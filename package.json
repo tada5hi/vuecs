@@ -1,6 +1,6 @@
 {
     "name": "vue-layout-navigation",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "description": "",
     "main": "dist/vue-layout-navigation.ssr.js",
     "browser": "dist/vue-layout-navigation.esm.js",
@@ -28,7 +28,8 @@
         "build:ssr": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format cjs",
         "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
         "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife",
-        "postbuild": "rimraf ./dist/types/dev ./dist/types/src/entry.d.ts"
+        "postbuild": "rimraf ./dist/types/dev ./dist/types/src/entry.d.ts",
+        "test": "echo null"
     },
     "devDependencies": {
         "@babel/core": "^7.14.6",

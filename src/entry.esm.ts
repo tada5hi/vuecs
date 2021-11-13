@@ -1,7 +1,7 @@
 import _Vue, { PluginFunction } from 'vue';
 
 // Import vue components
-import * as components from './lib-components/index';
+import * as components from './sfc/index';
 
 // install function executed by Vue.use()
 const install: PluginFunction<any> = function installVueLayoutNavigation(Vue: typeof _Vue) {
@@ -15,6 +15,6 @@ export default install;
 
 // To allow individual component use, export components
 // each can be registered via Vue.component()
-export * from './lib-components/index';
+export * from './sfc/index';
 
 export * from './index';

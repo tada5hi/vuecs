@@ -43,7 +43,6 @@ export default {
 </script>
 <template>
     <ul>
-        {{items}}
         <li
             v-if="component.show"
             v-for="(component,key) in items"
@@ -57,7 +56,7 @@ export default {
             <template v-else>
                 <template v-if="!component.components">
                     <template v-if="component.url">
-                        <router-link :to="component.url" class="sidebar-menu-link" :class="{'root-link': component.rootLink}">
+                        <router-link :to="component.url" class="nav-link" :class="{'root-link': component.rootLink}">
                             <i v-if="component.icon" :class="component.icon" /> {{ component.name }}
                         </router-link>
                     </template>
@@ -70,12 +69,12 @@ export default {
                 <template v-if="component.components">
                     <div
                         @click.prevent="selectComponent(component)"
-                        class="sidebar-submenu-title"
+                        class="nav-submenu-title"
                     >
                         <i v-if="component.icon" :class="component.icon" /> {{ component.name }}
                     </div>
                     <layout-components
-                        class="list-unstyled sidebar-submenu-components"
+                        class="list-unstyled nav-submenu-components"
                         :items="component.components"
                     />
                 </template>

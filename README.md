@@ -1,5 +1,16 @@
+[![npm version](https://badge.fury.io/js/vue-layout-navigation.svg)](https://badge.fury.io/js/vue-layout-navigation)
+[![Master Workflow](https://github.com/Tada5hi/vue-layout-navigation/workflows/main/badge.svg)](https://github.com/Tada5hi/vue-layout-navigation)
+
 # Vue-Layout-Navigation 🏝
 This repository contains all packages for the Central-UI of the Personal Health Train (PHT).
+
+
+---
+**NOTE**
+
+This package is still in heavy development and should therefore not be used for production 😇
+
+---
 
 ## Installation
 This package requires `nodejs` & `npm` to be installed on the host machine.
