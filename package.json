@@ -11,6 +11,15 @@
         "dist/*",
         "src/**/*.vue"
     ],
+    "author": {
+        "name": "Peter Placzek",
+        "email": "contact@tada5hi.net",
+        "url": "https://tada5hi.net"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tada5hi/vue-layout-navigation.git"
+    },
     "sideEffects": false,
     "scripts": {
         "serve": "vue-cli-service serve dev/serve.ts",
