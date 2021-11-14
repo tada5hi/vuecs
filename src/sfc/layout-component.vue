@@ -5,23 +5,33 @@
   - view the LICENSE file that was distributed with this source code.
   -->
 <script>
+import {isComponentMatch} from "../";
+
 export default {
+    name: 'LayoutComponent',
+    components: {
+        LayoutComponents: () => import('./layout-components.vue')
+    },
     props: {
         level: {
             type: String,
-            default: function () {
-                return 'level-0';
-            }
+            default: 'level-0'
         },
         component: {
-            type: Array,
+            type: Object,
             default: undefined
         }
     },
     methods: {
         async selectComponent(component) {
             await this.$store.dispatch('layout/selectComponent', {
-                type: this.level,
+                level: this.level,
+                component
+            })
+        },
+        async toggleComponentExpansion(component) {
+            await this.$store.commit('layout/toggleComponentExpansion', {
+                level: this.level,
                 component
             })
         }
@@ -29,6 +39,12 @@ export default {
     computed: {
         mainId() {
             return this.$store.getters['layout/componentId'](this.level);
+        },
+        isMatch() {
+            return isComponentMatch(
+                this.$store.getters['layout/component'](this.level),
+                this.component
+            )
         }
     }
 }
@@ -52,14 +68,14 @@ export default {
                         class="nav-link"
                         :class="{'router-link-active': level === 'main' && component.id === mainId }"
                         @click.prevent="selectComponent(component)" href="javascript:void(0)"
-                    ö>
+                    >
                         <i v-if="component.icon" :class="component.icon" /> {{ component.name }}
                     </a>
                 </template>
             </template>
             <template v-if="component.components">
                 <div
-                    @click.prevent="selectComponent(component)"
+                    @click.prevent="toggleComponentExpansion(component)"
                     class="nav-submenu-title"
                 >
                     <i v-if="component.icon" :class="component.icon" /> {{ component.name }}

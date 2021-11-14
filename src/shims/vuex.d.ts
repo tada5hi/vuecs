@@ -1,9 +1,9 @@
-import {AuthModule, LayoutProviderInterface} from "../type";
+import {AuthModuleInterface, LayoutProviderInterface} from "../type";
 import VueRouter from "vue-router";
 
 declare module 'vuex/types/index' {
     interface Store<S> {
-        $auth: AuthModule,
+        $auth: AuthModuleInterface,
         $router: VueRouter,
         $layoutProvider: LayoutProviderInterface
     }

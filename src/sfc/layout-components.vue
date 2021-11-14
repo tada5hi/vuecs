@@ -6,16 +6,15 @@
   -->
 
 <script>
-import LayoutComponent from "@/sfc/layout-component";
+import LayoutComponent from "./layout-component";
+
 export default {
     name: 'LayoutComponents',
     components: {LayoutComponent},
     props: {
         level: {
             type: String,
-            default: function () {
-                return 'level-0';
-            }
+            default: 'level-0'
         },
         propertyItems: {
             type: Array,

@@ -1,17 +1,14 @@
-<script lang="ts">
-import Vue from 'vue';
+<script>
 // Uncomment import and local "components" registration if library is not registered globally.
 import LayoutComponents from "../src/sfc/layout-components.vue";
-import {getMainNavComponents} from "../src";
 
-export default Vue.extend({
+export default {
     name: 'ServeDev',
     components: {LayoutComponents},
-});
+}
 </script>
-
 <template>
     <div id="app">
-        <layout-components level="'main'"/>
+        <layout-components />
     </div>
 </template>

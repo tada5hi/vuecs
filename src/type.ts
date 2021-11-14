@@ -6,23 +6,28 @@
  */
 
 import {AbilityMeta} from "@typescript-auth/core";
+import {LayoutKey} from "./contants";
 
 export type ComponentLevelName = `level-${number}`;
 
 export type Component = {
     id?: string,
-    level: ComponentLevelName,
+    type?: 'separator' | 'link',
+    level?: ComponentLevelName,
+    parent?: string | Component,
 
     name: string,
     url?: string,
     icon?: string,
     environment?: 'development' | 'production' | 'testing',
-    requireLoggedIn?: boolean,
-    requirePermissions?: string[],
-    requireLoggedOut?: boolean,
-    show?: boolean
+    [LayoutKey.REQUIRED_LOGGED_IN]?: boolean,
+    [LayoutKey.REQUIRED_LOGGED_OUT]?: boolean,
+    [LayoutKey.REQUIRED_PERMISSIONS]?: string[] | ((auth: AuthModuleInterface) => boolean),
+    [LayoutKey.REQUIRED_ABILITY]?: AbilityMeta[] | ((auth: AuthModuleInterface) => boolean),
 
-    type: 'separator' | 'link',
+    show?: boolean,
+
+
     rootLink?: boolean,
     components?: Component[]
 };
@@ -30,9 +35,15 @@ export type Component = {
 // --------------------------------------------------------
 
 export interface LayoutProviderInterface {
-    setComponents(level: ComponentLevelName): Promise<void>;
-    getComponent(level: ComponentLevelName, id: string) : Promise<Component | ComponentLevelName>;
+    getComponent(level: ComponentLevelName, id: string) : Promise<Component | undefined>;
     getComponents(level: ComponentLevelName) : Promise<Component[]>;
+    hasLevel(level: ComponentLevelName) : Promise<boolean>;
+}
+
+export interface AuthModuleInterface {
+    hasAbility(ability: AbilityMeta) : boolean;
+    hasPermission(name: string): boolean;
+    [key: string]: any
 }
 
 // --------------------------------------------------------
@@ -40,16 +51,12 @@ export interface LayoutProviderInterface {
 export type ReduceComponentContext = {
     loggedIn: boolean,
     show?: boolean,
-    auth: AuthModule,
+    auth?: AuthModuleInterface,
     [key: string]: any
 }
 
 // --------------------------------------------------------
 
-export type AuthModule = {
-    hasAbility(ability: AbilityMeta) : boolean;
-    hasPermission(name: string): boolean;
-    [key: string]: any
-}
+
 
 

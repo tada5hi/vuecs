@@ -5,12 +5,13 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-export enum Layout {
-    NAVIGATION_ID_KEY = 'navigationId',
-    REQUIRED_LOGGED_IN_KEY = 'requireLoggedIn',
-    REQUIRED_LOGGED_OUT_KEY = 'requireLoggedOut',
+export enum LayoutKey {
+    NAVIGATION_ID = 'navigationId',
 
-    REQUIRED_PERMISSIONS_KEY = 'requirePermissions',
-    REQUIRED_ABILITY_KEY = 'requireAbility'
+    REQUIRED_LOGGED_IN = 'requireLoggedIn',
+    REQUIRED_LOGGED_OUT = 'requireLoggedOut',
+
+    REQUIRED_PERMISSIONS = 'requirePermissions',
+    REQUIRED_ABILITY = 'requireAbility'
 }
 

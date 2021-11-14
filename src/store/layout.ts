@@ -6,14 +6,18 @@
  */
 
 import {ActionTree, GetterTree, MutationTree} from "vuex";
-import {isComponentMatch, reduceComponents} from "../components";
+import {reduceComponents} from "../reduce";
+import {toggleComponentTree} from "../toggle";
+import {initComponents, isComponentMatch} from "../utils";
 import {RootState} from "./index";
 
-import {AuthModule, Component, ComponentLevelName} from "../type";
+import {AuthModuleInterface, Component, ComponentLevelName} from "../type";
+
+// --------------------------------------------------------------------
 
 type CommitSetComponentsContextType = {
     level: ComponentLevelName,
-    auth: AuthModule,
+    auth: AuthModuleInterface,
     loggedIn: boolean,
     currentURL: string | undefined,
     components: Component[]
@@ -80,6 +84,25 @@ export const actions : ActionTree<LayoutState, RootState> = {
             level++;
         }
     },
+    async init(
+        { dispatch, getters },
+        context: {
+            level: ComponentLevelName,
+            component?: Component
+        }
+    ) {
+        const isMatch = isComponentMatch(getters.component(context.level), context.component as Component);
+
+        let level = parseInt(context.level.replace('level-', ''), 10);
+
+        while (await this.$layoutProvider.hasLevel(`level-${level}`)) {
+            if(`level-${level}` !== context.level || !isMatch) {
+                await dispatch('update', {level: `level-${level}`});
+            }
+
+            level++;
+        }
+    },
     async update(
         {commit, rootGetters},
         context: {
@@ -98,7 +121,10 @@ export const actions : ActionTree<LayoutState, RootState> = {
         // todo: eq to context.component ? like parent ?
         data.currentURL = (this.$router as any)?.history?.current?.fullPath;
 
-        data.components = await this.$layoutProvider.getComponents(context.level);
+        let components = await this.$layoutProvider.getComponents(context.level);
+        components = initComponents(components);
+        data.components = components;
+
         commit('setComponents', data);
     }
 };
@@ -108,28 +134,52 @@ export const mutations : MutationTree<LayoutState> = {
         state.initialized = value;
     },
 
+    toggleComponentExpansion(state, context: {level: ComponentLevelName, component: Component}) {
+        const isMatch = isComponentMatch(state.levelComponent[context.level], context.component);
+
+        if(isMatch) {
+            state.levelComponent = {
+                ...state.levelComponent,
+                [context.level]: undefined
+            }
+        } else {
+            state.levelComponent = {
+                ...state.levelComponent,
+                [context.level]: context.component
+            }
+        }
+
+        const {components} = toggleComponentTree(
+            state.levelComponents[context.level],
+            {
+                enable: !isMatch,
+                component: context.component
+            }
+        );
+
+        console.log(components);
+
+        state.levelComponents = {
+            ...state.levelComponents,
+            [context.level]: components
+        }
+    },
     setComponent(state, context: {level: ComponentLevelName, component: Component}) {
-        state.levelComponent[context.level] = state.levelComponent[context.level] === context.component ?
-            undefined : context.component;
+        state.levelComponents = {
+            ...state.levelComponents,
+            [context.level]: state.levelComponent[context.level] === context.component ?
+                undefined :
+                context.component
+        }
     },
     setComponents(state, context: CommitSetComponentsContextType) {
-        /*
-        const isMatch = context.component && isComponentMatch(state.mainComponent, context.component);
-
-        const build = buildComponents(components, {
-            component: context.component ?? undefined,
-            type: 'side',
-            navigationId: state.mainComponent?.id,
-            matchShow: isMatch
-        });
-
-        components = build.components;
-         */
-
-        state.levelComponents[context.level] = reduceComponents(context.components, {
-            loggedIn: context.loggedIn,
-            auth: context.auth
-        });
+        state.levelComponents = {
+            ...state.levelComponents,
+            [context.level]: reduceComponents(context.components, {
+                loggedIn: context.loggedIn,
+                auth: context.auth
+            })
+        };
     }
 };
 

@@ -5,30 +5,62 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {Component, ComponentLevelName} from "./type";
+import {Component} from "./type";
 
-let components : Record<ComponentLevelName, Component[]> = {};
-
-export function setComponents(level: ComponentLevelName, items: Component[]) {
-    components[level] = items;
-}
-
-export function getMainNavComponents(level: ComponentLevelName) : Component[] {
-    return components[level];
-}
-
-export function getComponentBy(
-    level: ComponentLevelName,
-    id: string
-) : Component | undefined {
-    if(!components.hasOwnProperty(level)) {
-        return undefined;
+export function isComponentMatch(
+    one?: Component,
+    two?: Component
+): boolean {
+    if (
+        typeof one === 'undefined' ||
+        typeof two === 'undefined'
+    ) {
+        return false;
     }
 
-    const index = components[level].findIndex(navigation => navigation.id === id);
-    if(index !== -1) {
-        return components[level][index];
+    if (
+        one.hasOwnProperty('id') &&
+        two.hasOwnProperty('id') &&
+        (one as any).id !== (two as any).id
+    ) {
+        return false;
     }
 
-    return undefined;
+    if (
+        one.url &&
+        two.url &&
+        !(
+            one.url === two.url ||
+            one.url.startsWith(two.url) ||
+            two.url.startsWith(one.url)
+        )
+    ) {
+        return false;
+    }
+
+    if (
+        one.name &&
+        two.name &&
+        one.name !== two.name
+    ) {
+        return false;
+    }
+
+    return true;
+}
+
+export function initComponents(
+    components: Component[],
+    show: boolean = true
+) {
+    return components.map(component => {
+        component.show = show;
+        component.type ??= 'link';
+
+        if(component.components) {
+            component.components = initComponents(component.components, false);
+        }
+
+        return component;
+    });
 }

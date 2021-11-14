@@ -6,11 +6,10 @@
  */
 
 import {Context} from "@nuxt/types";
-import {Layout} from "../contants";
-import {NAVIGATION_DEFAULT_ID} from "../main-nav";
+import {LayoutKey} from "../contants";
 
 export default async function layoutMiddleware({ store, route } : Context) {
-    const key = Layout.NAVIGATION_ID_KEY;
+    const key = LayoutKey.NAVIGATION_ID;
     let navigationId : string | undefined;
 
     if(route.meta) {
@@ -33,7 +32,7 @@ export default async function layoutMiddleware({ store, route } : Context) {
     await store.dispatch('layout/selectComponent', {
         type: 'navigation',
         component: {
-            id: navigationId ?? NAVIGATION_DEFAULT_ID
+            id: navigationId
         }
     });
 }
