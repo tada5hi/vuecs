@@ -6,37 +6,30 @@
   -->
 
 <script>
+import LayoutComponent from "@/sfc/layout-component";
 export default {
     name: 'LayoutComponents',
+    components: {LayoutComponent},
     props: {
-        type: {
+        level: {
             type: String,
             default: function () {
-                return 'main';
+                return 'level-0';
             }
+        },
+        propertyItems: {
+            type: Array,
+            default: undefined
         }
     },
-    methods: {
-        async selectComponent(component) {
-            await this.$store.dispatch('layout/selectComponent', {
-                type: this.type,
-                component
-            })
-        }
-    },
+
     computed: {
         items() {
-            switch (this.type) {
-                case 'main':
-                    return this.$store.getters['layout/mainComponents']
-                case 'side':
-                    return this.$store.getters['layout/sideComponents'];
+            if(typeof this.propertyItems !== 'undefined') {
+                return this.propertyItems;
             }
 
-            return [];
-        },
-        mainId() {
-            return this.$store.getters['layout/mainComponentId'];
+            return this.$store.getters['layout/components'](this.level);
         }
     }
 }
@@ -48,37 +41,7 @@ export default {
             v-for="(component,key) in items"
             :key="key"
         >
-            <template v-if="component.type === 'separator'" >
-                <div class="nav-separator">
-                    {{ component.name }}
-                </div>
-            </template>
-            <template v-else>
-                <template v-if="!component.components">
-                    <template v-if="component.url">
-                        <router-link :to="component.url" class="nav-link" :class="{'root-link': component.rootLink}">
-                            <i v-if="component.icon" :class="component.icon" /> {{ component.name }}
-                        </router-link>
-                    </template>
-                    <template v-else>
-                        <a class="nav-link" :class="{'router-link-active': type === 'main' && component.id === mainId }" @click.prevent="selectComponent(component)" href="javascript:void(0)" >
-                            <i v-if="component.icon" :class="component.icon" /> {{ component.name }}
-                        </a>
-                    </template>
-                </template>
-                <template v-if="component.components">
-                    <div
-                        @click.prevent="selectComponent(component)"
-                        class="nav-submenu-title"
-                    >
-                        <i v-if="component.icon" :class="component.icon" /> {{ component.name }}
-                    </div>
-                    <layout-components
-                        class="list-unstyled nav-submenu-components"
-                        :items="component.components"
-                    />
-                </template>
-            </template>
+            <layout-component :level="level" :component="component" />
         </li>
     </ul>
 </template>

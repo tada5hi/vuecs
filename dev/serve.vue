@@ -12,6 +12,6 @@ export default Vue.extend({
 
 <template>
     <div id="app">
-        <layout-components :type="'main'" />
+        <layout-components level="'main'"/>
     </div>
 </template>

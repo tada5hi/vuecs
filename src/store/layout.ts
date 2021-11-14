@@ -6,126 +6,100 @@
  */
 
 import {ActionTree, GetterTree, MutationTree} from "vuex";
-import {buildComponents, isComponentMatch, reduceComponents} from "../components";
+import {isComponentMatch, reduceComponents} from "../components";
 import {RootState} from "./index";
-import {
-    getMainNavComponentById,
-    getMainNavComponents,
-    MainNavComponent
-} from "../main-nav";
-import {getSideNavComponents, SideNavComponent} from "../side-nav";
-import {Component, ComponentType} from "../type";
+
+import {AuthModule, Component, ComponentLevelName} from "../type";
+
+type CommitSetComponentsContextType = {
+    level: ComponentLevelName,
+    auth: AuthModule,
+    loggedIn: boolean,
+    currentURL: string | undefined,
+    components: Component[]
+}
 
 // --------------------------------------------------------------------
 
 export interface LayoutState {
     initialized: boolean,
 
-    mainComponents: MainNavComponent[],
-    mainComponent: MainNavComponent | undefined,
-
-    sideComponents: SideNavComponent[],
-    sideComponent: SideNavComponent | undefined
+    levelComponents: Record<ComponentLevelName, Component[]>,
+    levelComponent: Record<ComponentLevelName, Component | undefined>
 }
 
 export const state = () : LayoutState => ({
     initialized: false,
 
-    mainComponents: [],
-    mainComponent: undefined,
-
-    sideComponents: [],
-    sideComponent: undefined
+    levelComponents: {},
+    levelComponent: {}
 });
 
 export const getters : GetterTree<LayoutState, RootState> = {
-    mainComponents: (state) : MainNavComponent[] => {
-        return state.mainComponents;
+    components: (state) => (level: ComponentLevelName) : Component[] =>  {
+        return state.levelComponents.hasOwnProperty(level) ?
+            state.levelComponents[level] :
+            [];
     },
-    mainComponent: (state) : MainNavComponent | undefined => {
-        return state.mainComponent;
-    },
-    mainComponentId: (state) : string | undefined => {
-        return state.mainComponent ?
-            state.mainComponent.id :
+    component: (state) => (level: ComponentLevelName) : Component | undefined => {
+        return state.levelComponent.hasOwnProperty(level) ?
+            state.levelComponent[level] :
             undefined;
     },
-
-    sideComponent: (state) : SideNavComponent | undefined => {
-        return state.sideComponent;
-    },
-    sideComponents: (state) : SideNavComponent[] => {
-        return state.sideComponents;
+    componentId: (state) => (level: ComponentLevelName) : string | undefined => {
+        return state.levelComponent.hasOwnProperty(level) ?
+            state.levelComponent[level]?.id :
+            undefined;
     }
 };
 
 export const actions : ActionTree<LayoutState, RootState> = {
     async selectComponent({dispatch, commit, getters}, context : {
-        type: ComponentType,
-        component: Component
+        level: ComponentLevelName,
+        component: Component | string
     }) {
-        if(
-            context.type === 'main' &&
-            context.component.hasOwnProperty('id')
-        ) {
-           const component = getMainNavComponentById((context.component as any).id);
-           if(typeof component !== 'undefined') {
-               context.component = component;
-           } else {
-               return;
-           }
+        if(typeof context.component === 'string') {
+            const component = await this.$layoutProvider.getComponent(context.level, context.component);
+            if(typeof component !== 'undefined') {
+                context.component = component;
+            } else {
+                return;
+            }
         }
 
-        const isMatch = context.type === 'side' ?
-            isComponentMatch(getters.sideComponent, context.component) :
-            isComponentMatch(getters.mainComponent, context.component);
+        const isMatch = isComponentMatch(getters.component(context.level), context.component as Component);
 
-        switch (context.type) {
-            case 'side':
-                commit('setSideComponent', context.component);
+        commit('setComponent', {level: context.level, component: context.component});
 
-                await dispatch('update', {type: 'side', component: context.component});
+        let level = parseInt(context.level.replace('level-', ''), 10);
+        while (getters.components(`level-${level}`).length > 0) {
+            if(`level-${level}` !== context.level || !isMatch) {
+                await dispatch('update', {level: `level-${level}`});
+            }
 
-                break;
-            case 'main':
-                commit('setMainComponent', context.component);
-
-                await dispatch('update', {type: 'main'});
-
-                if(!isMatch) {
-                    await dispatch('update', {type: 'side'});
-                }
-                break;
+            level++;
         }
     },
     async update(
         {commit, rootGetters},
         context: {
-            type: ComponentType,
+            level: ComponentLevelName,
             component?: Component
         }
     ) {
-        switch (context.type) {
-            case "main":
-                commit('setMainComponents', {
-                    auth: this.$auth,
-                    loggedIn: rootGetters["auth/loggedIn"]
-                });
-                break;
-            case "side":
-                const component : Component = !!context.component ?
-                    context.component :
-                    {
-                        url: (this.$router as any)?.history?.current?.fullPath
-                    } as Component;
+        let data : CommitSetComponentsContextType = {
+            level: context.level,
+            auth: this.$auth,
+            loggedIn: rootGetters["auth/loggedIn"],
+            currentURL: undefined,
+            components: []
+        };
 
-                commit('setSideComponents', {
-                    component,
-                    auth: this.$auth,
-                    loggedIn: rootGetters["auth/loggedIn"]
-                });
-                break;
-        }
+        // todo: eq to context.component ? like parent ?
+        data.currentURL = (this.$router as any)?.history?.current?.fullPath;
+
+        data.components = await this.$layoutProvider.getComponents(context.level);
+        commit('setComponents', data);
     }
 };
 
@@ -134,32 +108,12 @@ export const mutations : MutationTree<LayoutState> = {
         state.initialized = value;
     },
 
-    setMainComponent (state, component) {
-        state.mainComponent = component;
+    setComponent(state, context: {level: ComponentLevelName, component: Component}) {
+        state.levelComponent[context.level] = state.levelComponent[context.level] === context.component ?
+            undefined : context.component;
     },
-    setMainComponents(state, context) {
-        let components = getMainNavComponents();
-
-        components = reduceComponents(components, {
-            loggedIn: context.loggedIn,
-            auth: context.auth
-        })
-            .map(component => {
-                component.show = true;
-                return component;
-            });
-
-        state.mainComponents = components;
-    },
-
-    setSideComponent(state, component) {
-        state.sideComponents = isComponentMatch(state.sideComponent, component) ?
-            undefined :
-            component;
-    },
-    setSideComponents (state, context) {
-        let components = getSideNavComponents(state.mainComponent?.id);
-
+    setComponents(state, context: CommitSetComponentsContextType) {
+        /*
         const isMatch = context.component && isComponentMatch(state.mainComponent, context.component);
 
         const build = buildComponents(components, {
@@ -170,13 +124,12 @@ export const mutations : MutationTree<LayoutState> = {
         });
 
         components = build.components;
+         */
 
-        components = reduceComponents(components, {
+        state.levelComponents[context.level] = reduceComponents(context.components, {
             loggedIn: context.loggedIn,
             auth: context.auth
         });
-
-        state.sideComponents = components;
     }
 };
 

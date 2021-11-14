@@ -6,11 +6,34 @@
  */
 
 import {AbilityMeta} from "@typescript-auth/core";
-import {MainNavComponent} from "./main-nav";
-import {SideNavComponent} from "./side-nav";
 
-export type Component = MainNavComponent | SideNavComponent;
-export type ComponentType = 'side' | 'main';
+export type ComponentLevelName = `level-${number}`;
+
+export type Component = {
+    id?: string,
+    level: ComponentLevelName,
+
+    name: string,
+    url?: string,
+    icon?: string,
+    environment?: 'development' | 'production' | 'testing',
+    requireLoggedIn?: boolean,
+    requirePermissions?: string[],
+    requireLoggedOut?: boolean,
+    show?: boolean
+
+    type: 'separator' | 'link',
+    rootLink?: boolean,
+    components?: Component[]
+};
+
+// --------------------------------------------------------
+
+export interface LayoutProviderInterface {
+    setComponents(level: ComponentLevelName): Promise<void>;
+    getComponent(level: ComponentLevelName, id: string) : Promise<Component | ComponentLevelName>;
+    getComponents(level: ComponentLevelName) : Promise<Component[]>;
+}
 
 // --------------------------------------------------------
 
