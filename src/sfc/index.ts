@@ -1,3 +1,3 @@
 /* eslint-disable import/prefer-default-export */
-export { default as LayoutComponents } from './NavigationComponents.vue';
-export { default as LayoutComponent } from './NavigationComponent.vue';
+export { default as NavigationComponents } from './NavigationComponents.vue';
+export { default as NavigationComponent } from './NavigationComponent.vue';

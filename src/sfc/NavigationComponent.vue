@@ -8,7 +8,6 @@
 import {isNavigationComponentMatch} from "../";
 
 export default {
-    name: 'LayoutComponent',
     props: {
         level: {
             type: Number,
