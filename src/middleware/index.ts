@@ -29,8 +29,9 @@ export default async function layoutMiddleware({ store, route } : Context) {
         }
     }
 
+    // todo: this should be done for all levels :)
     await store.dispatch('layout/selectComponent', {
-        type: 'navigation',
+        level: 0,
         component: {
             id: navigationId
         }

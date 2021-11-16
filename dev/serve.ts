@@ -13,6 +13,19 @@ import VueRouter from "vue-router";
 Vue.use(Vuex);
 Vue.use(VueRouter);
 
+import Realm from './components/realm.vue';
+import Info from './components/about.vue';
+import About from './components/about.vue';
+
+const router = new VueRouter({
+    mode: "history",
+    routes: [
+        {path: '/', component: Info},
+        {path: '/about', component: About},
+        {path: '/admin/realms', component: Realm}
+    ]
+});
+
 const store = new Vuex.Store({
     modules: {
         layout: storePlugin
@@ -20,10 +33,13 @@ const store = new Vuex.Store({
 });
 
 (store as any).$layoutProvider = new LayoutProvider();
+(store as any).$router = router;
 
-store.dispatch('layout/init', {level: 'level-0'}).then(r => r);
+Promise.resolve()
+    .then(() => store.dispatch('layout/init'));
 
 new Vue({
     render: (h): VNode => h(Dev),
-    store
+    store,
+    router
 }).$mount('#app');

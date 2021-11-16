@@ -10,5 +10,11 @@ export default {
 <template>
     <div id="app">
         <layout-components />
+
+        <layout-components :level="1" />
+
+        <hr />
+
+        <router-view></router-view>
     </div>
 </template>

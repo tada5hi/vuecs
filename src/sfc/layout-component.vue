@@ -14,8 +14,8 @@ export default {
     },
     props: {
         level: {
-            type: String,
-            default: 'level-0'
+            type: Number,
+            default: 0
         },
         component: {
             type: Object,
@@ -30,14 +30,14 @@ export default {
             })
         },
         async toggleComponentExpansion(component) {
-            await this.$store.commit('layout/toggleComponentExpansion', {
+            await this.$store.dispatch('layout/toggleComponentExpansion', {
                 level: this.level,
                 component
             })
         }
     },
     computed: {
-        mainId() {
+        selectedId() {
             return this.$store.getters['layout/componentId'](this.level);
         },
         isMatch() {
@@ -52,39 +52,52 @@ export default {
 <template>
     <div>
         <template v-if="component.type === 'separator'" >
-            <div class="nav-separator">
-                {{ component.name }}
-            </div>
+            <slot name="separator" v-bind:component="component">
+                <div class="nav-separator">
+                    {{ component.name }}
+                </div>
+            </slot>
         </template>
         <template v-else>
             <template v-if="!component.components">
-                <template v-if="component.url">
-                    <router-link :to="component.url" class="nav-link" :class="{'root-link': component.rootLink}">
-                        <i v-if="component.icon" :class="component.icon" /> {{ component.name }}
-                    </router-link>
-                </template>
-                <template v-else>
-                    <a
-                        class="nav-link"
-                        :class="{'router-link-active': level === 'main' && component.id === mainId }"
-                        @click.prevent="selectComponent(component)" href="javascript:void(0)"
-                    >
-                        <i v-if="component.icon" :class="component.icon" /> {{ component.name }}
-                    </a>
-                </template>
+                <slot name="link" v-bind:component="component" v-bind:select-component="selectComponent">
+                    <template v-if="component.url">
+                        <router-link :to="component.url" class="nav-link" :class="{'root-link': component.rootLink}">
+                            <i v-if="component.icon" :class="component.icon" /> {{ component.name }}
+                        </router-link>
+                    </template>
+                    <template v-else>
+                        <a
+                            class="nav-link"
+                            :class="{'router-link-active active': component.id === selectedId }"
+                            @click.prevent="selectComponent(component)" href="javascript:void(0)"
+                        >
+                            <i v-if="component.icon" :class="component.icon" /> {{ component.name }}
+                        </a>
+                    </template>
+                </slot>
             </template>
             <template v-if="component.components">
-                <div
-                    @click.prevent="toggleComponentExpansion(component)"
-                    class="nav-submenu-title"
+                <slot
+                    name="componentNested"
+                    v-bind:component="component"
+                    v-bind:select-component="selectComponent"
+                    v-bind:toggle-component-expansion="toggleComponentExpansion"
                 >
-                    <i v-if="component.icon" :class="component.icon" /> {{ component.name }}
-                </div>
-                <layout-components
-                    class="list-unstyled nav-submenu-components"
-                    :level="level"
-                    :property-items="component.components"
-                />
+                    <div
+                        @click.prevent="toggleComponentExpansion(component)"
+                        class="nav-submenu-title"
+                        :class="{'router-link-active active': component.id === selectedId }"
+                    >
+                        <i v-if="component.icon" :class="component.icon" /> {{ component.name }}
+                    </div>
+
+                    <layout-components
+                        class="list-unstyled nav-submenu-components"
+                        :level="level"
+                        :property-items="component.components"
+                    />
+                </slot>
             </template>
         </template>
     </div>

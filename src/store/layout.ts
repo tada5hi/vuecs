@@ -11,15 +11,14 @@ import {toggleComponentTree} from "../toggle";
 import {initComponents, isComponentMatch} from "../utils";
 import {RootState} from "./index";
 
-import {AuthModuleInterface, Component, ComponentLevelName} from "../type";
+import {AuthModuleInterface, Component, ComponentLevel, LayoutProviderContext} from "../type";
 
 // --------------------------------------------------------------------
 
 type CommitSetComponentsContextType = {
-    level: ComponentLevelName,
+    level: ComponentLevel,
     auth: AuthModuleInterface,
     loggedIn: boolean,
-    currentURL: string | undefined,
     components: Component[]
 }
 
@@ -28,8 +27,8 @@ type CommitSetComponentsContextType = {
 export interface LayoutState {
     initialized: boolean,
 
-    levelComponents: Record<ComponentLevelName, Component[]>,
-    levelComponent: Record<ComponentLevelName, Component | undefined>
+    levelComponents: Record<string, Component[]>,
+    levelComponent: Record<string, Component | undefined>
 }
 
 export const state = () : LayoutState => ({
@@ -40,88 +39,147 @@ export const state = () : LayoutState => ({
 });
 
 export const getters : GetterTree<LayoutState, RootState> = {
-    components: (state) => (level: ComponentLevelName) : Component[] =>  {
-        return state.levelComponents.hasOwnProperty(level) ?
-            state.levelComponents[level] :
+    components: (state) => (level: ComponentLevel) : Component[] =>  {
+        return state.levelComponents.hasOwnProperty(level.toString()) ?
+            state.levelComponents[level.toString()] :
             [];
     },
-    component: (state) => (level: ComponentLevelName) : Component | undefined => {
-        return state.levelComponent.hasOwnProperty(level) ?
-            state.levelComponent[level] :
+    component: (state) => (level: ComponentLevel) : Component | undefined => {
+        return state.levelComponent.hasOwnProperty(level.toString()) ?
+            state.levelComponent[level.toString()] :
             undefined;
     },
-    componentId: (state) => (level: ComponentLevelName) : string | undefined => {
-        return state.levelComponent.hasOwnProperty(level) ?
-            state.levelComponent[level]?.id :
+    componentId: (state) => (level: ComponentLevel) : string | undefined => {
+        return state.levelComponent.hasOwnProperty(level.toString()) ?
+            state.levelComponent[level.toString()]?.id :
             undefined;
     }
 };
 
 export const actions : ActionTree<LayoutState, RootState> = {
     async selectComponent({dispatch, commit, getters}, context : {
-        level: ComponentLevelName,
-        component: Component | string
+        level: ComponentLevel,
+        component?: Component
     }) {
-        if(typeof context.component === 'string') {
-            const component = await this.$layoutProvider.getComponent(context.level, context.component);
-            if(typeof component !== 'undefined') {
-                context.component = component;
-            } else {
-                return;
-            }
+        if(typeof context.component === 'undefined') {
+            return;
         }
 
         const isMatch = isComponentMatch(getters.component(context.level), context.component as Component);
 
         commit('setComponent', {level: context.level, component: context.component});
 
-        let level = parseInt(context.level.replace('level-', ''), 10);
-        while (getters.components(`level-${level}`).length > 0) {
-            if(`level-${level}` !== context.level || !isMatch) {
-                await dispatch('update', {level: `level-${level}`});
+        let level = context.level;
+        while (getters.components(level).length > 0) {
+            if(level !== context.level || !isMatch) {
+                await dispatch('update', {level});
             }
 
             level++;
         }
     },
-    async init(
-        { dispatch, getters },
-        context: {
-            level: ComponentLevelName,
-            component?: Component
-        }
+    toggleComponentExpansion(
+        {commit, state},
+        context: {level: ComponentLevel, component: Component}
     ) {
-        const isMatch = isComponentMatch(getters.component(context.level), context.component as Component);
+        const levelStr : string = context.level.toString();
+        const isMatch = isComponentMatch(state.levelComponent[levelStr], context.component);
 
-        let level = parseInt(context.level.replace('level-', ''), 10);
+        commit('setComponent', {
+            level: context.level,
+            component: isMatch ? undefined : context.component
+        });
 
-        while (await this.$layoutProvider.hasLevel(`level-${level}`)) {
-            if(`level-${level}` !== context.level || !isMatch) {
-                await dispatch('update', {level: `level-${level}`});
+        commit('toggleComponentExpansion', context);
+    },
+    async init(
+        { dispatch, commit },
+        context?: LayoutProviderContext
+    ) {
+        let buildContext : boolean = typeof context === 'undefined';
+
+        context = {
+            components: [],
+            ...(context ? context : {})
+        };
+
+        const url : string | undefined = (this.$router as any)?.history?.current?.fullPath;
+        if(
+            typeof url !== 'undefined' &&
+            this.$layoutProvider.getContextForUrl
+        ) {
+            const urlContext = await this.$layoutProvider.getContextForUrl(url);
+            if(typeof urlContext !== 'undefined') {
+                context.components = urlContext.components;
+
+                buildContext = false;
+            }
+        }
+
+        let level = 0;
+        while (await this.$layoutProvider.hasLevel(level)) {
+            let items = await this.$layoutProvider.getComponents(level, context);
+            if(items.length === 0) {
+                level++;
+                continue;
             }
 
+            const defaultItem = items.filter(item => !!item.default).pop();
+
+            const item = defaultItem ?? items[0];
+
+            await dispatch('update', {
+                level,
+                components: context.components
+            });
+
+            commit('toggleComponentExpansion', {
+                component: item,
+                level
+            })
+
+            commit('setComponent', {
+                component: item,
+                level
+            });
+
             level++;
+
+            if(buildContext) {
+                context.components.push(item);
+            }
         }
     },
     async update(
-        {commit, rootGetters},
+        {getters, commit, rootGetters},
         context: {
-            level: ComponentLevelName,
-            component?: Component
+            level: ComponentLevel,
+            components?: Component[]
         }
     ) {
         let data : CommitSetComponentsContextType = {
             level: context.level,
             auth: this.$auth,
             loggedIn: rootGetters["auth/loggedIn"],
-            currentURL: undefined,
             components: []
         };
 
-        // todo: eq to context.component ? like parent ?
-        data.currentURL = (this.$router as any)?.history?.current?.fullPath;
+        const providerContext : LayoutProviderContext = {
+            ...(context.components ? {components: context.components} : {components: []})
+        }
 
-        let components = await this.$layoutProvider.getComponents(context.level);
+        if(typeof context.components === 'undefined') {
+            let level = 0;
+            while (
+                level < context.level &&
+                await this.$layoutProvider.hasLevel(level)
+                ) {
+                providerContext.components.push(getters.component(level));
+                level++;
+            }
+        }
+
+        let components = await this.$layoutProvider.getComponents(context.level, providerContext);
         components = initComponents(components);
         data.components = components;
 
@@ -134,48 +192,37 @@ export const mutations : MutationTree<LayoutState> = {
         state.initialized = value;
     },
 
-    toggleComponentExpansion(state, context: {level: ComponentLevelName, component: Component}) {
-        const isMatch = isComponentMatch(state.levelComponent[context.level], context.component);
-
-        if(isMatch) {
-            state.levelComponent = {
-                ...state.levelComponent,
-                [context.level]: undefined
-            }
-        } else {
-            state.levelComponent = {
-                ...state.levelComponent,
-                [context.level]: context.component
-            }
-        }
+    toggleComponentExpansion(state, context: {level: ComponentLevel, component: Component}) {
+        const levelStr : string = context.level.toString();
+        const isMatch = isComponentMatch(state.levelComponent[levelStr], context.component);
 
         const {components} = toggleComponentTree(
-            state.levelComponents[context.level],
+            state.levelComponents[levelStr],
             {
                 enable: !isMatch,
                 component: context.component
             }
         );
 
-        console.log(components);
-
         state.levelComponents = {
             ...state.levelComponents,
-            [context.level]: components
+            [levelStr]: components
         }
     },
-    setComponent(state, context: {level: ComponentLevelName, component: Component}) {
-        state.levelComponents = {
-            ...state.levelComponents,
-            [context.level]: state.levelComponent[context.level] === context.component ?
-                undefined :
-                context.component
+    setComponent(state, context: {level: ComponentLevel, component?: Component}) {
+        const levelStr : string = context.level.toString();
+
+        state.levelComponent = {
+            ...state.levelComponent,
+            [levelStr]: context.component
         }
     },
     setComponents(state, context: CommitSetComponentsContextType) {
+        const levelStr : string = context.level.toString();
+
         state.levelComponents = {
             ...state.levelComponents,
-            [context.level]: reduceComponents(context.components, {
+            [levelStr]: reduceComponents(context.components, {
                 loggedIn: context.loggedIn,
                 auth: context.auth
             })

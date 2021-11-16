@@ -13,8 +13,8 @@ export default {
     components: {LayoutComponent},
     props: {
         level: {
-            type: String,
-            default: 'level-0'
+            type: Number,
+            default: 0
         },
         propertyItems: {
             type: Array,

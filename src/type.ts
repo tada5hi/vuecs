@@ -8,16 +8,19 @@
 import {AbilityMeta} from "@typescript-auth/core";
 import {LayoutKey} from "./contants";
 
-export type ComponentLevelName = `level-${number}`;
+export type ComponentLevel = number;
 
 export type Component = {
     id?: string,
+    default?: boolean,
     type?: 'separator' | 'link',
-    level?: ComponentLevelName,
+
+    level?: ComponentLevel,
     parent?: string | Component,
 
     name: string,
     url?: string,
+
     icon?: string,
     environment?: 'development' | 'production' | 'testing',
     [LayoutKey.REQUIRED_LOGGED_IN]?: boolean,
@@ -27,7 +30,6 @@ export type Component = {
 
     show?: boolean,
 
-
     rootLink?: boolean,
     components?: Component[]
 };
@@ -35,9 +37,14 @@ export type Component = {
 // --------------------------------------------------------
 
 export interface LayoutProviderInterface {
-    getComponent(level: ComponentLevelName, id: string) : Promise<Component | undefined>;
-    getComponents(level: ComponentLevelName) : Promise<Component[]>;
-    hasLevel(level: ComponentLevelName) : Promise<boolean>;
+    getComponent(level: ComponentLevel, id: string, context: LayoutProviderContext) : Promise<Component | undefined>;
+    getComponents(level: ComponentLevel, context: LayoutProviderContext) : Promise<Component[]>;
+    hasLevel(level: ComponentLevel) : Promise<boolean>;
+    getContextForUrl?(url: string): Promise<LayoutProviderContext|undefined>;
+}
+
+export type LayoutProviderContext = {
+    components: Component[]
 }
 
 export interface AuthModuleInterface {
