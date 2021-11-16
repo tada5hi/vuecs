@@ -104,21 +104,11 @@ After those steps are completed,
 the SFC can be imported and render a specific navigation component level in reactive rendering mode.
 
 ```vue
-
-<script>
-import {LayoutComponents} from "vue-layout-navigation";
-
-export default {
-    components: {
-        LayoutComponents
-    }
-}
-</script>
 <template>
     <div>
-        <layout-components :level="0" />
+        <navigation-components :level="0" />
         
-        <layout-components :level="1" />
+        <navigation-components :level="1" />
     </div>
 </template>
 ```
