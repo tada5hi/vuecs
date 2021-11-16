@@ -6,7 +6,6 @@ import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import babel from '@rollup/plugin-babel';
 import { terser } from 'rollup-plugin-terser';
-import includePaths from 'rollup-plugin-includepaths';
 
 import ttypescript from 'ttypescript';
 import typescript from 'rollup-plugin-typescript2';
@@ -126,7 +125,6 @@ if (!argv.format || argv.format === 'cjs') {
             globals,
         },
         plugins: [
-            includePaths(includePathOptions),
             replace(baseConfig.plugins.replace),
             vue({
                 ...baseConfig.plugins.vue,
