@@ -1,25 +1,25 @@
-import {LayoutProviderContext, LayoutProviderInterface} from "../src";
-import {Component, ComponentLevel} from '../src';
+import {NavigationProviderContext, NavigationProviderInterface} from "../src";
+import {NavigationComponentConfig, NavigationComponentLevel} from '../src';
 
-export class LayoutProvider implements LayoutProviderInterface {
-    protected primaryItems : Component[] = [
+export class LayoutProvider implements NavigationProviderInterface {
+    protected primaryItems : NavigationComponentConfig[] = [
         {id: 'default', name: 'Home', icon: 'fa fa-home'},
         {id: 'admin', name: 'Admin', icon: 'fas fa-cog'}
     ];
 
     // -------------------------
 
-    protected secondaryDefaultItems : Component[] = [
+    protected secondaryDefaultItems : NavigationComponentConfig[] = [
         {name: 'Info', type: 'link', icon: 'fas fa-info', components: [{name: 'About', url: '/about'}], rootLink: true}
     ];
 
-    protected secondaryAdminItems : Component[] = [
+    protected secondaryAdminItems : NavigationComponentConfig[] = [
         {name: 'Realms', type: 'link', url: '/admin/realms', icon: 'fas fa-university'}
     ];
 
     // ---------------------------
 
-    async getComponent(level: ComponentLevel, id: string, context: LayoutProviderContext): Promise<Component | undefined> {
+    async getComponent(level: NavigationComponentLevel, id: string, context: NavigationProviderContext): Promise<NavigationComponentConfig | undefined> {
         const components = await this.getComponents(level, context);
         if(components.length === 0) {
             return undefined;
@@ -33,12 +33,12 @@ export class LayoutProvider implements LayoutProviderInterface {
         return components[index];
     }
 
-    async getComponents(level: ComponentLevel, context: LayoutProviderContext): Promise<Component[]> {
+    async getComponents(level: NavigationComponentLevel, context: NavigationProviderContext): Promise<NavigationComponentConfig[]> {
         if(!await this.hasLevel(level)) {
             return [];
         }
 
-        let items : Component[] = [];
+        let items : NavigationComponentConfig[] = [];
 
         switch (level) {
             case 0:
@@ -65,19 +65,19 @@ export class LayoutProvider implements LayoutProviderInterface {
         return items;
     }
 
-    async hasLevel(level: ComponentLevel): Promise<boolean> {
+    async hasLevel(level: NavigationComponentLevel): Promise<boolean> {
         return [0, 1].indexOf(level) !== -1;
     }
 
-    async getContextForUrl(url: string): Promise<LayoutProviderContext | undefined> {
-        const context : LayoutProviderContext = {
+    async getContextForUrl(url: string): Promise<NavigationProviderContext | undefined> {
+        const context : NavigationProviderContext = {
             components: []
         };
 
-        const sortFunc = (a: Component, b: Component) => {
+        const sortFunc = (a: NavigationComponentConfig, b: NavigationComponentConfig) => {
             return (b.url?.length ?? 0) - (a.url?.length ?? 0);
         };
-        const filterFunc = (item: Component) => {
+        const filterFunc = (item: NavigationComponentConfig) => {
             return !!item.url && (url.startsWith(item.url) || url === item.url);
         };
 
@@ -98,7 +98,7 @@ export class LayoutProvider implements LayoutProviderInterface {
         }
 
         const isAdminItem = secondaryAdminItems.length > 0;
-        const secondaryItem : Component = isAdminItem ? secondaryAdminItems[0] : secondaryDefaultItems[0];
+        const secondaryItem : NavigationComponentConfig = isAdminItem ? secondaryAdminItems[0] : secondaryDefaultItems[0];
 
         const primaryItem = this.primaryItems.filter(item => !!item?.id && item.id === (isAdminItem ? 'admin' : 'default')).pop();
 
@@ -114,7 +114,7 @@ export class LayoutProvider implements LayoutProviderInterface {
 
     // ----------------------------------------------------
 
-    private flatternNestedComponents(components: Component[]) : Component[] {
+    private flatternNestedComponents(components: NavigationComponentConfig[]) : NavigationComponentConfig[] {
         let output = [...components];
 
         components.map(component => {

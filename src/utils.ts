@@ -5,11 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {Component} from "./type";
+import {NavigationComponentConfig} from "./type";
 
-export function isComponentMatch(
-    one?: Component,
-    two?: Component
+export function isNavigationComponentMatch(
+    one?: NavigationComponentConfig,
+    two?: NavigationComponentConfig
 ): boolean {
     if (
         typeof one === 'undefined' ||
@@ -50,7 +50,7 @@ export function isComponentMatch(
 }
 
 export function initComponents(
-    components: Component[],
+    components: NavigationComponentConfig[],
     show: boolean = true
 ) {
     return components.map(component => {

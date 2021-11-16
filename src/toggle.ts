@@ -5,33 +5,33 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {Component} from "./type";
-import {isComponentMatch} from "./utils";
+import {NavigationComponentConfig} from "./type";
+import {isNavigationComponentMatch} from "./utils";
 
 // --------------------------------------------------
 
 type ToggleComponentContext = {
-    component: Component,
+    component: NavigationComponentConfig,
     enable: boolean,
 
     show?: boolean
 }
 
-export function toggleComponentTree(
-    components: Component[],
+export function toggleNavigationComponentTree(
+    components: NavigationComponentConfig[],
     context: ToggleComponentContext
-) : {componentFound: boolean, components: Component[]} {
+) : {componentFound: boolean, components: NavigationComponentConfig[]} {
     let componentFound = false;
 
     components = components
         .map(component => {
-            const isMatch = isComponentMatch(context.component, component);
+            const isMatch = isNavigationComponentMatch(context.component, component);
 
             if (
                 component.components &&
                 component.components.length > 0
             ) {
-                const child = toggleComponentTree(component.components, {
+                const child = toggleNavigationComponentTree(component.components, {
                     ...context,
                     show: isMatch
                 });

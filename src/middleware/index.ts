@@ -8,7 +8,7 @@
 import {Context} from "@nuxt/types";
 import {LayoutKey} from "../contants";
 
-export default async function layoutMiddleware({ store, route } : Context) {
+export async function layoutMiddleware({ store, route } : Context) {
     const key = LayoutKey.NAVIGATION_ID;
     let navigationId : string | undefined;
 

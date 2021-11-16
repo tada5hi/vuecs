@@ -1,6 +1,6 @@
 <script>
 // Uncomment import and local "components" registration if library is not registered globally.
-import LayoutComponents from "../src/sfc/layout-components.vue";
+import LayoutComponents from "@/sfc/NavigationComponents.vue";
 
 export default {
     name: 'ServeDev',
@@ -9,9 +9,9 @@ export default {
 </script>
 <template>
     <div id="app">
-        <layout-components />
+        <navigation-components />
 
-        <layout-components :level="1" />
+        <navigation-components :level="1" />
 
         <hr />
 

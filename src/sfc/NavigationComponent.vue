@@ -5,13 +5,10 @@
   - view the LICENSE file that was distributed with this source code.
   -->
 <script>
-import {isComponentMatch} from "../";
+import {isNavigationComponentMatch} from "../";
 
 export default {
     name: 'LayoutComponent',
-    components: {
-        LayoutComponents: () => import('./layout-components.vue')
-    },
     props: {
         level: {
             type: Number,
@@ -41,7 +38,7 @@ export default {
             return this.$store.getters['layout/componentId'](this.level);
         },
         isMatch() {
-            return isComponentMatch(
+            return isNavigationComponentMatch(
                 this.$store.getters['layout/component'](this.level),
                 this.component
             )
@@ -92,7 +89,7 @@ export default {
                         <i v-if="component.icon" :class="component.icon" /> {{ component.name }}
                     </div>
 
-                    <layout-components
+                    <navigation-components
                         class="list-unstyled nav-submenu-components"
                         :level="level"
                         :property-items="component.components"

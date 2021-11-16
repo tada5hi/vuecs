@@ -1,12 +1,14 @@
-import _Vue, { PluginFunction } from 'vue';
+import 'regenerator-runtime';
+
+import Vue, { PluginFunction } from 'vue';
 
 // Import vue components
 import * as components from './sfc/index';
 
 // install function executed by Vue.use()
-const install: PluginFunction<any> = function installVueLayoutNavigation(Vue: typeof _Vue) {
+const install: PluginFunction<any> = function installVueLayoutNavigation(vue: typeof Vue) {
     Object.entries(components).forEach(([componentName, component]) => {
-        Vue.component(componentName, component);
+        vue.component(componentName, component);
     });
 };
 
@@ -16,5 +18,4 @@ export default install;
 // To allow individual component use, export components
 // each can be registered via Vue.component()
 export * from './sfc/index';
-
 export * from './index';

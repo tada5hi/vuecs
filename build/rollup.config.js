@@ -6,6 +6,8 @@ import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import babel from '@rollup/plugin-babel';
 import { terser } from 'rollup-plugin-terser';
+import includePaths from 'rollup-plugin-includepaths';
+
 import ttypescript from 'ttypescript';
 import typescript from 'rollup-plugin-typescript2';
 import minimist from 'minimist';
@@ -21,6 +23,13 @@ const babelPresetEnvConfig = require('../babel.config')
     .presets.filter((entry) => entry[0] === '@babel/preset-env')[0][1];
 
 const argv = minimist(process.argv.slice(2));
+
+let includePathOptions = {
+    include: {
+        'vue': 'node_modules/vue/dist/vue.common.js'
+    },
+    external: ['vue']
+};
 
 const baseConfig = {
     input: 'src/entry.ts',
@@ -43,7 +52,7 @@ const baseConfig = {
         babel: {
             exclude: 'node_modules/**',
             extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
-            babelHelpers: 'bundled',
+            babelHelpers: "bundled"
         },
     },
 };
@@ -117,6 +126,7 @@ if (!argv.format || argv.format === 'cjs') {
             globals,
         },
         plugins: [
+            includePaths(includePathOptions),
             replace(baseConfig.plugins.replace),
             vue({
                 ...baseConfig.plugins.vue,

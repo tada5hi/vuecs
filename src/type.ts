@@ -8,15 +8,15 @@
 import {AbilityMeta} from "@typescript-auth/core";
 import {LayoutKey} from "./contants";
 
-export type ComponentLevel = number;
+export type NavigationComponentLevel = number;
 
-export type Component = {
+export type NavigationComponentConfig = {
     id?: string,
     default?: boolean,
     type?: 'separator' | 'link',
 
-    level?: ComponentLevel,
-    parent?: string | Component,
+    level?: NavigationComponentLevel,
+    parent?: string | NavigationComponentConfig,
 
     name: string,
     url?: string,
@@ -31,20 +31,20 @@ export type Component = {
     show?: boolean,
 
     rootLink?: boolean,
-    components?: Component[]
+    components?: NavigationComponentConfig[]
 };
 
 // --------------------------------------------------------
 
-export interface LayoutProviderInterface {
-    getComponent(level: ComponentLevel, id: string, context: LayoutProviderContext) : Promise<Component | undefined>;
-    getComponents(level: ComponentLevel, context: LayoutProviderContext) : Promise<Component[]>;
-    hasLevel(level: ComponentLevel) : Promise<boolean>;
-    getContextForUrl?(url: string): Promise<LayoutProviderContext|undefined>;
+export interface NavigationProviderInterface {
+    getComponent(level: NavigationComponentLevel, id: string, context: NavigationProviderContext) : Promise<NavigationComponentConfig | undefined>;
+    getComponents(level: NavigationComponentLevel, context: NavigationProviderContext) : Promise<NavigationComponentConfig[]>;
+    hasLevel(level: NavigationComponentLevel) : Promise<boolean>;
+    getContextForUrl?(url: string): Promise<NavigationProviderContext|undefined>;
 }
 
-export type LayoutProviderContext = {
-    components: Component[]
+export type NavigationProviderContext = {
+    components: NavigationComponentConfig[]
 }
 
 export interface AuthModuleInterface {

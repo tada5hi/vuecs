@@ -6,11 +6,8 @@
   -->
 
 <script>
-import LayoutComponent from "./layout-component";
-
 export default {
     name: 'LayoutComponents',
-    components: {LayoutComponent},
     props: {
         level: {
             type: Number,
@@ -40,7 +37,7 @@ export default {
             v-for="(component,key) in items"
             :key="key"
         >
-            <layout-component :level="level" :component="component" />
+            <navigation-component :level="level" :component="component" />
         </li>
     </ul>
 </template>

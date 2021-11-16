@@ -1,16 +1,16 @@
 import {LayoutKey} from "./contants";
-import {Component, ReduceComponentContext} from "./type";
+import {NavigationComponentConfig, ReduceComponentContext} from "./type";
 
-export function reduceComponents(
-    components: Component[],
+export function reduceNavigationComponents(
+    components: NavigationComponentConfig[],
     context: ReduceComponentContext
-): Component[] {
+): NavigationComponentConfig[] {
     if (typeof context.auth === 'undefined') {
         return components;
     }
 
     return components
-        .filter((component: Component) => {
+        .filter((component: NavigationComponentConfig) => {
             if (
                 component.hasOwnProperty(LayoutKey.REQUIRED_LOGGED_IN) &&
                 component[LayoutKey.REQUIRED_LOGGED_IN] &&
