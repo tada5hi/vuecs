@@ -4,16 +4,18 @@
 # Vue-Layout-Navigation 🏝
 
 This repository contains:
-- vue templates to render the components
-- vuex store plugin to hold the current level components
-- (nuxt-) middleware to init layout according a specific route
+- vue templates
+  - to render navigation components
+- vuex store plugin 
+  - to hold the current components of each level
+- (nuxt-) middleware 
+  - to init layout according meta properties instead of route.
 
----
-**NOTE**
+**Table of Contents**
 
-This package is still in heavy development and should therefore not be used for production 😇
-
----
+- [Installation](#installation)
+- [Usage](#usage)
+- [Example](#example)
 
 ## Installation
 This package requires `nodejs` & `npm` to be installed on the host machine.
@@ -45,12 +47,11 @@ export class LayoutProvider implements LayoutProviderInterface {
     }
 }
 ```
-For a full example check out `./serve/module.ts` file in the root directory of this project.
 
 ---
 
-The next step is to inject an instance of the class to the vuex store.
-The vue entry point could like shown in the following:
+The next step is to init the vuex store and inject an instance of the `ProviderClass` to the store.
+The vue entry point could look like this:
 
 ```typescript
 import Vue, { VNode } from 'vue';
@@ -97,10 +98,15 @@ new Vue({
 }).$mount('#app');
 ```
 
+--- 
+
+After those steps are completed,
+the SFC can be imported and render a specific navigation component level in reactive rendering mode.
+
 ```vue
 
 <script>
-import {LayoutComponents} from "./vue-layout-navigation";
+import {LayoutComponents} from "vue-layout-navigation";
 
 export default {
     components: {
@@ -110,12 +116,14 @@ export default {
 </script>
 <template>
     <div>
-        <!-- type: 'main' | 'side' -->
-        <layout-components :type="'main'" />
+        <layout-components :level="0" />
+        
+        <layout-components :level="1" />
     </div>
 </template>
 ```
 
-## Configuration
-Read the `Readme.md` in each package directory.
+## Example
+
+For a full example check out `./serve/` directory of this project.
 
