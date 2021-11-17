@@ -1,6 +1,6 @@
 // rollup.config.js
 import fs from 'fs';
-import vue from 'rollup-plugin-vue';
+import vue from 'rollup-plugin-vue2';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
@@ -10,6 +10,16 @@ import { terser } from 'rollup-plugin-terser';
 import ttypescript from 'ttypescript';
 import typescript from 'rollup-plugin-typescript2';
 import minimist from 'minimist';
+
+import includePaths from 'rollup-plugin-includepaths';
+
+let includePathOptions = {
+    include: {
+        'vue': 'node_modules/vue/dist/vue.common.js',
+        'vue-router': 'node_modules/vue-router/dist/vue-router.js'
+    },
+    external: ['vue', 'vue-router']
+};
 
 // Get browserslist config and remove ie from es build targets
 const esbrowserslist = fs.readFileSync('./.browserslistrc')
@@ -22,13 +32,6 @@ const babelPresetEnvConfig = require('../babel.config')
     .presets.filter((entry) => entry[0] === '@babel/preset-env')[0][1];
 
 const argv = minimist(process.argv.slice(2));
-
-let includePathOptions = {
-    include: {
-        'vue': 'node_modules/vue/dist/vue.common.js'
-    },
-    external: ['vue']
-};
 
 const baseConfig = {
     input: 'src/entry.ts',
@@ -69,7 +72,7 @@ const external = [
 const globals = {
     // Provide global variable names to replace your external imports
     // eg. jquery: '$'
-    vue: 'Vue',
+    vue: 'vue',
 };
 
 // Customize configs for individual targets
@@ -133,6 +136,7 @@ if (!argv.format || argv.format === 'cjs') {
                     optimizeSSR: true,
                 },
             }),
+            includePaths(includePathOptions),
             ...baseConfig.plugins.postVue,
             babel(baseConfig.plugins.babel),
         ],

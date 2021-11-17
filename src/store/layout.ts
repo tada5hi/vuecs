@@ -129,7 +129,7 @@ export const actions : ActionTree<LayoutState, RootState> = {
             const item = defaultItem ?? items[0];
 
             await dispatch('update', {
-                level,
+                level: level,
                 components: context.components
             });
 
@@ -179,9 +179,7 @@ export const actions : ActionTree<LayoutState, RootState> = {
             }
         }
 
-        let components = await this.$layoutProvider.getComponents(context.level, providerContext);
-        components = initComponents(components);
-        data.components = components;
+        data.components = await this.$layoutProvider.getComponents(context.level, providerContext);
 
         commit('setComponents', data);
     }
@@ -218,11 +216,14 @@ export const mutations : MutationTree<LayoutState> = {
         }
     },
     setComponents(state, context: CommitSetComponentsContextType) {
+        let components = [...context.components];
+        components = initComponents(components);
+
         const levelStr : string = context.level.toString();
 
         state.levelComponents = {
             ...state.levelComponents,
-            [levelStr]: reduceNavigationComponents(context.components, {
+            [levelStr]: reduceNavigationComponents(components, {
                 loggedIn: context.loggedIn,
                 auth: context.auth
             })
