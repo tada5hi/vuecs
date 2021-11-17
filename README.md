@@ -24,17 +24,20 @@ $ npm i --save-dev vue-layout-navigation
 ```
 
 ## Usage
-The first step is to define a class which implements the Interface `LayoutProviderInterface`.
+The first step is to define a class which implements the Interface `NavigationProviderInterface`.
 It will be responsible for providing navigation items for specific levels on demand.
 
 This implementation class shape should look like this:
+
 ```typescript
-export class LayoutProvider implements LayoutProviderInterface {
-    async getComponent(level: ComponentLevel, id: string, context: LayoutProviderContext): Promise<Component | undefined> {
+import {NavigationProviderInterface} from "./type";
+
+export class NavigationProvider implements NavigationProviderInterface {
+    async getComponent(level: ComponentLevel, id: string, context: NavigationProviderContext): Promise<NavigationComponentConfig | undefined> {
         // component for specific level for a given context.
     }
 
-    async getComponents(level: ComponentLevel, context: LayoutProviderContext): Promise<Component[]> {
+    async getComponents(level: ComponentLevel, context: NavigationProviderContext): Promise<NavigationComponentConfig[]> {
         // components for specific level for a given context.
     }
 
@@ -42,7 +45,7 @@ export class LayoutProvider implements LayoutProviderInterface {
         // check if the level exists.
     }
 
-    async getContextForUrl?(url: string): Promise<LayoutProviderContext | undefined> {
+    async getContextForUrl?(url: string): Promise<NavigationProviderContext | undefined> {
         // build component context for url
     }
 }
@@ -55,7 +58,7 @@ The vue entry point could look like this:
 
 ```typescript
 import Vue, { VNode } from 'vue';
-import {LayoutProvider} from "./module";
+import {NavigationProvider} from "./module";
 import Dev from './serve.vue';
 
 import VueLayoutNavigation, {
@@ -85,11 +88,11 @@ const store = new Vuex.Store({
     }
 });
 
-(store as any).$layoutProvider = new LayoutProvider();
+(store as any).$navigationProvider = new NavigationProvider();
 (store as any).$router = router;
 
 Promise.resolve()
-    .then(() => store.dispatch('layout/init'));
+    .then(() => store.dispatch('layout/initNavigation'));
 
 new Vue({
     render: (h): VNode => h(Dev),

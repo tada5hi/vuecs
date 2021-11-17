@@ -24,7 +24,7 @@ export default {
                 return this.propertyItems;
             }
 
-            return this.$store.getters['layout/components'](this.level);
+            return this.$store.getters['layout/navigationComponents'](this.level);
         }
     }
 }

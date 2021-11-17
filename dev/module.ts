@@ -1,7 +1,7 @@
 import {NavigationProviderContext, NavigationProviderInterface} from "../src";
 import {NavigationComponentConfig, NavigationComponentLevel} from '../src';
 
-export class LayoutProvider implements NavigationProviderInterface {
+export class NavigationProvider implements NavigationProviderInterface {
     protected primaryItems : NavigationComponentConfig[] = [
         {id: 'default', name: 'Home', icon: 'fa fa-home'},
         {id: 'admin', name: 'Admin', icon: 'fas fa-cog'}

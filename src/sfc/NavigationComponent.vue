@@ -20,13 +20,13 @@ export default {
     },
     methods: {
         async selectComponent(component) {
-            await this.$store.dispatch('layout/selectComponent', {
+            await this.$store.dispatch('layout/selectNavigation', {
                 level: this.level,
                 component
             })
         },
         async toggleComponentExpansion(component) {
-            await this.$store.dispatch('layout/toggleComponentExpansion', {
+            await this.$store.dispatch('layout/toggleNavigationExpansion', {
                 level: this.level,
                 component
             })
@@ -34,11 +34,11 @@ export default {
     },
     computed: {
         selectedId() {
-            return this.$store.getters['layout/componentId'](this.level);
+            return this.$store.getters['layout/navigationComponentId'](this.level);
         },
         isMatch() {
             return isNavigationComponentMatch(
-                this.$store.getters['layout/component'](this.level),
+                this.$store.getters['layout/navigationComponent'](this.level),
                 this.component
             )
         }

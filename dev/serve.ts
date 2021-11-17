@@ -1,5 +1,5 @@
 import Vue, { VNode } from 'vue';
-import {LayoutProvider} from "./module";
+import {NavigationProvider} from "./module";
 import Dev from './serve.vue';
 
 import VueLayoutNavigation, {storePlugin} from '../src/entry.esm';
@@ -32,11 +32,11 @@ const store = new Vuex.Store({
     }
 });
 
-(store as any).$layoutProvider = new LayoutProvider();
+(store as any).$navigationProvider = new NavigationProvider();
 (store as any).$router = router;
 
 Promise.resolve()
-    .then(() => store.dispatch('layout/init'));
+    .then(() => store.dispatch('layout/initNavigation'));
 
 new Vue({
     render: (h): VNode => h(Dev),

@@ -30,7 +30,7 @@ export async function layoutMiddleware({ store, route } : Context) {
     }
 
     // todo: this should be done for all levels :)
-    await store.dispatch('layout/selectComponent', {
+    await store.dispatch('layout/selectNavigation', {
         level: 0,
         component: {
             id: navigationId

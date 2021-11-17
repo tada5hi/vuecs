@@ -5,6 +5,6 @@ declare module 'vuex/types/index' {
     interface Store<S> {
         $auth: AuthModuleInterface,
         $router: VueRouter,
-        $layoutProvider: NavigationProviderInterface
+        $navigationProvider: NavigationProviderInterface
     }
 }

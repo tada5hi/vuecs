@@ -39,17 +39,17 @@ export const state = () : LayoutState => ({
 });
 
 export const getters : GetterTree<LayoutState, RootState> = {
-    components: (state) => (level: NavigationComponentLevel) : NavigationComponentConfig[] =>  {
+    navigationComponents: (state) => (level: NavigationComponentLevel) : NavigationComponentConfig[] =>  {
         return state.levelComponents.hasOwnProperty(level.toString()) ?
             state.levelComponents[level.toString()] :
             [];
     },
-    component: (state) => (level: NavigationComponentLevel) : NavigationComponentConfig | undefined => {
+    navigationComponent: (state) => (level: NavigationComponentLevel) : NavigationComponentConfig | undefined => {
         return state.levelComponent.hasOwnProperty(level.toString()) ?
             state.levelComponent[level.toString()] :
             undefined;
     },
-    componentId: (state) => (level: NavigationComponentLevel) : string | undefined => {
+    navigationComponentId: (state) => (level: NavigationComponentLevel) : string | undefined => {
         return state.levelComponent.hasOwnProperty(level.toString()) ?
             state.levelComponent[level.toString()]?.id :
             undefined;
@@ -57,7 +57,7 @@ export const getters : GetterTree<LayoutState, RootState> = {
 };
 
 export const actions : ActionTree<LayoutState, RootState> = {
-    async selectComponent({dispatch, commit, getters}, context : {
+    async selectNavigation({dispatch, commit, getters}, context : {
         level: NavigationComponentLevel,
         component?: NavigationComponentConfig
     }) {
@@ -65,34 +65,34 @@ export const actions : ActionTree<LayoutState, RootState> = {
             return;
         }
 
-        const isMatch = isNavigationComponentMatch(getters.component(context.level), context.component as NavigationComponentConfig);
+        const isMatch = isNavigationComponentMatch(getters.navigationComponent(context.level), context.component as NavigationComponentConfig);
 
-        commit('setComponent', {level: context.level, component: context.component});
+        commit('setNavigationComponent', {level: context.level, component: context.component});
 
         let level = context.level;
-        while (getters.components(level).length > 0) {
+        while (getters.navigationComponents(level).length > 0) {
             if(level !== context.level || !isMatch) {
-                await dispatch('update', {level});
+                await dispatch('updateNavigation', {level});
             }
 
             level++;
         }
     },
-    toggleComponentExpansion(
+    toggleNavigationExpansion(
         {commit, state},
         context: {level: NavigationComponentLevel, component: NavigationComponentConfig}
     ) {
         const levelStr : string = context.level.toString();
         const isMatch = isNavigationComponentMatch(state.levelComponent[levelStr], context.component);
 
-        commit('setComponent', {
+        commit('setNavigationComponent', {
             level: context.level,
             component: isMatch ? undefined : context.component
         });
 
-        commit('toggleComponentExpansion', context);
+        commit('toggleNavigationExpansion', context);
     },
-    async init(
+    async initNavigation(
         { dispatch, commit },
         context?: NavigationProviderContext
     ) {
@@ -106,9 +106,9 @@ export const actions : ActionTree<LayoutState, RootState> = {
         const url : string | undefined = (this.$router as any)?.history?.current?.fullPath;
         if(
             typeof url !== 'undefined' &&
-            this.$layoutProvider.getContextForUrl
+            this.$navigationProvider.getContextForUrl
         ) {
-            const urlContext = await this.$layoutProvider.getContextForUrl(url);
+            const urlContext = await this.$navigationProvider.getContextForUrl(url);
             if(typeof urlContext !== 'undefined') {
                 context.components = urlContext.components;
 
@@ -117,8 +117,8 @@ export const actions : ActionTree<LayoutState, RootState> = {
         }
 
         let level = 0;
-        while (await this.$layoutProvider.hasLevel(level)) {
-            let items = await this.$layoutProvider.getComponents(level, context);
+        while (await this.$navigationProvider.hasLevel(level)) {
+            let items = await this.$navigationProvider.getComponents(level, context);
             if(items.length === 0) {
                 level++;
                 continue;
@@ -128,17 +128,17 @@ export const actions : ActionTree<LayoutState, RootState> = {
 
             const item = defaultItem ?? items[0];
 
-            await dispatch('update', {
+            await dispatch('updateNavigation', {
                 level: level,
                 components: context.components
             });
 
-            commit('toggleComponentExpansion', {
+            commit('toggleNavigationExpansion', {
                 component: item,
                 level
             })
 
-            commit('setComponent', {
+            commit('setNavigationComponent', {
                 component: item,
                 level
             });
@@ -150,7 +150,7 @@ export const actions : ActionTree<LayoutState, RootState> = {
             }
         }
     },
-    async update(
+    async updateNavigation(
         {getters, commit, rootGetters},
         context: {
             level: NavigationComponentLevel,
@@ -172,16 +172,16 @@ export const actions : ActionTree<LayoutState, RootState> = {
             let level = 0;
             while (
                 level < context.level &&
-                await this.$layoutProvider.hasLevel(level)
+                await this.$navigationProvider.hasLevel(level)
                 ) {
-                providerContext.components.push(getters.component(level));
+                providerContext.components.push(getters.navigationComponent(level));
                 level++;
             }
         }
 
-        data.components = await this.$layoutProvider.getComponents(context.level, providerContext);
+        data.components = await this.$navigationProvider.getComponents(context.level, providerContext);
 
-        commit('setComponents', data);
+        commit('setNavigationComponents', data);
     }
 };
 
@@ -190,7 +190,7 @@ export const mutations : MutationTree<LayoutState> = {
         state.initialized = value;
     },
 
-    toggleComponentExpansion(state, context: {level: NavigationComponentLevel, component: NavigationComponentConfig}) {
+    toggleNavigationExpansion(state, context: {level: NavigationComponentLevel, component: NavigationComponentConfig}) {
         const levelStr : string = context.level.toString();
         const isMatch = isNavigationComponentMatch(state.levelComponent[levelStr], context.component);
 
@@ -207,7 +207,7 @@ export const mutations : MutationTree<LayoutState> = {
             [levelStr]: components
         }
     },
-    setComponent(state, context: {level: NavigationComponentLevel, component?: NavigationComponentConfig}) {
+    setNavigationComponent(state, context: {level: NavigationComponentLevel, component?: NavigationComponentConfig}) {
         const levelStr : string = context.level.toString();
 
         state.levelComponent = {
@@ -215,7 +215,7 @@ export const mutations : MutationTree<LayoutState> = {
             [levelStr]: context.component
         }
     },
-    setComponents(state, context: CommitSetComponentsContextType) {
+    setNavigationComponents(state, context: CommitSetComponentsContextType) {
         let components = [...context.components];
         components = initComponents(components);
 
