@@ -126,7 +126,7 @@ export const actions : ActionTree<LayoutState, RootState> = {
 
             const defaultItem = items.filter(item => !!item.default).pop();
 
-            const item = defaultItem ?? items[0];
+            const item = defaultItem ? defaultItem : items[0];
 
             await dispatch('updateNavigation', {
                 level: level,
