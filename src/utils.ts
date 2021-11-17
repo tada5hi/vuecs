@@ -53,9 +53,11 @@ export function initComponents(
     components: NavigationComponentConfig[],
     show: boolean = true
 ) {
-    return components.map(component => {
+    return components.map((component: NavigationComponentConfig) => {
         component.show = show;
-        component.type ??= 'link';
+        if(!component.type) {
+            component.type = 'link';
+        }
 
         if(component.components) {
             component.components = initComponents(component.components, false);
