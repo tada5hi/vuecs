@@ -118,5 +118,5 @@ the SFC can be imported and render a specific navigation component level in reac
 
 ## Example
 
-For a full example check out `./serve/` directory of this project.
+For a full example check out `./dev/` directory of this project.
 
