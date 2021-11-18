@@ -26,6 +26,9 @@ export function toggleNavigationComponentTree(
     components = components
         .map(component => {
             const isMatch = isNavigationComponentMatch(context.component, component);
+            if(isMatch) {
+                componentFound = true;
+            }
 
             if (
                 component.components &&
@@ -37,13 +40,12 @@ export function toggleNavigationComponentTree(
                 });
 
                 component.components = child.components;
+                if(child.componentFound) {
+                    componentFound = true;
+                }
             }
 
-            if(isMatch) {
-                componentFound = true;
-            }
-
-            component.show = (context.show || isMatch) && context.enable;
+            component.show = (context.show || componentFound) && context.enable;
 
             return component;
         });

@@ -5,6 +5,9 @@ import LayoutComponents from "@/sfc/NavigationComponents.vue";
 export default {
     name: 'ServeDev',
     components: {LayoutComponents},
+    computed: {
+
+    }
 }
 </script>
 <template>

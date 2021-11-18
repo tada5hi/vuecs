@@ -116,6 +116,8 @@ export const actions : ActionTree<LayoutState, RootState> = {
             }
         }
 
+        const matches = [...context.components];
+
         let level = 0;
         while (await this.$navigationProvider.hasLevel(level)) {
             let items = await this.$navigationProvider.getComponents(level, context);
@@ -124,9 +126,17 @@ export const actions : ActionTree<LayoutState, RootState> = {
                 continue;
             }
 
-            const defaultItem = items.filter(item => !!item.default).pop();
+            let item : NavigationComponentConfig | undefined = undefined;
 
-            const item = defaultItem ? defaultItem : items[0];
+            if(matches.length > 0) {
+                const poppedItem = matches.shift();
+                if(poppedItem) item = poppedItem;
+            }
+
+            if(typeof item === 'undefined') {
+                const defaultItem = items.filter(item => !!item.default).pop();
+                item = defaultItem ? defaultItem : items[0];
+            }
 
             await dispatch('updateNavigation', {
                 level: level,
@@ -221,12 +231,14 @@ export const mutations : MutationTree<LayoutState> = {
 
         const levelStr : string = context.level.toString();
 
+        components = reduceNavigationComponents(components, {
+            loggedIn: context.loggedIn,
+            auth: context.auth
+        });
+
         state.levelComponents = {
             ...state.levelComponents,
-            [levelStr]: reduceNavigationComponents(components, {
-                loggedIn: context.loggedIn,
-                auth: context.auth
-            })
+            [levelStr]: components
         };
     }
 };

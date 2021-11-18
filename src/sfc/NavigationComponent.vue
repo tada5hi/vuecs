@@ -46,7 +46,7 @@ export default {
 }
 </script>
 <template>
-    <div>
+    <div class="nav-item">
         <template v-if="component.type === 'separator'" >
             <slot name="separator" v-bind:component="component">
                 <div class="nav-separator">
@@ -82,14 +82,14 @@ export default {
                 >
                     <div
                         @click.prevent="toggleComponentExpansion(component)"
-                        class="nav-submenu-title"
+                        class="nav-sub-title"
                         :class="{'router-link-active active': component.id === selectedId }"
                     >
                         <i v-if="component.icon" :class="component.icon" /> {{ component.name }}
                     </div>
 
                     <navigation-components
-                        class="list-unstyled nav-submenu-components"
+                        class="list-unstyled nav-sub-items"
                         :level="level"
                         :property-items="component.components"
                     />
