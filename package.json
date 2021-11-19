@@ -47,7 +47,7 @@
         "@zerollup/ts-transform-paths": "^1.7.18",
         "cross-env": "^7.0.3",
         "minimist": "^1.2.5",
-        "np": "^7.5.0",
+        "np": "^7.6.0",
         "rimraf": "^3.0.2",
         "rollup": "^2.52.8",
         "rollup-plugin-includepaths": "^0.2.4",
