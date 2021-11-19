@@ -15,15 +15,15 @@ import VueRouter from "vue-router";
 Vue.use(Vuex);
 Vue.use(VueRouter);
 
-import Realm from './components/realm.vue';
-import Info from './components/about.vue';
 import About from './components/about.vue';
+import Realm from './components/realm.vue';
+import Settings from './components/settings.vue';
 
 const router = new VueRouter({
     mode: "history",
     routes: [
-        {path: '/', component: Info},
         {path: '/about', component: About},
+        {path: '/settings', component: Settings},
         {path: '/admin/realms', component: Realm}
     ]
 });

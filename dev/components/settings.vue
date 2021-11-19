@@ -7,6 +7,6 @@
 
 <template>
     <div>
-        About
+        Settings
     </div>
 </template>

@@ -83,7 +83,9 @@ export const actions : ActionTree<LayoutState, RootState> = {
         context: {level: NavigationComponentLevel, component: NavigationComponentConfig}
     ) {
         const levelStr : string = context.level.toString();
-        const isMatch = isNavigationComponentMatch(state.levelComponent[levelStr], context.component);
+
+        const isMatch = state.levelComponent[levelStr] &&
+            isNavigationComponentMatch(state.levelComponent[levelStr], context.component);
 
         commit('setNavigationComponent', {
             level: context.level,
@@ -146,7 +148,7 @@ export const actions : ActionTree<LayoutState, RootState> = {
             commit('toggleNavigationExpansion', {
                 component: item,
                 level
-            })
+            });
 
             commit('setNavigationComponent', {
                 component: item,
@@ -207,7 +209,7 @@ export const mutations : MutationTree<LayoutState> = {
         const {components} = toggleNavigationComponentTree(
             state.levelComponents[levelStr],
             {
-                enable: !isMatch,
+                enable: isMatch,
                 component: context.component
             }
         );

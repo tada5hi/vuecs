@@ -10,7 +10,8 @@ export class NavigationProvider implements NavigationProviderInterface {
     // -------------------------
 
     protected secondaryDefaultItems : NavigationComponentConfig[] = [
-        {name: 'Info', type: 'link', icon: 'fas fa-info', components: [{name: 'About', url: '/about'}], rootLink: true}
+        {name: 'Info', type: 'link', icon: 'fas fa-info', components: [{name: 'About', url: '/about'}], rootLink: true},
+        {name: 'Sonstige', type: 'link', icon: 'fas fa-bars', components: [{name: 'Settings', url: '/settings'}]}
     ];
 
     protected secondaryAdminItems : NavigationComponentConfig[] = [
