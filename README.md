@@ -61,7 +61,7 @@ export class NavigationProvider implements NavigationProviderInterface {
 
 ---
 
-The next step is to init the `vuex` store and inject an instance of the `ProviderClass` to the store.
+The next step is to init the `vuex` store and inject an instance of the `NavigationProvider` to the store.
 The vue entry point could look like this:
 
 ```typescript
@@ -69,7 +69,9 @@ import Vue, { VNode } from 'vue';
 import Vuex from 'vuex';
 import VueRouter from "vue-router";
 
+// import the NavigationProviderInterface implementation
 import {NavigationProvider} from "./module";
+
 import VueLayoutNavigation, {
     storePlugin
 } from 'vue-layout-navigation';
