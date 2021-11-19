@@ -7,7 +7,7 @@ This repository contains:
 - vue templates
   - to render navigation components
 - vuex store plugin 
-  - to hold the current components of each level
+  - to hold the current components of each tier
 - (nuxt-) middleware 
   - to init layout according meta properties instead of route.
 
@@ -25,7 +25,8 @@ $ npm i --save-dev vue-layout-navigation
 
 ## Usage
 The first step is to define a class which implements the Interface `NavigationProviderInterface`.
-It will be responsible for providing navigation items for specific levels on demand.
+It will be responsible for providing navigation items for specific tiers on demand and will be injected
+to the vuex store.
 
 This implementation class shape should look like this:
 
@@ -34,22 +35,22 @@ import {NavigationProviderInterface} from "./type";
 
 export class NavigationProvider implements NavigationProviderInterface {
     async getComponent(
-        level: NavigationComponentLevel, 
+        tier: NavigationComponentTier, 
         id: string, 
         context: NavigationProviderContext
     ): Promise<NavigationComponentConfig | undefined> {
-        // component for specific level for a given context.
+        // component for specific tier for a given context.
     }
 
     async getComponents(
-        level: NavigationComponentLevel,
+        tier: NavigationComponentTier,
         context: NavigationProviderContext
     ): Promise<NavigationComponentConfig[]> {
-        // components for specific level for a given context.
+        // components for specific tier for a given context.
     }
 
-    async hasLevel(level: NavigationComponentLevel): Promise<boolean> {
-        // check if the level exists.
+    async hasLevel(tier: NavigationComponentTier): Promise<boolean> {
+        // check if the tier exists.
     }
 
     async getContextForUrl?(url: string): Promise<NavigationProviderContext | undefined> {
@@ -60,25 +61,21 @@ export class NavigationProvider implements NavigationProviderInterface {
 
 ---
 
-The next step is to init the vuex store and inject an instance of the `ProviderClass` to the store.
+The next step is to init the `vuex` store and inject an instance of the `ProviderClass` to the store.
 The vue entry point could look like this:
 
 ```typescript
 import Vue, { VNode } from 'vue';
-import {NavigationProvider} from "./module";
-import Dev from './serve.vue';
+import Vuex from 'vuex';
+import VueRouter from "vue-router";
 
+import {NavigationProvider} from "./module";
 import VueLayoutNavigation, {
     storePlugin
 } from 'vue-layout-navigation';
 
+// register the plugin, vuex & vue-router
 Vue.use(VueLayoutNavigation);
-
-Vue.config.productionTip = false;
-
-import Vuex from 'vuex';
-import VueRouter from "vue-router";
-
 Vue.use(Vuex);
 Vue.use(VueRouter);
 
@@ -110,15 +107,15 @@ new Vue({
 
 --- 
 
-After those steps are completed,
-the SFC can be imported and render a specific navigation component level in reactive rendering mode.
+After those steps are completed, the `NavigationComponents` SFC can be imported and 
+render navigation components reactively for a specific tier.
 
 ```vue
 <template>
     <div>
-        <navigation-components :level="0" />
+        <navigation-components :tier="0" />
         
-        <navigation-components :level="1" />
+        <navigation-components :tier="1" />
     </div>
 </template>
 ```
