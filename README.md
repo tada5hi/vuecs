@@ -49,7 +49,7 @@ export class NavigationProvider implements NavigationProviderInterface {
         // components for specific tier for a given context.
     }
 
-    async hasLevel(tier: NavigationComponentTier): Promise<boolean> {
+    async hasTier(tier: NavigationComponentTier): Promise<boolean> {
         // check if the tier exists.
     }
 
