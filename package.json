@@ -6,7 +6,7 @@
     "browser": "dist/vue-layout-navigation.esm.js",
     "module": "dist/vue-layout-navigation.esm.js",
     "unpkg": "dist/vue-layout-navigation.min.js",
-    "types": "dist/types/src/entry.esm.d.ts",
+    "types": "dist/entry.esm.d.ts",
     "files": [
         "dist/*",
         "src/**/*.vue"
