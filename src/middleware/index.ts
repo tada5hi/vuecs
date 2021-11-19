@@ -5,10 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {Context} from "@nuxt/types";
 import {LayoutKey} from "../contants";
+import {Store} from "vuex";
+import {Route} from "vue-router";
 
-export async function layoutMiddleware({ store, route } : Context) {
+export async function layoutMiddleware({ store, route } : { store: Store<any>, route: Route }) {
     const key = LayoutKey.NAVIGATION_ID;
     let navigationId : string | undefined;
 

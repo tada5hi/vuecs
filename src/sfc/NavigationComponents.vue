@@ -30,7 +30,7 @@ export default {
 }
 </script>
 <template>
-    <ul class="nav-items">
+    <ul class="nav-items navbar-nav">
         <li
             v-if="component.show"
             v-for="(component,key) in items"

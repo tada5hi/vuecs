@@ -12,6 +12,7 @@ import typescript from 'rollup-plugin-typescript2';
 import minimist from 'minimist';
 
 import includePaths from 'rollup-plugin-includepaths';
+import postcss from 'rollup-plugin-postcss'
 
 let includePathOptions = {
     include: {
@@ -55,7 +56,7 @@ const baseConfig = {
             exclude: 'node_modules/**',
             extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
             babelHelpers: "bundled"
-        },
+        }
     },
 };
 
@@ -86,9 +87,13 @@ if (!argv.format || argv.format === 'es') {
             file: 'dist/vue-layout-navigation.esm.js',
             format: 'esm',
             exports: 'named',
+            assetFileNames: "[name]-[hash][extname]"
         },
         plugins: [
             replace(baseConfig.plugins.replace),
+            postcss({
+                extract: true
+            }),
             vue(baseConfig.plugins.vue),
             ...baseConfig.plugins.postVue,
             // Only use typescript for declarations - babel will
@@ -125,10 +130,14 @@ if (!argv.format || argv.format === 'cjs') {
             format: 'cjs',
             name: 'VueLayoutNavigation',
             exports: 'auto',
+            assetFileNames: "[name]-[hash][extname]",
             globals,
         },
         plugins: [
             replace(baseConfig.plugins.replace),
+            postcss({
+                extract: true
+            }),
             vue({
                 ...baseConfig.plugins.vue,
                 template: {
@@ -154,10 +163,14 @@ if (!argv.format || argv.format === 'iife') {
             format: 'iife',
             name: 'VueLayoutNavigation',
             exports: 'auto',
+            assetFileNames: "[name]-[hash][extname]",
             globals,
         },
         plugins: [
             replace(baseConfig.plugins.replace),
+            postcss({
+                extract: true
+            }),
             vue(baseConfig.plugins.vue),
             ...baseConfig.plugins.postVue,
             babel(baseConfig.plugins.babel),

@@ -2,6 +2,8 @@ import Vue, { VNode } from 'vue';
 import {NavigationProvider} from "./module";
 import Dev from './serve.vue';
 
+import '../assets/index.css';
+
 import VueLayoutNavigation, {storePlugin} from '../src/entry.esm';
 Vue.use(VueLayoutNavigation);
 
