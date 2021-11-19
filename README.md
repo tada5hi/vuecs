@@ -33,15 +33,22 @@ This implementation class shape should look like this:
 import {NavigationProviderInterface} from "./type";
 
 export class NavigationProvider implements NavigationProviderInterface {
-    async getComponent(level: ComponentLevel, id: string, context: NavigationProviderContext): Promise<NavigationComponentConfig | undefined> {
+    async getComponent(
+        level: NavigationComponentLevel, 
+        id: string, 
+        context: NavigationProviderContext
+    ): Promise<NavigationComponentConfig | undefined> {
         // component for specific level for a given context.
     }
 
-    async getComponents(level: ComponentLevel, context: NavigationProviderContext): Promise<NavigationComponentConfig[]> {
+    async getComponents(
+        level: NavigationComponentLevel,
+        context: NavigationProviderContext
+    ): Promise<NavigationComponentConfig[]> {
         // components for specific level for a given context.
     }
 
-    async hasLevel(level: ComponentLevel): Promise<boolean> {
+    async hasLevel(level: NavigationComponentLevel): Promise<boolean> {
         // check if the level exists.
     }
 
