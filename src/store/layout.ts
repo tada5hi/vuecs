@@ -94,7 +94,7 @@ export const actions : ActionTree<LayoutState, RootState> = {
             component: isMatch ? undefined : context.component
         });
 
-        commit('toggleNavigationExpansion', context);
+        commit('setNavigationExpansion', {...context, enable: isMatch});
     },
     async initNavigation(
         { dispatch, commit },
@@ -147,8 +147,9 @@ export const actions : ActionTree<LayoutState, RootState> = {
                 components: context.components
             });
 
-            commit('toggleNavigationExpansion', {
+            commit('setNavigationExpansion', {
                 component: item,
+                enable: true,
                 tier
             });
 
@@ -203,14 +204,18 @@ export const mutations : MutationTree<LayoutState> = {
         state.initialized = value;
     },
 
-    toggleNavigationExpansion(state, context: {tier: NavigationComponentTier, component: NavigationComponentConfig}) {
+    setNavigationExpansion(state, context: {
+        tier: NavigationComponentTier,
+        component: NavigationComponentConfig,
+        enable?: boolean
+    }) {
         const tierStr : string = context.tier.toString();
         const isMatch = isNavigationComponentMatch(state.navigationComponent[tierStr], context.component);
 
         const {components} = toggleNavigationComponentTree(
             state.navigationComponents[tierStr],
             {
-                enable: isMatch,
+                enable: context.enable || isMatch,
                 component: context.component
             }
         );
