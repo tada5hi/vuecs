@@ -54,7 +54,7 @@ export function initComponents(
     show: boolean = true
 ) {
     return components.map((component: NavigationComponentConfig) => {
-        component.show = show;
+        component.display = show;
         if(!component.type) {
             component.type = 'link';
         }

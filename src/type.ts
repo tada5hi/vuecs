@@ -6,17 +6,15 @@
  */
 
 import {AbilityMeta} from "@typescript-auth/core";
+import {AuthModuleInterface} from "./auth";
 import {LayoutKey} from "./contants";
 
-export type NavigationComponentLevel = number;
+export type NavigationComponentTier = number;
 
 export type NavigationComponentConfig = {
     id?: string,
     default?: boolean,
     type?: 'separator' | 'link',
-
-    level?: NavigationComponentLevel,
-    parent?: string | NavigationComponentConfig,
 
     name: string,
     url?: string,
@@ -28,18 +26,32 @@ export type NavigationComponentConfig = {
     [LayoutKey.REQUIRED_PERMISSIONS]?: string[] | ((auth: AuthModuleInterface) => boolean),
     [LayoutKey.REQUIRED_ABILITY]?: AbilityMeta[] | ((auth: AuthModuleInterface) => boolean),
 
-    show?: boolean,
+    display?: boolean,
 
     rootLink?: boolean,
-    components?: NavigationComponentConfig[]
+    components?: NavigationComponentConfig[],
+
+    [key: string]: any
 };
 
 // --------------------------------------------------------
 
 export interface NavigationProviderInterface {
-    getComponent(level: NavigationComponentLevel, id: string, context: NavigationProviderContext) : Promise<NavigationComponentConfig | undefined>;
-    getComponents(level: NavigationComponentLevel, context: NavigationProviderContext) : Promise<NavigationComponentConfig[]>;
-    hasLevel(level: NavigationComponentLevel) : Promise<boolean>;
+    getComponent(
+        tier: NavigationComponentTier,
+        id: string,
+        context: NavigationProviderContext
+    ) : Promise<NavigationComponentConfig | undefined>;
+
+    getComponents(
+        tier: NavigationComponentTier,
+        context: NavigationProviderContext
+    ) : Promise<NavigationComponentConfig[]>;
+
+    hasTier(
+        tier: NavigationComponentTier
+    ) : Promise<boolean>;
+
     getContextForUrl?(url: string): Promise<NavigationProviderContext|undefined>;
 }
 
@@ -47,23 +59,11 @@ export type NavigationProviderContext = {
     components: NavigationComponentConfig[]
 }
 
-export interface AuthModuleInterface {
-    hasAbility(ability: AbilityMeta) : boolean;
-    hasPermission(name: string): boolean;
-    [key: string]: any
-}
-
-// --------------------------------------------------------
-
-export type ReduceComponentContext = {
-    loggedIn: boolean,
-    show?: boolean,
-    auth?: AuthModuleInterface,
-    [key: string]: any
-}
-
 // --------------------------------------------------------
 
 
-
-
+export type NavigationComponentToggleContext = {
+    component: NavigationComponentConfig,
+    enable: boolean,
+    display?: boolean
+}

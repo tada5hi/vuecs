@@ -9,7 +9,7 @@ import {isNavigationComponentMatch} from "../";
 
 export default {
     props: {
-        level: {
+        tier: {
             type: Number,
             default: 0
         },
@@ -21,24 +21,24 @@ export default {
     methods: {
         async selectComponent(component) {
             await this.$store.dispatch('layout/selectNavigation', {
-                level: this.level,
+                tier: this.tier,
                 component
             })
         },
         async toggleComponentExpansion(component) {
             await this.$store.dispatch('layout/toggleNavigationExpansion', {
-                level: this.level,
+                tier: this.tier,
                 component
             })
         }
     },
     computed: {
         selectedId() {
-            return this.$store.getters['layout/navigationComponentId'](this.level);
+            return this.$store.getters['layout/navigationComponentId'](this.tier);
         },
         isMatch() {
             return isNavigationComponentMatch(
-                this.$store.getters['layout/navigationComponent'](this.level),
+                this.$store.getters['layout/navigationComponent'](this.tier),
                 this.component
             )
         }
@@ -90,7 +90,7 @@ export default {
 
                     <navigation-components
                         class="list-unstyled nav-sub-items"
-                        :level="level"
+                        :tier="tier"
                         :property-items="component.components"
                     />
                 </slot>

@@ -8,7 +8,7 @@
 <script>
 export default {
     props: {
-        level: {
+        tier: {
             type: Number,
             default: 0
         },
@@ -24,7 +24,7 @@ export default {
                 return this.propertyItems;
             }
 
-            return this.$store.getters['layout/navigationComponents'](this.level);
+            return this.$store.getters['layout/navigationComponents'](this.tier);
         }
     }
 }
@@ -32,11 +32,11 @@ export default {
 <template>
     <ul class="nav-items navbar-nav">
         <li
-            v-if="component.show"
+            v-if="component.display"
             v-for="(component,key) in items"
             :key="key"
         >
-            <navigation-component :level="level" :component="component" />
+            <navigation-component :tier="tier" :component="component" />
         </li>
     </ul>
 </template>

@@ -34,7 +34,7 @@ const store = new Vuex.Store({
     }
 });
 
-(store as any).$navigationProvider = new NavigationProvider();
+(store as any).$layoutNavigationProvider = new NavigationProvider();
 (store as any).$router = router;
 
 Promise.resolve()

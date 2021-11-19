@@ -8,33 +8,48 @@
 import {LayoutKey} from "../contants";
 import {Store} from "vuex";
 import {Route} from "vue-router";
+import {NavigationComponentConfig} from "../type";
 
 export async function layoutMiddleware({ store, route } : { store: Store<any>, route: Route }) {
-    const key = LayoutKey.NAVIGATION_ID;
-    let navigationId : string | undefined;
+    let navigationId : string | string[] | undefined;
 
     if(route.meta) {
         for (let i = 0; i < route.meta.length; i++) {
-            if (key in route.meta[i] && route.meta[i][key]) {
-                navigationId = route.meta[i][key]
+            if (
+                LayoutKey.NAVIGATION_ID in route.meta[i] &&
+                route.meta[i][LayoutKey.NAVIGATION_ID]
+            ) {
+                navigationId = route.meta[i][LayoutKey.NAVIGATION_ID]
             }
         }
     }
 
     if(typeof navigationId === 'undefined') {
         for(let i=0; i< route.matched.length; i++) {
-            if (key in route.matched[i]) {
+            if (LayoutKey.NAVIGATION_ID in route.matched[i]) {
                 // @ts-ignore
-                navigationId = route.matched[i][key];
+                navigationId = route.matched[i][LayoutKey.NAVIGATION_ID];
             }
         }
     }
 
-    // todo: this should be done for all levels :)
-    await store.dispatch('layout/selectNavigation', {
-        level: 0,
-        component: {
+    let components : Partial<NavigationComponentConfig>[] = [];
+
+    if(typeof navigationId === 'string') {
+        components.push({
             id: navigationId
-        }
+        });
+    }
+
+    if(Array.isArray(navigationId)) {
+        components = navigationId.map(id => {
+            return {
+                id
+            }
+        })
+    }
+
+    await store.dispatch('layout/initNavigation', {
+        components
     });
 }

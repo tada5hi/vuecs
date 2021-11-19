@@ -5,21 +5,14 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {NavigationComponentConfig} from "./type";
+import {NavigationComponentConfig, NavigationComponentToggleContext} from "./type";
 import {isNavigationComponentMatch} from "./utils";
 
 // --------------------------------------------------
 
-type ToggleComponentContext = {
-    component: NavigationComponentConfig,
-    enable: boolean,
-
-    show?: boolean
-}
-
 export function toggleNavigationComponentTree(
     components: NavigationComponentConfig[],
-    context: ToggleComponentContext
+    context: NavigationComponentToggleContext
 ) : {componentFound: boolean, components: NavigationComponentConfig[]} {
     let componentFound = false;
 
@@ -36,7 +29,7 @@ export function toggleNavigationComponentTree(
             ) {
                 const child = toggleNavigationComponentTree(component.components, {
                     ...context,
-                    show: isMatch
+                    display: isMatch
                 });
 
                 component.components = child.components;
@@ -45,14 +38,14 @@ export function toggleNavigationComponentTree(
                 }
             }
 
-            component.show = (context.show || componentFound) && context.enable;
+            component.display = (context.display || componentFound) && context.enable;
 
             return component;
         });
 
     if(componentFound) {
         components = components.map(component => {
-            component.show = true;
+            component.display = true;
             return component;
         });
     }

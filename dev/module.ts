@@ -1,5 +1,5 @@
 import {NavigationProviderContext, NavigationProviderInterface} from "../src";
-import {NavigationComponentConfig, NavigationComponentLevel} from '../src';
+import {NavigationComponentConfig, NavigationComponentTier} from '../src';
 
 export class NavigationProvider implements NavigationProviderInterface {
     protected primaryItems : NavigationComponentConfig[] = [
@@ -20,8 +20,8 @@ export class NavigationProvider implements NavigationProviderInterface {
 
     // ---------------------------
 
-    async getComponent(level: NavigationComponentLevel, id: string, context: NavigationProviderContext): Promise<NavigationComponentConfig | undefined> {
-        const components = await this.getComponents(level, context);
+    async getComponent(tier: NavigationComponentTier, id: string, context: NavigationProviderContext): Promise<NavigationComponentConfig | undefined> {
+        const components = await this.getComponents(tier, context);
         if(components.length === 0) {
             return undefined;
         }
@@ -34,14 +34,14 @@ export class NavigationProvider implements NavigationProviderInterface {
         return components[index];
     }
 
-    async getComponents(level: NavigationComponentLevel, context: NavigationProviderContext): Promise<NavigationComponentConfig[]> {
-        if(!await this.hasLevel(level)) {
+    async getComponents(tier: NavigationComponentTier, context: NavigationProviderContext): Promise<NavigationComponentConfig[]> {
+        if(!await this.hasTier(tier)) {
             return [];
         }
 
         let items : NavigationComponentConfig[] = [];
 
-        switch (level) {
+        switch (tier) {
             case 0:
                 items = this.primaryItems;
                 break;
@@ -66,8 +66,8 @@ export class NavigationProvider implements NavigationProviderInterface {
         return items;
     }
 
-    async hasLevel(level: NavigationComponentLevel): Promise<boolean> {
-        return [0, 1].indexOf(level) !== -1;
+    async hasTier(tier: NavigationComponentTier): Promise<boolean> {
+        return [0, 1].indexOf(tier) !== -1;
     }
 
     async getContextForUrl(url: string): Promise<NavigationProviderContext | undefined> {
@@ -84,10 +84,10 @@ export class NavigationProvider implements NavigationProviderInterface {
 
         // ------------------------
 
-        const secondaryDefaultItems = this.flatternNestedComponents(this.secondaryDefaultItems)
+        const secondaryDefaultItems = this.flattenNestedComponents(this.secondaryDefaultItems)
             .sort(sortFunc)
             .filter(filterFunc);
-        const secondaryAdminItems = this.flatternNestedComponents(this.secondaryAdminItems)
+        const secondaryAdminItems = this.flattenNestedComponents(this.secondaryAdminItems)
             .sort(sortFunc)
             .filter(filterFunc);
 
@@ -115,12 +115,12 @@ export class NavigationProvider implements NavigationProviderInterface {
 
     // ----------------------------------------------------
 
-    private flatternNestedComponents(components: NavigationComponentConfig[]) : NavigationComponentConfig[] {
+    private flattenNestedComponents(components: NavigationComponentConfig[]) : NavigationComponentConfig[] {
         let output = [...components];
 
         components.map(component => {
             if(component.components) {
-                output.push(...this.flatternNestedComponents(component.components));
+                output.push(...this.flattenNestedComponents(component.components));
             }
         });
 
