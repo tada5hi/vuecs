@@ -14,6 +14,11 @@ export default {
         items() {
             return this.$store.getters['layout/navigationComponents'](0);
         }
+    },
+    methods: {
+        async refresh() {
+            await this.$store.dispatch('layout/initNavigation', undefined);
+        }
     }
 }
 </script>
@@ -31,6 +36,12 @@ export default {
                 <router-view></router-view>
             </div>
         </div>
+
+        <hr />
+
+        <button @click.prevent="refresh">
+            Refresh
+        </button>
     </div>
 </template>
 <style>

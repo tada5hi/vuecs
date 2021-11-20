@@ -27,6 +27,7 @@ export type NavigationComponentConfig = {
     [LayoutKey.REQUIRED_ABILITY]?: AbilityMeta[] | ((auth: AuthModuleInterface) => boolean),
 
     display?: boolean,
+    displayChildren?: boolean,
 
     rootLink?: boolean,
     components?: NavigationComponentConfig[],
@@ -65,5 +66,6 @@ export type NavigationProviderContext = {
 export type NavigationComponentToggleContext = {
     component: NavigationComponentConfig,
     enable: boolean,
-    display?: boolean
+    display?: boolean,
+    rootLevel?: boolean
 }

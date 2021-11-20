@@ -26,6 +26,13 @@ export function isNavigationComponentMatch(
         return false;
     }
 
+    if(
+        (!one.url && two.url) ||
+        (one.url && !two.url)
+    ) {
+        return false;
+    }
+
     if (
         one.url &&
         two.url &&
@@ -46,6 +53,14 @@ export function isNavigationComponentMatch(
         return false;
     }
 
+    if(
+        one.components &&
+        two.components &&
+        one.components.length !== two.components.length
+    ) {
+        return false;
+    }
+
     return true;
 }
 
@@ -55,6 +70,8 @@ export function initComponents(
 ) {
     return components.map((component: NavigationComponentConfig) => {
         component.display = show;
+        component.displayChildren = false;
+
         if(!component.type) {
             component.type = 'link';
         }

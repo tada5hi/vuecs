@@ -81,20 +81,23 @@ export const actions : ActionTree<LayoutState, RootState> = {
         }
     },
     toggleNavigationExpansion(
-        {commit, state},
+        {commit, getters},
         context: {tier: NavigationComponentTier, component: NavigationComponentConfig}
     ) {
         const tierStr : string = context.tier.toString();
 
-        const isMatch = state.navigationComponent[tierStr] &&
-            isNavigationComponentMatch(state.navigationComponent[tierStr], context.component);
+        const isMatch : boolean =
+            isNavigationComponentMatch(getters.navigationComponent(tierStr), context.component);
 
         commit('setNavigationComponent', {
             tier: context.tier,
             component: isMatch ? undefined : context.component
         });
 
-        commit('setNavigationExpansion', {...context, enable: isMatch});
+        commit('setNavigationExpansion', {
+            ...context,
+            enable: !context.component.displayChildren
+        });
     },
     async initNavigation(
         { dispatch, commit },
@@ -107,16 +110,25 @@ export const actions : ActionTree<LayoutState, RootState> = {
             ...(context ? context : {})
         };
 
-        const url : string | undefined = (this.$router as any)?.history?.current?.fullPath;
+        const currentHistory = (this.$router as any)?.history?.current;
         if(
-            typeof url !== 'undefined' &&
-            this.$layoutNavigationProvider.getContextForUrl
+            typeof currentHistory !== 'undefined' &&
+            (
+                !context.components ||
+                (Array.isArray(context.components) && context.components.length === 0)
+            )
         ) {
-            const urlContext = await this.$layoutNavigationProvider.getContextForUrl(url);
-            if(typeof urlContext !== 'undefined') {
-                context.components = urlContext.components;
+            const url: string | undefined = currentHistory.fullPath;
+            if (
+                typeof url !== 'undefined' &&
+                this.$layoutNavigationProvider.getContextForUrl
+            ) {
+                const urlContext = await this.$layoutNavigationProvider.getContextForUrl(url);
+                if (typeof urlContext !== 'undefined') {
+                    context.components = urlContext.components;
 
-                buildContext = false;
+                    buildContext = false;
+                }
             }
         }
 
@@ -124,11 +136,16 @@ export const actions : ActionTree<LayoutState, RootState> = {
 
         let tier = 0;
         while (await this.$layoutNavigationProvider.hasTier(tier)) {
-            let items = await this.$layoutNavigationProvider.getComponents(tier, context);
+            let items = [...await this.$layoutNavigationProvider.getComponents(tier, context)];
             if(items.length === 0) {
                 tier++;
                 continue;
             }
+
+            await dispatch('updateNavigation', {
+                tier: tier,
+                components: context.components
+            });
 
             let item : NavigationComponentConfig | undefined = undefined;
 
@@ -138,23 +155,23 @@ export const actions : ActionTree<LayoutState, RootState> = {
             }
 
             if(typeof item === 'undefined') {
-                const defaultItem = items.filter(item => !!item.default).pop();
-                item = defaultItem ? defaultItem : items[0];
+                item = items.filter(item => item.default || !item.components).shift();
             }
 
-            await dispatch('updateNavigation', {
-                tier: tier,
-                components: context.components
+            if(typeof item === 'undefined') {
+                tier++;
+                continue;
+            }
+
+
+            commit('setNavigationComponent', {
+                component: item,
+                tier
             });
 
             commit('setNavigationExpansion', {
                 component: item,
                 enable: true,
-                tier
-            });
-
-            commit('setNavigationComponent', {
-                component: item,
                 tier
             });
 
@@ -193,7 +210,7 @@ export const actions : ActionTree<LayoutState, RootState> = {
             }
         }
 
-        data.components = await this.$layoutNavigationProvider.getComponents(context.tier, providerContext);
+        data.components = [...await this.$layoutNavigationProvider.getComponents(context.tier, providerContext)];
 
         commit('setNavigationComponents', data);
     }
@@ -207,15 +224,14 @@ export const mutations : MutationTree<LayoutState> = {
     setNavigationExpansion(state, context: {
         tier: NavigationComponentTier,
         component: NavigationComponentConfig,
-        enable?: boolean
+        enable: boolean
     }) {
         const tierStr : string = context.tier.toString();
-        const isMatch = isNavigationComponentMatch(state.navigationComponent[tierStr], context.component);
 
         const {components} = toggleNavigationComponentTree(
             state.navigationComponents[tierStr],
             {
-                enable: context.enable || isMatch,
+                enable: context.enable,
                 component: context.component
             }
         );

@@ -41,12 +41,33 @@ export default {
                 this.$store.getters['layout/navigationComponent'](this.tier),
                 this.component
             )
+        },
+        isActive() {
+            if(
+                this.component.components &&
+                this.component.displayChildren
+            ) {
+                return true;
+            }
+
+            if(
+                typeof this.selectedId !== 'undefined' &&
+                this.isMatch
+            ) {
+                return true;
+            }
+
+            return typeof this.component.id !== 'undefined' &&
+                typeof this.selectedId !== 'undefined' &&
+                this.component.id === this.selectedId;
         }
     }
 }
 </script>
 <template>
-    <div class="nav-item">
+    <div class="nav-item" :class="{
+        'active': isActive
+    }">
         <template v-if="component.type === 'separator'" >
             <slot name="separator" v-bind:component="component">
                 <div class="nav-separator">
@@ -65,7 +86,7 @@ export default {
                     <template v-else>
                         <a
                             class="nav-link"
-                            :class="{'router-link-active active': component.id === selectedId }"
+                            :class="{'router-link-active': isActive }"
                             @click.prevent="selectComponent(component)" href="javascript:void(0)"
                         >
                             <i v-if="component.icon" :class="component.icon" /> {{ component.name }}
@@ -83,12 +104,12 @@ export default {
                     <div
                         @click.prevent="toggleComponentExpansion(component)"
                         class="nav-sub-title"
-                        :class="{'router-link-active active': component.id === selectedId }"
                     >
                         <i v-if="component.icon" :class="component.icon" /> {{ component.name }}
                     </div>
 
                     <navigation-components
+                        v-if="component.displayChildren"
                         class="list-unstyled nav-sub-items"
                         :tier="tier"
                         :property-items="component.components"

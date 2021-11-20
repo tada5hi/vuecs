@@ -5,17 +5,18 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-.navbar-nav {
+.nav-items,
+.nav-sub-items {
+    padding-left: 0;
     list-style: none;
-    padding-left: 0px;
 }
 
-.navbar-nav .nav-link i {
+.nav-items .nav-link i {
     padding-right: 4px;
 }
 
-.navbar-nav .nav-link,
-.navbar-nav .nav-item .nav-sub-title {
+.nav-items .nav-link,
+.nav-items .nav-item .nav-sub-title {
     cursor: pointer;
     color: #aeb2b7;
     padding: 18px 15px 18px 15px;
@@ -26,47 +27,50 @@
 }
 
 /* for now */
-.navbar-nav .nav-item .nav-sub-title,
-.navbar-nav .nav-item:hover .nav-sub-title,
-.navbar-nav .nav-item.active .nav-sub-title {
+.nav-items .nav-item:hover .nav-sub-title,
+.nav-items .nav-item:active .nav-sub-title,
+.nav-items .nav-item.active .nav-sub-title {
     background: #666262;
 }
 
 /* for now */
-.navbar-nav .nav-item .nav-link,
-.navbar-nav .nav-item:hover .nav-link,
-.navbar-nav .nav-item.active .nav-link {
+.nav-items .nav-item .nav-link,
+.nav-items .nav-item:hover .nav-link,
+.nav-items .nav-item.active .nav-link {
     border-left-color: #666262 !important;
 }
 
-.navbar-nav .nav-link:hover,
-.navbar-nav .nav-link.router-link-active:not(.root-link),
-.navbar-nav .nav-link.nuxt-link-active:not(.root-link),
-.navbar-nav .nav-link.router-link-exact-active,
-.navbar-nav .nav-link.nuxt-link-exact-active {
+.nav-items .nav-link:active,
+.nav-items .nav-link:hover,
+
+.nav-items .nav-link.router-link-active:not(.root-link),
+.nav-items .nav-link.nuxt-link-active:not(.root-link),
+
+.nav-items .nav-link.router-link-exact-active,
+.nav-items .nav-link.nuxt-link-exact-active {
     cursor: pointer;
     color: #FF5B5B;
     background: #32333B;
 }
 
-.navbar-nav .nav-separator {
+.nav-items .nav-separator {
     display: flex;
     text-align: center;
     align-items: center;
     font-size:14px;
     font-weight: bold;
-    padding:5px 0px;
+    padding:5px 0;
 }
 
-.navbar-nav .nav-separator:before,
-.navbar-nav .nav-separator:after {
+.nav-items .nav-separator:before,
+.nav-items .nav-separator:after {
     content: '';
     flex: 1;
     height:3px;
     background: #32333B;
 }
 
-.navbar-nav .nav-items .nav-link {
+.nav-items .nav-sub-items .nav-link {
     border-left-width: 6px;
     border-left-style: solid;
     border-left-color: rgb(64,67,78);

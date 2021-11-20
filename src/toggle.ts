@@ -16,6 +16,8 @@ export function toggleNavigationComponentTree(
 ) : {componentFound: boolean, components: NavigationComponentConfig[]} {
     let componentFound = false;
 
+    context.rootLevel = typeof context.rootLevel === 'undefined' ? true : context.rootLevel;
+
     components = components
         .map(component => {
             const isMatch = isNavigationComponentMatch(context.component, component);
@@ -29,26 +31,27 @@ export function toggleNavigationComponentTree(
             ) {
                 const child = toggleNavigationComponentTree(component.components, {
                     ...context,
-                    display: isMatch
+                    display: context.display || isMatch,
+                    rootLevel: false
                 });
-
                 component.components = child.components;
+
                 if(child.componentFound) {
                     componentFound = true;
                 }
+
+                component.displayChildren = context.enable && (isMatch || child.componentFound);
             }
 
-            component.display = (context.display || componentFound) && context.enable;
-
+            component.display = context.enable && context.display;
             return component;
         });
 
-    if(componentFound) {
-        components = components.map(component => {
-            component.display = true;
-            return component;
-        });
-    }
+    components = components.map(component => {
+        component.display = context.rootLevel || component.display || componentFound;
+
+        return component;
+    });
 
     return {
         components,

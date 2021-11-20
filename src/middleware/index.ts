@@ -49,6 +49,10 @@ export async function layoutMiddleware({ store, route } : { store: Store<any>, r
         })
     }
 
+    components.push({
+        url: route.path
+    })
+
     await store.dispatch('layout/initNavigation', {
         components
     });

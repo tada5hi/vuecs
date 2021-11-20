@@ -3,14 +3,14 @@ import {NavigationComponentConfig, NavigationComponentTier} from '../src';
 
 export class NavigationProvider implements NavigationProviderInterface {
     protected primaryItems : NavigationComponentConfig[] = [
-        {id: 'default', name: 'Home', icon: 'fa fa-home'},
+        {id: 'default', name: 'Home', icon: 'fa fa-home', default: true},
         {id: 'admin', name: 'Admin', icon: 'fas fa-cog'}
     ];
 
     // -------------------------
 
     protected secondaryDefaultItems : NavigationComponentConfig[] = [
-        {name: 'Info', type: 'link', icon: 'fas fa-info', components: [{name: 'About', url: '/about'}], rootLink: true},
+        {name: 'Info', type: 'link', icon: 'fas fa-info', components: [{name: 'About', url: '/about'}]},
         {name: 'Sonstige', type: 'link', icon: 'fas fa-bars', components: [{name: 'Settings', url: '/settings'}]}
     ];
 
