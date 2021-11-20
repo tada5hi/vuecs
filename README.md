@@ -94,7 +94,7 @@ const store = new Vuex.Store({
     }
 });
 
-(store as any).$navigationProvider = new NavigationProvider();
+(store as any).$layoutNavigationProvider = new NavigationProvider();
 (store as any).$router = router;
 
 Promise.resolve()
@@ -109,8 +109,8 @@ new Vue({
 
 --- 
 
-After those steps are completed, the `NavigationComponents` SFC can be imported and 
-render navigation components reactively for a specific tier.
+After those steps are completed, the `NavigationComponents` SFC can be placed anywhere, if registered globally.
+In addition, navigation components are reactively rendered for a specific navigation tier, through the store.
 
 ```vue
 <template>
