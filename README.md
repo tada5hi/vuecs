@@ -4,12 +4,12 @@
 # Vue-Layout-Navigation 🏝
 
 This repository contains:
-- vue templates
-  - to render navigation components
-- vuex store plugin 
-  - to hold the current components of each tier
-- (nuxt-) middleware 
-  - to init layout according meta properties instead of route.
+- vuex store plugin 🏦
+    - to hold the current navigation components for each tier.
+- vue templates ⛩
+  - to render navigation components from the vuex store
+- (nuxt-) middleware 🚧
+  - to initialize navigation components according meta properties or by url, if no meta data is available.
 
 **Table of Contents**
 
