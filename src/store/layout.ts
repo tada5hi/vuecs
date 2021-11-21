@@ -69,8 +69,6 @@ export const actions : ActionTree<LayoutState, RootState> = {
 
         const isMatch = isNavigationComponentMatch(getters.navigationComponent(context.tier), context.component as NavigationComponentConfig);
 
-        console.log(context);
-
         commit('setNavigationComponent', {tier: context.tier, component: context.component});
 
         let tier = context.tier;
