@@ -1,6 +1,6 @@
 {
     "name": "vue-layout-navigation",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "",
     "main": "dist/vue-layout-navigation.ssr.js",
     "browser": "dist/vue-layout-navigation.esm.js",
