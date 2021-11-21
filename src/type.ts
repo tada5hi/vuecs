@@ -5,10 +5,6 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {AbilityMeta} from "@typescript-auth/core";
-import {AuthModuleInterface} from "./auth";
-import {LayoutKey} from "./contants";
-
 export type NavigationComponentTier = number;
 
 export type NavigationComponentConfig = {
@@ -21,10 +17,6 @@ export type NavigationComponentConfig = {
 
     icon?: string,
     environment?: 'development' | 'production' | 'testing',
-    [LayoutKey.REQUIRED_LOGGED_IN]?: boolean,
-    [LayoutKey.REQUIRED_LOGGED_OUT]?: boolean,
-    [LayoutKey.REQUIRED_PERMISSIONS]?: string[] | ((auth: AuthModuleInterface) => boolean),
-    [LayoutKey.REQUIRED_ABILITY]?: AbilityMeta[] | ((auth: AuthModuleInterface) => boolean),
 
     display?: boolean,
     displayChildren?: boolean,

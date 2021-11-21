@@ -2,7 +2,7 @@ import Vue, { VNode } from 'vue';
 import {NavigationProvider} from "./module";
 import Dev from './serve.vue';
 
-import '../assets/index.css';
+import '../assets/items.css';
 
 import VueLayoutNavigation, {storePlugin} from '../src/entry.esm';
 Vue.use(VueLayoutNavigation);
@@ -16,12 +16,14 @@ Vue.use(Vuex);
 Vue.use(VueRouter);
 
 import About from './components/about.vue';
+import Home from './components/home.vue';
 import Realm from './components/realm.vue';
 import Settings from './components/settings.vue';
 
 const router = new VueRouter({
     mode: "history",
     routes: [
+        {path: '/', component: Home},
         {path: '/about', component: About},
         {path: '/settings', component: Settings},
         {path: '/admin/realms', component: Realm}

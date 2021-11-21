@@ -11,5 +11,11 @@ export interface AuthModuleInterface {
 export type AuthRestrictionContext = {
     loggedIn?: boolean,
     auth?: AuthModuleInterface,
+    layoutKey: {
+        requiredAbilities: string,
+        requiredPermissions: string,
+        requiredLoggedOut: string,
+        requiredLoggedIn: string
+    },
     [key: string]: any
 }

@@ -69,6 +69,8 @@ export const actions : ActionTree<LayoutState, RootState> = {
 
         const isMatch = isNavigationComponentMatch(getters.navigationComponent(context.tier), context.component as NavigationComponentConfig);
 
+        console.log(context);
+
         commit('setNavigationComponent', {tier: context.tier, component: context.component});
 
         let tier = context.tier;
@@ -84,19 +86,16 @@ export const actions : ActionTree<LayoutState, RootState> = {
         {commit, getters},
         context: {tier: NavigationComponentTier, component: NavigationComponentConfig}
     ) {
-        const tierStr : string = context.tier.toString();
-
-        const isMatch : boolean =
-            isNavigationComponentMatch(getters.navigationComponent(tierStr), context.component);
-
         commit('setNavigationComponent', {
             tier: context.tier,
-            component: isMatch ? undefined : context.component
+            component: context.component
         });
+
+        const isMatch = isNavigationComponentMatch(getters.navigationComponent(context.tier), context.component, true);
 
         commit('setNavigationExpansion', {
             ...context,
-            enable: !context.component.displayChildren
+            enable: !context.component.displayChildren || !isMatch
         });
     },
     async initNavigation(
@@ -142,11 +141,6 @@ export const actions : ActionTree<LayoutState, RootState> = {
                 continue;
             }
 
-            await dispatch('updateNavigation', {
-                tier: tier,
-                components: context.components
-            });
-
             let item : NavigationComponentConfig | undefined = undefined;
 
             if(matches.length > 0) {
@@ -163,16 +157,14 @@ export const actions : ActionTree<LayoutState, RootState> = {
                 continue;
             }
 
-
             commit('setNavigationComponent', {
                 component: item,
                 tier
             });
 
-            commit('setNavigationExpansion', {
-                component: item,
-                enable: true,
-                tier
+            await dispatch('updateNavigation', {
+                tier: tier,
+                components: context.components
             });
 
             tier++;
@@ -213,6 +205,11 @@ export const actions : ActionTree<LayoutState, RootState> = {
         data.components = [...await this.$layoutNavigationProvider.getComponents(context.tier, providerContext)];
 
         commit('setNavigationComponents', data);
+        commit('setNavigationExpansion', {
+            enable: true,
+            tier: context.tier,
+            component: getters.navigationComponent(context.tier)
+        })
     }
 };
 

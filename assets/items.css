@@ -40,14 +40,16 @@
     border-left-color: #666262 !important;
 }
 
+.nav-items .nav-link.active,
+
 .nav-items .nav-link:active,
 .nav-items .nav-link:hover,
 
 .nav-items .nav-link.router-link-active:not(.root-link),
 .nav-items .nav-link.nuxt-link-active:not(.root-link),
 
-.nav-items .nav-link.router-link-exact-active,
-.nav-items .nav-link.nuxt-link-exact-active {
+.nav-items .nav-link.router-link-exact-active:not(.root-link),
+.nav-items .nav-link.nuxt-link-exact-active:not(.root-link) {
     cursor: pointer;
     color: #FF5B5B;
     background: #32333B;

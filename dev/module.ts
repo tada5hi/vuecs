@@ -10,6 +10,7 @@ export class NavigationProvider implements NavigationProviderInterface {
     // -------------------------
 
     protected secondaryDefaultItems : NavigationComponentConfig[] = [
+        {name: 'Home', type: 'link', icon: 'fas fa-home', url: '/', rootLink: true},
         {name: 'Info', type: 'link', icon: 'fas fa-info', components: [{name: 'About', url: '/about'}]},
         {name: 'Sonstige', type: 'link', icon: 'fas fa-bars', components: [{name: 'Settings', url: '/settings'}]}
     ];

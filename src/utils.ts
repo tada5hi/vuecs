@@ -9,7 +9,8 @@ import {NavigationComponentConfig} from "./type";
 
 export function isNavigationComponentMatch(
     one?: NavigationComponentConfig,
-    two?: NavigationComponentConfig
+    two?: NavigationComponentConfig,
+    strict: boolean = false
 ): boolean {
     if (
         typeof one === 'undefined' ||
@@ -19,30 +20,30 @@ export function isNavigationComponentMatch(
     }
 
     if (
-        one.hasOwnProperty('id') &&
-        two.hasOwnProperty('id') &&
-        (one as any).id !== (two as any).id
+        one.id &&
+        two.id
     ) {
-        return false;
+        return one.id === two.id;
     }
 
     if(
-        (!one.url && two.url) ||
-        (one.url && !two.url)
+        one.url && two.url
     ) {
-        return false;
-    }
-
-    if (
-        one.url &&
-        two.url &&
-        !(
-            one.url === two.url ||
-            one.url.startsWith(two.url) ||
-            two.url.startsWith(one.url)
-        )
-    ) {
-        return false;
+        if(strict) {
+            if(one.url !== two.url) {
+                 return false;
+            }
+        } else {
+            if(
+                !(
+                    one.url === two.url ||
+                    one.url.startsWith(two.url) ||
+                    two.url.startsWith(one.url)
+                )
+            ) {
+                return false;
+            }
+        }
     }
 
     if (

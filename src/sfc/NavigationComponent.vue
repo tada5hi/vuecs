@@ -23,7 +23,18 @@ export default {
             await this.$store.dispatch('layout/selectNavigation', {
                 tier: this.tier,
                 component
-            })
+            });
+
+            if(component?.url) {
+                if(this.$router.history.current.path === component?.url) {
+                    return;
+                }
+
+                // todo: check if it is absolute link :)
+                await this.$router.push({
+                    path: component?.url
+                })
+            }
         },
         async toggleComponentExpansion(component) {
             await this.$store.dispatch('layout/toggleNavigationExpansion', {
@@ -33,33 +44,16 @@ export default {
         }
     },
     computed: {
-        selectedId() {
-            return this.$store.getters['layout/navigationComponentId'](this.tier);
-        },
         isMatch() {
             return isNavigationComponentMatch(
                 this.$store.getters['layout/navigationComponent'](this.tier),
-                this.component
+                this.component,
+                true
             )
         },
         isActive() {
-            if(
-                this.component.components &&
-                this.component.displayChildren
-            ) {
-                return true;
-            }
-
-            if(
-                typeof this.selectedId !== 'undefined' &&
-                this.isMatch
-            ) {
-                return true;
-            }
-
-            return typeof this.component.id !== 'undefined' &&
-                typeof this.selectedId !== 'undefined' &&
-                this.component.id === this.selectedId;
+            return !!(this.component.components &&
+                this.component.displayChildren);
         }
     }
 }
@@ -77,43 +71,60 @@ export default {
         </template>
         <template v-else>
             <template v-if="!component.components">
-                <slot name="link" v-bind:component="component" v-bind:select-component="selectComponent">
-                    <template v-if="component.url">
-                        <router-link :to="component.url" class="nav-link" :class="{'root-link': component.rootLink}">
-                            <i v-if="component.icon" :class="component.icon" /> {{ component.name }}
-                        </router-link>
-                    </template>
-                    <template v-else>
-                        <a
-                            class="nav-link"
-                            :class="{'router-link-active': isActive }"
-                            @click.prevent="selectComponent(component)" href="javascript:void(0)"
-                        >
-                            <i v-if="component.icon" :class="component.icon" /> {{ component.name }}
-                        </a>
-                    </template>
+                <slot
+                    name="link"
+                    v-bind:component="component"
+                    v-bind:select-component="selectComponent"
+                    v-bind:is-active="isActive"
+                >
+                    <a
+                        class="nav-link"
+                        :class="{
+                            'router-link-active': isActive,
+                            'router-link-exact-active': isMatch,
+                            'active': isMatch || isActive,
+                            'root-link': component.rootLink
+                    }"
+                        @click.prevent="selectComponent(component)" href="javascript:void(0)"
+                    >
+                        <i v-if="component.icon" :class="component.icon" /> <span class="nav-link-text">{{ component.name }}</span>
+                    </a>
                 </slot>
             </template>
             <template v-if="component.components">
                 <slot
-                    name="componentNested"
+                    name="sub"
                     v-bind:component="component"
                     v-bind:select-component="selectComponent"
                     v-bind:toggle-component-expansion="toggleComponentExpansion"
                 >
-                    <div
-                        @click.prevent="toggleComponentExpansion(component)"
-                        class="nav-sub-title"
+                    <slot
+                        name="sub-title"
+                        v-bind:component="component"
+                        v-bind:select-component="selectComponent"
+                        v-bind:toggle-component-expansion="toggleComponentExpansion"
                     >
-                        <i v-if="component.icon" :class="component.icon" /> {{ component.name }}
-                    </div>
+                        <div
+                            @click.prevent="toggleComponentExpansion(component)"
+                            class="nav-sub-title"
+                        >
+                            <i v-if="component.icon" :class="component.icon" /> <span class="nav-link-text">{{ component.name }}</span>
+                        </div>
+                    </slot>
 
-                    <navigation-components
-                        v-if="component.displayChildren"
-                        class="list-unstyled nav-sub-items"
-                        :tier="tier"
-                        :property-items="component.components"
-                    />
+                    <slot
+                        name="sub-items"
+                        v-bind:component="component"
+                        v-bind:select-component="selectComponent"
+                        v-bind:toggle-component-expansion="toggleComponentExpansion"
+                    >
+                        <navigation-components
+                            v-if="component.displayChildren"
+                            class="list-unstyled nav-sub-items"
+                            :tier="tier"
+                            :property-items="component.components"
+                        />
+                    </slot>
                 </slot>
             </template>
         </template>

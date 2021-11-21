@@ -1,4 +1,3 @@
-import {LayoutKey} from "../contants";
 import {NavigationComponentConfig} from "../type";
 import {AuthRestrictionContext} from "./type";
 
@@ -17,16 +16,16 @@ export function applyAuthRestrictionForNavigationComponents(
         .filter((component: NavigationComponentConfig) => {
             if(typeof context.loggedIn !== 'undefined') {
                 if (
-                    component.hasOwnProperty(LayoutKey.REQUIRED_LOGGED_IN) &&
-                    component[LayoutKey.REQUIRED_LOGGED_IN] &&
+                    component.hasOwnProperty(context.layoutKey.requiredLoggedIn) &&
+                    component[context.layoutKey.requiredLoggedIn] &&
                     !context.loggedIn
                 ) {
                     return false
                 }
 
                 if (
-                    component.hasOwnProperty(LayoutKey.REQUIRED_LOGGED_OUT) &&
-                    component[LayoutKey.REQUIRED_LOGGED_OUT] &&
+                    component.hasOwnProperty(context.layoutKey.requiredLoggedOut) &&
+                    component[context.layoutKey.requiredLoggedOut] &&
                     context.loggedIn
                 ) {
                     return false
@@ -35,8 +34,8 @@ export function applyAuthRestrictionForNavigationComponents(
 
             if(typeof context.auth !== 'undefined') {
                 const keys: string[] = [
-                    LayoutKey.REQUIRED_PERMISSIONS,
-                    LayoutKey.REQUIRED_ABILITY
+                    context.layoutKey.requiredPermissions,
+                    context.layoutKey.requiredAbilities
                 ];
 
                 for (let i = 0; i < keys.length; i++) {
@@ -52,7 +51,7 @@ export function applyAuthRestrictionForNavigationComponents(
                         required.length > 0
                     ) {
 
-                        if (LayoutKey.REQUIRED_PERMISSIONS) {
+                        if (context.layoutKey.requiredPermissions === keys[i]) {
                             // @ts-ignore
                             return required.some(permission => context.auth.hasPermission(permission));
                         } else {
