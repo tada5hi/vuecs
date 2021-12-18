@@ -58,8 +58,12 @@ export async function layoutMiddleware(
         })
     }
 
+    let rootLink = false;
+    if(route.path === '/') rootLink = true;
+
     components.push({
-        url: route.path
+        url: route.path,
+        rootLink
     })
 
     await store.dispatch('layout/initNavigation', {

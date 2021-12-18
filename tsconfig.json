@@ -3,7 +3,7 @@
         "target": "ES6",
         "module": "esnext",
 
-        "strict": true,
+        "strict": false,
         "declaration": true,
 
         "noUnusedLocals": true,
@@ -17,10 +17,6 @@
         "sourceMap": false,
         "baseUrl": ".",
         "newLine": "lf",
-        "types": [
-            "node",
-            "vue"
-        ],
         "plugins": [
             {
                 "transform":"@zerollup/ts-transform-paths",

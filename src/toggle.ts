@@ -18,34 +18,36 @@ export function toggleNavigationComponentTree(
 
     context.rootLevel = typeof context.rootLevel === 'undefined' ? true : context.rootLevel;
 
-    components = components
-        .map(component => {
-            const isMatch = isNavigationComponentMatch(context.component, component);
-            if(isMatch) {
+    for(let i=0; i<components.length; i++) {
+        const component = components[i];
+
+        const isMatch = isNavigationComponentMatch(context.component, component);
+        if(isMatch) {
+            componentFound = true;
+        }
+
+        if (
+            component.components &&
+            component.components.length > 0
+        ) {
+            const child = toggleNavigationComponentTree(component.components, {
+                ...context,
+                display: context.display || isMatch,
+                rootLevel: false
+            });
+
+            component.components = child.components;
+            if(child.componentFound) {
                 componentFound = true;
             }
 
-            if (
-                component.components &&
-                component.components.length > 0
-            ) {
-                const child = toggleNavigationComponentTree(component.components, {
-                    ...context,
-                    display: context.display || isMatch,
-                    rootLevel: false
-                });
-                component.components = child.components;
+            component.displayChildren = context.enable && (isMatch || child.componentFound);
+        }
 
-                if(child.componentFound) {
-                    componentFound = true;
-                }
+        component.display = context.enable && context.display;
 
-                component.displayChildren = context.enable && (isMatch || child.componentFound);
-            }
-
-            component.display = context.enable && context.display;
-            return component;
-        });
+        components[i] = component;
+    }
 
     components = components.map(component => {
         component.display = context.rootLevel || component.display || componentFound;

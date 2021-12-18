@@ -29,7 +29,8 @@
         "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
         "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife",
         "postbuild": "rimraf ./dist/types/dev ./dist/types/src/entry.d.ts",
-        "test": "echo null"
+        "test": "cross-env NODE_ENV=test jest --config ./test/jest.config.js",
+        "test:coverage": "cross-env NODE_ENV=test jest --config ./test/jest.config.js --coverage"
     },
     "devDependencies": {
         "@babel/core": "^7.14.6",
@@ -40,12 +41,14 @@
         "@rollup/plugin-commonjs": "^21.0.1",
         "@rollup/plugin-node-resolve": "^13.0.6",
         "@rollup/plugin-replace": "^3.0.0",
+        "@types/jest": "^27.0.3",
         "@typescript-auth/core": "^1.0.2",
         "@vue/cli-plugin-babel": "^4.5.13",
         "@vue/cli-plugin-typescript": "^4.5.13",
         "@vue/cli-service": "^4.5.13",
         "@zerollup/ts-transform-paths": "^1.7.18",
         "cross-env": "^7.0.3",
+        "jest": "^27.4.5",
         "minimist": "^1.2.5",
         "np": "^7.6.0",
         "rimraf": "^3.0.2",
@@ -57,6 +60,7 @@
         "rollup-plugin-typescript2": "^0.31.0",
         "rollup-plugin-vue": "^6.0.0",
         "rollup-plugin-vue2": "^0.8.1",
+        "ts-jest": "^27.1.2",
         "ttypescript": "^1.5.12",
         "typescript": "^4.5.2",
         "vue": "^2.6.14",

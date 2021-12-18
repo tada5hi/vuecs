@@ -5,64 +5,83 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {NavigationComponentConfig} from "./type";
+import {NavigationComponentConfig, NavigationComponentConfigSlim} from "./type";
 
 export function isNavigationComponentMatch(
-    one?: NavigationComponentConfig,
-    two?: NavigationComponentConfig,
+    one?: NavigationComponentConfigSlim,
+    two?: NavigationComponentConfigSlim,
     strict: boolean = false
 ): boolean {
-    if (
-        typeof one === 'undefined' ||
-        typeof two === 'undefined'
-    ) {
+    if(!(one && two) || (!one || !two)) {
         return false;
     }
 
-    if (
+    // check when true
+
+    if(
         one.id &&
-        two.id
+        two.id &&
+        one.id === two.id
     ) {
-        return one.id === two.id;
+        return true;
     }
 
     if(
-        one.url && two.url
+        !strict &&
+        one.name &&
+        two.name &&
+        one.name === two.name
     ) {
-        if(strict) {
-            if(one.url !== two.url) {
-                 return false;
-            }
-        } else {
+        return true;
+    }
+
+    if(
+        one.url &&
+        two.url
+    ) {
+        if(one.url === two.url) {
+            return true;
+        }
+
+        if(
+            !strict &&
+            !one.rootLink &&
+            !two.rootLink
+        ) {
             if(
-                !(
-                    one.url === two.url ||
-                    one.url.startsWith(two.url) ||
-                    two.url.startsWith(one.url)
-                )
+                one.url.startsWith(two.url) ||
+                two.url.startsWith(one.url)
             ) {
-                return false;
+                return true;
             }
         }
     }
 
-    if (
-        one.name &&
-        two.name &&
-        one.name !== two.name
-    ) {
-        return false;
-    }
-
     if(
         one.components &&
-        two.components &&
-        one.components.length !== two.components.length
+        two.components
     ) {
-        return false;
+        let allMatched = true;
+        for(let i=0; i<one.components.length; i++) {
+            if(!isNavigationComponentMatch(one.components[i], two.components[i])) {
+                allMatched = false;
+                break;
+            }
+        }
+
+        for(let i=0; i<two.components.length; i++) {
+            if(!isNavigationComponentMatch(one.components[i], two.components[i])) {
+                allMatched = false;
+                break;
+            }
+        }
+
+        if(allMatched) {
+            return true;
+        }
     }
 
-    return true;
+    return false;
 }
 
 export function initComponents(

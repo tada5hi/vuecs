@@ -5,6 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import {Partial} from "rollup-plugin-typescript2/dist/partial";
+
 export type NavigationComponentTier = number;
 
 export type NavigationComponentConfig = {
@@ -26,6 +28,9 @@ export type NavigationComponentConfig = {
 
     [key: string]: any
 };
+
+export type NavigationComponentConfigSlim = Omit<NavigationComponentConfig, 'name'> &
+    Partial<Pick<NavigationComponentConfig, 'name'>>
 
 // --------------------------------------------------------
 
@@ -56,7 +61,7 @@ export type NavigationProviderContext = {
 
 
 export type NavigationComponentToggleContext = {
-    component: NavigationComponentConfig,
+    component: NavigationComponentConfigSlim,
     enable: boolean,
     display?: boolean,
     rootLevel?: boolean

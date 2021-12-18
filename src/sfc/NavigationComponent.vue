@@ -44,23 +44,29 @@ export default {
         }
     },
     computed: {
-        isMatch() {
+        isStrictMatch() {
             return isNavigationComponentMatch(
                 this.$store.getters['layout/navigationComponent'](this.tier),
                 this.component,
                 true
-            )
+            );
         },
-        isActive() {
-            return !!(this.component.components &&
-                this.component.displayChildren);
+        isMatch() {
+            return isNavigationComponentMatch(
+                this.$store.getters['layout/navigationComponent'](this.tier),
+                this.component,
+                false
+            ) || this.isChildrenMatch;
+        },
+        isChildrenMatch() {
+            return !!(this.component.components && this.component.displayChildren);
         }
     }
 }
 </script>
 <template>
     <div class="nav-item" :class="{
-        'active': isActive
+        'active': isMatch
     }">
         <template v-if="component.type === 'separator'" >
             <slot name="separator" v-bind:component="component">
@@ -75,14 +81,14 @@ export default {
                     name="link"
                     v-bind:component="component"
                     v-bind:select-component="selectComponent"
-                    v-bind:is-active="isActive"
+                    v-bind:is-active="isMatch"
                 >
                     <a
                         class="nav-link"
                         :class="{
-                            'router-link-active': isActive,
-                            'router-link-exact-active': isMatch,
-                            'active': isMatch || isActive,
+                            'router-link-active': isMatch,
+                            'router-link-exact-active': isStrictMatch,
+                            'active': isMatch,
                             'root-link': component.rootLink
                     }"
                         @click.prevent="selectComponent(component)" href="javascript:void(0)"
