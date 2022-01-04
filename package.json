@@ -52,7 +52,7 @@
         "minimist": "^1.2.5",
         "np": "^7.6.0",
         "rimraf": "^3.0.2",
-        "rollup": "^2.61.1",
+        "rollup": "^2.63.0",
         "rollup-plugin-includepaths": "^0.2.4",
         "rollup-plugin-postcss": "^4.0.2",
         "rollup-plugin-styles": "^3.14.1",
