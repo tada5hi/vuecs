@@ -41,7 +41,7 @@
         "@rollup/plugin-commonjs": "^21.0.1",
         "@rollup/plugin-node-resolve": "^13.1.1",
         "@rollup/plugin-replace": "^3.0.1",
-        "@types/jest": "^27.0.3",
+        "@types/jest": "^27.4.0",
         "@typescript-auth/core": "^1.0.5",
         "@vue/cli-plugin-babel": "^4.5.13",
         "@vue/cli-plugin-typescript": "^4.5.13",
