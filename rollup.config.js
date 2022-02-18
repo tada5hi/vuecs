@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2022.
+ * Author Peter Placzek (tada5hi)
+ * For the full copyright and license information,
+ * view the LICENSE file that was distributed with this source code.
+ */
+
 // rollup.config.js
 import fs from 'fs';
 import vue from 'rollup-plugin-vue2';
@@ -7,7 +14,7 @@ import replace from '@rollup/plugin-replace';
 import babel from '@rollup/plugin-babel';
 import { terser } from 'rollup-plugin-terser';
 
-import ttypescript from 'ttypescript';
+import typescriptTransformer from 'ttypescript';
 import typescript from 'rollup-plugin-typescript2';
 import minimist from 'minimist';
 
@@ -29,7 +36,7 @@ const esbrowserslist = fs.readFileSync('./.browserslistrc')
     .filter((entry) => entry && entry.substring(0, 2) !== 'ie');
 
 // Extract babel preset-env config, to combine with esbrowserslist
-const babelPresetEnvConfig = require('../babel.config')
+const babelPresetEnvConfig = require('./babel.config')
     .presets.filter((entry) => entry[0] === '@babel/preset-env')[0][1];
 
 const argv = minimist(process.argv.slice(2));
@@ -85,7 +92,7 @@ if (!argv.format || argv.format === 'es') {
         input: 'src/entry.esm.ts',
         external,
         output: {
-            file: 'dist/vue-layout-navigation.esm.js',
+            file: 'dist/index.esm.js',
             format: 'esm',
             exports: 'named',
             assetFileNames: "[name]-[hash][extname]"
@@ -100,7 +107,7 @@ if (!argv.format || argv.format === 'es') {
             // Only use typescript for declarations - babel will
             // do actual js transformations
             typescript({
-                typescript: ttypescript,
+                typescript: typescriptTransformer,
                 useTsconfigDeclarationDir: true,
                 emitDeclarationOnly: true,
             }),
@@ -127,7 +134,7 @@ if (!argv.format || argv.format === 'cjs') {
         external,
         output: {
             compact: true,
-            file: 'dist/vue-layout-navigation.ssr.js',
+            file: 'dist/index.ssr.js',
             format: 'cjs',
             name: 'VueLayoutNavigation',
             exports: 'auto',
@@ -160,7 +167,7 @@ if (!argv.format || argv.format === 'iife') {
         external,
         output: {
             compact: true,
-            file: 'dist/vue-layout-navigation.min.js',
+            file: 'dist/index.min.js',
             format: 'iife',
             name: 'VueLayoutNavigation',
             exports: 'auto',

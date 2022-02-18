@@ -2,14 +2,13 @@
     "name": "vue-layout-navigation",
     "version": "0.1.3",
     "description": "",
-    "main": "dist/vue-layout-navigation.ssr.js",
-    "browser": "dist/vue-layout-navigation.esm.js",
-    "module": "dist/vue-layout-navigation.esm.js",
-    "unpkg": "dist/vue-layout-navigation.min.js",
+    "main": "dist/index.ssr.js",
+    "browser": "dist/index.esm.js",
+    "module": "dist/index.esm.js",
+    "unpkg": "dist/index.min.js",
     "types": "dist/entry.esm.d.ts",
     "files": [
-        "dist/*",
-        "src/**/*.vue"
+        "dist/*"
     ],
     "author": {
         "name": "Peter Placzek",
@@ -24,11 +23,10 @@
     "scripts": {
         "serve": "vue-cli-service serve dev/serve.ts",
         "prebuild": "rimraf ./dist",
-        "build": "tsc && cross-env NODE_ENV=production rollup --config build/rollup.config.js",
-        "build:ssr": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format cjs",
-        "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
-        "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife",
-        "postbuild": "rimraf ./dist/types/dev ./dist/types/src/entry.d.ts",
+        "build": "cross-env NODE_ENV=production rollup --config rollup.config.js",
+        "build:ssr": "cross-env NODE_ENV=production rollup --config rollup.config.js --format cjs",
+        "build:es": "cross-env NODE_ENV=production rollup --config rollup.config.js --format es",
+        "build:unpkg": "cross-env NODE_ENV=production rollup --config rollup.config.js --format iife",
         "test": "cross-env NODE_ENV=test jest --config ./test/jest.config.js",
         "test:coverage": "cross-env NODE_ENV=test jest --config ./test/jest.config.js --coverage"
     },
