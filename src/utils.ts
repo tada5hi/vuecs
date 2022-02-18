@@ -5,20 +5,20 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {NavigationComponentConfig, NavigationComponentConfigSlim} from "./type";
+import { NavigationComponentConfig, NavigationComponentConfigSlim } from './type';
 
 export function isNavigationComponentMatch(
     one?: NavigationComponentConfigSlim,
     two?: NavigationComponentConfigSlim,
-    strict: boolean = false
+    strict = false,
 ): boolean {
-    if(!(one && two) || (!one || !two)) {
+    if (!(one && two) || (!one || !two)) {
         return false;
     }
 
     // check when true
 
-    if(
+    if (
         one.id &&
         two.id &&
         one.id === two.id
@@ -26,7 +26,7 @@ export function isNavigationComponentMatch(
         return true;
     }
 
-    if(
+    if (
         !strict &&
         one.name &&
         two.name &&
@@ -35,20 +35,20 @@ export function isNavigationComponentMatch(
         return true;
     }
 
-    if(
+    if (
         one.url &&
         two.url
     ) {
-        if(one.url === two.url) {
+        if (one.url === two.url) {
             return true;
         }
 
-        if(
+        if (
             !strict &&
             !one.rootLink &&
             !two.rootLink
         ) {
-            if(
+            if (
                 one.url.startsWith(two.url) ||
                 two.url.startsWith(one.url)
             ) {
@@ -57,26 +57,26 @@ export function isNavigationComponentMatch(
         }
     }
 
-    if(
+    if (
         one.components &&
         two.components
     ) {
         let allMatched = true;
-        for(let i=0; i<one.components.length; i++) {
-            if(!isNavigationComponentMatch(one.components[i], two.components[i])) {
+        for (let i = 0; i < one.components.length; i++) {
+            if (!isNavigationComponentMatch(one.components[i], two.components[i])) {
                 allMatched = false;
                 break;
             }
         }
 
-        for(let i=0; i<two.components.length; i++) {
-            if(!isNavigationComponentMatch(one.components[i], two.components[i])) {
+        for (let i = 0; i < two.components.length; i++) {
+            if (!isNavigationComponentMatch(one.components[i], two.components[i])) {
                 allMatched = false;
                 break;
             }
         }
 
-        if(allMatched) {
+        if (allMatched) {
             return true;
         }
     }
@@ -86,17 +86,17 @@ export function isNavigationComponentMatch(
 
 export function initComponents(
     components: NavigationComponentConfig[],
-    show: boolean = true
+    show = true,
 ) {
     return components.map((component: NavigationComponentConfig) => {
         component.display = show;
         component.displayChildren = false;
 
-        if(!component.type) {
+        if (!component.type) {
             component.type = 'link';
         }
 
-        if(component.components) {
+        if (component.components) {
             component.components = initComponents(component.components, false);
         }
 

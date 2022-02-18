@@ -1,7 +1,5 @@
-import {AbilityMeta} from "@typescript-auth/core";
-
 export interface AuthModuleInterface {
-    hasAbility(ability: AbilityMeta): boolean;
+    hasAbility<T>(ability: T): boolean;
 
     hasPermission(name: string): boolean;
 
@@ -18,4 +16,4 @@ export type AuthRestrictionContext = {
         requiredLoggedIn: string
     },
     [key: string]: any
-}
+};

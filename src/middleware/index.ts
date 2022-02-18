@@ -5,36 +5,36 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {Store} from "vuex";
-import {Route} from "vue-router";
-import {NavigationComponentConfig} from "../type";
+import { Store } from 'vuex';
+import { Route } from 'vue-router';
+import { NavigationComponentConfig } from '../type';
 
 export async function layoutMiddleware(
     {
         store,
         route,
-        metaKey
+        metaKey,
     } : {
         store: Store<any>,
         route: Route,
         metaKey: string
-    }
+    },
 ) {
     let navigationId : string | string[] | undefined;
 
-    if(route.meta) {
+    if (route.meta) {
         for (let i = 0; i < route.meta.length; i++) {
             if (
                 metaKey in route.meta[i] &&
                 route.meta[i][metaKey]
             ) {
-                navigationId = route.meta[i][metaKey]
+                navigationId = route.meta[i][metaKey];
             }
         }
     }
 
-    if(typeof navigationId === 'undefined') {
-        for(let i=0; i< route.matched.length; i++) {
+    if (typeof navigationId === 'undefined') {
+        for (let i = 0; i < route.matched.length; i++) {
             if (metaKey in route.matched[i]) {
                 // @ts-ignore
                 navigationId = route.matched[i][metaKey];
@@ -44,29 +44,27 @@ export async function layoutMiddleware(
 
     let components : Partial<NavigationComponentConfig>[] = [];
 
-    if(typeof navigationId === 'string') {
+    if (typeof navigationId === 'string') {
         components.push({
-            id: navigationId
+            id: navigationId,
         });
     }
 
-    if(Array.isArray(navigationId)) {
-        components = navigationId.map(id => {
-            return {
-                id
-            }
-        })
+    if (Array.isArray(navigationId)) {
+        components = navigationId.map((id) => ({
+            id,
+        }));
     }
 
     let rootLink = false;
-    if(route.path === '/') rootLink = true;
+    if (route.path === '/') rootLink = true;
 
     components.push({
         url: route.path,
-        rootLink
-    })
+        rootLink,
+    });
 
     await store.dispatch('layout/initNavigation', {
-        components
+        components,
     });
 }

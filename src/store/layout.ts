@@ -5,16 +5,16 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {ActionTree, GetterTree, MutationTree} from "vuex";
-import {toggleNavigationComponentTree} from "../toggle";
-import {initComponents, isNavigationComponentMatch} from "../utils";
-import {RootState} from "./index";
+import { ActionTree, GetterTree, MutationTree } from 'vuex';
+import { toggleNavigationComponentTree } from '../toggle';
+import { initComponents, isNavigationComponentMatch } from '../utils';
+import { RootState } from './index';
 
 import {
     NavigationComponentConfig,
     NavigationComponentTier,
-    NavigationProviderContext
-} from "../type";
+    NavigationProviderContext,
+} from '../type';
 
 // --------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ type CommitSetComponentsContextType = {
     tier: NavigationComponentTier,
     loggedIn: boolean,
     components: NavigationComponentConfig[]
-}
+};
 
 // --------------------------------------------------------------------
 
@@ -37,78 +37,72 @@ export const state = () : LayoutState => ({
     initialized: false,
 
     navigationComponents: {},
-    navigationComponent: {}
+    navigationComponent: {},
 });
 
 export const getters : GetterTree<LayoutState, RootState> = {
-    navigationComponents: (state) => (tier: NavigationComponentTier) : NavigationComponentConfig[] =>  {
-        return state.navigationComponents.hasOwnProperty(tier.toString()) ?
-            state.navigationComponents[tier.toString()] :
-            [];
-    },
-    navigationComponent: (state) => (tier: NavigationComponentTier) : NavigationComponentConfig | undefined => {
-        return state.navigationComponent.hasOwnProperty(tier.toString()) ?
-            state.navigationComponent[tier.toString()] :
-            undefined;
-    },
-    navigationComponentId: (state) => (tier: NavigationComponentTier) : string | undefined => {
-        return state.navigationComponent.hasOwnProperty(tier.toString()) ?
-            state.navigationComponent[tier.toString()]?.id :
-            undefined;
-    }
+    navigationComponents: (state) => (tier: NavigationComponentTier) : NavigationComponentConfig[] => (state.navigationComponents.hasOwnProperty(tier.toString()) ?
+        state.navigationComponents[tier.toString()] :
+        []),
+    navigationComponent: (state) => (tier: NavigationComponentTier) : NavigationComponentConfig | undefined => (state.navigationComponent.hasOwnProperty(tier.toString()) ?
+        state.navigationComponent[tier.toString()] :
+        undefined),
+    navigationComponentId: (state) => (tier: NavigationComponentTier) : string | undefined => (state.navigationComponent.hasOwnProperty(tier.toString()) ?
+        state.navigationComponent[tier.toString()]?.id :
+        undefined),
 };
 
 export const actions : ActionTree<LayoutState, RootState> = {
-    async selectNavigation({dispatch, commit, getters}, context : {
+    async selectNavigation({ dispatch, commit, getters }, context : {
         tier: NavigationComponentTier,
         component?: NavigationComponentConfig
     }) {
-        if(typeof context.component === 'undefined') {
+        if (typeof context.component === 'undefined') {
             return;
         }
 
         const isMatch = isNavigationComponentMatch(getters.navigationComponent(context.tier), context.component as NavigationComponentConfig);
 
-        commit('setNavigationComponent', {tier: context.tier, component: context.component});
+        commit('setNavigationComponent', { tier: context.tier, component: context.component });
 
-        let tier = context.tier;
+        let { tier } = context;
         while (getters.navigationComponents(tier).length > 0) {
-            if(tier !== context.tier || !isMatch) {
-                await dispatch('updateNavigation', {tier});
+            if (tier !== context.tier || !isMatch) {
+                await dispatch('updateNavigation', { tier });
             }
 
             tier++;
         }
     },
     toggleNavigationExpansion(
-        {commit, getters},
-        context: {tier: NavigationComponentTier, component: NavigationComponentConfig}
+        { commit, getters },
+        context: {tier: NavigationComponentTier, component: NavigationComponentConfig},
     ) {
         commit('setNavigationComponent', {
             tier: context.tier,
-            component: context.component
+            component: context.component,
         });
 
         const isMatch = isNavigationComponentMatch(getters.navigationComponent(context.tier), context.component, true);
 
         commit('setNavigationExpansion', {
             ...context,
-            enable: !context.component.displayChildren || !isMatch
+            enable: !context.component.displayChildren || !isMatch,
         });
     },
     async initNavigation(
         { dispatch, commit },
-        context?: NavigationProviderContext
+        context?: NavigationProviderContext,
     ) {
         let buildContext : boolean = typeof context === 'undefined';
 
         context = {
             components: [],
-            ...(context ? context : {})
+            ...(context || {}),
         };
 
         const currentHistory = (this.$router as any)?.history?.current;
-        if(
+        if (
             typeof currentHistory !== 'undefined' &&
             (
                 !context.components ||
@@ -133,68 +127,68 @@ export const actions : ActionTree<LayoutState, RootState> = {
 
         let tier = 0;
         while (await this.$layoutNavigationProvider.hasTier(tier)) {
-            let items = [...await this.$layoutNavigationProvider.getComponents(tier, context)];
-            if(items.length === 0) {
+            const items = [...await this.$layoutNavigationProvider.getComponents(tier, context)];
+            if (items.length === 0) {
                 tier++;
                 continue;
             }
 
-            let item : NavigationComponentConfig | undefined = undefined;
+            let item : NavigationComponentConfig | undefined;
 
-            if(matches.length > 0) {
+            if (matches.length > 0) {
                 const poppedItem = matches.shift();
-                if(poppedItem) item = poppedItem;
+                if (poppedItem) item = poppedItem;
             }
 
-            if(typeof item === 'undefined') {
-                item = items.filter(item => item.default || !item.components).shift();
+            if (typeof item === 'undefined') {
+                item = items.filter((item) => item.default || !item.components).shift();
             }
 
-            if(typeof item === 'undefined') {
+            if (typeof item === 'undefined') {
                 tier++;
                 continue;
             }
 
             commit('setNavigationComponent', {
                 component: item,
-                tier
+                tier,
             });
 
             await dispatch('updateNavigation', {
-                tier: tier,
-                components: context.components
+                tier,
+                components: context.components,
             });
 
             tier++;
 
-            if(buildContext) {
+            if (buildContext) {
                 context.components.push(item);
             }
         }
     },
     async updateNavigation(
-        {getters, commit, rootGetters},
+        { getters, commit, rootGetters },
         context: {
             tier: NavigationComponentTier,
             components?: NavigationComponentConfig[]
-        }
+        },
     ) {
-        let data : CommitSetComponentsContextType = {
+        const data : CommitSetComponentsContextType = {
             tier: context.tier,
-            loggedIn: rootGetters["auth/loggedIn"],
-            components: []
+            loggedIn: rootGetters['auth/loggedIn'],
+            components: [],
         };
 
         const providerContext : NavigationProviderContext = {
-            ...(context.components ? {components: context.components} : {components: []})
-        }
+            ...(context.components ? { components: context.components } : { components: [] }),
+        };
 
-        if(typeof context.components === 'undefined') {
+        if (typeof context.components === 'undefined') {
             let tier = 0;
             while (
                 tier < context.tier &&
                 await this.$layoutNavigationProvider.hasTier(tier)
-                ) {
+            ) {
                 providerContext.components.push(getters.navigationComponent(tier));
                 tier++;
             }
@@ -206,9 +200,9 @@ export const actions : ActionTree<LayoutState, RootState> = {
         commit('setNavigationExpansion', {
             enable: true,
             tier: context.tier,
-            component: getters.navigationComponent(context.tier)
-        })
-    }
+            component: getters.navigationComponent(context.tier),
+        });
+    },
 };
 
 export const mutations : MutationTree<LayoutState> = {
@@ -223,26 +217,26 @@ export const mutations : MutationTree<LayoutState> = {
     }) {
         const tierStr : string = context.tier.toString();
 
-        const {components} = toggleNavigationComponentTree(
+        const { components } = toggleNavigationComponentTree(
             state.navigationComponents[tierStr],
             {
                 enable: context.enable,
-                component: context.component
-            }
+                component: context.component,
+            },
         );
 
         state.navigationComponents = {
             ...state.navigationComponents,
-            [tierStr]: components
-        }
+            [tierStr]: components,
+        };
     },
     setNavigationComponent(state, context: {tier: NavigationComponentTier, component?: NavigationComponentConfig}) {
         const tierStr : string = context.tier.toString();
 
         state.navigationComponent = {
             ...state.navigationComponent,
-            [tierStr]: context.component
-        }
+            [tierStr]: context.component,
+        };
     },
     setNavigationComponents(state, context: CommitSetComponentsContextType) {
         let components = [...context.components];
@@ -252,9 +246,9 @@ export const mutations : MutationTree<LayoutState> = {
 
         state.navigationComponents = {
             ...state.navigationComponents,
-            [tierStr]: components
+            [tierStr]: components,
         };
-    }
+    },
 };
 
 // --------------------------------------------------------------------
@@ -264,9 +258,9 @@ const storePlugin = {
     state,
     getters,
     actions,
-    mutations
-}
+    mutations,
+};
 
 export {
-    storePlugin
+    storePlugin,
 };
