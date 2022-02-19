@@ -56,7 +56,7 @@ export const NavigationComponent = Vue.extend<any, any, any, Properties>({
             });
 
             if (component.url) {
-                if (this.$router.history.current.path === component?.url) {
+                if (this.$router.history.current.path === component.url) {
                     return;
                 }
 
