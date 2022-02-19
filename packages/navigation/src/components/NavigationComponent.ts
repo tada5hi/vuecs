@@ -55,18 +55,18 @@ export const NavigationComponent = Vue.extend<any, any, any, Properties>({
                 component,
             });
 
-            if (component?.url) {
+            if (component.url) {
                 if (this.$router.history.current.path === component?.url) {
                     return;
                 }
 
                 // todo: check if it is absolute link :)
                 await this.$router.push({
-                    path: component?.url,
+                    path: component.url,
                 });
             }
         },
-        async toggleComponentExpansion(component) {
+        async toggleComponentExpansion(component: NavigationComponentConfig) {
             await this.$store.dispatch('layout/toggleNavigationExpansion', {
                 tier: this.tier,
                 component,

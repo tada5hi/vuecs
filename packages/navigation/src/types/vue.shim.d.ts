@@ -6,7 +6,7 @@
  */
 
 import { Store } from 'vuex';
-import Router from 'vue-router';
+import Router, { Route } from 'vue-router';
 
 declare module '*.vue' {
     import Vue from 'vue';
@@ -19,11 +19,13 @@ declare module 'vue/types/vue' {
     // on the `VueConstructor` interface
     interface VueConstructor {
         $store: Store<any>,
-        $router: Router,
+        $router: Router
+        $route: Route
     }
 
     interface Vue {
         $store: Store<any>,
-        $router: Router,
+        $router: Router
+        $route: Route
     }
 }
