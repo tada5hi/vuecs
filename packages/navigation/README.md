@@ -15,7 +15,6 @@ This repository contains:
 
 - [Installation](#installation)
 - [Usage](#usage)
-- [Example](#example)
 
 ## Installation
 This package requires `nodejs` & `npm` to be installed on the host machine.
@@ -31,7 +30,11 @@ to the vuex store.
 This implementation class shape should look like this:
 
 ```typescript
-import {NavigationProviderInterface} from "./type";
+import { 
+    NavigationComponentTier,
+    NavigationProviderContext,
+    NavigationProviderInterface 
+} from "@vue-layout/navigation";
 
 export class NavigationProvider implements NavigationProviderInterface {
     async getComponent(
@@ -53,7 +56,7 @@ export class NavigationProvider implements NavigationProviderInterface {
         // check if the tier exists.
     }
 
-    async getContextForUrl?(url: string): Promise<NavigationProviderContext | undefined> {
+    async getContextForUrl(url: string): Promise<NavigationProviderContext | undefined> {
         // build component context for url
     }
 }
@@ -69,12 +72,12 @@ import Vue, { VNode } from 'vue';
 import Vuex from 'vuex';
 import VueRouter from "vue-router";
 
-// import the NavigationProviderInterface implementation
-import {NavigationProvider} from "./module";
-
 import VueLayoutNavigation, {
     storePlugin
 } from '@vue-layout/navigation';
+
+// import the NavigationProviderInterface implementation
+import {NavigationProvider} from "./module";
 
 // register the plugin, vuex & vue-router
 Vue.use(VueLayoutNavigation);
