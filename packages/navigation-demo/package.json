@@ -45,7 +45,7 @@
         "@vue/cli-plugin-babel": "^4.5.15",
         "@vue/cli-plugin-typescript": "^4.5.15",
         "@vue/cli-service": "^4.5.15",
-        "webpack": "4.45.0"
+        "webpack": "5.69.1"
     },
     "publishConfig": {
         "access": "public"
