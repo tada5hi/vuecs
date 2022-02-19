@@ -1,9 +1,9 @@
 <script>
-import LayoutComponents from "@/components/NavigationComponents.ts";
+import { NavigationComponents } from '@vue-layout/navigation';
 
 export default {
     name: 'ServeDev',
-    components: {LayoutComponents},
+    components: { NavigationComponents },
     computed: {
         topTier() {
             return 0;
@@ -13,31 +13,37 @@ export default {
         },
         items() {
             return this.$store.getters['layout/navigationComponents'](0);
-        }
+        },
     },
     methods: {
         async refresh() {
             await this.$store.dispatch('layout/initNavigation', undefined);
-        }
-    }
-}
+        },
+    },
+};
 </script>
 <template>
     <div id="app">
-        <navigation-components class="nav-top" :tier="topTier" />
+        <navigation-components
+            class="nav-top"
+            :tier="topTier"
+        />
 
-        <hr />
+        <hr>
 
         <div class="content">
             <div class="content-sidebar">
-                <navigation-components class="nav-side" :tier="sideTier" />
+                <navigation-components
+                    class="nav-side"
+                    :tier="sideTier"
+                />
             </div>
             <div>
-                <router-view></router-view>
+                <router-view />
             </div>
         </div>
 
-        <hr />
+        <hr>
 
         <button @click.prevent="refresh">
             Refresh

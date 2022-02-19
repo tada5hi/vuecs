@@ -7,7 +7,6 @@
 
 import Vue, { VNode } from 'vue';
 import { NavigationProvider } from './module';
-import Dev from './serve.vue';
 
 import '../assets/items.css';
 
@@ -15,6 +14,7 @@ import VueLayoutNavigation, { storePlugin } from '@vue-layout/navigation';
 
 import Vuex from 'vuex';
 import VueRouter from 'vue-router';
+import Dev from './serve.vue';
 
 import About from './components/about.vue';
 import Home from './components/home.vue';

@@ -49,7 +49,7 @@ export const NavigationComponent = Vue.extend<any, any, any, Properties>({
         },
     },
     methods: {
-        async selectComponent(component) {
+        async selectComponent(component: NavigationComponentConfig) {
             await this.$store.dispatch('layout/selectNavigation', {
                 tier: this.tier,
                 component,
@@ -114,15 +114,11 @@ export const NavigationComponent = Vue.extend<any, any, any, Properties>({
                                 active: vm.isMatch,
                                 'root-link': vm.component.rootLink,
                             },
-                            attrs: {
-                                // eslint-disable-next-line no-script-url
-                                href: 'javascript:void(0)',
-                            },
                             on: {
                                 click($event: any) {
                                     $event.preventDefault();
 
-                                    vm.selectComponent.call(null);
+                                    return vm.selectComponent.call(null, vm.component);
                                 },
                             },
                         }, [
@@ -151,7 +147,7 @@ export const NavigationComponent = Vue.extend<any, any, any, Properties>({
                                 click($event: any) {
                                     $event.preventDefault();
 
-                                    vm.toggleComponentExpansion.call(null, vm.component);
+                                    return vm.toggleComponentExpansion.call(null, vm.component);
                                 },
                             },
                         }, [
@@ -195,3 +191,5 @@ export const NavigationComponent = Vue.extend<any, any, any, Properties>({
         }, Array.isArray(item) ? item : [item]);
     },
 });
+
+export default NavigationComponent;

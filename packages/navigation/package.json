@@ -24,6 +24,7 @@
         "serve": "vue-cli-service serve dev/serve.ts",
         "prebuild": "rimraf ./dist",
         "build": "cross-env NODE_ENV=production rollup --config rollup.config.js",
+        "build:watch": "npm run build -- --watch",
         "build:ssr": "cross-env NODE_ENV=production rollup --config rollup.config.js --format cjs",
         "build:es": "cross-env NODE_ENV=production rollup --config rollup.config.js --format es",
         "build:unpkg": "cross-env NODE_ENV=production rollup --config rollup.config.js --format iife",

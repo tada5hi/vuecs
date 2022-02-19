@@ -14,6 +14,7 @@ type Properties = {
 };
 
 export const NavigationComponents = Vue.extend<any, any, any, Properties>({
+    name: 'NavigationComponents',
     props: {
         tier: {
             type: Number,
@@ -40,20 +41,22 @@ export const NavigationComponents = Vue.extend<any, any, any, Properties>({
 
         const entities : VNode[] = [];
 
-        for (let i = 0; i < vm.entites.length; i++) {
-            const entity : NavigationComponentConfig = vm.entites[i];
+        if (vm.items) {
+            for (let i = 0; i < vm.items.length; i++) {
+                const entity: NavigationComponentConfig = vm.items[i];
 
-            if (entity.display) {
-                entities.push(h('li', {
-                    key: i,
-                }, [
-                    h(NavigationComponent, {
-                        props: {
-                            tier: vm.tier,
-                            component: entity,
-                        },
-                    }),
-                ]));
+                if (entity.display) {
+                    entities.push(h('li', {
+                        key: i,
+                    }, [
+                        h(NavigationComponent, {
+                            props: {
+                                tier: vm.tier,
+                                component: entity,
+                            },
+                        }),
+                    ]));
+                }
             }
         }
 
@@ -62,3 +65,5 @@ export const NavigationComponents = Vue.extend<any, any, any, Properties>({
         }, entities);
     },
 });
+
+export default NavigationComponents;

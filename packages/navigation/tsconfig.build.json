@@ -30,7 +30,7 @@
         "dist"
     ],
     "include": [
-        "types/**/*.d.ts",
+        "src/types/**/*.d.ts",
         "src/**/*.ts"
     ]
 }

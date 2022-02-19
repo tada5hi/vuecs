@@ -1,3 +1,2 @@
-/* eslint-disable import/prefer-default-export */
-export { NavigationComponents } from './NavigationComponents';
-export { NavigationComponent } from './NavigationComponent';
+export * from './NavigationComponents';
+export * from './NavigationComponent';
