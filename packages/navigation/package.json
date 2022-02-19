@@ -1,6 +1,6 @@
 {
     "name": "@vue-layout/navigation",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "description": "",
     "main": "dist/index.ssr.js",
     "browser": "dist/index.esm.js",
@@ -67,8 +67,8 @@
     },
     "peerDependencies": {
         "vue": "^2.x",
-        "vuex": "^3.x",
-        "vue-router": "^3.x"
+        "vue-router": "^3.x",
+        "vuex": "^3.x"
     },
     "engines": {
         "node": ">=12"
