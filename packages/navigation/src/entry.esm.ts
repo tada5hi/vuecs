@@ -1,7 +1,5 @@
 import 'regenerator-runtime';
 
-import '../assets/items.css';
-
 import vue, { PluginFunction } from 'vue';
 
 // Import vue components

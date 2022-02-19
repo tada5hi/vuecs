@@ -1,0 +1,14 @@
+{
+    "packages": [
+        "packages/*"
+    ],
+    "command": {
+        "publish": {
+            "ignoreChanges": [
+                "*.md"
+            ]
+        }
+    },
+    "useWorkspaces": true,
+    "version": "independent"
+}

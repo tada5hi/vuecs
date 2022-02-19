@@ -1,0 +1,18 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "lib": [
+            "ES6",
+            "dom",
+            "dom.iterable",
+            "scripthost"
+        ],
+        "paths": {
+            "@vue-layout/navigation": ["./packages/navigation"]
+        }
+    },
+    "include": [
+        "types/**/*.d.ts",
+        "src/**/*.ts"
+    ]
+}

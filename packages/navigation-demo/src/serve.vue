@@ -1,5 +1,5 @@
 <script>
-import LayoutComponents from "../src/components/NavigationComponents.vue";
+import LayoutComponents from "@/components/NavigationComponents.ts";
 
 export default {
     name: 'ServeDev',

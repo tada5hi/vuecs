@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  * Author Peter Placzek (tada5hi)
  * For the full copyright and license information,
  * view the LICENSE file that was distributed with this source code.
@@ -19,14 +19,14 @@ import typescript from 'rollup-plugin-typescript2';
 import minimist from 'minimist';
 
 import includePaths from 'rollup-plugin-includepaths';
-import postcss from 'rollup-plugin-postcss'
+import postcss from 'rollup-plugin-postcss';
 
-let includePathOptions = {
+const includePathOptions = {
     include: {
-        'vue': 'node_modules/vue/dist/vue.common.js',
-        'vue-router': 'node_modules/vue-router/dist/vue-router.js'
+        vue: 'node_modules/vue/dist/vue.common.js',
+        'vue-router': 'node_modules/vue-router/dist/vue-router.js',
     },
-    external: ['vue', 'vue-router']
+    external: ['vue', 'vue-router'],
 };
 
 // Get browserslist config and remove ie from es build targets
@@ -46,7 +46,7 @@ const baseConfig = {
     plugins: {
         replace: {
             'process.env.NODE_ENV': JSON.stringify('production'),
-            preventAssignment: true
+            preventAssignment: true,
         },
         vue: {
             css: true,
@@ -63,8 +63,8 @@ const baseConfig = {
         babel: {
             exclude: 'node_modules/**',
             extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
-            babelHelpers: "bundled"
-        }
+            babelHelpers: 'bundled',
+        },
     },
 };
 
@@ -95,12 +95,12 @@ if (!argv.format || argv.format === 'es') {
             file: 'dist/index.esm.js',
             format: 'esm',
             exports: 'named',
-            assetFileNames: "[name]-[hash][extname]"
+            assetFileNames: '[name]-[hash][extname]',
         },
         plugins: [
             replace(baseConfig.plugins.replace),
             postcss({
-                extract: true
+                extract: true,
             }),
             vue(baseConfig.plugins.vue),
             ...baseConfig.plugins.postVue,
@@ -110,6 +110,7 @@ if (!argv.format || argv.format === 'es') {
                 typescript: typescriptTransformer,
                 useTsconfigDeclarationDir: true,
                 emitDeclarationOnly: true,
+                tsconfig: 'tsconfig.build.json',
             }),
             babel({
                 ...baseConfig.plugins.babel,
@@ -138,13 +139,13 @@ if (!argv.format || argv.format === 'cjs') {
             format: 'cjs',
             name: 'VueLayoutNavigation',
             exports: 'auto',
-            assetFileNames: "[name]-[hash][extname]",
+            assetFileNames: '[name]-[hash][extname]',
             globals,
         },
         plugins: [
             replace(baseConfig.plugins.replace),
             postcss({
-                extract: true
+                extract: true,
             }),
             vue({
                 ...baseConfig.plugins.vue,
@@ -171,13 +172,13 @@ if (!argv.format || argv.format === 'iife') {
             format: 'iife',
             name: 'VueLayoutNavigation',
             exports: 'auto',
-            assetFileNames: "[name]-[hash][extname]",
+            assetFileNames: '[name]-[hash][extname]',
             globals,
         },
         plugins: [
             replace(baseConfig.plugins.replace),
             postcss({
-                extract: true
+                extract: true,
             }),
             vue(baseConfig.plugins.vue),
             ...baseConfig.plugins.postVue,

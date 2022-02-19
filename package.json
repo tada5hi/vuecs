@@ -1,82 +1,51 @@
 {
-    "name": "vue-layout-navigation",
-    "version": "0.1.3",
-    "description": "",
-    "main": "dist/index.ssr.js",
-    "browser": "dist/index.esm.js",
-    "module": "dist/index.esm.js",
-    "unpkg": "dist/index.min.js",
-    "types": "dist/entry.esm.d.ts",
-    "files": [
-        "dist/*"
-    ],
+    "name": "vue-layout",
+    "private": true,
     "author": {
         "name": "Peter Placzek",
         "email": "contact@tada5hi.net",
-        "url": "https://tada5hi.net"
+        "url": "https://github.com/tada5hi"
     },
+    "license": "MIT",
+    "version": "1.0.0",
+    "workspaces": [
+        "./packages/*"
+    ],
+    "keywords": [
+        "auth",
+        "module",
+        "typescript",
+        "template",
+        "auth-template",
+        "oauth2",
+        "oauth2-client"
+    ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/tada5hi/vue-layout-navigation.git"
+        "url": "git+https://github.com/Tada5hi/vue-layout-navigation.git"
     },
-    "sideEffects": false,
-    "scripts": {
-        "serve": "vue-cli-service serve dev/serve.ts",
-        "prebuild": "rimraf ./dist",
-        "build": "cross-env NODE_ENV=production rollup --config rollup.config.js",
-        "build:ssr": "cross-env NODE_ENV=production rollup --config rollup.config.js --format cjs",
-        "build:es": "cross-env NODE_ENV=production rollup --config rollup.config.js --format es",
-        "build:unpkg": "cross-env NODE_ENV=production rollup --config rollup.config.js --format iife",
-        "test": "cross-env NODE_ENV=test jest --config ./test/jest.config.js",
-        "test:coverage": "cross-env NODE_ENV=test jest --config ./test/jest.config.js --coverage",
-        "lint": "eslint --ext .ts ./src/",
-        "lint:fix": "npm run lint -- --fix"
+    "bugs": {
+        "url": "https://github.com/Tada5hi/vue-layout-navigation/issues"
+    },
+    "homepage": "https://github.com/Tada5hi/vue-layout-navigation#readme",
+    "engines": {
+        "node": ">=14.0.0"
     },
     "devDependencies": {
-        "@babel/core": "^7.17.5",
-        "@babel/preset-env": "^7.16.11",
-        "@babel/preset-typescript": "^7.16.7",
-        "@rollup/plugin-alias": "^3.1.9",
-        "@rollup/plugin-babel": "^5.3.0",
-        "@rollup/plugin-commonjs": "^21.0.1",
-        "@rollup/plugin-node-resolve": "^13.1.3",
-        "@rollup/plugin-replace": "^3.1.0",
-        "@types/jest": "^27.4.0",
         "@tada5hi/eslint-config-vue-typescript": "^0.0.25",
-        "@vue/cli-plugin-babel": "^5.0.1",
-        "@vue/cli-plugin-typescript": "^5.0.1",
-        "@vue/cli-service": "^5.0.1",
-        "@zerollup/ts-transform-paths": "^1.7.18",
+        "@types/node": "^17.0.18",
         "cross-env": "^7.0.3",
-        "eslint": "^8.9.0",
-        "jest": "^27.5.1",
-        "minimist": "^1.2.5",
-        "np": "^7.6.0",
+        "lerna": "^4.0.0",
         "rimraf": "^3.0.2",
-        "rollup": "^2.67.3",
-        "rollup-plugin-includepaths": "^0.2.4",
-        "rollup-plugin-postcss": "^4.0.2",
-        "rollup-plugin-styles": "^4.0.0",
-        "rollup-plugin-terser": "^7.0.2",
-        "rollup-plugin-typescript2": "^0.31.2",
-        "rollup-plugin-vue": "^6.0.0",
-        "rollup-plugin-vue2": "^0.8.1",
-        "ts-jest": "^27.1.3",
-        "ttypescript": "^1.5.13",
-        "typescript": "^4.5.5",
-        "vue": "^2.6.14",
-        "vue-router": "^3.5.3",
-        "vuex": "^3.6.2"
+        "eslint": "^8.9.0"
     },
-    "peerDependencies": {
-        "vue": "^2.x",
-        "vuex": "^3.x",
-        "vue-router": "^3.x"
-    },
-    "engines": {
-        "node": ">=12"
-    },
-    "dependencies": {
-        "regenerator-runtime": "^0.13.9"
+    "scripts": {
+        "bootstrap": "lerna bootstrap",
+        "clean": "lerna run clean",
+        "build": "lerna run build",
+        "test": "lerna run test",
+        "pub": "npm run build && lerna publish",
+        "lint": "eslint --ext .ts ./packages/",
+        "lint:fix": "npm run lint -- --fix"
     }
 }

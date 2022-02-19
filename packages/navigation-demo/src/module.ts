@@ -1,34 +1,48 @@
-import {NavigationProviderContext, NavigationProviderInterface} from "../src";
-import {NavigationComponentConfig, NavigationComponentTier} from '../src';
+import {
+    NavigationComponentConfig,
+    NavigationComponentTier,
+    NavigationProviderContext,
+    NavigationProviderInterface,
+} from '@vue-layout/navigation';
 
 export class NavigationProvider implements NavigationProviderInterface {
     protected primaryItems : NavigationComponentConfig[] = [
-        {id: 'default', name: 'Home', icon: 'fa fa-home', default: true},
-        {id: 'admin', name: 'Admin', icon: 'fas fa-cog'}
+        {
+            id: 'default', name: 'Home', icon: 'fa fa-home', default: true,
+        },
+        { id: 'admin', name: 'Admin', icon: 'fas fa-cog' },
     ];
 
     // -------------------------
 
     protected secondaryDefaultItems : NavigationComponentConfig[] = [
-        {name: 'Home', type: 'link', icon: 'fas fa-home', url: '/', rootLink: true},
-        {name: 'Info', type: 'link', icon: 'fas fa-info', components: [{name: 'About', url: '/about'}]},
-        {name: 'Sonstige', type: 'link', icon: 'fas fa-bars', components: [{name: 'Settings', url: '/settings'}]}
+        {
+            name: 'Home', type: 'link', icon: 'fas fa-home', url: '/', rootLink: true,
+        },
+        {
+            name: 'Info', type: 'link', icon: 'fas fa-info', components: [{ name: 'About', url: '/about' }],
+        },
+        {
+            name: 'Sonstige', type: 'link', icon: 'fas fa-bars', components: [{ name: 'Settings', url: '/settings' }],
+        },
     ];
 
     protected secondaryAdminItems : NavigationComponentConfig[] = [
-        {name: 'Realms', type: 'link', url: '/admin/realms', icon: 'fas fa-university'}
+        {
+            name: 'Realms', type: 'link', url: '/admin/realms', icon: 'fas fa-university',
+        },
     ];
 
     // ---------------------------
 
     async getComponent(tier: NavigationComponentTier, id: string, context: NavigationProviderContext): Promise<NavigationComponentConfig | undefined> {
         const components = await this.getComponents(tier, context);
-        if(components.length === 0) {
+        if (components.length === 0) {
             return undefined;
         }
 
-        const index = components.findIndex(component => component.id === id);
-        if(index === -1) {
+        const index = components.findIndex((component) => component.id === id);
+        if (index === -1) {
             return undefined;
         }
 
@@ -36,7 +50,7 @@ export class NavigationProvider implements NavigationProviderInterface {
     }
 
     async getComponents(tier: NavigationComponentTier, context: NavigationProviderContext): Promise<NavigationComponentConfig[]> {
-        if(!await this.hasTier(tier)) {
+        if (!await this.hasTier(tier)) {
             return [];
         }
 
@@ -58,7 +72,6 @@ export class NavigationProvider implements NavigationProviderInterface {
                     case 'admin':
                         items = this.secondaryAdminItems;
                         break;
-
                 }
 
                 break;
@@ -73,15 +86,11 @@ export class NavigationProvider implements NavigationProviderInterface {
 
     async getContextForUrl(url: string): Promise<NavigationProviderContext | undefined> {
         const context : NavigationProviderContext = {
-            components: []
+            components: [],
         };
 
-        const sortFunc = (a: NavigationComponentConfig, b: NavigationComponentConfig) => {
-            return (b.url?.length ?? 0) - (a.url?.length ?? 0);
-        };
-        const filterFunc = (item: NavigationComponentConfig) => {
-            return !!item.url && (url.startsWith(item.url) || url === item.url);
-        };
+        const sortFunc = (a: NavigationComponentConfig, b: NavigationComponentConfig) => (b.url?.length ?? 0) - (a.url?.length ?? 0);
+        const filterFunc = (item: NavigationComponentConfig) => !!item.url && (url.startsWith(item.url) || url === item.url);
 
         // ------------------------
 
@@ -92,7 +101,7 @@ export class NavigationProvider implements NavigationProviderInterface {
             .sort(sortFunc)
             .filter(filterFunc);
 
-        if(
+        if (
             secondaryDefaultItems.length === 0 &&
             secondaryAdminItems.length === 0
         ) {
@@ -102,9 +111,9 @@ export class NavigationProvider implements NavigationProviderInterface {
         const isAdminItem = secondaryAdminItems.length > 0;
         const secondaryItem : NavigationComponentConfig = isAdminItem ? secondaryAdminItems[0] : secondaryDefaultItems[0];
 
-        const primaryItem = this.primaryItems.filter(item => !!item?.id && item.id === (isAdminItem ? 'admin' : 'default')).pop();
+        const primaryItem = this.primaryItems.filter((item) => !!item?.id && item.id === (isAdminItem ? 'admin' : 'default')).pop();
 
-        if(typeof primaryItem === 'undefined') {
+        if (typeof primaryItem === 'undefined') {
             return context;
         }
 
@@ -117,10 +126,10 @@ export class NavigationProvider implements NavigationProviderInterface {
     // ----------------------------------------------------
 
     private flattenNestedComponents(components: NavigationComponentConfig[]) : NavigationComponentConfig[] {
-        let output = [...components];
+        const output = [...components];
 
-        components.map(component => {
-            if(component.components) {
+        components.map((component) => {
+            if (component.components) {
                 output.push(...this.flattenNestedComponents(component.components));
             }
         });
