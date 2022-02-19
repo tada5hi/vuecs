@@ -75,5 +75,9 @@
     },
     "dependencies": {
         "regenerator-runtime": "^0.13.9"
-    }
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "gitHead": "732d6c4d47a4917cba9542b1a5c54ab48657b83d"
 }
