@@ -18,10 +18,18 @@ import { Component, ComponentsActive } from '../type';
 import { NavigationStateKey } from './constants';
 import { BuildContext, StateType } from './type';
 
-const NavigationState : StateType = Vue.observable({
+let NavigationState : StateType = Vue.observable({
     [NavigationStateKey.TIER_COMPONENTS]: {},
     [NavigationStateKey.TIER_ACTIVE_COMPONENT]: {},
 });
+
+export function getState() : StateType {
+    return NavigationState;
+}
+
+export function setState(state: StateType) {
+    NavigationState = state;
+}
 
 // --------------------------------------------------------
 

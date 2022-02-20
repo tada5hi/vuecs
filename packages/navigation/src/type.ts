@@ -42,3 +42,9 @@ export interface ProviderInterface {
 
 export type ComponentsActive = Record<string, Component>;
 export type Components = Record<string, Component[]>;
+
+// --------------------------------------------------------
+
+export type InstallOptions = {
+    provider?: ProviderInterface
+};
