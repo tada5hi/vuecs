@@ -6,7 +6,9 @@
  */
 
 import Vue, { CreateElement, PropType, VNode } from 'vue';
-import { NavigationComponentConfig, isNavigationComponentMatch } from '..';
+import { getNavigationActiveComponent, selectNavigation, toggleNavigation } from '../store';
+import { NavigationComponentConfig } from '../type';
+import { isComponentMatch } from '../utils/match';
 import { hasNormalizedSlot, normalizeSlot } from './utils/normalize-slot';
 import { SlotName } from './constants';
 import { NavigationComponents } from './NavigationComponents';
@@ -31,15 +33,15 @@ export const NavigationComponent = Vue.extend<any, any, any, Properties>({
     },
     computed: {
         isStrictMatch() {
-            return isNavigationComponentMatch(
-                this.$store.getters['layout/navigationComponent'](this.tier),
+            return isComponentMatch(
+                getNavigationActiveComponent(this.tier),
                 this.component,
                 true,
             );
         },
         isMatch() {
-            return isNavigationComponentMatch(
-                this.$store.getters['layout/navigationComponent'](this.tier),
+            return isComponentMatch(
+                getNavigationActiveComponent(this.tier),
                 this.component,
                 false,
             ) || this.isChildrenMatch;
@@ -50,10 +52,7 @@ export const NavigationComponent = Vue.extend<any, any, any, Properties>({
     },
     methods: {
         async selectComponent(component: NavigationComponentConfig) {
-            await this.$store.dispatch('layout/selectNavigation', {
-                tier: this.tier,
-                component,
-            });
+            await selectNavigation(this.tier, component);
 
             if (component.url) {
                 if (this.$router.history.current.path === component.url) {
@@ -67,10 +66,7 @@ export const NavigationComponent = Vue.extend<any, any, any, Properties>({
             }
         },
         async toggleComponentExpansion(component: NavigationComponentConfig) {
-            await this.$store.dispatch('layout/toggleNavigationExpansion', {
-                tier: this.tier,
-                component,
-            });
+            await toggleNavigation(this.tier, component);
         },
     },
     render(createElement: CreateElement): VNode {

@@ -5,22 +5,20 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Store } from 'vuex';
 import { Route } from 'vue-router';
-import { NavigationComponentConfig } from '../type';
+import { buildNavigation } from '../store/module';
+import { TierComponentsActive } from '../type';
 
 export async function layoutMiddleware(
     {
-        store,
         route,
         metaKey,
     } : {
-        store: Store<any>,
         route: Route,
         metaKey: string
     },
 ) {
-    let navigationId : string | string[] | undefined;
+    let data : string | string[] | undefined;
 
     if (route.meta) {
         for (let i = 0; i < route.meta.length; i++) {
@@ -28,43 +26,67 @@ export async function layoutMiddleware(
                 metaKey in route.meta[i] &&
                 route.meta[i][metaKey]
             ) {
-                navigationId = route.meta[i][metaKey];
+                data = route.meta[i][metaKey];
             }
         }
     }
 
-    if (typeof navigationId === 'undefined') {
+    if (typeof data === 'undefined') {
         for (let i = 0; i < route.matched.length; i++) {
-            if (metaKey in route.matched[i]) {
+            if (Object.prototype.hasOwnProperty.call(route.matched[i], metaKey)) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
-                navigationId = route.matched[i][metaKey];
+                data = route.matched[i][metaKey];
             }
         }
     }
 
-    let components : Partial<NavigationComponentConfig>[] = [];
+    const componentsActive : TierComponentsActive = {};
 
-    if (typeof navigationId === 'string') {
-        components.push({
-            id: navigationId,
-        });
+    if (typeof data === 'string') {
+        componentsActive[0] = {
+            id: data,
+        };
     }
 
-    if (Array.isArray(navigationId)) {
-        components = navigationId.map((id) => ({
-            id,
-        }));
+    if (Array.isArray(data)) {
+        for (let i = 0; i < data.length; i++) {
+            componentsActive[i] = {
+                id: data[i],
+            };
+        }
     }
 
-    let rootLink = false;
-    if (route.path === '/') rootLink = true;
+    let componentSize = Object.keys(componentsActive).length;
+    const isRootPath = route.path === '/';
 
-    components.push({
-        url: route.path,
-        rootLink,
-    });
+    if (
+        isRootPath &&
+        componentSize > 0
+    ) {
+        componentsActive[0].rootLink = true;
+    }
 
-    await store.dispatch('layout/initNavigation', {
-        components,
+    if (componentSize === 0) {
+        componentsActive[0] = {
+            rootLink: true,
+            url: route.fullPath,
+        };
+
+        componentSize++;
+    }
+
+    if (
+        componentSize === 1 &&
+        componentsActive[0].url !== route.path
+    ) {
+        componentsActive[1] = {
+            url: route.path,
+        };
+    }
+
+    await buildNavigation({
+        url: route.fullPath,
+        activeComponents: componentsActive,
     });
 }

@@ -1,15 +1,15 @@
 /*
- * Copyright (c) 2021.
+ * Copyright (c) 2021-2022.
  * Author Peter Placzek (tada5hi)
  * For the full copyright and license information,
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { NavigationComponentConfig, NavigationComponentConfigSlim } from './type';
+import { NavigationComponentConfig } from '../type';
 
-export function isNavigationComponentMatch(
-    one?: NavigationComponentConfigSlim,
-    two?: NavigationComponentConfigSlim,
+export function isComponentMatch(
+    one?: NavigationComponentConfig,
+    two?: NavigationComponentConfig,
     strict = false,
 ): boolean {
     if (!(one && two) || (!one || !two)) {
@@ -63,14 +63,14 @@ export function isNavigationComponentMatch(
     ) {
         let allMatched = true;
         for (let i = 0; i < one.components.length; i++) {
-            if (!isNavigationComponentMatch(one.components[i], two.components[i])) {
+            if (!isComponentMatch(one.components[i], two.components[i])) {
                 allMatched = false;
                 break;
             }
         }
 
         for (let i = 0; i < two.components.length; i++) {
-            if (!isNavigationComponentMatch(one.components[i], two.components[i])) {
+            if (!isComponentMatch(one.components[i], two.components[i])) {
                 allMatched = false;
                 break;
             }
@@ -82,24 +82,4 @@ export function isNavigationComponentMatch(
     }
 
     return false;
-}
-
-export function initComponents(
-    components: NavigationComponentConfig[],
-    show = true,
-) {
-    return components.map((component: NavigationComponentConfig) => {
-        component.display = show;
-        component.displayChildren = false;
-
-        if (!component.type) {
-            component.type = 'link';
-        }
-
-        if (component.components) {
-            component.components = initComponents(component.components, false);
-        }
-
-        return component;
-    });
 }

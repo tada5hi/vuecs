@@ -12,7 +12,7 @@ export type NavigationComponentConfig = {
     default?: boolean,
     type?: 'separator' | 'link',
 
-    name: string,
+    name?: string,
     url?: string,
 
     icon?: string,
@@ -27,39 +27,26 @@ export type NavigationComponentConfig = {
     [key: string]: any
 };
 
-export type NavigationComponentConfigSlim = Omit<NavigationComponentConfig, 'name'> &
-Partial<Pick<NavigationComponentConfig, 'name'>>;
-
 // --------------------------------------------------------
 
 export interface NavigationProviderInterface {
     getComponent(
         tier: NavigationComponentTier,
         id: string,
-        context: NavigationProviderContext
+        context: TierComponentsActive
     ) : Promise<NavigationComponentConfig | undefined>;
 
     getComponents(
         tier: NavigationComponentTier,
-        context: NavigationProviderContext
+        context: TierComponentsActive
     ) : Promise<NavigationComponentConfig[]>;
 
     hasTier(
         tier: NavigationComponentTier
     ) : Promise<boolean>;
 
-    getContextForUrl?(url: string): Promise<NavigationProviderContext | undefined>;
+    getActiveComponents(url: string): Promise<TierComponentsActive>;
 }
 
-export type NavigationProviderContext = {
-    components: NavigationComponentConfig[]
-};
-
-// --------------------------------------------------------
-
-export type NavigationComponentToggleContext = {
-    component: NavigationComponentConfigSlim,
-    enable: boolean,
-    display?: boolean,
-    rootLevel?: boolean
-};
+export type TierComponentsActive = Record<string, NavigationComponentConfig>;
+export type TierComponents = Record<string, NavigationComponentConfig[]>;

@@ -5,12 +5,12 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {isNavigationComponentMatch} from "../../src";
+import { isComponentMatch } from '../../src';
 
 describe('src/utils.ts', () => {
     it('should match correctly', () => {
-        let isMatch = isNavigationComponentMatch({
-            url: '/admin/users'
+        const isMatch = isComponentMatch({
+            url: '/admin/users',
         }, {
             name: 'Allgemein',
             type: 'link',
@@ -18,11 +18,11 @@ describe('src/utils.ts', () => {
                 {
                     name: 'xxx',
                     type: 'link',
-                    url: '/admin/xxx'
-                }
+                    url: '/admin/xxx',
+                },
             ],
         });
 
         expect(isMatch).toEqual(false);
-    })
-})
+    });
+});

@@ -5,6 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 import Vue, { CreateElement, PropType, VNode } from 'vue';
+import { getNavigationComponents } from '../store';
 import { NavigationComponentConfig } from '../type';
 import { NavigationComponent } from './NavigationComponent';
 
@@ -32,7 +33,7 @@ export const NavigationComponents = Vue.extend<any, any, any, Properties>({
                 return this.entities;
             }
 
-            return this.$store.getters['layout/navigationComponents'](this.tier);
+            return getNavigationComponents(this.tier);
         },
     },
     render(createElement: CreateElement): VNode {

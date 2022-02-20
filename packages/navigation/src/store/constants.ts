@@ -5,6 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-export * from './constants';
-export * from './module';
-export * from './type';
+export enum NavigationStateKey {
+    TIER_COMPONENTS = 'tierComponents',
+    TIER_ACTIVE_COMPONENT = 'tierComponent',
+}
