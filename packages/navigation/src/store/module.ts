@@ -43,13 +43,14 @@ function setComponents(tier: string | number, components: NavigationComponentCon
 export async function selectNavigation(tier: string | number, component: NavigationComponentConfig) {
     const tierIndex = buildTierIndex(tier);
 
-    const isMatch = isComponentMatch(getNavigationActiveComponent(tier), component, true);
+    const isMatch = isComponentMatch(getNavigationActiveComponent(tier), component);
 
-    if (isMatch && tierIndex === 0) {
+    if (isMatch) {
         return;
     }
 
     setActiveComponent(tier, component);
+    refreshComponents(tier);
 
     const tierMaxIndex = Object.keys(NavigationState.tierComponents).length - 1;
     let tierStartIndex = tierIndex + 1;
@@ -61,20 +62,30 @@ export async function selectNavigation(tier: string | number, component: Navigat
     }
 }
 
-export function toggleNavigation(tier: string | number, component: NavigationComponentConfig) {
-    const isMatch = isComponentMatch(getNavigationActiveComponent(tier), component, true);
-
+export function refreshComponents(tier: string | number) {
     let components = getNavigationComponents(tier);
-    resetNavigationExpansion(components);
+    components = resetNavigationExpansion(components);
 
-    if (!isMatch) {
-        setActiveComponent(tier, component);
+    const component = getNavigationActiveComponent(tier);
+    if (component) {
         const { items } = setNavigationExpansion(components, component);
-
         components = items;
     }
 
     setComponents(tier, components);
+}
+
+export function toggleNavigation(tier: string | number, component: NavigationComponentConfig) {
+    const isMatch = isComponentMatch(getNavigationActiveComponent(tier), component) ||
+        component.displayChildren;
+
+    if (isMatch) {
+        setActiveComponent(tier, undefined);
+    } else {
+        setActiveComponent(tier, component);
+    }
+
+    refreshComponents(tier);
 }
 
 export async function buildNavigation(
@@ -91,7 +102,7 @@ export async function buildNavigation(
         componentsActiveSize === 0 &&
         context.url
     ) {
-        componentsActive = await navigationProvider.getActiveComponents(context.url);
+        componentsActive = await navigationProvider.getComponentsActive(context.url);
     }
 
     let tierIndex = 0;
@@ -105,18 +116,29 @@ export async function buildNavigation(
 
         let currentItem = getActiveComponent(componentsActive, tierIndex);
         if (!currentItem) {
-            currentItem = items.shift();
+            if (context.url) {
+                const urlMatches = items.filter((item) => isComponentMatch(item, { url: context?.url }));
+                if (urlMatches) {
+                    // eslint-disable-next-line prefer-destructuring
+                    currentItem = urlMatches[0];
+                }
+            }
 
             if (!currentItem) {
-                continue;
+                // eslint-disable-next-line prefer-destructuring
+                currentItem = items[0];
             }
 
             componentsActive[`${tierIndex}`] = currentItem;
         }
 
+        if (!currentItem) {
+            continue;
+        }
+
         setActiveComponent(tierIndex, currentItem);
 
-        await buildNavigationForTier(tierIndex);
+        await buildNavigationForTier(tierIndex, componentsActive);
 
         tierIndex++;
     }
@@ -153,6 +175,7 @@ export async function buildNavigationForTier(
     );
 
     setComponents(tier, components);
+    refreshComponents(tier);
 }
 
 // --------------------------------------------------------

@@ -6,20 +6,26 @@
  */
 
 import Vue, { VNode } from 'vue';
-import { NavigationProvider } from './module';
 
 import '../assets/items.css';
 
-import VueLayoutNavigation, { storePlugin } from '@vue-layout/navigation';
+import VueLayoutNavigation, { buildNavigation, useNavigationProvider } from '@vue-layout/navigation';
 
 import Vuex from 'vuex';
 import VueRouter from 'vue-router';
+
+import { NavigationProvider } from './module';
+
 import Dev from './serve.vue';
 
 import About from './components/about.vue';
 import Home from './components/home.vue';
 import Realm from './components/realm.vue';
 import Settings from './components/settings.vue';
+
+const provider = new NavigationProvider();
+
+useNavigationProvider(provider);
 
 Vue.use(VueLayoutNavigation);
 
@@ -38,20 +44,14 @@ const router = new VueRouter({
     ],
 });
 
-const store = new Vuex.Store({
-    modules: {
-        layout: storePlugin,
-    },
-});
+(async () => {
+    const instance = new Vue({
+        render: (h): VNode => h(Dev),
+        router,
+    });
 
-(store as any).$layoutNavigationProvider = new NavigationProvider();
-(store as any).$router = router;
+    const url = (instance.$router as any)?.history?.current?.fullPath;
+    await buildNavigation({ url });
 
-Promise.resolve()
-    .then(() => store.dispatch('layout/initNavigation'));
-
-new Vue({
-    render: (h): VNode => h(Dev),
-    store,
-    router,
-}).$mount('#app');
+    instance.$mount('#app');
+})();

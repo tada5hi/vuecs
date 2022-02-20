@@ -5,7 +5,7 @@
             "ESNext"
         ],
         "paths": {
-            "@vue-layout/navigation": ["./packages/navigation"]
+            "@vue-layout/navigation": ["./packages/navigation/src"]
         }
     },
     "include": [

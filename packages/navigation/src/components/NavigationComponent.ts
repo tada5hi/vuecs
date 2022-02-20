@@ -28,26 +28,17 @@ export const NavigationComponent = Vue.extend<any, any, any, Properties>({
         component: {
             type: Object as PropType<NavigationComponentConfig>,
             required: true,
-            default: undefined,
         },
     },
     computed: {
+        componentActive() {
+            return getNavigationActiveComponent(this.tier);
+        },
         isStrictMatch() {
-            return isComponentMatch(
-                getNavigationActiveComponent(this.tier),
-                this.component,
-                true,
-            );
+            return isComponentMatch(this.componentActive, this.component);
         },
         isMatch() {
-            return isComponentMatch(
-                getNavigationActiveComponent(this.tier),
-                this.component,
-                false,
-            ) || this.isChildrenMatch;
-        },
-        isChildrenMatch() {
-            return !!(this.component.components && this.component.displayChildren);
+            return isComponentMatch(this.componentActive, this.component, false);
         },
     },
     methods: {
@@ -182,7 +173,7 @@ export const NavigationComponent = Vue.extend<any, any, any, Properties>({
         return h('div', {
             staticClass: 'nav-item',
             class: {
-                active: vm.isMatch,
+                active: vm.isMatch || vm.component.displayChildren,
             },
         }, Array.isArray(item) ? item : [item]);
     },

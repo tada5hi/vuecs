@@ -5,15 +5,13 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-export type NavigationComponentTier = number;
-
 export type NavigationComponentConfig = {
     id?: string,
-    default?: boolean,
-    type?: 'separator' | 'link',
-
     name?: string,
     url?: string,
+
+    default?: boolean,
+    type?: 'separator' | 'link',
 
     icon?: string,
     environment?: 'development' | 'production' | 'testing',
@@ -30,22 +28,16 @@ export type NavigationComponentConfig = {
 // --------------------------------------------------------
 
 export interface NavigationProviderInterface {
-    getComponent(
-        tier: NavigationComponentTier,
-        id: string,
-        context: TierComponentsActive
-    ) : Promise<NavigationComponentConfig | undefined>;
-
     getComponents(
-        tier: NavigationComponentTier,
+        tier: number,
         context: TierComponentsActive
     ) : Promise<NavigationComponentConfig[]>;
 
     hasTier(
-        tier: NavigationComponentTier
+        tier: number
     ) : Promise<boolean>;
 
-    getActiveComponents(url: string): Promise<TierComponentsActive>;
+    getComponentsActive(url: string): Promise<TierComponentsActive>;
 }
 
 export type TierComponentsActive = Record<string, NavigationComponentConfig>;

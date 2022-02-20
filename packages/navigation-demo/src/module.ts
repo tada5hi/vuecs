@@ -1,8 +1,7 @@
 import {
     NavigationComponentConfig,
-    NavigationComponentTier,
-    NavigationProviderContext,
     NavigationProviderInterface,
+    TierComponentsActive,
 } from '@vue-layout/navigation';
 
 export class NavigationProvider implements NavigationProviderInterface {
@@ -35,21 +34,7 @@ export class NavigationProvider implements NavigationProviderInterface {
 
     // ---------------------------
 
-    async getComponent(tier: NavigationComponentTier, id: string, context: NavigationProviderContext): Promise<NavigationComponentConfig | undefined> {
-        const components = await this.getComponents(tier, context);
-        if (components.length === 0) {
-            return undefined;
-        }
-
-        const index = components.findIndex((component) => component.id === id);
-        if (index === -1) {
-            return undefined;
-        }
-
-        return components[index];
-    }
-
-    async getComponents(tier: NavigationComponentTier, context: NavigationProviderContext): Promise<NavigationComponentConfig[]> {
+    async getComponents(tier: number, context: TierComponentsActive): Promise<NavigationComponentConfig[]> {
         if (!await this.hasTier(tier)) {
             return [];
         }
@@ -60,12 +45,9 @@ export class NavigationProvider implements NavigationProviderInterface {
             case 0:
                 items = this.primaryItems;
                 break;
-            case 1:
-                const id = context.components.length >= 1 ?
-                    context.components[0].id ?? 'default' :
-                    'default';
-
-                switch (id) {
+            case 1: {
+                const component : NavigationComponentConfig = context[0] || { id: 'default' };
+                switch (component.id) {
                     case 'default':
                         items = this.secondaryDefaultItems;
                         break;
@@ -75,20 +57,17 @@ export class NavigationProvider implements NavigationProviderInterface {
                 }
 
                 break;
+            }
         }
 
         return items;
     }
 
-    async hasTier(tier: NavigationComponentTier): Promise<boolean> {
+    async hasTier(tier: number): Promise<boolean> {
         return [0, 1].indexOf(tier) !== -1;
     }
 
-    async getContextForUrl(url: string): Promise<NavigationProviderContext | undefined> {
-        const context : NavigationProviderContext = {
-            components: [],
-        };
-
+    async getComponentsActive(url: string): Promise<TierComponentsActive> {
         const sortFunc = (a: NavigationComponentConfig, b: NavigationComponentConfig) => (b.url?.length ?? 0) - (a.url?.length ?? 0);
         const filterFunc = (item: NavigationComponentConfig) => !!item.url && (url.startsWith(item.url) || url === item.url);
 
@@ -97,6 +76,7 @@ export class NavigationProvider implements NavigationProviderInterface {
         const secondaryDefaultItems = this.flattenNestedComponents(this.secondaryDefaultItems)
             .sort(sortFunc)
             .filter(filterFunc);
+
         const secondaryAdminItems = this.flattenNestedComponents(this.secondaryAdminItems)
             .sort(sortFunc)
             .filter(filterFunc);
@@ -105,7 +85,7 @@ export class NavigationProvider implements NavigationProviderInterface {
             secondaryDefaultItems.length === 0 &&
             secondaryAdminItems.length === 0
         ) {
-            return context;
+            return { };
         }
 
         const isAdminItem = secondaryAdminItems.length > 0;
@@ -114,13 +94,13 @@ export class NavigationProvider implements NavigationProviderInterface {
         const primaryItem = this.primaryItems.filter((item) => !!item?.id && item.id === (isAdminItem ? 'admin' : 'default')).pop();
 
         if (typeof primaryItem === 'undefined') {
-            return context;
+            return { };
         }
 
-        context.components.push(primaryItem);
-        context.components.push(secondaryItem);
-
-        return context;
+        return {
+            0: primaryItem,
+            1: secondaryItem,
+        };
     }
 
     // ----------------------------------------------------
@@ -128,11 +108,11 @@ export class NavigationProvider implements NavigationProviderInterface {
     private flattenNestedComponents(components: NavigationComponentConfig[]) : NavigationComponentConfig[] {
         const output = [...components];
 
-        components.map((component) => {
-            if (component.components) {
-                output.push(...this.flattenNestedComponents(component.components));
+        for (let i = 0; i < components.length; i++) {
+            if (components[i].components) {
+                output.push(...this.flattenNestedComponents(components[i].components));
             }
-        });
+        }
 
         return output;
     }

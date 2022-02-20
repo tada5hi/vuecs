@@ -7,47 +7,35 @@
 
 import { NavigationComponentConfig } from '../type';
 
+function isRootLink(component: NavigationComponentConfig) {
+    return component.rootLink || (component.url && component.url === '/');
+}
+
 export function isComponentMatch(
     one?: NavigationComponentConfig,
     two?: NavigationComponentConfig,
-    strict = false,
+    exact = true,
 ): boolean {
+    // both undefined or one of them
     if (!(one && two) || (!one || !two)) {
         return false;
     }
 
     // check when true
-
-    if (
-        one.id &&
-        two.id &&
-        one.id === two.id
-    ) {
+    if (one.id && two.id && one.id === two.id) {
         return true;
     }
 
-    if (
-        !strict &&
-        one.name &&
-        two.name &&
-        one.name === two.name
-    ) {
+    if (one.name && two.name && one.name === two.name) {
         return true;
     }
 
-    if (
-        one.url &&
-        two.url
-    ) {
+    if (one.url && two.url) {
         if (one.url === two.url) {
             return true;
         }
 
-        if (
-            !strict &&
-            !one.rootLink &&
-            !two.rootLink
-        ) {
+        if (!exact && !isRootLink(one) && !isRootLink(two)) {
             if (
                 one.url.startsWith(two.url) ||
                 two.url.startsWith(one.url)
@@ -59,26 +47,16 @@ export function isComponentMatch(
 
     if (
         one.components &&
-        two.components
+        two.components &&
+        one.components.length === two.components.length
     ) {
-        let allMatched = true;
         for (let i = 0; i < one.components.length; i++) {
             if (!isComponentMatch(one.components[i], two.components[i])) {
-                allMatched = false;
-                break;
+                return false;
             }
         }
 
-        for (let i = 0; i < two.components.length; i++) {
-            if (!isComponentMatch(one.components[i], two.components[i])) {
-                allMatched = false;
-                break;
-            }
-        }
-
-        if (allMatched) {
-            return true;
-        }
+        return true;
     }
 
     return false;

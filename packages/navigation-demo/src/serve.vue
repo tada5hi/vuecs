@@ -1,5 +1,5 @@
 <script>
-import { NavigationComponents } from '@vue-layout/navigation';
+import { NavigationComponents, buildNavigation } from '@vue-layout/navigation';
 
 export default {
     name: 'ServeDev',
@@ -11,13 +11,10 @@ export default {
         sideTier() {
             return 1;
         },
-        items() {
-            return this.$store.getters['layout/navigationComponents'](0);
-        },
     },
     methods: {
         async refresh() {
-            await this.$store.dispatch('layout/initNavigation', undefined);
+            await buildNavigation();
         },
     },
 };
