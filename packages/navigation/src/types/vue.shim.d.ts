@@ -5,7 +5,6 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Store } from 'vuex';
 import Router, { Route } from 'vue-router';
 
 declare module '*.vue' {
@@ -18,13 +17,11 @@ declare module 'vue/types/vue' {
     // Global properties can be declared
     // on the `VueConstructor` interface
     interface VueConstructor {
-        $store: Store<any>,
         $router: Router
         $route: Route
     }
 
     interface Vue {
-        $store: Store<any>,
         $router: Router
         $route: Route
     }

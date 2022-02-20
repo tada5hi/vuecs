@@ -5,13 +5,13 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { NavigationComponentConfig } from '../type';
+import { Component } from '../type';
 import { isComponentMatch } from './match';
 
 // --------------------------------------------------
 
 export function resetNavigationExpansion(
-    items: NavigationComponentConfig[],
+    items: Component[],
     rootTier = true,
 ) {
     for (let i = 0; i < items.length; i++) {
@@ -29,10 +29,10 @@ export function resetNavigationExpansion(
 }
 
 export function setNavigationExpansion(
-    items: NavigationComponentConfig[],
-    component: NavigationComponentConfig,
+    items: Component[],
+    component: Component,
     parentMatch = false,
-) : { items: NavigationComponentConfig[], match: boolean} {
+) : { items: Component[], match: boolean} {
     let matchInIteration = false;
 
     for (let i = 0; i < items.length; i++) {

@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-export type NavigationComponentConfig = {
+export type Component = {
     id?: string,
     name?: string,
     url?: string,
@@ -20,25 +20,25 @@ export type NavigationComponentConfig = {
     displayChildren?: boolean,
 
     rootLink?: boolean,
-    components?: NavigationComponentConfig[],
+    components?: Component[],
 
     [key: string]: any
 };
 
 // --------------------------------------------------------
 
-export interface NavigationProviderInterface {
+export interface ProviderInterface {
     getComponents(
         tier: number,
-        context: TierComponentsActive
-    ) : Promise<NavigationComponentConfig[]>;
+        context: ComponentsActive
+    ) : Promise<Component[]>;
+
+    getComponentsActive(url: string): Promise<ComponentsActive | undefined>;
 
     hasTier(
         tier: number
     ) : Promise<boolean>;
-
-    getComponentsActive(url: string): Promise<TierComponentsActive>;
 }
 
-export type TierComponentsActive = Record<string, NavigationComponentConfig>;
-export type TierComponents = Record<string, NavigationComponentConfig[]>;
+export type ComponentsActive = Record<string, Component>;
+export type Components = Record<string, Component[]>;

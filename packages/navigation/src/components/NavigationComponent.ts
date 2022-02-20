@@ -7,7 +7,7 @@
 
 import Vue, { CreateElement, PropType, VNode } from 'vue';
 import { getNavigationActiveComponent, selectNavigation, toggleNavigation } from '../store';
-import { NavigationComponentConfig } from '../type';
+import { Component } from '../type';
 import { isComponentMatch } from '../utils/match';
 import { hasNormalizedSlot, normalizeSlot } from './utils/normalize-slot';
 import { SlotName } from './constants';
@@ -15,7 +15,7 @@ import { NavigationComponents } from './NavigationComponents';
 
 type Properties = {
     tier: number,
-    component: NavigationComponentConfig
+    component: Component
 };
 
 export const NavigationComponent = Vue.extend<any, any, any, Properties>({
@@ -26,7 +26,7 @@ export const NavigationComponent = Vue.extend<any, any, any, Properties>({
             default: 0,
         },
         component: {
-            type: Object as PropType<NavigationComponentConfig>,
+            type: Object as PropType<Component>,
             required: true,
         },
     },
@@ -42,7 +42,7 @@ export const NavigationComponent = Vue.extend<any, any, any, Properties>({
         },
     },
     methods: {
-        async selectComponent(component: NavigationComponentConfig) {
+        async selectComponent(component: Component) {
             await selectNavigation(this.tier, component);
 
             if (component.url) {
@@ -56,7 +56,7 @@ export const NavigationComponent = Vue.extend<any, any, any, Properties>({
                 });
             }
         },
-        async toggleComponentExpansion(component: NavigationComponentConfig) {
+        async toggleComponentExpansion(component: Component) {
             await toggleNavigation(this.tier, component);
         },
     },

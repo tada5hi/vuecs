@@ -1,11 +1,11 @@
 import {
-    NavigationComponentConfig,
-    NavigationProviderInterface,
-    TierComponentsActive,
+    Component,
+    ComponentsActive,
+    ProviderInterface,
 } from '@vue-layout/navigation';
 
-export class NavigationProvider implements NavigationProviderInterface {
-    protected primaryItems : NavigationComponentConfig[] = [
+export class NavigationProvider implements ProviderInterface {
+    protected primaryItems : Component[] = [
         {
             id: 'default', name: 'Home', icon: 'fa fa-home', default: true,
         },
@@ -14,7 +14,7 @@ export class NavigationProvider implements NavigationProviderInterface {
 
     // -------------------------
 
-    protected secondaryDefaultItems : NavigationComponentConfig[] = [
+    protected secondaryDefaultItems : Component[] = [
         {
             name: 'Home', type: 'link', icon: 'fas fa-home', url: '/', rootLink: true,
         },
@@ -26,7 +26,7 @@ export class NavigationProvider implements NavigationProviderInterface {
         },
     ];
 
-    protected secondaryAdminItems : NavigationComponentConfig[] = [
+    protected secondaryAdminItems : Component[] = [
         {
             name: 'Realms', type: 'link', url: '/admin/realms', icon: 'fas fa-university',
         },
@@ -34,19 +34,19 @@ export class NavigationProvider implements NavigationProviderInterface {
 
     // ---------------------------
 
-    async getComponents(tier: number, context: TierComponentsActive): Promise<NavigationComponentConfig[]> {
+    async getComponents(tier: number, context: ComponentsActive): Promise<Component[]> {
         if (!await this.hasTier(tier)) {
             return [];
         }
 
-        let items : NavigationComponentConfig[] = [];
+        let items : Component[] = [];
 
         switch (tier) {
             case 0:
                 items = this.primaryItems;
                 break;
             case 1: {
-                const component : NavigationComponentConfig = context[0] || { id: 'default' };
+                const component : Component = context[0] || { id: 'default' };
                 switch (component.id) {
                     case 'default':
                         items = this.secondaryDefaultItems;
@@ -67,9 +67,9 @@ export class NavigationProvider implements NavigationProviderInterface {
         return [0, 1].indexOf(tier) !== -1;
     }
 
-    async getComponentsActive(url: string): Promise<TierComponentsActive> {
-        const sortFunc = (a: NavigationComponentConfig, b: NavigationComponentConfig) => (b.url?.length ?? 0) - (a.url?.length ?? 0);
-        const filterFunc = (item: NavigationComponentConfig) => !!item.url && (url.startsWith(item.url) || url === item.url);
+    async getComponentsActive(url: string): Promise<ComponentsActive> {
+        const sortFunc = (a: Component, b: Component) => (b.url?.length ?? 0) - (a.url?.length ?? 0);
+        const filterFunc = (item: Component) => !!item.url && (url.startsWith(item.url) || url === item.url);
 
         // ------------------------
 
@@ -89,7 +89,7 @@ export class NavigationProvider implements NavigationProviderInterface {
         }
 
         const isAdminItem = secondaryAdminItems.length > 0;
-        const secondaryItem : NavigationComponentConfig = isAdminItem ? secondaryAdminItems[0] : secondaryDefaultItems[0];
+        const secondaryItem : Component = isAdminItem ? secondaryAdminItems[0] : secondaryDefaultItems[0];
 
         const primaryItem = this.primaryItems.filter((item) => !!item?.id && item.id === (isAdminItem ? 'admin' : 'default')).pop();
 
@@ -105,7 +105,7 @@ export class NavigationProvider implements NavigationProviderInterface {
 
     // ----------------------------------------------------
 
-    private flattenNestedComponents(components: NavigationComponentConfig[]) : NavigationComponentConfig[] {
+    private flattenNestedComponents(components: Component[]) : Component[] {
         const output = [...components];
 
         for (let i = 0; i < components.length; i++) {

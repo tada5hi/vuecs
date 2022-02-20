@@ -1,12 +1,14 @@
 import 'regenerator-runtime';
 
+import './assets/index.css';
+
 import vue, { PluginFunction } from 'vue';
 
 // Import vue components
 import * as components from './components';
 
 // install function executed by Vue.use()
-const install: PluginFunction<any> = function installVueLayoutNavigation(instance: typeof vue) {
+const install: PluginFunction<any> = function install(instance: typeof vue) {
     Object.entries(components).forEach(([componentName, component]) => {
         instance.component(componentName, component);
     });

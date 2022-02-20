@@ -5,14 +5,14 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { NavigationComponentConfig } from '../type';
+import { Component } from '../type';
 
-export type NavigationStateType = {
-    tierComponents: Record<string, NavigationComponentConfig[]>,
-    tierComponent: Record<string, NavigationComponentConfig | undefined>,
+export type StateType = {
+    tierComponents: Record<string, Component[]>,
+    tierComponent: Record<string, Component | undefined>,
 };
 
-export type NavigationBuildContext = {
-    activeComponents?: Record<string, NavigationComponentConfig>,
+export type BuildContext = {
+    activeComponents?: Record<string, Component>,
     url?: string
 };

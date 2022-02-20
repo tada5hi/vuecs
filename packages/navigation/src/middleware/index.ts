@@ -6,10 +6,10 @@
  */
 
 import { Route } from 'vue-router';
-import { buildNavigation } from '../store/module';
-import { TierComponentsActive } from '../type';
+import { buildNavigation } from '../store';
+import { ComponentsActive } from '../type';
 
-export async function layoutMiddleware(
+export async function middleware(
     {
         route,
         metaKey,
@@ -41,7 +41,7 @@ export async function layoutMiddleware(
         }
     }
 
-    const componentsActive : TierComponentsActive = {};
+    const componentsActive : ComponentsActive = {};
 
     if (typeof data === 'string') {
         componentsActive[0] = {

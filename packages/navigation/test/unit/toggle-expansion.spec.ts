@@ -5,12 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-
-import {NavigationComponentConfig, toggleNavigationComponentTree} from "../../src";
+import { Component, toggleNavigationComponentTree } from '../../src';
 
 describe('src/toggle.ts', () => {
     it('should expand navigation correctly', () => {
-        const items : NavigationComponentConfig[] = [
+        const items : Component[] = [
             {
                 name: 'Benutzer',
                 type: 'link',
@@ -23,31 +22,31 @@ describe('src/toggle.ts', () => {
                     {
                         name: 'xxx',
                         type: 'link',
-                        url: '/admin/xxx'
-                    }
+                        url: '/admin/xxx',
+                    },
                 ],
             },
             {
                 name: 'aaa',
                 type: 'link',
-                url: '/admin/aaa'
+                url: '/admin/aaa',
             },
         ];
 
-        const {components} = toggleNavigationComponentTree(items, {
+        const { components } = toggleNavigationComponentTree(items, {
             enable: true,
             component: {
-                url: '/admin/users'
-            }
+                url: '/admin/users',
+            },
         });
 
-        const expected = items.map(item => {
+        const expected = items.map((item) => {
             item.display = false;
             item.displayChildren = false;
 
-            if(item.url === '/admin/user') {
+            if (item.url === '/admin/user') {
                 item.display = true;
-                item.displayChildren = true
+                item.displayChildren = true;
             }
 
             return item;

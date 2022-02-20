@@ -1,9 +1,8 @@
 <script>
-import { NavigationComponents, buildNavigation } from '@vue-layout/navigation';
+import { buildNavigation } from '@vue-layout/navigation';
 
 export default {
     name: 'ServeDev',
-    components: { NavigationComponents },
     computed: {
         topTier() {
             return 0;

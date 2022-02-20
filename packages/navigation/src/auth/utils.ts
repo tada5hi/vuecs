@@ -1,10 +1,10 @@
-import { NavigationComponentConfig } from '../type';
+import { Component } from '../type';
 import { AuthRestrictionContext } from './type';
 
 export function applyAuthRestrictionForNavigationComponents(
-    components: NavigationComponentConfig[],
+    components: Component[],
     context: AuthRestrictionContext,
-): NavigationComponentConfig[] {
+): Component[] {
     if (
         typeof context.auth === 'undefined' &&
         typeof context.loggedIn === 'undefined'
@@ -13,7 +13,7 @@ export function applyAuthRestrictionForNavigationComponents(
     }
 
     return components
-        .filter((component: NavigationComponentConfig) => {
+        .filter((component: Component) => {
             if (typeof context.loggedIn !== 'undefined') {
                 if (
                     component.hasOwnProperty(context.layoutKey.requiredLoggedIn) &&

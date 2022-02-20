@@ -5,20 +5,24 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { NavigationProviderInterface } from '../type';
+import { ProviderInterface } from '../type';
 
-let instance : NavigationProviderInterface | undefined;
+let instance : ProviderInterface | undefined;
 
-export function useNavigationProvider(provider?: NavigationProviderInterface) : NavigationProviderInterface {
+export function useProvider(module?: ProviderInterface) : ProviderInterface {
     if (typeof instance !== 'undefined') {
         return instance;
     }
 
-    if (typeof provider === 'undefined') {
+    if (typeof module === 'undefined') {
         throw new Error('A Navigation Provider must be set!');
     }
 
-    instance = provider;
+    instance = module;
 
     return instance;
+}
+
+export function setProvider(module: ProviderInterface) {
+    instance = module;
 }

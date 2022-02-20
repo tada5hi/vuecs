@@ -5,20 +5,20 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { NavigationComponentConfig, TierComponentsActive } from '../type';
+import { Component, ComponentsActive } from '../type';
 import { parseTier } from './tier';
 
 export function hasActiveComponent(
-    components: TierComponentsActive,
+    components: ComponentsActive,
     tier: string | number,
 ) : boolean {
     return Object.prototype.hasOwnProperty.call(components, parseTier(tier));
 }
 
 export function getActiveComponent(
-    components: TierComponentsActive,
+    components: ComponentsActive,
     tier: string | number,
-) : NavigationComponentConfig | undefined {
+) : Component | undefined {
     if (hasActiveComponent(components, tier)) {
         return components[parseTier(tier)];
     }

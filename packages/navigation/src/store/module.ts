@@ -6,7 +6,7 @@
  */
 
 import Vue from 'vue';
-import { useNavigationProvider } from '../provider';
+import { useProvider } from '../provider';
 import {
     buildTierIndex,
     getActiveComponent,
@@ -14,25 +14,25 @@ import {
     resetNavigationExpansion,
     setNavigationExpansion,
 } from '../utils';
-import { NavigationComponentConfig, TierComponentsActive } from '../type';
+import { Component, ComponentsActive } from '../type';
 import { isComponentMatch } from '../utils/match';
 import { NavigationStateKey } from './constants';
-import { NavigationBuildContext, NavigationStateType } from './type';
+import { BuildContext, StateType } from './type';
 
-const NavigationState : NavigationStateType = Vue.observable({
+const NavigationState : StateType = Vue.observable({
     [NavigationStateKey.TIER_COMPONENTS]: {},
     [NavigationStateKey.TIER_ACTIVE_COMPONENT]: {},
 });
 
 // --------------------------------------------------------
 
-function setActiveComponent(tier: string | number, component: NavigationComponentConfig | undefined) {
+function setActiveComponent(tier: string | number, component: Component | undefined) {
     tier = parseTier(tier);
 
     Vue.set(NavigationState[NavigationStateKey.TIER_ACTIVE_COMPONENT], tier, component);
 }
 
-function setComponents(tier: string | number, components: NavigationComponentConfig[]) {
+function setComponents(tier: string | number, components: Component[]) {
     tier = parseTier(tier);
 
     Vue.set(NavigationState[NavigationStateKey.TIER_COMPONENTS], tier, components);
@@ -40,7 +40,7 @@ function setComponents(tier: string | number, components: NavigationComponentCon
 
 // --------------------------------------------------------
 
-export async function selectNavigation(tier: string | number, component: NavigationComponentConfig) {
+export async function selectNavigation(tier: string | number, component: Component) {
     const tierIndex = buildTierIndex(tier);
 
     const isMatch = isComponentMatch(getNavigationActiveComponent(tier), component);
@@ -75,7 +75,7 @@ export function refreshComponents(tier: string | number) {
     setComponents(tier, components);
 }
 
-export function toggleNavigation(tier: string | number, component: NavigationComponentConfig) {
+export function toggleNavigation(tier: string | number, component: Component) {
     const isMatch = isComponentMatch(getNavigationActiveComponent(tier), component) ||
         component.displayChildren;
 
@@ -89,20 +89,23 @@ export function toggleNavigation(tier: string | number, component: NavigationCom
 }
 
 export async function buildNavigation(
-    context?: NavigationBuildContext,
+    context?: BuildContext,
 ) {
-    const navigationProvider = useNavigationProvider();
+    const navigationProvider = useProvider();
 
     context = context || {};
 
-    let componentsActive : Record<string, NavigationComponentConfig> = context.activeComponents ?? {};
+    let componentsActive : Record<string, Component> = context.activeComponents ?? {};
     const componentsActiveSize = Object.keys(componentsActive).length;
 
     if (
         componentsActiveSize === 0 &&
         context.url
     ) {
-        componentsActive = await navigationProvider.getComponentsActive(context.url);
+        const urlComponentsActive = await navigationProvider.getComponentsActive(context.url);
+        if (urlComponentsActive) {
+            componentsActive = urlComponentsActive;
+        }
     }
 
     let tierIndex = 0;
@@ -146,7 +149,7 @@ export async function buildNavigation(
 
 export async function buildNavigationForTier(
     tier: string | number,
-    componentsActive?: TierComponentsActive,
+    componentsActive?: ComponentsActive,
 ) : Promise<void> {
     if (typeof componentsActive === 'undefined') {
         let tierStartIndex = 0;
@@ -169,7 +172,7 @@ export async function buildNavigationForTier(
         }
     }
 
-    const components : NavigationComponentConfig[] = await useNavigationProvider().getComponents(
+    const components : Component[] = await useProvider().getComponents(
         buildTierIndex(tier),
         componentsActive,
     );
@@ -180,7 +183,7 @@ export async function buildNavigationForTier(
 
 // --------------------------------------------------------
 
-export function getNavigationComponents(tier: number | string) : NavigationComponentConfig[] {
+export function getNavigationComponents(tier: number | string) : Component[] {
     tier = parseTier(tier);
 
     if (Object.prototype.hasOwnProperty.call(NavigationState.tierComponents, tier)) {
@@ -190,7 +193,7 @@ export function getNavigationComponents(tier: number | string) : NavigationCompo
     return [];
 }
 
-export function getNavigationActiveComponent(tier: number | string) : NavigationComponentConfig | undefined {
+export function getNavigationActiveComponent(tier: number | string) : Component | undefined {
     tier = parseTier(tier);
 
     if (Object.prototype.hasOwnProperty.call(NavigationState.tierComponent, tier)) {

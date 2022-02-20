@@ -3,117 +3,125 @@
 [![npm version](https://badge.fury.io/js/@vue-layout%2Fnavigation.svg)](https://badge.fury.io/js/@vue-layout%2Fnavigation)
 [![CI](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml)
 
-This repository contains:
-- vuex store plugin 🏦
-    - to hold the current navigation components for each tier.
-- vue templates ⛩
-  - to render navigation components from the vuex store
-- (nuxt-) middleware 🚧
-  - to initialize navigation components according meta properties or by url, if no meta data is available.
+This repository contains provides vue components and helper/utility methods to
+render a multi tier navigation, where tier-0 conditionally affects tier-1 and so on.
 
 **Table of Contents**
 
 - [Installation](#installation)
 - [Usage](#usage)
+  - [Nuxt](#nuxt)
+- [Example](#example)
 
 ## Installation
-This package requires `nodejs` & `npm` to be installed on the host machine.
+
 ```
 $ npm i --save-dev @vue-layout/navigation
 ```
 
 ## Usage
-The first step is to define a class which implements the Interface `NavigationProviderInterface`.
-It will be responsible for providing navigation items for specific tiers on demand and will be injected
-to the vuex store.
 
-This implementation class shape should look like this:
+To use this Package, a class must be created, which implements the `ProviderInterface`.
+The class is used to provide different navigation components for each `tier`.
+
+The `tier` is a numeric value, which can reach from 0 to n (infinity).
+
+The first step is to implement the class.
+
+`module.ts`
 
 ```typescript
-import { 
-    NavigationComponentTier,
-    NavigationProviderContext,
-    NavigationProviderInterface 
+import {
+    ComponentsActive,
+    ProviderInterface 
 } from "@vue-layout/navigation";
 
-export class NavigationProvider implements NavigationProviderInterface {
-    async getComponent(
-        tier: NavigationComponentTier, 
-        id: string, 
-        context: NavigationProviderContext
-    ): Promise<NavigationComponentConfig | undefined> {
-        // component for specific tier for a given context.
-    }
-
+export class Provider implements ProviderInterface {
+    componentsTierOne = [
+        { name: 'Home', url: '/', icon: 'fa fa-home'},
+        { name: 'About', url: '/about', icon: 'fa fa-info'}
+    ];
+    
     async getComponents(
-        tier: NavigationComponentTier,
-        context: NavigationProviderContext
+        tier: number,
+        context: ComponentsActive
     ): Promise<NavigationComponentConfig[]> {
-        // components for specific tier for a given context.
+        // Return components for a specific tier.
+        // The context provides the current active components for
+        // the parent tiers.
+        
+        switch (tier) {
+            case 0:
+                return this.componentsTierOne;
+            // ....
+        }
     }
 
-    async hasTier(tier: NavigationComponentTier): Promise<boolean> {
-        // check if the tier exists.
-    }
-
-    async getContextForUrl(url: string): Promise<NavigationProviderContext | undefined> {
+    async getComponentsActive(url: string): Promise<ComponentsActive | undefined> {
         // build component context for url
+        if(url === '/') {
+            return  {
+                0: this.componentsTierOne[0]
+            }
+        }
+        
+        if(url === '/about') {
+            return {
+                0: this.componentsTierOne[1]
+            }
+        }
+        
+        return undefined;
+    }
+
+    async hasTier(tier: number): Promise<boolean> {
+        // check if the tier exists.
+        return tier === 1;
     }
 }
 ```
 
----
+The next step is to create the vue entrypoint. 
 
-The next step is to init the `vuex` store and inject an instance of the `NavigationProvider` to the store.
-The vue entry point could look like this:
+`index.ts`
 
 ```typescript
 import Vue, { VNode } from 'vue';
-import Vuex from 'vuex';
 import VueRouter from "vue-router";
 
-import VueLayoutNavigation, {
-    storePlugin
+import VueLayoutNavigation, { 
+    buildNavigation,
+    setProvider
 } from '@vue-layout/navigation';
 
-// import the NavigationProviderInterface implementation
-import {NavigationProvider} from "./module";
+// import the ProviderInterface implementation
+import { Provider } from "./module";
 
-// register the plugin, vuex & vue-router
+// Create an instance and register it!
+const provider = new Provider();
+setProvider(provider);
+
+// register the plugin & vue-router
 Vue.use(VueLayoutNavigation);
-Vue.use(Vuex);
 Vue.use(VueRouter);
 
-const router = new VueRouter({
-    mode: "history",
-    routes: [
-        // ... set paths
-    ]
-});
+(async () => {
+    const instance = new Vue({
+        render: (h): VNode => h(Dev),
+        router: new VueRouter({...})
+    });
 
-const store = new Vuex.Store({
-    modules: {
-        layout: storePlugin
-    }
-});
+    // sadly there exists no typing for the history property... :/
+    const url = (instance.$router as any)?.history?.current?.fullPath;
+    await buildNavigation({ url });
 
-(store as any).$layoutNavigationProvider = new NavigationProvider();
-(store as any).$router = router;
-
-Promise.resolve()
-    .then(() => store.dispatch('layout/initNavigation'));
-
-new Vue({
-    render: (h): VNode => h(Dev),
-    store,
-    router
-}).$mount('#app');
+    instance.$mount('#app');
+})();
 ```
 
 --- 
 
 After those steps are completed, the `NavigationComponents` SFC can be placed anywhere, if registered globally.
-In addition, navigation components are reactively rendered for a specific navigation tier, through the store.
 
 ```vue
 <template>
@@ -125,3 +133,7 @@ In addition, navigation components are reactively rendered for a specific naviga
 </template>
 ```
 
+## Example
+
+For a simple example, on how to use this library, check out the demo package:
+[Example](https://github.com/tada5hi/vue-layout/tree/master/packages/navigation-demo)

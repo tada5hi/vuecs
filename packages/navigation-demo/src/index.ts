@@ -7,11 +7,9 @@
 
 import Vue, { VNode } from 'vue';
 
-import '../assets/items.css';
+import '@vue-layout/navigation/dist/index.min.css';
+import VueLayoutNavigation, { buildNavigation, useProvider } from '@vue-layout/navigation';
 
-import VueLayoutNavigation, { buildNavigation, useNavigationProvider } from '@vue-layout/navigation';
-
-import Vuex from 'vuex';
 import VueRouter from 'vue-router';
 
 import { NavigationProvider } from './module';
@@ -25,13 +23,9 @@ import Settings from './components/settings.vue';
 
 const provider = new NavigationProvider();
 
-useNavigationProvider(provider);
+useProvider(provider);
 
 Vue.use(VueLayoutNavigation);
-
-Vue.config.productionTip = false;
-
-Vue.use(Vuex);
 Vue.use(VueRouter);
 
 const router = new VueRouter({

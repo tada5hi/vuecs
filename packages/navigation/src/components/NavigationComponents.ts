@@ -6,12 +6,12 @@
  */
 import Vue, { CreateElement, PropType, VNode } from 'vue';
 import { getNavigationComponents } from '../store';
-import { NavigationComponentConfig } from '../type';
+import { Component } from '../type';
 import { NavigationComponent } from './NavigationComponent';
 
 type Properties = {
     tier: number,
-    entities: NavigationComponentConfig[]
+    entities: Component[]
 };
 
 export const NavigationComponents = Vue.extend<any, any, any, Properties>({
@@ -22,7 +22,7 @@ export const NavigationComponents = Vue.extend<any, any, any, Properties>({
             default: 0,
         },
         entities: {
-            type: Array as PropType<NavigationComponentConfig[]>,
+            type: Array as PropType<Component[]>,
             default: undefined,
         },
     },
@@ -44,7 +44,7 @@ export const NavigationComponents = Vue.extend<any, any, any, Properties>({
 
         if (vm.items) {
             for (let i = 0; i < vm.items.length; i++) {
-                const entity: NavigationComponentConfig = vm.items[i];
+                const entity: Component = vm.items[i];
 
                 if (entity.display) {
                     entities.push(h('li', {

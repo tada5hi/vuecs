@@ -5,15 +5,15 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { NavigationComponentConfig } from '../type';
+import { Component } from '../type';
 
-function isRootLink(component: NavigationComponentConfig) {
+function isRootLink(component: Component) {
     return component.rootLink || (component.url && component.url === '/');
 }
 
 export function isComponentMatch(
-    one?: NavigationComponentConfig,
-    two?: NavigationComponentConfig,
+    one?: Component,
+    two?: Component,
     exact = true,
 ): boolean {
     // both undefined or one of them
