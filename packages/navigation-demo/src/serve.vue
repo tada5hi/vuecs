@@ -1,5 +1,5 @@
 <script>
-import { buildNavigation } from '@vue-layout/navigation';
+import { build } from '@vue-layout/navigation';
 
 export default {
     name: 'ServeDev',
@@ -13,7 +13,7 @@ export default {
     },
     methods: {
         async refresh() {
-            await buildNavigation();
+            await build();
         },
     },
 };

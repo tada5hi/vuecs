@@ -45,7 +45,7 @@ export class Provider implements ProviderInterface {
     async getComponents(
         tier: number,
         context: ComponentsActive
-    ): Promise<NavigationComponentConfig[]> {
+    ): Promise<Component[]> {
         // Return components for a specific tier.
         // The context provides the current active components for
         // the parent tiers.
@@ -90,7 +90,7 @@ import Vue, { VNode } from 'vue';
 import VueRouter from "vue-router";
 
 import VueLayoutNavigation, { 
-    buildNavigation,
+    build,
     setProvider
 } from '@vue-layout/navigation';
 
@@ -113,7 +113,7 @@ Vue.use(VueRouter);
 
     // sadly there exists no typing for the history property... :/
     const url = (instance.$router as any)?.history?.current?.fullPath;
-    await buildNavigation({ url });
+    await build({ url });
 
     instance.$mount('#app');
 })();

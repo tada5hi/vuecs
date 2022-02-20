@@ -8,7 +8,7 @@
 import Vue, { VNode } from 'vue';
 
 import '@vue-layout/navigation/dist/index.min.css';
-import VueLayoutNavigation, { buildNavigation, useProvider } from '@vue-layout/navigation';
+import VueLayoutNavigation, { build, useProvider } from '@vue-layout/navigation';
 
 import VueRouter from 'vue-router';
 
@@ -45,7 +45,7 @@ const router = new VueRouter({
     });
 
     const url = (instance.$router as any)?.history?.current?.fullPath;
-    await buildNavigation({ url });
+    await build({ url });
 
     instance.$mount('#app');
 })();

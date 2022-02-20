@@ -9,13 +9,12 @@ import Vue from 'vue';
 import { useProvider } from '../provider';
 import {
     buildTierIndex,
-    getActiveComponent,
+    isComponentMatch,
     parseTier,
     resetNavigationExpansion,
     setNavigationExpansion,
 } from '../utils';
 import { Component, ComponentsActive } from '../type';
-import { isComponentMatch } from '../utils/match';
 import { NavigationStateKey } from './constants';
 import { BuildContext, StateType } from './type';
 
@@ -38,12 +37,28 @@ function setComponents(tier: string | number, components: Component[]) {
     Vue.set(NavigationState[NavigationStateKey.TIER_COMPONENTS], tier, components);
 }
 
+function refreshComponents(tier: string | number) {
+    let components = getComponents(tier);
+    components = resetNavigationExpansion(components);
+
+    const component = getActiveComponent(tier);
+    if (component) {
+        const { items } = setNavigationExpansion(components, component);
+        components = items;
+    }
+
+    setComponents(tier, components);
+}
+
 // --------------------------------------------------------
 
-export async function selectNavigation(tier: string | number, component: Component) {
+export async function select(
+    tier: string | number,
+    component: Component,
+) {
     const tierIndex = buildTierIndex(tier);
 
-    const isMatch = isComponentMatch(getNavigationActiveComponent(tier), component);
+    const isMatch = isComponentMatch(getActiveComponent(tier), component);
 
     if (isMatch) {
         return;
@@ -56,27 +71,14 @@ export async function selectNavigation(tier: string | number, component: Compone
     let tierStartIndex = tierIndex + 1;
 
     while (tierStartIndex <= tierMaxIndex) {
-        await buildNavigationForTier(tierStartIndex);
+        await buildForTier(tierStartIndex);
 
         tierStartIndex++;
     }
 }
 
-export function refreshComponents(tier: string | number) {
-    let components = getNavigationComponents(tier);
-    components = resetNavigationExpansion(components);
-
-    const component = getNavigationActiveComponent(tier);
-    if (component) {
-        const { items } = setNavigationExpansion(components, component);
-        components = items;
-    }
-
-    setComponents(tier, components);
-}
-
-export function toggleNavigation(tier: string | number, component: Component) {
-    const isMatch = isComponentMatch(getNavigationActiveComponent(tier), component) ||
+export function toggle(tier: string | number, component: Component) {
+    const isMatch = isComponentMatch(getActiveComponent(tier), component) ||
         component.displayChildren;
 
     if (isMatch) {
@@ -88,7 +90,7 @@ export function toggleNavigation(tier: string | number, component: Component) {
     refreshComponents(tier);
 }
 
-export async function buildNavigation(
+export async function build(
     context?: BuildContext,
 ) {
     const navigationProvider = useProvider();
@@ -117,7 +119,10 @@ export async function buildNavigation(
             continue;
         }
 
-        let currentItem = getActiveComponent(componentsActive, tierIndex);
+        let currentItem = Object.prototype.hasOwnProperty.call(componentsActive, tierIndex) ?
+            componentsActive[tierIndex] :
+            undefined;
+
         if (!currentItem) {
             if (context.url) {
                 const urlMatches = items.filter((item) => isComponentMatch(item, { url: context?.url }));
@@ -141,13 +146,13 @@ export async function buildNavigation(
 
         setActiveComponent(tierIndex, currentItem);
 
-        await buildNavigationForTier(tierIndex, componentsActive);
+        await buildForTier(tierIndex, componentsActive);
 
         tierIndex++;
     }
 }
 
-export async function buildNavigationForTier(
+export async function buildForTier(
     tier: string | number,
     componentsActive?: ComponentsActive,
 ) : Promise<void> {
@@ -160,7 +165,7 @@ export async function buildNavigationForTier(
         let componentFound = true;
 
         while (tierStartIndex <= tierEndIndex && componentFound) {
-            const component = getNavigationActiveComponent(tierStartIndex);
+            const component = getActiveComponent(tierStartIndex);
             if (!component) {
                 componentFound = false;
                 continue;
@@ -183,7 +188,7 @@ export async function buildNavigationForTier(
 
 // --------------------------------------------------------
 
-export function getNavigationComponents(tier: number | string) : Component[] {
+export function getComponents(tier: number | string) : Component[] {
     tier = parseTier(tier);
 
     if (Object.prototype.hasOwnProperty.call(NavigationState.tierComponents, tier)) {
@@ -193,7 +198,7 @@ export function getNavigationComponents(tier: number | string) : Component[] {
     return [];
 }
 
-export function getNavigationActiveComponent(tier: number | string) : Component | undefined {
+export function getActiveComponent(tier: number | string) : Component | undefined {
     tier = parseTier(tier);
 
     if (Object.prototype.hasOwnProperty.call(NavigationState.tierComponent, tier)) {

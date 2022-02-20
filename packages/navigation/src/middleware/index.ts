@@ -6,7 +6,7 @@
  */
 
 import { Route } from 'vue-router';
-import { buildNavigation } from '../store';
+import { build } from '../store';
 import { ComponentsActive } from '../type';
 
 export async function middleware(
@@ -85,7 +85,7 @@ export async function middleware(
         };
     }
 
-    await buildNavigation({
+    await build({
         url: route.fullPath,
         activeComponents: componentsActive,
     });

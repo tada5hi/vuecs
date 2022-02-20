@@ -6,7 +6,7 @@
  */
 
 import Vue, { CreateElement, PropType, VNode } from 'vue';
-import { getNavigationActiveComponent, selectNavigation, toggleNavigation } from '../store';
+import { getActiveComponent, select, toggle } from '../store';
 import { Component } from '../type';
 import { isComponentMatch } from '../utils/match';
 import { hasNormalizedSlot, normalizeSlot } from './utils/normalize-slot';
@@ -32,7 +32,7 @@ export const NavigationComponent = Vue.extend<any, any, any, Properties>({
     },
     computed: {
         componentActive() {
-            return getNavigationActiveComponent(this.tier);
+            return getActiveComponent(this.tier);
         },
         isStrictMatch() {
             return isComponentMatch(this.componentActive, this.component);
@@ -43,7 +43,7 @@ export const NavigationComponent = Vue.extend<any, any, any, Properties>({
     },
     methods: {
         async selectComponent(component: Component) {
-            await selectNavigation(this.tier, component);
+            await select(this.tier, component);
 
             if (component.url) {
                 if (this.$router.history.current.path === component.url) {
@@ -57,7 +57,7 @@ export const NavigationComponent = Vue.extend<any, any, any, Properties>({
             }
         },
         async toggleComponentExpansion(component: Component) {
-            await toggleNavigation(this.tier, component);
+            await toggle(this.tier, component);
         },
     },
     render(createElement: CreateElement): VNode {
