@@ -22,9 +22,12 @@ This package contains vue-components, helper, types and many more to render a mu
 
 [README.md](https://github.com/Tada5hi/vue-layout/tree/master/packages/navigation#README.md)
 
-### @vue-layout/navigation-demo 🌉
+### @vue-layout/navigation-demo 🦘
 
-This package contains examples on how to use the `@vue-layout/navigation` package.
+This package contains an example on how to use the `@vue-layout/navigation` package.
+
+
+[README.md](https://github.com/Tada5hi/vue-layout/tree/master/packages/navigation-demo#README.md)
 
 ## Installation & Usage
 Please follow the `README.md` instructions in the respective package folder.
