@@ -61,5 +61,11 @@ export function setNavigationExpansion(
         }
     }
 
+    if (matchInIteration) {
+        for (let i = 0; i < items.length; i++) {
+            items[i].display = true;
+        }
+    }
+
     return { items, match: matchInIteration };
 }
