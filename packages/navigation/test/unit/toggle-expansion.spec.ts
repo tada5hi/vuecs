@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Component, toggleNavigationComponentTree } from '../../src';
+import { Component, setNavigationExpansion } from '../../src';
 
 describe('src/toggle.ts', () => {
     it('should expand navigation correctly', () => {
@@ -33,12 +33,9 @@ describe('src/toggle.ts', () => {
             },
         ];
 
-        const { components } = toggleNavigationComponentTree(items, {
-            enable: true,
-            component: {
-                url: '/admin/users',
-            },
-        });
+        const { items: components } = setNavigationExpansion(items, {
+            url: '/admin/users',
+        }, true);
 
         const expected = items.map((item) => {
             item.display = false;

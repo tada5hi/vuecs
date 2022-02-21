@@ -1,19 +1,15 @@
-export interface AuthModuleInterface {
-    hasAbility<T>(ability: T): boolean;
-
-    hasPermission(name: string): boolean;
-
-    [key: string]: any
-}
-
-export type AuthRestrictionContext = {
-    loggedIn?: boolean,
-    auth?: AuthModuleInterface,
-    layoutKey: {
-        requiredAbilities: string,
-        requiredPermissions: string,
-        requiredLoggedOut: string,
-        requiredLoggedIn: string
+export type ComponentRestrictionContext = {
+    module: {
+        hasAbility(ability: any) : boolean;
+        hasPermission(name: string) : boolean;
+        isLoggedIn() : boolean;
+        [key: string]: any
     },
-    [key: string]: any
+    layoutKey?: {
+        children?: string,
+        requiredAbilities?: string,
+        requiredPermissions?: string,
+        requiredLoggedOut?: string,
+        requiredLoggedIn?: string
+    }
 };
