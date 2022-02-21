@@ -6,7 +6,6 @@ export function applyRestrictionForComponents<T extends Record<string, any> = Re
     components: T[],
     context: ComponentRestrictionContext,
 ) : T[] {
-    context = context || {};
     context.layoutKey = context.layoutKey || {};
 
     const childrenKey = context.layoutKey.children ||
