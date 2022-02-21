@@ -59,16 +59,18 @@ export function applyRestrictionForComponents<T extends Record<string, any> = Re
                 } else if (Array.isArray(checks)) {
                     checks = checks.filter((item) => item);
 
-                    if (
-                        authorizeChecks[j] === requiredAbilityKey &&
-                        !checks.some((item: any) => context.module.hasAbility(item))
-                    ) {
-                        canPass = false;
-                    } else if (
-                        authorizeChecks[j] === requiredPermissionKey &&
-                        !checks.some((item: any) => context.module.hasPermission(item))
-                    ) {
-                        canPass = false;
+                    if (checks.length > 0) {
+                        if (
+                            authorizeChecks[j] === requiredAbilityKey &&
+                            !checks.some((item: any) => context.module.hasAbility(item))
+                        ) {
+                            canPass = false;
+                        } else if (
+                            authorizeChecks[j] === requiredPermissionKey &&
+                            !checks.some((item: any) => context.module.hasPermission(item))
+                        ) {
+                            canPass = false;
+                        }
                     }
                 }
             }
