@@ -105,7 +105,7 @@ export async function build(
 
     context = context || {};
 
-    let componentsActive : Record<string, Component> = context.activeComponents ?? {};
+    let componentsActive : ComponentsActive = context.activeComponents ?? {};
     const componentsActiveSize = Object.keys(componentsActive).length;
 
     if (

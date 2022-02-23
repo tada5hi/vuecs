@@ -5,14 +5,14 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Component } from '../type';
+import { Component, Components, ComponentsActive } from '../type';
 
 export type StateType = {
-    tierComponents: Record<string, Component[]>,
-    tierComponent: Record<string, Component | undefined>,
+    tierComponents: Components,
+    tierComponent: ComponentsActive,
 };
 
 export type BuildContext = {
-    activeComponents?: Record<string, Component>,
+    activeComponents?: ComponentsActive,
     url?: string
 };

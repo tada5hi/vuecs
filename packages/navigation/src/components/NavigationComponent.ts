@@ -8,10 +8,9 @@
 import Vue, { CreateElement, PropType, VNode } from 'vue';
 import { getActiveComponent, select, toggle } from '../store';
 import { Component } from '../type';
-import { isComponentMatch } from '../utils/match';
-import { hasNormalizedSlot, normalizeSlot } from './utils/normalize-slot';
-import { SlotName } from './constants';
-import { NavigationComponents } from './NavigationComponents';
+import { isAbsoluteURL, isComponentMatch } from '../utils';
+import { SlotName, hasNormalizedSlot, normalizeSlot } from './render';
+import { NavigationLink, NavigationLinkProperties } from './NavigationLink';
 
 type Properties = {
     tier: number,
@@ -44,17 +43,6 @@ export const NavigationComponent = Vue.extend<any, any, any, Properties>({
     methods: {
         async selectComponent(component: Component) {
             await select(this.tier, component);
-
-            if (component.url) {
-                if (this.$router.history.current.path === component.url) {
-                    return;
-                }
-
-                // todo: check if it is absolute link :)
-                await this.$router.push({
-                    path: component.url,
-                });
-            }
         },
         async toggleComponentExpansion(component: Component) {
             await toggle(this.tier, component);
@@ -93,7 +81,27 @@ export const NavigationComponent = Vue.extend<any, any, any, Properties>({
                             isActive: vm.isMatch,
                         }, $scopedSlots, $slots);
                     } else {
-                        item = h('a', {
+                        const linkProps : NavigationLinkProperties = {
+                            active: vm.isMatch,
+                            disabled: false,
+                            prefetch: true,
+                        };
+
+                        if (vm.component.url) {
+                            if (
+                                isAbsoluteURL(vm.component.url) ||
+                                vm.component.url.startsWith('#')
+                            ) {
+                                linkProps.href = vm.component.url;
+                                if (vm.component.urlTarget) {
+                                    linkProps.target = vm.component.urlTarget;
+                                }
+                            } else {
+                                linkProps.to = vm.component.url;
+                            }
+                        }
+
+                        item = h(NavigationLink, {
                             staticClass: 'nav-link',
                             class: {
                                 'router-link-active': vm.isMatch,
@@ -101,11 +109,14 @@ export const NavigationComponent = Vue.extend<any, any, any, Properties>({
                                 active: vm.isMatch,
                                 'root-link': vm.component.rootLink,
                             },
+                            props: linkProps,
                             on: {
-                                click($event: any) {
-                                    $event.preventDefault();
+                                clicked() {
+                                    if (!vm.component.url) {
+                                        return vm.selectComponent.call(null, vm.component);
+                                    }
 
-                                    return vm.selectComponent.call(null, vm.component);
+                                    return undefined;
                                 },
                             },
                         }, [
@@ -152,7 +163,7 @@ export const NavigationComponent = Vue.extend<any, any, any, Properties>({
                             toggleComponentExpansion: vm.toggleComponentExpansion,
                         });
                     } else if (vm.component.displayChildren) {
-                        items = h(NavigationComponents, {
+                        items = h('navigation-components', {
                             staticClass: 'list-unstyled nav-sub-items',
                             props: {
                                 tier: vm.tier,

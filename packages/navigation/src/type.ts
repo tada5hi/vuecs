@@ -8,7 +8,9 @@
 export type Component = {
     id?: string,
     name?: string,
+
     url?: string,
+    urlTarget?: '_self' | '_blank' | '_parent' | '_top' | string,
 
     default?: boolean,
     type?: 'separator' | 'link',
@@ -40,11 +42,5 @@ export interface ProviderInterface {
     ) : Promise<boolean>;
 }
 
-export type ComponentsActive = Record<string, Component>;
+export type ComponentsActive = Record<string, Component | undefined>;
 export type Components = Record<string, Component[]>;
-
-// --------------------------------------------------------
-
-export type InstallOptions = {
-    provider?: ProviderInterface
-};
