@@ -5,8 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-export enum NavigationStateKey {
-    COMPONENTS = 'components',
-    COMPONENTS_ACTIVE = 'componentsActive',
-    TIERS = 'tiers',
-}
+import { Route } from 'vue-router';
+
+export type RouteBuildContext = {
+    route: Route,
+    metaKey: string
+};

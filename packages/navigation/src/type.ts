@@ -7,6 +7,7 @@
 
 export type Component = {
     id?: string,
+    tier?: number,
     name?: string,
 
     url?: string,
@@ -32,15 +33,12 @@ export type Component = {
 export interface ProviderInterface {
     getComponents(
         tier: number,
-        context: ComponentsActive
+        context: Component[]
     ) : Promise<Component[]>;
 
-    getComponentsActive(url: string): Promise<ComponentsActive | undefined>;
+    getComponentsActive(url: string): Promise<Component[]>;
 
     hasTier(
         tier: number
     ) : Promise<boolean>;
 }
-
-export type ComponentsActive = Record<string, Component | undefined>;
-export type Components = Record<string, Component[]>;

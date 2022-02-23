@@ -5,14 +5,16 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Component, Components, ComponentsActive } from '../type';
+import { Component } from '../type';
+import { NavigationStateKey } from './constants';
 
 export type StateType = {
-    tierComponents: Components,
-    tierComponent: ComponentsActive,
+    [NavigationStateKey.COMPONENTS]: Component[],
+    [NavigationStateKey.COMPONENTS_ACTIVE]: Component[],
+    [NavigationStateKey.TIERS]?: number
 };
 
 export type BuildContext = {
-    activeComponents?: ComponentsActive,
+    componentsActive?: Component[],
     url?: string
 };

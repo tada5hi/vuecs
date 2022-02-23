@@ -32,24 +32,32 @@ The first step is to implement the class.
 
 ```typescript
 import {
-    ComponentsActive,
-    ProviderInterface 
+    Component,
+    ProviderInterface
 } from "@vue-layout/navigation";
 
 export class Provider implements ProviderInterface {
     componentsTierOne = [
-        { name: 'Home', url: '/', icon: 'fa fa-home'},
-        { name: 'About', url: '/about', icon: 'fa fa-info'}
+        {
+            name: 'Home',
+            url: '/',
+            icon: 'fa fa-home'
+        },
+        {
+            name: 'About',
+            url: '/about',
+            icon: 'fa fa-info'
+        }
     ];
-    
+
     async getComponents(
         tier: number,
-        context: ComponentsActive
+        context: Component[]
     ): Promise<Component[]> {
         // Return components for a specific tier.
         // The context provides the current active components for
         // the parent tiers.
-        
+
         switch (tier) {
             case 0:
                 return this.componentsTierOne;
@@ -57,20 +65,20 @@ export class Provider implements ProviderInterface {
         }
     }
 
-    async getComponentsActive(url: string): Promise<ComponentsActive | undefined> {
+    async getComponentsActive(url: string): Promise<Component[]> {
         // build component context for url
-        if(url === '/') {
-            return  {
-                0: this.componentsTierOne[0]
-            }
+        if (url === '/') {
+            return [
+                this.componentsTierOne[0]
+            ]
         }
-        
-        if(url === '/about') {
-            return {
-                0: this.componentsTierOne[1]
-            }
+
+        if (url === '/about') {
+            return [
+                this.componentsTierOne[1]
+            ]
         }
-        
+
         return undefined;
     }
 

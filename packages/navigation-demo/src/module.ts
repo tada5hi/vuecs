@@ -1,7 +1,6 @@
 import {
-    Component,
-    ComponentsActive,
-    ProviderInterface,
+    Component, ProviderInterface,
+    findTierComponent,
 } from '@vue-layout/navigation';
 
 export class NavigationProvider implements ProviderInterface {
@@ -9,7 +8,9 @@ export class NavigationProvider implements ProviderInterface {
         {
             id: 'default', name: 'Home', icon: 'fa fa-home', default: true,
         },
-        { id: 'admin', name: 'Admin', icon: 'fas fa-cog' },
+        {
+            id: 'admin', name: 'Admin', icon: 'fas fa-cog',
+        },
     ];
 
     // -------------------------
@@ -34,7 +35,7 @@ export class NavigationProvider implements ProviderInterface {
 
     // ---------------------------
 
-    async getComponents(tier: number, context: ComponentsActive): Promise<Component[]> {
+    async getComponents(tier: number, components: Component[]): Promise<Component[]> {
         if (!await this.hasTier(tier)) {
             return [];
         }
@@ -46,7 +47,7 @@ export class NavigationProvider implements ProviderInterface {
                 items = this.primaryItems;
                 break;
             case 1: {
-                const component : Component = context[0] || { id: 'default' };
+                const component : Component = findTierComponent(components, 0) || { id: 'default' };
                 switch (component.id) {
                     case 'default':
                         items = this.secondaryDefaultItems;
@@ -67,9 +68,17 @@ export class NavigationProvider implements ProviderInterface {
         return [0, 1].indexOf(tier) !== -1;
     }
 
-    async getComponentsActive(url: string): Promise<ComponentsActive> {
+    async getComponentsActive(url: string): Promise<Component[]> {
         const sortFunc = (a: Component, b: Component) => (b.url?.length ?? 0) - (a.url?.length ?? 0);
-        const filterFunc = (item: Component) => !!item.url && (url.startsWith(item.url) || url === item.url);
+        const filterFunc = (item: Component) => {
+            if (!item.url) return false;
+
+            if (item.rootLink) {
+                return url === item.url;
+            }
+
+            return url === item.url || url.startsWith(item.url);
+        };
 
         // ------------------------
 
@@ -77,30 +86,25 @@ export class NavigationProvider implements ProviderInterface {
             .sort(sortFunc)
             .filter(filterFunc);
 
+        if (secondaryDefaultItems.length > 0) {
+            return [
+                this.primaryItems[0],
+                secondaryDefaultItems[0],
+            ];
+        }
+
         const secondaryAdminItems = this.flattenNestedComponents(this.secondaryAdminItems)
             .sort(sortFunc)
             .filter(filterFunc);
 
-        if (
-            secondaryDefaultItems.length === 0 &&
-            secondaryAdminItems.length === 0
-        ) {
-            return { };
+        if (secondaryAdminItems.length > 0) {
+            return [
+                this.primaryItems[1],
+                secondaryAdminItems[0],
+            ];
         }
 
-        const isAdminItem = secondaryAdminItems.length > 0;
-        const secondaryItem : Component = isAdminItem ? secondaryAdminItems[0] : secondaryDefaultItems[0];
-
-        const primaryItem = this.primaryItems.filter((item) => !!item?.id && item.id === (isAdminItem ? 'admin' : 'default')).pop();
-
-        if (typeof primaryItem === 'undefined') {
-            return { };
-        }
-
-        return {
-            0: primaryItem,
-            1: secondaryItem,
-        };
+        return [];
     }
 
     // ----------------------------------------------------

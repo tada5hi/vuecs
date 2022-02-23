@@ -23,7 +23,7 @@ export default install;
 // each can be registered via Vue.component()
 export * from './auth';
 export * from './components';
-export * from './middleware';
+export * from './route';
 export * from './provider';
 export * from './store';
 export * from './type';

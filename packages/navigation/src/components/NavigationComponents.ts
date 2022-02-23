@@ -4,6 +4,7 @@
  * For the full copyright and license information,
  * view the LICENSE file that was distributed with this source code.
  */
+
 import Vue, { CreateElement, PropType, VNode } from 'vue';
 import { getComponents } from '../store';
 import { Component } from '../type';
@@ -41,6 +42,8 @@ export const NavigationComponents = Vue.extend<any, any, any, Properties>({
         const h = createElement;
 
         const entities : VNode[] = [];
+
+        console.log(vm.items);
 
         if (vm.items) {
             for (let i = 0; i < vm.items.length; i++) {
