@@ -13,7 +13,9 @@ export default {
     },
     methods: {
         async refresh() {
-            await build();
+            await build({
+                url: this.$router.route.fullPath,
+            });
         },
     },
 };

@@ -118,6 +118,9 @@ export const NavigationComponent = Vue.extend<any, any, any, Properties>({
 
                                     return undefined;
                                 },
+                                click() {
+                                    return vm.selectComponent.call(null, vm.component);
+                                },
                             },
                         }, [
                             vm.component.icon ? h('i', { staticClass: vm.component.icon }) : h(),
