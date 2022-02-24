@@ -69,6 +69,6 @@ export async function buildWithRoute({ route, metaKey }: RouteBuildContext) {
 
     await build({
         url: route.fullPath,
-        componentsActive,
+        components: componentsActive,
     });
 }

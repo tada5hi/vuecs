@@ -28,3 +28,4 @@ export * from './provider';
 export * from './store';
 export * from './type';
 export * from './utils';
+export { ProviderInterface } from './provider';

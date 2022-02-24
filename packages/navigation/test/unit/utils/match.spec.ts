@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2021.
+ * Copyright (c) 2021-2022.
  * Author Peter Placzek (tada5hi)
  * For the full copyright and license information,
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { isComponentMatch } from '../../src';
+import { isComponentMatch } from '../../../src';
 
 describe('src/utils.ts', () => {
     it('should match correctly', () => {

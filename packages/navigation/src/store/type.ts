@@ -15,6 +15,6 @@ export type StateType = {
 };
 
 export type BuildContext = {
-    componentsActive?: Component[],
+    components?: Component[],
     url?: string
 };

@@ -10,7 +10,14 @@ render a multi tier navigation, where tier-0 conditionally affects tier-1 and so
 
 - [Installation](#installation)
 - [Usage](#usage)
-  - [Nuxt](#nuxt)
+- [Functions](#functions)
+  - [build](#build)
+  - [buildWithRoute](#buildwithroute)
+- [Types](#types)
+  - [BuildContext](#buildcontext)
+  - [Component](#component)
+  - [ProviderInterface](#providerinterface)
+  - [RouteBuildContext](#routebuildcontext)
 - [Example](#example)
 
 ## Installation
@@ -139,6 +146,161 @@ After those steps are completed, the `NavigationComponents` SFC can be placed an
         <navigation-components :tier="1" />
     </div>
 </template>
+```
+
+## Functions
+
+### build
+
+
+▸ `function` **build**(`context?: BuildContext`): `Promise`<`void`>
+
+Build all navigation tiers, by `url` or active `components`. 
+
+#### Example
+**`URL`**
+```typescript
+import { build } from '@vue-layout/navigation';
+
+await build({
+    url: '/'
+});
+```
+
+This will call the `getComponentsActive` method of the `ProviderInterface` implementation,
+to calculate the active `components`.
+
+**`components`**
+```typescript
+import { build } from '@vue-layout/navigation';
+
+await build({
+    components: [
+        {id: 'default', tier: 0, name: 'Home'}
+    ]
+})
+```
+
+This `component` array will be provided as second argument as context to the `getComponents` method of
+the `ProviderInterface` implementation, to build a specific tier navigation.
+
+### buildWithRoute
+
+▸ `function` **buildWithRoute**(`context?: RouteBuildContext`): `Promise`<`void`>
+
+Build all navigation tiers, by `route` (url) or by interpreting the `metaKey` attribute of 
+a route component.
+
+#### Example
+**`route`**
+```typescript
+import { Route } from 'vue-router';
+import { buildWithRoute } from '@vue-layout/navigation';
+
+const route : Route = {
+    fullPath: '/',
+    ...
+};
+
+await buildWithRoute({
+    route
+})
+```
+This method call is under the hood equal to: `build({url: '/'})`.
+
+**`metaKey`**
+```typescript
+import Vue from 'vue';
+import { Route } from 'vue-router';
+import { buildWithRoute } from '@vue-layout/navigation';
+
+const metaKey = 'navigation';
+
+const pageComponent = Vue.extend({
+    meta: {
+        [metaKey]: [
+            {id: 'default', tier: 0, name: 'Home'}
+        ]
+    },
+    ...
+});
+
+await buildWithRoute({
+    metaKey
+})
+```
+This method call is under the hood equal to:
+`build({components: [{id: 'default', tier: 0, name: 'Home'}]})`.
+
+
+## Types
+
+### BuildContext
+
+```typescript
+import { Component } from '@vue-layout/navigation';
+
+type BuildContext = {
+    components?: Component[],
+    url?: string
+};
+```
+
+### Component
+
+```typescript
+type Component = {
+    id?: string | number,
+    tier?: number,
+    name?: string,
+
+    url?: string,
+    urlTarget?: '_self' | '_blank' | '_parent' | '_top' | string,
+
+    default?: boolean,
+    type?: 'separator' | 'link',
+
+    icon?: string,
+    environment?: 'development' | 'production' | 'testing',
+
+    display?: boolean,
+    displayChildren?: boolean,
+
+    rootLink?: boolean,
+    components?: Component[],
+
+    [key: string]: any
+};
+```
+
+### ProviderInterface
+
+```typescript
+import { Component } from '@vue-layout/navigation';
+
+interface ProviderInterface {
+    getComponents(
+        tier: number,
+        context: Component[]
+    ): Promise<Component[]>;
+
+    getComponentsActive(url: string): Promise<Component[]>;
+
+    hasTier(
+        tier: number
+    ): Promise<boolean>;
+}
+```
+
+### RouteBuildContext
+
+```typescript
+import { Route } from 'vue-router';
+
+type RouteBuildContext = {
+    route: Route,
+    metaKey: string
+};
 ```
 
 ## Example

@@ -17,16 +17,17 @@ export function isComponent(value: unknown) : value is Component {
     if (
         hasOwnProperty(ob, 'id') &&
         typeof ob.id !== 'string' &&
+        typeof ob.id !== 'number' &&
         typeof ob.id !== 'undefined'
     ) {
         return false;
     }
 
     if (
-        hasOwnProperty(ob, 'id') &&
+        hasOwnProperty(ob, 'tier') &&
         (
-            typeof ob.id !== 'number' ||
-            ob.id < 0
+            typeof ob.tier !== 'number' ||
+            ob.tier < 0
         )
     ) {
         return false;
@@ -37,6 +38,79 @@ export function isComponent(value: unknown) : value is Component {
         typeof ob.name !== 'string'
     ) {
         return false;
+    }
+
+    if (
+        hasOwnProperty(ob, 'url') &&
+        typeof ob.url !== 'string'
+    ) {
+        return false;
+    }
+
+    if (
+        hasOwnProperty(ob, 'urlTarget') &&
+        typeof ob.urlTarget !== 'string'
+    ) {
+        return false;
+    }
+
+    if (
+        hasOwnProperty(ob, 'default') &&
+        typeof ob.default !== 'boolean'
+    ) {
+        return false;
+    }
+
+    if (
+        hasOwnProperty(ob, 'type') &&
+        (
+            typeof ob.type !== 'string' ||
+            ['separator', 'link'].indexOf(ob.type) === -1
+        )
+    ) {
+        return false;
+    }
+
+    if (
+        hasOwnProperty(ob, 'icon') &&
+        typeof ob.icon !== 'string'
+    ) {
+        return false;
+    }
+
+    if (
+        hasOwnProperty(ob, 'display') &&
+        typeof ob.display !== 'boolean'
+    ) {
+        return false;
+    }
+
+    if (
+        hasOwnProperty(ob, 'displayChildren') &&
+        typeof ob.displayChildren !== 'boolean'
+    ) {
+        return false;
+    }
+
+    if (
+        hasOwnProperty(ob, 'rootLink') &&
+        typeof ob.rootLink !== 'boolean'
+    ) {
+        return false;
+    }
+
+    if (
+        hasOwnProperty(ob, 'components')
+    ) {
+        if (!Array.isArray(ob.components)) {
+            return false;
+        }
+
+        for (let i = 0; i < ob.components.length; i++) {
+            if (!isComponent(ob.components[i])) {
+                return false;
+            }
+        }
     }
 
     return true;

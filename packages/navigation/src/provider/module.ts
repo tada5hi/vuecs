@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { ProviderInterface } from '../type';
+import { ProviderInterface } from './type';
 
 let instance : ProviderInterface | undefined;
 

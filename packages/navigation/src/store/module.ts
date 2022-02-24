@@ -135,12 +135,12 @@ export function toggle(tier: number, component: Component) {
     refreshComponents(tier);
 }
 
-export async function build(context?: BuildContext) {
+export async function build(context?: BuildContext) : Promise<void> {
     const navigationProvider = useProvider();
 
     context = context || {};
 
-    let componentsActive : Component[] = context.componentsActive ?? [];
+    let componentsActive : Component[] = context.components ?? [];
 
     if (
         componentsActive.length === 0 &&

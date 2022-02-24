@@ -6,7 +6,7 @@
  */
 
 export type Component = {
-    id?: string,
+    id?: string | number,
     tier?: number,
     name?: string,
 
@@ -17,7 +17,6 @@ export type Component = {
     type?: 'separator' | 'link',
 
     icon?: string,
-    environment?: 'development' | 'production' | 'testing',
 
     display?: boolean,
     displayChildren?: boolean,
@@ -27,18 +26,3 @@ export type Component = {
 
     [key: string]: any
 };
-
-// --------------------------------------------------------
-
-export interface ProviderInterface {
-    getComponents(
-        tier: number,
-        context: Component[]
-    ) : Promise<Component[]>;
-
-    getComponentsActive(url: string): Promise<Component[]>;
-
-    hasTier(
-        tier: number
-    ) : Promise<boolean>;
-}
