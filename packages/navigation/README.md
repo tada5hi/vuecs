@@ -59,7 +59,7 @@ export class Provider implements ProviderInterface {
 
     async getComponents(
         tier: number,
-        context: Component[]
+        components: Component[]
     ): Promise<Component[]> {
         // Return components for a specific tier.
         // The context provides the current active components for
@@ -281,7 +281,7 @@ import { Component } from '@vue-layout/navigation';
 interface ProviderInterface {
     getComponents(
         tier: number,
-        context: Component[]
+        components: Component[]
     ): Promise<Component[]>;
 
     getComponentsActive(url: string): Promise<Component[]>;

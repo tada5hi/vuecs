@@ -9,7 +9,7 @@ import { Component } from '../type';
 export interface ProviderInterface {
     getComponents(
         tier: number,
-        context: Component[]
+        components: Component[]
     ): Promise<Component[]>;
 
     getComponentsActive(url: string): Promise<Component[]>;
