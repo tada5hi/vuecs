@@ -43,8 +43,6 @@ export const NavigationComponents = Vue.extend<any, any, any, Properties>({
 
         const entities : VNode[] = [];
 
-        console.log(vm.items);
-
         if (vm.items) {
             for (let i = 0; i < vm.items.length; i++) {
                 const entity: Component = vm.items[i];
