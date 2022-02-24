@@ -1,4 +1,4 @@
-# @vue-layout 🦄	
+# @vue-layout 🏕	
 
 [![main](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml)
 [![codecov](https://codecov.io/gh/Tada5hi/vue-layout/branch/master/graph/badge.svg?token=FHE347R1NW)](https://codecov.io/gh/Tada5hi/vue-layout)
