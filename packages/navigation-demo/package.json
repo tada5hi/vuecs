@@ -1,6 +1,6 @@
 {
     "name": "@vue-layout/navigation-demo",
-    "version": "0.2.3",
+    "version": "1.0.0",
     "private": true,
     "description": "This package contains a vue demo app.",
     "scripts": {
@@ -35,7 +35,7 @@
     },
     "homepage": "https://github.com/Tada5hi/vue-layout#readme",
     "dependencies": {
-        "@vue-layout/navigation": "^0.2.3",
+        "@vue-layout/navigation": "^1.0.0",
         "vue": "^2.6.14",
         "vue-router": "^3.5.3"
     },
