@@ -12,13 +12,15 @@
         "./packages/*"
     ],
     "keywords": [
-        "auth",
-        "module",
+        "vue",
+        "layout",
+        "navigation",
+        "tier",
+        "multi-tier",
+        "level",
+        "vue-router",
         "typescript",
-        "template",
-        "auth-template",
-        "oauth2",
-        "oauth2-client"
+        "template"
     ],
     "repository": {
         "type": "git",
