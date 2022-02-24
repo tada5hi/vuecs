@@ -1,4 +1,4 @@
-# @vue-layout/navigation-demo 🦘
+# @vue-layout/navigation-demo 🧱
 
 [![CI](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml)
 

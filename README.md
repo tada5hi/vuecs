@@ -15,14 +15,14 @@ This monorepo contains different packages to simplify vue layout conception.
 
 ## Packages
 
-### @vue-layout/navigation 🏝
+### @vue-layout/navigation 🍙
 [![npm version](https://badge.fury.io/js/@vue-layout%2Fnavigation.svg)](https://badge.fury.io/js/@vue-layout%2Fnavigation)
 
 This package contains vue-components, helper, types and many more to render a multi level navigation menu. 
 
 [README.md](https://github.com/Tada5hi/vue-layout/tree/master/packages/navigation#README.md)
 
-### @vue-layout/navigation-demo 🦘
+### @vue-layout/navigation-demo 🧱
 
 This package contains an example on how to use the `@vue-layout/navigation` package.
 
