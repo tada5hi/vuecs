@@ -7,6 +7,7 @@
 
 import { build } from '../store';
 import { Component } from '../type';
+import { isComponent } from '../utils/check';
 import { RouteBuildContext } from './type';
 
 export async function buildWithRoute({ route, metaKey }: RouteBuildContext) {
@@ -33,42 +34,42 @@ export async function buildWithRoute({ route, metaKey }: RouteBuildContext) {
         }
     }
 
-    const componentsActive : Component[] = [];
+    const components : Component[] = [];
 
-    if (typeof data === 'string') {
-        componentsActive.push({
+    if (typeof data === 'string' || typeof data === 'number') {
+        components.push({
             tier: 0,
             id: data,
         });
     }
 
-    if (typeof data === 'object') {
-        if (!Object.prototype.hasOwnProperty.call(data, 'tier')) {
-            (data as Component).tier = 0;
+    if (isComponent(data)) {
+        if (typeof data.tier === 'undefined') {
+            data.tier = 0;
         }
 
-        componentsActive.push((data as Component));
+        components.push(data);
     }
 
     if (Array.isArray(data)) {
         for (let i = 0; i < data.length; i++) {
             if (typeof data[i] === 'number' || typeof data[i] === 'string') {
-                componentsActive.push({
+                components.push({
                     tier: i,
                     id: data[i],
                 });
-            } else if (typeof data[i] === 'object') {
-                if (!Object.prototype.hasOwnProperty.call(data[i], 'tier')) {
+            } else if (isComponent(data[i])) {
+                if (typeof data[i].tier === 'undefined') {
                     data[i].tier = i;
                 }
 
-                componentsActive.push(data[i]);
+                components.push(data[i]);
             }
         }
     }
 
     await build({
         url: route.fullPath,
-        components: componentsActive,
+        components,
     });
 }
