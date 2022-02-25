@@ -30,6 +30,7 @@ This package contains an example on how to use the `@vue-layout/navigation` pack
 [README.md](https://github.com/Tada5hi/vue-layout/tree/master/packages/navigation-demo#README.md)
 
 ### @vue-layout/utils 🦠
+[![npm version](https://badge.fury.io/js/@vue-layout%2Futils.svg)](https://badge.fury.io/js/@vue-layout%2Futils)
 
 This package contains utility functions, types and components for vue layouts.
 
