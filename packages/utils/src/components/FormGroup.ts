@@ -41,7 +41,7 @@ export const FormGroup = Vue.extend<Record<string, any>, any, FormGroupComputed,
                     if (!this.validations[validator]) {
                         // hope that lang file is already loaded ;)
                         let output = useLayoutLanguage()
-                            .getLineSync(
+                            .getSync(
                                 `form.${validator}`,
                                 this.validations.$params[validator],
                                 this.locale,
@@ -67,7 +67,7 @@ export const FormGroup = Vue.extend<Record<string, any>, any, FormGroupComputed,
     },
     created() {
         Promise.resolve()
-            .then(() => useLayoutLanguage().load('form', this.locale));
+            .then(() => useLayoutLanguage().loadFile('form', this.locale));
     },
     beforeCreate() {
 

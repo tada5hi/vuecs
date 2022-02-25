@@ -74,7 +74,7 @@
         "node": ">=12"
     },
     "dependencies": {
-        "ilingo": "^1.0.3",
+        "ilingo": "^1.1.1",
         "regenerator-runtime": "^0.13.9"
     },
     "publishConfig": {
