@@ -1,5 +1,5 @@
 {
-    "name": "@vue-layout/navigation",
+    "name": "@vue-layout/utils",
     "version": "1.0.3",
     "description": "",
     "main": "dist/index.ssr.js",
@@ -13,11 +13,7 @@
     "keywords": [
         "vue",
         "layout",
-        "navigation",
-        "tier",
-        "multi-tier",
-        "level",
-        "vue-router",
+        "utils",
         "typescript",
         "template"
     ],
@@ -39,8 +35,6 @@
         "build:ssr": "cross-env NODE_ENV=production rollup --config rollup.config.js --format cjs",
         "build:es": "cross-env NODE_ENV=production rollup --config rollup.config.js --format es",
         "build:unpkg": "cross-env NODE_ENV=production rollup --config rollup.config.js --format iife",
-        "test": "cross-env NODE_ENV=test jest --config ./test/jest.config.js",
-        "test:coverage": "cross-env NODE_ENV=test jest --config ./test/jest.config.js --coverage",
         "lint": "eslint --ext .ts ./src/",
         "lint:fix": "npm run lint -- --fix"
     },
@@ -71,17 +65,16 @@
         "ts-jest": "^27.1.3",
         "ttypescript": "^1.5.13",
         "typescript": "^4.5.5",
-        "vue": "^2.6.14",
-        "vue-router": "^3.5.3"
+        "vue": "^2.6.14"
     },
     "peerDependencies": {
-        "vue": "^2.x",
-        "vue-router": "^3.x"
+        "vue": "^2.x"
     },
     "engines": {
         "node": ">=12"
     },
     "dependencies": {
+        "ilingo": "^1.0.1",
         "regenerator-runtime": "^0.13.9"
     },
     "publishConfig": {

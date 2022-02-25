@@ -11,6 +11,7 @@ This monorepo contains different packages to simplify vue layout conception.
 - [Packages](#Packages)
   - [Navigation](#vue-layoutnavigation-)
   - [Navigation Demo](#vue-layoutnavigation-demo-)
+  - [Utils](#vue-layoututils-)
 - [Installation & Usage](#installation--usage)
 
 ## Packages
@@ -26,8 +27,13 @@ This package contains vue-components, helper, types and many more to render a mu
 
 This package contains an example on how to use the `@vue-layout/navigation` package.
 
-
 [README.md](https://github.com/Tada5hi/vue-layout/tree/master/packages/navigation-demo#README.md)
+
+### @vue-layout/utils 🦠
+
+This package contains utility functions, types and components for vue layouts.
+
+[README.md](https://github.com/Tada5hi/vue-layout/tree/master/packages/utils#README.md)
 
 ## Installation & Usage
 Please follow the `README.md` instructions in the respective package folder.

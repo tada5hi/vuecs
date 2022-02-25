@@ -1,0 +1,15 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "lib": [
+            "ESNext"
+        ],
+        "strict": true
+    },
+    "include": [
+        "src/types/**/*.d.ts",
+        "src/**/*.ts"
+    ]
+}
