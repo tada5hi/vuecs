@@ -26,7 +26,7 @@ const includePathOptions = {
         vue: 'node_modules/vue/dist/vue.common.js',
         'vue-router': 'node_modules/vue-router/dist/vue-router.js',
     },
-    external: ['vue', 'vue-router'],
+    external: ['ilingo', 'vue', 'vue-router'],
 };
 
 // Get browserslist config and remove ie from es build targets
@@ -74,6 +74,7 @@ const baseConfig = {
 const external = [
     // list external dependencies, exactly the way it is written in the import statement.
     // eg. 'jquery'
+    'ilingo',
     'vue',
     'vue-router',
 ];

@@ -69,13 +69,13 @@
         "vue": "^2.6.14"
     },
     "peerDependencies": {
+        "ilingo": "^2.x",
         "vue": "^2.x"
     },
     "engines": {
         "node": ">=12"
     },
     "dependencies": {
-        "ilingo": "^1.1.1",
         "regenerator-runtime": "^0.13.9"
     },
     "publishConfig": {
