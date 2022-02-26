@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-export default {
+export const LanguageFormGerman = {
     email: 'Die Eingabe muss eine gültige E-Mail sein.',
     maxLength: 'Die Länge der Eingabe muss kleiner als {{max}} sein.',
     minLength: 'Die Länge der Eingabe muss größer als {{max}} sein.',

@@ -51,6 +51,7 @@
         "@zerollup/ts-transform-paths": "^1.7.18",
         "cross-env": "^7.0.3",
         "eslint": "^8.9.0",
+        "ilingo": "2.0.0-1",
         "jest": "^27.5.1",
         "minimist": "^1.2.5",
         "rimraf": "^3.0.2",

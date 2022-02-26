@@ -6,19 +6,10 @@ import vue, { PluginFunction } from 'vue';
 
 // Import vue components
 import * as components from './components';
-import { InstallOptions } from './type';
-import { useLayoutLanguage } from './utils';
-
 // install function executed by Vue.use()
 const install: PluginFunction<any> = function install(
     instance: typeof vue,
-    options?: InstallOptions,
 ) {
-    options ??= {};
-    if (options.language) {
-        useLayoutLanguage(options.language);
-    }
-
     Object.entries(components).forEach(([componentName, component]) => {
         instance.component(componentName, component);
     });

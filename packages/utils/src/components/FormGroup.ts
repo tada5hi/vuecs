@@ -5,8 +5,10 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import Vue from 'vue';
-import { useLayoutLanguage } from '../utils';
+import { Ilingo } from 'ilingo';
+import Vue, { PropType } from 'vue';
+import { LanguageFormGerman } from '../language/de/form';
+import { LanguageFormEnglish } from '../language/en/form';
 
 export type FormGroupComputed = {
     errors: string[],
@@ -14,12 +16,28 @@ export type FormGroupComputed = {
 };
 
 export type FormGroupProperties = {
+    ilingo?: Ilingo,
     validations: Record<string, any>,
     locale?: string,
 };
 
+const language = new Ilingo({
+    cache: {
+        de: {
+            form: LanguageFormGerman,
+        },
+        en: {
+            form: LanguageFormEnglish,
+        },
+    },
+});
+
 export const FormGroup = Vue.extend<Record<string, any>, any, FormGroupComputed, FormGroupProperties>({
     props: {
+        ilingo: {
+            type: Object as PropType<Ilingo>,
+            default: undefined,
+        },
         validations: {
             required: true,
             type: Object,
@@ -36,15 +54,19 @@ export const FormGroup = Vue.extend<Record<string, any>, any, FormGroupComputed,
                 return [];
             }
 
+            const locale = this.ilingo ?
+                this.ilingo.getLocale() :
+                this.locale;
+
             return Object.keys(this.validations.$params).reduce(
                 (errors: string[], validator) => {
                     if (!this.validations[validator]) {
                         // hope that lang file is already loaded ;)
-                        let output = useLayoutLanguage()
+                        let output = language
                             .getSync(
                                 `form.${validator}`,
                                 this.validations.$params[validator],
-                                this.locale,
+                                locale,
                             );
 
                         output = output !== validator ?
@@ -66,8 +88,9 @@ export const FormGroup = Vue.extend<Record<string, any>, any, FormGroupComputed,
         },
     },
     created() {
-        Promise.resolve()
-            .then(() => useLayoutLanguage().loadFile('form', this.locale));
+        if (this.ilingo) {
+            language.setCache(this.ilingo.getCache());
+        }
     },
     beforeCreate() {
 
