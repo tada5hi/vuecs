@@ -13,7 +13,7 @@ import { SlotName } from '../constants';
 export type ListItemsBuildContext<T> = {
     itemIconClass?: string,
     itemFn?: (item: T) => VNode,
-    itemText?: string | VNode,
+    itemTextFn?: (item: T) => string | VNode,
     itemTextPropName?: string
 };
 
@@ -44,8 +44,8 @@ export function buildListItems<T extends Record<string, any>>(
         }, [
             h('div', [h('i', { staticClass: context?.itemIconClass })]),
             h('div', [
-                context?.itemText ?
-                    context.itemText :
+                context?.itemTextFn ?
+                    context.itemTextFn.call(instance, item) :
                     itemTextAlt,
             ]),
             h('div', { staticClass: 'ml-auto' }, [
