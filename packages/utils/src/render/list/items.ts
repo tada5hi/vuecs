@@ -5,17 +5,20 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { CreateElement, VNode } from 'vue';
+import { CreateElement, VNode, VNodeChildrenArrayContents } from 'vue';
 import { ComponentListData, ComponentListMethods, ComponentListProperties } from './type';
 import { hasNormalizedSlot, normalizeSlot } from '../utils';
 import { SlotName } from '../constants';
 
 export type ListItemsBuildContext<T> = {
+    itemActions?: VNode | VNode[],
+    itemClass?: string,
     itemIconClass?: string,
     itemProps?: Record<string, any>,
     itemFn?: (item: T) => VNode | VNode[],
-    itemTextFn?: (item: T) => string | VNode,
-    itemTextPropName?: string
+    itemTextFn?: (item: T) => string | VNode | (string | VNode)[],
+    itemTextPropName?: string,
+    itemsClass?: string
 };
 
 export function buildListItems<T extends Record<string, any>>(
@@ -39,21 +42,26 @@ export function buildListItems<T extends Record<string, any>>(
     const itemFnAlt = (item: T) => {
         const itemTextAlt = context?.itemTextPropName ? item[context?.itemTextPropName] : '???';
 
+        let itemActions : VNodeChildrenArrayContents = [];
+
+        if (hasNormalizedSlot(SlotName.ITEM_ACTIONS, $scopedSlots, $slots)) {
+            itemActions = normalizeSlot(SlotName.ITEM_ACTIONS, { item, ...(context?.itemProps ? context.itemProps : {}) }, $scopedSlots, $slots);
+        } else if (context?.itemActions) {
+            itemActions = [
+                ...(Array.isArray(context.itemActions) ? context.itemActions : [context.itemActions]) as VNode[],
+                hasNormalizedSlot(SlotName.ITEM_ACTIONS_EXTRA, $scopedSlots, $slots) ?
+                    normalizeSlot(SlotName.ITEM_ACTIONS_EXTRA, { item, ...(context?.itemProps ? context.itemProps : {}) }, $scopedSlots, $slots) :
+                    h(''),
+            ];
+        }
+
         return h('div', {
             key: item.id,
-            staticClass: 'list-item',
+            staticClass: context?.itemClass || 'list-item',
         }, [
             h('div', [h('i', { staticClass: context?.itemIconClass })]),
-            h('div', [
-                context?.itemTextFn ?
-                    context.itemTextFn.call(instance, item) :
-                    itemTextAlt,
-            ]),
-            h('div', { staticClass: 'ml-auto' }, [
-                hasNormalizedSlot(SlotName.ITEM_ACTIONS, $scopedSlots, $slots) ?
-                    normalizeSlot(SlotName.ITEM_ACTIONS, { item, ...(context?.itemProps ? context.itemProps : {}) }, $scopedSlots, $slots) :
-                    '',
-            ]),
+            h('div', [context?.itemTextFn ? context.itemTextFn.call(instance, item) : itemTextAlt]),
+            h('div', { staticClass: 'ml-auto' }, itemActions),
         ]);
     };
 
@@ -70,9 +78,10 @@ export function buildListItems<T extends Record<string, any>>(
         }, $scopedSlots, $slots) : itemFn.call(instance, item)));
 
     const hasItemsSlot = hasNormalizedSlot(SlotName.ITEMS, $scopedSlots, $slots);
+
     return h(
         'div',
-        { staticClass: 'list-items' },
+        { staticClass: context.itemsClass || 'list-items' },
         [hasItemsSlot ?
             normalizeSlot(SlotName.ITEMS, {
                 items: instance.items,

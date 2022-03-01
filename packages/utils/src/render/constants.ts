@@ -13,5 +13,6 @@ export enum SlotName {
     ITEMS_NO_MORE = 'no-more',
     ITEM = 'item',
     ITEM_ACTIONS = 'item-actions',
+    ITEM_ACTIONS_EXTRA = 'item-actions-extra',
     DEFAULT = 'default',
 }
