@@ -13,7 +13,7 @@ import { SlotName } from '../constants';
 export type ListItemsBuildContext<T> = {
     itemIconClass?: string,
     itemProps?: Record<string, any>,
-    itemFn?: (item: T) => VNode,
+    itemFn?: (item: T) => VNode | VNode[],
     itemTextFn?: (item: T) => string | VNode,
     itemTextPropName?: string
 };
@@ -57,7 +57,7 @@ export function buildListItems<T extends Record<string, any>>(
         ]);
     };
 
-    const itemFn : (item: T) => VNode = context.itemFn ? context.itemFn : itemFnAlt;
+    const itemFn : (item: T) => VNode | VNode[] = context.itemFn ? context.itemFn : itemFnAlt;
 
     // ----------------------------------------------------------------------
     const itemsAlt = instance.items.map((item: T) => (hasItemSlot ?
