@@ -10,8 +10,10 @@ import { ComponentListData, ComponentListMethods, ComponentListProperties } from
 import { hasNormalizedSlot, normalizeSlot } from '../utils';
 import { SlotName } from '../constants';
 
-export type ListItemsBuildContext = {
+export type ListItemsBuildContext<T> = {
     itemIconClass?: string,
+    itemFn?: (item: T) => VNode,
+    itemText?: string | VNode,
     itemTextPropName?: string
 };
 
@@ -23,7 +25,7 @@ export function buildListItems<T extends Record<string, any>>(
         $slots: Record<string, any>
     },
     h: CreateElement,
-    context?: ListItemsBuildContext,
+    context?: ListItemsBuildContext<T>,
 ) : VNode {
     const $scopedSlots = instance.$scopedSlots || {};
     const $slots = instance.$slots || {};
@@ -33,18 +35,28 @@ export function buildListItems<T extends Record<string, any>>(
     context.itemTextPropName = context.itemTextPropName || 'name';
 
     const hasItemSlot = hasNormalizedSlot(SlotName.ITEM, $scopedSlots, $slots);
-    const itemFn = (item: T) => h('div', {
-        key: item.id,
-        staticClass: 'list-item',
-    }, [
-        h('div', [h('i', { staticClass: context?.itemIconClass })]),
-        h('div', [context?.itemTextPropName ? item[context?.itemTextPropName] : '???']),
-        h('div', { staticClass: 'ml-auto' }, [
-            hasNormalizedSlot(SlotName.ITEM_ACTIONS, $scopedSlots, $slots) ?
-                normalizeSlot(SlotName.ITEM_ACTIONS, { item }, $scopedSlots, $slots) :
-                '',
-        ]),
-    ]);
+    const itemFnAlt = (item: T) => {
+        const itemTextAlt = context?.itemTextPropName ? item[context?.itemTextPropName] : '???';
+
+        return h('div', {
+            key: item.id,
+            staticClass: 'list-item',
+        }, [
+            h('div', [h('i', { staticClass: context?.itemIconClass })]),
+            h('div', [
+                context?.itemText ?
+                    context.itemText :
+                    itemTextAlt,
+            ]),
+            h('div', { staticClass: 'ml-auto' }, [
+                hasNormalizedSlot(SlotName.ITEM_ACTIONS, $scopedSlots, $slots) ?
+                    normalizeSlot(SlotName.ITEM_ACTIONS, { item }, $scopedSlots, $slots) :
+                    '',
+            ]),
+        ]);
+    };
+
+    const itemFn : (item: T) => VNode = context.itemFn ? context.itemFn : itemFnAlt;
 
     // ----------------------------------------------------------------------
     const itemsAlt = instance.items.map((item: T) => (hasItemSlot ?
@@ -53,8 +65,7 @@ export function buildListItems<T extends Record<string, any>>(
             item,
             busy: instance.busy,
             drop: instance.drop,
-        }, $scopedSlots, $slots) :
-        itemFn(item)));
+        }, $scopedSlots, $slots) : itemFn.call(instance, item)));
 
     const hasItemsSlot = hasNormalizedSlot(SlotName.ITEMS, $scopedSlots, $slots);
     return h(
