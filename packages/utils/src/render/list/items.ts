@@ -66,6 +66,7 @@ export function buildListItems<T extends Record<string, any>>(
             item,
             busy: instance.busy,
             drop: instance.drop,
+            ...(context?.itemProps ? context.itemProps : {}),
         }, $scopedSlots, $slots) : itemFn.call(instance, item)));
 
     const hasItemsSlot = hasNormalizedSlot(SlotName.ITEMS, $scopedSlots, $slots);
@@ -76,6 +77,7 @@ export function buildListItems<T extends Record<string, any>>(
             normalizeSlot(SlotName.ITEMS, {
                 items: instance.items,
                 busy: instance.busy,
+                ...(context?.itemProps ? context.itemProps : {}),
             }, $scopedSlots, $slots) :
             itemsAlt,
         ],
