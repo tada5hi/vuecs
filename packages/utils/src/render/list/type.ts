@@ -5,7 +5,6 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { VNode } from 'vue';
 import { BuildInput } from '@trapi/query';
 import { PaginationMeta } from '../../components';
 
@@ -17,13 +16,19 @@ export type ComponentListData<T = Record<string, any>> = {
     itemBusy: boolean
 };
 
+export type ComponentListHandlerMethodOptions<T extends Record<string, any>> = {
+    unshift?: boolean,
+    filterFn?: (item: T) => boolean,
+    emit?: boolean
+};
+
 export type ComponentListMethods<T = Record<string, any>> = {
     [key: string]: any,
     load: () => Promise<void>,
     goTo: (options: PaginationMeta, resolve: () => void, reject: (err?: Error) => void) => void,
-    handleCreated: (item: T, unshift?: boolean) => void,
-    handleUpdated: (item: T) => void,
-    handleDeleted: (item: T) => void,
+    handleCreated: (item: T, options?: ComponentListHandlerMethodOptions<T>) => void,
+    handleUpdated: (item: T, options?: ComponentListHandlerMethodOptions<T>) => void,
+    handleDeleted: (item: T, options?: ComponentListHandlerMethodOptions<T>) => void,
 };
 
 export type ComponentListItemData<T = Record<string, any>> = {
