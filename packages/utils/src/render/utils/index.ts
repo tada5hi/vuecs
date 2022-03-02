@@ -6,3 +6,4 @@
  */
 
 export * from './normalize-slot';
+export * from './proprety';
