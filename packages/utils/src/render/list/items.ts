@@ -14,7 +14,7 @@ export type ListItemsBuildContext<T> = {
     itemActions?: VNode | VNode[],
     itemClass?: string,
     itemIconClass?: string,
-    itemProps?: Record<string, any>,
+    itemSlots?: Record<string, any>,
     itemFn?: (item: T) => VNode | VNode[],
     itemTextFn?: (item: T) => string | VNode | (string | VNode)[],
     itemTextPropName?: string,
@@ -45,12 +45,12 @@ export function buildListItems<T extends Record<string, any>>(
         let itemActions : VNodeChildrenArrayContents = [];
 
         if (hasNormalizedSlot(SlotName.ITEM_ACTIONS, $scopedSlots, $slots)) {
-            itemActions = normalizeSlot(SlotName.ITEM_ACTIONS, { item, ...(context?.itemProps ? context.itemProps : {}) }, $scopedSlots, $slots);
+            itemActions = normalizeSlot(SlotName.ITEM_ACTIONS, { item, ...(context?.itemSlots ? context.itemSlots : {}) }, $scopedSlots, $slots);
         } else if (context?.itemActions) {
             itemActions = [
                 ...(Array.isArray(context.itemActions) ? context.itemActions : [context.itemActions]) as VNode[],
                 hasNormalizedSlot(SlotName.ITEM_ACTIONS_EXTRA, $scopedSlots, $slots) ?
-                    normalizeSlot(SlotName.ITEM_ACTIONS_EXTRA, { item, ...(context?.itemProps ? context.itemProps : {}) }, $scopedSlots, $slots) :
+                    normalizeSlot(SlotName.ITEM_ACTIONS_EXTRA, { item, ...(context?.itemSlots ? context.itemSlots : {}) }, $scopedSlots, $slots) :
                     h(''),
             ];
         }
@@ -74,7 +74,7 @@ export function buildListItems<T extends Record<string, any>>(
             item,
             busy: instance.busy,
             drop: instance.drop,
-            ...(context?.itemProps ? context.itemProps : {}),
+            ...(context?.itemSlots ? context.itemSlots : {}),
         }, $scopedSlots, $slots) : itemFn.call(instance, item)));
 
     const hasItemsSlot = hasNormalizedSlot(SlotName.ITEMS, $scopedSlots, $slots);
@@ -86,7 +86,7 @@ export function buildListItems<T extends Record<string, any>>(
             normalizeSlot(SlotName.ITEMS, {
                 items: instance.items,
                 busy: instance.busy,
-                ...(context?.itemProps ? context.itemProps : {}),
+                ...(context?.itemSlots ? context.itemSlots : {}),
             }, $scopedSlots, $slots) :
             itemsAlt,
         ],
