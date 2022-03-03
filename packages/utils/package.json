@@ -1,6 +1,6 @@
 {
     "name": "@vue-layout/utils",
-    "version": "1.1.11",
+    "version": "1.1.12",
     "description": "",
     "main": "dist/index.ssr.js",
     "browser": "dist/index.esm.js",
