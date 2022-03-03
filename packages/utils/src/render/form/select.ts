@@ -62,6 +62,10 @@ export function buildFormSelect<T extends Record<string, any>>(
                             value: instance.$v.form[context.propName].$model,
                             ...(context.domProps || {}),
                         },
+                        directives: [{
+                            name: 'model',
+                            value: instance.$v.form[context.propName].$model,
+                        }],
                         staticClass: 'form-control',
                         on: {
                             change($event: any) {
