@@ -16,7 +16,7 @@ export type ListItemsBuildContext<T> = {
     itemIconClass?: string,
     itemSlots?: Record<string, any>,
     itemKey?: string,
-    itemFn?: (item: T) => VNodeChildren,
+    itemFn?: (item: T) => VNode,
     itemTextFn?: (item: T) => string | VNode | (string | VNode)[],
     itemTextPropName?: string,
     itemsClass?: string
@@ -40,7 +40,7 @@ export function buildListItems<T extends Record<string, any>>(
     context.itemTextPropName = context.itemTextPropName || 'name';
 
     const hasItemSlot = hasNormalizedSlot(SlotName.ITEM, $scopedSlots, $slots);
-    const itemFnAlt = (item: T) : VNodeChildren => {
+    const itemFnAlt = (item: T) : VNode => {
         const itemTextAlt = context?.itemTextPropName ? item[context?.itemTextPropName] : '???';
 
         let itemActions : VNodeChildren = [];
@@ -56,14 +56,14 @@ export function buildListItems<T extends Record<string, any>>(
             ];
         }
 
-        return [
+        return h('div', { staticClass: 'd-flex flex-row' }, [
             h('div', [h('i', { staticClass: context?.itemIconClass })]),
             h('div', [context?.itemTextFn ? context.itemTextFn.call(instance, item) : itemTextAlt]),
             h('div', { staticClass: 'ml-auto' }, itemActions),
-        ];
+        ]);
     };
 
-    const itemFn : (item: T) => VNodeChildren = context.itemFn ? context.itemFn : itemFnAlt;
+    const itemFn : (item: T) => VNode = context.itemFn ? context.itemFn : itemFnAlt;
 
     // ----------------------------------------------------------------------
 
