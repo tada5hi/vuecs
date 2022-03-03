@@ -80,16 +80,18 @@ export function buildListItems<T extends Record<string, any>>(
                 key,
                 staticClass: context?.itemClass || 'list-item',
             },
-            (hasItemSlot ?
-                normalizeSlot(SlotName.ITEM, {
-                    itemBusy: instance.itemBusy,
-                    item,
-                    busy: instance.busy,
-                    drop: instance.drop,
-                    ...(context?.itemSlots ? context.itemSlots : {}),
-                }, $scopedSlots, $slots) :
-                itemFn.call(instance, item)
-            ),
+            [
+                (hasItemSlot ?
+                    normalizeSlot(SlotName.ITEM, {
+                        itemBusy: instance.itemBusy,
+                        item,
+                        busy: instance.busy,
+                        drop: instance.drop,
+                        ...(context?.itemSlots ? context.itemSlots : {}),
+                    }, $scopedSlots, $slots) :
+                    itemFn.call(instance, item)
+                ),
+            ],
         );
     });
 
