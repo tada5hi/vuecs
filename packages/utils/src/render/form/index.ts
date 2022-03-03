@@ -6,6 +6,7 @@
  */
 
 export * from './input';
+export * from './select';
 export * from './submit';
 export * from './textarea';
 export * from './type';
