@@ -26,7 +26,8 @@ export type FormSelectBuildContext<T extends Record<string, any> = Record<string
     domProps?: Record<string, any>,
     formGroup: Component,
     changeCallback?: (input: any) => void,
-    options: SelectOption[]
+    options: SelectOption[],
+    optionDefaultText?: string
 };
 
 export function buildFormSelect<T extends Record<string, any>>(
@@ -84,8 +85,10 @@ export function buildFormSelect<T extends Record<string, any>>(
                         },
                     }, [
                         h('option', {
-                            domProps: { value: '' },
-                        }, ['-- Select option --']),
+                            domProps: {
+                                value: '',
+                            },
+                        }, ['-- ', (context.optionDefaultText ? context.optionDefaultText : 'Select option'), ' --']),
                         context.options.map((item: SelectOption) => h('option', {
                             key: item.id,
                             domProps: {
