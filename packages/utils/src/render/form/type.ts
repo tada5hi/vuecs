@@ -5,6 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { Ilingo } from 'ilingo';
+
 export type ComponentFormMethods<T = Record<string, any>> = {
     [key: string]: any,
     submit: () => Promise<void>
@@ -36,6 +38,8 @@ export type FormGroupProps = {
 };
 
 export type FormSubmitOptions = {
-    updateText: string,
-    createText: string
+    ilingo?: Ilingo,
+    ilingoGroup?: string,
+    ilingoUpdateKey?: string,
+    ilingoCreateKey?: string
 };

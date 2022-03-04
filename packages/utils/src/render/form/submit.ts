@@ -17,8 +17,22 @@ export function buildFormSubmit<T extends Record<string, any>>(
     ComponentFormData<T> &
     ComponentFormVuelidate<T>,
     h: CreateElement,
-    options: FormSubmitOptions,
+    options?: FormSubmitOptions,
 ) {
+    let updateText = 'Update';
+    let createText = 'Create';
+
+    options = options || {};
+
+    if (options.ilingo) {
+        const ilingoGroup = options.ilingoGroup || 'form';
+        const ilingoUpdateKey = options.ilingoUpdateKey || 'update.button';
+        const ilingoCreateKey = options.ilingoCreateKey || 'create.button';
+
+        updateText = options.ilingo.getSync(`${ilingoGroup}.${ilingoUpdateKey}`);
+        createText = options.ilingo.getSync(`${ilingoGroup}.${ilingoCreateKey}`);
+    }
+
     return h('div', {
         staticClass: 'form-group',
     }, [
@@ -52,8 +66,8 @@ export function buildFormSubmit<T extends Record<string, any>>(
             ' ',
             (
                 instance.isEditing ?
-                    options.updateText :
-                    options.createText
+                    updateText :
+                    createText
             ),
         ]),
     ]);
