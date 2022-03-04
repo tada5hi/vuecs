@@ -5,9 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { type Ilingo } from 'ilingo';
 import {
     Component, CreateElement, VNode, VNodeChildren,
 } from 'vue';
+import { FormGroup, FormGroupProperties } from '../../components';
 import {
     ComponentFormComputed, ComponentFormData,
     ComponentFormMethods, ComponentFormVuelidate,
@@ -24,7 +26,7 @@ export type FormSelectBuildContext<T extends Record<string, any> = Record<string
     propName: keyof T | string,
     attrs?: Record<string, any>,
     domProps?: Record<string, any>,
-    formGroup: Component,
+    ilingo?: Ilingo,
     changeCallback?: (input: any) => void,
     options: SelectOption[],
     optionDefaultText?: string
@@ -38,10 +40,11 @@ export function buildFormSelect<T extends Record<string, any>>(
     h: CreateElement,
     context: FormSelectBuildContext<T>,
 ) : VNode {
-    return h(context.formGroup, {
+    return h(FormGroup, {
         props: {
             validations: instance.$v.form[context.propName],
-        },
+            ilingo: context.ilingo,
+        } as FormGroupProperties,
         scopedSlots: {
             default: (props: FormGroupProps) => h(
                 'div',
