@@ -31,11 +31,11 @@ export const FormGroup = Vue.extend<any, any, FormGroupComputed, FormGroupProper
             type: Object,
         },
         validationMessages: {
-            type: Object as PropType<Record<string, string>>,
+            type: Object as PropType<ValidationMessages>,
             default: undefined,
         },
         validationTranslator: {
-            type: Function,
+            type: Function as PropType<ValidationTranslator>,
             default: undefined,
         },
     },
@@ -72,7 +72,7 @@ export const FormGroup = Vue.extend<any, any, FormGroupComputed, FormGroupProper
             }
 
             if (typeof this.validationTranslator !== 'undefined') {
-                const translation = this.validationTranslator(validator, properties);
+                const translation : string | undefined = this.validationTranslator(validator, properties);
                 if (typeof translation === 'string') {
                     return translation;
                 }
