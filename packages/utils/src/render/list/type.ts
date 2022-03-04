@@ -51,7 +51,7 @@ export type ComponentListProperties<T = Record<string, any>> = {
 // --------------------------------------
 
 export type NoMoreBuildContext = {
-    text?: VNodeChildren
+    text?: VNodeChildren | VNode | VNode[]
 };
 
 export type ListItemsBuildContext<T> = {
