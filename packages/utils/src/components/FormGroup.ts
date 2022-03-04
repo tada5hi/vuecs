@@ -6,24 +6,22 @@
  */
 
 import Vue, { PropType } from 'vue';
-import { type Ilingo } from 'ilingo';
+import { ValidationMessages, ValidationTranslator } from '../render';
 
 type FormGroupComputed = {
     errors: string[],
-    invalid: boolean,
-    translator?: Ilingo
+    invalid: boolean
 };
 
 export type FormGroupSlotScope = {
     errors: string[],
     invalid: boolean,
-    ilingo?: Ilingo,
 };
 
 export type FormGroupProperties = {
-    ilingo?: Ilingo,
     validations: Record<string, any>,
-    locale?: string,
+    validationMessages?: ValidationMessages,
+    validationTranslator?: ValidationTranslator
 };
 
 export const FormGroup = Vue.extend<any, any, FormGroupComputed, FormGroupProperties>({
@@ -32,68 +30,25 @@ export const FormGroup = Vue.extend<any, any, FormGroupComputed, FormGroupProper
             required: true,
             type: Object,
         },
-        locale: {
-            required: false,
-            type: String,
+        validationMessages: {
+            type: Object as PropType<Record<string, string>>,
             default: undefined,
         },
-        ilingo: {
-            type: Object as PropType<Ilingo>,
+        validationTranslator: {
+            type: Function,
             default: undefined,
         },
     },
     computed: {
-        translator() : Ilingo | undefined {
-            if (this.ilingo) {
-                return this.ilingo;
-            }
-
-            if (this.$ilingo) {
-                return this.$ilingo;
-            }
-
-            return undefined;
-        },
         errors() {
             if (!this.invalid) {
                 return [];
             }
 
-            let { locale } = this;
-
-            if (!locale && this.ilingo) {
-                locale = this.ilingo.getLocale();
-            }
-
-            if (!locale && this.$ilingo) {
-                locale = this.$ilingo.getLocale();
-            }
-
             return Object.keys(this.validations.$params).reduce(
                 (errors: string[], validator) => {
                     if (!this.validations[validator]) {
-                        let output;
-                        if (this.translator) {
-                            output = this.translator
-                                .getSync(
-                                    `validation.${validator}`,
-                                    this.validations.$params[validator],
-                                    locale,
-                                );
-
-                            output = output !== validator ?
-                                output :
-                                this.translator
-                                    .getSync(
-                                        'app.validator.alt',
-                                        { validator },
-                                        locale,
-                                    );
-                        } else {
-                            output = `The ${validator} operator condition is not fulfilled.`;
-                        }
-
-                        errors.push(output);
+                        errors.push(this.translate(validator, this.validations.$params[validator]));
                     }
 
                     return errors;
@@ -107,11 +62,29 @@ export const FormGroup = Vue.extend<any, any, FormGroupComputed, FormGroupProper
                     this.validations.$invalid;
         },
     },
+    methods: {
+        translate(validator: string, properties?: Record<string, any>) {
+            if (
+                this.validationMessages &&
+                Object.prototype.hasOwnProperty.call(this.validationMessages, validator)
+            ) {
+                return this.validationMessages[validator];
+            }
+
+            if (typeof this.validationTranslator !== 'undefined') {
+                const translation = this.validationTranslator(validator, properties);
+                if (typeof translation === 'string') {
+                    return translation;
+                }
+            }
+
+            return `The ${validator} operator condition is not fulfilled.`;
+        },
+    },
     render() {
         return this.$scopedSlots.default({
             errors: this.errors,
             invalid: this.invalid,
-            ilingo: this.translator,
         } as FormGroupSlotScope);
     },
 });

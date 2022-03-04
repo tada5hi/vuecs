@@ -6,21 +6,14 @@
  */
 
 import { CreateElement, VNode, VNodeChildren } from 'vue';
-import { ComponentListData, ComponentListMethods, ComponentListProperties } from './type';
-import { hasNormalizedSlot, normalizeSlot } from '../utils';
 import { SlotName } from '../constants';
-
-export type ListItemsBuildContext<T> = {
-    itemActions?: VNode | VNode[],
-    itemClass?: string,
-    itemIconClass?: string,
-    itemSlots?: Record<string, any>,
-    itemKey?: string,
-    itemFn?: (item: T) => VNode,
-    itemTextFn?: (item: T) => string | VNode | (string | VNode)[],
-    itemTextPropName?: string,
-    itemsClass?: string
-};
+import { hasNormalizedSlot, normalizeSlot } from '../utils';
+import {
+    ComponentListData,
+    ComponentListMethods,
+    ComponentListProperties,
+    ListItemsBuildContext,
+} from './type';
 
 export function buildListItems<T extends Record<string, any>>(
     instance: ComponentListMethods<T> &

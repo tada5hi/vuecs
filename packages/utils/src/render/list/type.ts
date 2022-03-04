@@ -6,6 +6,7 @@
  */
 
 import { BuildInput } from '@trapi/query';
+import { VNode, VNodeChildren } from 'vue';
 import { PaginationMeta } from '../../components';
 
 export type ComponentListData<T = Record<string, any>> = {
@@ -45,4 +46,29 @@ export type ComponentListProperties<T = Record<string, any>> = {
     withPagination: boolean,
 
     loadOnInit: boolean,
+};
+
+// --------------------------------------
+
+export type NoMoreBuildContext = {
+    text?: VNodeChildren
+};
+
+export type ListItemsBuildContext<T> = {
+    itemActions?: VNode | VNode[],
+    itemClass?: string,
+    itemIconClass?: string,
+    itemSlots?: Record<string, any>,
+    itemKey?: string,
+    itemFn?: (item: T) => VNode,
+    itemTextFn?: (item: T) => string | VNode | (string | VNode)[],
+    itemTextPropName?: string,
+    itemsClass?: string
+};
+
+export type ListHeaderBuildContext = & {
+    refreshText?: VNodeChildren,
+    titleText?: VNodeChildren,
+
+    iconClass?: string,
 };

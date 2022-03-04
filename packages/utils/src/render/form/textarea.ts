@@ -5,20 +5,16 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { type Ilingo } from 'ilingo';
 import { CreateElement, VNode } from 'vue';
 import { FormGroup, FormGroupProperties } from '../../components';
 import {
-    ComponentFormComputed, ComponentFormData,
-    ComponentFormMethods, ComponentFormVuelidate, FormGroupProps,
+    ComponentFormComputed,
+    ComponentFormData,
+    ComponentFormMethods,
+    ComponentFormVuelidate,
+    FormGroupProps,
+    FormTextareaBuildContext,
 } from './type';
-
-export type FormTextareaBuildContext<T extends Record<string, any>> = {
-    title: string | VNode | (VNode | string)[],
-    propName: keyof T | string,
-    ilingo?: Ilingo,
-    attrs?: Record<string, any>
-};
 
 export function buildFormTextarea<T extends Record<string, any>>(
     instance: ComponentFormMethods<T> &
@@ -31,7 +27,8 @@ export function buildFormTextarea<T extends Record<string, any>>(
     return h(FormGroup, {
         props: {
             validations: instance.$v.form[context.propName],
-            ilingo: context.ilingo,
+            validationMessages: context.validationMessages,
+            validationTranslator: context.validationTranslator,
         } as FormGroupProperties,
         scopedSlots: {
             default: (props: FormGroupProps) => h(

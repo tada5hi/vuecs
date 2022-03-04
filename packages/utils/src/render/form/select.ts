@@ -5,32 +5,15 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { type Ilingo } from 'ilingo';
 import {
-    Component, CreateElement, VNode, VNodeChildren,
+    CreateElement, VNode,
 } from 'vue';
 import { FormGroup, FormGroupProperties } from '../../components';
 import {
     ComponentFormComputed, ComponentFormData,
     ComponentFormMethods, ComponentFormVuelidate,
-    FormGroupProps,
+    FormGroupProps, FormSelectBuildContext, FormSelectOption,
 } from './type';
-
-type SelectOption = {
-    id: string | number,
-    value: any
-};
-
-export type FormSelectBuildContext<T extends Record<string, any> = Record<string, any>> = {
-    title: VNodeChildren,
-    propName: keyof T | string,
-    attrs?: Record<string, any>,
-    domProps?: Record<string, any>,
-    ilingo?: Ilingo,
-    changeCallback?: (input: any) => void,
-    options: SelectOption[],
-    optionDefaultText?: string
-};
 
 export function buildFormSelect<T extends Record<string, any>>(
     instance: ComponentFormMethods<T> &
@@ -43,7 +26,8 @@ export function buildFormSelect<T extends Record<string, any>>(
     return h(FormGroup, {
         props: {
             validations: instance.$v.form[context.propName],
-            ilingo: context.ilingo,
+            validationMessages: context.validationMessages,
+            validationTranslator: context.validationTranslator,
         } as FormGroupProperties,
         scopedSlots: {
             default: (props: FormGroupProps) => h(
@@ -92,7 +76,7 @@ export function buildFormSelect<T extends Record<string, any>>(
                                 value: '',
                             },
                         }, ['-- ', (context.optionDefaultText ? context.optionDefaultText : 'Select option'), ' --']),
-                        context.options.map((item: SelectOption) => h('option', {
+                        context.options.map((item: FormSelectOption) => h('option', {
                             key: item.id,
                             domProps: {
                                 value: item.id,

@@ -6,14 +6,14 @@
  */
 
 import { CreateElement, VNode } from 'vue';
-import { ComponentListData, ComponentListMethods, ComponentListProperties } from './type';
+import {
+    ComponentListData,
+    ComponentListMethods,
+    ComponentListProperties,
+    ListHeaderBuildContext,
+} from './type';
 import { hasNormalizedSlot, normalizeSlot } from '../utils';
 import { SlotName } from '../constants';
-
-export type ListHeaderBuildContext = {
-    title?: string,
-    iconClass?: string,
-};
 
 export function buildListHeader<T extends Record<string, any>>(
     instance: ComponentListMethods<T> &
@@ -30,8 +30,9 @@ export function buildListHeader<T extends Record<string, any>>(
     const slotScope = {};
 
     context = context || {};
-    context.title = context.title || 'List';
     context.iconClass = context.iconClass || 'fa fa-bars';
+    context.titleText = context.titleText || 'List';
+    context.refreshText = context.refreshText || 'refresh';
 
     let header = h();
     if (instance.withHeader) {
@@ -40,7 +41,8 @@ export function buildListHeader<T extends Record<string, any>>(
             staticClass: 'mb-0',
         }, [
             h('i', { staticClass: context.iconClass }),
-            ` ${context.title}`,
+            ' ',
+            `${context.titleText}`,
         ]);
 
         const headerTitle = hasHeaderTitleSlot ?

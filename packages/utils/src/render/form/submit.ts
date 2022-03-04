@@ -19,19 +19,10 @@ export function buildFormSubmit<T extends Record<string, any>>(
     h: CreateElement,
     options?: FormSubmitOptions,
 ) {
-    let updateText = 'Update';
-    let createText = 'Create';
-
     options = options || {};
 
-    if (options.ilingo) {
-        const ilingoGroup = options.ilingoGroup || 'form';
-        const ilingoUpdateKey = options.ilingoUpdateKey || 'update.button';
-        const ilingoCreateKey = options.ilingoCreateKey || 'create.button';
-
-        updateText = options.ilingo.getSync(`${ilingoGroup}.${ilingoUpdateKey}`);
-        createText = options.ilingo.getSync(`${ilingoGroup}.${ilingoCreateKey}`);
-    }
+    const updateText = options.updateText || 'Update';
+    const createText = options.createText || 'Create';
 
     return h('div', {
         staticClass: 'form-group',

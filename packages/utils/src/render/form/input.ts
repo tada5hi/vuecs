@@ -5,23 +5,13 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { type Ilingo } from 'ilingo';
 import { CreateElement, VNode } from 'vue';
 import { FormGroup, FormGroupProperties } from '../../components';
 import {
     ComponentFormComputed, ComponentFormData,
     ComponentFormMethods, ComponentFormVuelidate,
-    FormGroupProps,
+    FormGroupProps, FormInputBuildContext,
 } from './type';
-
-export type FormInputBuildContext<T extends Record<string, any> = Record<string, any>> = {
-    title: string | VNode | (VNode | string)[],
-    propName: keyof T | string,
-    attrs?: Record<string, any>,
-    domProps?: Record<string, any>,
-    ilingo?: Ilingo,
-    changeCallback?: (input: string) => void
-};
 
 export function buildFormInput<T extends Record<string, any>>(
     instance: ComponentFormMethods<T> &
@@ -34,7 +24,8 @@ export function buildFormInput<T extends Record<string, any>>(
     return h(FormGroup, {
         props: {
             validations: instance.$v.form[context.propName],
-            ilingo: context.ilingo,
+            validationMessages: context.validationMessages,
+            validationTranslator: context.validationTranslator,
         } as FormGroupProperties,
         scopedSlots: {
             default: (props: FormGroupProps) => h(

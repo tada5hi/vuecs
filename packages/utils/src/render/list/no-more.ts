@@ -5,16 +5,12 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { CreateElement, VNode } from 'vue';
+import { CreateElement } from 'vue';
 import { SlotName } from '../constants';
 import { hasNormalizedSlot, normalizeSlot } from '../utils';
 import {
-    ComponentListData, ComponentListMethods, ComponentListProperties,
+    ComponentListData, ComponentListMethods, ComponentListProperties, NoMoreBuildContext,
 } from './type';
-
-export type NoMoreContext = {
-    hint: string | VNode | (string | VNode)[]
-};
 
 export function buildListNoMore<T extends Record<string, any>>(
     instance: ComponentListMethods<T> &
@@ -24,12 +20,16 @@ export function buildListNoMore<T extends Record<string, any>>(
         $slots: Record<string, any>
     },
     h: CreateElement,
-    context: NoMoreContext,
+    context?: NoMoreBuildContext,
 ) {
+    context = context || {};
+    context.text = context.text || 'No more items available...';
+
     const $scopedSlots = instance.$scopedSlots || {};
     const $slots = instance.$slots || {};
 
     let node = h();
+
     if (
         instance.withNoMore &&
         !instance.busy &&
@@ -39,7 +39,7 @@ export function buildListNoMore<T extends Record<string, any>>(
 
         node = h('div', { staticClass: 'list-no-more' }, [
             hasNoMoreSlot ?
-                normalizeSlot(SlotName.ITEMS_NO_MORE, {}, $scopedSlots, $slots) : context.hint,
+                normalizeSlot(SlotName.ITEMS_NO_MORE, {}, $scopedSlots, $slots) : context.text,
         ]);
     }
 

@@ -24,12 +24,9 @@ import postcss from 'rollup-plugin-postcss';
 const includePathOptions = {
     include: {
         vue: 'node_modules/vue/dist/vue.common.js',
-        'vue-router': 'node_modules/vue-router/dist/vue-router.js',
     },
     external: [
-        'ilingo',
         'vue',
-        'vue-router',
     ],
 };
 
@@ -78,9 +75,7 @@ const baseConfig = {
 const external = [
     // list external dependencies, exactly the way it is written in the import statement.
     // eg. 'jquery'
-    'ilingo',
     'vue',
-    'vue-router',
 ];
 
 // UMD/IIFE shared settings: output.globals
