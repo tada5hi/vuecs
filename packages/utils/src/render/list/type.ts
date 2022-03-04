@@ -67,8 +67,8 @@ export type ListItemsBuildContext<T> = {
 };
 
 export type ListHeaderBuildContext = & {
-    refreshText?: VNodeChildren,
-    titleText?: VNodeChildren,
+    refreshText?: VNodeChildren | VNode | VNode[],
+    titleText?: VNodeChildren | VNode | VNode[],
 
     iconClass?: string,
 };

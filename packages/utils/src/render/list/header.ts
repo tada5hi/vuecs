@@ -42,7 +42,7 @@ export function buildListHeader<T extends Record<string, any>>(
         }, [
             h('i', { staticClass: context.iconClass }),
             ' ',
-            `${context.titleText}`,
+            context.titleText,
         ]);
 
         const headerTitle = hasHeaderTitleSlot ?
@@ -74,7 +74,8 @@ export function buildListHeader<T extends Record<string, any>>(
                         },
                     }, [
                         h('i', { staticClass: 'fa fa-sync' }),
-                        ' refresh',
+                        ' ',
+                        context.refreshText,
                     ]),
                 ]),
             ],
