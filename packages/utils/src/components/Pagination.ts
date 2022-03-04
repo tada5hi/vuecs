@@ -10,10 +10,15 @@ import Vue, { CreateElement, VNode } from 'vue';
 export type PaginationMeta = {
     limit?: number,
     offset?: number,
-    total?: number
+    total?: number,
+    page?: number
 };
 
-export const Pagination = Vue.extend<{ busy: boolean }, any, any, PaginationMeta>({
+export type PaginationProperties = PaginationMeta & {
+    busy: boolean
+};
+
+export const Pagination = Vue.extend<any, any, any, PaginationProperties>({
     props: {
         total: {
             type: Number,
@@ -27,11 +32,10 @@ export const Pagination = Vue.extend<{ busy: boolean }, any, any, PaginationMeta
             type: Number,
             default: 0,
         },
-    },
-    data() {
-        return {
-            busy: false,
-        };
+        busy: {
+            type: Boolean,
+            default: false,
+        },
     },
     computed: {
         totalPages() {
@@ -61,19 +65,13 @@ export const Pagination = Vue.extend<{ busy: boolean }, any, any, PaginationMeta
         goTo(page: number) {
             if (this.busy || page === this.currentPage) return;
 
-            const data = {
+            const data : PaginationMeta = {
                 page,
                 offset: (page - 1) * this.limit,
                 limit: this.limit,
             };
 
-            // eslint-disable-next-line no-promise-executor-return
-            const result = new Promise(((resolve, reject) => this.$emit('to', data, resolve, reject)));
-            result.then(() => {
-                this.busy = false;
-            }).catch(() => {
-                this.busy = false;
-            });
+            this.$emit('load', data);
         },
     },
     render(createElement: CreateElement): VNode {

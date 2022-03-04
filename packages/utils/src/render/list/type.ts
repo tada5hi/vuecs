@@ -24,8 +24,7 @@ export type ComponentListHandlerMethodOptions<T extends Record<string, any>> = {
 
 export type ComponentListMethods<T = Record<string, any>> = {
     [key: string]: any,
-    load: () => Promise<void>,
-    goTo: (options: PaginationMeta, resolve: () => void, reject: (err?: Error) => void) => void,
+    load: (data?: PaginationMeta) => Promise<void>,
     handleCreated: (item: T, options?: ComponentListHandlerMethodOptions<T>) => void,
     handleUpdated: (item: T, options?: ComponentListHandlerMethodOptions<T>) => void,
     handleDeleted: (item: T, options?: ComponentListHandlerMethodOptions<T>) => void,

@@ -22,9 +22,12 @@ export function buildListPagination<T extends Record<string, any>>(
     if (instance.withPagination) {
         node = h('div', { staticClass: 'list-pagination' }, [
             h(Pagination, {
-                props: instance.meta,
+                props: {
+                    ...instance.meta,
+                    busy: instance.busy,
+                },
                 on: {
-                    to: instance.goTo,
+                    load: instance.load,
                 },
             }),
         ]);
