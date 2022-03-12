@@ -8,9 +8,12 @@
 import { CreateElement, VNode } from 'vue';
 import { FormGroup, FormGroupProperties } from '../../components';
 import {
-    ComponentFormComputed, ComponentFormData,
-    ComponentFormMethods, ComponentFormVuelidate,
-    FormGroupProps, FormInputBuildContext,
+    ComponentFormComputed,
+    ComponentFormData,
+    ComponentFormMethods,
+    ComponentFormVuelidate,
+    FormGroupProps,
+    FormInputBuildContext,
 } from './type';
 
 export function buildFormInput<T extends Record<string, any>>(

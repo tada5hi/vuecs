@@ -10,14 +10,16 @@ import {
 } from 'vue';
 import { FormGroup, FormGroupProperties } from '../../components';
 import {
-    ComponentFormComputed, ComponentFormData,
-    ComponentFormMethods, ComponentFormVuelidate,
-    FormGroupProps, FormSelectBuildContext, FormSelectOption,
+    ComponentFormData,
+    ComponentFormMethods,
+    ComponentFormVuelidate,
+    FormGroupProps,
+    FormSelectBuildContext,
+    FormSelectOption,
 } from './type';
 
 export function buildFormSelect<T extends Record<string, any>>(
     instance: ComponentFormMethods<T> &
-    ComponentFormComputed<T> &
     ComponentFormData<T> &
     ComponentFormVuelidate<T>,
     h: CreateElement,

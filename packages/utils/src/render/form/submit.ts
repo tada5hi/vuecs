@@ -6,14 +6,18 @@
  */
 
 import { CreateElement } from 'vue';
+import { hasOwnProperty } from '../../utils';
 import {
-    ComponentFormComputed, ComponentFormData,
-    ComponentFormMethods, ComponentFormVuelidate, FormSubmitOptions,
+    ComponentFormComputed,
+    ComponentFormData,
+    ComponentFormMethods,
+    ComponentFormVuelidate,
+    FormSubmitOptions,
 } from './type';
 
 export function buildFormSubmit<T extends Record<string, any>>(
     instance: ComponentFormMethods<T> &
-    ComponentFormComputed<T> &
+    Partial<ComponentFormComputed<T>> &
     ComponentFormData<T> &
     ComponentFormVuelidate<T>,
     h: CreateElement,
@@ -22,7 +26,15 @@ export function buildFormSubmit<T extends Record<string, any>>(
     options = options || {};
 
     const updateText = options.updateText || 'Update';
+    const updateIcon = options.updateIcon || 'fa fa-save';
+
     const createText = options.createText || 'Create';
+    const createIcon = options.createIcon || 'fa fa-plus';
+
+    const isEditing : boolean = hasOwnProperty(instance, 'isEditing') &&
+        typeof instance.isEditing !== 'undefined' ?
+        instance.isEditing :
+        false;
 
     return h('div', {
         staticClass: 'form-group',
@@ -30,8 +42,8 @@ export function buildFormSubmit<T extends Record<string, any>>(
         h('button', {
             staticClass: 'btn btn-xs',
             class: {
-                'btn-primary': instance.isEditing,
-                'btn-success': !instance.isEditing,
+                'btn-primary': isEditing,
+                'btn-success': !isEditing,
             },
             domProps: {
                 disabled: instance.$v.form.$invalid || instance.busy,
@@ -50,13 +62,13 @@ export function buildFormSubmit<T extends Record<string, any>>(
         }, [
             h('i', {
                 class: {
-                    'fa fa-save': instance.isEditing,
-                    'fa fa-plus': !instance.isEditing,
+                    [updateIcon]: isEditing,
+                    [createIcon]: !isEditing,
                 },
             }),
             ' ',
             (
-                instance.isEditing ?
+                isEditing ?
                     updateText :
                     createText
             ),

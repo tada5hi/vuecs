@@ -18,7 +18,6 @@ import {
 
 export function buildFormTextarea<T extends Record<string, any>>(
     instance: ComponentFormMethods<T> &
-    ComponentFormComputed<T> &
     ComponentFormData<T> &
     ComponentFormVuelidate<T>,
     h: CreateElement,

@@ -67,7 +67,9 @@ export type FormSelectBuildContext<T extends Record<string, any> = Record<string
 
 export type FormSubmitOptions = {
     updateText?: string,
+    updateIcon?: string,
     createText?: string
+    createIcon?: string
 };
 
 export type FormTextareaBuildContext<T extends Record<string, any> = Record<string, any>> = {
