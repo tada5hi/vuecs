@@ -50,7 +50,7 @@ export function buildListItems<T extends Record<string, any>>(
         }
 
         return h('div', { staticClass: 'd-flex flex-row' }, [
-            h('div', [h('i', { staticClass: context?.itemIconClass })]),
+            h('div', [h('i', { staticClass: `pr-1 ${context?.itemIconClass}` })]),
             h('div', [context?.itemTextFn ? context.itemTextFn.call(instance, item) : itemTextAlt]),
             h('div', { staticClass: 'ml-auto' }, itemActions),
         ]);

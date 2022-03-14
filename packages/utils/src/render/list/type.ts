@@ -14,13 +14,15 @@ export type ComponentListData<T = Record<string, any>> = {
     items: T[],
     q: string,
     meta: PaginationMeta,
-    itemBusy: boolean
+    itemBusy: boolean,
+    [key: string]: any
 };
 
 export type ComponentListHandlerMethodOptions<T extends Record<string, any>> = {
     unshift?: boolean,
     filterFn?: (item: T) => boolean,
-    emit?: boolean
+    emit?: boolean,
+    [key: string]: any
 };
 
 export type ComponentListMethods<T = Record<string, any>> = {
