@@ -26,17 +26,18 @@ export type ComponentListHandlerMethodOptions<T extends Record<string, any>> = {
 };
 
 export type ComponentListMethods<T = Record<string, any>> = {
-    [key: string]: any,
     load: (data?: PaginationMeta) => Promise<void>,
     handleCreated: (item: T, options?: ComponentListHandlerMethodOptions<T>) => void,
     handleUpdated: (item: T, options?: ComponentListHandlerMethodOptions<T>) => void,
     handleDeleted: (item: T, options?: ComponentListHandlerMethodOptions<T>) => void,
+    [key: string]: any,
 };
 
 export type ComponentListItemData<T = Record<string, any>> = {
     busy: boolean,
     item: T | null,
-    loaded?: boolean
+    loaded?: boolean,
+    [key: string]: any,
 };
 
 export type ComponentListProperties<T = Record<string, any>> = {
@@ -48,6 +49,7 @@ export type ComponentListProperties<T = Record<string, any>> = {
     withPagination: boolean,
 
     loadOnInit: boolean,
+    [key: string]: any
 };
 
 // --------------------------------------
