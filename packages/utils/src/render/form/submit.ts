@@ -31,8 +31,7 @@ export function buildFormSubmit<T extends Record<string, any>>(
     const createText = options.createText || 'Create';
     const createIcon = options.createIcon || 'fa fa-plus';
 
-    const isEditing : boolean = hasOwnProperty(instance, 'isEditing') &&
-        typeof instance.isEditing !== 'undefined' ?
+    const isEditing : boolean = typeof instance.isEditing === 'boolean' ?
         instance.isEditing :
         false;
 
@@ -50,7 +49,7 @@ export function buildFormSubmit<T extends Record<string, any>>(
             },
             attrs: {
                 disabled: instance.$v.form.$invalid || instance.busy,
-                type: 'button',
+                type: 'submit',
             },
             on: {
                 click($event: any) {
