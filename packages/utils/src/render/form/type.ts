@@ -9,17 +9,19 @@ import { VNode, VNodeChildren } from 'vue';
 import { ValidationMessages, ValidationTranslator } from '../type';
 
 export type ComponentFormMethods<T = Record<string, any>> = {
+    submit: () => Promise<void>,
     [key: string]: any,
-    submit: () => Promise<void>
 };
 
 export type ComponentFormComputed<T = Record<string, any>> = {
-    isEditing: boolean
+    isEditing: boolean,
+    [key: string]: any,
 };
 
 export type ComponentFormData<T = Record<string, any>> = {
     busy: boolean,
-    form: Partial<T> | null
+    form: Partial<T> | null,
+    [key: string]: any,
 };
 
 export type ComponentFormVuelidate<T = Record<string, any>> = {
@@ -44,6 +46,7 @@ export type FormInputBuildContext<T extends Record<string, any> = Record<string,
     attrs?: Record<string, any>,
     domProps?: Record<string, any>,
     changeCallback?: (input: string) => void,
+
     validationMessages?: ValidationMessages,
     validationTranslator?: ValidationTranslator
 };
@@ -59,23 +62,29 @@ export type FormSelectBuildContext<T extends Record<string, any> = Record<string
     attrs?: Record<string, any>,
     domProps?: Record<string, any>,
     changeCallback?: (input: any) => void,
+
     options: FormSelectOption[],
     optionDefaultText?: string,
+
     validationMessages?: ValidationMessages,
     validationTranslator?: ValidationTranslator
 };
 
 export type FormSubmitOptions = {
     updateText?: string,
-    updateIcon?: string,
+    updateIconClass?: string,
+    updateButtonClass?: string,
+
     createText?: string
-    createIcon?: string
+    createIconClass?: string,
+    createButtonClass?: string
 };
 
 export type FormTextareaBuildContext<T extends Record<string, any> = Record<string, any>> = {
     title: string | VNode | (VNode | string)[],
     propName: keyof T | string,
     attrs?: Record<string, any>,
+
     validationMessages?: ValidationMessages,
     validationTranslator?: ValidationTranslator
 };

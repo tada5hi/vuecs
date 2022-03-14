@@ -6,7 +6,6 @@
  */
 
 import { CreateElement } from 'vue';
-import { hasOwnProperty } from '../../utils';
 import {
     ComponentFormComputed,
     ComponentFormData,
@@ -26,10 +25,12 @@ export function buildFormSubmit<T extends Record<string, any>>(
     options = options || {};
 
     const updateText = options.updateText || 'Update';
-    const updateIcon = options.updateIcon || 'fa fa-save';
+    const updateIcon = options.updateIconClass || 'fa fa-save';
+    const updateButtonClass = options.updateButtonClass || 'btn btn-xs btn-primary';
 
     const createText = options.createText || 'Create';
-    const createIcon = options.createIcon || 'fa fa-plus';
+    const createIcon = options.createIconClass || 'fa fa-plus';
+    const createButtonClass = options.createButtonClass || 'btn btn-xs btn-success';
 
     const isEditing : boolean = typeof instance.isEditing === 'boolean' ?
         instance.isEditing :
@@ -39,10 +40,9 @@ export function buildFormSubmit<T extends Record<string, any>>(
         staticClass: 'form-group',
     }, [
         h('button', {
-            staticClass: 'btn btn-xs',
             class: {
-                'btn-primary': isEditing,
-                'btn-success': !isEditing,
+                [updateButtonClass]: isEditing,
+                [createButtonClass]: !isEditing,
             },
             domProps: {
                 disabled: instance.$v.form.$invalid || instance.busy,
@@ -60,6 +60,7 @@ export function buildFormSubmit<T extends Record<string, any>>(
             },
         }, [
             h('i', {
+                staticClass: 'pr-1',
                 class: {
                     [updateIcon]: isEditing,
                     [createIcon]: !isEditing,
