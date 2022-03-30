@@ -52,6 +52,24 @@ export type ComponentListProperties<T = Record<string, any>> = {
     [key: string]: any
 };
 
+export type ComponentListItemSlotProps<T extends Record<string, any>> = {
+    itemBusy: boolean,
+    item: T,
+    busy: boolean,
+    [key: string]: any
+};
+
+// --------------------------------------
+
+export type ListItemToggleActionContext<
+    T extends Record<string, any>,
+> = {
+    item: T,
+    itemPropName?: keyof T,
+    busy: boolean,
+    propName: string
+};
+
 // --------------------------------------
 
 export type NoMoreBuildContext = {

@@ -7,6 +7,7 @@
 
 export * from './header';
 export * from './items';
+export * from './item-toggle-action';
 export * from './no-more';
 export * from './pagination';
 export * from './search';
