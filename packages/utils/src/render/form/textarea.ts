@@ -49,6 +49,7 @@ export function buildFormTextarea<T extends Record<string, any>>(
                         },
                         domProps: {
                             value: instance.$v.form[context.propName].$model,
+                            ...(context.domProps || {}),
                         },
                         staticClass: 'form-control',
                         on: {
@@ -58,6 +59,9 @@ export function buildFormTextarea<T extends Record<string, any>>(
                                 }
 
                                 instance.$set(instance.$v.form[context.propName], '$model', $event.target.value);
+                                if (context.changeCallback) {
+                                    context.changeCallback.call(null, $event.target.value);
+                                }
                             },
                         },
                     }),

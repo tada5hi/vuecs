@@ -14,7 +14,9 @@ import {
     FormSubmitOptions,
 } from './type';
 
-export function buildFormSubmit<T extends Record<string, any>>(
+export function buildFormSubmit<
+    T extends Record<string, any>
+>(
     instance: ComponentFormMethods<T> &
     Partial<ComponentFormComputed<T>> &
     ComponentFormData<T> &

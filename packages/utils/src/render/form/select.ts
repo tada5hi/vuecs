@@ -43,7 +43,7 @@ export function buildFormSelect<T extends Record<string, any>>(
                     },
                 },
                 [
-                    h('label', context.title),
+                    h('label', Array.isArray(context.title) ? context.title : [context.title]),
                     h('select', {
                         attrs: {
                             ...(context.attrs || {}),

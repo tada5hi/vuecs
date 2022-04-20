@@ -40,34 +40,32 @@ export type FormGroupProps = {
 
 // --------------------------------
 
-export type FormInputBuildContext<T extends Record<string, any> = Record<string, any>> = {
-    title: string | VNode | (VNode | string)[],
+export type FormBaseBuildContext<
+    T extends Record<string, any> = Record<string, any>
+> = {
+    title: string | VNode | (VNode | string)[] | VNodeChildren,
     propName: keyof T | string,
     attrs?: Record<string, any>,
     domProps?: Record<string, any>,
-    changeCallback?: (input: string) => void,
-
+    changeCallback?: (input: any) => void,
     validationMessages?: ValidationMessages,
     validationTranslator?: ValidationTranslator
-};
+}
+
+export type FormInputBuildContext<
+    T extends Record<string, any> = Record<string, any>
+> = FormBaseBuildContext<T>;
 
 export type FormSelectOption = {
     id: string | number,
     value: any
 };
 
-export type FormSelectBuildContext<T extends Record<string, any> = Record<string, any>> = {
-    title: VNodeChildren,
-    propName: keyof T | string,
-    attrs?: Record<string, any>,
-    domProps?: Record<string, any>,
-    changeCallback?: (input: any) => void,
-
+export type FormSelectBuildContext<
+    T extends Record<string, any> = Record<string, any>
+> = FormBaseBuildContext<T> & {
     options: FormSelectOption[],
     optionDefaultText?: string,
-
-    validationMessages?: ValidationMessages,
-    validationTranslator?: ValidationTranslator
 };
 
 export type FormSubmitOptions = {
@@ -77,14 +75,9 @@ export type FormSubmitOptions = {
 
     createText?: string
     createIconClass?: string,
-    createButtonClass?: string
+    createButtonClass?: string,
 };
 
-export type FormTextareaBuildContext<T extends Record<string, any> = Record<string, any>> = {
-    title: string | VNode | (VNode | string)[],
-    propName: keyof T | string,
-    attrs?: Record<string, any>,
-
-    validationMessages?: ValidationMessages,
-    validationTranslator?: ValidationTranslator
-};
+export type FormTextareaBuildContext<
+    T extends Record<string, any> = Record<string, any>
+> = FormBaseBuildContext<T>;
