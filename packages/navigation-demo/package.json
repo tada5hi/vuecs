@@ -40,7 +40,7 @@
         "vue-router": "^3.5.3"
     },
     "devDependencies": {
-        "@babel/core": "^7.17.9",
+        "@babel/core": "^7.17.10",
         "@vue/cli-plugin-babel": "^4.5.15",
         "@vue/cli-plugin-typescript": "^4.5.15",
         "@vue/cli-service": "^4.5.15",
