@@ -53,7 +53,7 @@
         "@rollup/plugin-commonjs": "^22.0.0",
         "@rollup/plugin-node-resolve": "^13.2.1",
         "@rollup/plugin-replace": "^4.0.0",
-        "@types/jest": "^27.4.1",
+        "@types/jest": "^27.5.0",
         "@zerollup/ts-transform-paths": "^1.7.18",
         "cross-env": "^7.0.3",
         "eslint": "^8.14.0",
