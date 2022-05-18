@@ -52,7 +52,7 @@
         "@zerollup/ts-transform-paths": "^1.7.18",
         "cross-env": "^7.0.3",
         "eslint": "^8.15.0",
-        "jest": "^27.5.1",
+        "jest": "^28.1.0",
         "minimist": "^1.2.6",
         "rimraf": "^3.0.2",
         "rollup": "^2.73.0",
