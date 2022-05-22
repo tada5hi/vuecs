@@ -36,7 +36,7 @@
     "homepage": "https://github.com/Tada5hi/vue-layout#readme",
     "dependencies": {
         "@vue-layout/navigation": "^1.0.12",
-        "vue": "^2.6.14",
+        "vue": "^3.2.35",
         "vue-router": "^3.5.4"
     },
     "devDependencies": {
