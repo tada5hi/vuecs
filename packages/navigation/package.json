@@ -56,7 +56,7 @@
         "@types/jest": "^27.5.1",
         "@zerollup/ts-transform-paths": "^1.7.18",
         "cross-env": "^7.0.3",
-        "eslint": "^8.15.0",
+        "eslint": "^8.17.0",
         "jest": "^28.1.0",
         "minimist": "^1.2.6",
         "rimraf": "^3.0.2",
