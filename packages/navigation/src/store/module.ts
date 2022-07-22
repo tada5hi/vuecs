@@ -8,7 +8,7 @@
 import Vue from 'vue';
 import { useProvider } from '../provider';
 import {
-    findTierComponent, findTierComponents,
+    findTierComponent, findTierComponents, hasOwnProperty,
     isComponentMatch,
     removeTierFromComponents,
     resetNavigationExpansion,
@@ -29,7 +29,14 @@ export function getState() : StateType {
 }
 
 export function setState(state: StateType) {
-    NavigationState = state;
+    if (
+        typeof state === 'object' &&
+        hasOwnProperty(state, NavigationStateKey.COMPONENTS) &&
+        hasOwnProperty(state, NavigationStateKey.COMPONENTS_ACTIVE) &&
+        hasOwnProperty(state, NavigationStateKey.TIERS)
+    ) {
+        NavigationState = Vue.observable(state);
+    }
 }
 
 // --------------------------------------------------------
