@@ -1,8 +1,9 @@
+import { Component } from '../type';
 import { ComponentLayoutKey } from './constants';
 import { hasOwnProperty } from '../utils';
 import { ComponentRestrictionContext } from './type';
 
-export function applyRestrictionForComponents<T extends Record<string, any> = Record<string, any>>(
+export function applyRestrictionForComponents<T extends Component>(
     components: T[],
     context: ComponentRestrictionContext,
 ) : T[] {
@@ -10,9 +11,6 @@ export function applyRestrictionForComponents<T extends Record<string, any> = Re
 
     const childrenKey = context.layoutKey.children ||
         ComponentLayoutKey.CHILDREN;
-
-    const requiredAbilityKey = context.layoutKey.requiredAbilities ||
-        ComponentLayoutKey.REQUIRED_ABILITIES;
 
     const requiredPermissionKey = context.layoutKey.requiredPermissions ||
         ComponentLayoutKey.REQUIRED_PERMISSIONS;
@@ -29,7 +27,7 @@ export function applyRestrictionForComponents<T extends Record<string, any> = Re
         if (
             hasOwnProperty(components[i], requiredLoggedInKey) &&
             components[i][requiredLoggedInKey] &&
-            !context.module.isLoggedIn()
+            !context.isLoggedIn()
         ) {
             continue;
         }
@@ -37,40 +35,30 @@ export function applyRestrictionForComponents<T extends Record<string, any> = Re
         if (
             hasOwnProperty(components[i], requiredLoggedOutKey) &&
             components[i][requiredLoggedOutKey] &&
-            context.module.isLoggedIn()
+            context.isLoggedIn()
         ) {
             continue;
         }
 
         let canPass = true;
 
-        const authorizeChecks : string[] = [requiredAbilityKey, requiredPermissionKey];
-        for (let j = 0; j < authorizeChecks.length; j++) {
-            if (
-                hasOwnProperty(components[i], authorizeChecks[j]) &&
-                canPass
-            ) {
-                let checks = components[i][authorizeChecks[j]];
-                if (typeof checks === 'function') {
-                    if (!checks(context.module)) {
-                        canPass = false;
-                    }
-                } else if (Array.isArray(checks)) {
-                    checks = checks.filter((item) => item);
+        if (
+            hasOwnProperty(components[i], requiredPermissionKey) &&
+            canPass
+        ) {
+            let checks = components[i][requiredPermissionKey];
+            if (typeof checks === 'function') {
+                if (!checks(context.hasPermission)) {
+                    canPass = false;
+                }
+            } else if (Array.isArray(checks)) {
+                checks = checks.filter((item) => item);
 
-                    if (checks.length > 0) {
-                        if (
-                            authorizeChecks[j] === requiredAbilityKey &&
-                            !checks.some((item: any) => context.module.hasAbility(item))
-                        ) {
-                            canPass = false;
-                        } else if (
-                            authorizeChecks[j] === requiredPermissionKey &&
-                            !checks.some((item: any) => context.module.hasPermission(item))
-                        ) {
-                            canPass = false;
-                        }
-                    }
+                if (
+                    checks.length > 0 &&
+                    !checks.some((item: any) => context.hasPermission(item))
+                ) {
+                    canPass = false;
                 }
             }
         }
