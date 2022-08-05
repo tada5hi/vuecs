@@ -12,5 +12,4 @@ export enum ComponentLayoutKey {
     REQUIRED_LOGGED_OUT = 'requireLoggedOut',
 
     REQUIRED_PERMISSIONS = 'requirePermissions',
-    REQUIRED_ABILITIES = 'requireAbilities',
 }
