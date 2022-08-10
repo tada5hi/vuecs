@@ -5,7 +5,6 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { BuildInput } from '@trapi/query';
 import { VNode, VNodeChildren } from 'vue';
 import { PaginationMeta } from '../../components';
 
@@ -40,8 +39,8 @@ export type ComponentListItemData<T = Record<string, any>> = {
     [key: string]: any,
 };
 
-export type ComponentListProperties<T = Record<string, any>> = {
-    query: BuildInput<T>,
+export type ComponentListProperties<Q> = {
+    query: Q,
 
     withHeader: boolean,
     withNoMore: boolean,
