@@ -72,7 +72,7 @@
         "ttypescript": "^1.5.13",
         "typescript": "^4.7.4",
         "vue": "^2.6.14",
-        "vue-router": "^3.5.4"
+        "vue-router": "^3.6.0"
     },
     "peerDependencies": {
         "vue": "^2.x",
