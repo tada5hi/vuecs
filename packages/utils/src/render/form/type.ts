@@ -5,33 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { VNode, VNodeChildren } from 'vue';
-import { ValidationMessages, ValidationTranslator } from '../type';
-
-export type ComponentFormMethods<T = Record<string, any>> = {
-    submit: () => Promise<void>,
-    [key: string]: any,
-};
-
-export type ComponentFormComputed<T = Record<string, any>> = {
-    isEditing: boolean,
-    [key: string]: any,
-};
-
-export type ComponentFormData<T = Record<string, any>> = {
-    busy: boolean,
-    form: Partial<T> | null,
-    [key: string]: any,
-};
-
-export type ComponentFormVuelidate<T = Record<string, any>> = {
-    $v: {
-        [key: string]: any,
-        form: {
-            [K in keyof T]: any
-        }
-    }
-};
+import { BaseValidation } from '@vuelidate/core';
+import {
+    ComputedRef, Ref, VNode, VNodeChild,
+} from 'vue';
+import { MaybeRef, ValidationMessages, ValidationTranslator } from '../type';
 
 export type FormGroupProps = {
     errors: string[],
@@ -41,19 +19,20 @@ export type FormGroupProps = {
 // --------------------------------
 
 export type FormBaseBuildContext<
-    T extends Record<string, any> = Record<string, any>
+    T extends Record<string, any> = Record<string, any>,
 > = {
-    title: string | VNode | (VNode | string)[] | VNodeChildren,
+    title: string | VNode | (VNode | string)[] | VNodeChild,
     propName: keyof T | string,
     attrs?: Record<string, any>,
     domProps?: Record<string, any>,
     changeCallback?: (input: any) => void,
+    validationGroup?: Record<keyof T, BaseValidation>,
     validationMessages?: ValidationMessages,
     validationTranslator?: ValidationTranslator
-}
+};
 
 export type FormInputBuildContext<
-    T extends Record<string, any> = Record<string, any>
+    T extends Record<string, any> = Record<string, any>,
 > = FormBaseBuildContext<T>;
 
 export type FormSelectOption = {
@@ -62,13 +41,13 @@ export type FormSelectOption = {
 };
 
 export type FormSelectBuildContext<
-    T extends Record<string, any> = Record<string, any>
+    T extends Record<string, any> = Record<string, any>,
 > = FormBaseBuildContext<T> & {
     options: FormSelectOption[],
     optionDefaultText?: string,
 };
 
-export type FormSubmitOptions = {
+export type FormSubmitContext = {
     updateText?: string,
     updateIconClass?: string,
     updateButtonClass?: string,
@@ -76,8 +55,14 @@ export type FormSubmitOptions = {
     createText?: string
     createIconClass?: string,
     createButtonClass?: string,
+
+    busy: MaybeRef<boolean>,
+    isEditing: MaybeRef<boolean>,
+    submit: () => void | Promise<void>,
+
+    validationGroup?: BaseValidation
 };
 
 export type FormTextareaBuildContext<
-    T extends Record<string, any> = Record<string, any>
+    T extends Record<string, any> = Record<string, any>,
 > = FormBaseBuildContext<T>;

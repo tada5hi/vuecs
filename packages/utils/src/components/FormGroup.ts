@@ -5,13 +5,10 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import Vue, { PropType } from 'vue';
+import {
+    PropType, defineComponent, h,
+} from 'vue';
 import { ValidationMessages, ValidationTranslator } from '../render';
-
-type FormGroupComputed = {
-    errors: string[],
-    invalid: boolean
-};
 
 export type FormGroupSlotScope = {
     errors: string[],
@@ -24,10 +21,10 @@ export type FormGroupProperties = {
     validationTranslator?: ValidationTranslator
 };
 
-export const FormGroup = Vue.extend<any, any, FormGroupComputed, FormGroupProperties>({
+export const FormGroup = defineComponent({
     props: {
         validations: {
-            required: true,
+            default: undefined,
             type: Object,
         },
         validationMessages: {
@@ -41,13 +38,13 @@ export const FormGroup = Vue.extend<any, any, FormGroupComputed, FormGroupProper
     },
     computed: {
         errors() {
-            if (!this.invalid) {
+            if (!this.invalid || typeof this.validations === 'undefined') {
                 return [];
             }
 
             return Object.keys(this.validations.$params).reduce(
                 (errors: string[], validator) => {
-                    if (!this.validations[validator]) {
+                    if (this.validations && !this.validations[validator]) {
                         errors.push(this.translate(validator, this.validations.$params[validator]));
                     }
 
@@ -72,7 +69,7 @@ export const FormGroup = Vue.extend<any, any, FormGroupComputed, FormGroupProper
             }
 
             if (typeof this.validationTranslator !== 'undefined') {
-                const translation : string | undefined = this.validationTranslator(validator, properties);
+                const translation : string | undefined = this.validationTranslator(validator, properties || {});
                 if (typeof translation === 'string') {
                     return translation;
                 }
@@ -82,7 +79,11 @@ export const FormGroup = Vue.extend<any, any, FormGroupComputed, FormGroupProper
         },
     },
     render() {
-        return this.$scopedSlots.default({
+        if (!this.$slots.default) {
+            return h('');
+        }
+
+        return this.$slots.default({
             errors: this.errors,
             invalid: this.invalid,
         } as FormGroupSlotScope);

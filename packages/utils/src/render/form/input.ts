@@ -5,73 +5,61 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { CreateElement, VNode } from 'vue';
+import { VNode, h } from 'vue';
+import { BaseValidation } from '@vuelidate/core';
 import { FormGroup, FormGroupProperties } from '../../components';
 import {
-    ComponentFormComputed,
-    ComponentFormData,
-    ComponentFormMethods,
-    ComponentFormVuelidate,
     FormGroupProps,
     FormInputBuildContext,
 } from './type';
 
 export function buildFormInput<T extends Record<string, any>>(
-    instance: ComponentFormMethods<T> &
-    ComponentFormComputed<T> &
-    ComponentFormData<T> &
-    ComponentFormVuelidate<T>,
-    h: CreateElement,
     context: FormInputBuildContext<T>,
 ) : VNode {
-    return h(FormGroup, {
-        props: {
-            validations: instance.$v.form[context.propName],
-            validationMessages: context.validationMessages,
-            validationTranslator: context.validationTranslator,
-        } as FormGroupProperties,
-        scopedSlots: {
-            default: (props: FormGroupProps) => h(
-                'div',
-                {
-                    staticClass: 'form-group',
-                    class: {
-                        'form-group-error': instance.$v.form[context.propName].$error,
-                        'form-group-warning': instance.$v.form[context.propName].$invalid &&
-                            !instance.$v.form[context.propName].$dirty,
-                    },
-                },
-                [
-                    h('label', Array.isArray(context.title) ? context.title : [context.title]),
-                    h('input', {
-                        attrs: {
-                            type: 'text',
-                            placeholder: '...',
-                            ...(context.attrs || {}),
-                        },
-                        domProps: {
-                            value: instance.$v.form[context.propName].$model,
-                            ...(context.domProps || {}),
-                        },
-                        staticClass: 'form-control',
-                        on: {
-                            input($event: any) {
-                                if ($event.target.composing) {
-                                    return;
-                                }
+    const validations : Partial<BaseValidation> = context.validationGroup ?
+        context.validationGroup[context.propName] : {};
 
-                                instance.$set(instance.$v.form[context.propName], '$model', $event.target.value);
-                                if (context.changeCallback) {
-                                    context.changeCallback.call(null, $event.target.value);
-                                }
-                            },
-                        },
-                    }),
-                    props.errors.map((error) => h('div', {
-                        staticClass: 'form-group-hint group-required',
-                    }, [error])),
-                ],
-            ),
-        },
+    return h(FormGroup, {
+        validations,
+        validationMessages: context.validationMessages,
+        validationTranslator: context.validationTranslator,
+    } as FormGroupProperties, {
+        default: (props: FormGroupProps) => h(
+            'div',
+            {
+                class: {
+                    'form-group': true,
+                    'form-group-error': validations.$error,
+                    'form-group-warning': validations.$invalid &&
+                        !validations.$dirty,
+                },
+            },
+            [
+                h('label', Array.isArray(context.title) ? context.title : [context.title]),
+                h('input', {
+                    type: 'text',
+                    placeholder: '...',
+                    value: validations.$model,
+                    ...(context.domProps || {}),
+                    ...(context.attrs || {}),
+                    class: 'form-control',
+                    onInput($event: any) {
+                        if ($event.target.composing) {
+                            return;
+                        }
+
+                        validations.$model = $event.target.value;
+                        this.$emit('update:modelValue', $event.target.value);
+
+                        if (context.changeCallback) {
+                            context.changeCallback.call(null, $event.target.value);
+                        }
+                    },
+                }),
+                props.errors.map((error) => h('div', {
+                    class: 'form-group-hint group-required',
+                }, [error])),
+            ],
+        ),
     });
 }

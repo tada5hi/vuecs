@@ -6,10 +6,10 @@
         "lib": [
             "ESNext"
         ],
-        "strict": true
+        "strict": true,
     },
     "include": [
-        "src/types/**/*.d.ts",
+        "types/**/*.d.ts",
         "src/**/*.ts"
     ]
 }

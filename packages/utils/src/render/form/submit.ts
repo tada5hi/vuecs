@@ -5,72 +5,58 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { CreateElement } from 'vue';
+import { h, unref } from 'vue';
+import { BaseValidation } from '@vuelidate/core';
 import {
-    ComponentFormComputed,
-    ComponentFormData,
-    ComponentFormMethods,
-    ComponentFormVuelidate,
-    FormSubmitOptions,
+    FormSubmitContext,
 } from './type';
 
 export function buildFormSubmit<
-    T extends Record<string, any>
+    T extends Record<string, any>,
 >(
-    instance: ComponentFormMethods<T> &
-    Partial<ComponentFormComputed<T>> &
-    ComponentFormData<T> &
-    ComponentFormVuelidate<T>,
-    h: CreateElement,
-    options?: FormSubmitOptions,
+    context: FormSubmitContext,
 ) {
-    options = options || {};
+    const updateText = context.updateText || 'Update';
+    const updateIcon = context.updateIconClass || 'fa fa-save';
+    const updateButtonClass = context.updateButtonClass || 'btn btn-xs btn-primary';
 
-    const updateText = options.updateText || 'Update';
-    const updateIcon = options.updateIconClass || 'fa fa-save';
-    const updateButtonClass = options.updateButtonClass || 'btn btn-xs btn-primary';
+    const createText = context.createText || 'Create';
+    const createIcon = context.createIconClass || 'fa fa-plus';
+    const createButtonClass = context.createButtonClass || 'btn btn-xs btn-success';
 
-    const createText = options.createText || 'Create';
-    const createIcon = options.createIconClass || 'fa fa-plus';
-    const createButtonClass = options.createButtonClass || 'btn btn-xs btn-success';
-
-    const isEditing : boolean = typeof instance.isEditing === 'boolean' ?
-        instance.isEditing :
-        false;
+    const validation : Partial<BaseValidation> = context.validationGroup || {};
 
     return h('div', {
         staticClass: 'form-group',
     }, [
         h('button', {
             class: {
-                [updateButtonClass]: isEditing,
-                [createButtonClass]: !isEditing,
+                [updateButtonClass]: unref(context.isEditing),
+                [createButtonClass]: !unref(context.isEditing),
             },
             domProps: {
-                disabled: instance.$v.form.$invalid || instance.busy,
+                disabled: validation.$invalid || unref(context.busy),
             },
             attrs: {
-                disabled: instance.$v.form.$invalid || instance.busy,
+                disabled: validation.$invalid || context.busy,
                 type: 'submit',
             },
-            on: {
-                click($event: any) {
-                    $event.preventDefault();
+            onClick($event: any) {
+                $event.preventDefault();
 
-                    return instance.submit.apply(null);
-                },
+                return context.submit.apply(null);
             },
         }, [
             h('i', {
                 staticClass: 'pr-1',
                 class: {
-                    [updateIcon]: isEditing,
-                    [createIcon]: !isEditing,
+                    [updateIcon]: unref(context.isEditing),
+                    [createIcon]: !unref(context.isEditing),
                 },
             }),
             ' ',
             (
-                isEditing ?
+                unref(context.isEditing) ?
                     updateText :
                     createText
             ),

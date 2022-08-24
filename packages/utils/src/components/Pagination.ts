@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import Vue, { CreateElement, VNode } from 'vue';
+import { VNode, defineComponent, h } from 'vue';
 
 export type PaginationMeta = {
     limit?: number,
@@ -14,11 +14,7 @@ export type PaginationMeta = {
     page?: number
 };
 
-export type PaginationProperties = PaginationMeta & {
-    busy: boolean
-};
-
-export const Pagination = Vue.extend<any, any, any, PaginationProperties>({
+export const Pagination = defineComponent({
     props: {
         total: {
             type: Number,
@@ -74,29 +70,24 @@ export const Pagination = Vue.extend<any, any, any, PaginationProperties>({
             this.$emit('load', data);
         },
     },
-    render(createElement: CreateElement): VNode {
+    render(): VNode {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const vm = this;
-        const h = createElement;
 
-        let prevPage = h();
+        let prevPage = h('');
         if (vm.currentPage > 1) {
-            prevPage = h('li', { staticClass: 'page-item' }, [
+            prevPage = h('li', { class: 'page-item' }, [
                 h('button', {
-                    staticClass: 'page-link',
-                    domProps: {
-                        disabled: vm.busy,
-                    },
-                    on: {
-                        click($event: any) {
-                            $event.preventDefault();
+                    class: 'page-link',
+                    disabled: vm.busy,
+                    onClick($event: any) {
+                        $event.preventDefault();
 
-                            // eslint-disable-next-line prefer-rest-params
-                            return vm.goTo(vm.currentPage - 1);
-                        },
+                        // eslint-disable-next-line prefer-rest-params
+                        return vm.goTo(vm.currentPage - 1);
                     },
                 }, [
-                    h('i', { staticClass: 'fa fa-chevron-left' }),
+                    h('i', { class: 'fa fa-chevron-left' }),
                 ]),
             ]);
         }
@@ -104,20 +95,18 @@ export const Pagination = Vue.extend<any, any, any, PaginationProperties>({
         const betweenPages = [];
 
         for (let i = 0; i < vm.pages.length; i++) {
-            const node = h('li', { staticClass: 'page-item' }, [
+            const node = h('li', { class: 'page-item' }, [
                 h('button', {
-                    class: { active: vm.pages[i] === vm.currentPage },
-                    staticClass: 'page-link',
-                    domProps: {
-                        disabled: vm.busy,
+                    class: {
+                        active: vm.pages[i] === vm.currentPage,
+                        'page-link': true,
                     },
-                    on: {
-                        click($event: any) {
-                            $event.preventDefault();
+                    disabled: vm.busy,
+                    onClick($event: any) {
+                        $event.preventDefault();
 
-                            // eslint-disable-next-line prefer-rest-params
-                            return vm.goTo(vm.pages[i]);
-                        },
+                        // eslint-disable-next-line prefer-rest-params
+                        return vm.goTo(vm.pages[i]);
                     },
                 }, [
                     vm.pages[i],
@@ -127,29 +116,25 @@ export const Pagination = Vue.extend<any, any, any, PaginationProperties>({
             betweenPages.push(node);
         }
 
-        let nextPage = h();
+        let nextPage = h('');
         if (vm.currentPage < vm.totalPages) {
-            nextPage = h('li', { staticClass: 'page-item' }, [
+            nextPage = h('li', { class: 'page-item' }, [
                 h('button', {
-                    staticClass: 'page-link',
-                    domProps: {
-                        disabled: vm.busy,
-                    },
-                    on: {
-                        click($event: any) {
-                            $event.preventDefault();
+                    class: 'page-link',
+                    disabled: vm.busy,
+                    onClick($event: any) {
+                        $event.preventDefault();
 
-                            // eslint-disable-next-line prefer-rest-params
-                            return vm.goTo(vm.currentPage + 1);
-                        },
+                        // eslint-disable-next-line prefer-rest-params
+                        return vm.goTo(vm.currentPage + 1);
                     },
                 }, [
-                    h('i', { staticClass: 'fa fa-chevron-right' }),
+                    h('i', { class: 'fa fa-chevron-right' }),
                 ]),
             ]);
         }
 
-        return h('ul', { staticClass: 'pagination justify-content-center' }, [
+        return h('ul', { class: 'pagination justify-content-center' }, [
             prevPage,
             betweenPages,
             nextPage,

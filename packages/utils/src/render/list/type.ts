@@ -5,59 +5,59 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { VNode, VNodeChildren } from 'vue';
+import { Slots, VNode, VNodeChild } from 'vue';
 import { PaginationMeta } from '../../components';
+import { MaybeRef } from '../type';
 
 export type ComponentListData<T = Record<string, any>> = {
-    busy: boolean,
-    items: T[],
-    q: string,
-    meta: PaginationMeta,
-    itemBusy: boolean,
-    [key: string]: any
+    busy: MaybeRef<boolean>,
+    items: MaybeRef<T[]>,
+    q: MaybeRef<string>,
+    meta: MaybeRef<PaginationMeta>,
+    itemBusy: MaybeRef<boolean>
 };
 
 export type ComponentListHandlerMethodOptions<T extends Record<string, any>> = {
-    unshift?: boolean,
+    unshift?: MaybeRef<boolean>,
     filterFn?: (item: T) => boolean,
-    emit?: boolean,
-    [key: string]: any
+    emit?: MaybeRef<boolean>
 };
 
 export type ComponentListMethods<T = Record<string, any>> = {
     load: (data?: PaginationMeta) => Promise<void>,
     handleCreated: (item: T, options?: ComponentListHandlerMethodOptions<T>) => void,
     handleUpdated: (item: T, options?: ComponentListHandlerMethodOptions<T>) => void,
-    handleDeleted: (item: T, options?: ComponentListHandlerMethodOptions<T>) => void,
-    [key: string]: any,
+    handleDeleted: (item: T, options?: ComponentListHandlerMethodOptions<T>) => void
 };
 
 export type ComponentListItemData<T = Record<string, any>> = {
-    busy: boolean,
-    item: T | null,
-    loaded?: boolean,
-    [key: string]: any,
+    busy: MaybeRef<boolean>,
+    item: MaybeRef<T | null>,
+    loaded?: MaybeRef<boolean>
 };
 
 export type ComponentListProperties<Q> = {
-    query: Q,
+    query: MaybeRef<Q>,
 
-    withHeader: boolean,
-    withNoMore: boolean,
-    withSearch: boolean,
-    withPagination: boolean,
+    withHeader: MaybeRef<boolean>,
+    withNoMore: MaybeRef<boolean>,
+    withSearch: MaybeRef<boolean>,
+    withPagination: MaybeRef<boolean>,
 
-    loadOnInit: boolean,
-    [key: string]: any
+    loadOnInit: MaybeRef<boolean>
 };
 
 export type ComponentListItemSlotProps<T extends Record<string, any>> = {
-    itemBusy: boolean,
-    item: T,
-    busy: boolean,
-    [key: string]: any
+    itemBusy: MaybeRef<boolean>,
+    item: MaybeRef<T>,
+    busy: MaybeRef<boolean>
 };
 
+// --------------------------------------
+
+export type ListBaseOptions = {
+    $slots: Slots
+};
 // --------------------------------------
 
 export type ListItemToggleActionContext<
@@ -72,7 +72,7 @@ export type ListItemToggleActionContext<
 // --------------------------------------
 
 export type NoMoreBuildContext = {
-    text?: VNodeChildren | VNode | VNode[]
+    text?: VNodeChild | VNode | VNode[]
 };
 
 export type ListItemsBuildContext<T> = {
@@ -87,9 +87,14 @@ export type ListItemsBuildContext<T> = {
     itemsClass?: string
 };
 
-export type ListHeaderBuildContext = & {
-    refreshText?: VNodeChildren | VNode | VNode[],
-    titleText?: VNodeChildren | VNode | VNode[],
+export type ListHeaderBuildOptions<T extends Record<string, any>> =
+    ListBaseOptions &
+    {
+        refreshText?: VNodeChild | VNode | VNode[],
+        titleText?: VNodeChild | VNode | VNode[],
 
-    iconClass?: string,
-};
+        iconClass?: string,
+
+        properties: ComponentListProperties<T>,
+        data: ComponentListData<T>
+    };

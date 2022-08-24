@@ -6,28 +6,25 @@
  */
 
 import {
-    CreateElement, VNode,
+    VNode, h,
 } from 'vue';
+import { BaseValidation } from '@vuelidate/core';
 import { FormGroup, FormGroupProperties } from '../../components';
 import {
-    ComponentFormData,
-    ComponentFormMethods,
-    ComponentFormVuelidate,
     FormGroupProps,
     FormSelectBuildContext,
     FormSelectOption,
 } from './type';
 
 export function buildFormSelect<T extends Record<string, any>>(
-    instance: ComponentFormMethods<T> &
-    ComponentFormData<T> &
-    ComponentFormVuelidate<T>,
-    h: CreateElement,
     context: FormSelectBuildContext<T>,
 ) : VNode {
+    const validations : Partial<BaseValidation> = context.validationGroup ?
+        context.validationGroup[context.propName] : {};
+
     return h(FormGroup, {
         props: {
-            validations: instance.$v.form[context.propName],
+            validations,
             validationMessages: context.validationMessages,
             validationTranslator: context.validationTranslator,
         } as FormGroupProperties,
@@ -37,46 +34,36 @@ export function buildFormSelect<T extends Record<string, any>>(
                 {
                     staticClass: 'form-group',
                     class: {
-                        'form-group-error': instance.$v.form[context.propName].$error,
-                        'form-group-warning': instance.$v.form[context.propName].$invalid &&
-                            !instance.$v.form[context.propName].$dirty,
+                        'form-group-error': validations.$error,
+                        'form-group-warning': validations.$invalid &&
+                            !validations.$dirty,
                     },
                 },
                 [
                     h('label', Array.isArray(context.title) ? context.title : [context.title]),
                     h('select', {
-                        attrs: {
-                            ...(context.attrs || {}),
-                        },
-                        domProps: {
-                            value: instance.$v.form[context.propName].$model,
-                            ...(context.domProps || {}),
-                        },
+                        value: validations.$model,
+                        ...(context.attrs || {}),
+                        ...(context.domProps || {}),
                         directives: [{
                             name: 'model',
-                            value: instance.$v.form[context.propName].$model,
+                            value: validations.$model,
                         }],
-                        staticClass: 'form-control',
-                        on: {
-                            change($event: any) {
-                                const $$selectedVal = Array.prototype.filter.call($event.target.options, (o) => o.selected).map((o) => ('_value' in o ? o._value : o.value));
+                        class: 'form-control',
+                        onChange($event: any) {
+                            const $$selectedVal = Array.prototype.filter.call($event.target.options, (o) => o.selected).map((o) => ('_value' in o ? o._value : o.value));
+                            const value = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
 
-                                instance.$set(
-                                    instance.$v.form[context.propName],
-                                    '$model',
-                                    $event.target.multiple ? $$selectedVal : $$selectedVal[0],
-                                );
+                            validations.$model = value;
+                            this.$emit('update:modelValue', value);
 
-                                if (context.changeCallback) {
-                                    context.changeCallback.call(null, $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
-                                }
-                            },
+                            if (context.changeCallback) {
+                                context.changeCallback.call(null, value);
+                            }
                         },
                     }, [
                         h('option', {
-                            domProps: {
-                                value: '',
-                            },
+                            value: '',
                         }, ['-- ', (context.optionDefaultText ? context.optionDefaultText : 'Select option'), ' --']),
                         context.options.map((item: FormSelectOption) => h('option', {
                             key: item.id,
@@ -86,7 +73,7 @@ export function buildFormSelect<T extends Record<string, any>>(
                         }, item.value)),
                     ]),
                     props.errors.map((error) => h('div', {
-                        staticClass: 'form-group-hint group-required',
+                        class: 'form-group-hint group-required',
                     }, [error])),
                 ],
             ),

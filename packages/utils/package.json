@@ -65,12 +65,14 @@
         "ts-jest": "^28.0.8",
         "ttypescript": "^1.5.13",
         "typescript": "^4.7.4",
-        "vue": "^2.6.14",
-        "vuelidate": "^0.7.7"
+        "vue": "^3.2.37",
+        "@vuelidate/core": "^2.0.0-alpha.44",
+        "@vuelidate/validators": "^2.0.0-alpha.31"
     },
     "peerDependencies": {
-        "vue": "^2.x",
-        "vuelidate": "^0.x"
+        "vue": "^3.x",
+        "@vuelidate/core": "^2.x",
+        "@vuelidate/validators": "^2.x"
     },
     "engines": {
         "node": ">=12"
