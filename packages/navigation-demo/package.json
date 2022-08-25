@@ -37,7 +37,7 @@
     "dependencies": {
         "@vue-layout/navigation": "^1.0.16",
         "vue": "^2.6.14",
-        "vue-router": "^3.6.0"
+        "vue-router": "^3.6.4"
     },
     "devDependencies": {
         "@babel/core": "^7.18.13",
