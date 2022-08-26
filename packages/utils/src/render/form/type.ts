@@ -7,45 +7,77 @@
 
 import { BaseValidation } from '@vuelidate/core';
 import {
-    ComputedRef, Ref, VNode, VNodeChild,
+    VNode, VNodeChild,
 } from 'vue';
-import { MaybeRef, ValidationMessages, ValidationTranslator } from '../type';
+import { OptionsInput, ValidationMessages, ValidationTranslator } from '../type';
+import { MaybeRef, VNodeProperties } from '../../type';
 
 export type FormGroupProps = {
     errors: string[],
     invalid: boolean
 };
 
-// --------------------------------
+// --------------------------------------
 
-export type FormBaseBuildContext<
-    T extends Record<string, any> = Record<string, any>,
-> = {
-    title: string | VNode | (VNode | string)[] | VNodeChild,
-    propName: keyof T | string,
-    attrs?: Record<string, any>,
-    domProps?: Record<string, any>,
+export type FormBaseBuildOptions = {
+    label: boolean,
+    labelContent: string | VNode | (VNode | string)[] | VNodeChild,
+
+    props: VNodeProperties,
     changeCallback?: (input: any) => void,
-    validationGroup?: Record<keyof T, BaseValidation>,
-    validationMessages?: ValidationMessages,
+    validationRules: BaseValidation,
+    validationMessages: ValidationMessages,
     validationTranslator?: ValidationTranslator
 };
 
-export type FormInputBuildContext<
-    T extends Record<string, any> = Record<string, any>,
-> = FormBaseBuildContext<T>;
+export type FormBaseBuildOptionsInput = OptionsInput<
+FormBaseBuildOptions,
+never,
+'props' | 'labelContent' | 'changeCallback' | 'validationRules' | 'validationTranslator',
+'label' | 'validationMessages'
+>;
+
+export type ExpectFormbaseBuildOptions<T extends FormBaseBuildOptions | FormBaseBuildOptionsInput> =
+    Omit<T, keyof FormBaseBuildOptions | keyof FormBaseBuildOptionsInput>;
+
+// --------------------------------------
+
+export type FormInputBuildOptions = FormBaseBuildOptions & {
+    prepend: boolean,
+    prependTextContent: VNode | VNodeChild | string,
+
+    append: boolean,
+    appendTextContent: VNode | VNodeChild | string
+};
+
+export type FormInputBuildOptionsInput = FormBaseBuildOptionsInput & OptionsInput<
+ExpectFormbaseBuildOptions<FormInputBuildOptions>,
+never,
+'appendTextContent' | 'prependTextContent'
+>;
+
+// --------------------------------------
 
 export type FormSelectOption = {
     id: string | number,
     value: any
 };
 
-export type FormSelectBuildContext<
+export type FormSelectBuildOptions<
     T extends Record<string, any> = Record<string, any>,
-> = FormBaseBuildContext<T> & {
+> = FormBaseBuildOptions & {
     options: FormSelectOption[],
-    optionDefaultText?: string,
+    optionDefaultText: string,
 };
+
+export type FormSelectBuildOptionsInput = FormBaseBuildOptionsInput & OptionsInput<
+ExpectFormbaseBuildOptions<FormSelectBuildOptions>,
+never,
+never,
+'options'
+>;
+
+// --------------------------------------
 
 export type FormSubmitContext = {
     updateText?: string,
@@ -63,6 +95,8 @@ export type FormSubmitContext = {
     validationGroup?: BaseValidation
 };
 
+// --------------------------------------
+
 export type FormTextareaBuildContext<
     T extends Record<string, any> = Record<string, any>,
-> = FormBaseBuildContext<T>;
+> = FormBaseBuildOptions;

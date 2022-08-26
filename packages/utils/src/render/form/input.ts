@@ -5,61 +5,123 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { VNode, h } from 'vue';
-import { BaseValidation } from '@vuelidate/core';
+import { VNode, VNodeChild, h } from 'vue';
 import { FormGroup, FormGroupProperties } from '../../components';
 import {
     FormGroupProps,
-    FormInputBuildContext,
+    FormInputBuildOptions, FormInputBuildOptionsInput,
 } from './type';
+import { buildFormBaseOptions } from './utils';
+import { unrefWithDefault } from '../../utils';
 
-export function buildFormInput<T extends Record<string, any>>(
-    context: FormInputBuildContext<T>,
+export function buildFormInputOptions(
+    input: FormInputBuildOptionsInput,
+) : FormInputBuildOptions {
+    const options = buildFormBaseOptions(input);
+
+    return {
+        ...options,
+
+        append: unrefWithDefault(options.append, false),
+        appendTextContent: options.appendTextContent || '',
+
+        prepend: unrefWithDefault(options.prepend, false),
+        prependTextContent: options.prependTextContent || '',
+    };
+}
+
+export function buildFormInput(
+    input: FormInputBuildOptionsInput,
 ) : VNode {
-    const validations : Partial<BaseValidation> = context.validationGroup ?
-        context.validationGroup[context.propName] : {};
+    const options = buildFormInputOptions(input);
 
-    return h(FormGroup, {
-        validations,
-        validationMessages: context.validationMessages,
-        validationTranslator: context.validationTranslator,
-    } as FormGroupProperties, {
-        default: (props: FormGroupProps) => h(
+    const children : VNodeChild = [];
+
+    if (options.label) {
+        children.push(h('label', [options.labelContent]));
+    }
+
+    const inputGroupChildren : VNodeChild = [];
+
+    if (options.prepend) {
+        inputGroupChildren.push(h(
             'div',
             {
-                class: {
-                    'form-group': true,
-                    'form-group-error': validations.$error,
-                    'form-group-warning': validations.$invalid &&
-                        !validations.$dirty,
-                },
+                class: 'input-group-prepend',
             },
             [
-                h('label', Array.isArray(context.title) ? context.title : [context.title]),
-                h('input', {
-                    type: 'text',
-                    placeholder: '...',
-                    value: validations.$model,
-                    ...(context.domProps || {}),
-                    ...(context.attrs || {}),
-                    class: 'form-control',
-                    onInput($event: any) {
-                        if ($event.target.composing) {
-                            return;
-                        }
-
-                        validations.$model = $event.target.value;
-                        this.$emit('update:modelValue', $event.target.value);
-
-                        if (context.changeCallback) {
-                            context.changeCallback.call(null, $event.target.value);
-                        }
-                    },
-                }),
-                props.errors.map((error) => h('div', {
-                    class: 'form-group-hint group-required',
-                }, [error])),
+                h('div', { class: 'input-group-text' }, [options.prependTextContent]),
             ],
-        ),
-    });
+        ));
+    }
+
+    inputGroupChildren.push(h(
+        'input',
+        {
+            type: 'text',
+            placeholder: '...',
+            value: options.validationRules.$model,
+            class: 'form-control',
+            onInput($event: any) {
+                if ($event.target.composing) {
+                    return;
+                }
+
+                options.validationRules.$model = $event.target.value;
+                this.$emit('update:modelValue', $event.target.value);
+
+                if (options.changeCallback) {
+                    options.changeCallback.call(null, $event.target.value);
+                }
+            },
+            ...options.props,
+        },
+    ));
+
+    if (options.append) {
+        inputGroupChildren.push(h(
+            'div',
+            {
+                class: 'input-group-append',
+            },
+            [
+                h('div', { class: 'input-group-text' }, [options.appendTextContent]),
+            ],
+        ));
+    }
+
+    children.push(h(
+        'div',
+        {
+            class: 'input-group',
+        },
+        inputGroupChildren,
+    ));
+
+    return h(
+        FormGroup,
+        {
+            validations: options.validationRules,
+            validationMessages: options.validationMessages,
+            validationTranslator: options.validationTranslator,
+        } as FormGroupProperties,
+        {
+            default: (props: FormGroupProps) => h(
+                'div',
+                {
+                    class: {
+                        'form-group': true,
+                        'form-group-error': options.validationRules.$error,
+                        'form-group-warning': options.validationRules.$invalid && !options.validationRules.$dirty,
+                    },
+                },
+                [
+                    ...children,
+                    props.errors.map((error) => h('div', {
+                        class: 'form-group-hint group-required',
+                    }, [error])),
+                ],
+            ),
+        },
+    );
 }

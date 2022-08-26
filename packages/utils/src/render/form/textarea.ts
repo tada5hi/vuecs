@@ -16,8 +16,8 @@ import {
 export function buildFormTextarea<T extends Record<string, any>>(
     context: FormTextareaBuildContext<T>,
 ) : VNode {
-    const validations : Partial<BaseValidation> = context.validationGroup ?
-        context.validationGroup[context.propName] : {};
+    const validations : Partial<BaseValidation> = context.validationRules ?
+        context.validationRules[context.propName] : {};
 
     return h(FormGroup, {
         props: {
@@ -37,7 +37,7 @@ export function buildFormTextarea<T extends Record<string, any>>(
                     },
                 },
                 [
-                    h('label', Array.isArray(context.title) ? context.title : [context.title]),
+                    h('label', Array.isArray(context.labelContent) ? context.labelContent : [context.labelContent]),
                     h('textarea', {
                         placeholder: '...',
                         ...(context.attrs || {}),

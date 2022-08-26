@@ -5,7 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Slots } from 'vue';
+import { Slot, Slots, VNode } from 'vue';
+import { hasOwnProperty } from '../../utils';
 
 /**
  * Returns true if either scoped or unscoped named slot exists
@@ -23,7 +24,7 @@ export function hasNormalizedSlot(
     // Ensure names is an array
     names = names.filter((name) => name);
     // Returns true if the either a $scopedSlot or $slot exists with the specified name
-    return names.some((name) => $slots[name]);
+    return names.some((name) => hasOwnProperty($slots, name));
 }
 
 /**
@@ -33,24 +34,24 @@ export function hasNormalizedSlot(
  * @param {String} scope
  * @param $slots
  *
- * @returns {Array|undefined} VNodes
+ * @returns {Array} VNodes
  */
 export function normalizeSlot(
     names : string[] | string,
     scope: Record<string, any> = {},
     $slots : Slots = {},
-) {
+) : VNode[] | VNode {
     // Ensure names is an array
     names = Array.isArray(names) ? names : [names];
     // Ensure names is an array
     names = names.filter((name) => name);
 
-    let slot;
+    let slot : Slot = () => [];
 
     for (let i = 0; i < names.length && !slot; i++) {
         const name = names[i];
-        slot = $slots[name];
+        slot = $slots[name] as Slot;
     }
-    // Note: in Vue 2.6.x, all named slots are also scoped slots
-    return typeof slot === 'function' ? slot(scope) : slot;
+
+    return slot(scope);
 }

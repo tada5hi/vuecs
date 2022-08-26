@@ -5,101 +5,61 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { CreateElement, VNode, VNodeChildren } from 'vue';
+import {
+    VNode, h, unref,
+} from 'vue';
 import { SlotName } from '../constants';
 import { hasNormalizedSlot, normalizeSlot } from '../utils';
 import {
-    ComponentListData,
-    ComponentListMethods,
-    ComponentListProperties,
-    ListItemsBuildContext,
+    ListItemsBuildOptions, ListItemsBuildOptionsInput,
 } from './type';
+import { unrefWithDefault } from '../../utils';
+import { buildListItem } from './item';
+
+export function buildListItemsOptions<T extends Record<string, any>>(
+    options: ListItemsBuildOptionsInput<T>,
+) : ListItemsBuildOptions<T> {
+    return {
+        ...options,
+
+        slotItems: options.slotItems || {},
+        slotProps: unrefWithDefault(options.slotProps, {}),
+
+        type: unrefWithDefault(options.type, 'div'),
+        props: unrefWithDefault(options.props, {
+            class: 'list-items',
+        }),
+
+        busy: unrefWithDefault(options.busy, false),
+
+        items: unref(options.items),
+        item: unrefWithDefault(options.item, {}),
+    };
+}
 
 export function buildListItems<T extends Record<string, any>>(
-    instance: ComponentListMethods<T> &
-    ComponentListData<T> &
-    ComponentListProperties<T> & {
-        $scopedSlots: Record<string, any>,
-        $slots: Record<string, any>
-    },
-    h: CreateElement,
-    context?: ListItemsBuildContext<T>,
-) : VNode {
-    const $scopedSlots = instance.$scopedSlots || {};
-    const $slots = instance.$slots || {};
+    input: ListItemsBuildOptionsInput<T>,
+) : VNode | VNode[] {
+    const options = buildListItemsOptions(input);
 
-    context = context || {};
-    context.itemIconClass = context.itemIconClass || 'fa fa-bars';
-    context.itemTextPropName = context.itemTextPropName || 'name';
-
-    const hasItemSlot = hasNormalizedSlot(SlotName.ITEM, $scopedSlots, $slots);
-    const itemFnAlt = (item: T) : VNode => {
-        const itemTextAlt = context?.itemTextPropName ? item[context?.itemTextPropName] : '???';
-
-        let itemActions : VNodeChildren = [];
-
-        if (hasNormalizedSlot(SlotName.ITEM_ACTIONS, $scopedSlots, $slots)) {
-            itemActions = normalizeSlot(SlotName.ITEM_ACTIONS, { item, ...(context?.itemSlots ? context.itemSlots : {}) }, $scopedSlots, $slots);
-        } else if (context?.itemActions) {
-            itemActions = [
-                ...(Array.isArray(context.itemActions) ? context.itemActions : [context.itemActions]) as VNode[],
-                hasNormalizedSlot(SlotName.ITEM_ACTIONS_EXTRA, $scopedSlots, $slots) ?
-                    normalizeSlot(SlotName.ITEM_ACTIONS_EXTRA, { item, ...(context?.itemSlots ? context.itemSlots : {}) }, $scopedSlots, $slots) :
-                    h(''),
-            ];
-        }
-
-        return h('div', { staticClass: 'd-flex flex-row align-items-center' }, [
-            h('div', [h('i', { staticClass: `pr-1 ${context?.itemIconClass}` })]),
-            h('div', [context?.itemTextFn ? context.itemTextFn.call(instance, item) : itemTextAlt]),
-            h('div', { staticClass: 'ml-auto' }, itemActions),
-        ]);
-    };
-
-    const itemFn : (item: T) => VNode = context.itemFn ? context.itemFn : itemFnAlt;
+    if (hasNormalizedSlot(SlotName.ITEMS, options.slotItems)) {
+        return normalizeSlot(SlotName.ITEMS, {
+            ...options.slotProps,
+            items: options.items,
+            busy: options.busy,
+        }, options.slotItems);
+    }
 
     // ----------------------------------------------------------------------
 
-    const itemsAlt = instance.items.map((item: T, index) => {
-        let key = index;
-        const itemKey = context?.itemKey || 'id';
-        if (Object.prototype.hasOwnProperty.call(item, itemKey)) {
-            key = item[itemKey];
-        }
-
-        return h(
-            'div',
-            {
-                key,
-                staticClass: context?.itemClass || 'list-item',
-            },
-            [
-                (hasItemSlot ?
-                    normalizeSlot(SlotName.ITEM, {
-                        itemBusy: instance.itemBusy,
-                        item,
-                        busy: instance.busy,
-                        drop: instance.drop,
-                        ...(context?.itemSlots ? context.itemSlots : {}),
-                    }, $scopedSlots, $slots) :
-                    itemFn.call(instance, item)
-                ),
-            ],
-        );
-    });
-
-    const hasItemsSlot = hasNormalizedSlot(SlotName.ITEMS, $scopedSlots, $slots);
-
     return h(
-        'div',
-        { staticClass: context.itemsClass || 'list-items' },
-        [hasItemsSlot ?
-            normalizeSlot(SlotName.ITEMS, {
-                items: instance.items,
-                busy: instance.busy,
-                ...(context?.itemSlots ? context.itemSlots : {}),
-            }, $scopedSlots, $slots) :
-            itemsAlt,
-        ],
+        options.type,
+        options.props,
+        options.items.map((item: T, index) => buildListItem({
+            ...options.slotProps,
+            ...options.item,
+            data: item,
+            index,
+        })),
     );
 }

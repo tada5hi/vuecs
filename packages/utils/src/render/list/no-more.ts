@@ -5,43 +5,56 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { CreateElement } from 'vue';
+import { h, unref } from 'vue';
 import { SlotName } from '../constants';
 import { hasNormalizedSlot, normalizeSlot } from '../utils';
 import {
-    ComponentListData, ComponentListMethods, ComponentListProperties, NoMoreBuildContext,
+    ListNoMoreBuildOptions, ListNoMoreBuildOptionsInput,
 } from './type';
+import { unrefWithDefault } from '../../utils';
+
+export function buildListNoMoreOptions<T extends Record<string, any>>(
+    options: ListNoMoreBuildOptionsInput<T>,
+) : ListNoMoreBuildOptions<T> {
+    return {
+        ...options,
+
+        type: unrefWithDefault(options.type, 'div'),
+        props: unrefWithDefault(options.props, {
+            class: 'list-no-more',
+        }),
+
+        slotItems: options.slotItems || {},
+        slotProps: unrefWithDefault(options.slotProps, {}),
+
+        textContent: options.textContent || 'No more items available...',
+
+        busy: unrefWithDefault(options.busy, false),
+        items: unref(options.items),
+    };
+}
 
 export function buildListNoMore<T extends Record<string, any>>(
-    instance: ComponentListMethods<T> &
-    ComponentListData<T> &
-    ComponentListProperties<T> & {
-        $scopedSlots: Record<string, any>,
-        $slots: Record<string, any>
-    },
-    h: CreateElement,
-    context?: NoMoreBuildContext,
+    input: ListNoMoreBuildOptionsInput<T>,
 ) {
-    context = context || {};
-    context.text = context.text || 'No more items available...';
-
-    const $scopedSlots = instance.$scopedSlots || {};
-    const $slots = instance.$slots || {};
-
-    let node = h();
+    const options = buildListNoMoreOptions(input);
 
     if (
-        instance.withNoMore &&
-        !instance.busy &&
-        instance.items.length === 0
+        !options.busy &&
+        options.items.length === 0
     ) {
-        const hasNoMoreSlot = hasNormalizedSlot(SlotName.ITEMS_NO_MORE, $scopedSlots, $slots);
-
-        node = h('div', { staticClass: 'list-no-more' }, [
-            hasNoMoreSlot ?
-                normalizeSlot(SlotName.ITEMS_NO_MORE, {}, $scopedSlots, $slots) : context.text,
-        ]);
+        return h('');
     }
 
-    return node;
+    if (hasNormalizedSlot(SlotName.ITEMS_NO_MORE, options.slotItems)) {
+        return normalizeSlot(SlotName.ITEMS_NO_MORE, {
+            ...options.slotProps,
+            busy: options.busy,
+            items: options.items,
+        }, options.slotItems);
+    }
+
+    return h(options.type, options.props, [
+        options.textContent,
+    ]);
 }

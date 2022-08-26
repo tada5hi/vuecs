@@ -5,50 +5,61 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { CreateElement } from 'vue';
-import { ComponentListData, ComponentListMethods, ComponentListProperties } from './type';
+import { h, unref } from 'vue';
+import {
+    ListSearchBuildOptions,
+    ListSearchBuildOptionsInput,
+} from './type';
+import { unrefWithDefault } from '../../utils';
+
+export function buildListSearchOptions(
+    options: ListSearchBuildOptionsInput,
+) : ListSearchBuildOptions {
+    return {
+        ...options,
+
+        type: unrefWithDefault(options.type, 'div'),
+        props: unrefWithDefault(options.props, {
+            class: 'list-search',
+        }),
+
+        slotItems: options.slotItems || {},
+        slotProps: unrefWithDefault(options.slotProps, {}),
+
+        q: unref(options.q),
+    };
+}
 
 export function buildListSearch<T extends Record<string, any>>(
-    instance: ComponentListMethods<T> &
-    ComponentListData<T> &
-    ComponentListProperties<T> & {
-        $scopedSlots: Record<string, any>,
-        $slots: Record<string, any>
-    },
-    h: CreateElement,
+    input: ListSearchBuildOptionsInput,
 ) {
-    let search = h();
-    if (instance.withSearch) {
-        search = h('div', { staticClass: 'list-search' }, [
+    const options = buildListSearchOptions(input);
+
+    return h(
+        options.type,
+        options.props,
+        [
             h('div', { staticClass: 'form-group' }, [
                 h('div', { staticClass: 'input-group' }, [
                     h('input', {
                         directives: [{
                             name: 'model',
-                            value: instance.q,
+                            value: options.q,
                         }],
-                        staticClass: 'form-control',
-                        attrs: {
-                            type: 'text',
-                            placeholder: '...',
-                        },
-                        domProps: {
-                            value: instance.q,
-                        },
-                        on: {
-                            input($event: any) {
-                                if ($event.target.composing) {
-                                    return;
-                                }
+                        class: 'form-control',
+                        type: 'text',
+                        placeholder: '...',
+                        value: options.q,
+                        onInput($event: any) {
+                            if ($event.target.composing) {
+                                return;
+                            }
 
-                                instance.q = $event.target.value;
-                            },
+                            options.q = $event.target.value;
                         },
                     }),
                 ]),
             ]),
-        ]);
-    }
-
-    return search;
+        ],
+    );
 }

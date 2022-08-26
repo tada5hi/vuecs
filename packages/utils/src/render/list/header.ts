@@ -5,102 +5,109 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { VNode, h, unref } from 'vue';
 import {
-    ComponentListData,
-    ComponentListMethods,
-    ComponentListProperties,
-    ListHeaderBuildOptions,
+    VNode, VNodeArrayChildren, h,
+} from 'vue';
+import {
+    ListHeaderBuildOptions, ListHeaderBuildOptionsInput,
 } from './type';
 import { hasNormalizedSlot, normalizeSlot } from '../utils';
 import { SlotName } from '../constants';
+import { unrefWithDefault } from '../../utils';
+import { buildListTitle } from './title';
+import { buildListActionRefresh } from './action-refresh';
+
+export function buildListHeaderOptions<T extends Record<string, any>>(
+    options: ListHeaderBuildOptionsInput<T>,
+) : ListHeaderBuildOptions<T> {
+    return {
+        ...options,
+
+        type: unrefWithDefault(options.type, 'div'),
+        props: unrefWithDefault(options.props, {
+            class: 'list-header d-flex flex-row mb-2 align-items-center',
+        }),
+
+        $slots: options.$slots || {},
+
+        actionType: unrefWithDefault(options.actionType, 'div'),
+        actionProps: unrefWithDefault(options.actionProps, {
+            class: 'd-flex flex-row',
+        }),
+        actionRefresh: unrefWithDefault(options.actionRefresh, true),
+
+        title: unrefWithDefault(options.title, true),
+
+        load: unrefWithDefault(options.load, () => Promise.resolve()),
+        busy: unrefWithDefault(options.busy, false),
+    };
+}
 
 export function buildListHeader<T extends Record<string, any>>(
-    context: ListHeaderBuildOptions<T>,
-) : VNode {
-    const slotScope = {};
+    input: ListHeaderBuildOptionsInput<T>,
+) : VNode | VNode[] {
+    const options = buildListHeaderOptions(input);
 
-    context = context || {};
-    context.iconClass = context.iconClass || 'fa fa-bars';
-    context.titleText = context.titleText || 'List';
-    context.refreshText = context.refreshText || 'refresh';
+    const slotScope = {
+        busy: options.busy,
+        load: options.load,
+    };
 
-    let header = h('');
-    if (context.withHeader) {
-        const hasHeaderTitleSlot = hasNormalizedSlot(SlotName.HEADER_TITLE, context.$slots);
-        const headerTitleAlt = h('h6', {
-            class: 'mb-0',
-        }, [
-            h('i', { class: context.iconClass }),
-            ' ',
-            context.titleText,
-        ]);
-
-        const headerTitle = hasHeaderTitleSlot ?
-            normalizeSlot(SlotName.HEADER_TITLE, context.$slots) :
-            headerTitleAlt;
-
-        // -------------------------------------------------------------
-
-        const hasHeaderActionsSlot = hasNormalizedSlot(SlotName.HEADER_ACTIONS, context.$slots);
-        const headerActionsAlt = h(
-            'div',
-            {
-                class: 'd-flex flex-row',
-            },
-            [
-                h('div', [
-                    h('button', {
-                        type: 'button',
-                        disabled: context.busy,
-
-                        class: 'btn btn-xs btn-dark',
-                        onClick($event: any) {
-                            $event.preventDefault();
-
-                            return context.load.apply(null);
-                        },
-                    }, [
-                        h('i', { class: 'fa fa-sync' }),
-                        ' ',
-                        context.refreshText,
-                    ]),
-                ]),
-            ],
-        );
-
-        const headerActions = hasHeaderActionsSlot ?
-            normalizeSlot(SlotName.HEADER_ACTIONS, {
-                load: context.load,
-                busy: context.busy,
-            }, context.$slots) :
-            headerActionsAlt;
-
-        // -------------------------------------------------------------
-
-        const headerAlt = h(
-            'div',
-            {
-                class: 'd-flex flex-row mb-2 align-items-center',
-            },
-            [
-                h('div', [headerTitle]),
-                h('div', { class: 'ml-auto' }, [headerActions]),
-            ],
-        );
-
-        const hasHeaderSlot = hasNormalizedSlot(SlotName.HEADER, context.$slots);
-        header = h(
-            'div',
-            {
-                class: 'list-header',
-            },
-            [hasHeaderSlot ?
-                normalizeSlot(SlotName.HEADER, slotScope, context.$slots) :
-                headerAlt,
-            ],
-        );
+    if (hasNormalizedSlot(SlotName.HEADER, options.$slots)) {
+        return normalizeSlot(SlotName.HEADER, slotScope, options.$slots);
     }
 
-    return header;
+    const headerChildren : VNodeArrayChildren = [];
+
+    if (options.title) {
+        if (typeof options.title === 'boolean') {
+            options.title = {};
+        }
+
+        options.title.$slots = options.$slots;
+
+        headerChildren.push(buildListTitle(options.title));
+    }
+
+    // -------------------------------------------------------------
+
+    if (hasNormalizedSlot(SlotName.HEADER_ACTIONS, options.$slots)) {
+        headerChildren.push(normalizeSlot(
+            SlotName.HEADER_ACTIONS,
+            {
+                load: options.load,
+                busy: options.busy,
+            },
+            options.$slots,
+        ));
+    } else {
+        const actions : VNodeArrayChildren = [];
+
+        if (options.actionRefresh) {
+            if (typeof options.actionRefresh === 'boolean') {
+                options.actionRefresh = {
+                    load: options.load,
+                    busy: options.busy,
+                };
+            }
+
+            headerChildren.push(buildListActionRefresh(options.actionRefresh));
+        }
+
+        if (actions.length > 0) {
+            headerChildren.push(h(
+                options.actionType,
+                options.actionProps,
+                actions,
+            ));
+        }
+    }
+
+    // -------------------------------------------------------------
+
+    return h(
+        options.type,
+        options.props,
+        headerChildren,
+    );
 }

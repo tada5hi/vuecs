@@ -5,13 +5,15 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { VNode, defineComponent, h } from 'vue';
+import {
+    VNodeArrayChildren, computed, defineComponent, h,
+} from 'vue';
 
 export type PaginationMeta = {
-    limit?: number,
-    offset?: number,
-    total?: number,
-    page?: number
+    limit: number,
+    offset: number,
+    total: number,
+    page: number
 };
 
 export const Pagination = defineComponent({
@@ -33,58 +35,56 @@ export const Pagination = defineComponent({
             default: false,
         },
     },
-    computed: {
-        totalPages() {
-            if (this.limit === 0 || this.total === 0) return 1;
+    emits: ['load'],
+    setup(props, { emit }) {
+        const totalPages = computed(() => {
+            if (props.limit === 0 || props.total === 0) return 1;
 
-            const pages = Math.ceil(this.total / this.limit);
+            const pages = Math.ceil(props.total / props.limit);
             return pages >= 1 ? pages : 1;
-        },
-        currentPage() {
-            if (this.limit === 0 || this.total === 0) return 1;
+        });
 
-            return Math.floor(this.offset / this.limit) + 1;
-        },
-        pages() {
-            const pages = [];
+        const currentPage = computed(() => {
+            if (props.limit === 0 || props.total === 0) return 1;
 
-            for (let i = this.currentPage - 2; i < (this.currentPage + 2); i++) {
-                if (i > 0 && i <= this.totalPages) {
-                    pages.push(i);
+            return Math.floor(props.offset / props.limit) + 1;
+        });
+
+        const pages = computed(() => {
+            const items = [];
+
+            for (let i = currentPage.value - 2; i < (currentPage.value + 2); i++) {
+                if (i > 0 && i <= totalPages.value) {
+                    items.push(i);
                 }
             }
 
-            return pages;
-        },
-    },
-    methods: {
-        goTo(page: number) {
-            if (this.busy || page === this.currentPage) return;
+            return items;
+        });
+
+        const goTo = (page: number) => {
+            if (props.busy || page === currentPage.value) return;
 
             const data : PaginationMeta = {
                 page,
-                offset: (page - 1) * this.limit,
-                limit: this.limit,
+                offset: (page - 1) * props.limit,
+                limit: props.limit,
+                total: totalPages.value,
             };
 
-            this.$emit('load', data);
-        },
-    },
-    render(): VNode {
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        const vm = this;
+            emit('load', data);
+        };
 
         let prevPage = h('');
-        if (vm.currentPage > 1) {
+        if (currentPage.value > 1) {
             prevPage = h('li', { class: 'page-item' }, [
                 h('button', {
                     class: 'page-link',
-                    disabled: vm.busy,
+                    disabled: props.busy,
                     onClick($event: any) {
                         $event.preventDefault();
 
-                        // eslint-disable-next-line prefer-rest-params
-                        return vm.goTo(vm.currentPage - 1);
+                        return goTo(currentPage.value - 1);
                     },
                 }, [
                     h('i', { class: 'fa fa-chevron-left' }),
@@ -92,24 +92,24 @@ export const Pagination = defineComponent({
             ]);
         }
 
-        const betweenPages = [];
+        const betweenPages : VNodeArrayChildren = [];
 
-        for (let i = 0; i < vm.pages.length; i++) {
+        for (let i = 0; i < pages.value.length; i++) {
             const node = h('li', { class: 'page-item' }, [
                 h('button', {
                     class: {
-                        active: vm.pages[i] === vm.currentPage,
+                        active: pages.value[i] === currentPage.value,
                         'page-link': true,
                     },
-                    disabled: vm.busy,
+                    disabled: props.busy,
                     onClick($event: any) {
                         $event.preventDefault();
 
                         // eslint-disable-next-line prefer-rest-params
-                        return vm.goTo(vm.pages[i]);
+                        return goTo(pages.value[i]);
                     },
                 }, [
-                    vm.pages[i],
+                    pages.value[i],
                 ]),
             ]);
 
@@ -117,16 +117,15 @@ export const Pagination = defineComponent({
         }
 
         let nextPage = h('');
-        if (vm.currentPage < vm.totalPages) {
+        if (currentPage.value < totalPages.value) {
             nextPage = h('li', { class: 'page-item' }, [
                 h('button', {
                     class: 'page-link',
-                    disabled: vm.busy,
+                    disabled: props.busy,
                     onClick($event: any) {
                         $event.preventDefault();
 
-                        // eslint-disable-next-line prefer-rest-params
-                        return vm.goTo(vm.currentPage + 1);
+                        return goTo(currentPage.value + 1);
                     },
                 }, [
                     h('i', { class: 'fa fa-chevron-right' }),
@@ -134,7 +133,7 @@ export const Pagination = defineComponent({
             ]);
         }
 
-        return h('ul', { class: 'pagination justify-content-center' }, [
+        return () => h('ul', { class: 'pagination justify-content-center' }, [
             prevPage,
             betweenPages,
             nextPage,

@@ -7,3 +7,4 @@
 
 export * from './normalize-slot';
 export * from './proprety';
+export * from './ref';

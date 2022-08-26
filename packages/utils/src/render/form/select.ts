@@ -6,66 +6,80 @@
  */
 
 import {
-    VNode, h,
+    VNode, h, unref,
 } from 'vue';
-import { BaseValidation } from '@vuelidate/core';
 import { FormGroup, FormGroupProperties } from '../../components';
 import {
     FormGroupProps,
-    FormSelectBuildContext,
+    FormSelectBuildOptions,
+    FormSelectBuildOptionsInput,
     FormSelectOption,
 } from './type';
+import { buildFormBaseOptions } from './utils';
+import { unrefWithDefault } from '../../utils';
 
-export function buildFormSelect<T extends Record<string, any>>(
-    context: FormSelectBuildContext<T>,
+export function buildFormInputOptions(
+    input: FormSelectBuildOptionsInput,
+) : FormSelectBuildOptions {
+    const options = buildFormBaseOptions(input);
+
+    return {
+        ...options,
+
+        options: unref(options.options),
+        optionDefaultText: unrefWithDefault(options.optionDefaultText, 'Select'),
+    };
+}
+
+export function buildFormSelect(
+    input: FormSelectBuildOptions,
 ) : VNode {
-    const validations : Partial<BaseValidation> = context.validationGroup ?
-        context.validationGroup[context.propName] : {};
+    const options = buildFormInputOptions(input);
 
-    return h(FormGroup, {
-        props: {
-            validations,
-            validationMessages: context.validationMessages,
-            validationTranslator: context.validationTranslator,
+    return h(
+        FormGroup,
+        {
+            validations: options.validationRules,
+            validationMessages: options.validationMessages,
+            validationTranslator: options.validationTranslator,
         } as FormGroupProperties,
-        scopedSlots: {
+        {
             default: (props: FormGroupProps) => h(
                 'div',
                 {
                     staticClass: 'form-group',
                     class: {
-                        'form-group-error': validations.$error,
-                        'form-group-warning': validations.$invalid &&
-                            !validations.$dirty,
+                        'form-group-error': options.validationRules.$error,
+                        'form-group-warning': options.validationRules.$invalid &&
+                            !options.validationRules.$dirty,
                     },
                 },
                 [
-                    h('label', Array.isArray(context.title) ? context.title : [context.title]),
+                    h('label', Array.isArray(options.labelContent) ? options.labelContent : [options.labelContent]),
                     h('select', {
-                        value: validations.$model,
-                        ...(context.attrs || {}),
-                        ...(context.domProps || {}),
+                        value: options.validationRules.$model,
                         directives: [{
                             name: 'model',
-                            value: validations.$model,
+                            value: options.validationRules.$model,
                         }],
                         class: 'form-control',
                         onChange($event: any) {
                             const $$selectedVal = Array.prototype.filter.call($event.target.options, (o) => o.selected).map((o) => ('_value' in o ? o._value : o.value));
                             const value = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
 
-                            validations.$model = value;
+                            options.validationRules.$model = value;
                             this.$emit('update:modelValue', value);
 
-                            if (context.changeCallback) {
-                                context.changeCallback.call(null, value);
+                            if (options.changeCallback) {
+                                options.changeCallback.call(null, value);
                             }
                         },
+                        ...options.props,
                     }, [
                         h('option', {
                             value: '',
-                        }, ['-- ', (context.optionDefaultText ? context.optionDefaultText : 'Select option'), ' --']),
-                        context.options.map((item: FormSelectOption) => h('option', {
+                        }, ['-- ', options.optionDefaultText, ' --']),
+                        options.options.map((item: FormSelectOption) => h('option', {
                             key: item.id,
                             domProps: {
                                 value: item.id,
@@ -78,5 +92,5 @@ export function buildFormSelect<T extends Record<string, any>>(
                 ],
             ),
         },
-    });
+    );
 }

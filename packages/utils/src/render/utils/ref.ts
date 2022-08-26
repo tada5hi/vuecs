@@ -5,14 +5,42 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { unref } from 'vue';
-import { MaybeRef } from '../type';
+import { isRef, unref } from 'vue';
+import { MaybeRef } from '../../type';
 
-export function unrefRecord(data: Record<string, MaybeRef<unknown>>) {
-    const keys = Object.keys(data);
-    for (let i = 0; i < keys.length; i++) {
-        data[keys[i]] = unref(data[keys[i]]);
+export function setMaybeRefValue<T>(input: MaybeRef<T>, value: T) {
+    if (isRef(input)) {
+        input.value = value;
+    } else {
+        input = value;
     }
 
-    return data;
+    return input;
+}
+
+export function pushMaybeRefArrayValue<T>(
+    input: MaybeRef<T[]>,
+    value: T,
+) {
+    if (isRef(input)) {
+        input.value.push(value);
+    } else {
+        input.push(value);
+    }
+
+    return value;
+}
+
+export function spliceMaybeRefArray<T extends unknown[]>(
+    input: MaybeRef<T>,
+    index: number,
+    amount: number,
+) {
+    if (isRef(input)) {
+        input.value.splice(index, amount);
+    } else {
+        input.splice(index, amount);
+    }
+
+    return input;
 }

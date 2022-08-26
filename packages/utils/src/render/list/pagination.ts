@@ -5,33 +5,52 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { CreateElement } from 'vue';
+import { h, unref } from 'vue';
 import { Pagination } from '../../components/Pagination';
-import { ComponentListData, ComponentListMethods, ComponentListProperties } from './type';
+import {
+    ListPaginationBuildOptions,
+    ListPaginationBuildOptionsInput,
+} from './type';
+import { unrefWithDefault } from '../../utils';
+
+export function buildListPaginationOptions<T extends Record<string, any>>(
+    options: ListPaginationBuildOptionsInput<T>,
+) : ListPaginationBuildOptions<T> {
+    return {
+        ...options,
+
+        load: (() => Promise.resolve()),
+
+        type: unrefWithDefault(options.type, 'div'),
+        props: unrefWithDefault(options.props, {
+            class: 'list-pagination',
+        }),
+
+        slotItems: options.slotItems || {},
+        slotProps: unrefWithDefault(options.slotProps, {}),
+
+        busy: unrefWithDefault(options.busy, false),
+
+        items: unref(options.items),
+        meta: unref(options.meta),
+    };
+}
 
 export function buildListPagination<T extends Record<string, any>>(
-    instance: ComponentListMethods<T> &
-    ComponentListData<T> &
-    ComponentListProperties<T> & {
-        $scopedSlots: Record<string, any>,
-        $slots: Record<string, any>
-    },
-    h: CreateElement,
+    input: ListPaginationBuildOptionsInput<T>,
 ) {
-    let node = h();
-    if (instance.withPagination) {
-        node = h('div', { staticClass: 'list-pagination' }, [
-            h(Pagination, {
-                props: {
-                    ...instance.meta,
-                    busy: instance.busy,
-                },
-                on: {
-                    load: instance.load,
-                },
-            }),
-        ]);
-    }
+    const options = buildListPaginationOptions(input);
 
-    return node;
+    return h(
+        options.type,
+        options.props,
+        [
+            h(Pagination, {
+                ...options.meta,
+                busy: options.busy,
+                onLoad: options.load,
+                ...options.props,
+            }),
+        ],
+    );
 }
