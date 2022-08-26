@@ -12,25 +12,26 @@ import {
     ListTitleBuildOptions,
     ListTitleBuildOptionsInput,
 } from './type';
-import { unrefWithDefault, withOptionalDefault } from '../../utils';
+import { unrefWithDefault } from '../../utils';
 import { hasNormalizedSlot, normalizeSlot } from '../utils';
 import { SlotName } from '../constants';
+import { buildListBaseOptions } from './utils';
 
 export function buildListTitleOptions<T extends Record<string, any>>(
-    options: ListTitleBuildOptionsInput<T>,
+    input: ListTitleBuildOptionsInput<T>,
 ) : ListTitleBuildOptions<T> {
+    const options = buildListBaseOptions(input, {
+        type: 'h6',
+    });
+
     return {
         ...options,
-
-        type: unrefWithDefault(options.type, 'h6'),
-
-        $slots: options.$slots || {},
 
         text: unrefWithDefault(options.text, true),
         textProps: unrefWithDefault(options.textProps, {
             class: 'mb-0',
         }),
-        textContent: withOptionalDefault(options.textContent, 'List'),
+        textContent: unrefWithDefault(options.textContent, 'List'),
 
         icon: unrefWithDefault(options.icon, true),
         iconProps: unrefWithDefault(options.iconProps, {
@@ -44,8 +45,8 @@ export function buildListTitle<T extends Record<string, any>>(
 ) : VNode | VNode[] {
     const options = buildListTitleOptions(input);
 
-    if (hasNormalizedSlot(SlotName.HEADER_TITLE, options.$slots)) {
-        return normalizeSlot(SlotName.HEADER_TITLE, options.$slots);
+    if (hasNormalizedSlot(SlotName.HEADER_TITLE, options.slotItems)) {
+        return normalizeSlot(SlotName.HEADER_TITLE, options.slotItems);
     }
     const children: VNodeArrayChildren = [];
     if (options.icon) {

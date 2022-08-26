@@ -12,22 +12,21 @@ import {
     ListNoMoreBuildOptions, ListNoMoreBuildOptionsInput,
 } from './type';
 import { unrefWithDefault } from '../../utils';
+import { buildListBaseOptions } from './utils';
 
 export function buildListNoMoreOptions<T extends Record<string, any>>(
-    options: ListNoMoreBuildOptionsInput<T>,
+    input: ListNoMoreBuildOptionsInput<T>,
 ) : ListNoMoreBuildOptions<T> {
+    const options = buildListBaseOptions(input, {
+        props: {
+            class: 'list-no-more',
+        },
+    });
+
     return {
         ...options,
 
-        type: unrefWithDefault(options.type, 'div'),
-        props: unrefWithDefault(options.props, {
-            class: 'list-no-more',
-        }),
-
-        slotItems: options.slotItems || {},
-        slotProps: unrefWithDefault(options.slotProps, {}),
-
-        textContent: options.textContent || 'No more items available...',
+        textContent: unrefWithDefault(options.textContent, 'No more items available...'),
 
         busy: unrefWithDefault(options.busy, false),
         items: unref(options.items),

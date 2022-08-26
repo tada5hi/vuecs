@@ -12,20 +12,19 @@ import { hasNormalizedSlot, normalizeSlot } from '../utils';
 import { SlotName } from '../constants';
 import { ListItemBuildOptions, ListItemBuildOptionsInput } from './type';
 import { hasOwnProperty, unrefWithDefault } from '../../utils';
+import { buildListBaseOptions } from './utils';
 
 export function buildListItemOptions<T extends Record<string, any>>(
-    options: ListItemBuildOptionsInput<T>,
+    input: ListItemBuildOptionsInput<T>,
 ) : ListItemBuildOptions<T> {
+    const options = buildListBaseOptions(input, {
+        props: {
+            class: 'list-item d-flex flex-row align-items-center',
+        },
+    });
+
     return {
         ...options,
-
-        slotItems: options.slotItems || {},
-        slotProps: unrefWithDefault(options.slotProps, {}),
-
-        type: unrefWithDefault(options.type, 'div'),
-        props: unrefWithDefault(options.props, {
-            class: 'list-item d-flex flex-row align-items-center',
-        }),
 
         icon: unrefWithDefault(options.icon, true),
         iconProps: unrefWithDefault(options.iconProps, {
@@ -36,6 +35,8 @@ export function buildListItemOptions<T extends Record<string, any>>(
 
         index: unref(options.index),
         key: unref(options.key),
+
+        data: unref(options.data),
 
         actions: options.actions || [],
         busy: unrefWithDefault(options.busy, false),

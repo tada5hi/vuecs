@@ -6,4 +6,5 @@
  */
 
 export * from './has-own-property';
-export * from './unref';
+export * from './promise';
+export * from './ref';

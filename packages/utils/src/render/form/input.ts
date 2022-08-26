@@ -5,13 +5,16 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { VNode, VNodeChild, h } from 'vue';
+import {
+    VNode, VNodeChild, h, unref,
+} from 'vue';
 import { FormGroup, FormGroupProperties } from '../../components';
+import { setMaybeRefValue } from '../utils';
 import {
     FormGroupProps,
     FormInputBuildOptions, FormInputBuildOptionsInput,
 } from './type';
-import { buildFormBaseOptions } from './utils';
+import { buildFormBaseOptions, handleFormValueChanged } from './utils';
 import { unrefWithDefault } from '../../utils';
 
 export function buildFormInputOptions(
@@ -55,25 +58,24 @@ export function buildFormInput(
         ));
     }
 
+    const rawValue = unref(options.value);
+    const rawValidationValue = unref(options.validationRulesResult.$model);
+
     inputGroupChildren.push(h(
         'input',
         {
             type: 'text',
             placeholder: '...',
-            value: options.validationRules.$model,
             class: 'form-control',
             onInput($event: any) {
                 if ($event.target.composing) {
                     return;
                 }
 
-                options.validationRules.$model = $event.target.value;
-                this.$emit('update:modelValue', $event.target.value);
-
-                if (options.changeCallback) {
-                    options.changeCallback.call(null, $event.target.value);
-                }
+                handleFormValueChanged(options, $event.target.value);
             },
+            ...(typeof rawValue !== 'undefined' ? { value: rawValue } : {}),
+            ...(typeof rawValidationValue !== 'undefined' ? { value: rawValidationValue } : {}),
             ...options.props,
         },
     ));
@@ -101,7 +103,7 @@ export function buildFormInput(
     return h(
         FormGroup,
         {
-            validations: options.validationRules,
+            validations: options.validationRulesResult,
             validationMessages: options.validationMessages,
             validationTranslator: options.validationTranslator,
         } as FormGroupProperties,
@@ -111,8 +113,8 @@ export function buildFormInput(
                 {
                     class: {
                         'form-group': true,
-                        'form-group-error': options.validationRules.$error,
-                        'form-group-warning': options.validationRules.$invalid && !options.validationRules.$dirty,
+                        'form-group-error': options.validationRulesResult.$error,
+                        'form-group-warning': options.validationRulesResult.$invalid && !options.validationRulesResult.$dirty,
                     },
                 },
                 [

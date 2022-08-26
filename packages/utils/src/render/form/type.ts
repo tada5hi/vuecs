@@ -24,8 +24,11 @@ export type FormBaseBuildOptions = {
     labelContent: string | VNode | (VNode | string)[] | VNodeChild,
 
     props: VNodeProperties,
-    changeCallback?: (input: any) => void,
-    validationRules: BaseValidation,
+
+    value?: MaybeRef<unknown>,
+
+    change?: (input: any) => void,
+    validationRulesResult: Partial<BaseValidation>,
     validationMessages: ValidationMessages,
     validationTranslator?: ValidationTranslator
 };
@@ -33,11 +36,10 @@ export type FormBaseBuildOptions = {
 export type FormBaseBuildOptionsInput = OptionsInput<
 FormBaseBuildOptions,
 never,
-'props' | 'labelContent' | 'changeCallback' | 'validationRules' | 'validationTranslator',
-'label' | 'validationMessages'
+'value' | 'change' | 'validationTranslator'
 >;
 
-export type ExpectFormbaseBuildOptions<T extends FormBaseBuildOptions | FormBaseBuildOptionsInput> =
+export type ExpectFormBaseBuildOptions<T extends FormBaseBuildOptions | FormBaseBuildOptionsInput> =
     Omit<T, keyof FormBaseBuildOptions | keyof FormBaseBuildOptionsInput>;
 
 // --------------------------------------
@@ -51,7 +53,7 @@ export type FormInputBuildOptions = FormBaseBuildOptions & {
 };
 
 export type FormInputBuildOptionsInput = FormBaseBuildOptionsInput & OptionsInput<
-ExpectFormbaseBuildOptions<FormInputBuildOptions>,
+ExpectFormBaseBuildOptions<FormInputBuildOptions>,
 never,
 'appendTextContent' | 'prependTextContent'
 >;
@@ -63,15 +65,13 @@ export type FormSelectOption = {
     value: any
 };
 
-export type FormSelectBuildOptions<
-    T extends Record<string, any> = Record<string, any>,
-> = FormBaseBuildOptions & {
+export type FormSelectBuildOptions = FormBaseBuildOptions & {
     options: FormSelectOption[],
     optionDefaultText: string,
 };
 
 export type FormSelectBuildOptionsInput = FormBaseBuildOptionsInput & OptionsInput<
-ExpectFormbaseBuildOptions<FormSelectBuildOptions>,
+ExpectFormBaseBuildOptions<FormSelectBuildOptions>,
 never,
 never,
 'options'
@@ -79,24 +79,30 @@ never,
 
 // --------------------------------------
 
-export type FormSubmitContext = {
-    updateText?: string,
-    updateIconClass?: string,
-    updateButtonClass?: string,
+export type FormSubmitOptions = {
+    updateText: string,
+    updateIconClass: string,
+    updateButtonClass: string,
 
-    createText?: string
-    createIconClass?: string,
-    createButtonClass?: string,
+    createText: string
+    createIconClass: string,
+    createButtonClass: string,
 
     busy: MaybeRef<boolean>,
-    isEditing: MaybeRef<boolean>,
+    isEditing: boolean,
     submit: () => void | Promise<void>,
 
-    validationGroup?: BaseValidation
+    validationRulesResult: Partial<BaseValidation>
 };
+
+export type FormSubmitOptionsInput = OptionsInput<
+FormSubmitOptions,
+'submit',
+'busy'
+>;
 
 // --------------------------------------
 
-export type FormTextareaBuildContext<
-    T extends Record<string, any> = Record<string, any>,
-> = FormBaseBuildOptions;
+export type FormTextareaBuildOptions = FormBaseBuildOptions;
+export type FormTextareaBuildOptionsInput = FormBaseBuildOptionsInput &
+OptionsInput<ExpectFormBaseBuildOptions<FormInputBuildOptions>>;

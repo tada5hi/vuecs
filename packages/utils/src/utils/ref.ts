@@ -6,7 +6,7 @@
  */
 
 import { unref } from 'vue';
-import { MaybeRef, NonBoolean } from '../type';
+import { MaybeRef } from '../type';
 
 export function unrefWithDefault<T>(value: MaybeRef<T>, alt: T) : NonNullable<T> {
     const raw = unref(value);
@@ -15,14 +15,4 @@ export function unrefWithDefault<T>(value: MaybeRef<T>, alt: T) : NonNullable<T>
     }
 
     return raw as NonNullable<T>;
-}
-
-export function withOptionalDefault<T>(value: T, alt?: T) : NonBoolean<T> {
-    if (
-        typeof value === 'boolean'
-    ) {
-        return alt as NonBoolean<T>;
-    }
-
-    return value as NonBoolean<T>;
 }

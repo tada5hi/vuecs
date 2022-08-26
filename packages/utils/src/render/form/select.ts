@@ -6,19 +6,20 @@
  */
 
 import {
-    VNode, h, unref,
+    VNode, VNodeChild, h, unref,
 } from 'vue';
 import { FormGroup, FormGroupProperties } from '../../components';
+import { setMaybeRefValue } from '../utils';
 import {
     FormGroupProps,
     FormSelectBuildOptions,
     FormSelectBuildOptionsInput,
     FormSelectOption,
 } from './type';
-import { buildFormBaseOptions } from './utils';
+import { buildFormBaseOptions, handleFormValueChanged } from './utils';
 import { unrefWithDefault } from '../../utils';
 
-export function buildFormInputOptions(
+export function buildFormSelectOptions(
     input: FormSelectBuildOptionsInput,
 ) : FormSelectBuildOptions {
     const options = buildFormBaseOptions(input);
@@ -32,14 +33,23 @@ export function buildFormInputOptions(
 }
 
 export function buildFormSelect(
-    input: FormSelectBuildOptions,
+    input: FormSelectBuildOptionsInput,
 ) : VNode {
-    const options = buildFormInputOptions(input);
+    const options = buildFormSelectOptions(input);
+
+    const children : VNodeChild = [];
+
+    if (options.label) {
+        children.push(h('label', [options.labelContent]));
+    }
+
+    const rawValue = unref(options.value);
+    const rawValidationValue = unref(options.validationRulesResult.$model);
 
     return h(
         FormGroup,
         {
-            validations: options.validationRules,
+            validations: options.validationRulesResult,
             validationMessages: options.validationMessages,
             validationTranslator: options.validationTranslator,
         } as FormGroupProperties,
@@ -47,33 +57,27 @@ export function buildFormSelect(
             default: (props: FormGroupProps) => h(
                 'div',
                 {
-                    staticClass: 'form-group',
-                    class: {
-                        'form-group-error': options.validationRules.$error,
-                        'form-group-warning': options.validationRules.$invalid &&
-                            !options.validationRules.$dirty,
-                    },
+                    class: [
+                        'form-group',
+                        {
+                            'form-group-error': options.validationRulesResult.$error,
+                            'form-group-warning': options.validationRulesResult.$invalid &&
+                            !options.validationRulesResult.$dirty,
+                        },
+                    ],
                 },
                 [
-                    h('label', Array.isArray(options.labelContent) ? options.labelContent : [options.labelContent]),
+                    ...children,
                     h('select', {
-                        value: options.validationRules.$model,
-                        directives: [{
-                            name: 'model',
-                            value: options.validationRules.$model,
-                        }],
                         class: 'form-control',
                         onChange($event: any) {
                             const $$selectedVal = Array.prototype.filter.call($event.target.options, (o) => o.selected).map((o) => ('_value' in o ? o._value : o.value));
                             const value = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
 
-                            options.validationRules.$model = value;
-                            this.$emit('update:modelValue', value);
-
-                            if (options.changeCallback) {
-                                options.changeCallback.call(null, value);
-                            }
+                            handleFormValueChanged(options, value);
                         },
+                        ...(typeof rawValue !== 'undefined' ? { value: rawValue } : {}),
+                        ...(typeof rawValidationValue !== 'undefined' ? { value: rawValidationValue } : {}),
                         ...options.props,
                     }, [
                         h('option', {
@@ -81,9 +85,7 @@ export function buildFormSelect(
                         }, ['-- ', options.optionDefaultText, ' --']),
                         options.options.map((item: FormSelectOption) => h('option', {
                             key: item.id,
-                            domProps: {
-                                value: item.id,
-                            },
+                            value: item.id,
                         }, item.value)),
                     ]),
                     props.errors.map((error) => h('div', {

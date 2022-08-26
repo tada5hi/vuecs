@@ -5,21 +5,38 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { ExpectFormbaseBuildOptions, FormBaseBuildOptions, FormBaseBuildOptionsInput } from './type';
+import { setMaybeRefValue } from '../utils';
+import { ExpectFormBaseBuildOptions, FormBaseBuildOptions, FormBaseBuildOptionsInput } from './type';
 import { unrefWithDefault } from '../../utils';
 
 export function buildFormBaseOptions<T extends FormBaseBuildOptionsInput>(
     options: T,
-) : ExpectFormbaseBuildOptions<T> & FormBaseBuildOptions {
+) : ExpectFormBaseBuildOptions<T> & FormBaseBuildOptions {
     return {
         ...options,
 
-        props: options.props || {},
+        props: unrefWithDefault(options.props, {}),
 
         label: unrefWithDefault(options.label, true),
-        labelContent: options.labelContent || 'Input',
+        labelContent: unrefWithDefault(options.labelContent, 'Input'),
 
         validationMessages: unrefWithDefault(options.validationMessages, {}),
-        validationRules: options.validationRules || {},
+        validationRulesResult: unrefWithDefault(options.validationRulesResult, {}),
     };
+}
+
+export function handleFormValueChanged(options: FormBaseBuildOptions, value: unknown) {
+    if (typeof options.value !== 'undefined') {
+        setMaybeRefValue(options.value, value);
+    }
+
+    if (typeof options.validationRulesResult.$model !== 'undefined') {
+        setMaybeRefValue(options.validationRulesResult.$model, value);
+    }
+
+    if (options.change) {
+        options.change.call(null, value);
+    }
+
+    return options;
 }

@@ -12,22 +12,21 @@ import {
     ListPaginationBuildOptionsInput,
 } from './type';
 import { unrefWithDefault } from '../../utils';
+import { buildListBaseOptions } from './utils';
 
 export function buildListPaginationOptions<T extends Record<string, any>>(
-    options: ListPaginationBuildOptionsInput<T>,
+    input: ListPaginationBuildOptionsInput<T>,
 ) : ListPaginationBuildOptions<T> {
+    const options = buildListBaseOptions(input, {
+        props: {
+            class: 'list-pagination',
+        },
+    });
+
     return {
         ...options,
 
         load: (() => Promise.resolve()),
-
-        type: unrefWithDefault(options.type, 'div'),
-        props: unrefWithDefault(options.props, {
-            class: 'list-pagination',
-        }),
-
-        slotItems: options.slotItems || {},
-        slotProps: unrefWithDefault(options.slotProps, {}),
 
         busy: unrefWithDefault(options.busy, false),
 

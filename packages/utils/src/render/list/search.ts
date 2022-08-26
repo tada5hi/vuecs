@@ -11,20 +11,19 @@ import {
     ListSearchBuildOptionsInput,
 } from './type';
 import { unrefWithDefault } from '../../utils';
+import { buildListBaseOptions } from './utils';
 
 export function buildListSearchOptions(
-    options: ListSearchBuildOptionsInput,
+    input: ListSearchBuildOptionsInput,
 ) : ListSearchBuildOptions {
+    const options = buildListBaseOptions(input, {
+        props: {
+            class: 'list-search',
+        },
+    });
+
     return {
         ...options,
-
-        type: unrefWithDefault(options.type, 'div'),
-        props: unrefWithDefault(options.props, {
-            class: 'list-search',
-        }),
-
-        slotItems: options.slotItems || {},
-        slotProps: unrefWithDefault(options.slotProps, {}),
 
         q: unref(options.q),
     };

@@ -6,59 +6,80 @@
  */
 
 import { h, unref } from 'vue';
-import { BaseValidation } from '@vuelidate/core';
+import { isPromise, unrefWithDefault } from '../../utils';
+import { setMaybeRefValue } from '../utils';
 import {
-    FormSubmitContext,
+    FormSubmitOptions,
+    FormSubmitOptionsInput,
 } from './type';
 
-export function buildFormSubmit<
-    T extends Record<string, any>,
->(
-    context: FormSubmitContext,
-) {
-    const updateText = context.updateText || 'Update';
-    const updateIcon = context.updateIconClass || 'fa fa-save';
-    const updateButtonClass = context.updateButtonClass || 'btn btn-xs btn-primary';
+export function buildFormSubmitOptions(
+    options: FormSubmitOptionsInput,
+) : FormSubmitOptions {
+    return {
+        ...options,
 
-    const createText = context.createText || 'Create';
-    const createIcon = context.createIconClass || 'fa fa-plus';
-    const createButtonClass = context.createButtonClass || 'btn btn-xs btn-success';
+        validationRulesResult: unrefWithDefault(options.validationRulesResult, {}),
 
-    const validation : Partial<BaseValidation> = context.validationGroup || {};
+        updateText: unrefWithDefault(options.updateText, 'Update'),
+        updateIconClass: unrefWithDefault(options.updateIconClass, 'fa fa-save'),
+        updateButtonClass: unrefWithDefault(options.updateButtonClass, 'btn btn-xs btn-primary'),
+
+        createText: unrefWithDefault(options.updateText, 'Create'),
+        createIconClass: unrefWithDefault(options.updateIconClass, 'fa fa-plus'),
+        createButtonClass: unrefWithDefault(options.updateButtonClass, 'btn btn-xs btn-success'),
+
+        busy: options.busy ?? false,
+        isEditing: unrefWithDefault(options.isEditing, false),
+    };
+}
+
+export function buildFormSubmit(input: FormSubmitOptionsInput) {
+    const options = buildFormSubmitOptions(input);
 
     return h('div', {
-        staticClass: 'form-group',
+        class: 'form-group',
     }, [
         h('button', {
             class: {
-                [updateButtonClass]: unref(context.isEditing),
-                [createButtonClass]: !unref(context.isEditing),
+                [options.updateButtonClass]: options.isEditing,
+                [options.createButtonClass]: !options.isEditing,
             },
-            domProps: {
-                disabled: validation.$invalid || unref(context.busy),
-            },
-            attrs: {
-                disabled: validation.$invalid || context.busy,
-                type: 'submit',
-            },
+            disabled: options.validationRulesResult.$invalid || unref(options.busy),
+            type: 'submit',
             onClick($event: any) {
                 $event.preventDefault();
 
-                return context.submit.apply(null);
+                setMaybeRefValue(options.busy, true);
+
+                const promise = options.submit.apply(null);
+
+                if (isPromise(promise)) {
+                    promise
+                        .then(() => setMaybeRefValue(options.busy, false))
+                        .catch((e) => {
+                            setMaybeRefValue(options.busy, false);
+                            throw (e);
+                        });
+                }
+
+                return promise;
             },
         }, [
             h('i', {
-                staticClass: 'pr-1',
-                class: {
-                    [updateIcon]: unref(context.isEditing),
-                    [createIcon]: !unref(context.isEditing),
-                },
+                class: [
+                    'pr-1',
+                    {
+                        [options.updateIconClass]: options.isEditing,
+                        [options.createIconClass]: !options.isEditing,
+                    },
+                ],
             }),
             ' ',
             (
-                unref(context.isEditing) ?
-                    updateText :
-                    createText
+                options.isEditing ?
+                    options.updateText :
+                    options.createText
             ),
         ]),
     ]);

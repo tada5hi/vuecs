@@ -15,20 +15,19 @@ import {
 } from './type';
 import { unrefWithDefault } from '../../utils';
 import { buildListItem } from './item';
+import { buildListBaseOptions } from './utils';
 
 export function buildListItemsOptions<T extends Record<string, any>>(
-    options: ListItemsBuildOptionsInput<T>,
+    input: ListItemsBuildOptionsInput<T>,
 ) : ListItemsBuildOptions<T> {
+    const options = buildListBaseOptions(input, {
+        props: {
+            class: 'list-items',
+        },
+    });
+
     return {
         ...options,
-
-        slotItems: options.slotItems || {},
-        slotProps: unrefWithDefault(options.slotProps, {}),
-
-        type: unrefWithDefault(options.type, 'div'),
-        props: unrefWithDefault(options.props, {
-            class: 'list-items',
-        }),
 
         busy: unrefWithDefault(options.busy, false),
 

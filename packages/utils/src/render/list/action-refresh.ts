@@ -9,27 +9,27 @@ import {
     ListActionRefreshBuildOptions,
     ListActionRefreshOptionsInput,
 } from './type';
-import { unrefWithDefault, withOptionalDefault } from '../../utils';
+import { unrefWithDefault } from '../../utils';
+import { buildListBaseOptions } from './utils';
 
 export function buildListActionRefreshOptions<T extends Record<string, any>>(
-    options: ListActionRefreshOptionsInput<T>,
+    input: ListActionRefreshOptionsInput<T>,
 ) : ListActionRefreshBuildOptions<T> {
+    const options = buildListBaseOptions(input, {
+        type: 'button',
+        props: {
+            class: 'btn btn-xs btn-dark',
+        },
+    });
+
     return {
         ...options,
-
-        slotItems: options.slotItems || {},
-        slotProps: unrefWithDefault(options.slotProps, {}),
 
         load: unrefWithDefault(options.load, () => Promise.resolve()),
         busy: unrefWithDefault(options.busy, false),
 
-        type: unrefWithDefault(options.type, 'button'),
-        props: unrefWithDefault(options.props, {
-            class: 'btn btn-xs btn-dark',
-        }),
-
         text: unrefWithDefault(options.text, true),
-        textContent: withOptionalDefault(options.textContent, 'refresh'),
+        textContent: unrefWithDefault(options.textContent, 'refresh'),
 
         icon: unrefWithDefault(options.icon, true),
         iconProps: unrefWithDefault(options.iconProps, {

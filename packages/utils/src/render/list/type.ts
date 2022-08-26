@@ -22,6 +22,15 @@ export type ListBaseOptions = {
     props: VNodeProperties,
 };
 
+export type ListBaseBuildOptionsInput = OptionsInput<
+ListBaseOptions,
+never,
+'slotItems'
+>;
+
+export type ExpectListBaseBuildOptions<T extends ListBaseOptions | ListBaseBuildOptionsInput> =
+    Omit<T, keyof ListBaseOptions | keyof ListBaseBuildOptionsInput>;
+
 // --------------------------------------
 
 export type ListSearchBuildOptions = ListBaseOptions & {
@@ -29,9 +38,8 @@ export type ListSearchBuildOptions = ListBaseOptions & {
 };
 
 export type ListSearchBuildOptionsInput = OptionsInput<
-ListSearchBuildOptions,
-'q',
-'slotItems'
+ExpectListBaseBuildOptions<ListSearchBuildOptions>,
+'q'
 >;
 
 // --------------------------------------
@@ -44,9 +52,9 @@ export type ListPaginationBuildOptions<T extends Record<string, any>> = ListBase
 };
 
 export type ListPaginationBuildOptionsInput<T> = OptionsInput<
-ListPaginationBuildOptions<T>,
+ExpectListBaseBuildOptions<ListPaginationBuildOptions<T>>,
 'load',
-'slotItems',
+never,
 'items' | 'meta'
 >;
 
@@ -60,9 +68,9 @@ export type ListNoMoreBuildOptions<T extends Record<string, any>> = ListBaseOpti
 };
 
 export type ListNoMoreBuildOptionsInput<T> = OptionsInput<
-ListNoMoreBuildOptions<T>,
+ExpectListBaseBuildOptions<ListNoMoreBuildOptions<T>>,
 never,
-'slotItems' | 'textContent',
+never,
 'items'
 >;
 
@@ -76,9 +84,9 @@ export type ListItemsBuildOptions<T> = ListBaseOptions & {
 };
 
 export type ListItemsBuildOptionsInput<T> = OptionsInput<
-ListItemsBuildOptions<T>,
+ExpectListBaseBuildOptions<ListItemsBuildOptions<T>>,
 never,
-'slotItems',
+never,
 'items'
 >;
 
@@ -102,16 +110,15 @@ export type ListItemBuildOptions<T> = ListBaseOptions & {
 };
 
 export type ListItemBuildOptionsInput<T extends Record<string, any>> = OptionsInput<
-ListItemBuildOptions<T>,
-'data',
-'slotItems' | 'actions' | 'fn' | 'textFn'
+ExpectListBaseBuildOptions<ListItemBuildOptions<T>>,
+never,
+'actions' | 'fn' | 'textFn',
+'data'
 >;
 
 // --------------------------------------
 
-export type ListTitleBuildOptions<T extends Record<string, any>> = {
-    slotItems: Slots,
-
+export type ListTitleBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
     text: boolean,
     textProps: VNodeProperties,
     textContent: VNodeChild | VNode | VNode[],
@@ -121,10 +128,7 @@ export type ListTitleBuildOptions<T extends Record<string, any>> = {
 };
 
 export type ListTitleBuildOptionsInput<T extends Record<string, any>> = OptionsInput<
-ListTitleBuildOptions<T>,
-never,
-'slotItems' | 'textContent'
->;
+ExpectListBaseBuildOptions<ListTitleBuildOptions<T>>>;
 
 export type ListActionRefreshBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
     text: boolean,
@@ -138,9 +142,9 @@ export type ListActionRefreshBuildOptions<T extends Record<string, any>> = ListB
 };
 
 export type ListActionRefreshOptionsInput<T extends Record<string, any>> = OptionsInput<
-ListActionRefreshBuildOptions<T>,
+ExpectListBaseBuildOptions<ListActionRefreshBuildOptions<T>>,
 never,
-'slotItems' | 'load' | 'textContent'
+'load'
 >;
 
 // --------------------------------------
@@ -158,7 +162,7 @@ export type ListHeaderBuildOptions<T extends Record<string, any>> = ListBaseOpti
 };
 
 export type ListHeaderBuildOptionsInput<T extends Record<string, any>> = OptionsInput<
-ListHeaderBuildOptions<T>,
+ExpectListBaseBuildOptions<ListHeaderBuildOptions<T>>,
 never,
-'slotItems' | 'load'
+'load'
 >;

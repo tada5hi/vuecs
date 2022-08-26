@@ -5,59 +5,75 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { VNode, h } from 'vue';
-import { BaseValidation } from '@vuelidate/core';
+import {
+    VNode, VNodeChild, h, unref,
+} from 'vue';
 import { FormGroup, FormGroupProperties } from '../../components';
+import { setMaybeRefValue } from '../utils';
 import {
     FormGroupProps,
-    FormTextareaBuildContext,
+    FormTextareaBuildOptions,
+    FormTextareaBuildOptionsInput,
 } from './type';
+import { buildFormBaseOptions, handleFormValueChanged } from './utils';
 
-export function buildFormTextarea<T extends Record<string, any>>(
-    context: FormTextareaBuildContext<T>,
+export function buildFormTextareaOptions(
+    input: FormTextareaBuildOptionsInput,
+) : FormTextareaBuildOptions {
+    const options = buildFormBaseOptions(input);
+
+    return {
+        ...options,
+    };
+}
+
+export function buildFormTextarea(
+    input: FormTextareaBuildOptionsInput,
 ) : VNode {
-    const validations : Partial<BaseValidation> = context.validationRules ?
-        context.validationRules[context.propName] : {};
+    const options = buildFormTextareaOptions(input);
 
-    return h(FormGroup, {
-        props: {
-            validations,
-            validationMessages: context.validationMessages,
-            validationTranslator: context.validationTranslator,
+    const children : VNodeChild = [];
+
+    if (options.label) {
+        children.push(h('label', [options.labelContent]));
+    }
+
+    const rawValue = unref(options.value);
+    const rawValidationValue = unref(options.validationRulesResult.$model);
+
+    return h(
+        FormGroup,
+        {
+            validations: options.validationRulesResult,
+            validationMessages: options.validationMessages,
+            validationTranslator: options.validationTranslator,
         } as FormGroupProperties,
-        scopedSlots: {
+        {
             default: (props: FormGroupProps) => h(
                 'div',
                 {
                     class: {
                         'form-group': true,
-                        'form-group-error': validations.$error,
-                        'form-group-warning': validations.$invalid &&
-                            !validations.$dirty,
+                        'form-group-error': options.validationRulesResult.$error,
+                        'form-group-warning': options.validationRulesResult.$invalid &&
+                            !options.validationRulesResult.$dirty,
                     },
                 },
                 [
-                    h('label', Array.isArray(context.labelContent) ? context.labelContent : [context.labelContent]),
+                    ...children,
                     h('textarea', {
                         placeholder: '...',
-                        ...(context.attrs || {}),
-
-                        value: validations.$model,
-                        ...(context.domProps || {}),
-
                         class: 'form-control',
                         onInput($event: any) {
                             if ($event.target.composing) {
                                 return;
                             }
 
-                            validations.$model = $event.target.value;
-                            this.$emit('update:modelValue', $event.target.value);
-
-                            if (context.changeCallback) {
-                                context.changeCallback.call(null, $event.target.value);
-                            }
+                            handleFormValueChanged(options, $event.target.value);
                         },
+                        ...(typeof rawValue !== 'undefined' ? { value: rawValue } : {}),
+                        ...(typeof rawValidationValue !== 'undefined' ? { value: rawValidationValue } : {}),
+                        ...options.props,
                     }),
                     props.errors.map((error) => h('div', {
                         staticClass: 'form-group-hint group-required',
@@ -65,5 +81,5 @@ export function buildFormTextarea<T extends Record<string, any>>(
                 ],
             ),
         },
-    });
+    );
 }

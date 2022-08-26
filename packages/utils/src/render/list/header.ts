@@ -16,19 +16,19 @@ import { SlotName } from '../constants';
 import { unrefWithDefault } from '../../utils';
 import { buildListTitle } from './title';
 import { buildListActionRefresh } from './action-refresh';
+import { buildListBaseOptions } from './utils';
 
 export function buildListHeaderOptions<T extends Record<string, any>>(
-    options: ListHeaderBuildOptionsInput<T>,
+    input: ListHeaderBuildOptionsInput<T>,
 ) : ListHeaderBuildOptions<T> {
+    const options = buildListBaseOptions(input, {
+        props: {
+            class: 'list-header d-flex flex-row mb-2 align-items-center',
+        },
+    });
+
     return {
         ...options,
-
-        type: unrefWithDefault(options.type, 'div'),
-        props: unrefWithDefault(options.props, {
-            class: 'list-header d-flex flex-row mb-2 align-items-center',
-        }),
-
-        $slots: options.$slots || {},
 
         actionType: unrefWithDefault(options.actionType, 'div'),
         actionProps: unrefWithDefault(options.actionProps, {
@@ -53,8 +53,8 @@ export function buildListHeader<T extends Record<string, any>>(
         load: options.load,
     };
 
-    if (hasNormalizedSlot(SlotName.HEADER, options.$slots)) {
-        return normalizeSlot(SlotName.HEADER, slotScope, options.$slots);
+    if (hasNormalizedSlot(SlotName.HEADER, options.slotItems)) {
+        return normalizeSlot(SlotName.HEADER, slotScope, options.slotItems);
     }
 
     const headerChildren : VNodeArrayChildren = [];
@@ -64,21 +64,19 @@ export function buildListHeader<T extends Record<string, any>>(
             options.title = {};
         }
 
-        options.title.$slots = options.$slots;
-
         headerChildren.push(buildListTitle(options.title));
     }
 
     // -------------------------------------------------------------
 
-    if (hasNormalizedSlot(SlotName.HEADER_ACTIONS, options.$slots)) {
+    if (hasNormalizedSlot(SlotName.HEADER_ACTIONS, options.slotItems)) {
         headerChildren.push(normalizeSlot(
             SlotName.HEADER_ACTIONS,
             {
                 load: options.load,
                 busy: options.busy,
             },
-            options.$slots,
+            options.slotItems,
         ));
     } else {
         const actions : VNodeArrayChildren = [];
