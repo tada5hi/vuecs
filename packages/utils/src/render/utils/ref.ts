@@ -5,12 +5,14 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { isRef, unref } from 'vue';
+import {isReadonly, isRef} from 'vue';
 import { MaybeRef } from '../../type';
 
 export function setMaybeRefValue<T>(input: MaybeRef<T>, value: T) {
     if (isRef(input)) {
-        input.value = value;
+        if(!isReadonly(input)) {
+            input.value = value;
+        }
     } else {
         input = value;
     }

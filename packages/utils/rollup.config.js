@@ -5,43 +5,16 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-// rollup.config.js
-import fs from 'fs';
-import vue from 'rollup-plugin-vue2';
+import vue from 'rollup-plugin-vue';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import babel from '@rollup/plugin-babel';
 import { terser } from 'rollup-plugin-terser';
-
-import typescriptTransformer from 'ttypescript';
-import typescript from 'rollup-plugin-typescript2';
-import minimist from 'minimist';
-
-import includePaths from 'rollup-plugin-includepaths';
 import postcss from 'rollup-plugin-postcss';
 
-const includePathOptions = {
-    include: {
-        vue: 'node_modules/vue/dist/vue.common.js',
-    },
-    external: [
-        'vue',
-    ],
-};
+import pkg from './package.json';
 
-// Get browserslist config and remove ie from es build targets
-const esbrowserslist = fs.readFileSync('./.browserslistrc')
-    .toString()
-    .split('\n')
-    .filter((entry) => entry && entry.substring(0, 2) !== 'ie');
-
-// Extract babel preset-env config, to combine with esbrowserslist
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const babelPresetEnvConfig = require('./babel.config')
-    .presets.filter((entry) => entry[0] === '@babel/preset-env')[0][1];
-
-const argv = minimist(process.argv.slice(2));
 
 const baseConfig = {
     input: 'src/entry.ts',
@@ -50,12 +23,7 @@ const baseConfig = {
             'process.env.NODE_ENV': JSON.stringify('production'),
             preventAssignment: true,
         },
-        vue: {
-            css: true,
-            template: {
-                isProduction: true,
-            },
-        },
+        vue: {},
         postVue: [
             resolve({
                 extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
@@ -73,110 +41,53 @@ const baseConfig = {
 // ESM/UMD/IIFE shared settings: externals
 // Refer to https://rollupjs.org/guide/en/#warning-treating-module-as-external-dependency
 const external = [
-    // list external dependencies, exactly the way it is written in the import statement.
-    // eg. 'jquery'
-    'vue',
+    'vue'
 ];
 
 // UMD/IIFE shared settings: output.globals
 // Refer to https://rollupjs.org/guide/en#output-globals for details
 const globals = {
-    // Provide global variable names to replace your external imports
-    // eg. jquery: '$'
-    vue: 'vue',
+    vue: 'Vue',
 };
 
-// Customize configs for individual targets
-const buildFormats = [];
-if (!argv.format || argv.format === 'es') {
-    const esConfig = {
+const name = 'VueLayoutUtils';
+
+export default [
+    {
         ...baseConfig,
         input: 'src/index.ts',
         external,
-        output: {
-            file: 'dist/index.esm.js',
-            format: 'esm',
-            exports: 'named',
-            assetFileNames: '[name]-[hash][extname]',
-        },
         plugins: [
             replace(baseConfig.plugins.replace),
             postcss({
                 extract: true,
             }),
-            vue(baseConfig.plugins.vue),
+            vue(),
             ...baseConfig.plugins.postVue,
-            // Only use typescript for declarations - babel will
-            // do actual js transformations
-            typescript({
-                typescript: typescriptTransformer,
-                useTsconfigDeclarationDir: true,
-                emitDeclarationOnly: true,
-                tsconfig: 'tsconfig.build.json',
-            }),
             babel({
-                ...baseConfig.plugins.babel,
-                presets: [
-                    [
-                        '@babel/preset-env',
-                        {
-                            ...babelPresetEnvConfig,
-                            targets: esbrowserslist,
-                        },
-                    ],
-                ],
-            }),
+                ...baseConfig.plugins.babel
+            })
         ],
-    };
-    buildFormats.push(esConfig);
-}
+        output: [
+            {
+                file: pkg.module,
+                format: 'esm',
+                exports: 'named',
+                assetFileNames: '[name]-[hash][extname]',
+            },
+            {
+                file: pkg.main,
+                format: 'cjs',
+                exports: 'named',
+                assetFileNames: '[name]-[hash][extname]',
+                globals,
+            }
+        ]
 
-if (!argv.format || argv.format === 'cjs') {
-    const umdConfig = {
+    },
+    {
         ...baseConfig,
         external,
-        output: {
-            compact: true,
-            file: 'dist/index.ssr.js',
-            format: 'cjs',
-            name: 'VueLayoutNavigation',
-            exports: 'auto',
-            assetFileNames: '[name]-[hash][extname]',
-            globals,
-        },
-        plugins: [
-            replace(baseConfig.plugins.replace),
-            postcss({
-                extract: true,
-            }),
-            vue({
-                ...baseConfig.plugins.vue,
-                template: {
-                    ...baseConfig.plugins.vue.template,
-                    optimizeSSR: true,
-                },
-            }),
-            includePaths(includePathOptions),
-            ...baseConfig.plugins.postVue,
-            babel(baseConfig.plugins.babel),
-        ],
-    };
-    buildFormats.push(umdConfig);
-}
-
-if (!argv.format || argv.format === 'iife') {
-    const unpkgConfig = {
-        ...baseConfig,
-        external,
-        output: {
-            compact: true,
-            file: 'dist/index.min.js',
-            format: 'iife',
-            name: 'VueLayoutNavigation',
-            exports: 'auto',
-            assetFileNames: '[name]-[hash][extname]',
-            globals,
-        },
         plugins: [
             replace(baseConfig.plugins.replace),
             postcss({
@@ -191,9 +102,23 @@ if (!argv.format || argv.format === 'iife') {
                 },
             }),
         ],
-    };
-    buildFormats.push(unpkgConfig);
-}
-
-// Export config
-export default buildFormats;
+        output: [
+            {
+                name,
+                compact: true,
+                file: pkg.browser,
+                format: 'esm',
+                assetFileNames: '[name]-[hash][extname]',
+                globals,
+            },
+            {
+                name,
+                compact: true,
+                file: pkg.unpkg,
+                format: 'iife',
+                assetFileNames: '[name]-[hash][extname]',
+                globals,
+            }
+        ],
+    }
+]

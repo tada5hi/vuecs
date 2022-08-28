@@ -4,3 +4,10 @@
  * For the full copyright and license information,
  * view the LICENSE file that was distributed with this source code.
  */
+
+.btn-group-xs>.btn, .btn-xs, .dropdown-xs>.btn {
+    padding: 0.05rem 0.5rem;
+    font-size: .75rem;
+    line-height: 1.5;
+    border-radius: 0.2rem;
+}

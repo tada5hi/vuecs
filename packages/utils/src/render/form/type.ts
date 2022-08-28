@@ -5,11 +5,10 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { BaseValidation } from '@vuelidate/core';
 import {
     VNode, VNodeChild,
 } from 'vue';
-import { OptionsInput, ValidationMessages, ValidationTranslator } from '../type';
+import {OptionsInput, ValidationMessages, ValidationResultRules, ValidationTranslator} from '../type';
 import { MaybeRef, VNodeProperties } from '../../type';
 
 export type FormGroupProps = {
@@ -28,7 +27,7 @@ export type FormBaseBuildOptions = {
     value?: MaybeRef<unknown>,
 
     change?: (input: any) => void,
-    validationRulesResult: Partial<BaseValidation>,
+    validationRulesResult: Partial<ValidationResultRules>,
     validationMessages: ValidationMessages,
     validationTranslator?: ValidationTranslator
 };
@@ -53,9 +52,7 @@ export type FormInputBuildOptions = FormBaseBuildOptions & {
 };
 
 export type FormInputBuildOptionsInput = FormBaseBuildOptionsInput & OptionsInput<
-ExpectFormBaseBuildOptions<FormInputBuildOptions>,
-never,
-'appendTextContent' | 'prependTextContent'
+ExpectFormBaseBuildOptions<FormInputBuildOptions>
 >;
 
 // --------------------------------------
@@ -92,7 +89,7 @@ export type FormSubmitOptions = {
     isEditing: boolean,
     submit: () => void | Promise<void>,
 
-    validationRulesResult: Partial<BaseValidation>
+    validationRulesResult: Partial<ValidationResultRules>
 };
 
 export type FormSubmitOptionsInput = OptionsInput<

@@ -4,16 +4,7 @@
     "compilerOptions": {
         "outDir": "./dist",
         "lib": [
-            "dom",
-            "ESNext",
-            "dom.iterable",
-            "scripthost"
-        ],
-        "plugins": [
-            {
-                "transform":"@zerollup/ts-transform-paths",
-                "exclude": ["*"]
-            }
+            "ESNext"
         ],
         "importHelpers": true,
         "allowSyntheticDefaultImports": true,
@@ -23,7 +14,7 @@
 
         "declaration": true,
         "declarationDir": "dist/types",
-        "isolatedModules": true
+        "skipLibCheck": true
     },
     "exclude": [
         "node_modules",

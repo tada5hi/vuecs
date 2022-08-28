@@ -1,3 +1,10 @@
+<!--
+  - Copyright (c) 2022.
+  - Author Peter Placzek (tada5hi)
+  - For the full copyright and license information,
+  - view the LICENSE file that was distributed with this source code.
+  -->
+
 <script lang="ts">
 import {
     buildFormInput,
@@ -19,10 +26,7 @@ export default defineComponent({
             h('h1', 'Input'),
             buildFormInput({
                 labelContent: 'My input label',
-                prepend: true,
-                prependTextContent: h('i', {
-                    class: 'fa fa-search',
-                }),
+
                 value: inputRef,
                 change: (value) => {
                     console.log('Value of input changed', value);

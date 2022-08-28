@@ -7,6 +7,18 @@
 
 import { ToMaybeRef } from '../type';
 
+export type ValidationResultRules<T = unknown> = {
+    $model: T
+
+    readonly $dirty: boolean
+    readonly $error: boolean
+    readonly $invalid: boolean
+    readonly $anyDirty: boolean
+    readonly $pending: boolean
+    readonly $path: string
+
+    [key: string]: any
+}
 export type ValidationTranslator = (input: string, parameters: Record<string, any>) => string | undefined;
 export type ValidationMessages = Record<string, string>;
 

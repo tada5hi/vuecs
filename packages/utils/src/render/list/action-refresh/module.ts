@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  * Author Peter Placzek (tada5hi)
  * For the full copyright and license information,
  * view the LICENSE file that was distributed with this source code.
@@ -9,8 +9,8 @@ import {
     ListActionRefreshBuildOptions,
     ListActionRefreshOptionsInput,
 } from './type';
-import { unrefWithDefault } from '../../utils';
-import { buildListBaseOptions } from './utils';
+import { unrefWithDefault } from '../../../utils';
+import { buildListBaseOptions } from '../utils';
 
 export function buildListActionRefreshOptions<T extends Record<string, any>>(
     input: ListActionRefreshOptionsInput<T>,
@@ -33,7 +33,7 @@ export function buildListActionRefreshOptions<T extends Record<string, any>>(
 
         icon: unrefWithDefault(options.icon, true),
         iconProps: unrefWithDefault(options.iconProps, {
-            class: 'fa fa-sync',
+            class: 'fa fa-refresh',
         }),
     };
 }
@@ -60,8 +60,9 @@ export function buildListActionRefresh<T extends Record<string, any>>(
     }
 
     // todo: remove div wrapper ?
-    return h('div', [
-        h(options.type, {
+    return h(
+        options.type,
+        {
             ...(options.type === 'button' ? { type: options.type } : {}),
             disabled: options.busy,
             onClick($event: any) {
@@ -70,6 +71,7 @@ export function buildListActionRefresh<T extends Record<string, any>>(
                 return options.load.apply(null);
             },
             ...options.props,
-        }, refreshActionChildren),
-    ]);
+        },
+        refreshActionChildren
+    );
 }

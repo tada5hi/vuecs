@@ -75,68 +75,84 @@ export const Pagination = defineComponent({
             emit('load', data);
         };
 
-        let prevPage = h('');
-        if (currentPage.value > 1) {
-            prevPage = h('li', { class: 'page-item' }, [
-                h('button', {
-                    class: 'page-link',
-                    disabled: props.busy,
-                    onClick($event: any) {
-                        $event.preventDefault();
+        const renderPrevPage = () => {
+            let prevPage = h('');
+            if (currentPage.value > 1) {
+                prevPage = h('li', { class: 'page-item' }, [
+                    h('button', {
+                        class: 'page-link',
+                        disabled: props.busy,
+                        onClick($event: any) {
+                            $event.preventDefault();
 
-                        return goTo(currentPage.value - 1);
-                    },
-                }, [
-                    h('i', { class: 'fa fa-chevron-left' }),
-                ]),
-            ]);
+                            return goTo(currentPage.value - 1);
+                        },
+                    }, [
+                        h('i', { class: 'fa fa-chevron-left' }),
+                    ]),
+                ]);
+            }
+
+            return prevPage;
         }
 
-        const betweenPages : VNodeArrayChildren = [];
+        const renderBetweenPages = () => {
+            const betweenPages : VNodeArrayChildren = [];
 
-        for (let i = 0; i < pages.value.length; i++) {
-            const node = h('li', { class: 'page-item' }, [
-                h('button', {
-                    class: {
-                        active: pages.value[i] === currentPage.value,
-                        'page-link': true,
-                    },
-                    disabled: props.busy,
-                    onClick($event: any) {
-                        $event.preventDefault();
+            for (let i = 0; i < pages.value.length; i++) {
+                const node = h('li', { class: 'page-item' }, [
+                    h('button', {
+                        class: {
+                            active: pages.value[i] === currentPage.value,
+                            'page-link': true,
+                        },
+                        disabled: props.busy,
+                        onClick($event: any) {
+                            $event.preventDefault();
 
-                        // eslint-disable-next-line prefer-rest-params
-                        return goTo(pages.value[i]);
-                    },
-                }, [
-                    pages.value[i],
-                ]),
-            ]);
+                            // eslint-disable-next-line prefer-rest-params
+                            return goTo(pages.value[i]);
+                        },
+                    }, [
+                        pages.value[i],
+                    ]),
+                ]);
 
-            betweenPages.push(node);
+                betweenPages.push(node);
+            }
+
+            return betweenPages;
         }
 
-        let nextPage = h('');
-        if (currentPage.value < totalPages.value) {
-            nextPage = h('li', { class: 'page-item' }, [
-                h('button', {
-                    class: 'page-link',
-                    disabled: props.busy,
-                    onClick($event: any) {
-                        $event.preventDefault();
 
-                        return goTo(currentPage.value + 1);
-                    },
-                }, [
-                    h('i', { class: 'fa fa-chevron-right' }),
-                ]),
-            ]);
+        const renderNextPage = () => {
+            let nextPage = h('');
+
+            if (currentPage.value < totalPages.value) {
+                nextPage = h('li', { class: 'page-item' }, [
+                    h('button', {
+                        class: 'page-link',
+                        disabled: props.busy,
+                        onClick($event: any) {
+                            $event.preventDefault();
+
+                            return goTo(currentPage.value + 1);
+                        },
+                    }, [
+                        h('i', { class: 'fa fa-chevron-right' }),
+                    ]),
+                ]);
+            }
+
+            return nextPage;
         }
+
+
 
         return () => h('ul', { class: 'pagination justify-content-center' }, [
-            prevPage,
-            betweenPages,
-            nextPage,
+            renderPrevPage(),
+            renderBetweenPages(),
+            renderNextPage(),
         ]);
     },
 });

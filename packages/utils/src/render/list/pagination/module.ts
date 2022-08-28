@@ -5,14 +5,14 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { h, unref } from 'vue';
-import { Pagination } from '../../components/Pagination';
+import { h } from 'vue';
+import { Pagination } from '../../../components/Pagination';
 import {
     ListPaginationBuildOptions,
     ListPaginationBuildOptionsInput,
 } from './type';
-import { unrefWithDefault } from '../../utils';
-import { buildListBaseOptions } from './utils';
+import { unrefWithDefault } from '../../../utils';
+import { buildListBaseOptions } from '../utils';
 
 export function buildListPaginationOptions<T extends Record<string, any>>(
     input: ListPaginationBuildOptionsInput<T>,
@@ -26,18 +26,16 @@ export function buildListPaginationOptions<T extends Record<string, any>>(
     return {
         ...options,
 
-        load: (() => Promise.resolve()),
-
         busy: unrefWithDefault(options.busy, false),
 
-        items: unref(options.items),
-        meta: unref(options.meta),
+        meta: unrefWithDefault(options.meta, {}),
     };
 }
 
 export function buildListPagination<T extends Record<string, any>>(
-    input: ListPaginationBuildOptionsInput<T>,
+    input?: ListPaginationBuildOptionsInput<T>,
 ) {
+    input = input || {};
     const options = buildListPaginationOptions(input);
 
     return h(
@@ -47,7 +45,7 @@ export function buildListPagination<T extends Record<string, any>>(
             h(Pagination, {
                 ...options.meta,
                 busy: options.busy,
-                onLoad: options.load,
+                ...(options.load ? { onLoad: options.load } : {}),
                 ...options.props,
             }),
         ],

@@ -11,12 +11,12 @@ import {
 import {
     ListHeaderBuildOptions, ListHeaderBuildOptionsInput,
 } from './type';
-import { hasNormalizedSlot, normalizeSlot } from '../utils';
-import { SlotName } from '../constants';
-import { unrefWithDefault } from '../../utils';
-import { buildListTitle } from './title';
-import { buildListActionRefresh } from './action-refresh';
-import { buildListBaseOptions } from './utils';
+import { hasNormalizedSlot, normalizeSlot } from '../../utils';
+import { SlotName } from '../../constants';
+import { unrefWithDefault } from '../../../utils';
+import { buildListTitle } from '../title/module';
+import { buildListActionRefresh } from '../action-refresh/module';
+import { buildListBaseOptions } from '../utils';
 
 export function buildListHeaderOptions<T extends Record<string, any>>(
     input: ListHeaderBuildOptionsInput<T>,
@@ -32,7 +32,7 @@ export function buildListHeaderOptions<T extends Record<string, any>>(
 
         actionType: unrefWithDefault(options.actionType, 'div'),
         actionProps: unrefWithDefault(options.actionProps, {
-            class: 'd-flex flex-row',
+            class: 'd-flex flex-row ml-auto',
         }),
         actionRefresh: unrefWithDefault(options.actionRefresh, true),
 
@@ -44,8 +44,9 @@ export function buildListHeaderOptions<T extends Record<string, any>>(
 }
 
 export function buildListHeader<T extends Record<string, any>>(
-    input: ListHeaderBuildOptionsInput<T>,
+    input?: ListHeaderBuildOptionsInput<T>,
 ) : VNode | VNode[] {
+    input = input || {};
     const options = buildListHeaderOptions(input);
 
     const slotScope = {
@@ -89,7 +90,7 @@ export function buildListHeader<T extends Record<string, any>>(
                 };
             }
 
-            headerChildren.push(buildListActionRefresh(options.actionRefresh));
+            actions.push(buildListActionRefresh(options.actionRefresh));
         }
 
         if (actions.length > 0) {

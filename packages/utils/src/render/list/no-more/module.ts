@@ -6,20 +6,20 @@
  */
 
 import { h, unref } from 'vue';
-import { SlotName } from '../constants';
-import { hasNormalizedSlot, normalizeSlot } from '../utils';
+import { SlotName } from '../../constants';
+import { hasNormalizedSlot, normalizeSlot } from '../../utils';
 import {
     ListNoMoreBuildOptions, ListNoMoreBuildOptionsInput,
 } from './type';
-import { unrefWithDefault } from '../../utils';
-import { buildListBaseOptions } from './utils';
+import { unrefWithDefault } from '../../../utils';
+import { buildListBaseOptions } from '../utils';
 
 export function buildListNoMoreOptions<T extends Record<string, any>>(
     input: ListNoMoreBuildOptionsInput<T>,
 ) : ListNoMoreBuildOptions<T> {
     const options = buildListBaseOptions(input, {
         props: {
-            class: 'list-no-more',
+            class: 'list-no-more alert alert-warning alert-sm',
         },
     });
 
@@ -29,18 +29,19 @@ export function buildListNoMoreOptions<T extends Record<string, any>>(
         textContent: unrefWithDefault(options.textContent, 'No more items available...'),
 
         busy: unrefWithDefault(options.busy, false),
-        items: unref(options.items),
+        total: unrefWithDefault(options.total, 0),
     };
 }
 
 export function buildListNoMore<T extends Record<string, any>>(
-    input: ListNoMoreBuildOptionsInput<T>,
+    input?: ListNoMoreBuildOptionsInput<T>,
 ) {
+    input = input || {};
     const options = buildListNoMoreOptions(input);
 
     if (
-        !options.busy &&
-        options.items.length === 0
+        options.busy ||
+        options.total > 0
     ) {
         return h('');
     }
@@ -49,7 +50,7 @@ export function buildListNoMore<T extends Record<string, any>>(
         return normalizeSlot(SlotName.ITEMS_NO_MORE, {
             ...options.slotProps,
             busy: options.busy,
-            items: options.items,
+            total: options.total,
         }, options.slotItems);
     }
 

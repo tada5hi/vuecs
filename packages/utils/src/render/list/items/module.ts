@@ -8,14 +8,14 @@
 import {
     VNode, h, unref,
 } from 'vue';
-import { SlotName } from '../constants';
-import { hasNormalizedSlot, normalizeSlot } from '../utils';
+import { SlotName } from '../../constants';
+import { hasNormalizedSlot, normalizeSlot } from '../../utils';
 import {
     ListItemsBuildOptions, ListItemsBuildOptionsInput,
 } from './type';
-import { unrefWithDefault } from '../../utils';
-import { buildListItem } from './item';
-import { buildListBaseOptions } from './utils';
+import { unrefWithDefault } from '../../../utils';
+import { buildListItem } from '../item/module';
+import { buildListBaseOptions } from '../utils';
 
 export function buildListItemsOptions<T extends Record<string, any>>(
     input: ListItemsBuildOptionsInput<T>,
@@ -31,14 +31,15 @@ export function buildListItemsOptions<T extends Record<string, any>>(
 
         busy: unrefWithDefault(options.busy, false),
 
-        items: unref(options.items),
+        items: unrefWithDefault(options.items, []),
         item: unrefWithDefault(options.item, {}),
     };
 }
 
 export function buildListItems<T extends Record<string, any>>(
-    input: ListItemsBuildOptionsInput<T>,
+    input?: ListItemsBuildOptionsInput<T>,
 ) : VNode | VNode[] {
+    input = input || {};
     const options = buildListItemsOptions(input);
 
     if (hasNormalizedSlot(SlotName.ITEMS, options.slotItems)) {

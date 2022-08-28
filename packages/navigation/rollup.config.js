@@ -7,7 +7,7 @@
 
 // rollup.config.js
 import fs from 'fs';
-import vue from 'rollup-plugin-vue2';
+import vue from 'rollup-plugin-vue';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';

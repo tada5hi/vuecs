@@ -9,7 +9,6 @@ import {
     VNode, VNodeChild, h, unref,
 } from 'vue';
 import { FormGroup, FormGroupProperties } from '../../components';
-import { setMaybeRefValue } from '../utils';
 import {
     FormGroupProps,
     FormInputBuildOptions, FormInputBuildOptionsInput,
@@ -26,10 +25,10 @@ export function buildFormInputOptions(
         ...options,
 
         append: unrefWithDefault(options.append, false),
-        appendTextContent: options.appendTextContent || '',
+        appendTextContent: unrefWithDefault(options.appendTextContent, ''),
 
         prepend: unrefWithDefault(options.prepend, false),
-        prependTextContent: options.prependTextContent || '',
+        prependTextContent: unrefWithDefault(options.prependTextContent, ''),
     };
 }
 
