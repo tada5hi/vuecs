@@ -18,11 +18,3 @@ export type VNodeProperties = VNodeProps & {
     class?: VNodeClass,
     [key: string]: any
 };
-
-export type PrefixProperty<T, P extends string> = T extends string ?
-    `${P}${Capitalize<T>}` :
-    never;
-
-export type PrefixProperties<T extends Record<string, any>, P extends string> = {
-    [K in keyof T as K extends string ? PrefixProperty<K, P> : never]: T[K]
-};

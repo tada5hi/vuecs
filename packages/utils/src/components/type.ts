@@ -18,7 +18,7 @@ export type ValidationResultRules<T = unknown> = {
     readonly $path: string
 
     [key: string]: any
-}
+};
 export type ValidationTranslator = (input: string, parameters: Record<string, any>) => string | undefined;
 export type ValidationMessages = Record<string, string>;
 
@@ -30,3 +30,5 @@ export type OptionsInput<T,
     Partial<Pick<T, P>> &
     ToMaybeRef<Pick<T, MR>> &
     Partial<ToMaybeRef<Pick<T, Exclude<keyof T, R | P | MR>>>>;
+
+// --------------------------------------

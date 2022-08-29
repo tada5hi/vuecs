@@ -8,8 +8,8 @@
 import {
     VNodeArrayChildren, computed, defineComponent, h, mergeProps,
 } from 'vue';
-import { Component } from '../../config/component/constants';
-import { getComponentOption } from '../../config/component/module';
+import { Component } from '../../options/component/constants';
+import { getComponentOption } from '../../options/component/module';
 import { PaginationMeta } from './type';
 
 export const Pagination = defineComponent({
@@ -76,7 +76,7 @@ export const Pagination = defineComponent({
             if (currentPage.value > 1) {
                 prevPage = h(
                     'li',
-                    { class: getComponentOption(Component.Pagination, 'paginationItemClass') },
+                    { class: getComponentOption(Component.ListBase, 'props') },
                     [
                         h('button', {
                             class: getComponentOption(Component.Pagination, 'paginationLinkClass'),

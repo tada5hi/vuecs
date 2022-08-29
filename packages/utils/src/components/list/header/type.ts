@@ -5,20 +5,20 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {VNodeProperties} from "../../../type";
-import {OptionsInput} from "../../type";
+import { VNodeProperties } from '../../../type';
+import { OptionsInput } from '../../type';
+import { ListActionRefreshBuildOptionsInput } from '../action-refresh';
+import { ListTitleBuildOptionsInput } from '../title';
 import {
     ComponentListLoadFn,
     ExpectListBaseBuildOptions,
-    ListActionRefreshOptionsInput,
     ListBaseOptions,
-    ListTitleBuildOptionsInput
-} from "../type";
+} from '../type';
 
-export type ListHeaderBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
+export type ListHeaderBuildOptions = ListBaseOptions & {
     actionType: string,
     actionProps: VNodeProperties,
-    actionRefresh: ListActionRefreshOptionsInput<T> | boolean,
+    actionRefresh: ListActionRefreshBuildOptionsInput | boolean,
 
     title: ListTitleBuildOptionsInput<T> | boolean,
 
@@ -27,8 +27,8 @@ export type ListHeaderBuildOptions<T extends Record<string, any>> = ListBaseOpti
     load: ComponentListLoadFn
 };
 
-export type ListHeaderBuildOptionsInput<T extends Record<string, any>> = OptionsInput<
-    ExpectListBaseBuildOptions<ListHeaderBuildOptions<T>>,
-    never,
-    'load'
-    >;
+export type ListHeaderBuildOptionsInput = OptionsInput<
+ExpectListBaseBuildOptions<ListHeaderBuildOptions>,
+never,
+'load'
+>;

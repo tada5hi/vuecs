@@ -6,8 +6,8 @@
  */
 
 import { Slots } from 'vue';
-import { PaginationMeta } from '../static';
 import { VNodeProperties } from '../../type';
+import { PaginationMeta } from '../static';
 import { OptionsInput } from '../type';
 
 export type ComponentListLoadFn = (data?: PaginationMeta) => Promise<void> | void;
@@ -24,4 +24,8 @@ export type ListBaseOptions = {
 
 export type ListBaseBuildOptionsInput = OptionsInput<ListBaseOptions, never, 'slotItems'>;
 
-export type ExpectListBaseBuildOptions<T extends ListBaseOptions | ListBaseBuildOptionsInput> = Omit<T, keyof ListBaseOptions | keyof ListBaseBuildOptionsInput>;
+export type ExpectListBaseBuildOptions<
+    T extends ListBaseOptions | ListBaseBuildOptionsInput,
+> = Omit<T, keyof ListBaseOptions | keyof ListBaseBuildOptionsInput>;
+
+// --------------------------------------

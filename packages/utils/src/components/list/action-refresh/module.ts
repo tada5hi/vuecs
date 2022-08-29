@@ -7,14 +7,14 @@
 import { VNode, VNodeArrayChildren, h } from 'vue';
 import {
     ListActionRefreshBuildOptions,
-    ListActionRefreshOptionsInput,
+    ListActionRefreshBuildOptionsInput,
 } from './type';
 import { unrefWithDefault } from '../../../utils';
 import { buildListBaseOptions } from '../utils';
 
-export function buildListActionRefreshOptions<T extends Record<string, any>>(
-    input: ListActionRefreshOptionsInput<T>,
-) : ListActionRefreshBuildOptions<T> {
+export function buildListActionRefreshOptions(
+    input: ListActionRefreshBuildOptionsInput,
+) : ListActionRefreshBuildOptions {
     const options = buildListBaseOptions(input, {
         type: 'button',
         props: {
@@ -39,7 +39,7 @@ export function buildListActionRefreshOptions<T extends Record<string, any>>(
 }
 
 export function buildListActionRefresh<T extends Record<string, any>>(
-    input: ListActionRefreshOptionsInput<T>,
+    input: ListActionRefreshBuildOptionsInput,
 ) : VNode | VNode[] {
     const options = buildListActionRefreshOptions(input);
 
@@ -72,6 +72,6 @@ export function buildListActionRefresh<T extends Record<string, any>>(
             },
             ...options.props,
         },
-        refreshActionChildren
+        refreshActionChildren,
     );
 }

@@ -5,12 +5,12 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {VNode, VNodeChild} from "vue";
-import {VNodeProperties} from "../../../type";
-import {OptionsInput} from "../../type";
-import {ComponentListLoadFn, ExpectListBaseBuildOptions, ListBaseOptions} from "../type";
+import { VNode, VNodeChild } from 'vue';
+import { VNodeProperties } from '../../../type';
+import { OptionsInput } from '../../type';
+import { ComponentListLoadFn, ExpectListBaseBuildOptions, ListBaseOptions } from '../type';
 
-export type ListActionRefreshBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
+export type ListActionRefreshBuildOptions = ListBaseOptions & {
     text: boolean,
     textContent: VNodeChild | VNode | VNode[],
 
@@ -21,8 +21,8 @@ export type ListActionRefreshBuildOptions<T extends Record<string, any>> = ListB
     load: ComponentListLoadFn,
 };
 
-export type ListActionRefreshOptionsInput<T extends Record<string, any>> = OptionsInput<
-    ExpectListBaseBuildOptions<ListActionRefreshBuildOptions<T>>,
-    never,
-    'load'
-    >;
+export type ListActionRefreshBuildOptionsInput = OptionsInput<
+ExpectListBaseBuildOptions<ListActionRefreshBuildOptions>,
+never,
+'load'
+>;
