@@ -8,7 +8,7 @@
 import {
     PropType, defineComponent, h,
 } from 'vue';
-import { ValidationMessages, ValidationTranslator } from '../render';
+import { ValidationMessages, ValidationTranslator } from '../index';
 
 export type FormGroupSlotScope = {
     errors: string[],

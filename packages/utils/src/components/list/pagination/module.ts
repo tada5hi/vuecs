@@ -6,7 +6,7 @@
  */
 
 import { h } from 'vue';
-import { Pagination } from '../../../components/Pagination';
+import { Pagination } from '../../static/Pagination';
 import {
     ListPaginationBuildOptions,
     ListPaginationBuildOptionsInput,

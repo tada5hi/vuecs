@@ -5,9 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {PaginationMeta} from "../../../components";
-import {OptionsInput} from "../../type";
-import {ComponentListLoadFn, ExpectListBaseBuildOptions, ListBaseOptions} from "../type";
+import { PaginationMeta } from '../../static';
+import { OptionsInput } from '../../type';
+import { ComponentListLoadFn, ExpectListBaseBuildOptions, ListBaseOptions } from '../type';
 
 export type ListPaginationBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
     meta: Partial<PaginationMeta>,
@@ -16,7 +16,7 @@ export type ListPaginationBuildOptions<T extends Record<string, any>> = ListBase
 };
 
 export type ListPaginationBuildOptionsInput<T extends Record<string, any>> = OptionsInput<
-    ExpectListBaseBuildOptions<ListPaginationBuildOptions<T>>,
-    never,
-    'load'
-    >;
+ExpectListBaseBuildOptions<ListPaginationBuildOptions<T>>,
+never,
+'load'
+>;

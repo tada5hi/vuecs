@@ -6,15 +6,11 @@
  */
 
 import {
-    VNodeArrayChildren, computed, defineComponent, h,
+    VNodeArrayChildren, computed, defineComponent, h, mergeProps,
 } from 'vue';
-
-export type PaginationMeta = {
-    limit: number,
-    offset: number,
-    total: number,
-    page: number
-};
+import { Component } from '../../config/component/constants';
+import { getComponentOption } from '../../config/component/module';
+import { PaginationMeta } from './type';
 
 export const Pagination = defineComponent({
     props: {
@@ -78,60 +74,74 @@ export const Pagination = defineComponent({
         const renderPrevPage = () => {
             let prevPage = h('');
             if (currentPage.value > 1) {
-                prevPage = h('li', { class: 'page-item' }, [
-                    h('button', {
-                        class: 'page-link',
-                        disabled: props.busy,
-                        onClick($event: any) {
-                            $event.preventDefault();
+                prevPage = h(
+                    'li',
+                    { class: getComponentOption(Component.Pagination, 'paginationItemClass') },
+                    [
+                        h('button', {
+                            class: getComponentOption(Component.Pagination, 'paginationLinkClass'),
+                            disabled: props.busy,
+                            onClick($event: any) {
+                                $event.preventDefault();
 
-                            return goTo(currentPage.value - 1);
-                        },
-                    }, [
-                        h('i', { class: 'fa fa-chevron-left' }),
-                    ]),
-                ]);
+                                return goTo(currentPage.value - 1);
+                            },
+                        }, [
+                            h('i', { class: 'fa fa-chevron-left' }),
+                        ]),
+                    ],
+                );
             }
 
             return prevPage;
-        }
+        };
 
         const renderBetweenPages = () => {
             const betweenPages : VNodeArrayChildren = [];
 
             for (let i = 0; i < pages.value.length; i++) {
-                const node = h('li', { class: 'page-item' }, [
-                    h('button', {
-                        class: {
-                            active: pages.value[i] === currentPage.value,
-                            'page-link': true,
-                        },
-                        disabled: props.busy,
-                        onClick($event: any) {
-                            $event.preventDefault();
+                const node = h(
+                    'li',
+                    { class: getComponentOption('paginationItemClass') },
+                    [
+                        h('button', {
+                            ...mergeProps({
+                                ...(
+                                    pages.value[i] === currentPage.value ?
+                                        {
+                                            class: getComponentOption('paginationLinkActiveClass'),
+                                        } :
+                                        {}
+                                ),
+                            }, {
+                                class: getComponentOption('paginationLinkClass'),
+                            }),
+                            disabled: props.busy,
+                            onClick($event: any) {
+                                $event.preventDefault();
 
-                            // eslint-disable-next-line prefer-rest-params
-                            return goTo(pages.value[i]);
-                        },
-                    }, [
-                        pages.value[i],
-                    ]),
-                ]);
+                                // eslint-disable-next-line prefer-rest-params
+                                return goTo(pages.value[i]);
+                            },
+                        }, [
+                            pages.value[i],
+                        ]),
+                    ],
+                );
 
                 betweenPages.push(node);
             }
 
             return betweenPages;
-        }
-
+        };
 
         const renderNextPage = () => {
             let nextPage = h('');
 
             if (currentPage.value < totalPages.value) {
-                nextPage = h('li', { class: 'page-item' }, [
+                nextPage = h('li', { class: getComponentOption('paginationItemClass') }, [
                     h('button', {
-                        class: 'page-link',
+                        class: getComponentOption('paginationLinkClass'),
                         disabled: props.busy,
                         onClick($event: any) {
                             $event.preventDefault();
@@ -145,15 +155,17 @@ export const Pagination = defineComponent({
             }
 
             return nextPage;
-        }
+        };
 
-
-
-        return () => h('ul', { class: 'pagination justify-content-center' }, [
-            renderPrevPage(),
-            renderBetweenPages(),
-            renderNextPage(),
-        ]);
+        return () => h(
+            'ul',
+            { class: getComponentOption('paginationClass') },
+            [
+                renderPrevPage(),
+                renderBetweenPages(),
+                renderNextPage(),
+            ],
+        );
     },
 });
 

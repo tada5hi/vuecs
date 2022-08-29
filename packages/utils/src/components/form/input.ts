@@ -8,7 +8,7 @@
 import {
     VNode, VNodeChild, h, unref,
 } from 'vue';
-import { FormGroup, FormGroupProperties } from '../../components';
+import { FormGroup, FormGroupProperties } from '../static';
 import {
     FormGroupProps,
     FormInputBuildOptions, FormInputBuildOptionsInput,
