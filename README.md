@@ -1,41 +1,28 @@
-# @vue-layout 🏕	
+# @vue-layout 🏔	
 
 [![main](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml)
 [![codecov](https://codecov.io/gh/Tada5hi/vue-layout/branch/master/graph/badge.svg?token=FHE347R1NW)](https://codecov.io/gh/Tada5hi/vue-layout)
 [![Known Vulnerabilities](https://snyk.io/test/github/Tada5hi/vue-layout/badge.svg)](https://snyk.io/test/github/Tada5hi/vue-layout)
 
-This monorepo contains different packages to simplify vue layout conception.
+## What is it?
+**Vue-Layout** is a collection of packages to:
+
+- simplify layout rendering
+- creating multi tier/level navigations
 
 **Table of Contents**
 
-- [Packages](#Packages)
-  - [Navigation](#vue-layoutnavigation-)
-  - [Navigation Demo](#vue-layoutnavigation-demo-)
-  - [Utils](#vue-layoututils-)
-- [Installation & Usage](#installation--usage)
+- [Packages](#packages)
+- [Documentation](#documentaion)
 
 ## Packages
+The repository contains the following packages:
 
-### @vue-layout/navigation 🍙
-[![npm version](https://badge.fury.io/js/@vue-layout%2Fnavigation.svg)](https://badge.fury.io/js/@vue-layout%2Fnavigation)
+- 🏔 **@vue-layout/navigation**: A package to render a multi level navigation menu.
+- 🧪 **@vue-layout/navigation-demo** : An example project on how to use the navigation package.
+- 🧰 **@vue-layout/utils**: A package for building form and list components on the fly.
+- 🧪 **@vue-layout/utils-demo** : An example project on how to use the utils package.
 
-This package contains vue-components, helper, types and many more to render a multi level navigation menu. 
-
-[README.md](https://github.com/Tada5hi/vue-layout/tree/master/packages/navigation#README.md)
-
-### @vue-layout/navigation-demo 🧱
-
-This package contains an example on how to use the `@vue-layout/navigation` package.
-
-[README.md](https://github.com/Tada5hi/vue-layout/tree/master/packages/navigation-demo#README.md)
-
-### @vue-layout/utils 🦠
-[![npm version](https://badge.fury.io/js/@vue-layout%2Futils.svg)](https://badge.fury.io/js/@vue-layout%2Futils)
-
-This package contains utility functions, types and components for vue layouts.
-
-[README.md](https://github.com/Tada5hi/vue-layout/tree/master/packages/utils#README.md)
-
-## Installation & Usage
-Please follow the `README.md` instructions in the respective package folder.
+## Documentation
+Coming soon...
 
