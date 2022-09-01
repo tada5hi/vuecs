@@ -5,7 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { ToMaybeRef } from '../type';
+import { Slots, VNode, VNodeChild } from 'vue';
+import {
+    MaybeRef, ToMaybeRef, VNodeClass, VNodeProperties,
+} from '../type';
+import { PaginationMeta } from './pagination';
 
 export type ValidationResultRules<T = unknown> = {
     $model: T
@@ -22,6 +26,8 @@ export type ValidationResultRules<T = unknown> = {
 export type ValidationTranslator = (input: string, parameters: Record<string, any>) => string | undefined;
 export type ValidationMessages = Record<string, string>;
 
+// --------------------------------------
+
 export type OptionsInput<T,
     R extends keyof T = never,
     P extends keyof T = never,
@@ -32,3 +38,41 @@ export type OptionsInput<T,
     Partial<ToMaybeRef<Pick<T, Exclude<keyof T, R | P | MR>>>>;
 
 // --------------------------------------
+
+export type ListLoadFn = (data?: PaginationMeta) => Promise<void> | void;
+export type ListBaseOptions = {
+    slotItems: Slots,
+    slotProps: Record<string, any>,
+
+    type: string,
+    class: VNodeClass,
+    props: VNodeProperties,
+};
+export type ListBaseOptionsInput = OptionsInput<ListBaseOptions, never, 'slotItems'>;
+
+export type ExpectListBaseOptions<T extends ListBaseOptions | ListBaseOptionsInput,
+    > = Omit<T, keyof ListBaseOptions | keyof ListBaseOptionsInput>;
+
+// --------------------------------------
+
+export type FormBaseOptions = {
+    label: boolean,
+    labelContent: string | VNode | (VNode | string)[] | VNodeChild,
+
+    class: VNodeClass,
+    props: VNodeProperties,
+
+    value?: MaybeRef<unknown>,
+
+    change?: (input: any) => void,
+    validationRulesResult: Partial<ValidationResultRules>,
+    validationMessages: ValidationMessages,
+    validationTranslator?: ValidationTranslator
+};
+
+export type FormBaseOptionsInput = OptionsInput<FormBaseOptions,
+never,
+'value' | 'change' | 'validationTranslator'>;
+
+export type ExpectFormBaseOptions<T extends FormBaseOptions | FormBaseOptionsInput> =
+    Omit<T, keyof FormBaseOptions | keyof FormBaseOptionsInput>;

@@ -5,6 +5,25 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-export enum CSSFramework {
-    BOOTSTRAP = 'bootstrap',
+export enum Component {
+    Pagination = 'pagination',
+
+    FormBase = 'formBase',
+    FormGroup = 'formGroup',
+    FormInput = 'formInput',
+    FormSelect = 'formSelect',
+    FormSubmit = 'formSubmit',
+    FormTextarea = 'formTextarea',
+
+    ItemActionToggle = 'itemActionToggle',
+
+    ListBase = 'listBase',
+    ListActionRefresh = 'listActionRefresh',
+    ListHeader = 'listHeader',
+    ListItem = 'listItem',
+    ListItems = 'listItems',
+    ListNoMore = 'listNoMore',
+    ListPagination = 'listPagination',
+    ListSearch = 'listSearch',
+    ListTitle = 'listTitle',
 }

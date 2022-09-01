@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import {
-    buildFormInput,
+    buildFormInput, buildFormInputOptions,
     buildFormSelect,
     buildFormSubmit,
     buildFormTextarea,

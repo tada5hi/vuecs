@@ -7,25 +7,38 @@
 
 <script lang="ts">
 import {
-    buildFormInput,
-    buildListHeader, buildListItems, buildListNoMore, buildListPagination, buildListSearch
+    buildListHeader,
+    buildListItems,
+    buildListNoMore,
+    buildListPagination,
+    buildListSearch,
 } from '@vue-layout/utils';
-import {defineComponent, h, ref} from 'vue';
+import { defineComponent, h, ref } from 'vue';
 
 export default defineComponent({
     setup() {
-        const renderHeader = () => buildListHeader();
+        const busy = ref(false);
+
+        const renderHeader = () => buildListHeader({
+            busy,
+            load: () => new Promise<void>((resolve, reject) => {
+                console.log('Loaded data');
+
+                setTimeout(() => {
+                    resolve();
+                }, 5000);
+            }),
+        });
 
         const searchRef = ref('');
         const items = ref([
             { name: 'ABC' },
-            { name: 'DEF' }
-        ])
+            { name: 'DEF' },
+        ]);
 
         const renderSearch = () => h('div', [
-            h('h1', 'Input'),
             buildListSearch({
-                value: searchRef
+                value: searchRef,
             }),
             h('div', { class: 'alert alert-info mt-2' }, [
                 'Current Value:',
@@ -35,7 +48,7 @@ export default defineComponent({
         ]);
 
         const renderItems = () => buildListItems({
-            items
+            items,
         });
 
         const renderNoMore = () => buildListNoMore();
@@ -43,12 +56,12 @@ export default defineComponent({
         const renderPagination = () => buildListPagination({
             meta: {
                 total: items.value.length,
-                limit: 1
+                limit: 1,
             },
             load: (meta) => {
                 console.log(meta);
-            }
-        })
+            },
+        });
 
         return () => h('div', [
             renderHeader(),
@@ -59,8 +72,8 @@ export default defineComponent({
             h('hr'),
             renderNoMore(),
             h('hr'),
-            renderPagination()
-        ])
-    }
+            renderPagination(),
+        ]);
+    },
 });
 </script>

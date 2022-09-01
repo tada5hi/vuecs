@@ -6,6 +6,7 @@
  */
 
 import { Ref, VNodeProps } from 'vue';
+import { Component, ComponentOptions } from './options';
 
 export type NonBoolean<T> = T extends boolean ? never : T;
 export type MaybeRef<T> = T | Ref<T>;
@@ -17,4 +18,13 @@ export type VNodeClass = string | string[] | Record<string, boolean> | VNodeClas
 export type VNodeProperties = VNodeProps & {
     class?: VNodeClass,
     [key: string]: any
+};
+
+export type LibraryConfigOptions = {
+    [K in `${Component}` | Component]?: Partial<ComponentOptions<K>>
+};
+
+export type LibraryConfig = {
+    enabled: boolean,
+    options?: LibraryConfigOptions
 };

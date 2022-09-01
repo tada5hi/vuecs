@@ -5,5 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+export * from './constants';
+export * from './merge';
+export * from './module';
 export * from './type';
-export { ComponentConfig } from './component';
+export * from './utils';

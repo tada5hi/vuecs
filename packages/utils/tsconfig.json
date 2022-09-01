@@ -13,8 +13,5 @@
         "jsx": "preserve",
 
         "skipLibCheck": true
-    },
-    "include": [
-        "src/**/*.ts"
-    ]
+    }
 }

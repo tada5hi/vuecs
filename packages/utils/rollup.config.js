@@ -15,7 +15,6 @@ import postcss from 'rollup-plugin-postcss';
 
 import pkg from './package.json';
 
-
 const baseConfig = {
     input: 'src/entry.ts',
     plugins: {
@@ -41,7 +40,7 @@ const baseConfig = {
 // ESM/UMD/IIFE shared settings: externals
 // Refer to https://rollupjs.org/guide/en/#warning-treating-module-as-external-dependency
 const external = [
-    'vue'
+    'vue',
 ];
 
 // UMD/IIFE shared settings: output.globals
@@ -65,8 +64,8 @@ export default [
             vue(),
             ...baseConfig.plugins.postVue,
             babel({
-                ...baseConfig.plugins.babel
-            })
+                ...baseConfig.plugins.babel,
+            }),
         ],
         output: [
             {
@@ -81,8 +80,8 @@ export default [
                 exports: 'named',
                 assetFileNames: '[name]-[hash][extname]',
                 globals,
-            }
-        ]
+            },
+        ],
 
     },
     {
@@ -118,7 +117,7 @@ export default [
                 format: 'iife',
                 assetFileNames: '[name]-[hash][extname]',
                 globals,
-            }
+            },
         ],
-    }
-]
+    },
+];

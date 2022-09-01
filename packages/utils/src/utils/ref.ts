@@ -8,9 +8,21 @@
 import { unref } from 'vue';
 import { MaybeRef } from '../type';
 
-export function unrefWithDefault<T>(value: MaybeRef<T>, alt: T) : NonNullable<T> {
+export function unrefWithDefault<T>(value: MaybeRef<T>, alt: NonNullable<T>) : NonNullable<T> {
     const raw = unref(value);
     if (typeof raw === 'undefined') {
+        return alt as NonNullable<T>;
+    }
+
+    return raw as NonNullable<T>;
+}
+
+export function unrefWithOptionalDefault<T>(value: MaybeRef<T>, alt?: T) : T | undefined {
+    const raw = unref(value);
+
+    if (
+        typeof raw === 'undefined'
+    ) {
         return alt as NonNullable<T>;
     }
 

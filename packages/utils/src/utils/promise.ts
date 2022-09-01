@@ -5,11 +5,13 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { hasOwnProperty } from './has-own-property';
-
 export function isPromise(p: unknown) : p is Promise<unknown> {
     return typeof p === 'object' &&
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        typeof p.then === 'function';
+        p !== null &&
+        (
+            p instanceof Promise ||
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            typeof p.then === 'function'
+        );
 }
