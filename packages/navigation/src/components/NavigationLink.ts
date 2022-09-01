@@ -5,7 +5,15 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import Vue, { CreateElement, VNode } from 'vue';
+import {
+    DefineComponent,
+    VNodeProps,
+    VNodeTypes,
+    computed,
+    defineComponent,
+    h,
+    resolveDynamicComponent,
+} from 'vue';
 import { hasOwnProperty } from '../utils';
 
 export type NavigationLinkProperties = {
@@ -18,7 +26,7 @@ export type NavigationLinkProperties = {
     [key: string]: any
 };
 
-export const NavigationLink = Vue.extend<any, any, any, NavigationLinkProperties>({
+export const NavigationLink = defineComponent({
     name: 'NavigationLink',
     props: {
         active: {
@@ -46,92 +54,128 @@ export const NavigationLink = Vue.extend<any, any, any, NavigationLinkProperties
             default: undefined,
         },
     },
-    computed: {
-        computedTag() {
-            const hasRouter = !!this.$router;
-            if (!hasRouter || (hasRouter && (this.disabled || !this.to))) {
+    emits: ['click', 'clicked'],
+    setup(props, { emit, slots }) {
+        const routerLink = resolveDynamicComponent('RouterLink');
+        const nuxtLink = resolveDynamicComponent('NuxtLink');
+
+        const computedTag = computed(() => {
+            const hasRouter = typeof routerLink !== 'string';
+
+            if (!hasRouter || props.disabled || !props.to) {
                 return 'a';
             }
 
-            return this.$nuxt ? 'nuxt-link' : 'router-link';
-        },
-        computedHref() {
-            if (this.href) {
-                return this.href;
+            if (typeof nuxtLink !== 'string') {
+                return 'nuxt-link';
             }
 
-            if (this.isRouterLink) {
+            return 'router-link';
+        });
+
+        const isRouterLink = computed(() => computedTag.value !== 'a');
+
+        const computedHref = computed(() => {
+            if (props.href) {
+                return props.href;
+            }
+
+            if (isRouterLink.value) {
                 return null;
             }
 
             return '#';
-        },
-        computedProps() {
-            if (!this.isRouterLink) {
+        });
+
+        const computedProps = computed(() => {
+            if (!isRouterLink.value) {
                 return {};
             }
 
             return {
-                ...(this.to ? { to: this.to } : {}),
-                ...(typeof this.prefetch !== 'undefined' ? { prefetch: this.prefetch } : {}),
+                ...(props.to ? { to: props.to } : {}),
+                ...(typeof props.prefetch !== 'undefined' ? { prefetch: props.prefetch } : {}),
             };
-        },
-        computedAttrs() {
-            return {
-                ...(this.href ? { href: this.href } : {}),
-                ...(this.isRouterLink ? {} : {
-                    target: this.target,
-                }),
-            };
-        },
-        isRouterLink() {
-            return this.computedTag !== 'a';
-        },
-    },
-    methods: {
-        onClick(event: any) {
-            const isEvent : boolean = hasOwnProperty(event, 'preventDefault') &&
-                hasOwnProperty(event, 'stopPropagation') &&
-                hasOwnProperty(event, 'stopImmediatePropagation');
+        });
 
-            if (isEvent && this.disabled) {
-                event.preventDefault();
-                event.stopPropagation();
-                event.stopImmediatePropagation();
-            } else {
-                if (this.isRouterLink) {
-                    this.$emit('click', event);
+        const computedAttrs = computed(() => ({
+            ...(props.href ? { href: props.href } : {}),
+            ...(isRouterLink.value ? {} : {
+                target: props.target,
+            }),
+        }));
+
+        const buildVNodeProps = () => {
+            const onClick = (event: any) => {
+                const isEvent: boolean = hasOwnProperty(event, 'preventDefault') &&
+                    hasOwnProperty(event, 'stopPropagation') &&
+                    hasOwnProperty(event, 'stopImmediatePropagation');
+
+                if (isEvent && props.disabled) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    event.stopImmediatePropagation();
+                } else {
+                    if (isRouterLink.value) {
+                        emit('click', event);
+                    }
+
+                    emit('clicked', event);
                 }
 
-                this.$emit('clicked', event);
-            }
+                if (
+                    isEvent &&
+                    !isRouterLink.value &&
+                    computedHref.value === '#'
+                ) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    event.stopImmediatePropagation();
+                }
+            };
 
-            if (
-                isEvent &&
-                !this.isRouterLink &&
-                this.computedHref === '#'
-            ) {
-                event.preventDefault();
-                event.stopPropagation();
-                event.stopImmediatePropagation();
-            }
-        },
-    },
-    render(createElement: CreateElement) : VNode {
-        return createElement(
-            this.computedTag,
-            {
+            const vNodeProps: VNodeProps & Record<string, any> = {
                 class: {
-                    active: this.active,
-                    disabled: this.disabled,
+                    active: props.active,
+                    disabled: props.disabled,
                 },
-                attrs: this.computedAttrs,
-                props: this.computedProps,
-                [this.isRouterLink ? 'nativeOn' : 'on']: {
-                    click: this.onClick,
-                },
+                ...computedAttrs.value,
+                ...computedProps.value,
+                onClick,
+            };
+
+            return vNodeProps;
+        };
+
+        let component : string | VNodeTypes;
+
+        switch (computedTag.value) {
+            case 'router-link':
+                component = routerLink;
+                break;
+            case 'nuxt-link':
+                component = nuxtLink;
+                break;
+            default:
+                component = 'a';
+        }
+
+        if (typeof component === 'string') {
+            return () => h(
+                component as string,
+                buildVNodeProps(),
+                [
+                    (typeof slots.default === 'function' ? slots.default() : h('')),
+                ],
+            );
+        }
+
+        return () => h(
+            component as DefineComponent,
+            buildVNodeProps(),
+            {
+                default: () => (typeof slots.default === 'function' ? slots.default() : h('')),
             },
-            this.$scopedSlots.default(),
         );
     },
 });

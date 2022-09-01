@@ -5,9 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Route } from 'vue-router';
+import { RouteLocation } from 'vue-router';
 
 export type RouteBuildContext = {
-    route: Route,
+    route: RouteLocation,
     metaKey: string
 };

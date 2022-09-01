@@ -5,9 +5,7 @@
         "outDir": "./dist",
         "lib": [
             "dom",
-            "ESNext",
-            "dom.iterable",
-            "scripthost"
+            "ESNext"
         ],
         "plugins": [
             {
@@ -21,6 +19,7 @@
         "module": "ESNext",
         "jsx": "preserve",
 
+        "skipLibCheck": true,
         "declaration": true,
         "declarationDir": "dist/types",
         "isolatedModules": true
@@ -30,7 +29,6 @@
         "dist"
     ],
     "include": [
-        "src/types/**/*.d.ts",
         "src/**/*.ts"
     ]
 }

@@ -5,12 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import Vue, { VNode } from 'vue';
+import { VNode, createApp } from 'vue';
 
-import '@vue-layout/navigation/dist/index.min.css';
-import VueLayoutNavigation, { build, useProvider } from '@vue-layout/navigation';
+import VueLayoutNavigation, { build, setProvider, useProvider } from '@vue-layout/navigation';
 
-import VueRouter from 'vue-router';
+import { createRouter, createWebHistory, useRouter } from 'vue-router';
 
 import { NavigationProvider } from './module';
 
@@ -22,14 +21,14 @@ import Realm from './components/realm.vue';
 import Settings from './components/settings.vue';
 
 const provider = new NavigationProvider();
+setProvider(provider);
 
-useProvider(provider);
+const app = createApp(Dev);
 
-Vue.use(VueLayoutNavigation);
-Vue.use(VueRouter);
+app.use(VueLayoutNavigation);
 
-const router = new VueRouter({
-    mode: 'history',
+const router = createRouter({
+    history: createWebHistory(),
     routes: [
         { path: '/', component: Home },
         { path: '/about', component: About },
@@ -38,14 +37,11 @@ const router = new VueRouter({
     ],
 });
 
-(async () => {
-    const instance = new Vue({
-        render: (h): VNode => h(Dev),
-        router,
-    });
+app.use(router);
 
-    const url = (instance.$router as any)?.history?.current?.fullPath;
+(async () => {
+    const url = router?.currentRoute?.value?.fullPath;
     await build({ url });
 
-    instance.$mount('#app');
+    app.mount('#app');
 })();

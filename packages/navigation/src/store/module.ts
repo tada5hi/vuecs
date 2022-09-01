@@ -5,64 +5,43 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import Vue from 'vue';
+import { unref } from 'vue';
 import { useProvider } from '../provider';
 import {
-    findTierComponent, findTierComponents, hasOwnProperty,
+    findTierComponent, findTierComponents,
     isComponentMatch,
     removeTierFromComponents,
-    resetNavigationExpansion,
+    resetNavigationExpansion, setMaybeRefValue,
     setNavigationExpansion, setTierForComponents,
 } from '../utils';
-import { Component } from '../type';
-import { NavigationStateKey } from './constants';
-import { BuildContext, StateType } from './type';
-
-let NavigationState : StateType = Vue.observable({
-    [NavigationStateKey.COMPONENTS]: [],
-    [NavigationStateKey.COMPONENTS_ACTIVE]: [],
-    [NavigationStateKey.TIERS]: undefined,
-});
-
-export function getState() : StateType {
-    return NavigationState;
-}
-
-export function setState(state: StateType) {
-    if (
-        typeof state === 'object' &&
-        hasOwnProperty(state, NavigationStateKey.COMPONENTS) &&
-        hasOwnProperty(state, NavigationStateKey.COMPONENTS_ACTIVE) &&
-        hasOwnProperty(state, NavigationStateKey.TIERS)
-    ) {
-        NavigationState = Vue.observable(state);
-    }
-}
-
-// --------------------------------------------------------
+import { Component, MaybeRef } from '../type';
+import { BuildContext } from './type';
+import { useState } from './singleton';
 
 function setComponentActive(tier: number, component: Component | undefined) {
-    const componentsExisting = removeTierFromComponents(NavigationState[NavigationStateKey.COMPONENTS_ACTIVE], tier);
+    const state = useState();
+    const componentsExisting = removeTierFromComponents(state.componentsActive, tier);
 
     if (component) {
         component.tier = tier;
 
-        NavigationState[NavigationStateKey.COMPONENTS_ACTIVE] = [
+        setMaybeRefValue(state.componentsActive, [
             ...componentsExisting,
             component,
-        ];
+        ]);
     } else {
-        NavigationState[NavigationStateKey.COMPONENTS_ACTIVE] = componentsExisting;
+        setMaybeRefValue(state.componentsActive, componentsExisting);
     }
 }
 
-function setComponents(tier: number, components: Component[]) {
-    const componentsExisting = removeTierFromComponents(NavigationState[NavigationStateKey.COMPONENTS], tier);
+function setComponents(tier: number, components: MaybeRef<Component[]>) {
+    const state = useState();
+    const componentsExisting = removeTierFromComponents(state.components, tier);
 
-    NavigationState[NavigationStateKey.COMPONENTS] = [
+    setMaybeRefValue(state.components, [
         ...componentsExisting,
         ...setTierForComponents(components, tier),
-    ];
+    ]);
 }
 
 function refreshComponents(tier: number) {
@@ -78,13 +57,16 @@ function refreshComponents(tier: number) {
     setComponents(tier, components);
 }
 
-async function getTierLength() : Promise<number> {
-    const { [NavigationStateKey.TIERS]: tier } = NavigationState;
-    if (typeof tier === 'number') {
-        return tier;
+async function calculateTiers() : Promise<number> {
+    const state = useState();
+    let tiers = unref(state.tiers);
+
+    if (typeof tiers === 'number') {
+        return tiers;
     }
 
-    let tiers = 0;
+    tiers = 0;
+
     let match = true;
     while (match) {
         const hasTier = await useProvider().hasTier(tiers);
@@ -94,8 +76,6 @@ async function getTierLength() : Promise<number> {
             tiers++;
         }
     }
-
-    NavigationState[NavigationStateKey.TIERS] = tiers;
 
     return tiers;
 }
@@ -115,14 +95,13 @@ export async function select(
     setComponentActive(tier, component);
     refreshComponents(tier);
 
-    const tierMaxIndex = NavigationState[NavigationStateKey.TIERS];
-    if (typeof tierMaxIndex === 'undefined') {
-        return;
-    }
+    const tiers = await calculateTiers();
+    const state = useState();
+    setMaybeRefValue(state.tiers, tiers);
 
     let tierStartIndex = tier + 1;
 
-    while (tierStartIndex <= tierMaxIndex) {
+    while (tierStartIndex <= tiers) {
         await buildForTier(tierStartIndex);
 
         tierStartIndex++;
@@ -161,7 +140,10 @@ export async function build(context?: BuildContext) : Promise<void> {
         }
     }
 
-    const tierLength = await getTierLength();
+    const tierLength = await calculateTiers();
+    const state = useState();
+    setMaybeRefValue(state.tiers, tierLength);
+
     let tierIndex = 0;
 
     let tierHasComponents = true;
@@ -253,11 +235,13 @@ export async function buildForTier(
 // --------------------------------------------------------
 
 export function getComponents(tier: number) : Component[] {
-    return findTierComponents(NavigationState[NavigationStateKey.COMPONENTS], tier);
+    const state = useState();
+    return findTierComponents(state.components, tier);
 }
 
 export function getActiveComponent(tier: number) : Component | undefined {
-    return findTierComponent(NavigationState[NavigationStateKey.COMPONENTS_ACTIVE], tier);
+    const state = useState();
+    return findTierComponent(state.componentsActive, tier);
 }
 
 // --------------------------------------------------------

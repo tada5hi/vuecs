@@ -8,5 +8,6 @@
 export * from './expansion';
 export * from './has-own-property';
 export * from './match';
+export * from './ref';
 export * from './tier';
 export * from './url';

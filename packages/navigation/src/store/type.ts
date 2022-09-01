@@ -6,12 +6,11 @@
  */
 
 import { Component } from '../type';
-import { NavigationStateKey } from './constants';
 
 export type StateType = {
-    [NavigationStateKey.COMPONENTS]: Component[],
-    [NavigationStateKey.COMPONENTS_ACTIVE]: Component[],
-    [NavigationStateKey.TIERS]?: number
+    components: Component[],
+    componentsActive: Component[],
+    tiers?: number
 };
 
 export type BuildContext = {

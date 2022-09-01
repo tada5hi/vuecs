@@ -5,17 +5,14 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import Vue, { CreateElement, PropType, VNode } from 'vue';
+import {
+    PropType, VNode, computed, defineComponent, h,
+} from 'vue';
 import { getComponents } from '../store';
 import { Component } from '../type';
 import { NavigationComponent } from './NavigationComponent';
 
-type Properties = {
-    tier: number,
-    entities: Component[]
-};
-
-export const NavigationComponents = Vue.extend<any, any, any, Properties>({
+export const NavigationComponents = defineComponent({
     name: 'NavigationComponents',
     props: {
         tier: {
@@ -27,44 +24,43 @@ export const NavigationComponents = Vue.extend<any, any, any, Properties>({
             default: undefined,
         },
     },
-
-    computed: {
-        items() {
-            if (typeof this.entities !== 'undefined') {
-                return this.entities;
+    setup(props) {
+        const items = computed(() => {
+            if (typeof props.entities !== 'undefined') {
+                return props.entities;
             }
 
-            return getComponents(this.tier);
-        },
-    },
-    render(createElement: CreateElement): VNode {
-        const vm = this;
-        const h = createElement;
+            return getComponents(props.tier);
+        });
 
-        const entities : VNode[] = [];
+        const buildEntities = () => {
+            const entities : VNode[] = [];
 
-        if (vm.items) {
-            for (let i = 0; i < vm.items.length; i++) {
-                const entity: Component = vm.items[i];
-
-                if (entity.display) {
-                    entities.push(h('li', {
-                        key: i,
-                    }, [
-                        h(NavigationComponent, {
-                            props: {
-                                tier: vm.tier,
-                                component: entity,
+            if (items.value) {
+                for (let i = 0; i < items.value.length; i++) {
+                    if (items.value[i].display) {
+                        entities.push(h(
+                            'li',
+                            {
+                                key: i,
                             },
-                        }),
-                    ]));
+                            [
+                                h(NavigationComponent, {
+                                    tier: props.tier,
+                                    component: items.value[i],
+                                }),
+                            ],
+                        ));
+                    }
                 }
             }
-        }
 
-        return h('ul', {
-            staticClass: 'nav-items',
-        }, entities);
+            return entities;
+        };
+
+        return () => h('ul', {
+            class: 'nav-items',
+        }, buildEntities());
     },
 });
 

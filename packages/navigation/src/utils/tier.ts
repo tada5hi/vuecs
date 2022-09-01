@@ -5,27 +5,24 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Component } from '../type';
-
-export function parseTier(value: string | number): string {
-    return typeof value === 'string' ?
-        value :
-        value.toString();
-}
-
-export function buildTierIndex(value: string | number): number {
-    return parseInt(`${value}`, 10);
-}
+import { isRef } from 'vue';
+import { Component, MaybeRef } from '../type';
 
 export function findTierComponents(
-    components: Component[],
+    components: MaybeRef<Component[]>,
     tier: number,
 ) : Component[] {
-    return components.filter((component) => typeof component.tier !== 'undefined' && component.tier === tier);
+    const filterFn = (component: Component) => typeof component.tier !== 'undefined' && component.tier === tier;
+
+    if (isRef(components)) {
+        return components.value.filter(filterFn);
+    }
+
+    return components.filter(filterFn);
 }
 
 export function findTierComponent(
-    components: Component[],
+    components: MaybeRef<Component[]>,
     tier: number,
 ) : Component | undefined {
     const items = findTierComponents(components, tier);
@@ -37,15 +34,26 @@ export function findTierComponent(
 }
 
 export function setTierForComponents(
-    components: Component[],
+    components: MaybeRef<Component[]>,
     tier: number,
 ) {
-    return components.map((component) => {
+    const mapFn = (component: Component) => {
         component.tier = tier;
         return component;
-    });
+    };
+
+    if (isRef(components)) {
+        return components.value.map(mapFn);
+    }
+
+    return components.map(mapFn);
 }
 
-export function removeTierFromComponents(components: Component[], tier: number) {
-    return components.filter((component) => typeof component.tier === 'undefined' || component.tier !== tier);
+export function removeTierFromComponents(components: MaybeRef<Component[]>, tier: number) {
+    const filterFn = (component: Component) => typeof component.tier === 'undefined' || component.tier !== tier;
+    if (isRef(components)) {
+        return components.value.filter(filterFn);
+    }
+
+    return components.filter(filterFn);
 }

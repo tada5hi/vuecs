@@ -4,7 +4,11 @@
     "private": true,
     "description": "This package contains a vue demo app.",
     "scripts": {
-        "dev": "vue-cli-service serve src/index.ts"
+        "dev": "vite",
+        "build": "run-p type-check build-only",
+        "preview": "vite preview --port 4173",
+        "build-only": "vite build",
+        "type-check": "vue-tsc --noEmit"
     },
     "keywords": [
         "auth",
@@ -40,10 +44,9 @@
         "vue-router": "^4.1.4"
     },
     "devDependencies": {
-        "@babel/core": "^7.18.13",
-        "@vue/cli-plugin-babel": "^4.5.15",
-        "@vue/cli-plugin-typescript": "^4.5.15",
-        "@vue/cli-service": "^4.5.15",
-        "webpack": "5.74.0"
+        "@vitejs/plugin-vue": "^3.0.1",
+        "@vue/tsconfig": "^0.1.3",
+        "vite": "^3.0.4",
+        "vue-tsc": "^0.39.5"
     }
 }

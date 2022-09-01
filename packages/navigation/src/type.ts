@@ -5,6 +5,13 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { Ref } from 'vue';
+
+export type MaybeRef<T> = T | Ref<T>;
+export type ToMaybeRef<T> = {
+    [K in keyof T]: MaybeRef<T[K]>;
+};
+
 export type Component = {
     id?: string | number,
     tier?: number,

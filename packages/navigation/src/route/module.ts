@@ -14,13 +14,11 @@ export async function buildWithRoute({ route, metaKey }: RouteBuildContext) {
     let data : unknown;
 
     if (route.meta) {
-        for (let i = 0; i < route.meta.length; i++) {
-            if (
-                metaKey in route.meta[i] &&
-                route.meta[i][metaKey]
-            ) {
-                data = route.meta[i][metaKey];
-            }
+        if (
+            metaKey in route.meta &&
+            route.meta[metaKey]
+        ) {
+            data = route.meta[metaKey];
         }
     }
 

@@ -1,5 +1,6 @@
 <script>
 import { build } from '@vue-layout/navigation';
+import { useRouter } from 'vue-router';
 
 export default {
     name: 'ServeDev',
@@ -13,8 +14,10 @@ export default {
     },
     methods: {
         async refresh() {
+            const router = useRouter();
+
             await build({
-                url: this.$router.route.fullPath,
+                url: router.currentRoute.value.fullPath,
             });
         },
     },

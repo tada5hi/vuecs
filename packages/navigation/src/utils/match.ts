@@ -5,17 +5,22 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Component } from '../type';
+import { unref } from 'vue';
+import { Component, MaybeRef, ToMaybeRef } from '../type';
 
-function isRootLink(component: Component) {
+function isRootLink(component: MaybeRef<Component>) {
+    component = unref(component);
     return component.rootLink || (component.url && component.url === '/');
 }
 
 export function isComponentMatch(
-    one?: Component,
-    two?: Component,
+    one?: MaybeRef<Component>,
+    two?: MaybeRef<Component>,
     exact = true,
 ): boolean {
+    one = unref(one);
+    two = unref(two);
+
     // both undefined or one of them
     if (!(one && two) || (!one || !two)) {
         return false;

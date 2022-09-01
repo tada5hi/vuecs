@@ -5,19 +5,16 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import Vue, { CreateElement, PropType, VNode } from 'vue';
+import {
+    PropType, Ref, VNodeChild, computed, defineComponent, h, resolveComponent, toRef, unref,
+} from 'vue';
 import { getActiveComponent, select, toggle } from '../store';
 import { Component } from '../type';
 import { isAbsoluteURL, isComponentMatch } from '../utils';
 import { SlotName, hasNormalizedSlot, normalizeSlot } from './render';
 import { NavigationLink, NavigationLinkProperties } from './NavigationLink';
 
-type Properties = {
-    tier: number,
-    component: Component
-};
-
-export const NavigationComponent = Vue.extend<any, any, any, Properties>({
+export const NavigationComponent = defineComponent({
     name: 'NavigationComponent',
     props: {
         tier: {
@@ -26,170 +23,165 @@ export const NavigationComponent = Vue.extend<any, any, any, Properties>({
         },
         component: {
             type: Object as PropType<Component>,
-            required: true,
         },
     },
-    computed: {
-        componentActive() {
-            return getActiveComponent(this.tier);
-        },
-        isStrictMatch() {
-            return isComponentMatch(this.componentActive, this.component);
-        },
-        isMatch() {
-            return isComponentMatch(this.componentActive, this.component, false);
-        },
-    },
-    methods: {
-        async selectComponent(component: Component) {
-            await select(this.tier, component);
-        },
-        async toggleComponentExpansion(component: Component) {
-            await toggle(this.tier, component);
-        },
-    },
-    render(createElement: CreateElement): VNode {
-        const vm = this;
-        const h = createElement;
+    setup(props, { slots }) {
+        const component = toRef(props, 'component') as Ref<Component>;
 
-        const $scopedSlots = vm.$scopedSlots || {};
-        const $slots = vm.$slots || {};
+        const componentActive = computed(() => getActiveComponent(props.tier));
+        const isStrictMatch = computed(() => isComponentMatch(componentActive, component));
+        const isMatch = computed(() => isComponentMatch(componentActive, component, false));
 
-        let item : VNode | string | (VNode | string)[] = h();
+        const selectComponent = async (value: Component) => {
+            await select(props.tier, value);
+        };
 
-        switch (vm.component.type) {
-            case 'separator': {
-                const hasSlot = hasNormalizedSlot(SlotName.SEPARATOR, $scopedSlots, $slots);
-                if (hasSlot) {
-                    item = normalizeSlot(SlotName.SEPARATOR, {
-                        component: vm.component,
-                    }, $scopedSlots, $slots);
-                } else {
-                    item = h('div', {
-                        staticClass: 'nav-separator',
-                    }, [vm.component.name]);
-                }
-                break;
-            }
-            default: {
-                if (typeof vm.component.components === 'undefined') {
-                    const hasSlot = hasNormalizedSlot(SlotName.LINK, $scopedSlots, $slots);
+        const toggleComponentExpansion = async (value: Component) => {
+            await toggle(props.tier, value);
+        };
+
+        const buildItem = () => {
+            let item : VNodeChild;
+
+            switch (component.value.type) {
+                case 'separator': {
+                    const hasSlot = hasNormalizedSlot(SlotName.SEPARATOR, slots);
                     if (hasSlot) {
-                        item = normalizeSlot(SlotName.LINK, {
-                            component: vm.component,
-                            selectComponent: vm.selectComponent,
-                            isActive: vm.isMatch,
-                        }, $scopedSlots, $slots);
+                        item = normalizeSlot(SlotName.SEPARATOR, {
+                            component: component.value,
+                        }, slots);
                     } else {
-                        const linkProps : NavigationLinkProperties = {
-                            active: vm.isMatch,
-                            disabled: false,
-                            prefetch: true,
-                        };
+                        item = h('div', {
+                            class: 'nav-separator',
+                        }, component.value.name);
+                    }
+                    break;
+                }
+                default: {
+                    if (typeof component.value.components === 'undefined') {
+                        const hasSlot = hasNormalizedSlot(SlotName.LINK, slots);
+                        if (hasSlot) {
+                            item = normalizeSlot(SlotName.LINK, {
+                                component: component.value,
+                                selectComponent,
+                                isActive: isMatch,
+                            }, slots);
+                        } else {
+                            const linkProps : NavigationLinkProperties = {
+                                active: unref(isMatch),
+                                disabled: false,
+                                prefetch: true,
+                            };
 
-                        if (vm.component.url) {
-                            if (
-                                isAbsoluteURL(vm.component.url) ||
-                                vm.component.url.startsWith('#')
-                            ) {
-                                linkProps.href = vm.component.url;
-                                if (vm.component.urlTarget) {
-                                    linkProps.target = vm.component.urlTarget;
+                            if (component.value.url) {
+                                if (
+                                    isAbsoluteURL(component.value.url) ||
+                                    component.value.url.startsWith('#')
+                                ) {
+                                    linkProps.href = component.value.url;
+                                    if (component.value.urlTarget) {
+                                        linkProps.target = component.value.urlTarget;
+                                    }
+                                } else {
+                                    linkProps.to = component.value.url;
                                 }
-                            } else {
-                                linkProps.to = vm.component.url;
                             }
-                        }
 
-                        item = h(NavigationLink, {
-                            staticClass: 'nav-link',
-                            class: {
-                                'router-link-active': vm.isMatch,
-                                'router-link-exact-active': vm.isStrictMatch,
-                                active: vm.isMatch,
-                                'root-link': vm.component.rootLink,
-                            },
-                            props: linkProps,
-                            on: {
-                                clicked() {
-                                    if (!vm.component.url) {
-                                        return vm.selectComponent.call(null, vm.component);
+                            item = h(NavigationLink, {
+                                class: [
+                                    'nav-link',
+                                    {
+                                        'router-link-active': isMatch.value,
+                                        'router-link-exact-active': isStrictMatch.value,
+                                        active: isMatch.value,
+                                        'root-link': component.value.rootLink,
+                                    },
+                                ],
+                                ...linkProps,
+                                onClicked() {
+                                    if (!component.value.url) {
+                                        return selectComponent.call(null, component.value);
                                     }
 
                                     return undefined;
                                 },
-                                click() {
-                                    return vm.selectComponent.call(null, vm.component);
+                                onClick() {
+                                    return selectComponent.call(null, component.value);
                                 },
-                            },
-                        }, [
-                            vm.component.icon ? h('i', { staticClass: vm.component.icon }) : h(),
-                            h('span', { staticClass: 'nav-link-text' }, [vm.component.name]),
-                        ]);
-                    }
-                } else if (hasNormalizedSlot(SlotName.SUB, $scopedSlots, $slots)) {
-                    item = normalizeSlot(SlotName.SUB, {
-                        component: vm.component,
-                        selectComponent: vm.selectComponent,
-                        toggleComponentExpansion: vm.toggleComponentExpansion,
-                    }, $scopedSlots, $slots);
-                } else {
-                    let title = h();
-                    if (hasNormalizedSlot(SlotName.SUB_TITLE, $scopedSlots, $slots)) {
-                        title = normalizeSlot(SlotName.SUB_TITLE, {
-                            component: vm.component,
-                            selectComponent: vm.selectComponent,
-                            toggleComponentExpansion: vm.toggleComponentExpansion,
-                        });
+                            }, {
+                                default: () => [
+                                    ...(component.value.icon ? [h('i', { class: component.value.icon })] : []),
+                                    h('span', { class: 'nav-link-text' }, [component.value.name]),
+                                ],
+                            });
+                        }
+                    } else if (hasNormalizedSlot(SlotName.SUB, slots)) {
+                        item = normalizeSlot(SlotName.SUB, {
+                            component: component.value,
+                            selectComponent,
+                            toggleComponentExpansion,
+                        }, slots);
                     } else {
-                        title = h('div', {
-                            staticClass: 'nav-sub-title',
-                            on: {
-                                click($event: any) {
+                        let title : VNodeChild;
+                        if (hasNormalizedSlot(SlotName.SUB_TITLE, slots)) {
+                            title = normalizeSlot(SlotName.SUB_TITLE, {
+                                component: component.value,
+                                selectComponent,
+                                toggleComponentExpansion,
+                            });
+                        } else {
+                            title = h('div', {
+                                class: 'nav-sub-title',
+                                onClick($event: any) {
                                     $event.preventDefault();
 
-                                    return vm.toggleComponentExpansion.call(null, vm.component);
+                                    return toggleComponentExpansion.call(null, component.value);
                                 },
-                            },
-                        }, [
-                            vm.component.icon ? h('i', { staticClass: vm.component.icon }) : h(),
-                            h('span', { staticClass: 'nav-link-text' }, [vm.component.name]),
-                        ]);
+                            }, [[
+                                ...(component.value.icon ? [h('i', { class: component.value.icon })] : []),
+                                h('span', { class: 'nav-link-text' }, [component.value.name]),
+                            ]]);
+                        }
+
+                        let items : VNodeChild;
+
+                        if (hasNormalizedSlot(SlotName.SUB_ITEMS, slots)) {
+                            items = normalizeSlot(SlotName.SUB_ITEMS, {
+                                component: component.value,
+                                selectComponent,
+                                toggleComponentExpansion,
+                            });
+                        } else if (component.value.displayChildren) {
+                            const navigationComponents = resolveComponent('NavigationComponents');
+                            items = h(navigationComponents, {
+                                class: 'list-unstyled nav-sub-items',
+                                tier: props.tier,
+                                entities: component.value.components,
+                            });
+                        }
+
+                        item = [
+                            title,
+                            items,
+                        ];
                     }
-
-                    let items = h();
-
-                    if (hasNormalizedSlot(SlotName.SUB_ITEMS, $scopedSlots, $slots)) {
-                        items = normalizeSlot(SlotName.SUB_ITEMS, {
-                            component: vm.component,
-                            selectComponent: vm.selectComponent,
-                            toggleComponentExpansion: vm.toggleComponentExpansion,
-                        });
-                    } else if (vm.component.displayChildren) {
-                        items = h('navigation-components', {
-                            staticClass: 'list-unstyled nav-sub-items',
-                            props: {
-                                tier: vm.tier,
-                                entities: vm.component.components,
-                            },
-                        });
-                    }
-
-                    item = [
-                        title,
-                        items,
-                    ];
+                    break;
                 }
-                break;
             }
-        }
 
-        return h('div', {
-            staticClass: 'nav-item',
-            class: {
-                active: vm.isMatch || vm.component.displayChildren,
-            },
-        }, Array.isArray(item) ? item : [item]);
+            return item;
+        };
+
+        return () => h('div', {
+            class: [
+                'nav-item',
+                {
+                    active: isMatch.value || component.value.displayChildren,
+                },
+            ],
+        }, [
+            buildItem(),
+        ]);
     },
 });
 
