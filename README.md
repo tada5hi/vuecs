@@ -20,7 +20,7 @@ The repository contains the following packages:
 
 - 🏔 **@vue-layout/navigation**: A package to render a multi level navigation menu.
 - 🧪 **@vue-layout/navigation-demo** : An example project on how to use the navigation package.
-- 🧰 **@vue-layout/utils**: A package for building form and list components on the fly.
+- 🧰 **@vue-layout/utils**: A package for building form and list components on the fly in the vue render function.
 - 🧪 **@vue-layout/utils-demo** : An example project on how to use the utils package.
 
 ## Documentation

@@ -5,12 +5,38 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { RouteLocationMatched, useRoute } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { build } from '../store';
 import { Component } from '../type';
 import { isComponent } from '../utils/check';
 import { hasOwnProperty } from '../utils';
 import { RouteBuildContext } from './type';
+
+function transformToComponents(input: unknown) : Component[] {
+    if (isComponent(input)) {
+        return [input];
+    }
+
+    if (typeof input === 'string' || typeof input === 'number') {
+        return [
+            {
+                id: input,
+            },
+        ];
+    }
+
+    if (Array.isArray(input)) {
+        const items = [];
+
+        for (let i = 0; i < input.length; i++) {
+            items.push(...transformToComponents(input[i]));
+        }
+
+        return items;
+    }
+
+    return [];
+}
 
 export async function buildWithRoute(context?: Partial<RouteBuildContext>) {
     context ??= {};
@@ -19,57 +45,56 @@ export async function buildWithRoute(context?: Partial<RouteBuildContext>) {
 
     const { route, metaKey } = context as RouteBuildContext;
 
-    let data : unknown;
-
-    if (route.meta) {
-        if (
-            metaKey in route.meta &&
-            route.meta[metaKey]
-        ) {
-            data = route.meta[metaKey];
-        }
-    }
-
-    if (typeof data === 'undefined') {
-        for (let i = 0; i < route.matched.length; i++) {
-            if (hasOwnProperty(route.matched[i], metaKey)) {
-                data = route.matched[i][metaKey as keyof RouteLocationMatched];
-            }
-        }
-    }
-
     const components : Component[] = [];
 
-    if (typeof data === 'string' || typeof data === 'number') {
-        components.push({
-            tier: 0,
-            id: data,
-        });
-    }
+    const tiers : number[] = [];
+    let currentTier = 0;
 
-    if (isComponent(data)) {
-        if (typeof data.tier === 'undefined') {
-            data.tier = 0;
+    const nextTier = () : number => {
+        if (tiers.indexOf(currentTier) === -1) {
+            tiers.push(currentTier);
+            return currentTier;
         }
 
-        components.push(data);
-    }
+        currentTier++;
 
-    if (Array.isArray(data)) {
-        for (let i = 0; i < data.length; i++) {
-            if (typeof data[i] === 'number' || typeof data[i] === 'string') {
-                components.push({
-                    tier: i,
-                    id: data[i],
-                });
-            } else if (isComponent(data[i])) {
-                if (typeof data[i].tier === 'undefined') {
-                    data[i].tier = i;
+        return nextTier();
+    };
+
+    const handleComponents = (items: Component[]) => {
+        for (let j = 0; j < items.length; j++) {
+            const itemTier = items[j].tier;
+            if (typeof itemTier !== 'undefined') {
+                if (tiers.indexOf(itemTier) === -1) {
+                    components.push(items[j]);
+                    tiers.push(itemTier);
                 }
-
-                components.push(data[i]);
+            } else {
+                items[j].tier = nextTier();
+                components.push(items[j]);
             }
         }
+    };
+
+    for (let i = 0; i < route.matched.length; i++) {
+        const chainRoute = route.matched[i];
+
+        if (
+            chainRoute.meta &&
+            hasOwnProperty(chainRoute.meta, metaKey)
+        ) {
+            const items = transformToComponents(chainRoute.meta[metaKey]);
+            handleComponents(items);
+        }
+    }
+
+    if (
+        components.length === 0 &&
+        route.meta &&
+        hasOwnProperty(route.meta, metaKey)
+    ) {
+        const items = transformToComponents(route.meta[metaKey]);
+        handleComponents(items);
     }
 
     await build({
