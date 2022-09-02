@@ -15,27 +15,33 @@ import postcss from 'rollup-plugin-postcss';
 
 import pkg from './package.json';
 
-const baseConfig = {
-    input: 'src/entry.ts',
-    plugins: {
-        replace: {
-            'process.env.NODE_ENV': JSON.stringify('production'),
-            preventAssignment: true,
-        },
-        vue: {},
-        postVue: [
+function buildConfig(config) {
+    return {
+        input: 'src/entry.ts',
+        ...config,
+        plugins: [
+            replace({
+                'process.env.NODE_ENV': JSON.stringify('production'),
+                preventAssignment: true,
+            }),
+            postcss({
+                extract: true,
+            }),
+            vue(),
             resolve({
                 extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
             }),
             commonjs(),
+            babel({
+                exclude: 'node_modules/**',
+                extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
+                babelHelpers: 'bundled',
+            }),
+            ...(config.plugins ? config.plugins : []),
         ],
-        babel: {
-            exclude: 'node_modules/**',
-            extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
-            babelHelpers: 'bundled',
-        },
-    },
-};
+
+    };
+}
 
 // ESM/UMD/IIFE shared settings: externals
 // Refer to https://rollupjs.org/guide/en/#warning-treating-module-as-external-dependency
@@ -52,21 +58,9 @@ const globals = {
 const name = 'VueLayoutUtils';
 
 export default [
-    {
-        ...baseConfig,
+    buildConfig({
         input: 'src/index.ts',
         external,
-        plugins: [
-            replace(baseConfig.plugins.replace),
-            postcss({
-                extract: true,
-            }),
-            vue(),
-            ...baseConfig.plugins.postVue,
-            babel({
-                ...baseConfig.plugins.babel,
-            }),
-        ],
         output: [
             {
                 file: pkg.module,
@@ -74,27 +68,25 @@ export default [
                 exports: 'named',
                 assetFileNames: '[name]-[hash][extname]',
             },
+        ],
+    }),
+    buildConfig({
+        external,
+        output: [
             {
+                compact: true,
                 file: pkg.main,
                 format: 'cjs',
-                exports: 'named',
+                exports: 'auto',
                 assetFileNames: '[name]-[hash][extname]',
                 globals,
             },
         ],
-
-    },
-    {
-        ...baseConfig,
+    }),
+    buildConfig({
+        input: 'src/index.ts',
         external,
         plugins: [
-            replace(baseConfig.plugins.replace),
-            postcss({
-                extract: true,
-            }),
-            vue(baseConfig.plugins.vue),
-            ...baseConfig.plugins.postVue,
-            babel(baseConfig.plugins.babel),
             terser({
                 output: {
                     ecma: 5,
@@ -110,6 +102,18 @@ export default [
                 assetFileNames: '[name]-[hash][extname]',
                 globals,
             },
+        ],
+    }),
+    buildConfig({
+        external,
+        plugins: [
+            terser({
+                output: {
+                    ecma: 5,
+                },
+            }),
+        ],
+        output: [
             {
                 name,
                 compact: true,
@@ -119,5 +123,5 @@ export default [
                 globals,
             },
         ],
-    },
+    }),
 ];
