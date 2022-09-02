@@ -3,7 +3,7 @@ import {
     findTierComponent,
 } from '@vue-layout/navigation';
 
-export class NavigationProvider implements ProviderInterface {
+export class Provider implements ProviderInterface {
     protected primaryItems : Component[] = [
         {
             id: 'default', name: 'Home', icon: 'fa fa-home', default: true,

@@ -101,36 +101,36 @@ The next step is to create the vue entrypoint.
 `index.ts`
 
 ```typescript
-import Vue, { VNode } from 'vue';
-import VueRouter from "vue-router";
-
-import VueLayoutNavigation, { 
-    build,
-    setProvider
+import VueLayoutNavigation, {
+    build, 
+    setProvider 
 } from '@vue-layout/navigation';
+import { createApp } from 'vue';
+import { createRouter, createWebHistory } from 'vue-router';
 
-// import the ProviderInterface implementation
-import { Provider } from "./module";
+import { Provider } from './module';
 
-// Create an instance and register it!
 const provider = new Provider();
 setProvider(provider);
 
-// register the plugin & vue-router
-Vue.use(VueLayoutNavigation);
-Vue.use(VueRouter);
+const app = createApp();
+
+app.use(VueLayoutNavigation);
+
+const router = createRouter({
+    history: createWebHistory(),
+    routes: [
+        
+    ],
+});
+
+app.use(router);
 
 (async () => {
-    const instance = new Vue({
-        render: (h): VNode => h(Dev),
-        router: new VueRouter({...})
-    });
-
-    // sadly there exists no typing for the history property... :/
-    const url = (instance.$router as any)?.history?.current?.fullPath;
+    const url = router?.currentRoute?.value?.fullPath;
     await build({ url });
 
-    instance.$mount('#app');
+    app.mount('#app');
 })();
 ```
 
@@ -186,7 +186,7 @@ the `ProviderInterface` implementation, to build a specific tier navigation.
 
 ### buildWithRoute
 
-▸ `function` **buildWithRoute**(`context?: RouteBuildContext`): `Promise`<`void`>
+▸ `function` **buildWithRoute**(`context?: Partial<RouteBuildContext>`): `Promise`<`void`>
 
 Build all navigation tiers, by `route` (url) or by interpreting the `metaKey` attribute of 
 a route component.
@@ -194,10 +194,10 @@ a route component.
 #### Example
 **`route`**
 ```typescript
-import { Route } from 'vue-router';
+import { RouteLocation } from 'vue-router';
 import { buildWithRoute } from '@vue-layout/navigation';
 
-const route : Route = {
+const route : RouteLocation = {
     fullPath: '/',
     ...
 };
@@ -210,13 +210,12 @@ This method call is under the hood equal to: `build({url: '/'})`.
 
 **`metaKey`**
 ```typescript
-import Vue from 'vue';
-import { Route } from 'vue-router';
+import { defineComponent } from 'vue';
 import { buildWithRoute } from '@vue-layout/navigation';
 
 const metaKey = 'navigation';
 
-const pageComponent = Vue.extend({
+const pageComponent = defineComponent({
     meta: {
         [metaKey]: [
             {id: 'default', tier: 0, name: 'Home'}
@@ -295,10 +294,10 @@ interface ProviderInterface {
 ### RouteBuildContext
 
 ```typescript
-import { Route } from 'vue-router';
+import { RouteLocationNormalized } from 'vue-router';
 
 type RouteBuildContext = {
-    route: Route,
+    route: RouteLocationNormalized,
     metaKey: string
 };
 ```

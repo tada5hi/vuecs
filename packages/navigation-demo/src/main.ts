@@ -5,13 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { VNode, createApp } from 'vue';
+import VueLayoutNavigation, { build, setProvider } from '@vue-layout/navigation';
+import { createApp } from 'vue';
+import { createRouter, createWebHistory } from 'vue-router';
 
-import VueLayoutNavigation, { build, setProvider, useProvider } from '@vue-layout/navigation';
-
-import { createRouter, createWebHistory, useRouter } from 'vue-router';
-
-import { NavigationProvider } from './module';
+import { Provider } from './module';
 
 import Dev from './serve.vue';
 
@@ -20,7 +18,7 @@ import Home from './components/home.vue';
 import Realm from './components/realm.vue';
 import Settings from './components/settings.vue';
 
-const provider = new NavigationProvider();
+const provider = new Provider();
 setProvider(provider);
 
 const app = createApp(Dev);

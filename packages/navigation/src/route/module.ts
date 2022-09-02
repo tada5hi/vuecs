@@ -5,12 +5,20 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { RouteLocationMatched, useRoute } from 'vue-router';
 import { build } from '../store';
 import { Component } from '../type';
 import { isComponent } from '../utils/check';
+import { hasOwnProperty } from '../utils';
 import { RouteBuildContext } from './type';
 
-export async function buildWithRoute({ route, metaKey }: RouteBuildContext) {
+export async function buildWithRoute(context?: Partial<RouteBuildContext>) {
+    context ??= {};
+    context.route = context.route || useRoute();
+    context.metaKey = context.metaKey || 'navigation';
+
+    const { route, metaKey } = context as RouteBuildContext;
+
     let data : unknown;
 
     if (route.meta) {
@@ -24,10 +32,8 @@ export async function buildWithRoute({ route, metaKey }: RouteBuildContext) {
 
     if (typeof data === 'undefined') {
         for (let i = 0; i < route.matched.length; i++) {
-            if (Object.prototype.hasOwnProperty.call(route.matched[i], metaKey)) {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                data = route.matched[i][metaKey];
+            if (hasOwnProperty(route.matched[i], metaKey)) {
+                data = route.matched[i][metaKey as keyof RouteLocationMatched];
             }
         }
     }
