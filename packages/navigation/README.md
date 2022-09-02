@@ -23,7 +23,7 @@ render a multi tier navigation, where tier-0 conditionally affects tier-1 and so
 ## Installation
 
 ```
-$ npm i --save-dev @vue-layout/navigation
+$ npm i --save @vue-layout/navigation
 ```
 
 ## Usage
@@ -102,20 +102,17 @@ The next step is to create the vue entrypoint.
 
 ```typescript
 import VueLayoutNavigation, {
-    build, 
-    setProvider 
+    build
 } from '@vue-layout/navigation';
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
-
 import { Provider } from './module';
-
-const provider = new Provider();
-setProvider(provider);
 
 const app = createApp();
 
-app.use(VueLayoutNavigation);
+app.use(VueLayoutNavigation, {
+    provider: new Provider(),
+});
 
 const router = createRouter({
     history: createWebHistory(),

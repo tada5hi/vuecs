@@ -6,14 +6,31 @@ import { Plugin } from 'vue';
 
 // Import vue components
 import * as components from './components';
+import { hasOwnProperty } from './utils';
+import { setProvider } from './provider';
+import { setState } from './store';
 
 // install function executed by Vue.use()
 const install: Plugin = function install(
     instance,
+    options,
 ) {
     Object.entries(components).forEach(([componentName, component]) => {
         instance.component(componentName, component);
     });
+
+    if (
+        typeof options === 'object' &&
+        options !== null
+    ) {
+        if (hasOwnProperty(options, 'provider')) {
+            setProvider(options.provider);
+        }
+
+        if (hasOwnProperty(options, 'state')) {
+            setState(options.state);
+        }
+    }
 };
 
 // Create module definition for Vue.use()
