@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import VueLayoutNavigation, { build } from '@vue-layout/navigation';
+import { build, createNavigation } from '@vue-layout/navigation';
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
@@ -20,9 +20,11 @@ import Settings from './components/settings.vue';
 
 const app = createApp(Dev);
 
-app.use(VueLayoutNavigation, {
+const layoutNavigation = createNavigation({
     provider: new Provider(),
 });
+
+app.use(layoutNavigation);
 
 const router = createRouter({
     history: createWebHistory(),

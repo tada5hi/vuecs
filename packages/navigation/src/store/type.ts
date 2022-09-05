@@ -5,12 +5,12 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Component } from '../type';
+import { Component, MaybeRef } from '../type';
 
 export type StateType = {
-    components: Component[],
-    componentsActive: Component[],
-    tiers?: number
+    components: MaybeRef<Component[]>,
+    componentsActive: MaybeRef<Component[]>,
+    tiers?: MaybeRef<number>
 };
 
 export type BuildContext = {

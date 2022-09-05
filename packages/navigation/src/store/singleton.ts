@@ -6,12 +6,11 @@
  */
 
 import { ref } from 'vue';
-import { ToMaybeRef } from '../type';
 import { StateType } from './type';
 
-let instance : ToMaybeRef<StateType> | undefined;
+let instance : StateType | undefined;
 
-export function useState() : ToMaybeRef<StateType> {
+export function useState() : StateType {
     if (typeof instance !== 'undefined') {
         return instance;
     }
@@ -25,10 +24,10 @@ export function useState() : ToMaybeRef<StateType> {
     return instance;
 }
 
-export function setState(state: ToMaybeRef<StateType>) {
+export function setState(state: StateType) {
     instance = state;
 }
 
-export function getState() : ToMaybeRef<StateType> | undefined {
+export function getState() : StateType | undefined {
     return instance;
 }

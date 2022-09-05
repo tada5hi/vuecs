@@ -101,7 +101,7 @@ The next step is to create the vue entrypoint.
 `index.ts`
 
 ```typescript
-import VueLayoutNavigation, {
+import LayoutNavigation, {
     build
 } from '@vue-layout/navigation';
 import { createApp } from 'vue';
@@ -110,7 +110,7 @@ import { Provider } from './module';
 
 const app = createApp();
 
-app.use(VueLayoutNavigation, {
+app.use(LayoutNavigation, {
     provider: new Provider(),
 });
 

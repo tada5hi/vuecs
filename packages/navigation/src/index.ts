@@ -2,13 +2,32 @@ import 'regenerator-runtime';
 
 import '../assets/index.css';
 
-import { Plugin } from 'vue';
+import { App, Plugin } from 'vue';
 
 // Import vue components
 import * as components from './components';
 import { hasOwnProperty } from './utils';
 import { setProvider } from './provider';
 import { setState } from './store';
+import { Options } from './type';
+
+export function createNavigation(options?: Partial<Options>) : Plugin {
+    options ??= {};
+
+    if (options.provider) {
+        setProvider(options.provider);
+    }
+
+    if (options.state) {
+        setState(options.state);
+    }
+
+    return (instance: App) => {
+        Object.entries(components).forEach(([componentName, component]) => {
+            instance.component(componentName, component);
+        });
+    };
+}
 
 // install function executed by Vue.use()
 const install: Plugin = function install(

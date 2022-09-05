@@ -6,10 +6,17 @@
  */
 
 import { Ref } from 'vue';
+import { ProviderInterface } from './provider';
+import { StateType } from './store';
 
 export type MaybeRef<T> = T | Ref<T>;
 export type ToMaybeRef<T> = {
     [K in keyof T]: MaybeRef<T[K]>;
+};
+
+export type Options = {
+    provider: ProviderInterface,
+    state: StateType
 };
 
 export type Component = {
