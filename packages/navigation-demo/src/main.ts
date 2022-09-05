@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { build, createNavigation } from '@vue-layout/navigation';
+import { build, createPlugin } from '@vue-layout/navigation';
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
@@ -20,11 +20,10 @@ import Settings from './components/settings.vue';
 
 const app = createApp(Dev);
 
-const layoutNavigation = createNavigation({
+const navigation = createPlugin({
     provider: new Provider(),
 });
-
-app.use(layoutNavigation);
+app.use(navigation);
 
 const router = createRouter({
     history: createWebHistory(),
@@ -35,7 +34,6 @@ const router = createRouter({
         { path: '/admin/realms', component: Realm },
     ],
 });
-
 app.use(router);
 
 (async () => {

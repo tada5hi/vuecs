@@ -11,7 +11,7 @@ import { setProvider } from './provider';
 import { setState } from './store';
 import { Options } from './type';
 
-export function createNavigation(options?: Partial<Options>) : Plugin {
+export function createPlugin(options?: Partial<Options>) : Plugin {
     options ??= {};
 
     if (options.provider) {

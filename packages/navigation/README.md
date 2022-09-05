@@ -101,8 +101,9 @@ The next step is to create the vue entrypoint.
 `index.ts`
 
 ```typescript
-import LayoutNavigation, {
-    build
+import {
+    build,
+    createPlugin
 } from '@vue-layout/navigation';
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
@@ -110,17 +111,17 @@ import { Provider } from './module';
 
 const app = createApp();
 
-app.use(LayoutNavigation, {
+const navigation = createPlugin({
     provider: new Provider(),
 });
+app.use(navigation);
 
 const router = createRouter({
     history: createWebHistory(),
     routes: [
-        
+        /* ... */     
     ],
 });
-
 app.use(router);
 
 (async () => {
