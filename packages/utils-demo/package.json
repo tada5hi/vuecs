@@ -27,7 +27,7 @@
         "@vue-layout/utils": "^2.0.0-alpha.0",
         "bootstrap": "^4.6.2",
         "font-awesome": "^4.7.0",
-        "vue": "^3.2.38"
+        "vue": "^3.2.39"
     },
     "devDependencies": {
         "@vitejs/plugin-vue": "^3.1.0",

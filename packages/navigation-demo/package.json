@@ -39,7 +39,7 @@
     "homepage": "https://github.com/Tada5hi/vue-layout#readme",
     "dependencies": {
         "@vue-layout/navigation": "^2.0.0-alpha.0",
-        "vue": "^3.2.38",
+        "vue": "^3.2.39",
         "vue-router": "^4.1.4"
     },
     "devDependencies": {
