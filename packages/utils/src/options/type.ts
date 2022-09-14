@@ -22,6 +22,7 @@ import {
     ListTitleBuildOptions,
     PaginationOptions,
 } from '../components';
+import { ListBuildOptions } from '../components/list';
 import { Component } from './constants';
 
 export type OptionLibraryValueContext<V> = {
@@ -70,23 +71,25 @@ export type ComponentSpecialOptions<C extends Component | `${Component}`> =
 export type ComponentListOptions<C extends Component | `${Component}`> =
     C extends Component.ListBase | `${Component.ListBase}` ?
         ListBaseOptions :
-        C extends Component.ListActionRefresh | `${Component.ListActionRefresh}` ?
-            ListActionRefreshBuildOptions :
-            C extends Component.ListHeader | `${Component.ListHeader}` ?
-                ListHeaderBuildOptions :
-                C extends Component.ListItems | `${Component.ListItems}` ?
-                    ListItemsBuildOptions<any> :
-                    C extends Component.ListItem | `${Component.ListItem}` ?
-                        ListItemBuildOptions<any> :
-                        C extends Component.ListNoMore | `${Component.ListNoMore}` ?
-                            ListNoMoreBuildOptions<any> :
-                            C extends Component.ListPagination | `${Component.ListPagination}` ?
-                                ListPaginationBuildOptions<any> :
-                                C extends Component.ListSearch | `${Component.ListSearch}` ?
-                                    ListSearchBuildOptions :
-                                    C extends Component.ListTitle | `${Component.ListTitle}` ?
-                                        ListTitleBuildOptions :
-                                        { };
+        C extends Component.List | `${Component.List}` ?
+            ListBuildOptions<any> :
+            C extends Component.ListActionRefresh | `${Component.ListActionRefresh}` ?
+                ListActionRefreshBuildOptions :
+                C extends Component.ListHeader | `${Component.ListHeader}` ?
+                    ListHeaderBuildOptions :
+                    C extends Component.ListItems | `${Component.ListItems}` ?
+                        ListItemsBuildOptions<any> :
+                        C extends Component.ListItem | `${Component.ListItem}` ?
+                            ListItemBuildOptions<any> :
+                            C extends Component.ListNoMore | `${Component.ListNoMore}` ?
+                                ListNoMoreBuildOptions<any> :
+                                C extends Component.ListPagination | `${Component.ListPagination}` ?
+                                    ListPaginationBuildOptions<any> :
+                                    C extends Component.ListSearch | `${Component.ListSearch}` ?
+                                        ListSearchBuildOptions :
+                                        C extends Component.ListTitle | `${Component.ListTitle}` ?
+                                            ListTitleBuildOptions :
+                                            { };
 
 export type ComponentOptions<C extends Component | `${Component}`> = ComponentFormOptions<C> &
 ComponentItemOptions<C> &

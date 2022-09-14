@@ -12,7 +12,7 @@ export type ListItemsBuildOptions<T extends Record<string, any>> = ListBaseOptio
     busy: boolean,
 
     item: Omit<ListItemBuildOptionsInput<T>, 'data' | 'index'>,
-    items: T[],
+    data: T[],
 };
 
 export type ListItemsBuildOptionsInput<T extends Record<string, any>> = OptionsInput<

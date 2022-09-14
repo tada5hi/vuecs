@@ -11,8 +11,8 @@ import {
 import { PaginationMeta } from '../pagination';
 
 export type ListPaginationBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
-    meta: Partial<PaginationMeta>,
     busy: boolean,
+    meta: Partial<PaginationMeta>,
     load?: ListLoadFn
 };
 

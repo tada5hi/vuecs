@@ -17,6 +17,7 @@ export enum Component {
 
     ItemActionToggle = 'itemActionToggle',
 
+    List = 'list',
     ListBase = 'listBase',
     ListActionRefresh = 'listActionRefresh',
     ListHeader = 'listHeader',

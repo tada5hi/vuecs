@@ -48,7 +48,7 @@ export default defineComponent({
         ]);
 
         const renderItems = () => buildListItems({
-            items,
+            data: items,
         });
 
         const renderNoMore = () => buildListNoMore();

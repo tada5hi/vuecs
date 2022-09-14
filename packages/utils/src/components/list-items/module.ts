@@ -27,7 +27,7 @@ export function buildListItemsOptions<T extends Record<string, any>>(
 
         busy: unrefWithDefault(options.busy, false),
 
-        items: unrefWithDefault(options.items, []),
+        data: unrefWithDefault(options.data, []),
         item: unrefWithDefault(options.item, {}),
     };
 }
@@ -41,7 +41,7 @@ export function buildListItems<T extends Record<string, any>>(
     if (hasNormalizedSlot(SlotName.ITEMS, options.slotItems)) {
         return normalizeSlot(SlotName.ITEMS, {
             ...options.slotProps,
-            items: options.items,
+            data: options.data,
             busy: options.busy,
         }, options.slotItems);
     }
@@ -51,7 +51,7 @@ export function buildListItems<T extends Record<string, any>>(
     return h(
         options.type,
         mergeProps({ class: options.class }, options.props),
-        options.items.map((item: T, index) => buildListItem({
+        options.data.map((item: T, index) => buildListItem({
             ...options.slotProps,
             ...options.item,
             data: item,
