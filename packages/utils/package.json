@@ -56,8 +56,6 @@
         "vue": "^3.2.39"
     },
     "peerDependencies": {
-        "@vuelidate/core": "^2.x",
-        "@vuelidate/validators": "^2.x",
         "vue": "^3.x"
     },
     "engines": {
