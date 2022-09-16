@@ -5,7 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { ExpectListBaseOptions, ListBaseOptions, OptionsInput } from '../type';
+import {
+    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, OptionsInput,
+} from '../type';
 import { MaybeRef } from '../../type';
 
 export type ListSearchBuildOptions = ListBaseOptions & {
@@ -14,7 +16,7 @@ export type ListSearchBuildOptions = ListBaseOptions & {
     change?: (input: any) => void,
 };
 
-export type ListSearchBuildOptionsInput = OptionsInput<
+export type ListSearchBuildOptionsInput = ListBaseOptionsInput & OptionsInput<
 ExpectListBaseOptions<ListSearchBuildOptions>,
 never,
 'change'

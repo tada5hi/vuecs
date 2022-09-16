@@ -8,7 +8,7 @@
 import { VNode, VNodeChild } from 'vue';
 import { MaybeRef, VNodeClass, VNodeProperties } from '../../type';
 import {
-    ExpectListBaseOptions, ListBaseOptions, ListLoadFn, OptionsInput,
+    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListLoadFn, OptionsInput,
 } from '../type';
 
 export type ListActionRefreshBuildOptions = ListBaseOptions & {
@@ -24,7 +24,7 @@ export type ListActionRefreshBuildOptions = ListBaseOptions & {
     load: ListLoadFn,
 };
 
-export type ListActionRefreshBuildOptionsInput = OptionsInput<
+export type ListActionRefreshBuildOptionsInput = ListBaseOptionsInput & OptionsInput<
 ExpectListBaseOptions<ListActionRefreshBuildOptions>,
 never,
 'load' | 'busy'

@@ -6,7 +6,9 @@
  */
 
 import { VNode, VNodeChild } from 'vue';
-import { ExpectListBaseOptions, ListBaseOptions, OptionsInput } from '../type';
+import {
+    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, OptionsInput,
+} from '../type';
 
 export type ListNoMoreBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
     textContent: VNodeChild | VNode | VNode[],
@@ -15,6 +17,6 @@ export type ListNoMoreBuildOptions<T extends Record<string, any>> = ListBaseOpti
     total: number
 };
 
-export type ListNoMoreBuildOptionsInput<T extends Record<string, any>> = OptionsInput<
+export type ListNoMoreBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput & OptionsInput<
 ExpectListBaseOptions<ListNoMoreBuildOptions<T>>
 >;

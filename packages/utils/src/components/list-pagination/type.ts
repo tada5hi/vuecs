@@ -6,7 +6,7 @@
  */
 
 import {
-    ExpectListBaseOptions, ListBaseOptions, ListLoadFn, OptionsInput,
+    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListLoadFn, OptionsInput,
 } from '../type';
 import { PaginationMeta } from '../pagination';
 
@@ -16,7 +16,7 @@ export type ListPaginationBuildOptions<T extends Record<string, any>> = ListBase
     load?: ListLoadFn
 };
 
-export type ListPaginationBuildOptionsInput<T extends Record<string, any>> = OptionsInput<
+export type ListPaginationBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput & OptionsInput<
 ExpectListBaseOptions<ListPaginationBuildOptions<T>>,
 never,
 'load'

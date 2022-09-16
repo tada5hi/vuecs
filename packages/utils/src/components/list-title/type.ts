@@ -7,7 +7,9 @@
 
 import { VNode, VNodeChild } from 'vue';
 import { VNodeClass, VNodeProperties } from '../../type';
-import { ExpectListBaseOptions, ListBaseOptions, OptionsInput } from '../type';
+import {
+    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, OptionsInput,
+} from '../type';
 
 export type ListTitleBuildOptions = ListBaseOptions & {
     text: boolean,
@@ -21,5 +23,5 @@ export type ListTitleBuildOptions = ListBaseOptions & {
     iconProps: VNodeProperties
 };
 
-export type ListTitleBuildOptionsInput = OptionsInput<
+export type ListTitleBuildOptionsInput = ListBaseOptionsInput & OptionsInput<
 ExpectListBaseOptions<ListTitleBuildOptions>>;

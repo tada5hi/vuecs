@@ -7,7 +7,7 @@
 
 import { MaybeRef, VNodeClass, VNodeProperties } from '../../type';
 import {
-    ExpectListBaseOptions, ListBaseOptions, ListLoadFn, OptionsInput,
+    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListLoadFn, OptionsInput,
 } from '../type';
 import { ListActionRefreshBuildOptionsInput } from '../list-action-refresh';
 import { ListTitleBuildOptionsInput } from '../list-title';
@@ -25,7 +25,7 @@ export type ListHeaderBuildOptions = ListBaseOptions & {
     load: ListLoadFn
 };
 
-export type ListHeaderBuildOptionsInput = OptionsInput<
+export type ListHeaderBuildOptionsInput = ListBaseOptionsInput & OptionsInput<
 ExpectListBaseOptions<ListHeaderBuildOptions>,
 never,
 'load' | 'busy'

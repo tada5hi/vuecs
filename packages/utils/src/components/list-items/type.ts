@@ -5,7 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { ExpectListBaseOptions, ListBaseOptions, OptionsInput } from '../type';
+import {
+    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, OptionsInput,
+} from '../type';
 import { ListItemBuildOptionsInput } from '../list-item';
 
 export type ListItemsBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
@@ -15,6 +17,6 @@ export type ListItemsBuildOptions<T extends Record<string, any>> = ListBaseOptio
     data: T[],
 };
 
-export type ListItemsBuildOptionsInput<T extends Record<string, any>> = OptionsInput<
+export type ListItemsBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput & OptionsInput<
 ExpectListBaseOptions<ListItemsBuildOptions<T>>
 >;

@@ -7,7 +7,9 @@
 
 import { VNode } from 'vue';
 import { VNodeClass, VNodeProperties } from '../../type';
-import { ExpectListBaseOptions, ListBaseOptions, OptionsInput } from '../type';
+import {
+    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, OptionsInput,
+} from '../type';
 
 export type ListItemBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
     data: T,
@@ -27,7 +29,7 @@ export type ListItemBuildOptions<T extends Record<string, any>> = ListBaseOption
     busy: boolean
 };
 
-export type ListItemBuildOptionsInput<T extends Record<string, any>> = OptionsInput<
+export type ListItemBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput & OptionsInput<
 ExpectListBaseOptions<ListItemBuildOptions<T>>,
 never,
 'actions' | 'fn' | 'textFn',

@@ -13,7 +13,7 @@ import { ListPaginationBuildOptionsInput } from '../list-pagination';
 import { ListSearchBuildOptionsInput } from '../list-search';
 import { PaginationMeta } from '../pagination';
 import {
-    ExpectListBaseOptions, ListBaseOptions, ListLoadFn, OptionsInput,
+    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListLoadFn, OptionsInput,
 } from '../type';
 
 export type ListBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
@@ -30,7 +30,7 @@ export type ListBuildOptions<T extends Record<string, any>> = ListBaseOptions & 
     pagination: Omit<ListPaginationBuildOptionsInput<T>, 'busy' | 'meta' | 'load'> | boolean,
 };
 
-export type ListBuildOptionsInput<T extends Record<string, any>> = OptionsInput<
+export type ListBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput & OptionsInput<
 ExpectListBaseOptions<ListBuildOptions<T>>,
 'load',
 'busy' | 'data' | 'meta' | 'change'
