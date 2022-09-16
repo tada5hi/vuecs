@@ -52,7 +52,7 @@ export function buildListNoMore<T extends Record<string, any>>(
         options.busy ||
         options.total > 0
     ) {
-        return h('');
+        return [];
     }
 
     if (hasNormalizedSlot(SlotName.ITEMS_NO_MORE, options.slotItems)) {

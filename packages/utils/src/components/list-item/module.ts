@@ -133,7 +133,7 @@ export function buildListItem<T extends Record<string, any>>(
         actions &&
         actions.length > 0
     ) {
-        children.push(h('div', { class: 'ml-auto' }, actions));
+        children.push(h('div', { class: 'ms-auto' }, actions));
     }
 
     return h(options.type, mergeProps({ key: options.index }, { class: options.class }, options.props), children);

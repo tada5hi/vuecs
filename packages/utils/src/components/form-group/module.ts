@@ -6,7 +6,7 @@
  */
 
 import {
-    PropType, computed, defineComponent, h,
+    PropType, VNodeArrayChildren, computed, defineComponent, h, render,
 } from 'vue';
 import { ValidationMessages, ValidationResultRules, ValidationTranslator } from '../type';
 import { Component, buildOptionValue } from '../../options';
@@ -99,6 +99,23 @@ export const FormGroup = defineComponent({
             },
         });
 
+        const renderChildren = () => {
+            const children : VNodeArrayChildren = [];
+
+            if (slots.default) {
+                children.push(slots.default({
+                    errors: errors.value,
+                    invalid: invalid.value,
+                } as FormGroupSlotScope));
+            }
+
+            children.push(errors.value.map((error) => h('div', {
+                class: 'form-group-hint group-required',
+            }, [error])));
+
+            return children;
+        };
+
         return () => h(
             'div',
             {
@@ -120,15 +137,7 @@ export const FormGroup = defineComponent({
                     component: Component.FormGroup, key: 'props', alt: {},
                 }),
             },
-            [
-                slots.default ? slots.default({
-                    errors: errors.value,
-                    invalid: invalid.value,
-                } as FormGroupSlotScope) : h(''),
-                errors.value.map((error) => h('div', {
-                    class: 'form-group-hint group-required',
-                }, [error])),
-            ],
+            renderChildren(),
         );
     },
 });

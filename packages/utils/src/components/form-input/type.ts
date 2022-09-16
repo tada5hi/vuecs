@@ -19,13 +19,11 @@ export type FormInputBuildOptions = FormBaseOptions & {
 
     groupPrepend: boolean,
     groupPrependClass?: VNodeClass,
-    groupPrependTextClass?: VNodeClass,
-    groupPrependTextContent?: VNode | VNodeChild | string,
+    groupPrependContent?: VNode | VNodeChild | string,
 
     groupAppend: boolean,
     groupAppendClass?: VNodeClass,
-    groupAppendTextClass?: VNodeClass,
-    groupAppendTextContent?: VNode | VNodeChild | string
+    groupAppendContent?: VNode | VNodeChild | string
 };
 
 export type FormInputBuildOptionsInput =

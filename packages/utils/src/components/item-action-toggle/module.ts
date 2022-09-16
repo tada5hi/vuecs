@@ -5,7 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { VNode, h, unref } from 'vue';
+import {
+    VNode, VNodeArrayChildren, h, unref,
+} from 'vue';
 import { ItemActionToggleOptions, ItemActionToggleOptionsInput } from './type';
 import { unrefWithDefault } from '../../utils';
 import { pushMaybeRefArrayValue, setMaybeRefValue, spliceMaybeRefArray } from '../utils';
@@ -109,7 +111,7 @@ export function buildItemActionToggle<T>(
     const value = unref(options.value);
     const currentValue = unref(options.currentValue);
 
-    let child = h('');
+    let children : VNodeArrayChildren = [];
 
     const childClass = value === currentValue ?
         options.childEnabledClass :
@@ -120,11 +122,13 @@ export function buildItemActionToggle<T>(
         options.childDisabledContent;
 
     if (childClass || childContent) {
-        child = h(options.childType, {
-            class: childClass,
-        }, [
-            childContent,
-        ]);
+        children = [
+            h(options.childType, {
+                class: childClass,
+            }, [
+                childContent,
+            ]),
+        ];
     }
 
     return h(options.type, {
@@ -162,6 +166,6 @@ export function buildItemActionToggle<T>(
             setMaybeRefValue(options.currentValue, value);
         },
     }, [
-        child,
+        children,
     ]);
 }

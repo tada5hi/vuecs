@@ -102,37 +102,39 @@ export const Pagination = defineComponent({
                 content = [currentPage.value - 1];
             }
 
-            let prevPage = h('');
+            let prevPage : VNodeArrayChildren = [];
             if (currentPage.value > 1) {
-                prevPage = h(
-                    'li',
-                    {
-                        class: buildOptionValueOrFail({
-                            component: Component.Pagination,
-                            key: 'itemClass',
-                            alt: 'page-item',
-                        }),
-                    },
-                    [
-                        h(
-                            'button',
-                            {
-                                class: buildOptionValueOrFail({
-                                    component: Component.Pagination,
-                                    key: 'linkClass',
-                                    alt: 'page-link',
-                                }),
-                                disabled: props.busy,
-                                onClick($event: any) {
-                                    $event.preventDefault();
+                prevPage = [
+                    h(
+                        'li',
+                        {
+                            class: buildOptionValueOrFail({
+                                component: Component.Pagination,
+                                key: 'itemClass',
+                                alt: 'page-item',
+                            }),
+                        },
+                        [
+                            h(
+                                'button',
+                                {
+                                    class: buildOptionValueOrFail({
+                                        component: Component.Pagination,
+                                        key: 'linkClass',
+                                        alt: 'page-link',
+                                    }),
+                                    disabled: props.busy,
+                                    onClick($event: any) {
+                                        $event.preventDefault();
 
-                                    return goTo(currentPage.value - 1);
+                                        return goTo(currentPage.value - 1);
+                                    },
                                 },
-                            },
-                            [content],
-                        ),
-                    ],
-                );
+                                [content],
+                            ),
+                        ],
+                    ),
+                ];
             }
 
             return prevPage;
@@ -192,7 +194,7 @@ export const Pagination = defineComponent({
         };
 
         const renderNextPage = () => {
-            let nextPage = h('');
+            let nextPage : VNodeArrayChildren = [];
 
             let content : VNodeChild;
 
@@ -227,31 +229,33 @@ export const Pagination = defineComponent({
             }
 
             if (currentPage.value < totalPages.value) {
-                nextPage = h('li', {
-                    class: buildOptionValueOrFail({
-                        component: Component.Pagination,
-                        key: 'itemClass',
-                        alt: 'page-item',
-                    }),
-                }, [
-                    h(
-                        'button',
-                        {
-                            class: buildOptionValueOrFail({
-                                component: Component.Pagination,
-                                key: 'linkClass',
-                                alt: 'page-link',
-                            }),
-                            disabled: props.busy,
-                            onClick($event: any) {
-                                $event.preventDefault();
+                nextPage = [
+                    h('li', {
+                        class: buildOptionValueOrFail({
+                            component: Component.Pagination,
+                            key: 'itemClass',
+                            alt: 'page-item',
+                        }),
+                    }, [
+                        h(
+                            'button',
+                            {
+                                class: buildOptionValueOrFail({
+                                    component: Component.Pagination,
+                                    key: 'linkClass',
+                                    alt: 'page-link',
+                                }),
+                                disabled: props.busy,
+                                onClick($event: any) {
+                                    $event.preventDefault();
 
-                                return goTo(currentPage.value + 1);
+                                    return goTo(currentPage.value + 1);
+                                },
                             },
-                        },
-                        [content],
-                    ),
-                ]);
+                            [content],
+                        ),
+                    ]),
+                ];
             }
 
             return nextPage;

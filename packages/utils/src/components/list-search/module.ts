@@ -41,7 +41,7 @@ export function buildListSearch(input?: ListSearchBuildOptionsInput) {
                 change: options.change,
                 label: false,
                 groupPrepend: true,
-                groupPrependTextContent: h('i', {
+                groupPrependContent: h('i', {
                     class: 'fa fa-search',
                 }),
             }),

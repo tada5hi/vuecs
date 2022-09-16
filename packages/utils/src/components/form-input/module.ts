@@ -47,25 +47,14 @@ export function buildFormInputOptions(
             alt: '',
             library: {
                 [Library.BOOTSTRAP]: {
-                    value: 'input-group-append',
-                },
-            },
-        }),
-        groupAppendTextClass: buildOptionValueOrFail({
-            component: Component.FormInput,
-            key: 'groupAppendTextClass',
-            value: unref(options.groupAppendTextClass),
-            alt: '',
-            library: {
-                [Library.BOOTSTRAP]: {
                     value: 'input-group-text',
                 },
             },
         }),
-        groupAppendTextContent: buildOptionValueOrFail({
+        groupAppendContent: buildOptionValueOrFail({
             component: Component.FormInput,
-            key: 'groupAppendTextContent',
-            value: unref(options.groupAppendTextContent),
+            key: 'groupAppendContent',
+            value: unref(options.groupAppendContent),
             alt: '',
         }),
 
@@ -83,25 +72,14 @@ export function buildFormInputOptions(
             alt: '',
             library: {
                 [Library.BOOTSTRAP]: {
-                    value: 'input-group-prepend',
-                },
-            },
-        }),
-        groupPrependTextClass: buildOptionValueOrFail({
-            component: Component.FormInput,
-            key: 'groupPrependTextClass',
-            value: unref(options.groupPrependTextClass),
-            alt: '',
-            library: {
-                [Library.BOOTSTRAP]: {
                     value: 'input-group-text',
                 },
             },
         }),
-        groupPrependTextContent: buildOptionValueOrFail({
+        groupPrependContent: buildOptionValueOrFail({
             component: Component.FormInput,
-            key: 'groupPrependTextContent',
-            value: unref(options.groupPrependTextContent),
+            key: 'groupPrependContent',
+            value: unref(options.groupPrependContent),
             alt: '',
         }),
     };
@@ -121,15 +99,9 @@ export function buildFormInput(
     const inputGroupChildren : VNodeChild = [];
 
     if (options.groupPrepend) {
-        inputGroupChildren.push(h(
-            'div',
-            {
-                class: options.groupPrependClass,
-            },
-            [
-                h('div', { class: options.groupPrependTextClass }, [options.groupPrependTextContent]),
-            ],
-        ));
+        inputGroupChildren.push(
+            h('span', { class: options.groupPrependClass }, [options.groupPrependContent]),
+        );
     }
 
     const rawValue = unref(options.value);
@@ -155,15 +127,9 @@ export function buildFormInput(
     ));
 
     if (options.groupAppend) {
-        inputGroupChildren.push(h(
-            'div',
-            {
-                class: options.groupAppendClass,
-            },
-            [
-                h('div', { class: options.groupAppendTextClass }, [options.groupAppendTextContent]),
-            ],
-        ));
+        inputGroupChildren.push(
+            h('span', { class: options.groupAppendClass }, [options.groupAppendContent]),
+        );
     }
 
     children.push(h(

@@ -47,7 +47,7 @@ export function buildListHeaderOptions(
             alt: [],
             library: {
                 [Library.BOOTSTRAP]: {
-                    value: 'd-flex flex-row ml-auto',
+                    value: 'd-flex flex-row ms-auto',
                 },
             },
         }),
