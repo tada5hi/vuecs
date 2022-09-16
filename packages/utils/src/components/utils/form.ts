@@ -77,10 +77,6 @@ export function handleFormValueChanged(options: FormBaseOptions, value: unknown)
         setMaybeRefValue(options.value, value);
     }
 
-    if (typeof options.validationRulesResult.$model !== 'undefined') {
-        setMaybeRefValue(options.validationRulesResult.$model, value);
-    }
-
     if (options.change) {
         options.change.call(null, value);
     }

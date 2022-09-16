@@ -35,7 +35,6 @@ export function buildFormTextarea(
     }
 
     const rawValue = unref(options.value);
-    const rawValidationValue = unref(options.validationRulesResult.$model);
 
     return h(
         FormGroup,
@@ -61,7 +60,6 @@ export function buildFormTextarea(
                                 handleFormValueChanged(options, $event.target.value);
                             },
                             ...(typeof rawValue !== 'undefined' ? { value: rawValue } : {}),
-                            ...(typeof rawValidationValue !== 'undefined' ? { value: rawValidationValue } : {}),
                         },
                         options.props,
                     ),

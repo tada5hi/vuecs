@@ -133,7 +133,6 @@ export function buildFormInput(
     }
 
     const rawValue = unref(options.value);
-    const rawValidationValue = unref(options.validationRulesResult.$model);
 
     inputGroupChildren.push(h(
         'input',
@@ -150,7 +149,6 @@ export function buildFormInput(
                     handleFormValueChanged(options, $event.target.value);
                 },
                 ...(typeof rawValue !== 'undefined' ? { value: rawValue } : {}),
-                ...(typeof rawValidationValue !== 'undefined' ? { value: rawValidationValue } : {}),
             },
             options.props,
         ),
