@@ -59,6 +59,9 @@ export function buildFormSubmitOptions(
                 [Library.BOOTSTRAP]: {
                     value: 'btn btn-xs btn-primary',
                 },
+                [Library.BOOTSTRAP_V5]: {
+                    value: 'btn btn-xs btn-primary',
+                },
             },
         }),
 
@@ -86,6 +89,9 @@ export function buildFormSubmitOptions(
             alt: [],
             library: {
                 [Library.BOOTSTRAP]: {
+                    value: 'btn btn-xs btn-success',
+                },
+                [Library.BOOTSTRAP_V5]: {
                     value: 'btn btn-xs btn-success',
                 },
             },

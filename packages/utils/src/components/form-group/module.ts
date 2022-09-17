@@ -6,11 +6,12 @@
  */
 
 import {
-    PropType, VNodeArrayChildren, computed, defineComponent, h, render,
+    PropType, VNodeArrayChildren, computed, defineComponent, h,
 } from 'vue';
-import { ValidationMessages, ValidationResultRules, ValidationTranslator } from '../type';
+import { ValidationMessages, ValidationResult, ValidationTranslator } from '../type';
 import { Component, buildOptionValue } from '../../options';
 import { Library } from '../../constants';
+import { isValidationRuleResultWithParams, isValidationRuleResultWithoutParams } from './utils';
 
 export type FormGroupSlotScope = {
     errors: string[],
@@ -18,16 +19,16 @@ export type FormGroupSlotScope = {
 };
 
 export type FormGroupProperties = {
-    validations?: ValidationResultRules,
+    validationResult?: ValidationResult,
     validationMessages?: ValidationMessages,
     validationTranslator?: ValidationTranslator
 };
 
 export const FormGroup = defineComponent({
     props: {
-        validations: {
+        validationResult: {
             default: () => {},
-            type: Object as PropType<ValidationResultRules>,
+            type: Object as PropType<ValidationResult>,
         },
         validationMessages: {
             type: Object as PropType<ValidationMessages>,
@@ -57,25 +58,28 @@ export const FormGroup = defineComponent({
             return `The ${validator} operator condition is not fulfilled.`;
         };
 
-        const invalid = computed(() => props.validations &&
-            props.validations.$dirty &&
-            props.validations.$invalid);
+        const invalid = computed(() => props.validationResult &&
+            props.validationResult.$dirty &&
+            props.validationResult.$invalid);
 
         const errors = computed(() => {
-            if (!invalid.value || typeof props.validations === 'undefined') {
+            if (!invalid.value || typeof props.validationResult === 'undefined') {
                 return [];
             }
 
-            return Object.keys(props.validations.$params).reduce(
-                (errors: string[], validator) => {
-                    if (props.validations && !props.validations[validator]) {
-                        errors.push(translate(validator, props.validations.$params[validator]));
+            const messages : string[] = [];
+            const keys = Object.keys(props.validationResult);
+            for (let i = 0; i < keys.length; i++) {
+                if (props.validationResult[keys[i]].$invalid) {
+                    if (isValidationRuleResultWithParams(props.validationResult[keys[i]])) {
+                        messages.push(translate(keys[i], props.validationResult[keys[i]].$params));
+                    } else if (isValidationRuleResultWithoutParams(props.validationResult[keys[i]])) {
+                        messages.push(translate(keys[i]));
                     }
+                }
+            }
 
-                    return errors;
-                },
-                [],
-            );
+            return messages;
         });
 
         const errorClazz = buildOptionValue({
@@ -86,6 +90,9 @@ export const FormGroup = defineComponent({
                 [Library.BOOTSTRAP]: {
                     value: 'form-group-error',
                 },
+                [Library.BOOTSTRAP_V5]: {
+                    value: 'form-group-error',
+                },
             },
         });
         const warningClazz = buildOptionValue({
@@ -94,6 +101,9 @@ export const FormGroup = defineComponent({
             alt: [],
             library: {
                 [Library.BOOTSTRAP]: {
+                    value: 'form-group-warning',
+                },
+                [Library.BOOTSTRAP_V5]: {
                     value: 'form-group-warning',
                 },
             },
@@ -128,10 +138,13 @@ export const FormGroup = defineComponent({
                             [Library.BOOTSTRAP]: {
                                 value: 'form-group',
                             },
+                            [Library.BOOTSTRAP_V5]: {
+                                value: 'form-group',
+                            },
                         },
                     }),
-                    ...(props.validations.$error ? [errorClazz] : []),
-                    ...(props.validations.$invalid && !props.validations.$dirty ? [warningClazz] : []),
+                    ...(props.validationResult.$error ? [errorClazz] : []),
+                    ...(props.validationResult.$invalid && !props.validationResult.$dirty ? [warningClazz] : []),
                 ],
                 ...buildOptionValue({
                     component: Component.FormGroup, key: 'props', alt: {},

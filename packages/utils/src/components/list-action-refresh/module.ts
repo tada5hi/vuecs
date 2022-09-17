@@ -25,6 +25,9 @@ export function buildListActionRefreshOptions(
                 [Library.BOOTSTRAP]: {
                     value: 'btn btn-xs btn-dark',
                 },
+                [Library.BOOTSTRAP_V5]: {
+                    value: 'btn btn-xs btn-dark',
+                },
             },
         },
     });

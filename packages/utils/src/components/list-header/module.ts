@@ -27,6 +27,9 @@ export function buildListHeaderOptions(
                 [Library.BOOTSTRAP]: {
                     value: 'd-flex flex-row mb-2 align-items-center',
                 },
+                [Library.BOOTSTRAP_V5]: {
+                    value: 'd-flex flex-row mb-2 align-items-center',
+                },
             },
         },
     });
@@ -47,6 +50,9 @@ export function buildListHeaderOptions(
             alt: [],
             library: {
                 [Library.BOOTSTRAP]: {
+                    value: 'd-flex flex-row ml-auto',
+                },
+                [Library.BOOTSTRAP_V5]: {
                     value: 'd-flex flex-row ms-auto',
                 },
             },

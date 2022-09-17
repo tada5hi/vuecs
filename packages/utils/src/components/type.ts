@@ -11,7 +11,7 @@ import {
 } from '../type';
 import { PaginationMeta } from './pagination';
 
-export type ValidationResultRules<T = unknown> = {
+export type ValidationResult<T = unknown> = {
     $model: T
 
     readonly $dirty: boolean
@@ -23,6 +23,18 @@ export type ValidationResultRules<T = unknown> = {
 
     [key: string]: any
 };
+
+export interface ValidationRuleResultWithoutParams {
+    readonly $message: string
+    readonly $pending: boolean
+    readonly $invalid: boolean
+    readonly $response: any
+}
+
+export interface ValidationRuleResultWithParams<P extends object = object> extends ValidationRuleResultWithoutParams {
+    readonly $params: P
+}
+
 export type ValidationTranslator = (input: string, parameters: Record<string, any>) => string | undefined;
 export type ValidationMessages = Record<string, string>;
 
@@ -65,7 +77,7 @@ export type FormBaseOptions = {
     value?: MaybeRef<unknown>,
 
     change?: (input: any) => void,
-    validationRulesResult: Partial<ValidationResultRules>,
+    validationResult: Partial<ValidationResult>,
     validationMessages: ValidationMessages,
     validationTranslator?: ValidationTranslator
 };

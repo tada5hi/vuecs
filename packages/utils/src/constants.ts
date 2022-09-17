@@ -7,5 +7,6 @@
 
 export enum Library {
     BOOTSTRAP = 'bootstrap',
+    BOOTSTRAP_V5 = 'bootstrapV5',
     FONT_AWESOME = 'fontAwesome',
 }

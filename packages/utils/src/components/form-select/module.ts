@@ -8,6 +8,7 @@
 import {
     VNode, VNodeChild, h, mergeProps, unref,
 } from 'vue';
+import { Library } from '../../constants';
 import { FormGroup, FormGroupProperties } from '../form-group';
 import { buildFormBaseOptions, handleFormValueChanged } from '../utils';
 import { FormSelectBuildOptions, FormSelectBuildOptionsInput, FormSelectOption } from './type';
@@ -16,7 +17,18 @@ import { Component, buildOptionValueOrFail } from '../../options';
 export function buildFormSelectOptions(
     input: FormSelectBuildOptionsInput,
 ) : FormSelectBuildOptions {
-    const options = buildFormBaseOptions(input, Component.FormSelect);
+    const options = buildFormBaseOptions(input, Component.FormSelect, {
+        class: {
+            library: {
+                [Library.BOOTSTRAP]: {
+                    value: ['form-control'],
+                },
+                [Library.BOOTSTRAP_V5]: {
+                    value: ['form-select'],
+                },
+            },
+        },
+    });
 
     return {
         ...options,
@@ -47,7 +59,7 @@ export function buildFormSelect(
     return h(
         FormGroup,
         {
-            validations: options.validationRulesResult,
+            validationResult: options.validationResult,
             validationMessages: options.validationMessages,
             validationTranslator: options.validationTranslator,
         } as FormGroupProperties,

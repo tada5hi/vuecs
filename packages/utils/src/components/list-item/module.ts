@@ -25,6 +25,9 @@ export function buildListItemOptions<T extends Record<string, any>>(
                 [Library.BOOTSTRAP]: {
                     value: 'd-flex flex-row align-items-center',
                 },
+                [Library.BOOTSTRAP_V5]: {
+                    value: 'd-flex flex-row align-items-center',
+                },
             },
         },
     });
@@ -45,6 +48,9 @@ export function buildListItemOptions<T extends Record<string, any>>(
             alt: [],
             library: {
                 [Library.BOOTSTRAP]: {
+                    value: 'pr-1',
+                },
+                [Library.BOOTSTRAP_V5]: {
                     value: 'pr-1',
                 },
                 [Library.FONT_AWESOME]: {
@@ -133,7 +139,8 @@ export function buildListItem<T extends Record<string, any>>(
         actions &&
         actions.length > 0
     ) {
-        children.push(h('div', { class: 'ms-auto' }, actions));
+        // todo: make VNode-class an option
+        children.push(h('div', { class: 'ms-auto ml-auto' }, actions));
     }
 
     return h(options.type, mergeProps({ key: options.index }, { class: options.class }, options.props), children);

@@ -272,6 +272,9 @@ export const Pagination = defineComponent({
                         [Library.BOOTSTRAP]: {
                             value: 'justify-content-center',
                         },
+                        [Library.BOOTSTRAP_V5]: {
+                            value: 'justify-content-center',
+                        },
                     },
                 }),
             },

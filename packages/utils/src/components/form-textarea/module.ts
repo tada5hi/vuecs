@@ -39,7 +39,7 @@ export function buildFormTextarea(
     return h(
         FormGroup,
         {
-            validations: options.validationRulesResult,
+            validationResult: options.validationResult,
             validationMessages: options.validationMessages,
             validationTranslator: options.validationTranslator,
         } as FormGroupProperties,

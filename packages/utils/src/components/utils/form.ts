@@ -38,9 +38,14 @@ export function buildFormBaseOptions<T extends FormBaseOptionsInput>(
             component: component as Component.FormBase,
             key: 'class',
             value: unref(options.class),
-            alt: 'form-control',
+            alt: '',
             library: {
-                [Library.BOOTSTRAP]: {},
+                [Library.BOOTSTRAP]: {
+                    value: ['form-control'],
+                },
+                [Library.BOOTSTRAP_V5]: {
+                    value: ['form-control'],
+                },
             },
             ...defaults.class,
         }),
@@ -68,7 +73,7 @@ export function buildFormBaseOptions<T extends FormBaseOptionsInput>(
         }),
 
         validationMessages: unrefWithDefault(options.validationMessages, {}),
-        validationRulesResult: unrefWithDefault(options.validationRulesResult, {}),
+        validationResult: unrefWithDefault(options.validationResult, {}),
     };
 }
 

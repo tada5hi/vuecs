@@ -43,6 +43,9 @@ export function buildItemActionToggleOptions<T>(
                 [Library.BOOTSTRAP]: {
                     value: 'btn-dark',
                 },
+                [Library.BOOTSTRAP_V5]: {
+                    value: 'btn-dark',
+                },
             },
         }),
         enabledClass: buildOptionValueOrFail({
@@ -52,6 +55,9 @@ export function buildItemActionToggleOptions<T>(
             alt: [],
             library: {
                 [Library.BOOTSTRAP]: {
+                    value: 'btn-warning',
+                },
+                [Library.BOOTSTRAP_V5]: {
                     value: 'btn-warning',
                 },
             },

@@ -41,6 +41,9 @@ export function buildListTitleOptions(
                 [Library.BOOTSTRAP]: {
                     value: 'mb-0',
                 },
+                [Library.BOOTSTRAP_V5]: {
+                    value: 'mb-0',
+                },
             },
         }),
         textType: buildOptionValueOrFail({

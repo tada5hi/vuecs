@@ -31,6 +31,9 @@ export function buildFormInputOptions(
                 [Library.BOOTSTRAP]: {
                     value: 'input-group',
                 },
+                [Library.BOOTSTRAP_V5]: {
+                    value: 'input-group',
+                },
             },
         }),
 
@@ -47,6 +50,9 @@ export function buildFormInputOptions(
             alt: '',
             library: {
                 [Library.BOOTSTRAP]: {
+                    value: 'input-group-text',
+                },
+                [Library.BOOTSTRAP_V5]: {
                     value: 'input-group-text',
                 },
             },
@@ -72,6 +78,9 @@ export function buildFormInputOptions(
             alt: '',
             library: {
                 [Library.BOOTSTRAP]: {
+                    value: 'input-group-text',
+                },
+                [Library.BOOTSTRAP_V5]: {
                     value: 'input-group-text',
                 },
             },
@@ -143,7 +152,7 @@ export function buildFormInput(
     return h(
         FormGroup,
         {
-            validations: options.validationRulesResult,
+            validationResult: options.validationResult,
             validationMessages: options.validationMessages,
             validationTranslator: options.validationTranslator,
         } as FormGroupProperties,

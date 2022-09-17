@@ -23,6 +23,9 @@ export function buildListNoMoreOptions<T extends Record<string, any>>(
                 [Library.BOOTSTRAP]: {
                     value: 'alert alert-warning alert-sm',
                 },
+                [Library.BOOTSTRAP_V5]: {
+                    value: 'alert alert-warning alert-sm',
+                },
             },
         },
     });
