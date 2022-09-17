@@ -1,6 +1,6 @@
 {
     "name": "@vue-layout/navigation",
-    "version": "2.0.0-alpha.1",
+    "version": "2.0.0-alpha.2",
     "description": "",
     "main": "dist/index.cjs.js",
     "browser": "dist/index.browser.js",
