@@ -2,6 +2,7 @@
 import { defineComponent, h } from 'vue';
 import Form from './views/Form.vue';
 import List from './views/List.vue';
+import Slots from './views/Slots.vue';
 
 export default defineComponent({
     setup() {
@@ -15,6 +16,13 @@ export default defineComponent({
                 h('div', {
                     class: 'col',
                 }, h(List)),
+            ]),
+            h('div', {
+                class: 'row',
+            }, [
+                h('div', {
+                    class: 'col',
+                }, h(Slots)),
             ]),
         ]);
     },
