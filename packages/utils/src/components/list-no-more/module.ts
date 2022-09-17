@@ -67,7 +67,7 @@ export function buildListNoMore<T extends Record<string, any>>(
     }
 
     return h(
-        options.type,
+        options.tag,
         mergeProps({ class: options.class }, options.props),
         [
             options.textContent,

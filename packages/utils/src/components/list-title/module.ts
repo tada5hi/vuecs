@@ -116,5 +116,5 @@ export function buildListTitle(
         children = [h(options.textType, mergeProps({ class: options.textClass }, options.textProps), [...children, options.textContent])];
     }
 
-    return h(options.type, mergeProps({ class: options.class }, options.props), children);
+    return h(options.tag, mergeProps({ class: options.class }, options.props), children);
 }

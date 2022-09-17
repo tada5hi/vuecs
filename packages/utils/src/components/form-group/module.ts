@@ -50,7 +50,10 @@ export const FormGroup = defineComponent({
 
             if (typeof props.validationTranslator !== 'undefined') {
                 const translation : string | undefined = props.validationTranslator(validator, properties || {});
-                if (typeof translation === 'string') {
+                if (
+                    typeof translation === 'string' &&
+                    translation !== validator
+                ) {
                     return translation;
                 }
             }

@@ -17,7 +17,7 @@ export function buildListActionRefreshOptions(
     input: ListActionRefreshBuildOptionsInput,
 ) : ListActionRefreshBuildOptions {
     const options = buildListBaseOptions(input, Component.ListActionRefresh, {
-        type: {
+        tag: {
             alt: 'button',
         },
         class: {
@@ -104,10 +104,10 @@ export function buildListActionRefresh<T extends Record<string, any>>(
     }
 
     return h(
-        options.type,
+        options.tag,
         mergeProps(
             {
-                ...(options.type === 'button' ? { type: options.type } : {}),
+                ...(options.tag === 'button' ? { type: options.tag } : {}),
                 disabled: unref(options.busy),
                 onClick($event: any) {
                     $event.preventDefault();

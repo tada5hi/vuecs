@@ -22,6 +22,13 @@ export function buildFormInputOptions(
     return {
         ...options,
 
+        type: buildOptionValueOrFail({
+            component: Component.FormInput,
+            key: 'type',
+            value: unref(options.type),
+            alt: 'text',
+        }),
+
         groupClass: buildOptionValueOrFail({
             component: Component.FormInput,
             key: 'groupClass',
@@ -119,7 +126,7 @@ export function buildFormInput(
         'input',
         mergeProps(
             {
-                type: 'text',
+                type: options.type,
                 placeholder: '...',
                 class: options.class,
                 onInput($event: any) {

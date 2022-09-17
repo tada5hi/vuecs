@@ -33,7 +33,7 @@ export function buildListSearch(input?: ListSearchBuildOptionsInput) {
     const options = buildListSearchOptions(input);
 
     return h(
-        options.type,
+        options.tag,
         mergeProps({ class: options.class }, options.props),
         [
             buildFormInput({

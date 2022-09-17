@@ -49,7 +49,7 @@ export function buildListItems<T extends Record<string, any>>(
     // ----------------------------------------------------------------------
 
     return h(
-        options.type,
+        options.tag,
         mergeProps({ class: options.class }, options.props),
         options.data.map((item: T, index) => buildListItem({
             slotProps: options.slotProps,

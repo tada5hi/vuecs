@@ -15,6 +15,7 @@ import {
 import { VNodeClass } from '../../type';
 
 export type FormInputBuildOptions = FormBaseOptions & {
+    type: string,
     groupClass: VNodeClass,
 
     groupPrepend: boolean,

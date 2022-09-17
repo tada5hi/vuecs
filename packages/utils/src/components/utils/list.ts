@@ -32,12 +32,12 @@ export function buildListBaseOptions<
     return {
         ...options,
 
-        type: buildOptionValueOrFail<Component.ListBase, 'type'>({
+        tag: buildOptionValueOrFail<Component.ListBase, 'tag'>({
             component: component as Component.ListBase,
-            key: 'type',
-            value: unref(options.type),
+            key: 'tag',
+            value: unref(options.tag),
             alt: 'div',
-            ...defaults.type,
+            ...defaults.tag,
         }),
 
         slotItems: options.slotItems || {},

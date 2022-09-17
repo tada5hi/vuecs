@@ -148,7 +148,7 @@ export function buildList<T extends Record<string, any>>(
     }
 
     return h(
-        options.type,
+        options.tag,
         mergeProps({ class: options.class }, options.props),
         children,
     );

@@ -56,7 +56,7 @@ export type ListBaseOptions = {
     slotItems: Slots,
     slotProps: Record<string, any>,
 
-    type: string,
+    tag: string,
     class: VNodeClass,
     props: VNodeProperties,
 };

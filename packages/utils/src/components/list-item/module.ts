@@ -143,5 +143,5 @@ export function buildListItem<T extends Record<string, any>>(
         children.push(h('div', { class: 'ms-auto ml-auto' }, actions));
     }
 
-    return h(options.type, mergeProps({ key: options.index }, { class: options.class }, options.props), children);
+    return h(options.tag, mergeProps({ key: options.index }, { class: options.class }, options.props), children);
 }

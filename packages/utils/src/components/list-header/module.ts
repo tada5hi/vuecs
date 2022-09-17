@@ -136,7 +136,7 @@ export function buildListHeader(
     // -------------------------------------------------------------
 
     return h(
-        options.type,
+        options.tag,
         mergeProps({ class: options.class }, options.props),
         headerChildren,
     );

@@ -37,7 +37,7 @@ export function buildListPagination<T extends Record<string, any>>(
     const options = buildListPaginationOptions(input);
 
     return h(
-        options.type,
+        options.tag,
         mergeProps({ class: options.class }, options.props),
         [
             h(Pagination, {
