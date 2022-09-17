@@ -1,4 +1,4 @@
-import { createApp, toRef } from 'vue';
+import { createApp } from 'vue';
 import Utils, { Config, Preset } from '@vue-layout/utils';
 
 import App from './App.vue';

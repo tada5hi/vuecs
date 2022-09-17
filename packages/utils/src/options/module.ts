@@ -7,8 +7,7 @@
 
 import {
     getConfigComponentOption,
-    getConfigLibraryComponentOption, hasConfigComponentOption,
-    hasConfigLibraryComponentOption,
+    getConfigPresetComponentOption, hasConfigComponentOption,
     useConfig,
 } from '../config';
 import { Component } from './constants';
@@ -16,40 +15,45 @@ import { ComponentOptions, OptionPresetsValueContext, OptionValueBuildContext } 
 import { mergeOption, mergeVNodeOption } from './merge';
 import { hasOwnProperty } from '../utils';
 
-export function extendOptionValueWithLibraries<
+export function extendOptionValueWithPresets<
     C extends `${Component}` | Component,
     K extends keyof ComponentOptions<C>,
     >(
     component: C,
     key: K,
     value: ComponentOptions<C>[K],
-    libraries: OptionPresetsValueContext<ComponentOptions<C>[K]>,
+    presets: OptionPresetsValueContext<ComponentOptions<C>[K]>,
 ) : ComponentOptions<C>[K] {
     const config = useConfig();
 
     const keys = [...new Set([
         ...Object.keys(config.preset),
-        ...Object.keys(libraries),
+        ...Object.keys(presets),
     ])];
 
     for (let i = 0; i < keys.length; i++) {
         const isEnabled : boolean = (hasOwnProperty(config.preset, keys[i]) && Boolean(config.preset[keys[i]].enabled)) ||
-            (hasOwnProperty(libraries, keys[i]) && Boolean(libraries[keys[i]].enabled));
+            (hasOwnProperty(presets, keys[i]) && Boolean(presets[keys[i]].enabled));
 
         if (!isEnabled) {
             continue;
         }
 
         if (
-            hasOwnProperty(config.preset, keys[i]) &&
-            hasConfigLibraryComponentOption(keys[i], component, key)
+            hasOwnProperty(config.preset, keys[i])
         ) {
-            value = mergeOption(key as string, value, getConfigLibraryComponentOption(keys[i], component, key)) as ComponentOptions<C>[K];
-        } else if (
-            hasOwnProperty(libraries, keys[i]) &&
-            typeof libraries[keys[i]].value !== 'undefined'
+            const presetValue = getConfigPresetComponentOption(keys[i], component, key);
+            if (typeof presetValue !== 'undefined') {
+                value = mergeOption(key as string, value, presetValue) as ComponentOptions<C>[K];
+                continue;
+            }
+        }
+
+        if (
+            hasOwnProperty(presets, keys[i]) &&
+            typeof presets[keys[i]].value !== 'undefined'
         ) {
-            value = mergeOption(key as string, value, libraries[keys[i]].value) as ComponentOptions<C>[K];
+            value = mergeOption(key as string, value, presets[keys[i]].value) as ComponentOptions<C>[K];
         }
     }
 
@@ -79,8 +83,8 @@ export function buildOptionValue<
     }
 
     if (typeof target !== 'undefined') {
-        // todo: if alt value override with library one if available :)
-        target = extendOptionValueWithLibraries(context.component, context.key, target, context.preset || {});
+        // todo: if alt value override with preset one if available :)
+        target = extendOptionValueWithPresets(context.component, context.key, target, context.preset || {});
     }
 
     return target;

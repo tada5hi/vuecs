@@ -8,7 +8,7 @@
 import { Component, ComponentOptions } from '../../options';
 import { useConfig } from '../module';
 import { hasOwnProperty } from '../../utils';
-import { PresetConfig } from '../../type';
+import { PresetConfigOptions } from '../../type';
 
 export function getConfigComponentOption
 <C extends Component | `${Component}`, K extends keyof ComponentOptions<C>>(component: C, key: K) : ComponentOptions<C>[K] | undefined {
@@ -34,32 +34,31 @@ export function hasConfigComponentOption
         hasOwnProperty((config.component[component] as Record<string, any>), key);
 }
 
-export function getConfigLibraryComponentOption
-<C extends Component | `${Component}`, K extends keyof ComponentOptions<C>>(library: string, component: C, key: K) : ComponentOptions<C>[K] | undefined {
+export function getConfigPresetComponentOption
+<C extends Component | `${Component}`, K extends keyof ComponentOptions<C>>(
+    preset: string,
+    component: C,
+    key: K,
+) : ComponentOptions<C>[K] | undefined {
     const config = useConfig();
 
-    if (!config.preset) {
+    if (
+        !config.preset ||
+        !config.preset[preset] ||
+        !config.preset[preset].options
+    ) {
         return undefined;
     }
 
-    if (
-        config.preset[library] &&
-        typeof config.preset[library].options !== 'undefined' &&
-        (config.preset[library] as PresetConfig).options![component]
-    ) {
-        return ((config.preset[library] as PresetConfig).options![component] as ComponentOptions<C>)[key];
+    const { options } = config.preset[preset] as { options: PresetConfigOptions };
+    if (typeof options[component] === 'undefined') {
+        return undefined;
     }
 
-    return undefined;
-}
+    const optionsComponent = options[component] as Partial<ComponentOptions<C>>;
+    if (!hasOwnProperty(optionsComponent, key)) {
+        return undefined;
+    }
 
-export function hasConfigLibraryComponentOption
-<C extends Component | `${Component}`>(library: string, component: C, key: keyof ComponentOptions<C>) {
-    const config = useConfig();
-
-    return config.preset &&
-        config.preset[library] &&
-        config.preset[library].options &&
-        (config.preset[library] as PresetConfig).options![component] &&
-        hasOwnProperty(((config.preset[library] as PresetConfig).options![component] as ComponentOptions<C>), key);
+    return optionsComponent[key] as ComponentOptions<C>[K];
 }
