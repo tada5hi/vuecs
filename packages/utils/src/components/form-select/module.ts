@@ -8,7 +8,7 @@
 import {
     VNode, VNodeChild, h, mergeProps, unref,
 } from 'vue';
-import { Library } from '../../constants';
+import { Preset } from '../../constants';
 import { FormGroup, FormGroupProperties } from '../form-group';
 import { buildFormBaseOptions, handleFormValueChanged } from '../utils';
 import { FormSelectBuildOptions, FormSelectBuildOptionsInput, FormSelectOption } from './type';
@@ -19,11 +19,8 @@ export function buildFormSelectOptions(
 ) : FormSelectBuildOptions {
     const options = buildFormBaseOptions(input, Component.FormSelect, {
         class: {
-            library: {
-                [Library.BOOTSTRAP]: {
-                    value: ['form-control'],
-                },
-                [Library.BOOTSTRAP_V5]: {
+            preset: {
+                [Preset.BOOTSTRAP_V5]: {
                     value: ['form-select'],
                 },
             },

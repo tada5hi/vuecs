@@ -11,7 +11,7 @@ import { buildListBaseOptions, hasNormalizedSlot, normalizeSlot } from '../utils
 import { ListNoMoreBuildOptions, ListNoMoreBuildOptionsInput } from './type';
 import { unrefWithDefault } from '../../utils';
 import { Component, buildOptionValueOrFail } from '../../options';
-import { Library } from '../../constants';
+import { Preset } from '../../constants';
 
 export function buildListNoMoreOptions<T extends Record<string, any>>(
     input: ListNoMoreBuildOptionsInput<T>,
@@ -19,11 +19,11 @@ export function buildListNoMoreOptions<T extends Record<string, any>>(
     const options = buildListBaseOptions(input, Component.ListNoMore, {
         class: {
             alt: 'list-no-more',
-            library: {
-                [Library.BOOTSTRAP]: {
+            preset: {
+                [Preset.BOOTSTRAP]: {
                     value: 'alert alert-warning alert-sm',
                 },
-                [Library.BOOTSTRAP_V5]: {
+                [Preset.BOOTSTRAP_V5]: {
                     value: 'alert alert-warning alert-sm',
                 },
             },

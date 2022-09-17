@@ -10,7 +10,7 @@ import {
 } from 'vue';
 import { ValidationMessages, ValidationResult, ValidationTranslator } from '../type';
 import { Component, buildOptionValue } from '../../options';
-import { Library } from '../../constants';
+import { Preset } from '../../constants';
 import { isValidationRuleResultWithParams, isValidationRuleResultWithoutParams } from './utils';
 
 export type FormGroupSlotScope = {
@@ -85,11 +85,11 @@ export const FormGroup = defineComponent({
             component: Component.FormGroup,
             key: 'errorClass',
             alt: [],
-            library: {
-                [Library.BOOTSTRAP]: {
+            preset: {
+                [Preset.BOOTSTRAP]: {
                     value: 'form-group-error',
                 },
-                [Library.BOOTSTRAP_V5]: {
+                [Preset.BOOTSTRAP_V5]: {
                     value: 'form-group-error',
                 },
             },
@@ -98,11 +98,11 @@ export const FormGroup = defineComponent({
             component: Component.FormGroup,
             key: 'warningClass',
             alt: [],
-            library: {
-                [Library.BOOTSTRAP]: {
+            preset: {
+                [Preset.BOOTSTRAP]: {
                     value: 'form-group-warning',
                 },
-                [Library.BOOTSTRAP_V5]: {
+                [Preset.BOOTSTRAP_V5]: {
                     value: 'form-group-warning',
                 },
             },
@@ -133,11 +133,11 @@ export const FormGroup = defineComponent({
                         component: Component.FormGroup,
                         key: 'class',
                         alt: [],
-                        library: {
-                            [Library.BOOTSTRAP]: {
+                        preset: {
+                            [Preset.BOOTSTRAP]: {
                                 value: 'form-group',
                             },
-                            [Library.BOOTSTRAP_V5]: {
+                            [Preset.BOOTSTRAP_V5]: {
                                 value: 'form-group',
                             },
                         },

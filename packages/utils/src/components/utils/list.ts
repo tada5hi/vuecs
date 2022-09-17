@@ -18,7 +18,7 @@ export function buildListBaseOptions<
     defaults?: {
         [K in keyof ListBaseOptions]?: {
             alt?: ListBaseOptions[K],
-            library?: {
+            preset?: {
                 [key: string]: {
                     enabled?: boolean,
                     value?: ListBaseOptions[K]

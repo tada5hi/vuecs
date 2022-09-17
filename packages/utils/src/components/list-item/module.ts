@@ -13,7 +13,7 @@ import { SlotName } from '../constants';
 import { ListItemBuildOptions, ListItemBuildOptionsInput } from './type';
 import { hasOwnProperty, unrefWithDefault } from '../../utils';
 import { Component, buildOptionValueOrFail } from '../../options';
-import { Library } from '../../constants';
+import { Preset } from '../../constants';
 
 export function buildListItemOptions<T extends Record<string, any>>(
     input: ListItemBuildOptionsInput<T>,
@@ -21,11 +21,11 @@ export function buildListItemOptions<T extends Record<string, any>>(
     const options = buildListBaseOptions(input, Component.ListItem, {
         class: {
             alt: 'list-item',
-            library: {
-                [Library.BOOTSTRAP]: {
+            preset: {
+                [Preset.BOOTSTRAP]: {
                     value: 'd-flex flex-row align-items-center',
                 },
-                [Library.BOOTSTRAP_V5]: {
+                [Preset.BOOTSTRAP_V5]: {
                     value: 'd-flex flex-row align-items-center',
                 },
             },
@@ -46,14 +46,14 @@ export function buildListItemOptions<T extends Record<string, any>>(
             key: 'iconClass',
             value: unref(options.iconClass),
             alt: [],
-            library: {
-                [Library.BOOTSTRAP]: {
+            preset: {
+                [Preset.BOOTSTRAP]: {
                     value: 'pr-1',
                 },
-                [Library.BOOTSTRAP_V5]: {
+                [Preset.BOOTSTRAP_V5]: {
                     value: 'pr-1',
                 },
-                [Library.FONT_AWESOME]: {
+                [Preset.FONT_AWESOME]: {
                     value: 'fa fa-bars',
                 },
             },

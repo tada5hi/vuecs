@@ -27,7 +27,7 @@ export function useConfig() : Config {
 
 export function extendConfig(input: Partial<Config>) : Config {
     return {
-        library: input.library || {},
+        preset: input.preset || {},
         component: input.component || {},
     };
 }

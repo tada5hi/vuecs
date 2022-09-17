@@ -13,7 +13,7 @@ import { unrefWithDefault } from '../../utils';
 import { pushMaybeRefArrayValue, setMaybeRefValue, spliceMaybeRefArray } from '../utils';
 import { MaybeRef } from '../../type';
 import { Component, buildOptionValueOrFail } from '../../options';
-import { Library } from '../../constants';
+import { Preset } from '../../constants';
 
 export function buildItemActionToggleOptions<T>(
     options: ItemActionToggleOptionsInput<T>,
@@ -39,11 +39,11 @@ export function buildItemActionToggleOptions<T>(
             key: 'disabledClass',
             value: unref(options.disabledClass),
             alt: [],
-            library: {
-                [Library.BOOTSTRAP]: {
+            preset: {
+                [Preset.BOOTSTRAP]: {
                     value: 'btn-dark',
                 },
-                [Library.BOOTSTRAP_V5]: {
+                [Preset.BOOTSTRAP_V5]: {
                     value: 'btn-dark',
                 },
             },
@@ -53,11 +53,11 @@ export function buildItemActionToggleOptions<T>(
             key: 'enabledClass',
             value: unref(options.enabledClass),
             alt: [],
-            library: {
-                [Library.BOOTSTRAP]: {
+            preset: {
+                [Preset.BOOTSTRAP]: {
                     value: 'btn-warning',
                 },
-                [Library.BOOTSTRAP_V5]: {
+                [Preset.BOOTSTRAP_V5]: {
                     value: 'btn-warning',
                 },
             },
@@ -80,8 +80,8 @@ export function buildItemActionToggleOptions<T>(
             key: 'childDisabledClass',
             value: unref(options.childDisabledClass),
             alt: [],
-            library: {
-                [Library.FONT_AWESOME]: {
+            preset: {
+                [Preset.FONT_AWESOME]: {
                     value: 'fa fa-plus',
                 },
             },
@@ -97,8 +97,8 @@ export function buildItemActionToggleOptions<T>(
             key: 'childEnabledClass',
             value: unref(options.childEnabledClass),
             alt: [],
-            library: {
-                [Library.FONT_AWESOME]: {
+            preset: {
+                [Preset.FONT_AWESOME]: {
                     value: 'fa fa-minus',
                 },
             },

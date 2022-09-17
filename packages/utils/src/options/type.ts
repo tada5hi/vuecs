@@ -25,12 +25,12 @@ import {
 import { ListBuildOptions } from '../components/list';
 import { Component } from './constants';
 
-export type OptionLibraryValueContext<V> = {
+export type OptionPresetValueContext<V> = {
     enabled?: boolean,
     value?: V
 };
-export type OptionLibrariesValueContext<V> = {
-    [key: string]: OptionLibraryValueContext<V>
+export type OptionPresetsValueContext<V> = {
+    [key: string]: OptionPresetValueContext<V>
 };
 
 export type OptionValueBuildContext<
@@ -40,7 +40,7 @@ export type OptionValueBuildContext<
         key: K,
         alt?: ComponentOptions<C>[K],
         value?: ComponentOptions<C>[K],
-        library?: OptionLibrariesValueContext<ComponentOptions<C>[K]>
+        preset?: OptionPresetsValueContext<ComponentOptions<C>[K]>
     };
 
 export type ComponentFormOptions<C extends Component | `${Component}`> =

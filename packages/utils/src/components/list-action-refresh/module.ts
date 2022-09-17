@@ -11,7 +11,7 @@ import { ListActionRefreshBuildOptions, ListActionRefreshBuildOptionsInput } fro
 import { isPromise, unrefWithDefault } from '../../utils';
 import { buildListBaseOptions, setMaybeRefValue } from '../utils';
 import { Component, buildOptionValueOrFail } from '../../options';
-import { Library } from '../../constants';
+import { Preset } from '../../constants';
 
 export function buildListActionRefreshOptions(
     input: ListActionRefreshBuildOptionsInput,
@@ -21,11 +21,11 @@ export function buildListActionRefreshOptions(
             alt: 'button',
         },
         class: {
-            library: {
-                [Library.BOOTSTRAP]: {
+            preset: {
+                [Preset.BOOTSTRAP]: {
                     value: 'btn btn-xs btn-dark',
                 },
-                [Library.BOOTSTRAP_V5]: {
+                [Preset.BOOTSTRAP_V5]: {
                     value: 'btn btn-xs btn-dark',
                 },
             },
@@ -62,8 +62,8 @@ export function buildListActionRefreshOptions(
             key: 'iconClass',
             value: unref(options.iconClass),
             alt: [],
-            library: {
-                [Library.FONT_AWESOME]: {
+            preset: {
+                [Preset.FONT_AWESOME]: {
                     value: 'fa fa-refresh',
                 },
             },

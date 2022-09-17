@@ -8,7 +8,7 @@
 import { Component, ComponentOptions } from '../../options';
 import { useConfig } from '../module';
 import { hasOwnProperty } from '../../utils';
-import { LibraryConfig } from '../../type';
+import { PresetConfig } from '../../type';
 
 export function getConfigComponentOption
 <C extends Component | `${Component}`, K extends keyof ComponentOptions<C>>(component: C, key: K) : ComponentOptions<C>[K] | undefined {
@@ -38,16 +38,16 @@ export function getConfigLibraryComponentOption
 <C extends Component | `${Component}`, K extends keyof ComponentOptions<C>>(library: string, component: C, key: K) : ComponentOptions<C>[K] | undefined {
     const config = useConfig();
 
-    if (!config.library) {
+    if (!config.preset) {
         return undefined;
     }
 
     if (
-        config.library[library] &&
-        typeof config.library[library].options !== 'undefined' &&
-        (config.library[library] as LibraryConfig).options![component]
+        config.preset[library] &&
+        typeof config.preset[library].options !== 'undefined' &&
+        (config.preset[library] as PresetConfig).options![component]
     ) {
-        return ((config.library[library] as LibraryConfig).options![component] as ComponentOptions<C>)[key];
+        return ((config.preset[library] as PresetConfig).options![component] as ComponentOptions<C>)[key];
     }
 
     return undefined;
@@ -57,9 +57,9 @@ export function hasConfigLibraryComponentOption
 <C extends Component | `${Component}`>(library: string, component: C, key: keyof ComponentOptions<C>) {
     const config = useConfig();
 
-    return config.library &&
-        config.library[library] &&
-        config.library[library].options &&
-        (config.library[library] as LibraryConfig).options![component] &&
-        hasOwnProperty(((config.library[library] as LibraryConfig).options![component] as ComponentOptions<C>), key);
+    return config.preset &&
+        config.preset[library] &&
+        config.preset[library].options &&
+        (config.preset[library] as PresetConfig).options![component] &&
+        hasOwnProperty(((config.preset[library] as PresetConfig).options![component] as ComponentOptions<C>), key);
 }

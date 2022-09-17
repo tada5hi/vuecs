@@ -6,11 +6,11 @@
  */
 
 import { Component, ComponentOptions } from '../options';
-import { LibraryConfig } from '../type';
+import { PresetConfig } from '../type';
 
 export type Config = {
-    library: {
-        [key: string]: LibraryConfig
+    preset: {
+        [key: string]: PresetConfig
     },
     component: {
         [K in `${Component}` | Component]?: Partial<ComponentOptions<K>>

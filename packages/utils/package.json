@@ -60,7 +60,8 @@
         "node": ">=12"
     },
     "dependencies": {
-        "regenerator-runtime": "^0.13.9"
+        "regenerator-runtime": "^0.13.9",
+        "smob": "^0.0.3"
     },
     "publishConfig": {
         "access": "public"

@@ -12,7 +12,7 @@ import {
     useConfig,
 } from '../config';
 import { Component } from './constants';
-import { ComponentOptions, OptionLibrariesValueContext, OptionValueBuildContext } from './type';
+import { ComponentOptions, OptionPresetsValueContext, OptionValueBuildContext } from './type';
 import { mergeOption, mergeVNodeOption } from './merge';
 import { hasOwnProperty } from '../utils';
 
@@ -23,17 +23,17 @@ export function extendOptionValueWithLibraries<
     component: C,
     key: K,
     value: ComponentOptions<C>[K],
-    libraries: OptionLibrariesValueContext<ComponentOptions<C>[K]>,
+    libraries: OptionPresetsValueContext<ComponentOptions<C>[K]>,
 ) : ComponentOptions<C>[K] {
     const config = useConfig();
 
     const keys = [...new Set([
-        ...Object.keys(config.library),
+        ...Object.keys(config.preset),
         ...Object.keys(libraries),
     ])];
 
     for (let i = 0; i < keys.length; i++) {
-        const isEnabled : boolean = (hasOwnProperty(config.library, keys[i]) && Boolean(config.library[keys[i]].enabled)) ||
+        const isEnabled : boolean = (hasOwnProperty(config.preset, keys[i]) && Boolean(config.preset[keys[i]].enabled)) ||
             (hasOwnProperty(libraries, keys[i]) && Boolean(libraries[keys[i]].enabled));
 
         if (!isEnabled) {
@@ -41,7 +41,7 @@ export function extendOptionValueWithLibraries<
         }
 
         if (
-            hasOwnProperty(config.library, keys[i]) &&
+            hasOwnProperty(config.preset, keys[i]) &&
             hasConfigLibraryComponentOption(keys[i], component, key)
         ) {
             value = mergeOption(key as string, value, getConfigLibraryComponentOption(keys[i], component, key)) as ComponentOptions<C>[K];
@@ -80,7 +80,7 @@ export function buildOptionValue<
 
     if (typeof target !== 'undefined') {
         // todo: if alt value override with library one if available :)
-        target = extendOptionValueWithLibraries(context.component, context.key, target, context.library || {});
+        target = extendOptionValueWithLibraries(context.component, context.key, target, context.preset || {});
     }
 
     return target;

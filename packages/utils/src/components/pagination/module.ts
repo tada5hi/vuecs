@@ -9,7 +9,7 @@ import {
     VNodeArrayChildren, VNodeChild, computed, defineComponent, h, mergeProps,
 } from 'vue';
 import { Component, buildOptionValue, buildOptionValueOrFail } from '../../options';
-import { Library } from '../../constants';
+import { Preset } from '../../constants';
 import { PaginationMeta } from './type';
 
 export const Pagination = defineComponent({
@@ -78,8 +78,8 @@ export const Pagination = defineComponent({
                 component: Component.Pagination,
                 key: 'prevClass',
                 alt: [],
-                library: {
-                    [Library.FONT_AWESOME]: {
+                preset: {
+                    [Preset.FONT_AWESOME]: {
                         value: 'fa fa-chevron-left',
                     },
                 },
@@ -202,8 +202,8 @@ export const Pagination = defineComponent({
                 component: Component.Pagination,
                 key: 'nextClass',
                 alt: [],
-                library: {
-                    [Library.FONT_AWESOME]: {
+                preset: {
+                    [Preset.FONT_AWESOME]: {
                         value: 'fa fa-chevron-right',
                     },
                 },
@@ -268,11 +268,11 @@ export const Pagination = defineComponent({
                     component: Component.Pagination,
                     key: 'class',
                     alt: 'pagination',
-                    library: {
-                        [Library.BOOTSTRAP]: {
+                    preset: {
+                        [Preset.BOOTSTRAP]: {
                             value: 'justify-content-center',
                         },
-                        [Library.BOOTSTRAP_V5]: {
+                        [Preset.BOOTSTRAP_V5]: {
                             value: 'justify-content-center',
                         },
                     },

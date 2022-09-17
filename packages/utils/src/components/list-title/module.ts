@@ -12,7 +12,7 @@ import { ListTitleBuildOptions, ListTitleBuildOptionsInput } from './type';
 import { buildListBaseOptions, hasNormalizedSlot, normalizeSlot } from '../utils';
 import { SlotName } from '../constants';
 import { Component, buildOptionValueOrFail } from '../../options';
-import { Library } from '../../constants';
+import { Preset } from '../../constants';
 
 export function buildListTitleOptions(
     input: ListTitleBuildOptionsInput,
@@ -37,11 +37,11 @@ export function buildListTitleOptions(
             key: 'textClass',
             value: unref(options.textClass),
             alt: [],
-            library: {
-                [Library.BOOTSTRAP]: {
+            preset: {
+                [Preset.BOOTSTRAP]: {
                     value: 'mb-0',
                 },
-                [Library.BOOTSTRAP_V5]: {
+                [Preset.BOOTSTRAP_V5]: {
                     value: 'mb-0',
                 },
             },
@@ -76,8 +76,8 @@ export function buildListTitleOptions(
             key: 'iconClass',
             value: unref(options.iconClass),
             alt: [],
-            library: {
-                [Library.FONT_AWESOME]: {
+            preset: {
+                [Preset.FONT_AWESOME]: {
                     value: 'fa fa-bars',
                 },
             },

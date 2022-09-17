@@ -1,5 +1,5 @@
 import { createApp, toRef } from 'vue';
-import Utils, { Config, Library } from '@vue-layout/utils';
+import Utils, { Config, Preset } from '@vue-layout/utils';
 
 import App from './App.vue';
 
@@ -8,11 +8,11 @@ import 'font-awesome/css/font-awesome.min.css';
 
 createApp(App)
     .use(Utils, {
-        library: {
-            [Library.BOOTSTRAP]: {
+        preset: {
+            [Preset.BOOTSTRAP]: {
                 enabled: true,
             },
-            [Library.FONT_AWESOME]: {
+            [Preset.FONT_AWESOME]: {
                 enabled: true,
             },
         },

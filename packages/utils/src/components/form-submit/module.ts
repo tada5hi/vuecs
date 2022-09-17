@@ -10,7 +10,7 @@ import { isPromise, unrefWithDefault } from '../../utils';
 import { setMaybeRefValue } from '../utils';
 import { FormSubmitOptions, FormSubmitOptionsInput } from './type';
 import { Component, buildOptionValueOrFail } from '../../options';
-import { Library } from '../../constants';
+import { Preset } from '../../constants';
 
 export function buildFormSubmitOptions(
     options: FormSubmitOptionsInput,
@@ -44,8 +44,8 @@ export function buildFormSubmitOptions(
             key: 'updateIconClass',
             value: unref(options.updateIconClass),
             alt: [],
-            library: {
-                [Library.FONT_AWESOME]: {
+            preset: {
+                [Preset.FONT_AWESOME]: {
                     value: 'fa fa-save',
                 },
             },
@@ -55,11 +55,11 @@ export function buildFormSubmitOptions(
             key: 'updateButtonClass',
             value: unref(options.updateButtonClass),
             alt: [],
-            library: {
-                [Library.BOOTSTRAP]: {
+            preset: {
+                [Preset.BOOTSTRAP]: {
                     value: 'btn btn-xs btn-primary',
                 },
-                [Library.BOOTSTRAP_V5]: {
+                [Preset.BOOTSTRAP_V5]: {
                     value: 'btn btn-xs btn-primary',
                 },
             },
@@ -76,8 +76,8 @@ export function buildFormSubmitOptions(
             key: 'createIconClass',
             value: unref(options.createIconClass),
             alt: [],
-            library: {
-                [Library.FONT_AWESOME]: {
+            preset: {
+                [Preset.FONT_AWESOME]: {
                     value: 'fa fa-plus',
                 },
             },
@@ -87,11 +87,11 @@ export function buildFormSubmitOptions(
             key: 'createButtonClass',
             value: unref(options.createButtonClass),
             alt: [],
-            library: {
-                [Library.BOOTSTRAP]: {
+            preset: {
+                [Preset.BOOTSTRAP]: {
                     value: 'btn btn-xs btn-success',
                 },
-                [Library.BOOTSTRAP_V5]: {
+                [Preset.BOOTSTRAP_V5]: {
                     value: 'btn btn-xs btn-success',
                 },
             },

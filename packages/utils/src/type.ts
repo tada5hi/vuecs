@@ -20,11 +20,11 @@ export type VNodeProperties = VNodeProps & {
     [key: string]: any
 };
 
-export type LibraryConfigOptions = {
+export type PresetConfigOptions = {
     [K in `${Component}` | Component]?: Partial<ComponentOptions<K>>
 };
 
-export type LibraryConfig = {
+export type PresetConfig = {
     enabled: boolean,
-    options?: LibraryConfigOptions
+    options?: PresetConfigOptions
 };

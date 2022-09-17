@@ -5,6 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { createMerger, merge } from 'smob';
 import { unref } from 'vue';
 import { setMaybeRefValue } from './ref';
 import { unrefWithDefault } from '../../utils';
@@ -12,7 +13,7 @@ import {
     ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput,
 } from '../type';
 import { Component, buildOptionValueOrFail } from '../../options';
-import { Library } from '../../constants';
+import { Preset } from '../../constants';
 
 export function buildFormBaseOptions<T extends FormBaseOptionsInput>(
     options: T,
@@ -20,7 +21,7 @@ export function buildFormBaseOptions<T extends FormBaseOptionsInput>(
     defaults?: {
         [K in keyof FormBaseOptions]?: {
             alt?: FormBaseOptions[K],
-            library?: {
+            preset?: {
                 [key: string]: {
                     enabled?: boolean,
                     value?: FormBaseOptions[K]
@@ -31,6 +32,8 @@ export function buildFormBaseOptions<T extends FormBaseOptionsInput>(
 ): ExpectFormBaseOptions<T> & FormBaseOptions {
     defaults = defaults || {};
 
+    const merger = createMerger({ array: false });
+
     return {
         ...options,
 
@@ -38,16 +41,17 @@ export function buildFormBaseOptions<T extends FormBaseOptionsInput>(
             component: component as Component.FormBase,
             key: 'class',
             value: unref(options.class),
-            alt: '',
-            library: {
-                [Library.BOOTSTRAP]: {
-                    value: ['form-control'],
+            ...merger(defaults.class || {}, {
+                alt: '',
+                preset: {
+                    [Preset.BOOTSTRAP]: {
+                        value: ['form-control'],
+                    },
+                    [Preset.BOOTSTRAP_V5]: {
+                        value: ['form-control'],
+                    },
                 },
-                [Library.BOOTSTRAP_V5]: {
-                    value: ['form-control'],
-                },
-            },
-            ...defaults.class,
+            }),
         }),
         props: buildOptionValueOrFail({
             component: component as Component.FormBase,

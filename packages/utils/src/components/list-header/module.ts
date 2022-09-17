@@ -15,7 +15,7 @@ import { unrefWithDefault } from '../../utils';
 import { buildListTitle } from '../list-title';
 import { buildListActionRefresh } from '../list-action-refresh';
 import { Component, buildOptionValueOrFail } from '../../options';
-import { Library } from '../../constants';
+import { Preset } from '../../constants';
 
 export function buildListHeaderOptions(
     input: ListHeaderBuildOptionsInput,
@@ -23,11 +23,11 @@ export function buildListHeaderOptions(
     const options = buildListBaseOptions(input, Component.ListHeader, {
         class: {
             alt: 'list-header',
-            library: {
-                [Library.BOOTSTRAP]: {
+            preset: {
+                [Preset.BOOTSTRAP]: {
                     value: 'd-flex flex-row mb-2 align-items-center',
                 },
-                [Library.BOOTSTRAP_V5]: {
+                [Preset.BOOTSTRAP_V5]: {
                     value: 'd-flex flex-row mb-2 align-items-center',
                 },
             },
@@ -48,11 +48,11 @@ export function buildListHeaderOptions(
             key: 'actionClass',
             value: unref(options.actionClass),
             alt: [],
-            library: {
-                [Library.BOOTSTRAP]: {
+            preset: {
+                [Preset.BOOTSTRAP]: {
                     value: 'd-flex flex-row ml-auto',
                 },
-                [Library.BOOTSTRAP_V5]: {
+                [Preset.BOOTSTRAP_V5]: {
                     value: 'd-flex flex-row ms-auto',
                 },
             },

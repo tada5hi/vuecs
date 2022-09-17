@@ -12,7 +12,7 @@ import { FormGroup, FormGroupProperties } from '../form-group';
 import { buildFormBaseOptions, handleFormValueChanged } from '../utils';
 import { FormInputBuildOptions, FormInputBuildOptionsInput } from './type';
 import { Component, buildOptionValueOrFail } from '../../options';
-import { Library } from '../../constants';
+import { Preset } from '../../constants';
 
 export function buildFormInputOptions(
     input: FormInputBuildOptionsInput,
@@ -34,11 +34,11 @@ export function buildFormInputOptions(
             key: 'groupClass',
             value: unref(options.groupClass),
             alt: '',
-            library: {
-                [Library.BOOTSTRAP]: {
+            preset: {
+                [Preset.BOOTSTRAP]: {
                     value: 'input-group',
                 },
-                [Library.BOOTSTRAP_V5]: {
+                [Preset.BOOTSTRAP_V5]: {
                     value: 'input-group',
                 },
             },
@@ -55,11 +55,11 @@ export function buildFormInputOptions(
             key: 'groupAppendClass',
             value: unref(options.groupAppendClass),
             alt: '',
-            library: {
-                [Library.BOOTSTRAP]: {
+            preset: {
+                [Preset.BOOTSTRAP]: {
                     value: 'input-group-text',
                 },
-                [Library.BOOTSTRAP_V5]: {
+                [Preset.BOOTSTRAP_V5]: {
                     value: 'input-group-text',
                 },
             },
@@ -83,11 +83,11 @@ export function buildFormInputOptions(
             key: 'groupPrependClass',
             value: unref(options.groupPrependClass),
             alt: '',
-            library: {
-                [Library.BOOTSTRAP]: {
+            preset: {
+                [Preset.BOOTSTRAP]: {
                     value: 'input-group-text',
                 },
-                [Library.BOOTSTRAP_V5]: {
+                [Preset.BOOTSTRAP_V5]: {
                     value: 'input-group-text',
                 },
             },
