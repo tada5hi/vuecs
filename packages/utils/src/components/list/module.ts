@@ -81,6 +81,8 @@ export function buildList<T extends Record<string, any>>(
 
         headerOptions.load = options.load;
         headerOptions.busy = options.busy;
+        headerOptions.slotItems = options.slotItems;
+        headerOptions.slotProps = options.slotProps;
 
         const header = buildListHeader(headerOptions);
         children.push(header);
@@ -92,6 +94,8 @@ export function buildList<T extends Record<string, any>>(
             options.search;
 
         searchOptions.change = options.change;
+        searchOptions.slotItems = options.slotItems;
+        searchOptions.slotProps = options.slotProps;
 
         const search = buildListSearch(searchOptions);
         children.push(search);
@@ -104,6 +108,8 @@ export function buildList<T extends Record<string, any>>(
 
         itemsOptions.data = options.data;
         itemsOptions.busy = options.busy;
+        itemsOptions.slotItems = options.slotItems;
+        itemsOptions.slotProps = options.slotProps;
 
         const items = buildListItems(itemsOptions);
         children.push(items);
@@ -115,6 +121,8 @@ export function buildList<T extends Record<string, any>>(
             options.noMore;
 
         noMoreOptions.busy = options.busy;
+        noMoreOptions.slotItems = options.slotItems;
+        noMoreOptions.slotProps = options.slotProps;
         const meta = unref(options.meta);
         if (meta) {
             noMoreOptions.total = meta.total;
@@ -132,6 +140,8 @@ export function buildList<T extends Record<string, any>>(
         paginationOptions.busy = options.busy;
         paginationOptions.meta = options.meta;
         paginationOptions.load = options.load;
+        paginationOptions.slotItems = options.slotItems;
+        paginationOptions.slotProps = options.slotProps;
 
         const pagination = buildListPagination(paginationOptions);
         children.push(pagination);

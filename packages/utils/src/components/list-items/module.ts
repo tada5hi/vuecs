@@ -52,7 +52,8 @@ export function buildListItems<T extends Record<string, any>>(
         options.type,
         mergeProps({ class: options.class }, options.props),
         options.data.map((item: T, index) => buildListItem({
-            ...options.slotProps,
+            slotProps: options.slotProps,
+            slotItems: options.slotItems,
             ...options.item,
             data: item,
             index,
