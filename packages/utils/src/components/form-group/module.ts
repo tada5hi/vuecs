@@ -63,10 +63,6 @@ export const FormGroup = defineComponent({
             props.validationResult.$invalid);
 
         const errors = computed(() => {
-            if (!invalid.value || typeof props.validationResult === 'undefined') {
-                return [];
-            }
-
             const messages : string[] = [];
             const keys = Object.keys(props.validationResult);
             for (let i = 0; i < keys.length; i++) {
@@ -143,7 +139,7 @@ export const FormGroup = defineComponent({
                             },
                         },
                     }),
-                    ...(props.validationResult.$error ? [errorClazz] : []),
+                    ...(props.validationResult.$invalid && props.validationResult.$dirty ? [errorClazz] : []),
                     ...(props.validationResult.$invalid && !props.validationResult.$dirty ? [warningClazz] : []),
                 ],
                 ...buildOptionValue({

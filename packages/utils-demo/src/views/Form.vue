@@ -7,12 +7,16 @@
 
 <script lang="ts">
 import {
-    buildFormInput, buildFormInputOptions,
+    buildFormInput,
     buildFormSelect,
     buildFormSubmit,
     buildFormTextarea,
 } from '@vue-layout/utils';
-import { defineComponent, h, ref } from 'vue';
+import { maxLength, minLength } from '@vuelidate/validators';
+import useVuelidate from '@vuelidate/core';
+import {
+    defineComponent, h, reactive, ref,
+} from 'vue';
 
 export default defineComponent({
     setup() {
@@ -22,14 +26,27 @@ export default defineComponent({
 
         const busy = ref(false);
 
+        const form = reactive({
+            text: '',
+        });
+
+        const $v = useVuelidate({
+            text: {
+                minLength: minLength(3),
+                maxLength: maxLength(5),
+            },
+        }, form);
+
         const renderInput = () => h('div', [
             h('h1', 'Input'),
             buildFormInput({
+                validationResult: $v.value.text,
                 labelContent: 'My input label',
 
-                value: inputRef,
+                value: form.text,
                 change: (value) => {
                     console.log('Value of input changed', value);
+                    form.text = value;
                 },
             }),
             h('div', { class: 'alert alert-info' }, [

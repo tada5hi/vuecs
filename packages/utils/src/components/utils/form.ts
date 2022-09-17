@@ -73,7 +73,7 @@ export function buildFormBaseOptions<T extends FormBaseOptionsInput>(
         }),
 
         validationMessages: unrefWithDefault(options.validationMessages, {}),
-        validationResult: unrefWithDefault(options.validationResult, {}),
+        validationResult: options.validationResult || {},
     };
 }
 

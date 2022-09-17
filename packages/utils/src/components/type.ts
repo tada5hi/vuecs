@@ -84,7 +84,7 @@ export type FormBaseOptions = {
 
 export type FormBaseOptionsInput = OptionsInput<FormBaseOptions,
 never,
-'value' | 'change' | 'validationTranslator'>;
+'value' | 'change' | 'validationTranslator' | 'validationResult'>;
 
 export type ExpectFormBaseOptions<T extends FormBaseOptions | FormBaseOptionsInput> =
     Omit<T, keyof FormBaseOptions | keyof FormBaseOptionsInput>;
