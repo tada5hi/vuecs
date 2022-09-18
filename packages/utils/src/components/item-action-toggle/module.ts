@@ -41,10 +41,10 @@ export function buildItemActionToggleOptions<T>(
             alt: [],
             preset: {
                 [Preset.BOOTSTRAP]: {
-                    value: 'btn-dark',
+                    value: 'btn btn-xs btn-dark',
                 },
                 [Preset.BOOTSTRAP_V5]: {
-                    value: 'btn-dark',
+                    value: 'btn btn-xs btn-dark',
                 },
             },
         }),
@@ -55,10 +55,10 @@ export function buildItemActionToggleOptions<T>(
             alt: [],
             preset: {
                 [Preset.BOOTSTRAP]: {
-                    value: 'btn-warning',
+                    value: 'btn btn-xs btn-warning',
                 },
                 [Preset.BOOTSTRAP_V5]: {
-                    value: 'btn-warning',
+                    value: 'btn btn-xs btn-warning',
                 },
             },
         }),
@@ -160,16 +160,30 @@ export function buildItemActionToggle<T>(
                     spliceMaybeRefArray(options.currentValue as MaybeRef<T[]>, index, 1);
                 }
 
+                if (
+                    options.currentValue &&
+                    options.change
+                ) {
+                    options.change(options.currentValue as T);
+                }
+
                 return;
             }
+
+            const setValue = (value: T | T[] | null) => {
+                setMaybeRefValue(options.currentValue, value);
+                if (options.change) {
+                    options.change(value);
+                }
+            };
 
             if (value === currentValue) {
-                setMaybeRefValue(options.currentValue, null);
+                setValue(null);
 
                 return;
             }
 
-            setMaybeRefValue(options.currentValue, value);
+            setValue(value);
         },
     }, [
         children,

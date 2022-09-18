@@ -25,11 +25,12 @@ export type ItemActionToggleOptions<T> = {
     busy: boolean,
     value: MaybeRef<T>,
     currentValue?: MaybeRef<T | T[] | null>,
-    toggle?: (value: T) => void
+    toggle?: (value: T) => void,
+    change?: (value: T | T[] | null) => void
 };
 
 export type ItemActionToggleOptionsInput<T> =
     OptionsInput<ItemActionToggleOptions<T>,
     'value',
-    'toggle' | 'currentValue'
+    'toggle' | 'change' | 'currentValue'
     >;
