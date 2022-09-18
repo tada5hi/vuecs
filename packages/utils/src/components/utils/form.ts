@@ -10,7 +10,7 @@ import { unref } from 'vue';
 import { setMaybeRefValue } from './ref';
 import { unrefWithDefault } from '../../utils';
 import {
-    ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput,
+    ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput, FormbaseOptionsDefaults,
 } from '../type';
 import { Component, buildOptionValueOrFail } from '../../options';
 import { Preset } from '../../constants';
@@ -18,17 +18,7 @@ import { Preset } from '../../constants';
 export function buildFormBaseOptions<T extends FormBaseOptionsInput>(
     options: T,
     component: Component,
-    defaults?: {
-        [K in keyof FormBaseOptions]?: {
-            alt?: FormBaseOptions[K],
-            preset?: {
-                [key: string]: {
-                    enabled?: boolean,
-                    value?: FormBaseOptions[K]
-                }
-            },
-        }
-    },
+    defaults?: FormbaseOptionsDefaults,
 ): ExpectFormBaseOptions<T> & FormBaseOptions {
     defaults = defaults || {};
 
@@ -67,6 +57,19 @@ export function buildFormBaseOptions<T extends FormBaseOptionsInput>(
             value: unref(options.label),
             alt: true,
             ...defaults.label,
+        }),
+        labelClass: buildOptionValueOrFail({
+            component: component as Component.FormBase,
+            key: 'labelClass',
+            value: unref(options.labelClass),
+            ...merger(defaults.labelClass || {}, {
+                alt: '',
+                preset: {
+                    [Preset.BOOTSTRAP_V5]: {
+                        value: ['form-label'],
+                    },
+                },
+            }),
         }),
         labelContent: buildOptionValueOrFail({
             component: component as Component.FormBase,

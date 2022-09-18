@@ -69,6 +69,7 @@ export type ExpectListBaseOptions<T extends ListBaseOptions | ListBaseOptionsInp
 
 export type FormBaseOptions = {
     label: boolean,
+    labelClass: VNodeClass,
     labelContent: string | VNode | (VNode | string)[] | VNodeChild,
 
     class: VNodeClass,
@@ -88,3 +89,15 @@ never,
 
 export type ExpectFormBaseOptions<T extends FormBaseOptions | FormBaseOptionsInput> =
     Omit<T, keyof FormBaseOptions | keyof FormBaseOptionsInput>;
+
+export type FormbaseOptionsDefaults = {
+    [K in keyof FormBaseOptions]?: {
+        alt?: FormBaseOptions[K],
+        preset?: {
+            [key: string]: {
+                enabled?: boolean,
+                value?: FormBaseOptions[K]
+            }
+        },
+    }
+};

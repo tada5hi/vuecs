@@ -25,10 +25,10 @@ export function buildListHeaderOptions(
             alt: 'list-header',
             preset: {
                 [Preset.BOOTSTRAP]: {
-                    value: 'd-flex flex-row mb-2 align-items-center',
+                    value: 'd-flex flex-row align-items-center',
                 },
                 [Preset.BOOTSTRAP_V5]: {
-                    value: 'd-flex flex-row mb-2 align-items-center',
+                    value: 'd-flex flex-row align-items-center',
                 },
             },
         },

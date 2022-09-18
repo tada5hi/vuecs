@@ -7,7 +7,8 @@
 
 <script lang="ts">
 import {
-    buildFormInput,
+    buildFormInputCheckbox,
+    buildFormInputText,
     buildFormSelect,
     buildFormSubmit,
     buildFormTextarea,
@@ -20,7 +21,6 @@ import {
 
 export default defineComponent({
     setup() {
-        const inputRef = ref('Initial input text');
         const selectRef = ref('');
         const textareaRef = ref('Initial textarea text');
 
@@ -28,6 +28,7 @@ export default defineComponent({
 
         const form = reactive({
             text: '',
+            checkbox: true,
         });
 
         const $v = useVuelidate({
@@ -37,22 +38,40 @@ export default defineComponent({
             },
         }, form);
 
-        const renderInput = () => h('div', [
+        const renderInputText = () => h('div', [
             h('h1', 'Input'),
-            buildFormInput({
+            buildFormInputText({
                 validationResult: $v.value.text,
                 labelContent: 'My input label',
 
                 value: form.text,
                 change: (value) => {
-                    console.log('Value of input changed', value);
+                    console.log('Value of input text changed', value);
                     form.text = value;
                 },
             }),
             h('div', { class: 'alert alert-info' }, [
                 'Current Value:',
                 ' ',
-                inputRef.value,
+                form.text,
+            ]),
+        ]);
+
+        const renderInputCheckbox = () => h('div', [
+            h('h1', 'Checkbox'),
+            buildFormInputCheckbox({
+                labelContent: 'My input label',
+
+                value: form.checkbox,
+                change: (value) => {
+                    console.log('Value of input checkbox changed', value);
+                    form.checkbox = value;
+                },
+            }),
+            h('div', { class: 'alert alert-info' }, [
+                'Current Value:',
+                ' ',
+                form.checkbox ? 'true' : 'false',
             ]),
         ]);
 
@@ -113,7 +132,9 @@ export default defineComponent({
         ]);
 
         return () => h('div', { class: 'container' }, [
-            renderInput(),
+            renderInputText(),
+            h('hr'),
+            renderInputCheckbox(),
             h('hr'),
             renderSelect(),
             h('hr'),

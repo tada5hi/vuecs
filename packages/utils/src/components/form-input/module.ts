@@ -8,29 +8,31 @@
 import {
     VNode, VNodeChild, h, mergeProps, unref,
 } from 'vue';
+import { Preset } from '../../constants';
+import { Component, buildOptionValueOrFail } from '../../options';
 import { FormGroup, FormGroupProperties } from '../form-group';
 import { buildFormBaseOptions, handleFormValueChanged } from '../utils';
 import { FormInputBuildOptions, FormInputBuildOptionsInput } from './type';
-import { Component, buildOptionValueOrFail } from '../../options';
-import { Preset } from '../../constants';
 
 export function buildFormInputOptions(
     input: FormInputBuildOptionsInput,
+    component?: Component.FormInput | Component.FormInputText,
 ) : FormInputBuildOptions {
-    const options = buildFormBaseOptions(input, Component.FormInput);
+    component = component || Component.FormInput;
+    const options = buildFormBaseOptions(input, component);
 
     return {
         ...options,
 
         type: buildOptionValueOrFail({
-            component: Component.FormInput,
+            component,
             key: 'type',
             value: unref(options.type),
             alt: 'text',
         }),
 
         groupClass: buildOptionValueOrFail({
-            component: Component.FormInput,
+            component,
             key: 'groupClass',
             value: unref(options.groupClass),
             alt: '',
@@ -45,13 +47,13 @@ export function buildFormInputOptions(
         }),
 
         groupAppend: buildOptionValueOrFail({
-            component: Component.FormInput,
+            component,
             key: 'groupAppend',
             value: unref(options.groupAppend),
             alt: false,
         }),
         groupAppendClass: buildOptionValueOrFail({
-            component: Component.FormInput,
+            component,
             key: 'groupAppendClass',
             value: unref(options.groupAppendClass),
             alt: '',
@@ -65,21 +67,21 @@ export function buildFormInputOptions(
             },
         }),
         groupAppendContent: buildOptionValueOrFail({
-            component: Component.FormInput,
+            component,
             key: 'groupAppendContent',
             value: unref(options.groupAppendContent),
             alt: '',
         }),
 
         groupPrepend: buildOptionValueOrFail({
-            component: Component.FormInput,
+            component,
             key: 'groupPrepend',
             value: unref(options.groupPrepend),
             alt: false,
 
         }),
         groupPrependClass: buildOptionValueOrFail({
-            component: Component.FormInput,
+            component,
             key: 'groupPrependClass',
             value: unref(options.groupPrependClass),
             alt: '',
@@ -93,7 +95,7 @@ export function buildFormInputOptions(
             },
         }),
         groupPrependContent: buildOptionValueOrFail({
-            component: Component.FormInput,
+            component,
             key: 'groupPrependContent',
             value: unref(options.groupPrependContent),
             alt: '',
@@ -106,10 +108,16 @@ export function buildFormInput(
 ) : VNode {
     const options = buildFormInputOptions(input);
 
+    return buildFormInputFromOptions(options);
+}
+
+export function buildFormInputFromOptions(
+    options: FormInputBuildOptions,
+) {
     const children : VNodeChild = [];
 
     if (options.label) {
-        children.push(h('label', [options.labelContent]));
+        children.push(h('label', { class: options.labelClass }, [options.labelContent]));
     }
 
     const inputGroupChildren : VNodeChild = [];
@@ -127,7 +135,6 @@ export function buildFormInput(
         mergeProps(
             {
                 type: options.type,
-                placeholder: '...',
                 class: options.class,
                 onInput($event: any) {
                     if ($event.target.composing) {

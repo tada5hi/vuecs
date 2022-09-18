@@ -13,6 +13,7 @@ import {
     FormTextareaBuildOptions, ItemActionToggleOptions,
     ListActionRefreshBuildOptions,
     ListBaseOptions,
+    ListBuildOptions,
     ListHeaderBuildOptions,
     ListItemBuildOptions,
     ListItemsBuildOptions,
@@ -22,7 +23,7 @@ import {
     ListTitleBuildOptions,
     PaginationOptions,
 } from '../components';
-import { ListBuildOptions } from '../components/list';
+import { FormInputCheckboxBuildOptions } from '../components/form-input-checkbox/type';
 import { Component } from './constants';
 
 export type OptionPresetValueContext<V> = {
@@ -48,15 +49,18 @@ export type ComponentFormOptions<C extends Component | `${Component}`> =
         FormBaseOptions :
         C extends Component.FormGroup | `${Component.FormGroup}` ?
             FormGroupOptions :
-            C extends Component.FormInput | `${Component.FormInput}` ?
+            C extends Component.FormInput | Component.FormInputText |
+                `${Component.FormInput}` | `${Component.FormInputText}` ?
                 FormInputBuildOptions :
-                C extends Component.FormSelect | `${Component.FormSelect}` ?
-                    FormSelectBuildOptions :
-                    C extends Component.FormSubmit | `${Component.FormSubmit}` ?
-                        FormSubmitOptions :
-                        C extends Component.FormTextarea | `${Component.FormTextarea}` ?
-                            FormTextareaBuildOptions :
-                            {};
+                C extends Component.FormInputCheckbox | `${Component.FormInputCheckbox}` ?
+                    FormInputCheckboxBuildOptions :
+                    C extends Component.FormSelect | `${Component.FormSelect}` ?
+                        FormSelectBuildOptions :
+                        C extends Component.FormSubmit | `${Component.FormSubmit}` ?
+                            FormSubmitOptions :
+                            C extends Component.FormTextarea | `${Component.FormTextarea}` ?
+                                FormTextareaBuildOptions :
+                                {};
 
 export type ComponentItemOptions<C extends Component | `${Component}`> =
     C extends Component.ItemActionToggle | `${Component.ItemActionToggle}` ?

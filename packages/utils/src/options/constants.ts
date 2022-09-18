@@ -11,6 +11,8 @@ export enum Component {
     FormBase = 'formBase',
     FormGroup = 'formGroup',
     FormInput = 'formInput',
+    FormInputCheckbox = 'formInputCheckbox',
+    FormInputText = 'formInputText',
     FormSelect = 'formSelect',
     FormSubmit = 'formSubmit',
     FormTextarea = 'formTextarea',
