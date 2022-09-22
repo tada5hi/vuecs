@@ -99,6 +99,8 @@ export function buildListHeader(
             options.title = {};
         }
 
+        options.title.slotItems = options.slotItems;
+
         headerChildren.push(buildListTitle(options.title));
     }
 

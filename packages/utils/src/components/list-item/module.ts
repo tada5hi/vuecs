@@ -90,7 +90,7 @@ export function buildListItem<T extends Record<string, any>>(
 
     const slotProps = {
         itemBusy: options.busy,
-        item: options.data,
+        data: options.data,
         busy: options.busy,
         index: options.index,
         ...(options.slotProps || {}),

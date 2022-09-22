@@ -31,7 +31,7 @@ export function buildFormSubmitOptions(
             alt: [],
         }),
 
-        validationRulesResult: unrefWithDefault(options.validationRulesResult, {}),
+        validationResult: unrefWithDefault(options.validationResult, {}),
 
         updateText: buildOptionValueOrFail({
             component: Component.FormSubmit,
@@ -98,6 +98,7 @@ export function buildFormSubmitOptions(
         }),
 
         busy: options.busy ?? false,
+        valid: options.valid ?? true,
         isEditing: unrefWithDefault(options.isEditing, false),
     };
 }
@@ -114,7 +115,9 @@ export function buildFormSubmit(input: FormSubmitOptionsInput) {
                 ...(options.isEditing ? [options.updateButtonClass] : []),
                 ...(!options.isEditing ? [options.createButtonClass] : []),
             ],
-            disabled: options.validationRulesResult.$invalid || unref(options.busy),
+            disabled: options.validationResult.$invalid ||
+                !options.valid ||
+                unref(options.busy),
             onClick($event: any) {
                 $event.preventDefault();
 

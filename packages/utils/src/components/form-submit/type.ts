@@ -21,12 +21,13 @@ export type FormSubmitOptions = {
     createButtonClass: VNodeClass,
 
     busy: MaybeRef<boolean>,
+    valid: MaybeRef<boolean>,
     isEditing: boolean,
     submit: () => void | Promise<void>,
-
-    validationRulesResult: Partial<ValidationResult>
+    validationResult: Partial<ValidationResult>
 };
 
 export type FormSubmitOptionsInput = OptionsInput<FormSubmitOptions,
 'submit',
-'busy'>;
+'busy' | 'valid'
+>;
