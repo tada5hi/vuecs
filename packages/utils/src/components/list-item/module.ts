@@ -51,7 +51,7 @@ export function buildListItemOptions<T extends Record<string, any>>(
                     value: 'pr-1',
                 },
                 [Preset.BOOTSTRAP_V5]: {
-                    value: 'pr-1',
+                    value: 'pe-1',
                 },
                 [Preset.FONT_AWESOME]: {
                     value: 'fa fa-bars',
@@ -60,6 +60,7 @@ export function buildListItemOptions<T extends Record<string, any>>(
         }),
         iconProps: unrefWithDefault(options.iconProps, {}),
 
+        textFn: options.textFn,
         textPropName: buildOptionValueOrFail({
             component: Component.ListItem,
             key: 'textPropName',
@@ -112,6 +113,7 @@ export function buildListItem<T extends Record<string, any>>(
     }
 
     let itemText : string | VNode | undefined | (string | VNode)[];
+
     if (options.textFn) {
         itemText = options.textFn(options.data);
     } else if (hasOwnProperty(options.data, options.textPropName)) {
