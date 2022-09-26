@@ -12,7 +12,7 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url)),
-            '@vue-layout/navigation': path.join(__dirname, '..', 'navigation', 'src'),
+            '@vue-layout/navigation': path.join(__dirname, '..', '..', 'packages', 'navigation', 'src'),
         },
     },
 });
