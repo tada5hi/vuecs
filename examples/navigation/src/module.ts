@@ -1,5 +1,5 @@
 import {
-    Component, ProviderInterface,
+    ProviderInterface,
     findTierComponent,
 } from '@vue-layout/navigation';
 

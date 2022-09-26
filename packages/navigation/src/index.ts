@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2022.
+ * Author Peter Placzek (tada5hi)
+ * For the full copyright and license information,
+ * view the LICENSE file that was distributed with this source code.
+ */
+
 import 'regenerator-runtime';
 
 import '../assets/index.css';
@@ -7,11 +14,15 @@ import { App, Plugin } from 'vue';
 // Import vue components
 import * as components from './components';
 import { hasOwnProperty } from './utils';
-import { setProvider } from './provider';
-import { setState } from './store';
-import { Options } from './type';
+import { ProviderInterface, setProvider } from './provider';
+import { StateType, setState } from './store';
 
-export function createPlugin(options?: Partial<Options>) : Plugin {
+export type PluginOptions = {
+    provider: ProviderInterface,
+    state: StateType
+};
+
+export function createPlugin(options?: Partial<PluginOptions>) : Plugin {
     options ??= {};
 
     if (options.provider) {
