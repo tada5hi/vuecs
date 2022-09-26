@@ -1,6 +1,5 @@
 {
-    "name": "@vue-layout/navigation-demo",
-    "version": "2.0.0-alpha.3",
+    "name": "navigation-example",
     "private": true,
     "description": "This package contains a vue demo app.",
     "scripts": {

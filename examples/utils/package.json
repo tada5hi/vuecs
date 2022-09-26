@@ -1,6 +1,5 @@
 {
-    "name": "@vue-layout/utils-demo",
-    "version": "1.0.0-alpha.11",
+    "name": "utils-example",
     "private": true,
     "description": "This package contains a vue demo app for the utils package.",
     "scripts": {

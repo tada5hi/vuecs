@@ -7,7 +7,7 @@
         ],
         "module": "ESNext",
         "paths": {
-            "@/*": ["./packages/utils-demo/src/*"],
+            "@/*": ["./examples/utils/src/*"],
             "@vue-layout/utils": ["./packages/utils/src"]
         }
     },
