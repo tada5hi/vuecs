@@ -5,30 +5,32 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { createMerger, merge } from 'smob';
+import { createMerger } from 'smob';
 import { unref } from 'vue';
-import { setMaybeRefValue } from './ref';
-import { unrefWithDefault } from '../../utils';
-import {
-    ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput, FormbaseOptionsDefaults,
-} from '../type';
-import { Component, buildOptionValueOrFail } from '../../options';
+import { createOptionValueBuilder } from '../../options';
+import { setMaybeRefValue, unrefWithDefault } from '../../utils';
 import { Preset } from '../../constants';
+import { Component } from '../constants';
+import {
+    ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsDefaults, FormBaseOptionsInput,
+} from './type';
 
 export function buildFormBaseOptions<T extends FormBaseOptionsInput>(
     options: T,
     component: Component,
-    defaults?: FormbaseOptionsDefaults,
+    defaults?: FormBaseOptionsDefaults,
 ): ExpectFormBaseOptions<T> & FormBaseOptions {
     defaults = defaults || {};
 
     const merger = createMerger({ array: false });
+    const { buildOrFail } = createOptionValueBuilder<FormBaseOptions>(
+        component,
+    );
 
     return {
         ...options,
 
-        class: buildOptionValueOrFail({
-            component: component as Component.FormBase,
+        class: buildOrFail({
             key: 'class',
             value: unref(options.class),
             ...merger(defaults.class || {}, {
@@ -43,23 +45,20 @@ export function buildFormBaseOptions<T extends FormBaseOptionsInput>(
                 },
             }),
         }),
-        props: buildOptionValueOrFail({
-            component: component as Component.FormBase,
+        props: buildOrFail({
             key: 'props',
             value: unref(options.props),
             alt: {},
             ...defaults.props,
         }),
 
-        label: buildOptionValueOrFail({
-            component: component as Component.FormBase,
+        label: buildOrFail({
             key: 'label',
             value: unref(options.label),
             alt: true,
             ...defaults.label,
         }),
-        labelClass: buildOptionValueOrFail({
-            component: component as Component.FormBase,
+        labelClass: buildOrFail({
             key: 'labelClass',
             value: unref(options.labelClass),
             ...merger(defaults.labelClass || {}, {
@@ -71,8 +70,7 @@ export function buildFormBaseOptions<T extends FormBaseOptionsInput>(
                 },
             }),
         }),
-        labelContent: buildOptionValueOrFail({
-            component: component as Component.FormBase,
+        labelContent: buildOrFail({
             key: 'labelContent',
             value: unref(options.labelContent),
             alt: 'Input',

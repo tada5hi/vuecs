@@ -8,9 +8,11 @@
 import {
     VNodeArrayChildren, VNodeChild, computed, defineComponent, h, mergeProps,
 } from 'vue';
-import { Component, buildOptionValue, buildOptionValueOrFail } from '../../options';
+import { createOptionValueBuilder } from '../../options';
 import { Preset } from '../../constants';
-import { PaginationMeta } from './type';
+import { Component } from '../constants';
+import { ListLoadMeta } from '../type';
+import { PaginationOptions } from './type';
 
 export const Pagination = defineComponent({
     props: {
@@ -33,6 +35,10 @@ export const Pagination = defineComponent({
     },
     emits: ['load'],
     setup(props, { emit }) {
+        const { build, buildOrFail } = createOptionValueBuilder<PaginationOptions>(
+            Component.Pagination,
+        );
+
         const totalPages = computed(() => {
             if (props.limit === 0 || props.total === 0) return 1;
 
@@ -61,7 +67,7 @@ export const Pagination = defineComponent({
         const goTo = (page: number) => {
             if (props.busy || page === currentPage.value) return;
 
-            const data : PaginationMeta = {
+            const data : ListLoadMeta = {
                 page,
                 offset: (page - 1) * props.limit,
                 limit: props.limit,
@@ -74,8 +80,7 @@ export const Pagination = defineComponent({
         const renderPrevPage = () => {
             let content : VNodeChild;
 
-            const prevClass = buildOptionValue({
-                component: Component.Pagination,
+            const prevClass = build({
                 key: 'prevClass',
                 alt: [],
                 preset: {
@@ -84,14 +89,12 @@ export const Pagination = defineComponent({
                     },
                 },
             });
-            const prevContent = buildOptionValue({
-                component: Component.Pagination,
+            const prevContent = build({
                 key: 'prevContent',
             });
             if (prevClass || prevContent) {
                 content = h(
-                    buildOptionValueOrFail({
-                        component: Component.Pagination,
+                    buildOrFail({
                         key: 'prevType',
                         alt: 'i',
                     }),
@@ -108,8 +111,7 @@ export const Pagination = defineComponent({
                     h(
                         'li',
                         {
-                            class: buildOptionValueOrFail({
-                                component: Component.Pagination,
+                            class: buildOrFail({
                                 key: 'itemClass',
                                 alt: 'page-item',
                             }),
@@ -118,8 +120,7 @@ export const Pagination = defineComponent({
                             h(
                                 'button',
                                 {
-                                    class: buildOptionValueOrFail({
-                                        component: Component.Pagination,
+                                    class: buildOrFail({
                                         key: 'linkClass',
                                         alt: 'page-link',
                                     }),
@@ -147,8 +148,7 @@ export const Pagination = defineComponent({
                 const node = h(
                     'li',
                     {
-                        class: buildOptionValueOrFail({
-                            component: Component.Pagination,
+                        class: buildOrFail({
                             key: 'itemClass',
                             alt: 'page-item',
                         }),
@@ -159,8 +159,7 @@ export const Pagination = defineComponent({
                                 ...(
                                     pages.value[i] === currentPage.value ?
                                         {
-                                            class: buildOptionValueOrFail({
-                                                component: Component.Pagination,
+                                            class: buildOrFail({
                                                 key: 'linkActiveClass',
                                                 alt: 'active',
                                             }),
@@ -168,8 +167,7 @@ export const Pagination = defineComponent({
                                         {}
                                 ),
                             }, {
-                                class: buildOptionValueOrFail({
-                                    component: Component.Pagination,
+                                class: buildOrFail({
                                     key: 'linkClass',
                                     alt: 'page-link',
                                 }),
@@ -198,8 +196,7 @@ export const Pagination = defineComponent({
 
             let content : VNodeChild;
 
-            const nextClass = buildOptionValue({
-                component: Component.Pagination,
+            const nextClass = build({
                 key: 'nextClass',
                 alt: [],
                 preset: {
@@ -209,15 +206,13 @@ export const Pagination = defineComponent({
                 },
             });
 
-            const nextContent = buildOptionValue({
-                component: Component.Pagination,
+            const nextContent = build({
                 key: 'nextContent',
             });
 
             if (nextClass || nextContent) {
                 content = h(
-                    buildOptionValueOrFail({
-                        component: Component.Pagination,
+                    buildOrFail({
                         key: 'nextType',
                         alt: 'i',
                     }),
@@ -231,8 +226,7 @@ export const Pagination = defineComponent({
             if (currentPage.value < totalPages.value) {
                 nextPage = [
                     h('li', {
-                        class: buildOptionValueOrFail({
-                            component: Component.Pagination,
+                        class: buildOrFail({
                             key: 'itemClass',
                             alt: 'page-item',
                         }),
@@ -240,8 +234,7 @@ export const Pagination = defineComponent({
                         h(
                             'button',
                             {
-                                class: buildOptionValueOrFail({
-                                    component: Component.Pagination,
+                                class: buildOrFail({
                                     key: 'linkClass',
                                     alt: 'page-link',
                                 }),
@@ -264,8 +257,7 @@ export const Pagination = defineComponent({
         return () => h(
             'ul',
             {
-                class: buildOptionValueOrFail({
-                    component: Component.Pagination,
+                class: buildOrFail({
                     key: 'class',
                     alt: 'pagination',
                     preset: {

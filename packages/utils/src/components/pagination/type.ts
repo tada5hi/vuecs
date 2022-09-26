@@ -8,13 +8,6 @@
 import { VNodeArrayChildren } from 'vue';
 import { VNodeClass } from '../../type';
 
-export type PaginationMeta = {
-    limit: number,
-    offset: number,
-    total: number,
-    page: number
-};
-
 export type PaginationOptions = {
     class: VNodeClass,
     itemClass: VNodeClass,
@@ -22,11 +15,11 @@ export type PaginationOptions = {
     linkClass: VNodeClass,
     linkActiveClass: VNodeClass,
 
-    prevType?: string,
+    prevType: string,
     prevClass?: VNodeClass,
     prevContent?: VNodeArrayChildren,
 
-    nextType?: string,
+    nextType: string,
     nextClass?: VNodeClass,
     nextContent?: VNodeArrayChildren
 };

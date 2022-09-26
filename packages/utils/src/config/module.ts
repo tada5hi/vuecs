@@ -5,29 +5,15 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { provide } from '../di';
 import { Config } from './type';
 
-let instance : Config | undefined;
-
-export function setConfig(input: Partial<Config>) : Config {
-    instance = extendConfig(input);
-
-    return instance;
-}
-
-export function useConfig() : Config {
-    if (typeof instance !== 'undefined') {
-        return instance;
+export function setConfig(input: Partial<Config>) {
+    if (input.preset) {
+        provide('preset', input.preset);
     }
 
-    instance = extendConfig({});
-
-    return instance;
-}
-
-export function extendConfig(input: Partial<Config>) : Config {
-    return {
-        preset: input.preset || {},
-        component: input.component || {},
-    };
+    if (input.component) {
+        provide('component', input.component);
+    }
 }

@@ -1,13 +1,16 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  * Author Peter Placzek (tada5hi)
  * For the full copyright and license information,
  * view the LICENSE file that was distributed with this source code.
  */
 
 import { unref } from 'vue';
-import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../type';
-import { Component, buildOptionValueOrFail } from '../../options';
+import { createOptionValueBuilder } from '../../options';
+import { Component } from '../constants';
+import {
+    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsDefaults, ListBaseOptionsInput,
+} from './type';
 
 export function buildListBaseOptions<
     T extends ListBaseOptionsInput,
@@ -15,25 +18,18 @@ export function buildListBaseOptions<
 >(
     options: T,
     component: Component,
-    defaults?: {
-        [K in keyof ListBaseOptions]?: {
-            alt?: ListBaseOptions[K],
-            preset?: {
-                [key: string]: {
-                    enabled?: boolean,
-                    value?: ListBaseOptions[K]
-                }
-            },
-        }
-    },
+    defaults?: ListBaseOptionsDefaults,
 ): ExpectListBaseOptions<T> & ListBaseOptions {
     defaults = defaults || {};
+
+    const { buildOrFail } = createOptionValueBuilder<ListBaseOptions>(
+        component,
+    );
 
     return {
         ...options,
 
-        tag: buildOptionValueOrFail<Component.ListBase, 'tag'>({
-            component: component as Component.ListBase,
+        tag: buildOrFail({
             key: 'tag',
             value: unref(options.tag),
             alt: 'div',
@@ -41,23 +37,20 @@ export function buildListBaseOptions<
         }),
 
         slotItems: options.slotItems || {},
-        slotProps: buildOptionValueOrFail<Component.ListBase, 'slotProps'>({
-            component: component as Component.ListBase,
+        slotProps: buildOrFail({
             key: 'slotProps',
             value: unref(options.slotProps),
             alt: {},
             ...defaults.slotProps,
         }),
 
-        class: buildOptionValueOrFail<Component.ListBase, 'class'>({
-            component: component as Component.ListBase,
+        class: buildOrFail({
             key: 'class',
             value: unref(options.class),
             alt: [],
             ...defaults.class,
         }),
-        props: buildOptionValueOrFail<Component.ListBase, 'props'>({
-            component: component as Component.ListBase,
+        props: buildOrFail({
             key: 'props',
             value: unref(options.props),
             alt: {},

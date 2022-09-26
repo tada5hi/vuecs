@@ -71,29 +71,3 @@ export function mergeOption<T>(key: string, target: T, source: T) : T {
 
     return target ?? source;
 }
-
-export function mergeOptions<A extends Record<string, any>, B extends Record<string, any>>(target: A, ...sources: B[]): A & B {
-    if (!sources.length) return target as A & B;
-
-    const source = sources.shift();
-
-    if (
-        isObject(target) &&
-        isObject(source)
-    ) {
-        const keys = Object.keys(source);
-        for (let i = 0; i < keys.length; i++) {
-            if (isObject(source[keys[i]])) {
-                if (!target[keys[i]]) Object.assign(target, { [keys[i]]: {} });
-
-                mergeOptions(target[keys[i]], source[keys[i]]);
-            } else if (isVNodeOption(keys[i])) {
-                target[keys[i] as keyof A] = mergeVNodeOption(keys[i], target[keys[i]], source[keys[i]]) as A[keyof A];
-            } else if (!target[keys[i]]) {
-                Object.assign(target, { [keys[i]]: source[keys[i]] });
-            }
-        }
-    }
-
-    return mergeOptions(target, ...sources);
-}

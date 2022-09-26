@@ -5,6 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { PresetOption } from './type';
+
 export function isVNodeClassOption(name: string) {
     return name.toLowerCase().indexOf('class') !== -1;
 }
@@ -26,4 +28,11 @@ export function isVNodeOption(name: string) {
         isVNodeStyleOption(name) ||
         isVNodeListenerOption(name) ||
         isVNodePropsOption(name);
+}
+
+export function extendPresetOption<V>(value: PresetOption<V>) : PresetOption<V> {
+    return {
+        value: value.value,
+        enabled: value.enabled || typeof value !== 'undefined',
+    };
 }

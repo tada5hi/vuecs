@@ -8,13 +8,14 @@
 import {
     VNodeArrayChildren, h, mergeProps, unref,
 } from 'vue';
-import { Component, buildOptionValueOrFail } from '../../options';
+import { createOptionValueBuilder } from '../../options';
+import { Component } from '../constants';
 import { ListHeaderBuildOptionsInput, buildListHeader } from '../list-header';
 import { ListItemsBuildOptionsInput, buildListItems } from '../list-items';
 import { ListNoMoreBuildOptionsInput, buildListNoMore } from '../list-no-more';
 import { ListPaginationBuildOptionsInput, buildListPagination } from '../list-pagination';
 import { ListSearchBuildOptionsInput, buildListSearch } from '../list-search';
-import { buildListBaseOptions } from '../utils';
+import { buildListBaseOptions } from '../list-base';
 import { ListBuildOptions, ListBuildOptionsInput } from './type';
 
 export function buildListOptions<T extends Record<string, any>>(
@@ -26,6 +27,10 @@ export function buildListOptions<T extends Record<string, any>>(
         },
     });
 
+    const { buildOrFail } = createOptionValueBuilder<ListBuildOptions<T>>(
+        Component.List,
+    );
+
     return {
         ...options,
 
@@ -34,32 +39,27 @@ export function buildListOptions<T extends Record<string, any>>(
         data: options.data,
         meta: options.meta,
 
-        header: buildOptionValueOrFail({
-            component: Component.List,
+        header: buildOrFail({
             key: 'header',
             value: unref(options.header),
             alt: true,
         }),
-        search: buildOptionValueOrFail({
-            component: Component.List,
+        search: buildOrFail({
             key: 'search',
             value: unref(options.search),
             alt: true,
         }),
-        items: buildOptionValueOrFail({
-            component: Component.List,
+        items: buildOrFail({
             key: 'items',
             value: unref(options.items),
             alt: true,
         }),
-        noMore: buildOptionValueOrFail({
-            component: Component.List,
+        noMore: buildOrFail({
             key: 'noMore',
             value: unref(options.noMore),
             alt: true,
         }),
-        pagination: buildOptionValueOrFail({
-            component: Component.List,
+        pagination: buildOrFail({
             key: 'pagination',
             value: unref(options.pagination),
             alt: true,
@@ -126,6 +126,11 @@ export function buildList<T extends Record<string, any>>(
         const meta = unref(options.meta);
         if (meta) {
             noMoreOptions.total = meta.total;
+        } else {
+            const data = unref(options.data);
+            if (data) {
+                noMoreOptions.total = data.length;
+            }
         }
 
         const noMore = buildListNoMore(noMoreOptions);

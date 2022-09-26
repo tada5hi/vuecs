@@ -6,21 +6,21 @@
  */
 
 import { MaybeRef } from '../../type';
+import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import { ListHeaderBuildOptionsInput } from '../list-header';
 import { ListItemsBuildOptionsInput } from '../list-items';
 import { ListNoMoreBuildOptionsInput } from '../list-no-more';
 import { ListPaginationBuildOptionsInput } from '../list-pagination';
 import { ListSearchBuildOptionsInput } from '../list-search';
-import { PaginationMeta } from '../pagination';
 import {
-    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListLoadFn, OptionsInput,
+    ListLoadFn, ListLoadMeta, OptionsInput,
 } from '../type';
 
 export type ListBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
     busy?: MaybeRef<boolean>,
     data?: MaybeRef<T[]>,
     load?: ListLoadFn,
-    meta?: MaybeRef<Partial<PaginationMeta>>,
+    meta?: MaybeRef<Partial<ListLoadMeta>>,
     change?: (input: any) => void,
 
     header: Omit<ListHeaderBuildOptionsInput, 'busy' | 'load'> | boolean,

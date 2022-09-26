@@ -5,14 +5,14 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import {
-    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListLoadFn, OptionsInput,
+    ListLoadFn, ListLoadMeta, OptionsInput,
 } from '../type';
-import { PaginationMeta } from '../pagination';
 
 export type ListPaginationBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
     busy: boolean,
-    meta: Partial<PaginationMeta>,
+    meta: Partial<ListLoadMeta>,
     load?: ListLoadFn
 };
 

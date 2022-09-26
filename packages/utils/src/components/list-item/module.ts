@@ -8,11 +8,13 @@
 import {
     VNode, VNodeArrayChildren, VNodeChild, h, mergeProps, unref,
 } from 'vue';
-import { buildListBaseOptions, hasNormalizedSlot, normalizeSlot } from '../utils';
-import { SlotName } from '../constants';
+import { Component, SlotName } from '../constants';
+import { buildListBaseOptions } from '../list-base';
 import { ListItemBuildOptions, ListItemBuildOptionsInput } from './type';
-import { hasOwnProperty, unrefWithDefault } from '../../utils';
-import { Component, buildOptionValueOrFail } from '../../options';
+import {
+    hasNormalizedSlot, hasOwnProperty, normalizeSlot, unrefWithDefault,
+} from '../../utils';
+import { createOptionValueBuilder } from '../../options';
 import { Preset } from '../../constants';
 
 export function buildListItemOptions<T extends Record<string, any>>(
@@ -32,17 +34,19 @@ export function buildListItemOptions<T extends Record<string, any>>(
         },
     });
 
+    const { buildOrFail } = createOptionValueBuilder<ListItemBuildOptions<T>>(
+        Component.ListItem,
+    );
+
     return {
         ...options,
 
-        icon: buildOptionValueOrFail({
-            component: Component.ListItem,
+        icon: buildOrFail({
             key: 'icon',
             value: unref(options.icon),
             alt: true,
         }),
-        iconClass: buildOptionValueOrFail({
-            component: Component.ListItem,
+        iconClass: buildOrFail({
             key: 'iconClass',
             value: unref(options.iconClass),
             alt: [],
@@ -61,8 +65,7 @@ export function buildListItemOptions<T extends Record<string, any>>(
         iconProps: unrefWithDefault(options.iconProps, {}),
 
         textFn: options.textFn,
-        textPropName: buildOptionValueOrFail({
-            component: Component.ListItem,
+        textPropName: buildOrFail({
             key: 'textPropName',
             value: unref(options.textPropName),
             alt: 'name',
@@ -73,8 +76,7 @@ export function buildListItemOptions<T extends Record<string, any>>(
 
         data: unref(options.data),
 
-        actions: buildOptionValueOrFail({
-            component: Component.ListItem,
+        actions: buildOrFail({
             key: 'actions',
             value: unref(options.actions),
             alt: [],

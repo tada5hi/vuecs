@@ -6,10 +6,8 @@
  */
 
 import { VNodeClass } from '../../type';
+import { ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput } from '../form-base';
 import {
-    ExpectFormBaseOptions,
-    FormBaseOptions,
-    FormBaseOptionsInput,
     OptionsInput,
 } from '../type';
 

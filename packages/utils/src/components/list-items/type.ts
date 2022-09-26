@@ -5,8 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import {
-    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, OptionsInput,
+    OptionsInput,
 } from '../type';
 import { ListItemBuildOptionsInput } from '../list-item';
 

@@ -5,6 +5,32 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+export enum Component {
+    Pagination = 'pagination',
+
+    FormBase = 'formBase',
+    FormGroup = 'formGroup',
+    FormInput = 'formInput',
+    FormInputCheckbox = 'formInputCheckbox',
+    FormInputText = 'formInputText',
+    FormSelect = 'formSelect',
+    FormSubmit = 'formSubmit',
+    FormTextarea = 'formTextarea',
+
+    ItemActionToggle = 'itemActionToggle',
+
+    List = 'list',
+    ListBase = 'listBase',
+    ListActionRefresh = 'listActionRefresh',
+    ListHeader = 'listHeader',
+    ListItem = 'listItem',
+    ListItems = 'listItems',
+    ListNoMore = 'listNoMore',
+    ListPagination = 'listPagination',
+    ListSearch = 'listSearch',
+    ListTitle = 'listTitle',
+}
+
 export enum SlotName {
     HEADER = 'header',
     HEADER_TITLE = 'header-title',

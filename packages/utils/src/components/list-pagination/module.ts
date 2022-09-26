@@ -6,11 +6,11 @@
  */
 
 import { h, mergeProps } from 'vue';
+import { Component } from '../constants';
+import { buildListBaseOptions } from '../list-base';
 import { Pagination } from '../pagination';
 import { ListPaginationBuildOptions, ListPaginationBuildOptionsInput } from './type';
 import { unrefWithDefault } from '../../utils';
-import { buildListBaseOptions } from '../utils';
-import { Component } from '../../options';
 
 export function buildListPaginationOptions<T extends Record<string, any>>(
     input: ListPaginationBuildOptionsInput<T>,

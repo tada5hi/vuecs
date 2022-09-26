@@ -6,7 +6,7 @@
  */
 
 import { VNode } from 'vue';
-import { Component } from '../../options';
+import { Component } from '../constants';
 import {
     FormInputBuildOptionsInput,
     buildFormInputFromOptions,

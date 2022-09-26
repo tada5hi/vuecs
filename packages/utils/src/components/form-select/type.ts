@@ -5,8 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput } from '../form-base';
 import {
-    ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput, OptionsInput,
+    OptionsInput,
 } from '../type';
 
 export type FormSelectOption = {

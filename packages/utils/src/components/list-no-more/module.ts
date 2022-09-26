@@ -6,11 +6,11 @@
  */
 
 import { h, mergeProps, unref } from 'vue';
-import { SlotName } from '../constants';
-import { buildListBaseOptions, hasNormalizedSlot, normalizeSlot } from '../utils';
+import { Component, SlotName } from '../constants';
+import { buildListBaseOptions } from '../list-base';
 import { ListNoMoreBuildOptions, ListNoMoreBuildOptionsInput } from './type';
-import { unrefWithDefault } from '../../utils';
-import { Component, buildOptionValueOrFail } from '../../options';
+import { hasNormalizedSlot, normalizeSlot, unrefWithDefault } from '../../utils';
+import { createOptionValueBuilder } from '../../options';
 import { Preset } from '../../constants';
 
 export function buildListNoMoreOptions<T extends Record<string, any>>(
@@ -30,11 +30,14 @@ export function buildListNoMoreOptions<T extends Record<string, any>>(
         },
     });
 
+    const { buildOrFail } = createOptionValueBuilder<ListNoMoreBuildOptions<T>>(
+        Component.ListNoMore,
+    );
+
     return {
         ...options,
 
-        textContent: buildOptionValueOrFail({
-            component: Component.ListNoMore,
+        textContent: buildOrFail({
             key: 'textContent',
             value: unref(options.textContent),
             alt: 'No more items available...',

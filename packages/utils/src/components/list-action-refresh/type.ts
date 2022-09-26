@@ -7,8 +7,9 @@
 
 import { VNode, VNodeChild } from 'vue';
 import { MaybeRef, VNodeClass, VNodeProperties } from '../../type';
+import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import {
-    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListLoadFn, OptionsInput,
+    ListLoadFn, OptionsInput,
 } from '../type';
 
 export type ListActionRefreshBuildOptions = ListBaseOptions & {

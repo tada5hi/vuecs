@@ -9,9 +9,10 @@ import {
     VNode, VNodeChild, h, mergeProps, unref,
 } from 'vue';
 import { Preset } from '../../constants';
-import { Component, buildOptionValueOrFail } from '../../options';
+import { createOptionValueBuilder } from '../../options';
+import { Component } from '../constants';
 import { FormGroup, FormGroupProperties } from '../form-group';
-import { buildFormBaseOptions, handleFormValueChanged } from '../utils';
+import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
 import { FormInputBuildOptions, FormInputBuildOptionsInput } from './type';
 
 export function buildFormInputOptions(
@@ -21,21 +22,23 @@ export function buildFormInputOptions(
     component = component || Component.FormInput;
     const options = buildFormBaseOptions(input, component);
 
+    const { build, buildOrFail } = createOptionValueBuilder<FormInputBuildOptions>(
+        Component.FormSelect,
+    );
+
     return {
         ...options,
 
-        type: buildOptionValueOrFail({
-            component,
+        type: buildOrFail({
             key: 'type',
             value: unref(options.type),
             alt: 'text',
         }),
 
-        groupClass: buildOptionValueOrFail({
-            component,
+        groupClass: buildOrFail({
             key: 'groupClass',
             value: unref(options.groupClass),
-            alt: '',
+            alt: [],
             preset: {
                 [Preset.BOOTSTRAP]: {
                     value: 'input-group',
@@ -46,14 +49,12 @@ export function buildFormInputOptions(
             },
         }),
 
-        groupAppend: buildOptionValueOrFail({
-            component,
+        groupAppend: buildOrFail({
             key: 'groupAppend',
             value: unref(options.groupAppend),
             alt: false,
         }),
-        groupAppendClass: buildOptionValueOrFail({
-            component,
+        groupAppendClass: build({
             key: 'groupAppendClass',
             value: unref(options.groupAppendClass),
             alt: '',
@@ -66,22 +67,19 @@ export function buildFormInputOptions(
                 },
             },
         }),
-        groupAppendContent: buildOptionValueOrFail({
-            component,
+        groupAppendContent: build({
             key: 'groupAppendContent',
             value: unref(options.groupAppendContent),
             alt: '',
         }),
 
-        groupPrepend: buildOptionValueOrFail({
-            component,
+        groupPrepend: buildOrFail({
             key: 'groupPrepend',
             value: unref(options.groupPrepend),
             alt: false,
 
         }),
-        groupPrependClass: buildOptionValueOrFail({
-            component,
+        groupPrependClass: build({
             key: 'groupPrependClass',
             value: unref(options.groupPrependClass),
             alt: '',
@@ -94,8 +92,7 @@ export function buildFormInputOptions(
                 },
             },
         }),
-        groupPrependContent: buildOptionValueOrFail({
-            component,
+        groupPrependContent: build({
             key: 'groupPrependContent',
             value: unref(options.groupPrependContent),
             alt: '',

@@ -5,11 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Slots, VNode, VNodeChild } from 'vue';
-import {
-    MaybeRef, ToMaybeRef, VNodeClass, VNodeProperties,
-} from '../type';
-import { PaginationMeta } from './pagination';
+import { ToMaybeRef } from '../type';
 
 export type ValidationResult<T = unknown> = {
     $model: T
@@ -51,53 +47,11 @@ export type OptionsInput<T,
 
 // --------------------------------------
 
-export type ListLoadFn = (data?: PaginationMeta) => Promise<void> | void;
-export type ListBaseOptions = {
-    slotItems: Slots,
-    slotProps: Record<string, any>,
-
-    tag: string,
-    class: VNodeClass,
-    props: VNodeProperties,
-};
-export type ListBaseOptionsInput = OptionsInput<ListBaseOptions, never, 'slotItems'>;
-
-export type ExpectListBaseOptions<T extends ListBaseOptions | ListBaseOptionsInput,
-    > = Omit<T, keyof ListBaseOptions | keyof ListBaseOptionsInput>;
-
-// --------------------------------------
-
-export type FormBaseOptions = {
-    label: boolean,
-    labelClass: VNodeClass,
-    labelContent: string | VNode | (VNode | string)[] | VNodeChild,
-
-    class: VNodeClass,
-    props: VNodeProperties,
-
-    value?: MaybeRef<unknown>,
-
-    change?: (input: any) => void,
-    validationResult: Partial<ValidationResult>,
-    validationMessages: ValidationMessages,
-    validationTranslator?: ValidationTranslator
+export type ListLoadMeta = {
+    limit: number,
+    offset: number,
+    total: number,
+    page: number
 };
 
-export type FormBaseOptionsInput = OptionsInput<FormBaseOptions,
-never,
-'value' | 'change' | 'validationTranslator' | 'validationResult'>;
-
-export type ExpectFormBaseOptions<T extends FormBaseOptions | FormBaseOptionsInput> =
-    Omit<T, keyof FormBaseOptions | keyof FormBaseOptionsInput>;
-
-export type FormbaseOptionsDefaults = {
-    [K in keyof FormBaseOptions]?: {
-        alt?: FormBaseOptions[K],
-        preset?: {
-            [key: string]: {
-                enabled?: boolean,
-                value?: FormBaseOptions[K]
-            }
-        },
-    }
-};
+export type ListLoadFn = (data?: ListLoadMeta) => Promise<void> | void;

@@ -8,10 +8,11 @@
 import {
     VNode, VNodeArrayChildren, h, mergeProps, unref,
 } from 'vue';
+import { hasNormalizedSlot, normalizeSlot } from '../../utils';
+import { buildListBaseOptions } from '../list-base';
 import { ListTitleBuildOptions, ListTitleBuildOptionsInput } from './type';
-import { buildListBaseOptions, hasNormalizedSlot, normalizeSlot } from '../utils';
-import { SlotName } from '../constants';
-import { Component, buildOptionValueOrFail } from '../../options';
+import { Component, SlotName } from '../constants';
+import { createOptionValueBuilder } from '../../options';
 import { Preset } from '../../constants';
 
 export function buildListTitleOptions(
@@ -23,17 +24,19 @@ export function buildListTitleOptions(
         },
     });
 
+    const { buildOrFail } = createOptionValueBuilder<ListTitleBuildOptions>(
+        Component.ListTitle,
+    );
+
     return {
         ...options,
 
-        text: buildOptionValueOrFail({
-            component: Component.ListTitle,
+        text: buildOrFail({
             key: 'text',
             value: unref(options.text),
             alt: true,
         }),
-        textClass: buildOptionValueOrFail({
-            component: Component.ListTitle,
+        textClass: buildOrFail({
             key: 'textClass',
             value: unref(options.textClass),
             alt: [],
@@ -46,33 +49,28 @@ export function buildListTitleOptions(
                 },
             },
         }),
-        textType: buildOptionValueOrFail({
-            component: Component.ListTitle,
+        textType: buildOrFail({
             key: 'textType',
             value: unref(options.textType),
             alt: 'h4',
         }),
-        textProps: buildOptionValueOrFail({
-            component: Component.ListTitle,
+        textProps: buildOrFail({
             key: 'textProps',
             value: unref(options.textProps),
             alt: {},
         }),
-        textContent: buildOptionValueOrFail({
-            component: Component.ListTitle,
+        textContent: buildOrFail({
             key: 'textContent',
             value: unref(options.textContent),
             alt: 'List',
         }),
 
-        icon: buildOptionValueOrFail({
-            component: Component.ListTitle,
+        icon: buildOrFail({
             key: 'icon',
             value: unref(options.icon),
             alt: true,
         }),
-        iconClass: buildOptionValueOrFail({
-            component: Component.ListTitle,
+        iconClass: buildOrFail({
             key: 'iconClass',
             value: unref(options.iconClass),
             alt: [],
@@ -82,8 +80,7 @@ export function buildListTitleOptions(
                 },
             },
         }),
-        iconProps: buildOptionValueOrFail({
-            component: Component.ListTitle,
+        iconProps: buildOrFail({
             key: 'iconProps',
             value: unref(options.iconProps),
             alt: {},

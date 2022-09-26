@@ -9,9 +9,10 @@ import {
     VNode, VNodeChild, h, mergeProps, unref,
 } from 'vue';
 import { Preset } from '../../constants';
-import { Component, buildOptionValueOrFail } from '../../options';
+import { createOptionValueBuilder } from '../../options';
+import { Component } from '../constants';
 import { FormGroup, FormGroupProperties } from '../form-group';
-import { buildFormBaseOptions, handleFormValueChanged } from '../utils';
+import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
 import { FormInputCheckboxBuildOptions, FormInputCheckboxBuildOptionsInput } from './type';
 
 export function buildFormInputCheckboxOptions(
@@ -40,11 +41,14 @@ export function buildFormInputCheckboxOptions(
         },
     });
 
+    const { buildOrFail } = createOptionValueBuilder<FormInputCheckboxBuildOptions>(
+        Component.FormInputCheckbox,
+    );
+
     return {
         ...options,
 
-        groupClass: buildOptionValueOrFail({
-            component: Component.FormInputCheckbox,
+        groupClass: buildOrFail({
             key: 'groupClass',
             value: unref(options.groupClass),
             alt: '',

@@ -6,15 +6,22 @@ import App from './App.vue';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
-createApp(App)
-    .use(Utils, {
-        preset: {
-            [Preset.BOOTSTRAP]: {
-                enabled: true,
-            },
-            [Preset.FONT_AWESOME]: {
-                enabled: true,
+const config : Partial<Config> = {
+    preset: {
+        [Preset.BOOTSTRAP]: true,
+        [Preset.FONT_AWESOME]: true,
+    },
+    component: {
+        formInput: {
+            label: {
+                preset: {
+                    [Preset.BOOTSTRAP_V5]: false,
+                },
             },
         },
-    } as Partial<Config>)
+    },
+};
+
+createApp(App)
+    .use(Utils, config)
     .mount('#app');

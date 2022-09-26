@@ -6,13 +6,13 @@
  */
 
 import { h, mergeProps } from 'vue';
+import { Component } from '../constants';
+import { buildListBaseOptions } from '../list-base';
 import {
     ListSearchBuildOptions,
     ListSearchBuildOptionsInput,
 } from './type';
 import { buildFormInput } from '../form-input';
-import { buildListBaseOptions } from '../utils';
-import { Component } from '../../options';
 
 export function buildListSearchOptions(
     input: ListSearchBuildOptionsInput,

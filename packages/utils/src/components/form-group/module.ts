@@ -8,8 +8,9 @@
 import {
     PropType, VNodeArrayChildren, computed, defineComponent, h,
 } from 'vue';
+import { Component } from '../constants';
 import { ValidationMessages, ValidationResult, ValidationTranslator } from '../type';
-import { Component, buildOptionValue } from '../../options';
+import { buildOptionValue } from '../../options';
 import { Preset } from '../../constants';
 import { isValidationRuleResultWithParams, isValidationRuleResultWithoutParams } from './utils';
 

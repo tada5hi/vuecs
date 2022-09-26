@@ -8,13 +8,13 @@
 import {
     VNode, VNodeArrayChildren, h, mergeProps, unref,
 } from 'vue';
+import { buildListBaseOptions } from '../list-base';
 import { ListHeaderBuildOptions, ListHeaderBuildOptionsInput } from './type';
-import { buildListBaseOptions, hasNormalizedSlot, normalizeSlot } from '../utils';
-import { SlotName } from '../constants';
-import { unrefWithDefault } from '../../utils';
+import { Component, SlotName } from '../constants';
+import { hasNormalizedSlot, normalizeSlot, unrefWithDefault } from '../../utils';
 import { buildListTitle } from '../list-title';
 import { buildListActionRefresh } from '../list-action-refresh';
-import { Component, buildOptionValueOrFail } from '../../options';
+import { buildOptionValueOrFail } from '../../options';
 import { Preset } from '../../constants';
 
 export function buildListHeaderOptions(

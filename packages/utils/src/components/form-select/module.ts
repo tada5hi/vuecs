@@ -9,10 +9,11 @@ import {
     VNode, VNodeChild, h, mergeProps, unref,
 } from 'vue';
 import { Preset } from '../../constants';
+import { Component } from '../constants';
 import { FormGroup, FormGroupProperties } from '../form-group';
-import { buildFormBaseOptions, handleFormValueChanged } from '../utils';
+import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
 import { FormSelectBuildOptions, FormSelectBuildOptionsInput, FormSelectOption } from './type';
-import { Component, buildOptionValueOrFail } from '../../options';
+import { createOptionValueBuilder } from '../../options';
 
 export function buildFormSelectOptions(
     input: FormSelectBuildOptionsInput,
@@ -27,12 +28,15 @@ export function buildFormSelectOptions(
         },
     });
 
+    const { buildOrFail } = createOptionValueBuilder<FormSelectBuildOptions>(
+        Component.FormSelect,
+    );
+
     return {
         ...options,
 
         options: unref(options.options),
-        optionDefaultText: buildOptionValueOrFail({
-            component: Component.FormSelect,
+        optionDefaultText: buildOrFail({
             key: 'optionDefaultText',
             value: unref(options.optionDefaultText),
             alt: 'Select',

@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  * Author Peter Placzek (tada5hi)
  * For the full copyright and license information,
  * view the LICENSE file that was distributed with this source code.
  */
 
 import { Slot, Slots, VNode } from 'vue';
-import { hasOwnProperty } from '../../utils';
+import { hasOwnProperty } from './has-own-property';
 
 /**
  * Returns true if either scoped or unscoped named slot exists

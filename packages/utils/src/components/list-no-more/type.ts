@@ -6,8 +6,9 @@
  */
 
 import { VNode, VNodeChild } from 'vue';
+import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import {
-    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, OptionsInput,
+    OptionsInput,
 } from '../type';
 
 export type ListNoMoreBuildOptions<T extends Record<string, any>> = ListBaseOptions & {

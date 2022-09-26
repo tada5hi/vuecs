@@ -6,26 +6,28 @@
  */
 
 import { h, unref } from 'vue';
-import { isPromise, unrefWithDefault } from '../../utils';
-import { setMaybeRefValue } from '../utils';
+import { isPromise, setMaybeRefValue, unrefWithDefault } from '../../utils';
+import { Component } from '../constants';
 import { FormSubmitOptions, FormSubmitOptionsInput } from './type';
-import { Component, buildOptionValueOrFail } from '../../options';
+import { createOptionValueBuilder } from '../../options';
 import { Preset } from '../../constants';
 
 export function buildFormSubmitOptions(
     options: FormSubmitOptionsInput,
 ) : FormSubmitOptions {
+    const { buildOrFail } = createOptionValueBuilder<FormSubmitOptions>(
+        Component.FormSubmit,
+    );
+
     return {
         ...options,
 
-        type: buildOptionValueOrFail({
-            component: Component.FormSubmit,
+        type: buildOrFail({
             key: 'type',
             value: unref(options.type),
             alt: 'button',
         }),
-        class: buildOptionValueOrFail({
-            component: Component.FormSubmit,
+        class: buildOrFail({
             key: 'class',
             value: unref(options.class),
             alt: [],
@@ -33,14 +35,12 @@ export function buildFormSubmitOptions(
 
         validationResult: unrefWithDefault(options.validationResult, {}),
 
-        updateText: buildOptionValueOrFail({
-            component: Component.FormSubmit,
+        updateText: buildOrFail({
             key: 'updateText',
             value: unref(options.updateText),
             alt: 'Update',
         }),
-        updateIconClass: buildOptionValueOrFail({
-            component: Component.FormSubmit,
+        updateIconClass: buildOrFail({
             key: 'updateIconClass',
             value: unref(options.updateIconClass),
             alt: [],
@@ -50,8 +50,7 @@ export function buildFormSubmitOptions(
                 },
             },
         }),
-        updateButtonClass: buildOptionValueOrFail({
-            component: Component.FormSubmit,
+        updateButtonClass: buildOrFail({
             key: 'updateButtonClass',
             value: unref(options.updateButtonClass),
             alt: [],
@@ -65,14 +64,12 @@ export function buildFormSubmitOptions(
             },
         }),
 
-        createText: buildOptionValueOrFail({
-            component: Component.FormSubmit,
+        createText: buildOrFail({
             key: 'createText',
             value: unref(options.createText),
             alt: 'Create',
         }),
-        createIconClass: buildOptionValueOrFail({
-            component: Component.FormSubmit,
+        createIconClass: buildOrFail({
             key: 'createIconClass',
             value: unref(options.createIconClass),
             alt: [],
@@ -82,8 +79,7 @@ export function buildFormSubmitOptions(
                 },
             },
         }),
-        createButtonClass: buildOptionValueOrFail({
-            component: Component.FormSubmit,
+        createButtonClass: buildOrFail({
             key: 'createButtonClass',
             value: unref(options.createButtonClass),
             alt: [],

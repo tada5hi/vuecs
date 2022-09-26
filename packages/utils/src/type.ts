@@ -6,9 +6,7 @@
  */
 
 import { Ref, VNodeProps } from 'vue';
-import { Component, ComponentOptions } from './options';
 
-export type NonBoolean<T> = T extends boolean ? never : T;
 export type MaybeRef<T> = T | Ref<T>;
 export type ToMaybeRef<T> = {
     [K in keyof T]: MaybeRef<T[K]>;
@@ -20,11 +18,8 @@ export type VNodeProperties = VNodeProps & {
     [key: string]: any
 };
 
-export type PresetConfigOptions = {
-    [K in `${Component}` | Component]?: Partial<ComponentOptions<K>>
-};
-
-export type PresetConfig = {
-    enabled: boolean,
-    options?: PresetConfigOptions
-};
+export type MakeOptional<
+    Type,
+    Key extends keyof Type,
+> = Omit<Type, Key> &
+Partial<Pick<Type, Key>>;

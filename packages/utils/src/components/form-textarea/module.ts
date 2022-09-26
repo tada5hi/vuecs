@@ -8,10 +8,10 @@
 import {
     VNode, VNodeChild, h, mergeProps, unref,
 } from 'vue';
+import { Component } from '../constants';
 import { FormGroup, FormGroupProperties } from '../form-group';
-import { buildFormBaseOptions, handleFormValueChanged } from '../utils';
+import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
 import { FormTextareaBuildOptions, FormTextareaBuildOptionsInput } from './type';
-import { Component } from '../../options';
 
 export function buildFormTextareaOptions(
     input: FormTextareaBuildOptionsInput,

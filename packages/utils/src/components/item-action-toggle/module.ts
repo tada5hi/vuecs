@@ -8,34 +8,37 @@
 import {
     VNode, VNodeArrayChildren, h, unref,
 } from 'vue';
+import { Component } from '../constants';
 import { ItemActionToggleOptions, ItemActionToggleOptionsInput } from './type';
-import { unrefWithDefault } from '../../utils';
-import { pushMaybeRefArrayValue, setMaybeRefValue, spliceMaybeRefArray } from '../utils';
+import {
+    pushMaybeRefArrayValue, setMaybeRefValue, spliceMaybeRefArray, unrefWithDefault,
+} from '../../utils';
 import { MaybeRef } from '../../type';
-import { Component, buildOptionValueOrFail } from '../../options';
+import { createOptionValueBuilder } from '../../options';
 import { Preset } from '../../constants';
 
 export function buildItemActionToggleOptions<T>(
     options: ItemActionToggleOptionsInput<T>,
 ) : ItemActionToggleOptions<T> {
+    const { buildOrFail } = createOptionValueBuilder<ItemActionToggleOptions<T>>(
+        Component.ItemActionToggle,
+    );
+
     return {
         ...options,
 
-        type: buildOptionValueOrFail({
-            component: Component.ItemActionToggle,
+        type: buildOrFail({
             key: 'type',
             value: unref(options.type),
             alt: 'button',
         }),
-        class: buildOptionValueOrFail({
-            component: Component.ItemActionToggle,
+        class: buildOrFail({
             key: 'class',
             value: unref(options.class),
             alt: [],
         }),
 
-        disabledClass: buildOptionValueOrFail({
-            component: Component.ItemActionToggle,
+        disabledClass: buildOrFail({
             key: 'disabledClass',
             value: unref(options.disabledClass),
             alt: [],
@@ -48,8 +51,7 @@ export function buildItemActionToggleOptions<T>(
                 },
             },
         }),
-        enabledClass: buildOptionValueOrFail({
-            component: Component.ItemActionToggle,
+        enabledClass: buildOrFail({
             key: 'enabledClass',
             value: unref(options.enabledClass),
             alt: [],
@@ -63,20 +65,17 @@ export function buildItemActionToggleOptions<T>(
             },
         }),
 
-        childType: buildOptionValueOrFail({
-            component: Component.ItemActionToggle,
+        childType: buildOrFail({
             key: 'childType',
             value: unref(options.childType),
             alt: 'i',
         }),
-        childDisabledContent: buildOptionValueOrFail({
-            component: Component.ItemActionToggle,
+        childDisabledContent: buildOrFail({
             key: 'childDisabledContent',
             value: unref(options.childDisabledContent),
             alt: [],
         }),
-        childDisabledClass: buildOptionValueOrFail({
-            component: Component.ItemActionToggle,
+        childDisabledClass: buildOrFail({
             key: 'childDisabledClass',
             value: unref(options.childDisabledClass),
             alt: [],
@@ -86,14 +85,12 @@ export function buildItemActionToggleOptions<T>(
                 },
             },
         }),
-        childEnabledContent: buildOptionValueOrFail({
-            component: Component.ItemActionToggle,
+        childEnabledContent: buildOrFail({
             key: 'childEnabledContent',
             value: unref(options.childEnabledContent),
             alt: [],
         }),
-        childEnabledClass: buildOptionValueOrFail({
-            component: Component.ItemActionToggle,
+        childEnabledClass: buildOrFail({
             key: 'childEnabledClass',
             value: unref(options.childEnabledClass),
             alt: [],

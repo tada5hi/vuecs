@@ -6,5 +6,7 @@
  */
 
 export * from './has-own-property';
+export * from './normalize-slot';
 export * from './promise';
+export * from './proprety';
 export * from './ref';

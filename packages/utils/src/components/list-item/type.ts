@@ -7,8 +7,9 @@
 
 import { VNode } from 'vue';
 import { VNodeClass, VNodeProperties } from '../../type';
+import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import {
-    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, OptionsInput,
+    OptionsInput,
 } from '../type';
 
 export type ListItemBuildOptions<T extends Record<string, any>> = ListBaseOptions & {

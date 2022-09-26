@@ -7,10 +7,12 @@
 import {
     VNode, VNodeArrayChildren, h, mergeProps, unref,
 } from 'vue';
+import { Component } from '../constants';
+import { FormSelectBuildOptions } from '../form-select';
 import { ListActionRefreshBuildOptions, ListActionRefreshBuildOptionsInput } from './type';
-import { isPromise, unrefWithDefault } from '../../utils';
-import { buildListBaseOptions, setMaybeRefValue } from '../utils';
-import { Component, buildOptionValueOrFail } from '../../options';
+import { isPromise, setMaybeRefValue, unrefWithDefault } from '../../utils';
+import { buildListBaseOptions } from '../list-base';
+import { buildOptionValueOrFail, createOptionValueBuilder } from '../../options';
 import { Preset } from '../../constants';
 
 export function buildListActionRefreshOptions(
@@ -32,33 +34,33 @@ export function buildListActionRefreshOptions(
         },
     });
 
+    const { buildOrFail } = createOptionValueBuilder<ListActionRefreshBuildOptions>(
+        Component.ListActionRefresh,
+    );
+
     return {
         ...options,
 
         load: unrefWithDefault(options.load, () => Promise.resolve()),
         busy: options.busy ?? false,
 
-        text: buildOptionValueOrFail({
-            component: Component.ListActionRefresh,
+        text: buildOrFail({
             key: 'text',
             value: unref(options.text),
             alt: true,
         }),
-        textContent: buildOptionValueOrFail({
-            component: Component.ListActionRefresh,
+        textContent: buildOrFail({
             key: 'textContent',
             value: unref(options.textContent),
             alt: 'refresh',
         }),
 
-        icon: buildOptionValueOrFail({
-            component: Component.ListActionRefresh,
+        icon: buildOrFail({
             key: 'icon',
             value: unref(options.icon),
             alt: true,
         }),
-        iconClass: buildOptionValueOrFail({
-            component: Component.ListActionRefresh,
+        iconClass: buildOrFail({
             key: 'iconClass',
             value: unref(options.iconClass),
             alt: [],
@@ -68,8 +70,7 @@ export function buildListActionRefreshOptions(
                 },
             },
         }),
-        iconContent: buildOptionValueOrFail({
-            component: Component.ListActionRefresh,
+        iconContent: buildOrFail({
             key: 'iconContent',
             value: unref(options.iconContent),
             alt: [],

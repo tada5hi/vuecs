@@ -6,10 +6,8 @@
  */
 
 import { VNode, VNodeChild } from 'vue';
+import { ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput } from '../form-base';
 import {
-    ExpectFormBaseOptions,
-    FormBaseOptions,
-    FormBaseOptionsInput,
     OptionsInput,
 } from '../type';
 import { VNodeClass } from '../../type';
