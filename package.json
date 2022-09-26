@@ -9,7 +9,8 @@
     "license": "MIT",
     "version": "1.0.0",
     "workspaces": [
-        "./packages/*"
+        "./packages/*",
+        "./examples/*"
     ],
     "keywords": [
         "vue",
@@ -24,12 +25,12 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Tada5hi/vue-layout-navigation.git"
+        "url": "git+https://github.com/Tada5hi/vue-layout.git"
     },
     "bugs": {
-        "url": "https://github.com/Tada5hi/vue-layout-navigation/issues"
+        "url": "https://github.com/Tada5hi/vue-layout/issues"
     },
-    "homepage": "https://github.com/Tada5hi/vue-layout-navigation#readme",
+    "homepage": "https://github.com/Tada5hi/vue-layout#readme",
     "engines": {
         "node": ">=14.0.0"
     },
