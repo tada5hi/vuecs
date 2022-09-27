@@ -13,7 +13,7 @@
 **Table of Contents**
 
 - [Packages](#packages)
-- [Documentation](#documentaion)
+- [Documentation](#documentation)
 
 ## Packages
 The repository contains the following packages:
