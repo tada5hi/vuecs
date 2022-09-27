@@ -15,6 +15,8 @@
     "version": "independent",
     "changelog": {
         "labels": {
+            "build": "Build",
+            "ci": "Continuous Integration",
             "docs": "Documentation",
             "feat": "New Feature",
             "fix": "Bug Fix",
