@@ -9,7 +9,7 @@ import { MaybeRef } from '@vue-layout/core';
 import { isRef } from 'vue';
 import { NavigationElement } from '../type';
 
-export function findTierNavigationElements(
+export function findNavigationElementsForTier(
     items: MaybeRef<NavigationElement[]>,
     tier: number,
 ) : NavigationElement[] {
@@ -22,11 +22,11 @@ export function findTierNavigationElements(
     return items.filter(filterFn);
 }
 
-export function findTierNavigationElement(
+export function findNavigationElementForTier(
     items: MaybeRef<NavigationElement[]>,
     tier: number,
 ) : NavigationElement | undefined {
-    const data = findTierNavigationElements(items, tier);
+    const data = findNavigationElementsForTier(items, tier);
     if (data.length >= 1) {
         return data[0];
     }

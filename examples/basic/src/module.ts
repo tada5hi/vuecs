@@ -1,7 +1,7 @@
 import {
     NavigationElement,
     NavigationProvider,
-    findTierNavigationElement,
+    findNavigationElementForTier,
     flattenNestedNavigationElements,
 } from '@vue-layout/basic';
 
@@ -48,7 +48,7 @@ export const navigationProvider : NavigationProvider = {
                 items = primaryItems;
                 break;
             case 1: {
-                const component : NavigationElement = findTierNavigationElement(elements, 0) || { id: 'default' };
+                const component : NavigationElement = findNavigationElementForTier(elements, 0) || { id: 'default' };
                 switch (component.id) {
                     case 'default':
                         items = secondaryDefaultItems;

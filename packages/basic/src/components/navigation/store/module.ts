@@ -8,7 +8,8 @@
 import { MaybeRef } from '@vue-layout/core';
 import { useNavigationProvider } from '../provider';
 import {
-    findTierNavigationElement, findTierNavigationElements,
+    findNavigationElementForTier,
+    findNavigationElementsForTier,
     isNavigationElementMatch,
     removeTierFromNavigationElements,
     resetNavigationExpansion,
@@ -156,7 +157,7 @@ export async function buildNavigation(context?: NavigationBuildContext) : Promis
         // ensure tier property
         items = setTierForNavigationElements(items, tierIndex);
 
-        let currentItem = findTierNavigationElement(itemsActive, tierIndex);
+        let currentItem = findNavigationElementForTier(itemsActive, tierIndex);
 
         if (!currentItem) {
             if (context.url) {
@@ -232,12 +233,12 @@ export async function buildNavigationForTier(
 
 export function getComponents(tier: number) : NavigationElement[] {
     const data = useStoreItem('items');
-    return findTierNavigationElements(data, tier);
+    return findNavigationElementsForTier(data, tier);
 }
 
 export function getActiveComponent(tier: number) : NavigationElement | undefined {
     const data = useStoreItem('itemsActive');
-    return findTierNavigationElement(data, tier);
+    return findNavigationElementForTier(data, tier);
 }
 
 // --------------------------------------------------------
