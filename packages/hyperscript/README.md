@@ -1,4 +1,4 @@
-# @vue-layout/hyperscript 🧰
+# @vue-layout/hyperscript 👻
 
 [![npm version](https://badge.fury.io/js/@vue-layout%2Fhyperscript.svg)](https://badge.fury.io/js/@vue-layout%2Fhyperscript)
 [![CI](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml)

@@ -6,13 +6,13 @@
  */
 
 import { useRoute } from 'vue-router';
+import { hasOwnProperty } from '@vue-layout/core';
 import { build } from '../store';
-import { Component } from '../type';
+import { NavigationElement } from '../type';
 import { isComponent } from '../utils/check';
-import { hasOwnProperty } from '../utils';
 import { RouteBuildContext } from './type';
 
-function transformToComponents(input: unknown) : Component[] {
+function transformToComponents(input: unknown) : NavigationElement[] {
     if (isComponent(input)) {
         return [input];
     }
@@ -45,7 +45,7 @@ export async function buildWithRoute(context?: Partial<RouteBuildContext>) {
 
     const { route, metaKey } = context as RouteBuildContext;
 
-    const components : Component[] = [];
+    const components : NavigationElement[] = [];
 
     const tiers : number[] = [];
     let currentTier = 0;
@@ -61,7 +61,7 @@ export async function buildWithRoute(context?: Partial<RouteBuildContext>) {
         return nextTier();
     };
 
-    const handleComponents = (items: Component[]) => {
+    const handleComponents = (items: NavigationElement[]) => {
         for (let j = 0; j < items.length; j++) {
             const itemTier = items[j].tier;
             if (typeof itemTier !== 'undefined') {

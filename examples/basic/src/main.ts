@@ -21,7 +21,7 @@ import Settings from './components/settings.vue';
 const app = createApp(Dev);
 
 const navigation = createPlugin({
-    provider: new Provider(),
+    navigationProvider: new Provider(),
 });
 app.use(navigation);
 

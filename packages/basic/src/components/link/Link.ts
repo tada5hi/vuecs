@@ -6,28 +6,11 @@
  */
 
 import {
-    DefineComponent,
-    VNodeProps,
-    VNodeTypes,
-    computed,
-    defineComponent,
-    h,
-    resolveDynamicComponent,
+    DefineComponent, VNodeProps, VNodeTypes, computed, defineComponent, h, resolveDynamicComponent,
 } from 'vue';
-import { hasOwnProperty } from '../utils';
+import { hasOwnProperty } from '@vue-layout/core';
 
-export type NavigationLinkProperties = {
-    active?: boolean,
-    disabled?: boolean,
-    href?: string,
-    prefetch?: boolean,
-    target?: string,
-    to?: string,
-    [key: string]: any
-};
-
-export const NavigationLink = defineComponent({
-    name: 'NavigationLink',
+export const Link = defineComponent({
     props: {
         active: {
             type: Boolean,
@@ -180,4 +163,4 @@ export const NavigationLink = defineComponent({
     },
 });
 
-export default NavigationLink;
+export default Link;

@@ -5,17 +5,18 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { MaybeRef } from '@vue-layout/core';
 import { unref } from 'vue';
-import { Component, MaybeRef, ToMaybeRef } from '../type';
+import { NavigationElement } from '../type';
 
-function isRootLink(component: MaybeRef<Component>) {
+function isRootLink(component: MaybeRef<NavigationElement>) {
     component = unref(component);
     return component.rootLink || (component.url && component.url === '/');
 }
 
 export function isComponentMatch(
-    one?: MaybeRef<Component>,
-    two?: MaybeRef<Component>,
+    one?: MaybeRef<NavigationElement>,
+    two?: MaybeRef<NavigationElement>,
     exact = true,
 ): boolean {
     one = unref(one);

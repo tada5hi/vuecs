@@ -5,14 +5,15 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { MaybeRef } from '@vue-layout/core';
 import { isRef } from 'vue';
-import { Component, MaybeRef } from '../type';
+import { NavigationElement } from '../type';
 
 export function findTierComponents(
-    components: MaybeRef<Component[]>,
+    components: MaybeRef<NavigationElement[]>,
     tier: number,
-) : Component[] {
-    const filterFn = (component: Component) => typeof component.tier !== 'undefined' && component.tier === tier;
+) : NavigationElement[] {
+    const filterFn = (component: NavigationElement) => typeof component.tier !== 'undefined' && component.tier === tier;
 
     if (isRef(components)) {
         return components.value.filter(filterFn);
@@ -22,9 +23,9 @@ export function findTierComponents(
 }
 
 export function findTierComponent(
-    components: MaybeRef<Component[]>,
+    components: MaybeRef<NavigationElement[]>,
     tier: number,
-) : Component | undefined {
+) : NavigationElement | undefined {
     const items = findTierComponents(components, tier);
     if (items.length >= 1) {
         return items[0];
@@ -34,10 +35,10 @@ export function findTierComponent(
 }
 
 export function setTierForComponents(
-    components: MaybeRef<Component[]>,
+    components: MaybeRef<NavigationElement[]>,
     tier: number,
 ) {
-    const mapFn = (component: Component) => {
+    const mapFn = (component: NavigationElement) => {
         component.tier = tier;
         return component;
     };
@@ -49,8 +50,8 @@ export function setTierForComponents(
     return components.map(mapFn);
 }
 
-export function removeTierFromComponents(components: MaybeRef<Component[]>, tier: number) {
-    const filterFn = (component: Component) => typeof component.tier === 'undefined' || component.tier !== tier;
+export function removeTierFromComponents(components: MaybeRef<NavigationElement[]>, tier: number) {
+    const filterFn = (component: NavigationElement) => typeof component.tier === 'undefined' || component.tier !== tier;
     if (isRef(components)) {
         return components.value.filter(filterFn);
     }

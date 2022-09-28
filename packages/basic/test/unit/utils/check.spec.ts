@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { isComponent } from '../../../src/utils/check';
+import { isComponent } from '../../../src/components/navigation/utils/check';
 
 describe('src/utils/check.ts', () => {
     it('should identify unknown value correctly', () => {

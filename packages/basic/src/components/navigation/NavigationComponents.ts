@@ -8,8 +8,8 @@
 import {
     PropType, VNode, computed, defineComponent, h,
 } from 'vue';
-import { getComponents } from '../store';
-import { Component } from '../type';
+import { getComponents, useStore } from './store';
+import { NavigationElement } from './type';
 import { NavigationComponent } from './NavigationComponent';
 
 export const NavigationComponents = defineComponent({
@@ -20,11 +20,13 @@ export const NavigationComponents = defineComponent({
             default: 0,
         },
         entities: {
-            type: Array as PropType<Component[]>,
+            type: Array as PropType<NavigationElement[]>,
             default: undefined,
         },
     },
     setup(props) {
+        useStore();
+
         const items = computed(() => {
             if (typeof props.entities !== 'undefined') {
                 return props.entities;

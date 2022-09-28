@@ -5,10 +5,10 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Component } from '../type';
-import { hasOwnProperty } from './has-own-property';
+import { hasOwnProperty } from '@vue-layout/core';
+import { NavigationElement } from '../type';
 
-export function isComponent(value: unknown) : value is Component {
+export function isComponent(value: unknown) : value is NavigationElement {
     if (typeof value !== 'object') {
         return false;
     }

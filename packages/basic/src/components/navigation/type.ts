@@ -5,13 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Ref } from 'vue';
-
-export type MaybeRef<T> = T | Ref<T>;
-export type ToMaybeRef<T> = {
-    [K in keyof T]: MaybeRef<T[K]>;
-};
-export type Component = {
+export type NavigationElement = {
     id?: string | number,
     tier?: number,
     name?: string,
@@ -28,7 +22,11 @@ export type Component = {
     displayChildren?: boolean,
 
     rootLink?: boolean,
-    components?: Component[],
+    components?: NavigationElement[],
+
+    requireLoggedIn?: boolean,
+    requireLoggedOut?: boolean,
+    requirePermissions?: string | string[] | ((checker: (name: string) => boolean) => boolean)
 
     [key: string]: any
 };

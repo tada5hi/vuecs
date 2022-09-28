@@ -5,14 +5,16 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { hasNormalizedSlot, normalizeSlot } from '@vue-layout/core';
 import {
     PropType, Ref, VNodeChild, computed, defineComponent, h, resolveComponent, toRef, unref,
 } from 'vue';
-import { getActiveComponent, select, toggle } from '../store';
-import { Component } from '../type';
-import { isAbsoluteURL, isComponentMatch } from '../utils';
-import { SlotName, hasNormalizedSlot, normalizeSlot } from './render';
-import { NavigationLink, NavigationLinkProperties } from './NavigationLink';
+import { getActiveComponent, select, toggle } from './store';
+import { NavigationElement } from './type';
+import { isAbsoluteURL, isComponentMatch } from './utils';
+import { LinkProperties } from '../link';
+import { SlotName } from './constants';
+import { Link } from '../link/Link';
 
 export const NavigationComponent = defineComponent({
     name: 'NavigationComponent',
@@ -22,21 +24,21 @@ export const NavigationComponent = defineComponent({
             default: 0,
         },
         component: {
-            type: Object as PropType<Component>,
+            type: Object as PropType<NavigationElement>,
         },
     },
     setup(props, { slots }) {
-        const component = toRef(props, 'component') as Ref<Component>;
+        const component = toRef(props, 'component') as Ref<NavigationElement>;
 
         const componentActive = computed(() => getActiveComponent(props.tier));
         const isStrictMatch = computed(() => isComponentMatch(componentActive, component));
         const isMatch = computed(() => isComponentMatch(componentActive, component, false));
 
-        const selectComponent = async (value: Component) => {
+        const selectComponent = async (value: NavigationElement) => {
             await select(props.tier, value);
         };
 
-        const toggleComponentExpansion = async (value: Component) => {
+        const toggleComponentExpansion = async (value: NavigationElement) => {
             await toggle(props.tier, value);
         };
 
@@ -67,7 +69,7 @@ export const NavigationComponent = defineComponent({
                                 isActive: isMatch,
                             }, slots);
                         } else {
-                            const linkProps : NavigationLinkProperties = {
+                            const linkProps : LinkProperties = {
                                 active: unref(isMatch),
                                 disabled: false,
                                 prefetch: true,
@@ -87,7 +89,7 @@ export const NavigationComponent = defineComponent({
                                 }
                             }
 
-                            item = h(NavigationLink, {
+                            item = h(Link, {
                                 class: [
                                     'nav-link',
                                     {

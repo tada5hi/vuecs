@@ -5,40 +5,40 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { unref } from 'vue';
+import { MaybeRef } from '@vue-layout/core';
 import { useProvider } from '../provider';
 import {
     findTierComponent, findTierComponents,
     isComponentMatch,
     removeTierFromComponents,
-    resetNavigationExpansion, setMaybeRefValue,
+    resetNavigationExpansion,
     setNavigationExpansion, setTierForComponents,
 } from '../utils';
-import { Component, MaybeRef } from '../type';
+import { NavigationElement } from '../type';
 import { BuildContext } from './type';
-import { useState } from './singleton';
+import { setStoreItem, useStoreItem } from './singleton';
 
-function setComponentActive(tier: number, component: Component | undefined) {
-    const state = useState();
-    const componentsExisting = removeTierFromComponents(state.componentsActive, tier);
+function setComponentActive(tier: number, component: NavigationElement | undefined) {
+    const data = useStoreItem('componentsActive');
+    const componentsExisting = removeTierFromComponents(data, tier);
 
     if (component) {
         component.tier = tier;
 
-        setMaybeRefValue(state.componentsActive, [
+        setStoreItem('componentsActive', [
             ...componentsExisting,
             component,
         ]);
     } else {
-        setMaybeRefValue(state.componentsActive, componentsExisting);
+        setStoreItem('componentsActive', componentsExisting);
     }
 }
 
-function setComponents(tier: number, components: MaybeRef<Component[]>) {
-    const state = useState();
-    const componentsExisting = removeTierFromComponents(state.components, tier);
+function setComponents(tier: number, components: MaybeRef<NavigationElement[]>) {
+    const data = useStoreItem('components');
+    const componentsExisting = removeTierFromComponents(data, tier);
 
-    setMaybeRefValue(state.components, [
+    setStoreItem('components', [
         ...componentsExisting,
         ...setTierForComponents(components, tier),
     ]);
@@ -58,10 +58,9 @@ function refreshComponents(tier: number) {
 }
 
 async function calculateTiers() : Promise<number> {
-    const state = useState();
-    let tiers = unref(state.tiers);
+    let tiers = useStoreItem('tiers');
 
-    if (typeof tiers === 'number') {
+    if (typeof tiers !== 'undefined') {
         return tiers;
     }
 
@@ -77,6 +76,8 @@ async function calculateTiers() : Promise<number> {
         }
     }
 
+    setStoreItem('tiers', tiers);
+
     return tiers;
 }
 
@@ -84,7 +85,7 @@ async function calculateTiers() : Promise<number> {
 
 export async function select(
     tier: number,
-    component: Component,
+    component: NavigationElement,
 ) {
     const isMatch = isComponentMatch(getActiveComponent(tier), component);
 
@@ -96,8 +97,6 @@ export async function select(
     refreshComponents(tier);
 
     const tiers = await calculateTiers();
-    const state = useState();
-    setMaybeRefValue(state.tiers, tiers);
 
     let tierStartIndex = tier + 1;
 
@@ -108,7 +107,7 @@ export async function select(
     }
 }
 
-export function toggle(tier: number, component: Component) {
+export function toggle(tier: number, component: NavigationElement) {
     const isMatch = isComponentMatch(getActiveComponent(tier), component) ||
         component.displayChildren;
 
@@ -126,7 +125,7 @@ export async function build(context?: BuildContext) : Promise<void> {
 
     context = context || {};
 
-    let componentsActive : Component[] = context.components ?? [];
+    let componentsActive : NavigationElement[] = context.components ?? [];
 
     if (
         componentsActive.length === 0 &&
@@ -141,9 +140,6 @@ export async function build(context?: BuildContext) : Promise<void> {
     }
 
     const tierLength = await calculateTiers();
-    const state = useState();
-    setMaybeRefValue(state.tiers, tierLength);
-
     let tierIndex = 0;
 
     let tierHasComponents = true;
@@ -200,7 +196,7 @@ export async function build(context?: BuildContext) : Promise<void> {
 
 export async function buildForTier(
     tier: number,
-    componentsActive?: Component[],
+    componentsActive?: NavigationElement[],
 ) : Promise<void> {
     if (typeof componentsActive === 'undefined') {
         let tierStartIndex = 0;
@@ -223,7 +219,7 @@ export async function buildForTier(
         }
     }
 
-    const components : Component[] = await useProvider().getComponents(
+    const components : NavigationElement[] = await useProvider().getComponents(
         tier,
         componentsActive,
     );
@@ -234,14 +230,14 @@ export async function buildForTier(
 
 // --------------------------------------------------------
 
-export function getComponents(tier: number) : Component[] {
-    const state = useState();
-    return findTierComponents(state.components, tier);
+export function getComponents(tier: number) : NavigationElement[] {
+    const data = useStoreItem('components');
+    return findTierComponents(data, tier);
 }
 
-export function getActiveComponent(tier: number) : Component | undefined {
-    const state = useState();
-    return findTierComponent(state.componentsActive, tier);
+export function getActiveComponent(tier: number) : NavigationElement | undefined {
+    const data = useStoreItem('componentsActive');
+    return findTierComponent(data, tier);
 }
 
 // --------------------------------------------------------

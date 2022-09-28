@@ -4,15 +4,15 @@
  * For the full copyright and license information,
  * view the LICENSE file that was distributed with this source code.
  */
-import { Component } from '../type';
+import { NavigationElement } from '../type';
 
 export interface ProviderInterface {
     getComponents(
         tier: number,
-        components: Component[]
-    ): Promise<Component[]>;
+        components: NavigationElement[]
+    ): Promise<NavigationElement[]>;
 
-    getComponentsActive(url: string): Promise<Component[]>;
+    getComponentsActive(url: string): Promise<NavigationElement[]>;
 
     hasTier(
         tier: number

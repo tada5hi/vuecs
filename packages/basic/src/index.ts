@@ -9,32 +9,43 @@ import 'regenerator-runtime';
 
 import '../assets/index.css';
 
-import { App, Plugin } from 'vue';
+import { App, Plugin, Ref } from 'vue';
 
 // Import vue components
-import * as components from './components';
-import { hasOwnProperty } from './utils';
-import { ProviderInterface, setProvider } from './provider';
-import { StateType, setState } from './store';
+import {
+    Link,
+    NavigationComponent,
+    NavigationComponents,
+    NavigationStore,
+    Pagination,
+    ProviderInterface,
+    setProvider,
+    setStore,
+} from './components';
 
 export type PluginOptions = {
-    provider: ProviderInterface,
-    state: StateType
+    navigationProvider: ProviderInterface,
+    navigationState?: Ref<NavigationStore>
 };
 
 export function createPlugin(options?: Partial<PluginOptions>) : Plugin {
     options ??= {};
 
-    if (options.provider) {
-        setProvider(options.provider);
+    if (options.navigationProvider) {
+        setProvider(options.navigationProvider);
     }
 
-    if (options.state) {
-        setState(options.state);
+    if (options.navigationState) {
+        setStore(options.navigationState);
     }
 
     return (instance: App) => {
-        Object.entries(components).forEach(([componentName, component]) => {
+        Object.entries({
+            Link,
+            NavigationComponent,
+            NavigationComponents,
+            Pagination,
+        }).forEach(([componentName, component]) => {
             instance.component(componentName, component);
         });
     };
@@ -45,22 +56,8 @@ const install: Plugin = function install(
     instance,
     options,
 ) {
-    Object.entries(components).forEach(([componentName, component]) => {
-        instance.component(componentName, component);
-    });
-
-    if (
-        typeof options === 'object' &&
-        options !== null
-    ) {
-        if (hasOwnProperty(options, 'provider')) {
-            setProvider(options.provider);
-        }
-
-        if (hasOwnProperty(options, 'state')) {
-            setState(options.state);
-        }
-    }
+    const plugin = createPlugin(options);
+    instance.use(plugin);
 };
 
 // Create module definition for Vue.use()
@@ -68,10 +65,4 @@ export default install;
 
 // To allow individual component use, export components
 // each can be registered via Vue.component()
-export * from './auth';
 export * from './components';
-export * from './route';
-export * from './provider';
-export * from './store';
-export * from './type';
-export * from './utils';

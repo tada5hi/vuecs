@@ -5,6 +5,12 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-export * from './navigation';
-export * from './link';
-export * from './pagination';
+export type LinkProperties = {
+    active?: boolean,
+    disabled?: boolean,
+    href?: string,
+    prefetch?: boolean,
+    target?: string,
+    to?: string,
+    [key: string]: any
+};

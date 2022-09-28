@@ -18,8 +18,8 @@
 ## Packages
 The repository contains the following packages:
 
-- 🏔 **@vue-layout/navigation**: A package containing basic components, to build for example multi level navigation menus.
-- 🧰 **@vue-layout/hyperscript**: A package containing hyperscript components for usage in render functions.
+- **@vue-layout/basic** 🍙: A package containing basic components, to build for example multi level navigation menus.
+- **@vue-layout/hyperscript** 👻: A package containing hyperscript components for usage in render functions.
 
 ## Documentation
 Coming soon...

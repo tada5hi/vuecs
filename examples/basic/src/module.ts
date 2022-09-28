@@ -1,11 +1,11 @@
 import {
-    Component,
+    NavigationElement,
     ProviderInterface,
     findTierComponent,
 } from '@vue-layout/basic';
 
 export class Provider implements ProviderInterface {
-    protected primaryItems : Component[] = [
+    protected primaryItems : NavigationElement[] = [
         {
             id: 'default', name: 'Home', icon: 'fa fa-home', default: true,
         },
@@ -16,7 +16,7 @@ export class Provider implements ProviderInterface {
 
     // -------------------------
 
-    protected secondaryDefaultItems : Component[] = [
+    protected secondaryDefaultItems : NavigationElement[] = [
         {
             name: 'Home', type: 'link', icon: 'fas fa-home', url: '/', rootLink: true,
         },
@@ -28,7 +28,7 @@ export class Provider implements ProviderInterface {
         },
     ];
 
-    protected secondaryAdminItems : Component[] = [
+    protected secondaryAdminItems : NavigationElement[] = [
         {
             name: 'Realms', type: 'link', url: '/admin/realms', icon: 'fas fa-university',
         },
@@ -36,19 +36,19 @@ export class Provider implements ProviderInterface {
 
     // ---------------------------
 
-    async getComponents(tier: number, components: Component[]): Promise<Component[]> {
+    async getComponents(tier: number, components: NavigationElement[]): Promise<NavigationElement[]> {
         if (!await this.hasTier(tier)) {
             return [];
         }
 
-        let items : Component[] = [];
+        let items : NavigationElement[] = [];
 
         switch (tier) {
             case 0:
                 items = this.primaryItems;
                 break;
             case 1: {
-                const component : Component = findTierComponent(components, 0) || { id: 'default' };
+                const component : NavigationElement = findTierComponent(components, 0) || { id: 'default' };
                 switch (component.id) {
                     case 'default':
                         items = this.secondaryDefaultItems;
@@ -69,9 +69,9 @@ export class Provider implements ProviderInterface {
         return [0, 1].indexOf(tier) !== -1;
     }
 
-    async getComponentsActive(url: string): Promise<Component[]> {
-        const sortFunc = (a: Component, b: Component) => (b.url?.length ?? 0) - (a.url?.length ?? 0);
-        const filterFunc = (item: Component) => {
+    async getComponentsActive(url: string): Promise<NavigationElement[]> {
+        const sortFunc = (a: NavigationElement, b: NavigationElement) => (b.url?.length ?? 0) - (a.url?.length ?? 0);
+        const filterFunc = (item: NavigationElement) => {
             if (!item.url) return false;
 
             if (item.rootLink) {
@@ -110,7 +110,7 @@ export class Provider implements ProviderInterface {
 
     // ----------------------------------------------------
 
-    private flattenNestedComponents(components: Component[]) : Component[] {
+    private flattenNestedComponents(components: NavigationElement[]) : NavigationElement[] {
         const output = [...components];
 
         for (let i = 0; i < components.length; i++) {
