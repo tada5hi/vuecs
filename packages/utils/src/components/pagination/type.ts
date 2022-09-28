@@ -6,10 +6,20 @@
  */
 
 import { VNodeArrayChildren } from 'vue';
-import { VNodeClass } from '../../type';
+import { OptionsInput, VNodeClass } from '@vue-layout/core';
+import { ListLoadFn } from '../type';
 
 export type PaginationOptions = {
+    limit: number,
+    offset: number,
+    total: number,
+    load: ListLoadFn,
+    busy: boolean,
+
+    tag: string,
     class: VNodeClass,
+
+    itemTag: string,
     itemClass: VNodeClass,
 
     linkClass: VNodeClass,
@@ -23,3 +33,8 @@ export type PaginationOptions = {
     nextClass?: VNodeClass,
     nextContent?: VNodeArrayChildren
 };
+
+export type PaginationOptionsInput = OptionsInput<
+PaginationOptions,
+'limit' | 'offset' | 'total' | 'load'
+>;

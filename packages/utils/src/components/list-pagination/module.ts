@@ -6,11 +6,12 @@
  */
 
 import { h, mergeProps } from 'vue';
+import { unrefWithDefault } from '@vue-layout/core';
 import { Component } from '../constants';
 import { buildListBaseOptions } from '../list-base';
-import { Pagination } from '../pagination';
+import { buildPagination } from '../pagination';
+import { ListLoadMeta } from '../type';
 import { ListPaginationBuildOptions, ListPaginationBuildOptionsInput } from './type';
-import { unrefWithDefault } from '../../utils';
 
 export function buildListPaginationOptions<T extends Record<string, any>>(
     input: ListPaginationBuildOptionsInput<T>,
@@ -40,10 +41,10 @@ export function buildListPagination<T extends Record<string, any>>(
         options.tag,
         mergeProps({ class: options.class }, options.props),
         [
-            h(Pagination, {
-                ...options.meta,
+            buildPagination({
+                ...options.meta as ListLoadMeta,
                 busy: options.busy,
-                ...(options.load ? { onLoad: options.load } : {}),
+                ...(options.load ? { load: options.load } : { load: () => Promise.resolve() }),
                 ...options.props,
             }),
         ],

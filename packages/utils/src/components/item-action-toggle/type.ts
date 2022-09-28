@@ -6,8 +6,7 @@
  */
 
 import { VNodeChild } from 'vue';
-import { MaybeRef, VNodeClass } from '../../type';
-import { OptionsInput } from '../type';
+import { MaybeRef, OptionsInput, VNodeClass } from '@vue-layout/core';
 
 export type ItemActionToggleOptions<T> = {
     type: string,

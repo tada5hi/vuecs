@@ -8,10 +8,9 @@
         "sourceMap": false,
         "jsx": "preserve",
 
-        "skipLibCheck": true,
         "declaration": true,
         "declarationDir": "dist/types",
-        "isolatedModules": true
+        "skipLibCheck": true
     },
     "exclude": [
         "node_modules",

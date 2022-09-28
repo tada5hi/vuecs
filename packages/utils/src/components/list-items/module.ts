@@ -6,10 +6,10 @@
  */
 
 import { VNode, h, mergeProps } from 'vue';
+import { hasNormalizedSlot, normalizeSlot, unrefWithDefault } from '@vue-layout/core';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions } from '../list-base';
 import { ListItemsBuildOptions, ListItemsBuildOptionsInput } from './type';
-import { hasNormalizedSlot, normalizeSlot, unrefWithDefault } from '../../utils';
 import { buildListItem } from '../list-item';
 
 export function buildListItemsOptions<T extends Record<string, any>>(

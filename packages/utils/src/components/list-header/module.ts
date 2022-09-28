@@ -11,11 +11,11 @@ import {
 import { buildListBaseOptions } from '../list-base';
 import { ListHeaderBuildOptions, ListHeaderBuildOptionsInput } from './type';
 import { Component, SlotName } from '../constants';
-import { hasNormalizedSlot, normalizeSlot, unrefWithDefault } from '../../utils';
+import { hasNormalizedSlot, normalizeSlot, unrefWithDefault } from '@vue-layout/core';
 import { buildListTitle } from '../list-title';
 import { buildListActionRefresh } from '../list-action-refresh';
-import { buildOptionValueOrFail } from '../../options';
-import { Preset } from '../../constants';
+import { buildOptionValueOrFail } from '@vue-layout/core';
+import { Preset } from '@vue-layout/core';
 
 export function buildListHeaderOptions(
     input: ListHeaderBuildOptionsInput,

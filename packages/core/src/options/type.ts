@@ -5,7 +5,16 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { MakeOptional } from '../type';
+import { MakeOptional, ToMaybeRef } from '../type';
+
+export type OptionsInput<T,
+    R extends keyof T = never,
+    P extends keyof T = never,
+    MR extends keyof T = never,
+    > = Pick<T, R> &
+    Partial<Pick<T, P>> &
+    ToMaybeRef<Pick<T, MR>> &
+    Partial<ToMaybeRef<Pick<T, Exclude<keyof T, R | P | MR>>>>;
 
 export type PresetOption<V> = {
     value: V,

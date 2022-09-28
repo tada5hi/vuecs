@@ -8,14 +8,12 @@
 import {
     VNode, VNodeArrayChildren, h, unref,
 } from 'vue';
-import { Component } from '../constants';
-import { ItemActionToggleOptions, ItemActionToggleOptionsInput } from './type';
 import {
-    pushMaybeRefArrayValue, setMaybeRefValue, spliceMaybeRefArray, unrefWithDefault,
-} from '../../utils';
-import { MaybeRef } from '../../type';
-import { createOptionValueBuilder } from '../../options';
-import { Preset } from '../../constants';
+    MaybeRef, Preset, createOptionValueBuilder, pushMaybeRefArrayValue,
+    setMaybeRefValue, spliceMaybeRefArray, unrefWithDefault,
+} from '@vue-layout/core';
+import { ItemActionToggleOptions, ItemActionToggleOptionsInput } from './type';
+import { Component } from '../constants';
 
 export function buildItemActionToggleOptions<T>(
     options: ItemActionToggleOptionsInput<T>,

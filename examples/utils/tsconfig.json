@@ -5,6 +5,7 @@
         "module": "ESNext",
         "paths": {
             "@/*": ["./examples/utils/src/*"],
+            "@vue-layout/core": ["./packages/core/src"],
             "@vue-layout/utils": ["./packages/utils/src"]
         }
     },

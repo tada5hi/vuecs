@@ -3,18 +3,15 @@
 
     "compilerOptions": {
         "outDir": "./dist",
-        "lib": [
-            "ESNext"
-        ],
         "importHelpers": true,
         "allowSyntheticDefaultImports": true,
         "sourceMap": false,
-        "module": "ESNext",
         "jsx": "preserve",
 
         "declaration": true,
         "declarationDir": "dist/types",
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "isolatedModules": true
     },
     "exclude": [
         "node_modules",

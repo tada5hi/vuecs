@@ -8,11 +8,10 @@
 import {
     VNode, VNodeChild, h, mergeProps, unref,
 } from 'vue';
-import { Preset } from '../../constants';
-import { createOptionValueBuilder } from '../../options';
+import { Preset, createOptionValueBuilder } from '@vue-layout/core';
 import { Component } from '../constants';
-import { FormGroup, FormGroupProperties } from '../form-group';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
+import { buildValidationGroup } from '../validation-group';
 import { FormInputBuildOptions, FormInputBuildOptionsInput } from './type';
 
 export function buildFormInputOptions(
@@ -160,15 +159,10 @@ export function buildFormInputFromOptions(
         inputGroupChildren,
     ));
 
-    return h(
-        FormGroup,
-        {
-            validationResult: options.validationResult,
-            validationMessages: options.validationMessages,
-            validationTranslator: options.validationTranslator,
-        } as FormGroupProperties,
-        {
-            default: () => children,
-        },
-    );
+    return buildValidationGroup({
+        content: children,
+        validationResult: options.validationResult,
+        validationMessages: options.validationMessages,
+        validationTranslator: options.validationTranslator,
+    });
 }

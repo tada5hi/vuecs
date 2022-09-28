@@ -9,8 +9,8 @@ import {
     VNode, VNodeChild, h, mergeProps, unref,
 } from 'vue';
 import { Component } from '../constants';
-import { FormGroup, FormGroupProperties } from '../form-group';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
+import { buildValidationGroup } from '../validation-group';
 import { FormTextareaBuildOptions, FormTextareaBuildOptionsInput } from './type';
 
 export function buildFormTextareaOptions(
@@ -36,35 +36,30 @@ export function buildFormTextarea(
 
     const rawValue = unref(options.value);
 
-    return h(
-        FormGroup,
-        {
-            validationResult: options.validationResult,
-            validationMessages: options.validationMessages,
-            validationTranslator: options.validationTranslator,
-        } as FormGroupProperties,
-        {
-            default: () => [
-                ...children,
-                h(
-                    'textarea',
-                    mergeProps(
-                        {
-                            placeholder: '...',
-                            class: options.class,
-                            onInput($event: any) {
-                                if ($event.target.composing) {
-                                    return;
-                                }
+    return buildValidationGroup({
+        content: [
+            ...children,
+            h(
+                'textarea',
+                mergeProps(
+                    {
+                        placeholder: '...',
+                        class: options.class,
+                        onInput($event: any) {
+                            if ($event.target.composing) {
+                                return;
+                            }
 
-                                handleFormValueChanged(options, $event.target.value);
-                            },
-                            ...(typeof rawValue !== 'undefined' ? { value: rawValue } : {}),
+                            handleFormValueChanged(options, $event.target.value);
                         },
-                        options.props,
-                    ),
+                        ...(typeof rawValue !== 'undefined' ? { value: rawValue } : {}),
+                    },
+                    options.props,
                 ),
-            ],
-        },
-    );
+            ),
+        ],
+        validationResult: options.validationResult,
+        validationMessages: options.validationMessages,
+        validationTranslator: options.validationTranslator,
+    });
 }

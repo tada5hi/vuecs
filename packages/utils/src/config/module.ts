@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { provide } from '../di';
+import { provide } from '@vue-layout/core';
 import { Config } from './type';
 
 export function setConfig(input: Partial<Config>) {

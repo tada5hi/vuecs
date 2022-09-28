@@ -8,14 +8,13 @@
 import {
     VNode, VNodeArrayChildren, VNodeChild, h, mergeProps, unref,
 } from 'vue';
+import {
+    Preset, createOptionValueBuilder, hasNormalizedSlot, hasOwnProperty,
+    normalizeSlot, unrefWithDefault,
+} from '@vue-layout/core';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions } from '../list-base';
 import { ListItemBuildOptions, ListItemBuildOptionsInput } from './type';
-import {
-    hasNormalizedSlot, hasOwnProperty, normalizeSlot, unrefWithDefault,
-} from '../../utils';
-import { createOptionValueBuilder } from '../../options';
-import { Preset } from '../../constants';
 
 export function buildListItemOptions<T extends Record<string, any>>(
     input: ListItemBuildOptionsInput<T>,

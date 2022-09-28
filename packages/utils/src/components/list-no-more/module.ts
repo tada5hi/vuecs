@@ -6,12 +6,12 @@
  */
 
 import { h, mergeProps, unref } from 'vue';
+import {
+    Preset, createOptionValueBuilder, hasNormalizedSlot, normalizeSlot, unrefWithDefault,
+} from '@vue-layout/core';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions } from '../list-base';
 import { ListNoMoreBuildOptions, ListNoMoreBuildOptionsInput } from './type';
-import { hasNormalizedSlot, normalizeSlot, unrefWithDefault } from '../../utils';
-import { createOptionValueBuilder } from '../../options';
-import { Preset } from '../../constants';
 
 export function buildListNoMoreOptions<T extends Record<string, any>>(
     input: ListNoMoreBuildOptionsInput<T>,

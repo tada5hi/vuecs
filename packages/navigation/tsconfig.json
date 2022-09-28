@@ -3,10 +3,11 @@
     "compilerOptions": {
         "esModuleInterop": true,
         "skipLibCheck": true,
-        "lib": [
-            "ESNext"
-        ],
-        "strict": true
+        "strict": true,
+        "paths": {
+            "@vue-layout/core": ["./packages/core/src"],
+            "@vue-layout/utils": ["./packages/utils/src"]
+        }
     },
     "include": [
         "src/types/**/*.d.ts",

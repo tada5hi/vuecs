@@ -6,12 +6,16 @@
  */
 
 import { VNode, VNodeChild } from 'vue';
-import { PresetOption } from '../../options';
 import {
-    MakeOptional, MaybeRef, VNodeClass, VNodeProperties,
-} from '../../type';
+    MakeOptional,
+    MaybeRef,
+    OptionsInput,
+    PresetOption,
+    VNodeClass,
+    VNodeProperties,
+} from '@vue-layout/core';
 import {
-    OptionsInput, ValidationMessages, ValidationResult, ValidationTranslator,
+    ValidationMessages, ValidationResult, ValidationTranslator,
 } from '../type';
 
 export type FormBaseOptions = {

@@ -6,10 +6,12 @@
  */
 
 import { VNode, VNodeChild } from 'vue';
-import { MaybeRef, VNodeClass, VNodeProperties } from '../../type';
+import {
+    MaybeRef, OptionsInput, VNodeClass, VNodeProperties,
+} from '@vue-layout/core';
 import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import {
-    ListLoadFn, OptionsInput,
+    ListLoadFn,
 } from '../type';
 
 export type ListActionRefreshBuildOptions = ListBaseOptions & {

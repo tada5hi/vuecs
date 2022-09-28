@@ -7,9 +7,12 @@
 
 import { createMerger } from 'smob';
 import { unref } from 'vue';
-import { createOptionValueBuilder } from '../../options';
-import { setMaybeRefValue, unrefWithDefault } from '../../utils';
-import { Preset } from '../../constants';
+import {
+    Preset,
+    createOptionValueBuilder,
+    setMaybeRefValue,
+    unrefWithDefault,
+} from '@vue-layout/core';
 import { Component } from '../constants';
 import {
     ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsDefaults, FormBaseOptionsInput,

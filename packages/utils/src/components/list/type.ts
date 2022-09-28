@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { MaybeRef } from '../../type';
+import { MaybeRef, OptionsInput } from '@vue-layout/core';
 import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import { ListHeaderBuildOptionsInput } from '../list-header';
 import { ListItemsBuildOptionsInput } from '../list-items';
@@ -13,7 +13,7 @@ import { ListNoMoreBuildOptionsInput } from '../list-no-more';
 import { ListPaginationBuildOptionsInput } from '../list-pagination';
 import { ListSearchBuildOptionsInput } from '../list-search';
 import {
-    ListLoadFn, ListLoadMeta, OptionsInput,
+    ListLoadFn, ListLoadMeta,
 } from '../type';
 
 export type ListBuildOptions<T extends Record<string, any>> = ListBaseOptions & {

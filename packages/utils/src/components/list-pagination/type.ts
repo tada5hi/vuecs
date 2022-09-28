@@ -5,9 +5,10 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { OptionsInput } from '@vue-layout/core';
 import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import {
-    ListLoadFn, ListLoadMeta, OptionsInput,
+    ListLoadFn, ListLoadMeta,
 } from '../type';
 
 export type ListPaginationBuildOptions<T extends Record<string, any>> = ListBaseOptions & {

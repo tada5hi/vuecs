@@ -9,7 +9,7 @@ export enum Component {
     Pagination = 'pagination',
 
     FormBase = 'formBase',
-    FormGroup = 'formGroup',
+    ValidationGroup = 'formGroup',
     FormInput = 'formInput',
     FormInputCheckbox = 'formInputCheckbox',
     FormInputText = 'formInputText',

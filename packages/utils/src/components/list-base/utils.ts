@@ -6,7 +6,7 @@
  */
 
 import { unref } from 'vue';
-import { createOptionValueBuilder } from '../../options';
+import { createOptionValueBuilder } from '@vue-layout/core';
 import { Component } from '../constants';
 import {
     ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsDefaults, ListBaseOptionsInput,

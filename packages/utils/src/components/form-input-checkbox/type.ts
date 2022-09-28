@@ -5,11 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { VNodeClass } from '../../type';
-import { ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput } from '../form-base';
 import {
     OptionsInput,
-} from '../type';
+    VNodeClass,
+} from '@vue-layout/core';
+import { ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput } from '../form-base';
 
 export type FormInputCheckboxBuildOptions = FormBaseOptions & {
     groupClass: VNodeClass,

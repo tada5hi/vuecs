@@ -6,9 +6,13 @@
  */
 
 import { Slots } from 'vue';
-import { PresetOption } from '../../options';
-import { MakeOptional, VNodeClass, VNodeProperties } from '../../type';
-import { OptionsInput } from '../type';
+import {
+    MakeOptional,
+    OptionsInput,
+    PresetOption,
+    VNodeClass,
+    VNodeProperties,
+} from '@vue-layout/core';
 
 export type ListBaseOptions = {
     slotItems: Slots,

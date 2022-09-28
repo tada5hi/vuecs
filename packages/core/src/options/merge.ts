@@ -7,7 +7,11 @@
 
 import { VNodeProps, mergeProps } from 'vue';
 import {
-    isVNodeClassOption, isVNodeListenerOption, isVNodeOption, isVNodePropsOption, isVNodeStyleOption,
+    isVNodeClassOption,
+    isVNodeListenerOption,
+    isVNodeOption,
+    isVNodePropsOption,
+    isVNodeStyleOption,
 } from './utils';
 
 function isObject(item: any): item is Record<string, any> {

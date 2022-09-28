@@ -5,10 +5,10 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { MaybeRef, VNodeClass, VNodeProperties } from '../../type';
+import { OptionsInput, MaybeRef, VNodeClass, VNodeProperties } from '@vue-layout/core';
 import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import {
-    ListLoadFn, OptionsInput,
+    ListLoadFn
 } from '../type';
 import { ListActionRefreshBuildOptionsInput } from '../list-action-refresh';
 import { ListTitleBuildOptionsInput } from '../list-title';

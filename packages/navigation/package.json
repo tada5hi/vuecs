@@ -28,7 +28,8 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/tada5hi/vue-layout.git"
+        "url": "https://github.com/tada5hi/vue-layout.git",
+        "directory": "packages/navigation"
     },
     "scripts": {
         "prebuild": "rimraf ./dist",
@@ -67,7 +68,9 @@
         "node": ">=12"
     },
     "dependencies": {
-        "regenerator-runtime": "^0.13.9"
+        "regenerator-runtime": "^0.13.9",
+        "@vue-layout/core": "0.0.0",
+        "@vue-layout/utils": "2.0.0-alpha.11"
     },
     "publishConfig": {
         "access": "public"

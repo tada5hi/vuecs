@@ -16,7 +16,7 @@ import pkg from './package.json';
 
 function buildConfig(config) {
     return {
-        input: 'src/entry.ts',
+        input: 'src/index.ts',
         ...config,
         plugins: [
             replace({
@@ -45,6 +45,7 @@ function buildConfig(config) {
 // ESM/UMD/IIFE shared settings: externals
 // Refer to https://rollupjs.org/guide/en/#warning-treating-module-as-external-dependency
 const external = [
+    '@vue-layout/core',
     'vue',
 ];
 

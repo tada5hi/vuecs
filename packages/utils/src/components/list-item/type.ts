@@ -6,11 +6,12 @@
  */
 
 import { VNode } from 'vue';
-import { VNodeClass, VNodeProperties } from '../../type';
-import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import {
     OptionsInput,
-} from '../type';
+    VNodeClass,
+    VNodeProperties,
+} from '@vue-layout/core';
+import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 
 export type ListItemBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
     data: T,

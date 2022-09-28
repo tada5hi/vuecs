@@ -46,6 +46,8 @@ function buildConfig(config) {
 // ESM/UMD/IIFE shared settings: externals
 // Refer to https://rollupjs.org/guide/en/#warning-treating-module-as-external-dependency
 const external = [
+    '@vue-layout/core',
+    '@vue-layout/utils',
     'vue',
     'vue-router',
 ];

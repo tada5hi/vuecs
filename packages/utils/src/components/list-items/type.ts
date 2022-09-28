@@ -5,10 +5,10 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import {
     OptionsInput,
-} from '../type';
+} from '@vue-layout/core';
+import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import { ListItemBuildOptionsInput } from '../list-item';
 
 export type ListItemsBuildOptions<T extends Record<string, any>> = ListBaseOptions & {

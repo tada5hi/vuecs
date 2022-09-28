@@ -5,11 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import {
+    MaybeRef,
     OptionsInput,
-} from '../type';
-import { MaybeRef } from '../../type';
+} from '@vue-layout/core';
+import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 
 export type ListSearchBuildOptions = ListBaseOptions & {
     value?: MaybeRef<unknown>,

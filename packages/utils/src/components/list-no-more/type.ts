@@ -6,10 +6,10 @@
  */
 
 import { VNode, VNodeChild } from 'vue';
-import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import {
     OptionsInput,
-} from '../type';
+} from '@vue-layout/core';
+import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 
 export type ListNoMoreBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
     textContent: VNodeChild | VNode | VNode[],

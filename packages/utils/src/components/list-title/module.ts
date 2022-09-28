@@ -8,12 +8,12 @@
 import {
     VNode, VNodeArrayChildren, h, mergeProps, unref,
 } from 'vue';
-import { hasNormalizedSlot, normalizeSlot } from '../../utils';
+import {
+    Preset, createOptionValueBuilder, hasNormalizedSlot, normalizeSlot,
+} from '@vue-layout/core';
 import { buildListBaseOptions } from '../list-base';
 import { ListTitleBuildOptions, ListTitleBuildOptionsInput } from './type';
 import { Component, SlotName } from '../constants';
-import { createOptionValueBuilder } from '../../options';
-import { Preset } from '../../constants';
 
 export function buildListTitleOptions(
     input: ListTitleBuildOptionsInput,

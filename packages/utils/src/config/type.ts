@@ -5,10 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { MakeOptional, OptionValueConfig } from '@vue-layout/core';
+
 import {
     Component,
     FormBaseOptions,
-    FormGroupOptions,
     FormInputBuildOptions,
     FormInputCheckboxBuildOptions,
     FormSelectBuildOptions,
@@ -26,16 +27,14 @@ import {
     ListSearchBuildOptions,
     ListTitleBuildOptions,
     PaginationOptions,
+    ValidationGroupOptions,
 } from '../components';
-
-import { OptionValueConfig } from '../options';
-import { MakeOptional } from '../type';
 
 export type ComponentFormOptions<C extends Component | `${Component}`> =
     C extends Component.FormBase | `${Component.FormBase}` ?
         FormBaseOptions :
-        C extends Component.FormGroup | `${Component.FormGroup}` ?
-            FormGroupOptions :
+        C extends Component.ValidationGroup | `${Component.ValidationGroup}` ?
+            ValidationGroupOptions :
             C extends Component.FormInput | Component.FormInputText |
                 `${Component.FormInput}` | `${Component.FormInputText}` ?
                 FormInputBuildOptions :

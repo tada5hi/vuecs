@@ -8,11 +8,10 @@
 import {
     VNode, VNodeChild, h, mergeProps, unref,
 } from 'vue';
-import { Preset } from '../../constants';
-import { createOptionValueBuilder } from '../../options';
+import { Preset, createOptionValueBuilder } from '@vue-layout/core';
 import { Component } from '../constants';
-import { FormGroup, FormGroupProperties } from '../form-group';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
+import { buildValidationGroup } from '../validation-group';
 import { FormInputCheckboxBuildOptions, FormInputCheckboxBuildOptionsInput } from './type';
 
 export function buildFormInputCheckboxOptions(
@@ -98,21 +97,16 @@ export function buildFormInputCheckbox(
         children.push(h('label', { class: options.labelClass, for: id }, [options.labelContent]));
     }
 
-    return h(
-        FormGroup,
-        {
-            validationResult: options.validationResult,
-            validationMessages: options.validationMessages,
-            validationTranslator: options.validationTranslator,
-        } as FormGroupProperties,
-        {
-            default: () => h(
-                'div',
-                {
-                    class: options.groupClass,
-                },
-                children,
-            ),
-        },
-    );
+    return buildValidationGroup({
+        content: h(
+            'div',
+            {
+                class: options.groupClass,
+            },
+            children,
+        ),
+        validationResult: options.validationResult,
+        validationMessages: options.validationMessages,
+        validationTranslator: options.validationTranslator,
+    });
 }

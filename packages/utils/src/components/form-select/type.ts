@@ -5,10 +5,10 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput } from '../form-base';
 import {
     OptionsInput,
-} from '../type';
+} from '@vue-layout/core';
+import { ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput } from '../form-base';
 
 export type FormSelectOption = {
     id: string | number,

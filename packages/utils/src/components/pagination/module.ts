@@ -1,282 +1,267 @@
 /*
- * Copyright (c) 2022-2022.
+ * Copyright (c) 2022.
  * Author Peter Placzek (tada5hi)
  * For the full copyright and license information,
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { Preset, createOptionValueBuilder } from '@vue-layout/core';
 import {
-    VNodeArrayChildren, VNodeChild, computed, defineComponent, h, mergeProps,
+    VNodeArrayChildren, VNodeChild, h, mergeProps, unref,
 } from 'vue';
-import { createOptionValueBuilder } from '../../options';
-import { Preset } from '../../constants';
 import { Component } from '../constants';
 import { ListLoadMeta } from '../type';
-import { PaginationOptions } from './type';
+import { PaginationOptions, PaginationOptionsInput } from './type';
 
-export const Pagination = defineComponent({
-    props: {
-        total: {
-            type: Number,
-            default: 0,
-        },
-        limit: {
-            type: Number,
-            default: 0,
-        },
-        offset: {
-            type: Number,
-            default: 0,
-        },
-        busy: {
-            type: Boolean,
-            default: false,
-        },
-    },
-    emits: ['load'],
-    setup(props, { emit }) {
-        const { build, buildOrFail } = createOptionValueBuilder<PaginationOptions>(
-            Component.Pagination,
-        );
+export function buildPaginationOptions(
+    options: PaginationOptionsInput,
+) : PaginationOptions {
+    const { buildOrFail, build } = createOptionValueBuilder<PaginationOptions>(
+        Component.ListTitle,
+    );
 
-        const totalPages = computed(() => {
-            if (props.limit === 0 || props.total === 0) return 1;
+    return {
+        ...options,
 
-            const pages = Math.ceil(props.total / props.limit);
-            return pages >= 1 ? pages : 1;
-        });
+        busy: unref(options.busy) ?? false,
 
-        const currentPage = computed(() => {
-            if (props.limit === 0 || props.total === 0) return 1;
-
-            return Math.floor(props.offset / props.limit) + 1;
-        });
-
-        const pages = computed(() => {
-            const items = [];
-
-            for (let i = currentPage.value - 2; i < (currentPage.value + 2); i++) {
-                if (i > 0 && i <= totalPages.value) {
-                    items.push(i);
-                }
-            }
-
-            return items;
-        });
-
-        const goTo = (page: number) => {
-            if (props.busy || page === currentPage.value) return;
-
-            const data : ListLoadMeta = {
-                page,
-                offset: (page - 1) * props.limit,
-                limit: props.limit,
-                total: totalPages.value,
-            };
-
-            emit('load', data);
-        };
-
-        const renderPrevPage = () => {
-            let content : VNodeChild;
-
-            const prevClass = build({
-                key: 'prevClass',
-                alt: [],
-                preset: {
-                    [Preset.FONT_AWESOME]: {
-                        value: 'fa fa-chevron-left',
-                    },
+        tag: buildOrFail({
+            key: 'tag',
+            value: unref(options.tag),
+            alt: 'ul',
+        }),
+        class: buildOrFail({
+            key: 'class',
+            value: unref(options.class),
+            alt: 'pagination',
+            preset: {
+                [Preset.BOOTSTRAP]: {
+                    value: 'justify-content-center',
                 },
-            });
-            const prevContent = build({
-                key: 'prevContent',
-            });
-            if (prevClass || prevContent) {
-                content = h(
-                    buildOrFail({
-                        key: 'prevType',
-                        alt: 'i',
-                    }),
-                    { class: prevClass },
-                    prevContent,
-                );
-            } else {
-                content = [currentPage.value - 1];
-            }
+                [Preset.BOOTSTRAP_V5]: {
+                    value: 'justify-content-center',
+                },
+            },
+        }),
 
-            let prevPage : VNodeArrayChildren = [];
-            if (currentPage.value > 1) {
-                prevPage = [
-                    h(
-                        'li',
-                        {
-                            class: buildOrFail({
-                                key: 'itemClass',
-                                alt: 'page-item',
-                            }),
-                        },
-                        [
-                            h(
-                                'button',
-                                {
-                                    class: buildOrFail({
-                                        key: 'linkClass',
-                                        alt: 'page-link',
-                                    }),
-                                    disabled: props.busy,
-                                    onClick($event: any) {
-                                        $event.preventDefault();
+        itemTag: buildOrFail({
+            key: 'itemTag',
+            value: unref(options.itemTag),
+            alt: 'li',
+        }),
+        itemClass: buildOrFail({
+            key: 'itemClass',
+            alt: 'page-item',
+        }),
 
-                                        return goTo(currentPage.value - 1);
-                                    },
-                                },
-                                [content],
-                            ),
-                        ],
-                    ),
-                ];
-            }
+        linkClass: buildOrFail({
+            key: 'linkClass',
+            alt: 'page-link',
+        }),
+        linkActiveClass: buildOrFail({
+            key: 'linkActiveClass',
+            alt: 'active',
+        }),
 
-            return prevPage;
+        prevType: buildOrFail({
+            key: 'prevType',
+            alt: 'i',
+        }),
+        prevClass: build({
+            key: 'prevClass',
+            alt: [],
+            preset: {
+                [Preset.FONT_AWESOME]: {
+                    value: 'fa fa-chevron-left',
+                },
+            },
+        }),
+        prevContent: build({
+            key: 'prevContent',
+        }),
+
+        nextType: buildOrFail({
+            key: 'nextType',
+            alt: 'i',
+        }),
+        nextClass: build({
+            key: 'nextClass',
+            alt: [],
+            preset: {
+                [Preset.FONT_AWESOME]: {
+                    value: 'fa fa-chevron-right',
+                },
+            },
+        }),
+        nextContent: build({
+            key: 'nextContent',
+        }),
+    };
+}
+
+export function buildPagination(input: PaginationOptionsInput) {
+    const options = buildPaginationOptions(input);
+
+    let totalPages = 1;
+    let currentPage = 1;
+    if (options.total > 0 && options.limit > 0) {
+        totalPages = Math.min(Math.ceil(options.total / options.limit), 1);
+        currentPage = Math.floor(options.offset / options.limit) + 1;
+    }
+
+    const betweenPages : number[] = [];
+    for (let i = currentPage - 2; i < (currentPage + 2); i++) {
+        if (i > 0 && i <= totalPages) {
+            betweenPages.push(i);
+        }
+    }
+
+    const loadPage = (page: number) => {
+        if (options.busy || page === currentPage) return;
+
+        const data : ListLoadMeta = {
+            page,
+            offset: (page - 1) * options.limit,
+            limit: options.limit,
+            total: totalPages,
         };
 
-        const renderBetweenPages = () => {
-            const betweenPages : VNodeArrayChildren = [];
+        options.load(data);
+    };
 
-            for (let i = 0; i < pages.value.length; i++) {
-                const node = h(
-                    'li',
+    const renderPrevPage = () => {
+        let content : VNodeChild;
+
+        if (options.prevClass || options.prevContent) {
+            content = h(
+                options.prevType,
+                { class: options.prevClass },
+                options.prevContent,
+            );
+        } else {
+            content = [currentPage - 1];
+        }
+
+        let prevPage : VNodeArrayChildren = [];
+        if (currentPage > 1) {
+            prevPage = [
+                h(
+                    options.itemTag,
                     {
-                        class: buildOrFail({
-                            key: 'itemClass',
-                            alt: 'page-item',
-                        }),
+                        class: options.itemClass,
                     },
                     [
-                        h('button', {
-                            ...mergeProps({
-                                ...(
-                                    pages.value[i] === currentPage.value ?
-                                        {
-                                            class: buildOrFail({
-                                                key: 'linkActiveClass',
-                                                alt: 'active',
-                                            }),
-                                        } :
-                                        {}
-                                ),
-                            }, {
-                                class: buildOrFail({
-                                    key: 'linkClass',
-                                    alt: 'page-link',
-                                }),
-                            }),
-                            disabled: props.busy,
-                            onClick($event: any) {
-                                $event.preventDefault();
-
-                                // eslint-disable-next-line prefer-rest-params
-                                return goTo(pages.value[i]);
-                            },
-                        }, [
-                            pages.value[i],
-                        ]),
-                    ],
-                );
-
-                betweenPages.push(node);
-            }
-
-            return betweenPages;
-        };
-
-        const renderNextPage = () => {
-            let nextPage : VNodeArrayChildren = [];
-
-            let content : VNodeChild;
-
-            const nextClass = build({
-                key: 'nextClass',
-                alt: [],
-                preset: {
-                    [Preset.FONT_AWESOME]: {
-                        value: 'fa fa-chevron-right',
-                    },
-                },
-            });
-
-            const nextContent = build({
-                key: 'nextContent',
-            });
-
-            if (nextClass || nextContent) {
-                content = h(
-                    buildOrFail({
-                        key: 'nextType',
-                        alt: 'i',
-                    }),
-                    { class: nextClass },
-                    nextContent,
-                );
-            } else {
-                content = [currentPage.value + 1];
-            }
-
-            if (currentPage.value < totalPages.value) {
-                nextPage = [
-                    h('li', {
-                        class: buildOrFail({
-                            key: 'itemClass',
-                            alt: 'page-item',
-                        }),
-                    }, [
                         h(
                             'button',
                             {
-                                class: buildOrFail({
-                                    key: 'linkClass',
-                                    alt: 'page-link',
-                                }),
-                                disabled: props.busy,
+                                class: options.linkClass,
+                                disabled: options.busy,
                                 onClick($event: any) {
                                     $event.preventDefault();
 
-                                    return goTo(currentPage.value + 1);
+                                    return loadPage(currentPage - 1);
                                 },
                             },
                             [content],
                         ),
+                    ],
+                ),
+            ];
+        }
+
+        return prevPage;
+    };
+
+    const renderBetweenPages = () => {
+        const children : VNodeArrayChildren = [];
+
+        for (let i = 0; i < betweenPages.length; i++) {
+            const node = h(
+                options.itemTag,
+                {
+                    class: options.itemClass,
+                },
+                [
+                    h('button', {
+                        ...mergeProps({
+                            ...(
+                                betweenPages[i] === currentPage ?
+                                    {
+                                        class: options.linkActiveClass,
+                                    } :
+                                    {}
+                            ),
+                        }, {
+                            class: options.linkClass,
+                        }),
+                        disabled: options.busy,
+                        onClick($event: any) {
+                            $event.preventDefault();
+
+                            // eslint-disable-next-line prefer-rest-params
+                            return loadPage(betweenPages[i]);
+                        },
+                    }, [
+                        betweenPages[i],
                     ]),
-                ];
-            }
+                ],
+            );
 
-            return nextPage;
-        };
+            children.push(node);
+        }
 
-        return () => h(
-            'ul',
-            {
-                class: buildOrFail({
-                    key: 'class',
-                    alt: 'pagination',
-                    preset: {
-                        [Preset.BOOTSTRAP]: {
-                            value: 'justify-content-center',
+        return children;
+    };
+
+    const renderNextPage = () => {
+        let nextPage : VNodeArrayChildren = [];
+
+        let content : VNodeChild;
+
+        if (options.nextClass || options.nextContent) {
+            content = h(
+                options.nextType,
+                { class: options.nextClass },
+                options.nextContent,
+            );
+        } else {
+            content = [currentPage + 1];
+        }
+
+        if (currentPage < totalPages) {
+            nextPage = [
+                h(options.itemTag, {
+                    class: options.itemClass,
+                }, [
+                    h(
+                        'button',
+                        {
+                            class: options.linkClass,
+                            disabled: options.busy,
+                            onClick($event: any) {
+                                $event.preventDefault();
+
+                                return loadPage(currentPage + 1);
+                            },
                         },
-                        [Preset.BOOTSTRAP_V5]: {
-                            value: 'justify-content-center',
-                        },
-                    },
-                }),
-            },
-            [
-                renderPrevPage(),
-                renderBetweenPages(),
-                renderNextPage(),
-            ],
-        );
-    },
-});
+                        [content],
+                    ),
+                ]),
+            ];
+        }
 
-export default Pagination;
+        return nextPage;
+    };
+
+    return h(
+        options.tag,
+        {
+            class: options.class,
+        },
+        [
+            renderPrevPage(),
+            renderBetweenPages(),
+            renderNextPage(),
+        ],
+    );
+}

@@ -54,7 +54,7 @@
     },
     "scripts": {
         "bootstrap": "lerna bootstrap",
-        "clean": "lerna run clean",
+        "commit": "npx git-cz",
         "build": "lerna run build",
         "test": "lerna run test",
         "pub": "npm run build && lerna publish",

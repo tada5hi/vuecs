@@ -8,7 +8,7 @@
 import {
     VNodeArrayChildren, h, mergeProps, unref,
 } from 'vue';
-import { createOptionValueBuilder } from '../../options';
+import { createOptionValueBuilder } from '@vue-layout/core';
 import { Component } from '../constants';
 import { ListHeaderBuildOptionsInput, buildListHeader } from '../list-header';
 import { ListItemsBuildOptionsInput, buildListItems } from '../list-items';

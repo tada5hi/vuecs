@@ -6,11 +6,11 @@
  */
 
 import { h, unref } from 'vue';
-import { isPromise, setMaybeRefValue, unrefWithDefault } from '../../utils';
+import {
+    Preset, createOptionValueBuilder, isPromise, setMaybeRefValue, unrefWithDefault,
+} from '@vue-layout/core';
 import { Component } from '../constants';
 import { FormSubmitOptions, FormSubmitOptionsInput } from './type';
-import { createOptionValueBuilder } from '../../options';
-import { Preset } from '../../constants';
 
 export function buildFormSubmitOptions(
     options: FormSubmitOptionsInput,

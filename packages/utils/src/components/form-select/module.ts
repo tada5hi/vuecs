@@ -8,12 +8,11 @@
 import {
     VNode, VNodeChild, h, mergeProps, unref,
 } from 'vue';
-import { Preset } from '../../constants';
+import { Preset, createOptionValueBuilder } from '@vue-layout/core';
 import { Component } from '../constants';
-import { FormGroup, FormGroupProperties } from '../form-group';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
+import { buildValidationGroup } from '../validation-group';
 import { FormSelectBuildOptions, FormSelectBuildOptionsInput, FormSelectOption } from './type';
-import { createOptionValueBuilder } from '../../options';
 
 export function buildFormSelectOptions(
     input: FormSelectBuildOptionsInput,
@@ -57,42 +56,37 @@ export function buildFormSelect(
 
     const rawValue = unref(options.value);
 
-    return h(
-        FormGroup,
-        {
-            validationResult: options.validationResult,
-            validationMessages: options.validationMessages,
-            validationTranslator: options.validationTranslator,
-        } as FormGroupProperties,
-        {
-            default: () => [
-                ...children,
-                h(
-                    'select',
-                    mergeProps(
-                        {
-                            class: options.class,
-                            onChange($event: any) {
-                                const $$selectedVal = Array.prototype.filter.call($event.target.options, (o) => o.selected).map((o) => ('_value' in o ? o._value : o.value));
-                                const value = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+    return buildValidationGroup({
+        content: [
+            ...children,
+            h(
+                'select',
+                mergeProps(
+                    {
+                        class: options.class,
+                        onChange($event: any) {
+                            const $$selectedVal = Array.prototype.filter.call($event.target.options, (o) => o.selected).map((o) => ('_value' in o ? o._value : o.value));
+                            const value = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
 
-                                handleFormValueChanged(options, value);
-                            },
-                            ...(typeof rawValue !== 'undefined' ? { value: rawValue } : {}),
+                            handleFormValueChanged(options, value);
                         },
-                        options.props,
-                    ),
-                    [
-                        h('option', {
-                            value: '',
-                        }, ['-- ', options.optionDefaultText, ' --']),
-                        options.options.map((item: FormSelectOption) => h('option', {
-                            key: item.id,
-                            value: item.id,
-                        }, item.value)),
-                    ],
+                        ...(typeof rawValue !== 'undefined' ? { value: rawValue } : {}),
+                    },
+                    options.props,
                 ),
-            ],
-        },
-    );
+                [
+                    h('option', {
+                        value: '',
+                    }, ['-- ', options.optionDefaultText, ' --']),
+                    options.options.map((item: FormSelectOption) => h('option', {
+                        key: item.id,
+                        value: item.id,
+                    }, item.value)),
+                ],
+            ),
+        ],
+        validationResult: options.validationResult,
+        validationMessages: options.validationMessages,
+        validationTranslator: options.validationTranslator,
+    });
 }

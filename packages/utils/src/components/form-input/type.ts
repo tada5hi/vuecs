@@ -6,11 +6,11 @@
  */
 
 import { VNode, VNodeChild } from 'vue';
-import { ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput } from '../form-base';
 import {
     OptionsInput,
-} from '../type';
-import { VNodeClass } from '../../type';
+    VNodeClass,
+} from '@vue-layout/core';
+import { ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput } from '../form-base';
 
 export type FormInputBuildOptions = FormBaseOptions & {
     type: string,
