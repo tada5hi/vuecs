@@ -5,10 +5,10 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/Tada5hi/vue-layout/badge.svg)](https://snyk.io/test/github/Tada5hi/vue-layout)
 
 ## What is it?
-**Vue-Layout** is a collection of packages to:
+**Vue-Layout** is a collection of packages containing:
 
-- simplify layout rendering
-- creating multi tier/level navigations
+- basic components (multi navbar, pagination, ...)
+- hyperscript components
 
 **Table of Contents**
 
@@ -18,7 +18,7 @@
 ## Packages
 The repository contains the following packages:
 
-- 🏔 **@vue-layout/navigation**: A package to build multi level navigation menus.
+- 🏔 **@vue-layout/navigation**: A package containing basic components, to build for example multi level navigation menus.
 - 🧰 **@vue-layout/hyperscript**: A package containing hyperscript components for usage in render functions.
 
 ## Documentation

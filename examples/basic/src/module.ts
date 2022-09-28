@@ -1,7 +1,8 @@
 import {
+    Component,
     ProviderInterface,
     findTierComponent,
-} from '@vue-layout/navigation';
+} from '@vue-layout/basic';
 
 export class Provider implements ProviderInterface {
     protected primaryItems : Component[] = [

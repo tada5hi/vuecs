@@ -1,6 +1,6 @@
-# @vue-layout/navigation 🍙
+# @vue-layout/basic 🍙
 
-[![npm version](https://badge.fury.io/js/@vue-layout%2Fnavigation.svg)](https://badge.fury.io/js/@vue-layout%2Fnavigation)
+[![npm version](https://badge.fury.io/js/@vue-layout%2Fbasic.svg)](https://badge.fury.io/js/@vue-layout%2Fbasic)
 [![CI](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml)
 
 This repository contains provides vue components and helper/utility methods to
@@ -23,7 +23,7 @@ render a multi tier navigation, where tier-0 conditionally affects tier-1 and so
 ## Installation
 
 ```
-$ npm i --save @vue-layout/navigation
+$ npm i --save @vue-layout/basic
 ```
 
 ## Usage
@@ -41,7 +41,7 @@ The first step is to implement the class.
 import {
     Component,
     ProviderInterface
-} from "@vue-layout/navigation";
+} from "@vue-layout/basic";
 
 export class Provider implements ProviderInterface {
     componentsTierOne = [
@@ -104,7 +104,7 @@ The next step is to create the vue entrypoint.
 import {
     build,
     createPlugin
-} from '@vue-layout/navigation';
+} from '@vue-layout/basic';
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import { Provider } from './module';
@@ -158,7 +158,7 @@ Build all navigation tiers, by `url` or active `components`.
 #### Example
 **`URL`**
 ```typescript
-import { build } from '@vue-layout/navigation';
+import { build } from '@vue-layout/basic';
 
 await build({
     url: '/'
@@ -170,7 +170,7 @@ to calculate the active `components`.
 
 **`components`**
 ```typescript
-import { build } from '@vue-layout/navigation';
+import { build } from '@vue-layout/basic';
 
 await build({
     components: [
@@ -193,7 +193,7 @@ a route component.
 **`route`**
 ```typescript
 import { RouteLocation } from 'vue-router';
-import { buildWithRoute } from '@vue-layout/navigation';
+import { buildWithRoute } from '@vue-layout/basic';
 
 const route : RouteLocation = {
     fullPath: '/',
@@ -209,7 +209,7 @@ This method call is under the hood equal to: `build({url: '/'})`.
 **`metaKey`**
 ```typescript
 import { defineComponent } from 'vue';
-import { buildWithRoute } from '@vue-layout/navigation';
+import { buildWithRoute } from '@vue-layout/basic';
 
 const metaKey = 'navigation';
 
@@ -235,7 +235,7 @@ This method call is under the hood equal to:
 ### BuildContext
 
 ```typescript
-import { Component } from '@vue-layout/navigation';
+import { Component } from '@vue-layout/basic';
 
 type BuildContext = {
     components?: Component[],
@@ -273,7 +273,7 @@ type Component = {
 ### ProviderInterface
 
 ```typescript
-import { Component } from '@vue-layout/navigation';
+import { Component } from '@vue-layout/basic';
 
 interface ProviderInterface {
     getComponents(
@@ -302,5 +302,5 @@ type RouteBuildContext = {
 
 ## Example
 
-For a simple example, on how to use this library, check out the demo package:
-[Example](https://github.com/tada5hi/vue-layout/tree/master/packages/navigation-demo)
+For a simple example, on how to use this library, check out the example package:
+[Example](https://github.com/tada5hi/vue-layout/tree/master/examples/basic)

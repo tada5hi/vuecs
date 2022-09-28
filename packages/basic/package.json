@@ -1,7 +1,7 @@
 {
-    "name": "@vue-layout/navigation",
-    "version": "2.0.0-alpha.2",
-    "description": "",
+    "name": "@vue-layout/basic",
+    "version": "0.0.0",
+    "description": "A package containing basic components, to build for example multi level navigation menus.",
     "main": "dist/index.cjs.js",
     "browser": "dist/index.browser.js",
     "module": "dist/index.esm.js",
@@ -13,13 +13,16 @@
     "keywords": [
         "vue",
         "layout",
+        "basic",
+        "components",
+        "pagination",
         "navigation",
+        "navbar",
         "tier",
         "multi-tier",
         "level",
         "vue-router",
-        "typescript",
-        "template"
+        "typescript"
     ],
     "author": {
         "name": "Peter Placzek",
@@ -29,7 +32,7 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/tada5hi/vue-layout.git",
-        "directory": "packages/navigation"
+        "directory": "packages/basic"
     },
     "scripts": {
         "prebuild": "rimraf ./dist",

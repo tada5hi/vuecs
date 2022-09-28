@@ -1,5 +1,5 @@
 <script>
-import { build } from '@vue-layout/navigation';
+import { build } from '@vue-layout/basic';
 import { useRouter } from 'vue-router';
 
 export default {
