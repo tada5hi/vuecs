@@ -5,11 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { isComponentMatch } from '../../../src';
+import { isNavigationElementMatch } from '../../../../../src';
 
-describe('src/utils.ts', () => {
+describe('src/components/navigation/utils.ts', () => {
     it('should match correctly', () => {
-        const isMatch = isComponentMatch({
+        const isMatch = isNavigationElementMatch({
             url: '/admin/users',
         }, {
             name: 'Allgemein',

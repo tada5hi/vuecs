@@ -6,45 +6,45 @@
  */
 
 import { MaybeRef } from '@vue-layout/core';
-import { useProvider } from '../provider';
+import { useNavigationProvider } from '../provider';
 import {
-    findTierComponent, findTierComponents,
-    isComponentMatch,
-    removeTierFromComponents,
+    findTierNavigationElement, findTierNavigationElements,
+    isNavigationElementMatch,
+    removeTierFromNavigationElements,
     resetNavigationExpansion,
-    setNavigationExpansion, setTierForComponents,
+    setNavigationExpansion, setTierForNavigationElements,
 } from '../utils';
 import { NavigationElement } from '../type';
-import { BuildContext } from './type';
+import { NavigationBuildContext } from './type';
 import { setStoreItem, useStoreItem } from './singleton';
 
-function setComponentActive(tier: number, component: NavigationElement | undefined) {
-    const data = useStoreItem('componentsActive');
-    const componentsExisting = removeTierFromComponents(data, tier);
+function setNavigationElementActive(tier: number, item: NavigationElement | undefined) {
+    const data = useStoreItem('itemsActive');
+    const componentsExisting = removeTierFromNavigationElements(data, tier);
 
-    if (component) {
-        component.tier = tier;
+    if (item) {
+        item.tier = tier;
 
-        setStoreItem('componentsActive', [
+        setStoreItem('itemsActive', [
             ...componentsExisting,
-            component,
+            item,
         ]);
     } else {
-        setStoreItem('componentsActive', componentsExisting);
+        setStoreItem('itemsActive', componentsExisting);
     }
 }
 
-function setComponents(tier: number, components: MaybeRef<NavigationElement[]>) {
-    const data = useStoreItem('components');
-    const componentsExisting = removeTierFromComponents(data, tier);
+function setNavigationElements(tier: number, items: MaybeRef<NavigationElement[]>) {
+    const data = useStoreItem('items');
+    const componentsExisting = removeTierFromNavigationElements(data, tier);
 
-    setStoreItem('components', [
+    setStoreItem('items', [
         ...componentsExisting,
-        ...setTierForComponents(components, tier),
+        ...setTierForNavigationElements(items, tier),
     ]);
 }
 
-function refreshComponents(tier: number) {
+function refreshNavigationElements(tier: number) {
     let components = getComponents(tier);
     components = resetNavigationExpansion(components);
 
@@ -54,10 +54,10 @@ function refreshComponents(tier: number) {
         components = items;
     }
 
-    setComponents(tier, components);
+    setNavigationElements(tier, components);
 }
 
-async function calculateTiers() : Promise<number> {
+async function calculateNavigationTiers() : Promise<number> {
     let tiers = useStoreItem('tiers');
 
     if (typeof tiers !== 'undefined') {
@@ -68,7 +68,7 @@ async function calculateTiers() : Promise<number> {
 
     let match = true;
     while (match) {
-        const hasTier = await useProvider().hasTier(tiers);
+        const hasTier = await useNavigationProvider().hasTier(tiers);
         if (!hasTier) {
             match = false;
         } else {
@@ -83,84 +83,84 @@ async function calculateTiers() : Promise<number> {
 
 // --------------------------------------------------------
 
-export async function select(
+export async function selectNavigationElement(
     tier: number,
     component: NavigationElement,
 ) {
-    const isMatch = isComponentMatch(getActiveComponent(tier), component);
+    const isMatch = isNavigationElementMatch(getActiveComponent(tier), component);
 
     if (isMatch) {
         return;
     }
 
-    setComponentActive(tier, component);
-    refreshComponents(tier);
+    setNavigationElementActive(tier, component);
+    refreshNavigationElements(tier);
 
-    const tiers = await calculateTiers();
+    const tiers = await calculateNavigationTiers();
 
     let tierStartIndex = tier + 1;
 
     while (tierStartIndex <= tiers) {
-        await buildForTier(tierStartIndex);
+        await buildNavigationForTier(tierStartIndex);
 
         tierStartIndex++;
     }
 }
 
-export function toggle(tier: number, component: NavigationElement) {
-    const isMatch = isComponentMatch(getActiveComponent(tier), component) ||
+export function toggleNavigation(tier: number, component: NavigationElement) {
+    const isMatch = isNavigationElementMatch(getActiveComponent(tier), component) ||
         component.displayChildren;
 
     if (isMatch) {
-        setComponentActive(tier, undefined);
+        setNavigationElementActive(tier, undefined);
     } else {
-        setComponentActive(tier, component);
+        setNavigationElementActive(tier, component);
     }
 
-    refreshComponents(tier);
+    refreshNavigationElements(tier);
 }
 
-export async function build(context?: BuildContext) : Promise<void> {
-    const navigationProvider = useProvider();
+export async function buildNavigation(context?: NavigationBuildContext) : Promise<void> {
+    const navigationProvider = useNavigationProvider();
 
     context = context || {};
 
-    let componentsActive : NavigationElement[] = context.components ?? [];
+    let itemsActive : NavigationElement[] = context.items ?? [];
 
     if (
-        componentsActive.length === 0 &&
+        itemsActive.length === 0 &&
         context.url
     ) {
-        componentsActive = await navigationProvider
-            .getComponentsActive(context.url);
+        itemsActive = await navigationProvider
+            .getElementsActive(context.url);
 
-        for (let i = 0; i < componentsActive.length; i++) {
-            componentsActive[i].tier = i;
+        for (let i = 0; i < itemsActive.length; i++) {
+            itemsActive[i].tier = i;
         }
     }
 
-    const tierLength = await calculateTiers();
+    const tierLength = await calculateNavigationTiers();
     let tierIndex = 0;
 
-    let tierHasComponents = true;
+    let tierHasItems = true;
 
-    while (tierIndex < tierLength && tierHasComponents) {
+    while (tierIndex < tierLength && tierHasItems) {
         let items = await navigationProvider
-            .getComponents(tierIndex, [...componentsActive]);
+            .getElements(tierIndex, [...itemsActive]);
 
         if (items.length === 0) {
-            tierHasComponents = false;
+            tierHasItems = false;
             continue;
         }
 
         // ensure tier property
-        items = setTierForComponents(items, tierIndex);
+        items = setTierForNavigationElements(items, tierIndex);
 
-        let currentItem = findTierComponent(componentsActive, tierIndex);
+        let currentItem = findTierNavigationElement(itemsActive, tierIndex);
 
         if (!currentItem) {
             if (context.url) {
-                const urlMatches = items.filter((item) => isComponentMatch(item, { url: context?.url }));
+                const urlMatches = items.filter((item) => isNavigationElementMatch(item, { url: context?.url }));
                 if (urlMatches && urlMatches.length > 0) {
                     // eslint-disable-next-line prefer-destructuring
                     currentItem = urlMatches[0];
@@ -179,65 +179,65 @@ export async function build(context?: BuildContext) : Promise<void> {
             }
 
             currentItem.tier = tierIndex;
-            componentsActive.push(currentItem);
+            itemsActive.push(currentItem);
         }
 
         if (!currentItem) {
             continue;
         }
 
-        setComponentActive(tierIndex, currentItem);
+        setNavigationElementActive(tierIndex, currentItem);
 
-        await buildForTier(tierIndex, componentsActive);
+        await buildNavigationForTier(tierIndex, itemsActive);
 
         tierIndex++;
     }
 }
 
-export async function buildForTier(
+export async function buildNavigationForTier(
     tier: number,
-    componentsActive?: NavigationElement[],
+    itemsActive?: NavigationElement[],
 ) : Promise<void> {
-    if (typeof componentsActive === 'undefined') {
+    if (typeof itemsActive === 'undefined') {
         let tierStartIndex = 0;
         const tierEndIndex = tier;
 
-        componentsActive = [];
+        itemsActive = [];
 
-        let componentFound = true;
+        let found = true;
 
-        while (tierStartIndex <= tierEndIndex && componentFound) {
+        while (tierStartIndex <= tierEndIndex && found) {
             const component = getActiveComponent(tierStartIndex);
             if (!component) {
-                componentFound = false;
+                found = false;
                 continue;
             }
 
-            componentsActive.push(component);
+            itemsActive.push(component);
 
             tierStartIndex++;
         }
     }
 
-    const components : NavigationElement[] = await useProvider().getComponents(
+    const items : NavigationElement[] = await useNavigationProvider().getElements(
         tier,
-        componentsActive,
+        itemsActive,
     );
 
-    setComponents(tier, [...components]);
-    refreshComponents(tier);
+    setNavigationElements(tier, [...items]);
+    refreshNavigationElements(tier);
 }
 
 // --------------------------------------------------------
 
 export function getComponents(tier: number) : NavigationElement[] {
-    const data = useStoreItem('components');
-    return findTierComponents(data, tier);
+    const data = useStoreItem('items');
+    return findTierNavigationElements(data, tier);
 }
 
 export function getActiveComponent(tier: number) : NavigationElement | undefined {
-    const data = useStoreItem('componentsActive');
-    return findTierComponent(data, tier);
+    const data = useStoreItem('itemsActive');
+    return findTierNavigationElement(data, tier);
 }
 
 // --------------------------------------------------------

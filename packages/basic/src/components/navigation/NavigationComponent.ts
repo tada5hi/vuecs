@@ -9,9 +9,9 @@ import { hasNormalizedSlot, normalizeSlot } from '@vue-layout/core';
 import {
     PropType, Ref, VNodeChild, computed, defineComponent, h, resolveComponent, toRef, unref,
 } from 'vue';
-import { getActiveComponent, select, toggle } from './store';
+import { getActiveComponent, selectNavigationElement, toggleNavigation } from './store';
 import { NavigationElement } from './type';
-import { isAbsoluteURL, isComponentMatch } from './utils';
+import { isAbsoluteURL, isNavigationElementMatch } from './utils';
 import { LinkProperties } from '../link';
 import { SlotName } from './constants';
 import { Link } from '../link/Link';
@@ -31,15 +31,15 @@ export const NavigationComponent = defineComponent({
         const component = toRef(props, 'component') as Ref<NavigationElement>;
 
         const componentActive = computed(() => getActiveComponent(props.tier));
-        const isStrictMatch = computed(() => isComponentMatch(componentActive, component));
-        const isMatch = computed(() => isComponentMatch(componentActive, component, false));
+        const isStrictMatch = computed(() => isNavigationElementMatch(componentActive, component));
+        const isMatch = computed(() => isNavigationElementMatch(componentActive, component, false));
 
         const selectComponent = async (value: NavigationElement) => {
-            await select(props.tier, value);
+            await selectNavigationElement(props.tier, value);
         };
 
         const toggleComponentExpansion = async (value: NavigationElement) => {
-            await toggle(props.tier, value);
+            await toggleNavigation(props.tier, value);
         };
 
         const buildItem = () => {
@@ -60,7 +60,7 @@ export const NavigationComponent = defineComponent({
                     break;
                 }
                 default: {
-                    if (typeof component.value.components === 'undefined') {
+                    if (typeof component.value.children === 'undefined') {
                         const hasSlot = hasNormalizedSlot(SlotName.LINK, slots);
                         if (hasSlot) {
                             item = normalizeSlot(SlotName.LINK, {
@@ -158,7 +158,7 @@ export const NavigationComponent = defineComponent({
                             items = h(navigationComponents, {
                                 class: 'list-unstyled nav-sub-items',
                                 tier: props.tier,
-                                entities: component.value.components,
+                                entities: component.value.children,
                             });
                         }
 

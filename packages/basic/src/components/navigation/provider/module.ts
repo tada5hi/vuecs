@@ -5,11 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { ProviderInterface } from './type';
+import { NavigationProvider } from './type';
 
-let instance : ProviderInterface | undefined;
+let instance : NavigationProvider | undefined;
 
-export function useProvider(module?: ProviderInterface) : ProviderInterface {
+export function useNavigationProvider(module?: NavigationProvider) : NavigationProvider {
     if (typeof instance !== 'undefined') {
         return instance;
     }
@@ -23,6 +23,6 @@ export function useProvider(module?: ProviderInterface) : ProviderInterface {
     return instance;
 }
 
-export function setProvider(module: ProviderInterface) {
+export function setNavigationProvider(module: NavigationProvider) {
     instance = module;
 }

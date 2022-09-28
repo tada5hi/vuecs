@@ -6,7 +6,7 @@
  */
 
 import { NavigationElement } from '../type';
-import { isComponentMatch } from './match';
+import { isNavigationElementMatch } from './match';
 
 // --------------------------------------------------
 
@@ -18,10 +18,10 @@ export function resetNavigationExpansion(
         items[i].display = rootTier;
         items[i].displayChildren = false;
 
-        const { components } = items[i];
+        const { children } = items[i];
 
-        if (typeof components !== 'undefined') {
-            items[i].components = resetNavigationExpansion(components, false);
+        if (typeof children !== 'undefined') {
+            items[i].children = resetNavigationExpansion(children, false);
         }
     }
 
@@ -30,20 +30,20 @@ export function resetNavigationExpansion(
 
 export function setNavigationExpansion(
     items: NavigationElement[],
-    component: NavigationElement,
+    item: NavigationElement,
     parentMatch = false,
 ) : { items: NavigationElement[], match: boolean} {
     let matchInIteration = false;
 
     for (let i = 0; i < items.length; i++) {
-        const isMatch = isComponentMatch(items[i], component);
+        const isMatch = isNavigationElementMatch(items[i], item);
         let isChildMatch = false;
 
-        const { components } = items[i];
+        const { children } = items[i];
 
-        if (typeof components !== 'undefined') {
-            const { items: childItems, match: childMatch } = setNavigationExpansion(components, component, isMatch);
-            items[i].components = childItems;
+        if (typeof children !== 'undefined') {
+            const { items: childItems, match: childMatch } = setNavigationExpansion(children, item, isMatch);
+            items[i].children = childItems;
             isChildMatch = childMatch;
         }
 

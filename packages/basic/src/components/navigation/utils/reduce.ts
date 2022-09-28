@@ -12,24 +12,24 @@ type ComponentRestrictionContext = {
     isLoggedIn: () => boolean
 };
 
-export function reduceComponentsByRestriction<T extends NavigationElement>(
-    components: T[],
+export function reduceNavigationElementsByRestriction<T extends NavigationElement>(
+    items: T[],
     context: ComponentRestrictionContext,
 ) : T[] {
     const result : T[] = [];
 
-    for (let i = 0; i < components.length; i++) {
+    for (let i = 0; i < items.length; i++) {
         if (
-            typeof components[i].requireLoggedIn !== 'undefined' &&
-            components[i].requireLoggedIn &&
+            typeof items[i].requireLoggedIn !== 'undefined' &&
+            items[i].requireLoggedIn &&
             !context.isLoggedIn()
         ) {
             continue;
         }
 
         if (
-            typeof components[i].requireLoggedOut !== 'undefined' &&
-            components[i].requireLoggedOut &&
+            typeof items[i].requireLoggedOut !== 'undefined' &&
+            items[i].requireLoggedOut &&
             context.isLoggedIn()
         ) {
             continue;
@@ -38,10 +38,10 @@ export function reduceComponentsByRestriction<T extends NavigationElement>(
         let canPass = true;
 
         if (
-            typeof components[i].requirePermissions !== 'undefined' &&
+            typeof items[i].requirePermissions !== 'undefined' &&
             canPass
         ) {
-            let checks = components[i].requirePermissions;
+            let checks = items[i].requirePermissions;
             if (typeof checks === 'function') {
                 if (!checks(context.hasPermission)) {
                     canPass = false;
@@ -59,13 +59,13 @@ export function reduceComponentsByRestriction<T extends NavigationElement>(
         }
 
         if (canPass) {
-            if (typeof components[i].components !== 'undefined') {
+            if (typeof items[i].children !== 'undefined') {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
-                components[i].components = reduceComponentsByRestriction(components[i].components, context);
+                items[i].children = reduceComponentsByRestriction(items[i].children, context);
             }
 
-            result.push(components[i]);
+            result.push(items[i]);
         }
     }
 

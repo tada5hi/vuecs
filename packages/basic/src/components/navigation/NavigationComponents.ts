@@ -5,9 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { hasNormalizedSlot, normalizeSlot } from '@vue-layout/core';
 import {
     PropType, VNode, computed, defineComponent, h,
 } from 'vue';
+import { SlotName } from './constants';
 import { getComponents, useStore } from './store';
 import { NavigationElement } from './type';
 import { NavigationComponent } from './NavigationComponent';
@@ -24,7 +26,7 @@ export const NavigationComponents = defineComponent({
             default: undefined,
         },
     },
-    setup(props) {
+    setup(props, { slots }) {
         useStore();
 
         const items = computed(() => {
@@ -35,7 +37,18 @@ export const NavigationComponents = defineComponent({
             return getComponents(props.tier);
         });
 
-        const buildEntities = () => {
+        const buildChild = (context: {
+            tier?: number,
+            component: NavigationElement
+        }) => {
+            if (hasNormalizedSlot(SlotName.ITEM, slots)) {
+                return normalizeSlot(SlotName.ITEM, context, slots);
+            }
+
+            return h(NavigationComponent, context);
+        };
+
+        const buildChildren = () => {
             const entities : VNode[] = [];
 
             if (items.value) {
@@ -47,7 +60,7 @@ export const NavigationComponents = defineComponent({
                                 key: i,
                             },
                             [
-                                h(NavigationComponent, {
+                                buildChild({
                                     tier: props.tier,
                                     component: items.value[i],
                                 }),
@@ -62,7 +75,7 @@ export const NavigationComponents = defineComponent({
 
         return () => h('ul', {
             class: 'nav-items',
-        }, buildEntities());
+        }, buildChildren());
     },
 });
 

@@ -7,7 +7,7 @@
 
 import { RouteLocationNormalized } from 'vue-router';
 
-export type RouteBuildContext = {
+export type NavigationBuildRouteContext = {
     route: RouteLocationNormalized,
     metaKey: string
 };

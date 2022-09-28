@@ -1,5 +1,5 @@
 <script>
-import { build } from '@vue-layout/basic';
+import { buildNavigation } from '@vue-layout/basic';
 import { useRouter } from 'vue-router';
 
 export default {
@@ -16,7 +16,7 @@ export default {
         async refresh() {
             const router = useRouter();
 
-            await build({
+            await buildNavigation({
                 url: router.currentRoute.value.fullPath,
             });
         },

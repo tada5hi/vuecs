@@ -6,6 +6,7 @@
  */
 
 export * from './expansion';
+export * from './flatten';
 export * from './match';
 export * from './reduce';
 export * from './tier';

@@ -5,11 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { build, createPlugin } from '@vue-layout/basic';
+import { buildNavigation, createPlugin } from '@vue-layout/basic';
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
-import { Provider } from './module';
+import { navigationProvider } from './module';
 
 import Dev from './serve.vue';
 
@@ -21,7 +21,7 @@ import Settings from './components/settings.vue';
 const app = createApp(Dev);
 
 const navigation = createPlugin({
-    navigationProvider: new Provider(),
+    navigationProvider,
 });
 app.use(navigation);
 
@@ -38,7 +38,7 @@ app.use(router);
 
 (async () => {
     const url = router?.currentRoute?.value?.fullPath;
-    await build({ url });
+    await buildNavigation({ url });
 
     app.mount('#app');
 })();

@@ -8,7 +8,7 @@
 import { hasOwnProperty } from '@vue-layout/core';
 import { NavigationElement } from '../type';
 
-export function isComponent(value: unknown) : value is NavigationElement {
+export function isNavigationElement(value: unknown) : value is NavigationElement {
     if (typeof value !== 'object') {
         return false;
     }
@@ -100,14 +100,14 @@ export function isComponent(value: unknown) : value is NavigationElement {
     }
 
     if (
-        hasOwnProperty(ob, 'components')
+        hasOwnProperty(ob, 'children')
     ) {
-        if (!Array.isArray(ob.components)) {
+        if (!Array.isArray(ob.children)) {
             return false;
         }
 
-        for (let i = 0; i < ob.components.length; i++) {
-            if (!isComponent(ob.components[i])) {
+        for (let i = 0; i < ob.children.length; i++) {
+            if (!isNavigationElement(ob.children[i])) {
                 return false;
             }
         }

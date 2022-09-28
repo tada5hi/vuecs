@@ -5,21 +5,21 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { isComponent } from '../../../src/components/navigation/utils/check';
+import { isNavigationElement } from '../../../../../src/components/navigation/utils/check';
 
-describe('src/utils/check.ts', () => {
+describe('src/components/navigation/utils/check.ts', () => {
     it('should identify unknown value correctly', () => {
         let value : any = {
             id: 'default',
         };
 
-        expect(isComponent(value)).toBeTruthy();
+        expect(isNavigationElement(value)).toBeTruthy();
 
         value = {
             url: '/',
         };
 
-        expect(isComponent(value)).toBeTruthy();
+        expect(isNavigationElement(value)).toBeTruthy();
     });
 
     it('should not identify unknown value correctly', () => {
@@ -27,20 +27,20 @@ describe('src/utils/check.ts', () => {
             id: true,
         };
 
-        expect(isComponent(value)).toBeFalsy();
+        expect(isNavigationElement(value)).toBeFalsy();
 
         value = {
             url: null,
         };
 
-        expect(isComponent(value)).toBeFalsy();
+        expect(isNavigationElement(value)).toBeFalsy();
 
         value = 1;
 
-        expect(isComponent(value)).toBeFalsy();
+        expect(isNavigationElement(value)).toBeFalsy();
 
         value = true;
 
-        expect(isComponent(value)).toBeFalsy();
+        expect(isNavigationElement(value)).toBeFalsy();
     });
 });

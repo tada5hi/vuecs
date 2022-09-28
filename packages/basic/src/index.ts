@@ -16,15 +16,15 @@ import {
     Link,
     NavigationComponent,
     NavigationComponents,
+    NavigationProvider,
     NavigationStore,
     Pagination,
-    ProviderInterface,
-    setProvider,
+    setNavigationProvider,
     setStore,
 } from './components';
 
 export type PluginOptions = {
-    navigationProvider: ProviderInterface,
+    navigationProvider: NavigationProvider,
     navigationState?: Ref<NavigationStore>
 };
 
@@ -32,7 +32,7 @@ export function createPlugin(options?: Partial<PluginOptions>) : Plugin {
     options ??= {};
 
     if (options.navigationProvider) {
-        setProvider(options.navigationProvider);
+        setNavigationProvider(options.navigationProvider);
     }
 
     if (options.navigationState) {

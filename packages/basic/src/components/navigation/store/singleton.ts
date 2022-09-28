@@ -17,8 +17,8 @@ export function useStore() : Ref<NavigationStore> {
     }
 
     instance = ref<NavigationStore>({
-        components: [],
-        componentsActive: [],
+        items: [],
+        itemsActive: [],
         tiers: undefined,
     });
 

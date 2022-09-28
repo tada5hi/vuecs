@@ -8,8 +8,8 @@
 import { NavigationElement } from '../type';
 
 export type NavigationStore = {
-    components: NavigationElement[],
-    componentsActive: NavigationElement[],
+    items: NavigationElement[],
+    itemsActive: NavigationElement[],
     tiers?: number
 };
 
@@ -17,7 +17,7 @@ export type NavigationStoreInitOptions = {
     forceSet?: boolean
 };
 
-export type BuildContext = {
-    components?: NavigationElement[],
+export type NavigationBuildContext = {
+    items?: NavigationElement[],
     url?: string
 };

@@ -6,15 +6,8 @@
  */
 import { NavigationElement } from '../type';
 
-export interface ProviderInterface {
-    getComponents(
-        tier: number,
-        components: NavigationElement[]
-    ): Promise<NavigationElement[]>;
-
-    getComponentsActive(url: string): Promise<NavigationElement[]>;
-
-    hasTier(
-        tier: number
-    ): Promise<boolean>;
-}
+export type NavigationProvider = {
+    getElements: (tier: number, items: NavigationElement[]) => Promise<NavigationElement[]>,
+    getElementsActive: (url: string) => Promise<NavigationElement[]>,
+    hasTier: (tier: number) => Promise<boolean>
+};

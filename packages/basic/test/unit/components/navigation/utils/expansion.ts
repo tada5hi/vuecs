@@ -5,9 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { NavigationElement, setNavigationExpansion } from '../../../src';
+import { NavigationElement, setNavigationExpansion } from '../../../../../src';
 
-describe('src/toggle.ts', () => {
+describe('src/components/navigation/utils/toggle.ts', () => {
     it('should expand navigation correctly', () => {
         const items : NavigationElement[] = [
             {

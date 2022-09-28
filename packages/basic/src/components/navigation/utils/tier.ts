@@ -9,33 +9,33 @@ import { MaybeRef } from '@vue-layout/core';
 import { isRef } from 'vue';
 import { NavigationElement } from '../type';
 
-export function findTierComponents(
-    components: MaybeRef<NavigationElement[]>,
+export function findTierNavigationElements(
+    items: MaybeRef<NavigationElement[]>,
     tier: number,
 ) : NavigationElement[] {
     const filterFn = (component: NavigationElement) => typeof component.tier !== 'undefined' && component.tier === tier;
 
-    if (isRef(components)) {
-        return components.value.filter(filterFn);
+    if (isRef(items)) {
+        return items.value.filter(filterFn);
     }
 
-    return components.filter(filterFn);
+    return items.filter(filterFn);
 }
 
-export function findTierComponent(
-    components: MaybeRef<NavigationElement[]>,
+export function findTierNavigationElement(
+    items: MaybeRef<NavigationElement[]>,
     tier: number,
 ) : NavigationElement | undefined {
-    const items = findTierComponents(components, tier);
-    if (items.length >= 1) {
-        return items[0];
+    const data = findTierNavigationElements(items, tier);
+    if (data.length >= 1) {
+        return data[0];
     }
 
     return undefined;
 }
 
-export function setTierForComponents(
-    components: MaybeRef<NavigationElement[]>,
+export function setTierForNavigationElements(
+    items: MaybeRef<NavigationElement[]>,
     tier: number,
 ) {
     const mapFn = (component: NavigationElement) => {
@@ -43,18 +43,21 @@ export function setTierForComponents(
         return component;
     };
 
-    if (isRef(components)) {
-        return components.value.map(mapFn);
+    if (isRef(items)) {
+        return items.value.map(mapFn);
     }
 
-    return components.map(mapFn);
+    return items.map(mapFn);
 }
 
-export function removeTierFromComponents(components: MaybeRef<NavigationElement[]>, tier: number) {
-    const filterFn = (component: NavigationElement) => typeof component.tier === 'undefined' || component.tier !== tier;
-    if (isRef(components)) {
-        return components.value.filter(filterFn);
+export function removeTierFromNavigationElements(
+    items: MaybeRef<NavigationElement[]>,
+    tier: number,
+) {
+    const filterFn = (items: NavigationElement) => typeof items.tier === 'undefined' || items.tier !== tier;
+    if (isRef(items)) {
+        return items.value.filter(filterFn);
     }
 
-    return components.filter(filterFn);
+    return items.filter(filterFn);
 }

@@ -6,6 +6,7 @@
  */
 
 export enum SlotName {
+    ITEM = 'item',
     SEPARATOR = 'separator',
     LINK = 'link',
     SUB = 'sub',

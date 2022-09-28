@@ -22,7 +22,7 @@ export type NavigationElement = {
     displayChildren?: boolean,
 
     rootLink?: boolean,
-    components?: NavigationElement[],
+    children?: NavigationElement[],
 
     requireLoggedIn?: boolean,
     requireLoggedOut?: boolean,

@@ -3,21 +3,21 @@
 [![npm version](https://badge.fury.io/js/@vue-layout%2Fbasic.svg)](https://badge.fury.io/js/@vue-layout%2Fbasic)
 [![CI](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml)
 
-This repository contains provides vue components and helper/utility methods to
-render a multi tier navigation, where tier-0 conditionally affects tier-1 and so on.
+A package containing basic components, 
+to build for example multi level navigation menus.
 
 **Table of Contents**
 
 - [Installation](#installation)
 - [Usage](#usage)
 - [Functions](#functions)
-  - [build](#build)
-  - [buildWithRoute](#buildwithroute)
+    - [buildNavigation](#buildnavigation)
+    - [buildNavigationWithRoute](#buildnavigationwithroute)
 - [Types](#types)
-  - [BuildContext](#buildcontext)
-  - [Component](#component)
-  - [ProviderInterface](#providerinterface)
-  - [RouteBuildContext](#routebuildcontext)
+    - [NavigationBuildContext](#navigationbuildcontext)
+    - [NavigationBuildRouteContext](#navigationbuildroutecontext)
+    - [NavigationElement](#navigationelement)
+    - [NavigationProvider](#navigationprovider)
 - [Example](#example)
 
 ## Installation
@@ -28,72 +28,66 @@ $ npm i --save @vue-layout/basic
 
 ## Usage
 
-To use this Package, a class must be created, which implements the `ProviderInterface`.
-The class is used to provide different navigation components for each `tier`.
+To use the navigation component, a constant must be defined, 
+which satisfy the type: `NavigationProvider`.
 
+The implementation will provide different navigation elements for each `tier`.
 The `tier` is a numeric value, which can reach from 0 to n (infinity).
-
-The first step is to implement the class.
 
 `module.ts`
 
 ```typescript
 import {
-    Component,
-    ProviderInterface
+    NavigationElement,
+    NavigationProvider
 } from "@vue-layout/basic";
 
-export class Provider implements ProviderInterface {
-    componentsTierOne = [
-        {
-            name: 'Home',
-            url: '/',
-            icon: 'fa fa-home'
-        },
-        {
-            name: 'About',
-            url: '/about',
-            icon: 'fa fa-info'
-        }
-    ];
+const primaryItems : NavigationElement[] = [
+    {
+        name: 'Home',
+        url: '/',
+        icon: 'fa fa-home'
+    },
+    {
+        name: 'About',
+        url: '/about',
+        icon: 'fa fa-info'
+    }
+]
 
-    async getComponents(
-        tier: number,
-        components: Component[]
-    ): Promise<Component[]> {
-        // Return components for a specific tier.
-        // The context provides the current active components for
+export const navigationProvider : NavigationProvider = {
+    async hasTier(tier: number): Promise<boolean> {
+        // check if the tier exists.
+        return Promise.resolve(tier === 1);
+    },
+    async getElements(tier: number, items: NavigationElement[]): Promise<NavigationElement[]> {
+        // Return elements for a specific tier.
+        // The context provides the current active elements for
         // the parent tiers.
 
         switch (tier) {
             case 0:
-                return this.componentsTierOne;
+                return primaryItems;
             // ....
         }
-    }
-
-    async getComponentsActive(url: string): Promise<Component[]> {
-        // build component context for url
+    },
+    async getElementsActive(url: string): Promise<NavigationElement[]> {
+        // build element context for url
         if (url === '/') {
             return [
-                this.componentsTierOne[0]
+                primaryItems[0]
             ]
         }
 
         if (url === '/about') {
             return [
-                this.componentsTierOne[1]
+                primaryItems[1]
             ]
         }
 
         return undefined;
     }
-
-    async hasTier(tier: number): Promise<boolean> {
-        // check if the tier exists.
-        return tier === 1;
-    }
-}
+};
 ```
 
 The next step is to create the vue entrypoint. 
@@ -102,19 +96,18 @@ The next step is to create the vue entrypoint.
 
 ```typescript
 import {
-    build,
+    buildNavigation,
     createPlugin
 } from '@vue-layout/basic';
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
-import { Provider } from './module';
+import { navigationProvider } from './module';
 
 const app = createApp();
 
-const navigation = createPlugin({
-    provider: new Provider(),
-});
-app.use(navigation);
+app.use(createPlugin({
+    navigationProvider
+}));
 
 const router = createRouter({
     history: createWebHistory(),
@@ -126,7 +119,7 @@ app.use(router);
 
 (async () => {
     const url = router?.currentRoute?.value?.fullPath;
-    await build({ url });
+    await buildNavigation({ url });
 
     app.mount('#app');
 })();
@@ -148,43 +141,43 @@ After those steps are completed, the `NavigationComponents` SFC can be placed an
 
 ## Functions
 
-### build
+### buildNavigation
 
 
-▸ `function` **build**(`context?: BuildContext`): `Promise`<`void`>
+▸ `function` **buildNavigation**(`context?: NavigationBuildContext`): `Promise`<`void`>
 
-Build all navigation tiers, by `url` or active `components`. 
+Build all navigation tiers, by `url` or active `elements`. 
 
 #### Example
 **`URL`**
 ```typescript
-import { build } from '@vue-layout/basic';
+import { buildNavigation } from '@vue-layout/basic';
 
-await build({
+await buildNavigation({
     url: '/'
 });
 ```
 
-This will call the `getComponentsActive` method of the `ProviderInterface` implementation,
-to calculate the active `components`.
+This will call the `getElementsActive` method of the `NavigationProvider` implementation,
+to calculate the active `elements`.
 
-**`components`**
+**`items`**
 ```typescript
-import { build } from '@vue-layout/basic';
+import { buildNavigation } from '@vue-layout/basic';
 
-await build({
-    components: [
+await buildNavigation({
+    items: [
         {id: 'default', tier: 0, name: 'Home'}
     ]
 })
 ```
 
-This `component` array will be provided as second argument as context to the `getComponents` method of
-the `ProviderInterface` implementation, to build a specific tier navigation.
+This `element` array will be provided as second argument as context to the `getElements` method of
+the `NavigationProvider` implementation, to build a specific tier navigation.
 
-### buildWithRoute
+### buildNavigationWithRoute
 
-▸ `function` **buildWithRoute**(`context?: Partial<RouteBuildContext>`): `Promise`<`void`>
+▸ `function` **buildNavigationWithRoute**(`context?: Partial<NavigationBuildRouteContext>`): `Promise`<`void`>
 
 Build all navigation tiers, by `route` (url) or by interpreting the `metaKey` attribute of 
 a route component.
@@ -193,23 +186,23 @@ a route component.
 **`route`**
 ```typescript
 import { RouteLocation } from 'vue-router';
-import { buildWithRoute } from '@vue-layout/basic';
+import { buildNavigationWithRoute } from '@vue-layout/basic';
 
 const route : RouteLocation = {
     fullPath: '/',
     ...
 };
 
-await buildWithRoute({
+await buildNavigationWithRoute({
     route
 })
 ```
-This method call is under the hood equal to: `build({url: '/'})`.
+This method call is under the hood equal to: `buildNavigation({url: '/'})`.
 
 **`metaKey`**
 ```typescript
 import { defineComponent } from 'vue';
-import { buildWithRoute } from '@vue-layout/basic';
+import { buildNavigationWithRoute } from '@vue-layout/basic';
 
 const metaKey = 'navigation';
 
@@ -222,31 +215,42 @@ const pageComponent = defineComponent({
     ...
 });
 
-await buildWithRoute({
+await buildNavigationWithRoute({
     metaKey
 })
 ```
 This method call is under the hood equal to:
-`build({components: [{id: 'default', tier: 0, name: 'Home'}]})`.
+`buildNavigation({items: [{id: 'default', tier: 0, name: 'Home'}]})`.
 
 
 ## Types
 
-### BuildContext
+### NavigationBuildContext
 
 ```typescript
 import { Component } from '@vue-layout/basic';
 
-type BuildContext = {
-    components?: Component[],
+type NavigationBuildContext = {
+    items?: Component[],
     url?: string
 };
 ```
 
-### Component
+### NavigationBuildRouteContext
 
 ```typescript
-type Component = {
+import { RouteLocationNormalized } from 'vue-router';
+
+type NavigationBuildRouteContext = {
+    route: RouteLocationNormalized,
+    metaKey: string
+};
+```
+
+### NavigationElement
+
+```typescript
+type NavigationElement = {
     id?: string | number,
     tier?: number,
     name?: string,
@@ -264,39 +268,26 @@ type Component = {
     displayChildren?: boolean,
 
     rootLink?: boolean,
-    components?: Component[],
+    children?: NavigationElement[],
+
+    requireLoggedIn?: boolean,
+    requireLoggedOut?: boolean,
+    requirePermissions?: string | string[] | ((checker: (name: string) => boolean) => boolean)
+
 
     [key: string]: any
 };
 ```
 
-### ProviderInterface
+### NavigationProvider
 
 ```typescript
-import { Component } from '@vue-layout/basic';
+import { NavigationElement } from '@vue-layout/basic';
 
-interface ProviderInterface {
-    getComponents(
-        tier: number,
-        components: Component[]
-    ): Promise<Component[]>;
-
-    getComponentsActive(url: string): Promise<Component[]>;
-
-    hasTier(
-        tier: number
-    ): Promise<boolean>;
-}
-```
-
-### RouteBuildContext
-
-```typescript
-import { RouteLocationNormalized } from 'vue-router';
-
-type RouteBuildContext = {
-    route: RouteLocationNormalized,
-    metaKey: string
+declare type NavigationProvider = {
+    getElements: (tier: number, items: NavigationElement[]) => Promise<NavigationElement[]>,
+    getElementsActive: (url: string) => Promise<NavigationElement[]>,
+    hasTier: (tier: number) => Promise<boolean>
 };
 ```
 

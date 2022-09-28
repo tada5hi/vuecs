@@ -7,13 +7,13 @@
 
 import { useRoute } from 'vue-router';
 import { hasOwnProperty } from '@vue-layout/core';
-import { build } from '../store';
+import { buildNavigation } from '../store';
 import { NavigationElement } from '../type';
-import { isComponent } from '../utils/check';
-import { RouteBuildContext } from './type';
+import { isNavigationElement } from '../utils/check';
+import { NavigationBuildRouteContext } from './type';
 
-function transformToComponents(input: unknown) : NavigationElement[] {
-    if (isComponent(input)) {
+function transformToElements(input: unknown) : NavigationElement[] {
+    if (isNavigationElement(input)) {
         return [input];
     }
 
@@ -29,7 +29,7 @@ function transformToComponents(input: unknown) : NavigationElement[] {
         const items = [];
 
         for (let i = 0; i < input.length; i++) {
-            items.push(...transformToComponents(input[i]));
+            items.push(...transformToElements(input[i]));
         }
 
         return items;
@@ -38,14 +38,16 @@ function transformToComponents(input: unknown) : NavigationElement[] {
     return [];
 }
 
-export async function buildWithRoute(context?: Partial<RouteBuildContext>) {
+export async function buildNavigationWithRoute(
+    context?: Partial<NavigationBuildRouteContext>,
+) {
     context ??= {};
     context.route = context.route || useRoute();
     context.metaKey = context.metaKey || 'navigation';
 
-    const { route, metaKey } = context as RouteBuildContext;
+    const { route, metaKey } = context as NavigationBuildRouteContext;
 
-    const components : NavigationElement[] = [];
+    const elements : NavigationElement[] = [];
 
     const tiers : number[] = [];
     let currentTier = 0;
@@ -66,12 +68,12 @@ export async function buildWithRoute(context?: Partial<RouteBuildContext>) {
             const itemTier = items[j].tier;
             if (typeof itemTier !== 'undefined') {
                 if (tiers.indexOf(itemTier) === -1) {
-                    components.push(items[j]);
+                    elements.push(items[j]);
                     tiers.push(itemTier);
                 }
             } else {
                 items[j].tier = nextTier();
-                components.push(items[j]);
+                elements.push(items[j]);
             }
         }
     };
@@ -83,22 +85,22 @@ export async function buildWithRoute(context?: Partial<RouteBuildContext>) {
             chainRoute.meta &&
             hasOwnProperty(chainRoute.meta, metaKey)
         ) {
-            const items = transformToComponents(chainRoute.meta[metaKey]);
+            const items = transformToElements(chainRoute.meta[metaKey]);
             handleComponents(items);
         }
     }
 
     if (
-        components.length === 0 &&
+        elements.length === 0 &&
         route.meta &&
         hasOwnProperty(route.meta, metaKey)
     ) {
-        const items = transformToComponents(route.meta[metaKey]);
+        const items = transformToElements(route.meta[metaKey]);
         handleComponents(items);
     }
 
-    await build({
+    await buildNavigation({
         url: route.fullPath,
-        components,
+        items: elements,
     });
 }

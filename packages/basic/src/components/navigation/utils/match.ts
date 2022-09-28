@@ -9,12 +9,12 @@ import { MaybeRef } from '@vue-layout/core';
 import { unref } from 'vue';
 import { NavigationElement } from '../type';
 
-function isRootLink(component: MaybeRef<NavigationElement>) {
-    component = unref(component);
-    return component.rootLink || (component.url && component.url === '/');
+function isRootLink(element: MaybeRef<NavigationElement>) {
+    element = unref(element);
+    return element.rootLink || (element.url && element.url === '/');
 }
 
-export function isComponentMatch(
+export function isNavigationElementMatch(
     one?: MaybeRef<NavigationElement>,
     two?: MaybeRef<NavigationElement>,
     exact = true,
@@ -52,12 +52,12 @@ export function isComponentMatch(
     }
 
     if (
-        one.components &&
-        two.components &&
-        one.components.length === two.components.length
+        one.children &&
+        two.children &&
+        one.children.length === two.children.length
     ) {
-        for (let i = 0; i < one.components.length; i++) {
-            if (!isComponentMatch(one.components[i], two.components[i])) {
+        for (let i = 0; i < one.children.length; i++) {
+            if (!isNavigationElementMatch(one.children[i], two.children[i])) {
                 return false;
             }
         }
