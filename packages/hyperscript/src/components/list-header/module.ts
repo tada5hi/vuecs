@@ -8,14 +8,14 @@
 import {
     VNode, VNodeArrayChildren, h, mergeProps, unref,
 } from 'vue';
+import {
+    Preset, buildOptionValueOrFail, hasNormalizedSlot, normalizeSlot, unrefWithDefault,
+} from '@vue-layout/core';
 import { buildListBaseOptions } from '../list-base';
 import { ListHeaderBuildOptions, ListHeaderBuildOptionsInput } from './type';
 import { Component, SlotName } from '../constants';
-import { hasNormalizedSlot, normalizeSlot, unrefWithDefault } from '@vue-layout/core';
 import { buildListTitle } from '../list-title';
 import { buildListActionRefresh } from '../list-action-refresh';
-import { buildOptionValueOrFail } from '@vue-layout/core';
-import { Preset } from '@vue-layout/core';
 
 export function buildListHeaderOptions(
     input: ListHeaderBuildOptionsInput,
