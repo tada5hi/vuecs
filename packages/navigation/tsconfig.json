@@ -6,7 +6,7 @@
         "strict": true,
         "paths": {
             "@vue-layout/core": ["./packages/core/src"],
-            "@vue-layout/utils": ["./packages/utils/src"]
+            "@vue-layout/hyperscript": ["./packages/hyperscript/src"]
         }
     },
     "include": [

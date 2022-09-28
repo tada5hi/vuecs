@@ -6,7 +6,7 @@
  */
 
 import { Preset } from '@vue-layout/core';
-import { setConfig } from '@vue-layout/utils';
+import { setConfig } from '@vue-layout/hyperscript';
 import { createApp } from 'vue';
 
 import App from './App.vue';

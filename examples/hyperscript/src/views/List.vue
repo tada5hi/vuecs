@@ -12,7 +12,7 @@ import {
     buildListNoMore,
     buildListPagination,
     buildListSearch,
-} from '@vue-layout/utils';
+} from '@vue-layout/hyperscript';
 import { defineComponent, h, ref } from 'vue';
 
 export default defineComponent({

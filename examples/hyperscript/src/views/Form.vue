@@ -12,7 +12,7 @@ import {
     buildFormSelect,
     buildFormSubmit,
     buildFormTextarea,
-} from '@vue-layout/utils';
+} from '@vue-layout/hyperscript';
 import { maxLength, minLength } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {

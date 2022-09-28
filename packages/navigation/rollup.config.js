@@ -47,7 +47,7 @@ function buildConfig(config) {
 // Refer to https://rollupjs.org/guide/en/#warning-treating-module-as-external-dependency
 const external = [
     '@vue-layout/core',
-    '@vue-layout/utils',
+    '@vue-layout/hyperscript',
     'vue',
     'vue-router',
 ];

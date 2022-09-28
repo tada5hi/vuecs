@@ -12,7 +12,7 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url)),
-            '@vue-layout/utils': path.join(__dirname, '..', '..', 'packages', 'utils', 'src'),
+            '@vue-layout/hyperscript': path.join(__dirname, '..', '..', 'packages', 'hyperscript', 'src'),
         },
     },
 });

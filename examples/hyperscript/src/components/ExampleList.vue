@@ -6,7 +6,7 @@
   -->
 
 <script lang="ts">
-import { buildList } from '@vue-layout/utils';
+import { buildList } from '@vue-layout/hyperscript';
 import { defineComponent } from 'vue';
 
 export default defineComponent({

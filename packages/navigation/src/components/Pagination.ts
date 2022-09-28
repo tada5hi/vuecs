@@ -8,7 +8,7 @@
 import {
     defineComponent,
 } from 'vue';
-import { buildPagination } from '@vue-layout/utils';
+import { buildPagination } from '@vue-layout/hyperscript';
 
 export const Pagination = defineComponent({
     name: 'Pagination',

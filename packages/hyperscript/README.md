@@ -1,6 +1,6 @@
-# @vue-layout/utils 🧰
+# @vue-layout/hyperscript 🧰
 
-[![npm version](https://badge.fury.io/js/@vue-layout%2Futils.svg)](https://badge.fury.io/js/@vue-layout%2Futils)
+[![npm version](https://badge.fury.io/js/@vue-layout%2Fhyperscript.svg)](https://badge.fury.io/js/@vue-layout%2Fhyperscript)
 [![CI](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml)
 
 This package provides helpers for building **forms** and **list** elements on the fly, using hyperscript.
@@ -16,7 +16,7 @@ It also provides presets for bootstrap & font-awesome.
 ## Installation
 
 ```
-$ npm i --save @vue-layout/utils
+$ npm i --save @vue-layout/hyperscript
 ```
 
 ## Usage
