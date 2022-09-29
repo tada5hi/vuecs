@@ -8,7 +8,7 @@
 import {
     VNode, VNodeChild, h, mergeProps, unref,
 } from 'vue';
-import { Preset, createOptionValueBuilder } from '@vue-layout/core';
+import { createOptionValueBuilder } from '@vue-layout/core';
 import { Component } from '../constants';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
 import { buildValidationGroup } from '../validation-group';
@@ -17,28 +17,7 @@ import { FormInputCheckboxBuildOptions, FormInputCheckboxBuildOptionsInput } fro
 export function buildFormInputCheckboxOptions(
     input: FormInputCheckboxBuildOptionsInput,
 ) : FormInputCheckboxBuildOptions {
-    const options = buildFormBaseOptions(input, Component.FormInputCheckbox, {
-        class: {
-            preset: {
-                [Preset.BOOTSTRAP]: {
-                    value: ['form-check-input'],
-                },
-                [Preset.BOOTSTRAP_V5]: {
-                    value: ['form-check-input'],
-                },
-            },
-        },
-        labelClass: {
-            preset: {
-                [Preset.BOOTSTRAP]: {
-                    value: ['form-check-label'],
-                },
-                [Preset.BOOTSTRAP_V5]: {
-                    value: ['form-check-label'],
-                },
-            },
-        },
-    });
+    const options = buildFormBaseOptions(input, Component.FormInputCheckbox);
 
     const { buildOrFail } = createOptionValueBuilder<FormInputCheckboxBuildOptions>(
         Component.FormInputCheckbox,
@@ -51,14 +30,6 @@ export function buildFormInputCheckboxOptions(
             key: 'groupClass',
             value: unref(options.groupClass),
             alt: '',
-            preset: {
-                [Preset.BOOTSTRAP]: {
-                    value: 'form-check',
-                },
-                [Preset.BOOTSTRAP_V5]: {
-                    value: 'form-check',
-                },
-            },
         }),
     };
 }

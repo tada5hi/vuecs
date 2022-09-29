@@ -5,137 +5,81 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { inject } from '../di';
-import { MakeOptional } from '../type';
-import { isOptionValueConfig } from './check';
-import { OptionValueBuildContext, OptionValueConfig, PresetOption } from './type';
-import { mergeOption } from './merge';
+import { unref } from 'vue';
+import { InjectionKeys } from '../type';
 import { hasOwnProperty } from '../utils';
-
-function getGlobalComponentOption<V>(
-    component: string,
-    key: string,
-) : OptionValueConfig<V> | undefined {
-    const { [component]: componentOptions } = {
-        ...inject('component') ?? {},
-    };
-
-    if (
-        typeof componentOptions === 'object' &&
-        hasOwnProperty(componentOptions, key)
-    ) {
-        return componentOptions[key];
-    }
-
-    return undefined;
-}
-
-function mergePreset<V>(
-    target: Record<string, MakeOptional<PresetOption<V>, 'value' | 'enabled'>>,
-    source: Record<string, MakeOptional<PresetOption<V>, 'value' | 'enabled'>>,
-) {
-    const keys = Object.keys(source);
-    for (let i = 0; i < keys.length; i++) {
-        // if boolean false <-- disable preset for default preset value
-        if (hasOwnProperty(target, keys[i])) {
-            if (typeof target[keys[i]].value === 'undefined') {
-                target[keys[i]].value = source[keys[i]].value as V;
-            }
-
-            if (
-                typeof target[keys[i]].enabled === 'undefined' &&
-                    typeof source[keys[i]].enabled !== 'undefined'
-            ) {
-                target[keys[i]].enabled = source[keys[i]].enabled as boolean;
-            }
-        }
-    }
-
-    return target;
-}
+import {
+    getGlobalComponentOptionValue,
+    getGlobalPresetsOptionValue,
+    isOptionValueConfig,
+    mergeOption,
+} from './utils';
+import { OptionValueBuildContext, OptionValueBuilder } from './type';
 
 export function buildOptionValue<
     O extends Record<string, any>,
     K extends keyof O,
 >(context: OptionValueBuildContext<K, O[K] | undefined>) : O[K] | undefined {
-    let target : O[K] | undefined;
+    let value : O[K] | undefined;
 
-    const presetConfig : Record<
-    string,
-    MakeOptional<PresetOption<O[K]>, 'value' | 'enabled'>
-    > = {};
+    const presetConfig : Record<string, boolean> = {};
 
     if (isOptionValueConfig(context.value)) {
-        target = context.value.value;
+        value = unref(context.value.value);
 
-        if (context.value.preset) {
-            const keys = Object.keys(context.value.preset);
+        if (context.value.presets) {
+            const keys = Object.keys(context.value.presets);
             for (let i = 0; i < keys.length; i++) {
-                presetConfig[keys[i]] = context.value.preset[keys[i]];
+                presetConfig[keys[i]] = context.value.presets[keys[i]];
             }
         }
     } else {
-        target = context.value as O[K];
+        value = unref(context.value) as O[K];
     }
 
-    const globalComponentOption = getGlobalComponentOption(
+    const {
+        components: componentsInjectionKey,
+        presets: presetsInjectionKey,
+    } = context.injectionKeys || {};
+
+    const configValue = getGlobalComponentOptionValue(
         context.component,
         context.key as string,
-    );
+        componentsInjectionKey,
+    ) as O[K];
 
-    if (
-        globalComponentOption &&
-        typeof globalComponentOption.value !== 'undefined'
-    ) {
-        target = globalComponentOption.value as O[K];
+    if (typeof value === 'undefined') {
+        value = configValue;
     }
 
-    if (typeof target === 'undefined') {
-        target = context.alt;
+    if (typeof value === 'undefined') {
+        value = context.alt;
     }
 
-    if (typeof target === 'undefined') {
+    if (typeof value === 'undefined') {
         return undefined;
     }
 
-    const globalPresets = { ...inject('preset') ?? {} } as Record<string, boolean>;
-    const globalPresetKeys = Object.keys(globalPresets);
-    for (let i = 0; i < globalPresetKeys.length; i++) {
-        if (Object.prototype.hasOwnProperty.call(presetConfig, globalPresetKeys[i])) {
-            presetConfig[globalPresetKeys[i]].enabled = globalPresets[globalPresetKeys[i]];
-        } else {
-            presetConfig[globalPresetKeys[i]] = {
-                enabled: globalPresets[globalPresetKeys[i]],
-            };
-        }
-    }
-
-    if (
-        globalComponentOption &&
-        globalComponentOption.preset
-    ) {
-        if (globalComponentOption.preset) {
-            mergePreset(presetConfig, globalComponentOption.preset);
-        }
-    }
-
-    if (context.preset) {
-        mergePreset(presetConfig, context.preset);
-    }
-
-    const keys = Object.keys(presetConfig);
-    for (let i = 0; i < keys.length; i++) {
-        const enabled = presetConfig[keys[i]].enabled ?? true;
-        if (enabled) {
-            target = mergeOption(
+    const presetsValue = getGlobalPresetsOptionValue(
+        context.component,
+        context.key as string,
+        presetsInjectionKey,
+    );
+    const presetsKeys = Object.keys(presetsValue);
+    for (let i = 0; i < presetsKeys.length; i++) {
+        if (
+            !hasOwnProperty(presetConfig, presetsKeys[i]) ||
+            presetConfig[presetsKeys[i]]
+        ) {
+            value = mergeOption(
                 context.key as string,
-                target,
-                presetConfig[keys[i]].value,
+                value,
+                presetsValue[presetsKeys[i]],
             );
         }
     }
 
-    return target;
+    return value;
 }
 
 export function buildOptionValueOrFail<
@@ -153,19 +97,22 @@ export function buildOptionValueOrFail<
 
 export function createOptionValueBuilder<O extends Record<string, any>>(
     component: string,
-) {
+    injectionKeys?: InjectionKeys,
+) : OptionValueBuilder<O> {
     return {
         build: <K extends keyof O>(
-            context: Omit<OptionValueBuildContext<K, O[K]>, 'component'>,
+            context: Omit<OptionValueBuildContext<K, O[K]>, 'component' | 'injectionKeys'>,
         ) : O[K] | undefined => buildOptionValue({
             ...context,
             component,
+            ...(injectionKeys ? { injectionKeys } : {}),
         }),
         buildOrFail: <K extends keyof O>(
-            context: Omit<OptionValueBuildContext<K, O[K]>, 'component'>,
+            context: Omit<OptionValueBuildContext<K, O[K]>, 'component' | 'injectionKeys'>,
         ) : O[K] => buildOptionValueOrFail({
             ...context,
             component,
+            ...(injectionKeys ? { injectionKeys } : {}),
         }),
     };
 }

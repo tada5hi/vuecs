@@ -7,9 +7,7 @@
 
 import { Slots } from 'vue';
 import {
-    MakeOptional,
     OptionsInput,
-    PresetOption,
     VNodeClass,
     VNodeProperties,
 } from '@vue-layout/core';
@@ -28,13 +26,5 @@ export type ExpectListBaseOptions<T extends ListBaseOptions | ListBaseOptionsInp
     > = Omit<T, keyof ListBaseOptions | keyof ListBaseOptionsInput>;
 
 export type ListBaseOptionsDefaults = {
-    [K in keyof ListBaseOptions]?: {
-        alt?: ListBaseOptions[K],
-        preset?: {
-            [key: string]: MakeOptional<
-            PresetOption<ListBaseOptions[K]>,
-            'value' | 'enabled'
-            >
-        },
-    }
+    [K in keyof ListBaseOptions]?: ListBaseOptions[K]
 };

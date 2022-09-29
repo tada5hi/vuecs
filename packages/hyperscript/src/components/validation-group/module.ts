@@ -8,7 +8,7 @@
 import {
     VNode, VNodeArrayChildren, h, unref,
 } from 'vue';
-import { Preset, createOptionValueBuilder } from '@vue-layout/core';
+import { createOptionValueBuilder } from '@vue-layout/core';
 import { Component } from '../constants';
 import { ValidationResult } from '../type';
 import { ValidationGroupOptions, ValidationGroupOptionsInput } from './type';
@@ -25,14 +25,6 @@ export function buildValidationGroupOptions(options: ValidationGroupOptionsInput
         class: buildOrFail({
             key: 'class',
             alt: [],
-            preset: {
-                [Preset.BOOTSTRAP]: {
-                    value: 'form-group',
-                },
-                [Preset.BOOTSTRAP_V5]: {
-                    value: 'form-group',
-                },
-            },
         }),
 
         props: buildOrFail({
@@ -44,27 +36,11 @@ export function buildValidationGroupOptions(options: ValidationGroupOptionsInput
         errorClass: buildOrFail({
             key: 'errorClass',
             alt: [],
-            preset: {
-                [Preset.BOOTSTRAP]: {
-                    value: 'form-group-error',
-                },
-                [Preset.BOOTSTRAP_V5]: {
-                    value: 'form-group-error',
-                },
-            },
         }),
 
         warningClass: buildOrFail({
             key: 'warningClass',
             alt: [],
-            preset: {
-                [Preset.BOOTSTRAP]: {
-                    value: 'form-group-warning',
-                },
-                [Preset.BOOTSTRAP_V5]: {
-                    value: 'form-group-warning',
-                },
-            },
         }),
 
         validationResult: options.validationResult || {} as ValidationResult<unknown>,

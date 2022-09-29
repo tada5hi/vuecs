@@ -5,15 +5,15 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { provide } from '@vue-layout/core';
+import { provide, transformPresetsInput } from '@vue-layout/core';
 import { Config } from './type';
 
 export function setConfig(input: Partial<Config>) {
-    if (input.preset) {
-        provide('preset', input.preset);
+    if (input.presets) {
+        provide('presets', transformPresetsInput(input.presets));
     }
 
-    if (input.component) {
-        provide('component', input.component);
+    if (input.components) {
+        provide('components', input.components);
     }
 }

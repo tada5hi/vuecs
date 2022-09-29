@@ -5,13 +5,10 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { createMerger } from 'smob';
-import { unref } from 'vue';
 import {
-    Preset,
     createOptionValueBuilder,
-    setMaybeRefValue,
-    unrefWithDefault,
+    extractValueFromOptionValueInput,
+    setMaybeRefValue, unrefWithDefault,
 } from '@vue-layout/core';
 import { Component } from '../constants';
 import {
@@ -25,62 +22,41 @@ export function buildFormBaseOptions<T extends FormBaseOptionsInput>(
 ): ExpectFormBaseOptions<T> & FormBaseOptions {
     defaults = defaults || {};
 
-    const merger = createMerger({ array: false });
-    const { buildOrFail } = createOptionValueBuilder<FormBaseOptions>(
+    const builder = createOptionValueBuilder<FormBaseOptions>(
         component,
     );
 
     return {
         ...options,
 
-        class: buildOrFail({
+        class: builder.buildOrFail({
             key: 'class',
-            value: unref(options.class),
-            ...merger(defaults.class || {}, {
-                alt: '',
-                preset: {
-                    [Preset.BOOTSTRAP]: {
-                        value: ['form-control'],
-                    },
-                    [Preset.BOOTSTRAP_V5]: {
-                        value: ['form-control'],
-                    },
-                },
-            }),
+            value: options.class,
+            alt: defaults.class || '',
         }),
-        props: buildOrFail({
+        props: builder.buildOrFail({
             key: 'props',
-            value: unref(options.props),
-            alt: {},
-            ...defaults.props,
+            value: options.props,
+            alt: defaults.props || {},
         }),
 
-        label: buildOrFail({
+        label: builder.buildOrFail({
             key: 'label',
-            value: unref(options.label),
-            alt: true,
-            ...defaults.label,
+            value: options.label,
+            alt: defaults.label ?? true,
         }),
-        labelClass: buildOrFail({
+        labelClass: builder.buildOrFail({
             key: 'labelClass',
-            value: unref(options.labelClass),
-            ...merger(defaults.labelClass || {}, {
-                alt: '',
-                preset: {
-                    [Preset.BOOTSTRAP_V5]: {
-                        value: ['form-label'],
-                    },
-                },
-            }),
+            value: options.labelClass,
+            alt: defaults.labelClass || '',
         }),
-        labelContent: buildOrFail({
+        labelContent: builder.buildOrFail({
             key: 'labelContent',
-            value: unref(options.labelContent),
-            alt: 'Input',
-            ...defaults.labelContent,
+            value: options.labelContent,
+            alt: defaults.labelContent || 'Input',
         }),
 
-        validationMessages: unrefWithDefault(options.validationMessages, {}),
+        validationMessages: unrefWithDefault(extractValueFromOptionValueInput(options.validationMessages), {}),
         validationResult: options.validationResult || {},
     };
 }

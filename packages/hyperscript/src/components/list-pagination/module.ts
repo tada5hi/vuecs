@@ -6,7 +6,7 @@
  */
 
 import { h, mergeProps } from 'vue';
-import { unrefWithDefault } from '@vue-layout/core';
+import { extractValueFromOptionValueInput, unrefWithDefault } from '@vue-layout/core';
 import { Component } from '../constants';
 import { buildListBaseOptions } from '../list-base';
 import { buildPagination } from '../pagination';
@@ -17,17 +17,15 @@ export function buildListPaginationOptions<T extends Record<string, any>>(
     input: ListPaginationBuildOptionsInput<T>,
 ) : ListPaginationBuildOptions<T> {
     const options = buildListBaseOptions(input, Component.ListPagination, {
-        class: {
-            alt: 'list-pagination',
-        },
+        class: 'list-pagination',
     });
 
     return {
         ...options,
 
-        busy: unrefWithDefault(options.busy, false),
+        busy: unrefWithDefault(extractValueFromOptionValueInput(options.busy), false),
 
-        meta: unrefWithDefault(options.meta, {}),
+        meta: unrefWithDefault(extractValueFromOptionValueInput(options.meta), {}),
     };
 }
 

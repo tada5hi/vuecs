@@ -6,7 +6,9 @@
  */
 
 import { VNode, h, mergeProps } from 'vue';
-import { hasNormalizedSlot, normalizeSlot, unrefWithDefault } from '@vue-layout/core';
+import {
+    extractValueFromOptionValueInput, hasNormalizedSlot, normalizeSlot, unrefWithDefault,
+} from '@vue-layout/core';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions } from '../list-base';
 import { ListItemsBuildOptions, ListItemsBuildOptionsInput } from './type';
@@ -16,18 +18,16 @@ export function buildListItemsOptions<T extends Record<string, any>>(
     input: ListItemsBuildOptionsInput<T>,
 ) : ListItemsBuildOptions<T> {
     const options = buildListBaseOptions(input, Component.ListItems, {
-        class: {
-            alt: 'list-items',
-        },
+        class: 'list-items',
     });
 
     return {
         ...options,
 
-        busy: unrefWithDefault(options.busy, false),
+        busy: unrefWithDefault(extractValueFromOptionValueInput(options.busy), false),
 
-        data: unrefWithDefault(options.data, []),
-        item: unrefWithDefault(options.item, {}),
+        data: unrefWithDefault(extractValueFromOptionValueInput(options.data), []),
+        item: unrefWithDefault(extractValueFromOptionValueInput(options.item), {}),
     };
 }
 

@@ -32,29 +32,25 @@ export function buildListBaseOptions<
         tag: buildOrFail({
             key: 'tag',
             value: unref(options.tag),
-            alt: 'div',
-            ...defaults.tag,
+            alt: defaults.tag || 'div',
         }),
 
         slotItems: options.slotItems || {},
         slotProps: buildOrFail({
             key: 'slotProps',
             value: unref(options.slotProps),
-            alt: {},
-            ...defaults.slotProps,
+            alt: defaults.slotProps || {},
         }),
 
         class: buildOrFail({
             key: 'class',
             value: unref(options.class),
-            alt: [],
-            ...defaults.class,
+            alt: defaults.class || [],
         }),
         props: buildOrFail({
             key: 'props',
             value: unref(options.props),
-            alt: {},
-            ...defaults.props,
+            alt: defaults.props || {},
         }),
     };
 }

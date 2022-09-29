@@ -5,7 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Preset, createOptionValueBuilder } from '@vue-layout/core';
+import {
+    createOptionValueBuilder,
+    extractValueFromOptionValueInput,
+    unrefWithDefault,
+} from '@vue-layout/core';
 import {
     VNodeArrayChildren, VNodeChild, h, mergeProps, unref,
 } from 'vue';
@@ -23,7 +27,7 @@ export function buildPaginationOptions(
     return {
         ...options,
 
-        busy: unref(options.busy) ?? false,
+        busy: unrefWithDefault(extractValueFromOptionValueInput(options.busy), false),
 
         tag: buildOrFail({
             key: 'tag',
@@ -34,14 +38,6 @@ export function buildPaginationOptions(
             key: 'class',
             value: unref(options.class),
             alt: 'pagination',
-            preset: {
-                [Preset.BOOTSTRAP]: {
-                    value: 'justify-content-center',
-                },
-                [Preset.BOOTSTRAP_V5]: {
-                    value: 'justify-content-center',
-                },
-            },
         }),
 
         itemTag: buildOrFail({
@@ -70,11 +66,6 @@ export function buildPaginationOptions(
         prevClass: build({
             key: 'prevClass',
             alt: [],
-            preset: {
-                [Preset.FONT_AWESOME]: {
-                    value: 'fa fa-chevron-left',
-                },
-            },
         }),
         prevContent: build({
             key: 'prevContent',
@@ -87,11 +78,6 @@ export function buildPaginationOptions(
         nextClass: build({
             key: 'nextClass',
             alt: [],
-            preset: {
-                [Preset.FONT_AWESOME]: {
-                    value: 'fa fa-chevron-right',
-                },
-            },
         }),
         nextContent: build({
             key: 'nextContent',

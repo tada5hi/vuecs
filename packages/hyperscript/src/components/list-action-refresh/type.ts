@@ -16,7 +16,7 @@ import {
 
 export type ListActionRefreshBuildOptions = ListBaseOptions & {
     text: boolean,
-    textContent: VNodeChild | VNode | VNode[],
+    textContent: VNodeChild | VNode | VNode[] | string,
 
     icon: boolean,
     iconClass: VNodeClass,

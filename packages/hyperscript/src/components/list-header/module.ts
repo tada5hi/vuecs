@@ -9,7 +9,7 @@ import {
     VNode, VNodeArrayChildren, h, mergeProps, unref,
 } from 'vue';
 import {
-    Preset, buildOptionValueOrFail, hasNormalizedSlot, normalizeSlot, unrefWithDefault,
+    buildOptionValueOrFail, hasNormalizedSlot, normalizeSlot, unrefWithDefault,
 } from '@vue-layout/core';
 import { buildListBaseOptions } from '../list-base';
 import { ListHeaderBuildOptions, ListHeaderBuildOptionsInput } from './type';
@@ -21,17 +21,7 @@ export function buildListHeaderOptions(
     input: ListHeaderBuildOptionsInput,
 ) : ListHeaderBuildOptions {
     const options = buildListBaseOptions(input, Component.ListHeader, {
-        class: {
-            alt: 'list-header',
-            preset: {
-                [Preset.BOOTSTRAP]: {
-                    value: 'd-flex flex-row align-items-center',
-                },
-                [Preset.BOOTSTRAP_V5]: {
-                    value: 'd-flex flex-row align-items-center',
-                },
-            },
-        },
+        class: 'list-header',
     });
 
     return {
@@ -48,14 +38,6 @@ export function buildListHeaderOptions(
             key: 'actionClass',
             value: unref(options.actionClass),
             alt: [],
-            preset: {
-                [Preset.BOOTSTRAP]: {
-                    value: 'd-flex flex-row ml-auto',
-                },
-                [Preset.BOOTSTRAP_V5]: {
-                    value: 'd-flex flex-row ms-auto',
-                },
-            },
         }),
         actionProps: unrefWithDefault(options.actionProps, {}),
         actionRefresh: buildOptionValueOrFail({

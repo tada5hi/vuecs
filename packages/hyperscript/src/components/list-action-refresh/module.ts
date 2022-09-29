@@ -8,7 +8,7 @@ import {
     VNode, VNodeArrayChildren, h, mergeProps, unref,
 } from 'vue';
 import {
-    Preset, createOptionValueBuilder, isPromise, setMaybeRefValue, unrefWithDefault,
+    createOptionValueBuilder, isPromise, setMaybeRefValue, unrefWithDefault,
 } from '@vue-layout/core';
 import { Component } from '../constants';
 import { ListActionRefreshBuildOptions, ListActionRefreshBuildOptionsInput } from './type';
@@ -18,19 +18,7 @@ export function buildListActionRefreshOptions(
     input: ListActionRefreshBuildOptionsInput,
 ) : ListActionRefreshBuildOptions {
     const options = buildListBaseOptions(input, Component.ListActionRefresh, {
-        tag: {
-            alt: 'button',
-        },
-        class: {
-            preset: {
-                [Preset.BOOTSTRAP]: {
-                    value: 'btn btn-xs btn-dark',
-                },
-                [Preset.BOOTSTRAP_V5]: {
-                    value: 'btn btn-xs btn-dark',
-                },
-            },
-        },
+        tag: 'button',
     });
 
     const { buildOrFail } = createOptionValueBuilder<ListActionRefreshBuildOptions>(
@@ -63,11 +51,6 @@ export function buildListActionRefreshOptions(
             key: 'iconClass',
             value: unref(options.iconClass),
             alt: [],
-            preset: {
-                [Preset.FONT_AWESOME]: {
-                    value: 'fa fa-refresh',
-                },
-            },
         }),
         iconContent: buildOrFail({
             key: 'iconContent',

@@ -9,7 +9,7 @@ import {
     VNode, VNodeArrayChildren, h, mergeProps, unref,
 } from 'vue';
 import {
-    Preset, createOptionValueBuilder, hasNormalizedSlot, normalizeSlot,
+    createOptionValueBuilder, hasNormalizedSlot, normalizeSlot,
 } from '@vue-layout/core';
 import { buildListBaseOptions } from '../list-base';
 import { ListTitleBuildOptions, ListTitleBuildOptionsInput } from './type';
@@ -19,9 +19,7 @@ export function buildListTitleOptions(
     input: ListTitleBuildOptionsInput,
 ) : ListTitleBuildOptions {
     const options = buildListBaseOptions(input, Component.ListTitle, {
-        class: {
-            alt: [],
-        },
+        class: [],
     });
 
     const { buildOrFail } = createOptionValueBuilder<ListTitleBuildOptions>(
@@ -40,14 +38,6 @@ export function buildListTitleOptions(
             key: 'textClass',
             value: unref(options.textClass),
             alt: [],
-            preset: {
-                [Preset.BOOTSTRAP]: {
-                    value: 'mb-0',
-                },
-                [Preset.BOOTSTRAP_V5]: {
-                    value: 'mb-0',
-                },
-            },
         }),
         textType: buildOrFail({
             key: 'textType',
@@ -74,11 +64,6 @@ export function buildListTitleOptions(
             key: 'iconClass',
             value: unref(options.iconClass),
             alt: [],
-            preset: {
-                [Preset.FONT_AWESOME]: {
-                    value: 'fa fa-bars',
-                },
-            },
         }),
         iconProps: buildOrFail({
             key: 'iconProps',

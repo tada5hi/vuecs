@@ -9,8 +9,8 @@ import {
     VNode, VNodeArrayChildren, VNodeChild, h, mergeProps, unref,
 } from 'vue';
 import {
-    Preset, createOptionValueBuilder, hasNormalizedSlot, hasOwnProperty,
-    normalizeSlot, unrefWithDefault,
+    createOptionValueBuilder, extractValueFromOptionValueInput, hasNormalizedSlot,
+    hasOwnProperty, normalizeSlot, unrefWithDefault,
 } from '@vue-layout/core';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions } from '../list-base';
@@ -20,17 +20,7 @@ export function buildListItemOptions<T extends Record<string, any>>(
     input: ListItemBuildOptionsInput<T>,
 ) : ListItemBuildOptions<T> {
     const options = buildListBaseOptions(input, Component.ListItem, {
-        class: {
-            alt: 'list-item',
-            preset: {
-                [Preset.BOOTSTRAP]: {
-                    value: 'd-flex flex-row align-items-center',
-                },
-                [Preset.BOOTSTRAP_V5]: {
-                    value: 'd-flex flex-row align-items-center',
-                },
-            },
-        },
+        class: 'list-item',
     });
 
     const { buildOrFail } = createOptionValueBuilder<ListItemBuildOptions<T>>(
@@ -49,17 +39,6 @@ export function buildListItemOptions<T extends Record<string, any>>(
             key: 'iconClass',
             value: unref(options.iconClass),
             alt: [],
-            preset: {
-                [Preset.BOOTSTRAP]: {
-                    value: 'pr-1',
-                },
-                [Preset.BOOTSTRAP_V5]: {
-                    value: 'pe-1',
-                },
-                [Preset.FONT_AWESOME]: {
-                    value: 'fa fa-bars',
-                },
-            },
         }),
         iconProps: unrefWithDefault(options.iconProps, {}),
 
@@ -70,18 +49,17 @@ export function buildListItemOptions<T extends Record<string, any>>(
             alt: 'name',
         }),
 
-        index: unref(options.index),
-        key: unref(options.key),
+        index: unref(extractValueFromOptionValueInput(options.index)),
+        key: unref(extractValueFromOptionValueInput(options.key)),
 
-        data: unref(options.data),
+        data: unref(extractValueFromOptionValueInput(options.data)),
 
         actions: buildOrFail({
             key: 'actions',
             value: unref(options.actions),
             alt: [],
         }),
-        busy: unrefWithDefault(options.busy, false),
-
+        busy: unrefWithDefault(extractValueFromOptionValueInput(options.busy), false),
     };
 }
 

@@ -7,3 +7,5 @@
 
 export * from './components';
 export * from './config';
+export * from './presets';
+export * from './type';

@@ -7,7 +7,11 @@
 
 import { h, unref } from 'vue';
 import {
-    Preset, createOptionValueBuilder, isPromise, setMaybeRefValue, unrefWithDefault,
+    createOptionValueBuilder,
+    extractValueFromOptionValueInput,
+    isPromise,
+    setMaybeRefValue,
+    unrefWithDefault,
 } from '@vue-layout/core';
 import { Component } from '../constants';
 import { FormSubmitOptions, FormSubmitOptionsInput } from './type';
@@ -44,24 +48,11 @@ export function buildFormSubmitOptions(
             key: 'updateIconClass',
             value: unref(options.updateIconClass),
             alt: [],
-            preset: {
-                [Preset.FONT_AWESOME]: {
-                    value: 'fa fa-save',
-                },
-            },
         }),
         updateButtonClass: buildOrFail({
             key: 'updateButtonClass',
             value: unref(options.updateButtonClass),
             alt: [],
-            preset: {
-                [Preset.BOOTSTRAP]: {
-                    value: 'btn btn-xs btn-primary',
-                },
-                [Preset.BOOTSTRAP_V5]: {
-                    value: 'btn btn-xs btn-primary',
-                },
-            },
         }),
 
         createText: buildOrFail({
@@ -73,29 +64,16 @@ export function buildFormSubmitOptions(
             key: 'createIconClass',
             value: unref(options.createIconClass),
             alt: [],
-            preset: {
-                [Preset.FONT_AWESOME]: {
-                    value: 'fa fa-plus',
-                },
-            },
         }),
         createButtonClass: buildOrFail({
             key: 'createButtonClass',
             value: unref(options.createButtonClass),
             alt: [],
-            preset: {
-                [Preset.BOOTSTRAP]: {
-                    value: 'btn btn-xs btn-success',
-                },
-                [Preset.BOOTSTRAP_V5]: {
-                    value: 'btn btn-xs btn-success',
-                },
-            },
         }),
 
         busy: options.busy ?? false,
         valid: options.valid ?? true,
-        isEditing: unrefWithDefault(options.isEditing, false),
+        isEditing: unrefWithDefault(extractValueFromOptionValueInput(options.isEditing), false),
     };
 }
 

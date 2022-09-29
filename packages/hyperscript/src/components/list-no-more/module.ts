@@ -7,7 +7,11 @@
 
 import { h, mergeProps, unref } from 'vue';
 import {
-    Preset, createOptionValueBuilder, hasNormalizedSlot, normalizeSlot, unrefWithDefault,
+    createOptionValueBuilder,
+    extractValueFromOptionValueInput,
+    hasNormalizedSlot,
+    normalizeSlot,
+    unrefWithDefault,
 } from '@vue-layout/core';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions } from '../list-base';
@@ -17,17 +21,7 @@ export function buildListNoMoreOptions<T extends Record<string, any>>(
     input: ListNoMoreBuildOptionsInput<T>,
 ) : ListNoMoreBuildOptions<T> {
     const options = buildListBaseOptions(input, Component.ListNoMore, {
-        class: {
-            alt: 'list-no-more',
-            preset: {
-                [Preset.BOOTSTRAP]: {
-                    value: 'alert alert-warning alert-sm',
-                },
-                [Preset.BOOTSTRAP_V5]: {
-                    value: 'alert alert-warning alert-sm',
-                },
-            },
-        },
+        class: 'list-no-more',
     });
 
     const { buildOrFail } = createOptionValueBuilder<ListNoMoreBuildOptions<T>>(
@@ -43,8 +37,8 @@ export function buildListNoMoreOptions<T extends Record<string, any>>(
             alt: 'No more items available...',
         }),
 
-        busy: unrefWithDefault(options.busy, false),
-        total: unrefWithDefault(options.total, 0),
+        busy: unrefWithDefault(extractValueFromOptionValueInput(options.busy), false),
+        total: unrefWithDefault(extractValueFromOptionValueInput(options.total), 0),
     };
 }
 
@@ -52,6 +46,7 @@ export function buildListNoMore<T extends Record<string, any>>(
     input?: ListNoMoreBuildOptionsInput<T>,
 ) {
     input = input || {};
+
     const options = buildListNoMoreOptions(input);
 
     if (

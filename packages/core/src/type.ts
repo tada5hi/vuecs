@@ -18,8 +18,7 @@ export type VNodeProperties = VNodeProps & {
     [key: string]: any
 };
 
-export type MakeOptional<
-    Type,
-    Key extends keyof Type,
-> = Omit<Type, Key> &
-Partial<Pick<Type, Key>>;
+export type InjectionKeys = {
+    components: string,
+    presets: string
+};

@@ -7,10 +7,8 @@
 
 import { VNode, VNodeChild } from 'vue';
 import {
-    MakeOptional,
     MaybeRef,
     OptionsInput,
-    PresetOption,
     VNodeClass,
     VNodeProperties,
 } from '@vue-layout/core';
@@ -41,13 +39,5 @@ export type ExpectFormBaseOptions<T extends FormBaseOptions | FormBaseOptionsInp
     Omit<T, keyof FormBaseOptions | keyof FormBaseOptionsInput>;
 
 export type FormBaseOptionsDefaults = {
-    [K in keyof FormBaseOptions]?: {
-        alt?: FormBaseOptions[K],
-        preset?: {
-            [key: string]: MakeOptional<
-            PresetOption<FormBaseOptions[K]>,
-            'value' | 'enabled'
-            >
-        },
-    }
+    [K in keyof FormBaseOptions]?: FormBaseOptions[K]
 };

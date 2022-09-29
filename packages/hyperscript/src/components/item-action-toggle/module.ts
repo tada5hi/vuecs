@@ -9,8 +9,8 @@ import {
     VNode, VNodeArrayChildren, h, unref,
 } from 'vue';
 import {
-    MaybeRef, Preset, createOptionValueBuilder, pushMaybeRefArrayValue,
-    setMaybeRefValue, spliceMaybeRefArray, unrefWithDefault,
+    MaybeRef, createOptionValueBuilder, extractValueFromOptionValueInput,
+    pushMaybeRefArrayValue, setMaybeRefValue, spliceMaybeRefArray, unrefWithDefault,
 } from '@vue-layout/core';
 import { ItemActionToggleOptions, ItemActionToggleOptionsInput } from './type';
 import { Component } from '../constants';
@@ -40,27 +40,11 @@ export function buildItemActionToggleOptions<T>(
             key: 'disabledClass',
             value: unref(options.disabledClass),
             alt: [],
-            preset: {
-                [Preset.BOOTSTRAP]: {
-                    value: 'btn btn-xs btn-dark',
-                },
-                [Preset.BOOTSTRAP_V5]: {
-                    value: 'btn btn-xs btn-dark',
-                },
-            },
         }),
         enabledClass: buildOrFail({
             key: 'enabledClass',
             value: unref(options.enabledClass),
             alt: [],
-            preset: {
-                [Preset.BOOTSTRAP]: {
-                    value: 'btn btn-xs btn-warning',
-                },
-                [Preset.BOOTSTRAP_V5]: {
-                    value: 'btn btn-xs btn-warning',
-                },
-            },
         }),
 
         childType: buildOrFail({
@@ -77,11 +61,6 @@ export function buildItemActionToggleOptions<T>(
             key: 'childDisabledClass',
             value: unref(options.childDisabledClass),
             alt: [],
-            preset: {
-                [Preset.FONT_AWESOME]: {
-                    value: 'fa fa-plus',
-                },
-            },
         }),
         childEnabledContent: buildOrFail({
             key: 'childEnabledContent',
@@ -92,14 +71,9 @@ export function buildItemActionToggleOptions<T>(
             key: 'childEnabledClass',
             value: unref(options.childEnabledClass),
             alt: [],
-            preset: {
-                [Preset.FONT_AWESOME]: {
-                    value: 'fa fa-minus',
-                },
-            },
         }),
 
-        busy: unrefWithDefault(options.busy, false),
+        busy: unrefWithDefault(extractValueFromOptionValueInput(options.busy), false),
     };
 }
 

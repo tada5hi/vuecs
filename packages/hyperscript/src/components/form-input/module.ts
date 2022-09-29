@@ -8,7 +8,7 @@
 import {
     VNode, VNodeChild, h, mergeProps, unref,
 } from 'vue';
-import { Preset, createOptionValueBuilder } from '@vue-layout/core';
+import { createOptionValueBuilder } from '@vue-layout/core';
 import { Component } from '../constants';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
 import { buildValidationGroup } from '../validation-group';
@@ -22,7 +22,7 @@ export function buildFormInputOptions(
     const options = buildFormBaseOptions(input, component);
 
     const { build, buildOrFail } = createOptionValueBuilder<FormInputBuildOptions>(
-        Component.FormSelect,
+        component,
     );
 
     return {
@@ -38,14 +38,6 @@ export function buildFormInputOptions(
             key: 'groupClass',
             value: unref(options.groupClass),
             alt: [],
-            preset: {
-                [Preset.BOOTSTRAP]: {
-                    value: 'input-group',
-                },
-                [Preset.BOOTSTRAP_V5]: {
-                    value: 'input-group',
-                },
-            },
         }),
 
         groupAppend: buildOrFail({
@@ -57,14 +49,6 @@ export function buildFormInputOptions(
             key: 'groupAppendClass',
             value: unref(options.groupAppendClass),
             alt: '',
-            preset: {
-                [Preset.BOOTSTRAP]: {
-                    value: 'input-group-text',
-                },
-                [Preset.BOOTSTRAP_V5]: {
-                    value: 'input-group-text',
-                },
-            },
         }),
         groupAppendContent: build({
             key: 'groupAppendContent',
@@ -82,14 +66,6 @@ export function buildFormInputOptions(
             key: 'groupPrependClass',
             value: unref(options.groupPrependClass),
             alt: '',
-            preset: {
-                [Preset.BOOTSTRAP]: {
-                    value: 'input-group-text',
-                },
-                [Preset.BOOTSTRAP_V5]: {
-                    value: 'input-group-text',
-                },
-            },
         }),
         groupPrependContent: build({
             key: 'groupPrependContent',

@@ -6,6 +6,7 @@
   -->
 
 <script lang="ts">
+import { buildOptionValueConfig } from '@vue-layout/core';
 import {
     buildFormInputCheckbox,
     buildFormInputText,
@@ -99,6 +100,7 @@ export default defineComponent({
         const renderTextarea = () => h('div', [
             h('h1', 'Textarea'),
             buildFormTextarea({
+                class: buildOptionValueConfig('form-control'),
                 labelContent: 'My textarea label',
                 value: textareaRef,
                 onChange: (value) => {

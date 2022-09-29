@@ -18,9 +18,7 @@ export function buildListSearchOptions(
     input: ListSearchBuildOptionsInput,
 ) : ListSearchBuildOptions {
     const options = buildListBaseOptions(input, Component.ListSearch, {
-        class: {
-            alt: 'list-search',
-        },
+        class: 'list-search',
     });
 
     return {
