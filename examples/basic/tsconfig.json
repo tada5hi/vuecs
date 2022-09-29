@@ -6,7 +6,8 @@
         ],
         "paths": {
             "@/*": ["./examples/navigation/src/*"],
-            "@vue-layout/basic": ["./packages/basic/src"]
+            "@vue-layout/basic": ["./packages/basic/src"],
+            "@vue-layout/hyperscript": ["./packages/hyperscript/src"]
         }
     },
     "include": [

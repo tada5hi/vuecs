@@ -13,6 +13,7 @@ export default defineConfig({
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url)),
             '@vue-layout/hyperscript': path.join(__dirname, '..', '..', 'packages', 'hyperscript', 'src'),
+            '@vue-layout/core': path.join(__dirname, '..', '..', 'packages', 'core', 'src'),
         },
     },
 });
