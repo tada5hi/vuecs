@@ -6,7 +6,7 @@
  */
 
 import {
-    createOptionValueBuilder,
+    createOptionValueBuilderForComponent,
     extractValueFromOptionValueInput,
     setMaybeRefValue, unrefWithDefault,
 } from '@vue-layout/core';
@@ -22,35 +22,35 @@ export function buildFormBaseOptions<T extends FormBaseOptionsInput>(
 ): ExpectFormBaseOptions<T> & FormBaseOptions {
     defaults = defaults || {};
 
-    const builder = createOptionValueBuilder<FormBaseOptions>(
+    const { buildOrFail } = createOptionValueBuilderForComponent<FormBaseOptions>(
         component,
     );
 
     return {
         ...options,
 
-        class: builder.buildOrFail({
+        class: buildOrFail({
             key: 'class',
             value: options.class,
             alt: defaults.class || '',
         }),
-        props: builder.buildOrFail({
+        props: buildOrFail({
             key: 'props',
             value: options.props,
             alt: defaults.props || {},
         }),
 
-        label: builder.buildOrFail({
+        label: buildOrFail({
             key: 'label',
             value: options.label,
             alt: defaults.label ?? true,
         }),
-        labelClass: builder.buildOrFail({
+        labelClass: buildOrFail({
             key: 'labelClass',
             value: options.labelClass,
             alt: defaults.labelClass || '',
         }),
-        labelContent: builder.buildOrFail({
+        labelContent: buildOrFail({
             key: 'labelContent',
             value: options.labelContent,
             alt: defaults.labelContent || 'Input',

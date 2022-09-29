@@ -8,9 +8,6 @@
 import { ComponentsOptions } from '../type';
 
 export const bootstrapV4 : ComponentsOptions = {
-    formBase: {
-        class: 'form-control',
-    },
     formInput: {
         class: 'form-control',
         groupClass: 'input-group',

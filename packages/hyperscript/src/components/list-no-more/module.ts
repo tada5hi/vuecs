@@ -7,7 +7,7 @@
 
 import { h, mergeProps, unref } from 'vue';
 import {
-    createOptionValueBuilder,
+    createOptionValueBuilderForComponent,
     extractValueFromOptionValueInput,
     hasNormalizedSlot,
     normalizeSlot,
@@ -24,7 +24,7 @@ export function buildListNoMoreOptions<T extends Record<string, any>>(
         class: 'list-no-more',
     });
 
-    const { buildOrFail } = createOptionValueBuilder<ListNoMoreBuildOptions<T>>(
+    const { buildOrFail } = createOptionValueBuilderForComponent<ListNoMoreBuildOptions<T>>(
         Component.ListNoMore,
     );
 

@@ -95,7 +95,7 @@ export function buildOptionValueOrFail<
     return target as O[K];
 }
 
-export function createOptionValueBuilder<O extends Record<string, any>>(
+export function createOptionValueBuilderForComponent<O extends Record<string, any>>(
     component: string,
     injectionKeys?: InjectionKeys,
 ) : OptionValueBuilder<O> {

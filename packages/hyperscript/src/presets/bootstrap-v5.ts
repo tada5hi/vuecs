@@ -8,10 +8,6 @@
 import { ComponentsOptions } from '../type';
 
 export const bootstrapV5 : ComponentsOptions = {
-    formBase: {
-        class: 'form-control',
-        labelClass: 'form-label',
-    },
     formInput: {
         class: 'form-control',
         labelClass: 'form-label',
@@ -21,6 +17,7 @@ export const bootstrapV5 : ComponentsOptions = {
     },
     formInputText: {
         class: 'form-control',
+        labelClass: 'form-label',
         groupClass: 'input-group',
         groupAppendClass: 'input-group-text',
         groupPrependClass: 'input-group-text',

@@ -7,7 +7,7 @@
 
 import { h, unref } from 'vue';
 import {
-    createOptionValueBuilder,
+    createOptionValueBuilderForComponent,
     extractValueFromOptionValueInput,
     isPromise,
     setMaybeRefValue,
@@ -19,7 +19,7 @@ import { FormSubmitOptions, FormSubmitOptionsInput } from './type';
 export function buildFormSubmitOptions(
     options: FormSubmitOptionsInput,
 ) : FormSubmitOptions {
-    const { buildOrFail } = createOptionValueBuilder<FormSubmitOptions>(
+    const { buildOrFail } = createOptionValueBuilderForComponent<FormSubmitOptions>(
         Component.FormSubmit,
     );
 

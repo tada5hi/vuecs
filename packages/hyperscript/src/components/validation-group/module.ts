@@ -8,14 +8,14 @@
 import {
     VNode, VNodeArrayChildren, h, unref,
 } from 'vue';
-import { createOptionValueBuilder } from '@vue-layout/core';
+import { createOptionValueBuilderForComponent } from '@vue-layout/core';
 import { Component } from '../constants';
 import { ValidationResult } from '../type';
 import { ValidationGroupOptions, ValidationGroupOptionsInput } from './type';
 import { isValidationRuleResultWithParams, isValidationRuleResultWithoutParams } from './utils';
 
 export function buildValidationGroupOptions(options: ValidationGroupOptionsInput) : ValidationGroupOptions {
-    const { buildOrFail } = createOptionValueBuilder<ValidationGroupOptions>(
+    const { buildOrFail } = createOptionValueBuilderForComponent<ValidationGroupOptions>(
         Component.ValidationGroup,
     );
 

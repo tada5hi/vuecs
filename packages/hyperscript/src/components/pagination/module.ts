@@ -6,7 +6,7 @@
  */
 
 import {
-    createOptionValueBuilder,
+    createOptionValueBuilderForComponent,
     extractValueFromOptionValueInput,
     unrefWithDefault,
 } from '@vue-layout/core';
@@ -20,7 +20,7 @@ import { PaginationOptions, PaginationOptionsInput } from './type';
 export function buildPaginationOptions(
     options: PaginationOptionsInput,
 ) : PaginationOptions {
-    const { buildOrFail, build } = createOptionValueBuilder<PaginationOptions>(
+    const { buildOrFail, build } = createOptionValueBuilderForComponent<PaginationOptions>(
         Component.ListTitle,
     );
 

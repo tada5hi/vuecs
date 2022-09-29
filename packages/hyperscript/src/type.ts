@@ -7,7 +7,6 @@
 
 import {
     Component,
-    FormBaseOptions,
     FormInputBuildOptions,
     FormInputCheckboxBuildOptions,
     FormSelectBuildOptions,
@@ -15,7 +14,6 @@ import {
     FormTextareaBuildOptions,
     ItemActionToggleOptions,
     ListActionRefreshBuildOptions,
-    ListBaseOptions,
     ListBuildOptions,
     ListHeaderBuildOptions,
     ListItemBuildOptions,
@@ -29,8 +27,6 @@ import {
 } from './components';
 
 export type ComponentFormOptions<C extends Component | `${Component}`> =
-    C extends Component.FormBase | `${Component.FormBase}` ?
-        FormBaseOptions :
         C extends Component.ValidationGroup | `${Component.ValidationGroup}` ?
             ValidationGroupOptions :
             C extends Component.FormInput | Component.FormInputText |
@@ -57,8 +53,6 @@ export type ComponentSpecialOptions<C extends Component | `${Component}`> =
         { };
 
 export type ComponentListOptions<C extends Component | `${Component}`> =
-    C extends Component.ListBase | `${Component.ListBase}` ?
-        ListBaseOptions :
         C extends Component.List | `${Component.List}` ?
             ListBuildOptions<any> :
             C extends Component.ListActionRefresh | `${Component.ListActionRefresh}` ?

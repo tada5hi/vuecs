@@ -7,14 +7,9 @@
 
 import { InjectionKeys, MaybeRef, ToMaybeRef } from '../type';
 
-/**
- * THe option value config should be created
- * using buildOptionValueConfig.
- */
 export type OptionValueConfig<V> = {
-    __vl__isOptionValueConfig: true,
     value: V,
-    presets?: Record<string, boolean>
+    presets: Record<string, boolean>
 };
 
 export type OptionValueInput<V> = V | OptionValueConfig<V>;

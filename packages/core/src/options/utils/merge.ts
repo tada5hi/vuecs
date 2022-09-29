@@ -5,6 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { merge } from 'smob';
 import { isVNodeOption, mergeVNodeOption } from './vnode';
 
 function isObject(item: any): item is Record<string, any> {
@@ -16,11 +17,11 @@ export function mergeOption<T>(key: string, target: T, source: T) : T {
         return mergeVNodeOption(key, target, source);
     }
 
-    if (isObject(key) && isObject(source)) {
-        return {
-            ...source,
-            ...target,
-        } as T;
+    if (
+        isObject(target) &&
+        isObject(source)
+    ) {
+        return merge(target, source) as T;
     }
 
     return target ?? source;

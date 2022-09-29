@@ -7,9 +7,8 @@
 
 export enum Component {
     Pagination = 'pagination',
-
-    FormBase = 'formBase',
     ValidationGroup = 'validationGroup',
+
     FormInput = 'formInput',
     FormInputCheckbox = 'formInputCheckbox',
     FormInputText = 'formInputText',
@@ -20,7 +19,6 @@ export enum Component {
     ItemActionToggle = 'itemActionToggle',
 
     List = 'list',
-    ListBase = 'listBase',
     ListActionRefresh = 'listActionRefresh',
     ListHeader = 'listHeader',
     ListItem = 'listItem',
@@ -40,5 +38,4 @@ export enum SlotName {
     ITEM = 'item',
     ITEM_ACTIONS = 'item-actions',
     ITEM_ACTIONS_EXTRA = 'item-actions-extra',
-    DEFAULT = 'default',
 }

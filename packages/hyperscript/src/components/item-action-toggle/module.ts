@@ -9,7 +9,7 @@ import {
     VNode, VNodeArrayChildren, h, unref,
 } from 'vue';
 import {
-    MaybeRef, createOptionValueBuilder, extractValueFromOptionValueInput,
+    MaybeRef, createOptionValueBuilderForComponent, extractValueFromOptionValueInput,
     pushMaybeRefArrayValue, setMaybeRefValue, spliceMaybeRefArray, unrefWithDefault,
 } from '@vue-layout/core';
 import { ItemActionToggleOptions, ItemActionToggleOptionsInput } from './type';
@@ -18,7 +18,7 @@ import { Component } from '../constants';
 export function buildItemActionToggleOptions<T>(
     options: ItemActionToggleOptionsInput<T>,
 ) : ItemActionToggleOptions<T> {
-    const { buildOrFail } = createOptionValueBuilder<ItemActionToggleOptions<T>>(
+    const { buildOrFail } = createOptionValueBuilderForComponent<ItemActionToggleOptions<T>>(
         Component.ItemActionToggle,
     );
 

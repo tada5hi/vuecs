@@ -8,7 +8,7 @@
 import {
     VNode, VNodeChild, h, mergeProps, unref,
 } from 'vue';
-import { createOptionValueBuilder } from '@vue-layout/core';
+import { createOptionValueBuilderForComponent } from '@vue-layout/core';
 import { Component } from '../constants';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
 import { buildValidationGroup } from '../validation-group';
@@ -19,7 +19,7 @@ export function buildFormInputCheckboxOptions(
 ) : FormInputCheckboxBuildOptions {
     const options = buildFormBaseOptions(input, Component.FormInputCheckbox);
 
-    const { buildOrFail } = createOptionValueBuilder<FormInputCheckboxBuildOptions>(
+    const { buildOrFail } = createOptionValueBuilderForComponent<FormInputCheckboxBuildOptions>(
         Component.FormInputCheckbox,
     );
 

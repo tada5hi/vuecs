@@ -21,17 +21,6 @@ export function isOptionValueConfig(
         hasOwnProperty(value, 'value');
 }
 
-export function buildOptionValueConfig<V>(
-    value: V,
-    presets?: Record<string, boolean>,
-) : OptionValueConfig<V> {
-    return {
-        value,
-        presets,
-        __vl__isOptionValueConfig: true,
-    } as OptionValueConfig<V>;
-}
-
 export function extractValueFromOptionValueInput<V>(input: OptionValueInput<V>) : V {
     if (isOptionValueConfig(input)) {
         return input.value;

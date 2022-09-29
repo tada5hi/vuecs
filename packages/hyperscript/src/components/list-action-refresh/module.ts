@@ -8,7 +8,7 @@ import {
     VNode, VNodeArrayChildren, h, mergeProps, unref,
 } from 'vue';
 import {
-    createOptionValueBuilder, isPromise, setMaybeRefValue, unrefWithDefault,
+    createOptionValueBuilderForComponent, isPromise, setMaybeRefValue, unrefWithDefault,
 } from '@vue-layout/core';
 import { Component } from '../constants';
 import { ListActionRefreshBuildOptions, ListActionRefreshBuildOptionsInput } from './type';
@@ -21,7 +21,7 @@ export function buildListActionRefreshOptions(
         tag: 'button',
     });
 
-    const { buildOrFail } = createOptionValueBuilder<ListActionRefreshBuildOptions>(
+    const { buildOrFail } = createOptionValueBuilderForComponent<ListActionRefreshBuildOptions>(
         Component.ListActionRefresh,
     );
 

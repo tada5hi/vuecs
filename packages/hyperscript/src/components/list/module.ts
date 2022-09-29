@@ -8,7 +8,7 @@
 import {
     VNodeArrayChildren, h, mergeProps, unref,
 } from 'vue';
-import { createOptionValueBuilder } from '@vue-layout/core';
+import { createOptionValueBuilderForComponent } from '@vue-layout/core';
 import { Component } from '../constants';
 import { ListHeaderBuildOptionsInput, buildListHeader } from '../list-header';
 import { ListItemsBuildOptionsInput, buildListItems } from '../list-items';
@@ -25,7 +25,7 @@ export function buildListOptions<T extends Record<string, any>>(
         class: 'list',
     });
 
-    const { buildOrFail } = createOptionValueBuilder<ListBuildOptions<T>>(
+    const { buildOrFail } = createOptionValueBuilderForComponent<ListBuildOptions<T>>(
         Component.List,
     );
 

@@ -48,6 +48,7 @@ function buildConfig(config) {
 const external = [
     '@vue-layout/core',
     '@vue-layout/hyperscript',
+    'smob',
     'vue',
     'vue-router',
 ];

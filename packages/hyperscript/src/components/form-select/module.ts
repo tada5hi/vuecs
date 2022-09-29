@@ -8,7 +8,7 @@
 import {
     VNode, VNodeChild, h, mergeProps, unref,
 } from 'vue';
-import { createOptionValueBuilder, extractValueFromOptionValueInput } from '@vue-layout/core';
+import { createOptionValueBuilderForComponent, extractValueFromOptionValueInput } from '@vue-layout/core';
 import { Component } from '../constants';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
 import { buildValidationGroup } from '../validation-group';
@@ -19,7 +19,7 @@ export function buildFormSelectOptions(
 ) : FormSelectBuildOptions {
     const options = buildFormBaseOptions(input, Component.FormSelect);
 
-    const builder = createOptionValueBuilder<FormSelectBuildOptions>(
+    const { buildOrFail } = createOptionValueBuilderForComponent<FormSelectBuildOptions>(
         Component.FormSelect,
     );
 
@@ -27,7 +27,7 @@ export function buildFormSelectOptions(
         ...options,
 
         options: unref(extractValueFromOptionValueInput(options.options)),
-        optionDefaultText: builder.buildOrFail({
+        optionDefaultText: buildOrFail({
             key: 'optionDefaultText',
             value: unref(options.optionDefaultText),
             alt: 'Select',

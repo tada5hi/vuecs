@@ -46,6 +46,7 @@ function buildConfig(config) {
 // Refer to https://rollupjs.org/guide/en/#warning-treating-module-as-external-dependency
 const external = [
     '@vue-layout/core',
+    'smob',
     'vue',
 ];
 
