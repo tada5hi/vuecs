@@ -5,7 +5,4 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-export * from './countdown';
-export * from './navigation';
-export * from './link';
-export * from './pagination';
+export * from './Countdown';

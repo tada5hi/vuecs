@@ -2,6 +2,10 @@
     "extends": "../../tsconfig.build.json",
 
     "compilerOptions": {
+        "lib": [
+            "ESNext",
+            "dom"
+        ],
         "outDir": "./dist",
         "importHelpers": true,
         "allowSyntheticDefaultImports": true,

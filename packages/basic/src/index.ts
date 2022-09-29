@@ -13,6 +13,7 @@ import { App, Plugin, Ref } from 'vue';
 
 // Import vue components
 import {
+    Countdown,
     Link,
     NavigationComponent,
     NavigationComponents,
@@ -41,6 +42,7 @@ export function createPlugin(options?: Partial<PluginOptions>) : Plugin {
 
     return (instance: App) => {
         Object.entries({
+            Countdown,
             Link,
             NavigationComponent,
             NavigationComponents,
