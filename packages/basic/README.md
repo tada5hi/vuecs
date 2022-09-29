@@ -6,6 +6,10 @@
 A package containing basic components, 
 to build for example multi level navigation menus.
 
+> **Note**
+> The package is still in development and the API is still subject to change.
+> Besides, the documentation still needs to be expanded
+
 **Table of Contents**
 
 - [Installation](#installation)

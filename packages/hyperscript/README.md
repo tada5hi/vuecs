@@ -8,6 +8,10 @@ Those can be used directly in the vue render function 🔥.
 
 It also provides presets for bootstrap & font-awesome.
 
+> **Note**
+> The package is still in development and the API is still subject to change.
+> Besides, the documentation still needs to be expanded
+
 **Table of Contents**
 
 - [Installation](#installation)
