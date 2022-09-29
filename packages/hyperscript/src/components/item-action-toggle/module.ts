@@ -143,10 +143,6 @@ export function buildItemActionToggle<T>(
         onClick($event: any) {
             $event.preventDefault();
 
-            if (typeof options.toggle === 'function') {
-                options.toggle(value);
-            }
-
             if (Array.isArray(currentValue)) {
                 const index = currentValue.indexOf(value);
                 if (index === -1) {
@@ -157,9 +153,9 @@ export function buildItemActionToggle<T>(
 
                 if (
                     options.currentValue &&
-                    options.change
+                    options.onChange
                 ) {
-                    options.change(options.currentValue as T);
+                    options.onChange(options.currentValue as T);
                 }
 
                 return;
@@ -167,8 +163,8 @@ export function buildItemActionToggle<T>(
 
             const setValue = (value: T | T[] | null) => {
                 setMaybeRefValue(options.currentValue, value);
-                if (options.change) {
-                    options.change(value);
+                if (options.onChange) {
+                    options.onChange(value);
                 }
             };
 

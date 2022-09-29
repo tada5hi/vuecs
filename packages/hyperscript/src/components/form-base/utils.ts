@@ -90,8 +90,8 @@ export function handleFormValueChanged(options: FormBaseOptions, value: unknown)
         setMaybeRefValue(options.value, value);
     }
 
-    if (options.change) {
-        options.change.call(null, value);
+    if (options.onChange) {
+        options.onChange.call(null, value);
     }
 
     return options;

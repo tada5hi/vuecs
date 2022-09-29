@@ -38,7 +38,7 @@ export function buildListSearch(input?: ListSearchBuildOptionsInput) {
         [
             buildFormInput({
                 value: options.value,
-                change: options.change,
+                onChange: options.change,
                 label: false,
                 groupPrepend: true,
                 groupPrependContent: h('i', {

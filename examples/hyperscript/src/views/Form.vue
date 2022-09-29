@@ -45,7 +45,7 @@ export default defineComponent({
                 labelContent: 'My input label',
 
                 value: form.text,
-                change: (value) => {
+                onChange: (value) => {
                     console.log('Value of input text changed', value);
                     form.text = value;
                 },
@@ -63,7 +63,7 @@ export default defineComponent({
                 labelContent: 'My input label',
 
                 value: form.checkbox,
-                change: (value) => {
+                onChange: (value) => {
                     console.log('Value of input checkbox changed', value);
                     form.checkbox = value;
                 },
@@ -85,7 +85,7 @@ export default defineComponent({
                     { id: 2, value: 'Option 2' },
                 ],
                 value: selectRef,
-                change: (value) => {
+                onChange: (value) => {
                     console.log('Value of select changed', value);
                 },
             }),
@@ -101,7 +101,7 @@ export default defineComponent({
             buildFormTextarea({
                 labelContent: 'My textarea label',
                 value: textareaRef,
-                change: (value) => {
+                onChange: (value) => {
                     console.log('Value of textarea changed', value);
                 },
             }),

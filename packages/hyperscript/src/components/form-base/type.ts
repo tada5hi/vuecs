@@ -28,14 +28,14 @@ export type FormBaseOptions = {
 
     value?: MaybeRef<unknown>,
 
-    change?: (input: any) => void,
+    onChange?: (input: any) => void,
     validationResult: Partial<ValidationResult>,
     validationMessages: ValidationMessages,
     validationTranslator?: ValidationTranslator
 };
 export type FormBaseOptionsInput = OptionsInput<FormBaseOptions,
 never,
-'value' | 'change' | 'validationTranslator' | 'validationResult'>;
+'value' | 'onChange' | 'validationTranslator' | 'validationResult'>;
 
 export type ExpectFormBaseOptions<T extends FormBaseOptions | FormBaseOptionsInput> =
     Omit<T, keyof FormBaseOptions | keyof FormBaseOptionsInput>;
