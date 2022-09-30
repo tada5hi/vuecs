@@ -16,6 +16,7 @@ It also provides presets for bootstrap & font-awesome.
 
 - [Installation](#installation)
 - [Usage](#usage)
+- [License](#license)
 
 ## Installation
 
@@ -45,3 +46,9 @@ The following **list** helpers are provided:
 - `buildListPagination`
 - `buildListSearch`
 - `buildListTitle`
+
+## License
+
+Made with 💚
+
+Published under [MIT License](./LICENSE).

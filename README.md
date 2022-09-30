@@ -14,6 +14,7 @@
 
 - [Packages](#packages)
 - [Documentation](#documentation)
+- [License](#license)
 
 ## Packages
 The repository contains the following packages:
@@ -24,3 +25,8 @@ The repository contains the following packages:
 ## Documentation
 Coming soon...
 
+## License
+
+Made with 💚
+
+Published under [MIT License](./LICENSE).
