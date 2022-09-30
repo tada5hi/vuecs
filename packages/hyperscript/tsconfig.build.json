@@ -11,11 +11,7 @@
         "declaration": true,
         "declarationDir": "dist/types",
         "skipLibCheck": true,
-        "isolatedModules": true,
-
-        "paths": {
-            "@vue-layout/core": ["./packages/core/src"]
-        }
+        "isolatedModules": true
     },
     "exclude": [
         "node_modules",

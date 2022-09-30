@@ -15,12 +15,7 @@
         "skipLibCheck": true,
         "declaration": true,
         "declarationDir": "dist/types",
-        "isolatedModules": true,
-
-        "paths": {
-            "@vue-layout/core": ["./packages/core/src"],
-            "@vue-layout/hyperscript": ["./packages/hyperscript/src"]
-        }
+        "isolatedModules": true
     },
     "exclude": [
         "node_modules",
