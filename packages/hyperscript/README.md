@@ -16,6 +16,7 @@ It also provides presets for bootstrap & font-awesome.
 
 - [Installation](#installation)
 - [Usage](#usage)
+- [Example](#example)
 - [License](#license)
 
 ## Installation
@@ -46,6 +47,11 @@ The following **list** helpers are provided:
 - `buildListPagination`
 - `buildListSearch`
 - `buildListTitle`
+
+## Example
+
+For an implementation example, on how to use this library, check out the example
+[package](https://github.com/tada5hi/vue-layout/tree/master/examples/hyperscript).
 
 ## License
 

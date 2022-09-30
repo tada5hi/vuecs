@@ -19,7 +19,7 @@ export default defineNuxtPlugin((ctx) => {
         navigationStore,
         navigationProvider,
         presets: [
-            'bootstrapV4',
+            'bootstrapV5',
             'fontAwesome',
         ],
     }));

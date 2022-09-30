@@ -1,17 +1,4 @@
 {
-    "extends": "../../tsconfig.json",
-    "compilerOptions": {
-        "lib": ["ESNext", "dom"],
-        "module": "ESNext",
-        "paths": {
-            "@/*": ["./examples/utils/src/*"],
-            "@vue-layout/core": ["./packages/core/src"],
-            "@vue-layout/hyperscript": ["./packages/hyperscript/src"]
-        }
-    },
-    "include": [
-        "env.d.ts",
-        "types/**/*.d.ts",
-        "src/**/*.ts"
-    ]
+    // https://v3.nuxtjs.org/concepts/typescript
+    "extends": "./.nuxt/tsconfig.json"
 }

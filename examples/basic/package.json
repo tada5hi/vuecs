@@ -1,7 +1,7 @@
 {
-    "name": "navigation-example",
+    "name": "basic-example",
     "private": true,
-    "description": "This package contains a vue demo app.",
+    "description": "This package contains an example app for the basic package",
     "scripts": {
         "build": "nuxt build",
         "dev": "nuxt dev",
@@ -9,20 +9,6 @@
         "preview": "nuxt preview",
         "postinstall": "nuxt prepare"
     },
-    "keywords": [
-        "auth",
-        "module",
-        "typescript",
-        "template",
-        "auth-template",
-        "oauth2",
-        "oauth2-client",
-        "ability",
-        "permission",
-        "header",
-        "bearer",
-        "basic"
-    ],
     "author": {
         "name": "Peter Placzek",
         "email": "contact@tada5hi.net",

@@ -23,6 +23,7 @@ to build for example multi level navigation menus.
     - [NavigationElement](#navigationelement)
     - [NavigationProvider](#navigationprovider)
 - [Example](#example)
+- [License](#license)
 
 ## Installation
 
@@ -297,5 +298,11 @@ declare type NavigationProvider = {
 
 ## Example
 
-For a simple example, on how to use this library, check out the example package:
-[Example](https://github.com/tada5hi/vue-layout/tree/master/examples/basic)
+For an implementation example, on how to use this library, check out the example
+[package](https://github.com/tada5hi/vue-layout/tree/master/examples/basic).
+
+## License
+
+Made with 💚
+
+Published under [MIT License](./LICENSE).

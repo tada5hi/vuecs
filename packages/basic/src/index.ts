@@ -28,7 +28,7 @@ import {
 export type PluginOptions = {
     navigationProvider: NavigationProvider,
     navigationStore?: Ref<NavigationStore>,
-    presets?: Record<string, ComponentsOptions> | `${PresetsBuildIn}`[],
+    presets?: Record<string, ComponentsOptions> | (`${PresetsBuildIn}`)[],
     defaults?: ComponentsOptions
 };
 
