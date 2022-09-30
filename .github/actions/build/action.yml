@@ -19,6 +19,4 @@ runs:
         -   name: Build
             shell: bash
             run: |
-                npm run build --workspace=packages/core
-                npm run build --workspace=packages/hyperscript
                 npm run build

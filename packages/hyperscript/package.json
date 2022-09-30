@@ -29,7 +29,6 @@
         "url": "https://github.com/tada5hi/vue-layout.git",
         "directory": "packages/hyperscript"
     },
-    "sideEffects": false,
     "scripts": {
         "prebuild": "rimraf ./dist",
         "build:types": "tsc --emitDeclarationOnly -p tsconfig.build.json",
