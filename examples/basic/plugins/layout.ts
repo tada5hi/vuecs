@@ -10,15 +10,15 @@ import { defineNuxtPlugin, useState } from '#app';
 import { navigationProvider } from '~/config/layout';
 
 export default defineNuxtPlugin((ctx) => {
-    const navigationState = useState<NavigationStore>(() => ({
+    const navigationStore = useState<NavigationStore>(() => ({
         items: [],
         itemsActive: [],
     }));
 
     ctx.vueApp.use(createPlugin({
-        navigationState,
+        navigationStore,
         navigationProvider,
-        presetsBuildIn: [
+        presets: [
             'bootstrapV4',
             'fontAwesome',
         ],

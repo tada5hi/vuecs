@@ -1,8 +1,8 @@
-# @vue-layout/navigation-demo 🧱
+# Basic Example 🧱
 
-[![CI](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml)
 
-This package provides a simple example for the `@vue-layout/navigation` package.
+This package provides a simple example for the
+`@vue-layout/basic` package.
 
 **Table of Contents**
 
@@ -22,10 +22,11 @@ $ npm i
 To run the example simply execute the following command: 
 
 ```shell
-$ npm run dev --workspace=packages/navigation-demo
+$ npm run dev --workspace=examples/basic
 ```
 
-This should start the development server on Port 8080.
-From now on the demo can be visited in the Browser under the following URL:
+This will boot up the development server on Port `3000`.
+From now on the example can be inspected in the Browser using 
+the following URL:
 
-`http://127.0.0.1:8080`
+`http://localhost:3000`

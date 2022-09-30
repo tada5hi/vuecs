@@ -18,6 +18,19 @@
         "no-underscore-dangle": "off",
         "no-shadow": "off",
 
+        "import/no-extraneous-dependencies": [
+            "error", {
+                "devDependencies": [
+                    "**/*.test.js",
+                    "**/*.test.ts",
+                    "**/*.spec.js",
+                    "**/*.spec.ts",
+                    "examples/**",
+                    "**/rollup.config.js"
+                ]
+            }
+        ],
+
         "@typescript-eslint/no-throw-literal": "off",
         "@typescript-eslint/no-unused-vars": "off",
         "@typescript-eslint/no-use-before-define": "off",

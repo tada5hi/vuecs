@@ -27,9 +27,8 @@ import {
 
 export type PluginOptions = {
     navigationProvider: NavigationProvider,
-    navigationState?: Ref<NavigationStore>,
-    presets?: Record<string, ComponentsOptions>,
-    presetsBuildIn?: `${PresetsBuildIn}`[],
+    navigationStore?: Ref<NavigationStore>,
+    presets?: Record<string, ComponentsOptions> | `${PresetsBuildIn}`[],
     defaults?: ComponentsOptions
 };
 
@@ -40,16 +39,16 @@ export function createPlugin(options?: Partial<PluginOptions>) : Plugin {
         setNavigationProvider(options.navigationProvider);
     }
 
-    if (options.navigationState) {
-        setStore(options.navigationState);
+    if (options.navigationStore) {
+        setStore(options.navigationStore);
     }
 
     if (options.presets) {
-        setPresets(options.presets);
-    }
-
-    if (options.presetsBuildIn) {
-        setPresets(getBuildInPresets(options.presetsBuildIn));
+        if (Array.isArray(options.presets)) {
+            setPresets(getBuildInPresets(options.presets));
+        } else {
+            setPresets(options.presets);
+        }
     }
 
     if (options.defaults) {
