@@ -5,8 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-export * from './bootstrap-v4';
-export * from './bootstrap-v5';
-export * from './constatns';
-export * from './font-awesome';
-export * from './utils';
+export enum PresetsBuildIn {
+    BOOTSTRAP_V4 = 'bootstrapV4',
+    BOOTSTRAP_V5 = 'bootstrapV5',
+    FONT_AWESOME = 'fontAwesome',
+}

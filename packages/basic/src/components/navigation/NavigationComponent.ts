@@ -12,9 +12,9 @@ import {
 import { getActiveComponent, selectNavigationElement, toggleNavigation } from './store';
 import { NavigationElement } from './type';
 import { isAbsoluteURL, isNavigationElementMatch } from './utils';
-import { LinkProperties } from '../link';
+import { LinkProperties } from '../my-link';
 import { SlotName } from './constants';
-import { Link } from '../link/Link';
+import { MyLink } from '../my-link/MyLink';
 
 export const NavigationComponent = defineComponent({
     name: 'NavigationComponent',
@@ -89,7 +89,7 @@ export const NavigationComponent = defineComponent({
                                 }
                             }
 
-                            item = h(Link, {
+                            item = h(MyLink, {
                                 class: [
                                     'nav-link',
                                     {

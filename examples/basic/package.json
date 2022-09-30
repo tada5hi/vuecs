@@ -3,10 +3,11 @@
     "private": true,
     "description": "This package contains a vue demo app.",
     "scripts": {
-        "dev": "vite",
-        "preview": "vite preview --port 4173",
-        "build": "vite build",
-        "type-check": "vue-tsc --noEmit"
+        "build": "nuxt build",
+        "dev": "nuxt dev",
+        "generate": "nuxt generate",
+        "preview": "nuxt preview",
+        "postinstall": "nuxt prepare"
     },
     "keywords": [
         "auth",
@@ -30,21 +31,21 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Tada5hi/vue-layout.git"
+        "url": "git+https://github.com/Tada5hi/vue-layout.git",
+        "directory": "examples/basic"
     },
     "bugs": {
         "url": "https://github.com/Tada5hi/vue-layout/issues"
     },
     "homepage": "https://github.com/Tada5hi/vue-layout#readme",
-    "dependencies": {
+    "devDependencies": {
+        "@fortawesome/fontawesome-free": "^6.2.0",
+        "@pinia/nuxt": "^0.4.2",
         "@vue-layout/basic": "^0.0.0",
+        "bootstrap": "^5.2.1",
+        "nuxt": "3.0.0-rc.11",
+        "pinia": "^2.0.22",
         "vue": "^3.2.40",
         "vue-router": "^4.1.4"
-    },
-    "devDependencies": {
-        "@vitejs/plugin-vue": "^3.1.0",
-        "@vue/tsconfig": "^0.1.3",
-        "vite": "^3.1.4",
-        "vue-tsc": "^0.40.13"
     }
 }

@@ -7,5 +7,5 @@
 
 export * from './countdown';
 export * from './navigation';
-export * from './link';
+export * from './my-link';
 export * from './pagination';

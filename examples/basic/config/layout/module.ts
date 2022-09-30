@@ -19,10 +19,23 @@ const secondaryDefaultItems : NavigationElement[] = [
         name: 'Home', type: 'link', icon: 'fas fa-home', url: '/', rootLink: true,
     },
     {
-        name: 'Info', type: 'link', icon: 'fas fa-info', children: [{ name: 'About', url: '/about' }],
+        name: 'Components',
+        type: 'link',
+        icon: 'fa-solid fa-bars',
+        children: [
+            {
+                name: 'Countdown', type: 'link', icon: 'fa-solid fa-clock', url: '/countdown',
+            },
+            {
+                name: 'Pagination', type: 'link', icon: 'fa-solid fa-road', url: '/pagination',
+            },
+        ],
     },
     {
-        name: 'Sonstige', type: 'link', icon: 'fas fa-bars', children: [{ name: 'Settings', url: '/settings' }],
+        name: 'Info',
+        type: 'link',
+        icon: 'fas fa-info',
+        url: '/about',
     },
 ];
 

@@ -21,7 +21,7 @@ export function buildPaginationOptions(
     options: PaginationOptionsInput,
 ) : PaginationOptions {
     const { buildOrFail, build } = createOptionValueBuilderForComponent<PaginationOptions>(
-        Component.ListTitle,
+        Component.Pagination,
     );
 
     return {
@@ -91,7 +91,7 @@ export function buildPagination(input: PaginationOptionsInput) {
     let totalPages = 1;
     let currentPage = 1;
     if (options.total > 0 && options.limit > 0) {
-        totalPages = Math.min(Math.ceil(options.total / options.limit), 1);
+        totalPages = Math.max(Math.ceil(options.total / options.limit), 1);
         currentPage = Math.floor(options.offset / options.limit) + 1;
     }
 

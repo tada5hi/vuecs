@@ -6,15 +6,16 @@
  */
 
 import 'regenerator-runtime';
-
-import '../assets/index.css';
+import {
+    ComponentsOptions, PresetsBuildIn, getBuildInPresets, setDefaults, setPresets,
+} from '@vue-layout/hyperscript';
 
 import { App, Plugin, Ref } from 'vue';
 
 // Import vue components
 import {
     Countdown,
-    Link,
+    MyLink,
     NavigationComponent,
     NavigationComponents,
     NavigationProvider,
@@ -26,7 +27,10 @@ import {
 
 export type PluginOptions = {
     navigationProvider: NavigationProvider,
-    navigationState?: Ref<NavigationStore>
+    navigationState?: Ref<NavigationStore>,
+    presets?: Record<string, ComponentsOptions>,
+    presetsBuildIn?: `${PresetsBuildIn}`[],
+    defaults?: ComponentsOptions
 };
 
 export function createPlugin(options?: Partial<PluginOptions>) : Plugin {
@@ -40,10 +44,22 @@ export function createPlugin(options?: Partial<PluginOptions>) : Plugin {
         setStore(options.navigationState);
     }
 
+    if (options.presets) {
+        setPresets(options.presets);
+    }
+
+    if (options.presetsBuildIn) {
+        setPresets(getBuildInPresets(options.presetsBuildIn));
+    }
+
+    if (options.defaults) {
+        setDefaults(options.defaults);
+    }
+
     return (instance: App) => {
         Object.entries({
             Countdown,
-            Link,
+            MyLink,
             NavigationComponent,
             NavigationComponents,
             Pagination,

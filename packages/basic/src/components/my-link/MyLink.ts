@@ -10,7 +10,8 @@ import {
 } from 'vue';
 import { hasOwnProperty } from '@vue-layout/core';
 
-export const Link = defineComponent({
+export const MyLink = defineComponent({
+    name: 'MyLink',
     props: {
         active: {
             type: Boolean,
@@ -163,4 +164,4 @@ export const Link = defineComponent({
     },
 });
 
-export default Link;
+export default MyLink;

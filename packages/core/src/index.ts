@@ -6,6 +6,7 @@
  */
 
 export * from './di';
+export * from './defaults';
 export * from './options';
 export * from './preset';
 export * from './utils';

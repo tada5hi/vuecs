@@ -5,6 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { merge } from 'smob';
+import { inject, provide } from '../di';
+
 /**
  * Transform preset.component.option -> component.option.preset.
  *
@@ -32,6 +35,36 @@ export function transformPresetsInput(
                 data[cKeys[j]][oKeys[k]][pKeys[i]] = input[pKeys[i]][cKeys[j]][oKeys[k]];
             }
         }
+    }
+
+    return data;
+}
+
+export function setPresets(
+    data: Record<string, Record<string, Record<string, any>>>,
+    injectionKey?: string,
+) {
+    const transformedData = transformPresetsInput(data);
+    provide(injectionKey || 'presets', transformedData);
+}
+
+export function setPreset(
+    name: string,
+    data: Record<string, Record<string, any>>,
+    injectionKey?: string,
+) {
+    const transformedData = transformPresetsInput({
+        [name]: data,
+    });
+
+    const presets = usePresets(injectionKey);
+    provide(injectionKey || 'presets', merge(presets, transformedData));
+}
+
+export function usePresets(injectionKey?: string) : Record<string, Record<string, Record<string, any>>> {
+    const data = inject(injectionKey || 'presets');
+    if (typeof data === 'undefined') {
+        return {};
     }
 
     return data;

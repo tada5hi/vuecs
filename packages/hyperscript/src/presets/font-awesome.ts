@@ -26,7 +26,7 @@ export const fontAwesome : ComponentsOptions = {
         iconClass: 'fa fa-bars',
     },
     pagination: {
-        prevClass: 'fa fa-chevron-left',
-        nextClass: 'fa fa-chevron-right',
+        prevClass: 'fa-solid fa-chevron-left',
+        nextClass: 'fa-solid fa-chevron-right',
     },
 };

@@ -47,6 +47,7 @@
         "@rollup/plugin-commonjs": "^22.0.2",
         "@rollup/plugin-node-resolve": "^14.1.0",
         "@rollup/plugin-replace": "^4.0.0",
+        "@vue-layout/core": "^0.0.0",
         "cross-env": "^7.0.3",
         "rollup": "^2.79.0",
         "rollup-plugin-includepaths": "^0.2.4",
@@ -57,6 +58,7 @@
         "vue": "^3.2.40"
     },
     "peerDependencies": {
+        "@vue-layout/core": "^0.0.0",
         "vue": "^3.x"
     },
     "engines": {
@@ -64,8 +66,7 @@
     },
     "dependencies": {
         "regenerator-runtime": "^0.13.9",
-        "smob": "^0.0.3",
-        "@vue-layout/core": "^0.0.0"
+        "smob": "^0.0.3"
     },
     "publishConfig": {
         "access": "public"

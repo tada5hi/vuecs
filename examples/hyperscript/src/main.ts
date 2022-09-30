@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { bootstrapV4, fontAwesome, setConfig } from '@vue-layout/hyperscript';
+import { bootstrapV4, fontAwesome, setPresets } from '@vue-layout/hyperscript';
 import { createApp } from 'vue';
 
 import App from './App.vue';
@@ -13,11 +13,9 @@ import App from './App.vue';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
-setConfig({
-    presets: {
-        bootstrapV4,
-        fontAwesome,
-    },
+setPresets({
+    bootstrapV4,
+    fontAwesome,
 });
 
 createApp(App)

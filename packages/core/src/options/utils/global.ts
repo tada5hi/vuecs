@@ -4,7 +4,8 @@
  * For the full copyright and license information,
  * view the LICENSE file that was distributed with this source code.
  */
-import { inject } from '../../di';
+import { useDefaults } from '../../defaults';
+import { usePresets } from '../../preset';
 import { hasOwnProperty } from '../../utils';
 
 export function getGlobalPresetsOptionValue(
@@ -12,9 +13,7 @@ export function getGlobalPresetsOptionValue(
     option: string,
     injectionKey?: string,
 ): Record<string, any> {
-    const input = {
-        ...inject(injectionKey || 'presets') ?? {},
-    } as Record<string, Record<string, any>>;
+    const input = usePresets(injectionKey);
 
     if (!hasOwnProperty(input, component)) {
         return {};
@@ -32,9 +31,7 @@ export function getGlobalComponentOptionValue<V>(
     option: string,
     injectionKey?: string,
 ): V | undefined {
-    const { [component]: componentOptions } = {
-        ...inject(injectionKey || 'components') ?? {},
-    };
+    const { [component]: componentOptions } = useDefaults(injectionKey);
 
     if (
         typeof componentOptions === 'object' &&
