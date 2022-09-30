@@ -67,7 +67,7 @@
     },
     "peerDependencies": {
         "@vue-layout/core": "^0.x",
-        "@vue-layout/hyperscript": "^0.0.0",
+        "@vue-layout/hyperscript": "^0.x",
         "vue": "^3.x",
         "vue-router": "^4.x"
     },
