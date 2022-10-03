@@ -28,7 +28,7 @@
         "@fortawesome/fontawesome-free": "^6.2.0",
         "@pinia/nuxt": "^0.4.2",
         "@vue-layout/basic": "*",
-        "bootstrap": "^5.2.1",
+        "bootstrap": "^5.2.2",
         "nuxt": "3.0.0-rc.11",
         "pinia": "^2.0.22",
         "vue": "^3.2.40",
