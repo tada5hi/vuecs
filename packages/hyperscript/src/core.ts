@@ -23,3 +23,8 @@ export function setDefaults(
 ) {
     return _setDefaults(data);
 }
+
+export {
+    extractValueFromOptionValueInput,
+    isOptionValueConfig,
+} from '@vue-layout/core';
