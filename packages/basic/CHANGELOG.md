@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.1](https://github.com/tada5hi/vue-layout/compare/@vue-layout/basic@0.1.0...@vue-layout/basic@0.1.1) (2022-10-08)
+
+
+### Bug Fixes
+
+* **hyperscript:** add addtional exports from core package ([ff4dcfe](https://github.com/tada5hi/vue-layout/commit/ff4dcfe94eb2bf9c6a5626cd066e4e2368056525))
+
+
+
+
+
 # 0.1.0 (2022-10-03)
 
 
