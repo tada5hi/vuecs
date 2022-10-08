@@ -67,8 +67,8 @@
         "vue-router": "^4.1.4"
     },
     "peerDependencies": {
-        "@vue-layout/core": "*",
-        "@vue-layout/hyperscript": "*",
+        "@vue-layout/core": "^0.x",
+        "@vue-layout/hyperscript": "^0.x",
         "vue": "^3.x",
         "vue-router": "^4.x"
     },
