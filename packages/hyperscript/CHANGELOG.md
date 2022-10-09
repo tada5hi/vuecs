@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.1](https://github.com/tada5hi/vue-layout/compare/@vue-layout/hyperscript@0.1.0...@vue-layout/hyperscript@0.1.1) (2022-10-09)
+
+
+### Bug Fixes
+
+* **hyperscript:** add missing handlers for global list builder ([68f58ee](https://github.com/tada5hi/vue-layout/commit/68f58ee25ca723d5dc87eca0cd53cf00e8d847d5))
+
+
+
+
+
 # [0.1.0](https://github.com/tada5hi/vue-layout/compare/@vue-layout/hyperscript@0.0.2...@vue-layout/hyperscript@0.1.0) (2022-10-09)
 
 
