@@ -91,7 +91,7 @@ export function buildList<T extends Record<string, any>>(
             {} :
             options.search;
 
-        searchOptions.change = options.onChange;
+        searchOptions.onChange = options.onChange;
         searchOptions.slotItems = options.slotItems;
         searchOptions.slotProps = options.slotProps;
 
@@ -108,6 +108,8 @@ export function buildList<T extends Record<string, any>>(
         itemsOptions.busy = options.busy;
         itemsOptions.slotItems = options.slotItems;
         itemsOptions.slotProps = options.slotProps;
+        itemsOptions.onDeleted = options.onDeleted;
+        itemsOptions.onUpdated = options.onUpdated;
 
         const items = buildListItems(itemsOptions);
         children.push(items);

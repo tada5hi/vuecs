@@ -14,11 +14,11 @@ import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '..
 export type ListSearchBuildOptions = ListBaseOptions & {
     value?: MaybeRef<unknown>,
 
-    change?: (input: any) => void,
+    onChange?: (input: any) => void,
 };
 
 export type ListSearchBuildOptionsInput = ListBaseOptionsInput & OptionsInput<
 ExpectListBaseOptions<ListSearchBuildOptions>,
 never,
-'change'
+'onChange'
 >;

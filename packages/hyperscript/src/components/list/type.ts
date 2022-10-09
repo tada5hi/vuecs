@@ -21,10 +21,13 @@ export type ListBuildOptions<T extends Record<string, any>> = ListBaseOptions & 
     data?: MaybeRef<T[]>,
     load?: ListLoadFn,
     meta?: MaybeRef<Partial<ListLoadMeta>>,
+
     onChange?: (input: any) => void,
+    onDeleted?: (item: T) => void,
+    onUpdated?: (item: T) => void,
 
     header: Omit<ListHeaderBuildOptionsInput, 'busy' | 'load'> | boolean,
-    search: Omit<ListSearchBuildOptionsInput, 'change'> | boolean,
+    search: Omit<ListSearchBuildOptionsInput, 'onChange'> | boolean,
     items: Omit<ListItemsBuildOptionsInput<T>, 'busy' | 'data'> | boolean,
     noMore: Omit<ListNoMoreBuildOptionsInput<T>, 'busy' | 'total'> | boolean
     pagination: Omit<ListPaginationBuildOptionsInput<T>, 'busy' | 'meta' | 'load'> | boolean,
@@ -33,5 +36,5 @@ export type ListBuildOptions<T extends Record<string, any>> = ListBaseOptions & 
 export type ListBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput & OptionsInput<
 ExpectListBaseOptions<ListBuildOptions<T>>,
 'load',
-'busy' | 'data' | 'meta' | 'onChange'
+'busy' | 'data' | 'meta' | 'onChange' | 'onDeleted' | 'onUpdated'
 >;
