@@ -91,7 +91,7 @@ export function buildList<T extends Record<string, any>>(
             {} :
             options.search;
 
-        searchOptions.change = options.change;
+        searchOptions.change = options.onChange;
         searchOptions.slotItems = options.slotItems;
         searchOptions.slotProps = options.slotProps;
 

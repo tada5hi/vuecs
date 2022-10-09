@@ -28,12 +28,24 @@ export type ListItemBuildOptions<T extends Record<string, any>> = ListBaseOption
     key?: string,
 
     actions: VNode | VNode[],
-    busy: boolean
+    busy: boolean,
+
+    onDeleted?: (item: T) => void,
+    onUpdated?: (item: T) => void,
 };
 
 export type ListItemBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput & OptionsInput<
 ExpectListBaseOptions<ListItemBuildOptions<T>>,
 never,
-'actions' | 'fn' | 'textFn',
+'actions' | 'fn' | 'textFn' | 'onDeleted' | 'onUpdated',
 'data'
 >;
+
+export type ListItemSlotProps<T> = {
+    data: T,
+    busy: boolean,
+    index?: number,
+    deleted: () => void,
+    updated: (item: T) => void,
+    [key: string]: any
+};

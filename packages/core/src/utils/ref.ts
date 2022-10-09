@@ -55,3 +55,42 @@ export function spliceMaybeRefArray<T extends unknown[]>(
 
     return input;
 }
+
+export function getMaybeRefArrayValue<T>(
+    input: MaybeRef<T[]>,
+    index: number,
+) {
+    if (isRef(input)) {
+        return input.value[index];
+    }
+
+    return input[index];
+}
+
+export function extendMaybeRefArrayValue<T extends Record<string, any>>(
+    input: MaybeRef<T[]>,
+    index: number,
+    value: T,
+) {
+    const item : T = getMaybeRefArrayValue(input, index);
+
+    const keys : (keyof T)[] = Object.keys(value);
+    for (let i = 0; i < keys.length; i++) {
+        if (isRef(input)) {
+            input.value[index][keys[i]] = item[keys[i]];
+        } else {
+            input[index][keys[i]] = item[keys[i]];
+        }
+    }
+}
+
+export function findIndexOfMaybeRefArray<T>(
+    input: MaybeRef<T[]>,
+    filterFn: (item: T, index?: number) => boolean,
+) {
+    if (isRef(input)) {
+        return input.value.findIndex(filterFn);
+    }
+
+    return input.findIndex(filterFn);
+}

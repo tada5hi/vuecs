@@ -149,7 +149,7 @@ export const MyLink = defineComponent({
                 component as string,
                 buildVNodeProps(),
                 [
-                    (typeof slots.default === 'function' ? slots.default() : h('')),
+                    (typeof slots.default === 'function' ? slots.default() : []),
                 ],
             );
         }
@@ -158,7 +158,7 @@ export const MyLink = defineComponent({
             component as DefineComponent,
             buildVNodeProps(),
             {
-                default: () => (typeof slots.default === 'function' ? slots.default() : h('')),
+                default: () => (typeof slots.default === 'function' ? slots.default() : []),
             },
         );
     },

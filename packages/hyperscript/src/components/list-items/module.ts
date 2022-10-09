@@ -5,13 +5,21 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { VNode, h, mergeProps } from 'vue';
 import {
-    extractValueFromOptionValueInput, hasNormalizedSlot, normalizeSlot, unrefWithDefault,
+    VNode, h, mergeProps, unref,
+} from 'vue';
+import {
+    extendMaybeRefArrayValue,
+    extractValueFromOptionValueInput,
+    findIndexOfMaybeRefArray,
+    hasNormalizedSlot,
+    normalizeSlot,
+    spliceMaybeRefArray,
+    unrefWithDefault,
 } from '@vue-layout/core';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions } from '../list-base';
-import { ListItemsBuildOptions, ListItemsBuildOptionsInput } from './type';
+import { ListItemsBuildOptions, ListItemsBuildOptionsInput, ListItemsSlotProps } from './type';
 import { buildListItem } from '../list-item';
 
 export function buildListItemsOptions<T extends Record<string, any>>(
@@ -26,7 +34,7 @@ export function buildListItemsOptions<T extends Record<string, any>>(
 
         busy: unrefWithDefault(extractValueFromOptionValueInput(options.busy), false),
 
-        data: unrefWithDefault(extractValueFromOptionValueInput(options.data), []),
+        data: extractValueFromOptionValueInput(options.data) || [],
         item: unrefWithDefault(extractValueFromOptionValueInput(options.item), {}),
     };
 }
@@ -37,12 +45,46 @@ export function buildListItems<T extends Record<string, any>>(
     input = input || {};
     const options = buildListItemsOptions(input);
 
+    const deleted = (item: T) => {
+        const index = findIndexOfMaybeRefArray<T>(
+            options.data,
+            options.filterFn || ((el) => JSON.stringify(el) === JSON.stringify(item)),
+        );
+
+        if (index !== -1) {
+            spliceMaybeRefArray(options.data, index, 1);
+
+            if (typeof options.onDeleted === 'function') {
+                options.onDeleted(item);
+            }
+        }
+    };
+
+    const updated = (item: T) => {
+        const index = findIndexOfMaybeRefArray<T>(
+            options.data,
+            options.filterFn || ((el) => JSON.stringify(el) === JSON.stringify(item)),
+        );
+
+        if (index !== -1) {
+            extendMaybeRefArrayValue(options.data, index, item);
+
+            if (typeof options.onUpdated === 'function') {
+                options.onUpdated(item);
+            }
+        }
+    };
+
     if (hasNormalizedSlot(SlotName.ITEMS, options.slotItems)) {
-        return normalizeSlot(SlotName.ITEMS, {
+        const slotScope : ListItemsSlotProps<T> = {
             ...options.slotProps,
-            data: options.data,
+            data: unref(options.data),
             busy: options.busy,
-        }, options.slotItems);
+            deleted,
+            updated,
+        };
+
+        return normalizeSlot(SlotName.ITEMS, slotScope, options.slotItems);
     }
 
     // ----------------------------------------------------------------------
@@ -50,12 +92,14 @@ export function buildListItems<T extends Record<string, any>>(
     return h(
         options.tag,
         mergeProps({ class: options.class }, options.props),
-        options.data.map((item: T, index) => buildListItem({
+        unref(options.data).map((item: T, index) => buildListItem({
             slotProps: options.slotProps,
             slotItems: options.slotItems,
             ...options.item,
             data: item,
             index,
+            onDeleted: deleted,
+            onUpdated: updated,
         })),
     );
 }

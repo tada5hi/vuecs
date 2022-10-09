@@ -14,7 +14,7 @@ import {
 } from '@vue-layout/core';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions } from '../list-base';
-import { ListItemBuildOptions, ListItemBuildOptionsInput } from './type';
+import { ListItemBuildOptions, ListItemBuildOptionsInput, ListItemSlotProps } from './type';
 
 export function buildListItemOptions<T extends Record<string, any>>(
     input: ListItemBuildOptionsInput<T>,
@@ -68,11 +68,20 @@ export function buildListItem<T extends Record<string, any>>(
 ) : VNode | VNode[] {
     const options = buildListItemOptions(input);
 
-    const slotProps = {
-        itemBusy: options.busy,
+    const slotProps : ListItemSlotProps<T> = {
         data: options.data,
         busy: options.busy,
         index: options.index,
+        deleted: () => {
+            if (options.onDeleted) {
+                options.onDeleted(options.data);
+            }
+        },
+        updated: (item: T) => {
+            if (options.onUpdated) {
+                options.onUpdated(item);
+            }
+        },
         ...(options.slotProps || {}),
     };
 

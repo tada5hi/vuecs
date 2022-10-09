@@ -6,6 +6,7 @@
  */
 
 import {
+    MaybeRef,
     OptionsInput,
 } from '@vue-layout/core';
 import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
@@ -15,9 +16,23 @@ export type ListItemsBuildOptions<T extends Record<string, any>> = ListBaseOptio
     busy: boolean,
 
     item: Omit<ListItemBuildOptionsInput<T>, 'data' | 'index'>,
-    data: T[],
+    data: MaybeRef<T[]>,
+
+    onDeleted?: (item: T) => void,
+    onUpdated?: (item: T) => void,
+    filterFn?: (item: T) => boolean
 };
 
 export type ListItemsBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput & OptionsInput<
-ExpectListBaseOptions<ListItemsBuildOptions<T>>
+ExpectListBaseOptions<ListItemsBuildOptions<T>>,
+never,
+'data' | 'onDeleted' | 'onUpdated' | 'filterFn'
 >;
+
+export type ListItemsSlotProps<T> = {
+    data: T[],
+    busy: boolean,
+    deleted: (item: T) => void,
+    updated: (item: T) => void,
+    [key: string]: any
+};
