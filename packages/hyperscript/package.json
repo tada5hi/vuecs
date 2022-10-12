@@ -44,7 +44,7 @@
         "@rollup/plugin-alias": "^3.1.9",
         "@rollup/plugin-babel": "^6.0.0",
         "@rollup/plugin-commonjs": "^22.0.2",
-        "@rollup/plugin-node-resolve": "^14.1.0",
+        "@rollup/plugin-node-resolve": "^15.0.0",
         "@rollup/plugin-replace": "^4.0.0",
         "@vue-layout/core": "^0.1.0",
         "cross-env": "^7.0.3",
