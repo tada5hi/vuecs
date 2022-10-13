@@ -76,7 +76,7 @@
         "node": ">=16"
     },
     "dependencies": {
-        "regenerator-runtime": "^0.13.9"
+        "regenerator-runtime": "^0.13.10"
     },
     "publishConfig": {
         "access": "public"
