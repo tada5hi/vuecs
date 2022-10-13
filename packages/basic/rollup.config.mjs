@@ -12,11 +12,12 @@ import replace from '@rollup/plugin-replace';
 import babel from '@rollup/plugin-babel';
 import { terser } from 'rollup-plugin-terser';
 import postcss from 'rollup-plugin-postcss';
-import pkg from './package.json';
+
+import pkg from './package.json' assert { type: 'json' };
 
 function buildConfig(config) {
     return {
-        input: 'src/index.ts',
+        input: 'src/entry.ts',
         ...config,
         plugins: [
             replace({
@@ -46,17 +47,20 @@ function buildConfig(config) {
 // Refer to https://rollupjs.org/guide/en/#warning-treating-module-as-external-dependency
 const external = [
     '@vue-layout/core',
+    '@vue-layout/hyperscript',
     'smob',
     'vue',
+    'vue-router',
 ];
 
 // UMD/IIFE shared settings: output.globals
 // Refer to https://rollupjs.org/guide/en#output-globals for details
 const globals = {
     vue: 'Vue',
+    'vue-router': 'VueRouter',
 };
 
-const name = 'VueLayoutUtils';
+const name = 'VueLayoutNavigation';
 
 export default [
     buildConfig({
