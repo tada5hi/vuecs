@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.2](https://github.com/tada5hi/vue-layout/compare/@vue-layout/core@0.1.1...@vue-layout/core@0.1.2) (2022-10-23)
+
+
+### Bug Fixes
+
+* **deps:** bump smob from 0.0.3 to 0.0.6 ([2a3bd32](https://github.com/tada5hi/vue-layout/commit/2a3bd3297dd915f5e9989728815bf960c383ea96))
+
+
+
+
+
 ## [0.1.1](https://github.com/tada5hi/vue-layout/compare/@vue-layout/core@0.1.0...@vue-layout/core@0.1.1) (2022-10-13)
 
 **Note:** Version bump only for package @vue-layout/core

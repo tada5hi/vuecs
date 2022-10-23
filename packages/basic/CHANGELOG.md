@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.3](https://github.com/tada5hi/vue-layout/compare/@vue-layout/basic@0.2.2...@vue-layout/basic@0.2.3) (2022-10-23)
+
+
+### Bug Fixes
+
+* **deps:** bump regenerator-runtime from 0.13.9 to 0.13.10 ([2e03dd0](https://github.com/tada5hi/vue-layout/commit/2e03dd0c5b34a6fbc38c500a21406b92f89f0eb9))
+
+
+
+
+
 ## [0.2.2](https://github.com/tada5hi/vue-layout/compare/@vue-layout/basic@0.2.1...@vue-layout/basic@0.2.2) (2022-10-13)
 
 **Note:** Version bump only for package @vue-layout/basic

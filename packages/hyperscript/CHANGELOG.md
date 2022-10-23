@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.3](https://github.com/tada5hi/vue-layout/compare/@vue-layout/hyperscript@0.1.2...@vue-layout/hyperscript@0.1.3) (2022-10-23)
+
+
+### Bug Fixes
+
+* **deps:** bump regenerator-runtime from 0.13.9 to 0.13.10 ([2e03dd0](https://github.com/tada5hi/vue-layout/commit/2e03dd0c5b34a6fbc38c500a21406b92f89f0eb9))
+* **deps:** bump smob from 0.0.3 to 0.0.6 ([2a3bd32](https://github.com/tada5hi/vue-layout/commit/2a3bd3297dd915f5e9989728815bf960c383ea96))
+
+
+
+
+
 ## [0.1.2](https://github.com/tada5hi/vue-layout/compare/@vue-layout/hyperscript@0.1.1...@vue-layout/hyperscript@0.1.2) (2022-10-13)
 
 **Note:** Version bump only for package @vue-layout/hyperscript
