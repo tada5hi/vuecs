@@ -1,6 +1,6 @@
 {
     "name": "@vue-layout/basic",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "description": "A package containing basic components, to build for example multi level navigation menus.",
     "main": "dist/index.cjs.js",
     "browser": "dist/index.browser.js",
@@ -53,8 +53,8 @@
         "@rollup/plugin-node-resolve": "^15.0.0",
         "@rollup/plugin-replace": "^5.0.0",
         "@types/jest": "^29.2.0",
-        "@vue-layout/core": "^0.1.2",
-        "@vue-layout/hyperscript": "^0.1.3",
+        "@vue-layout/core": "^0.1.3",
+        "@vue-layout/hyperscript": "^0.1.4",
         "cross-env": "^7.0.3",
         "jest": "^29.2.1",
         "rollup": "^3.2.3",

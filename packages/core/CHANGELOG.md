@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.3](https://github.com/tada5hi/vue-layout/compare/@vue-layout/core@0.1.2...@vue-layout/core@0.1.3) (2022-10-23)
+
+
+### Bug Fixes
+
+* **core:** is option value config check ([5351ed9](https://github.com/tada5hi/vue-layout/commit/5351ed9e4792a49ac27140f5091dfe106442f1a8))
+
+
+
+
+
 ## [0.1.2](https://github.com/tada5hi/vue-layout/compare/@vue-layout/core@0.1.1...@vue-layout/core@0.1.2) (2022-10-23)
 
 
