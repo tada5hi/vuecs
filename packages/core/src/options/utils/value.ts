@@ -17,8 +17,25 @@ export function isOptionValueConfig(
         return false;
     }
 
-    return hasOwnProperty(value, '__vl__isOptionValueConfig') &&
-        hasOwnProperty(value, 'value');
+    if (!hasOwnProperty(value, 'presets') || !hasOwnProperty(value, 'value')) {
+        return false;
+    }
+
+    if (typeof value.presets !== 'object' || value.presets === null) {
+        return false;
+    }
+
+    const keys = Object.keys(value.presets);
+    for (let i = 0; i < keys.length; i++) {
+        if (
+            !hasOwnProperty(value.presets, keys[i]) ||
+            typeof value.presets[keys[i]] !== 'boolean'
+        ) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 export function extractValueFromOptionValueInput<V>(input: OptionValueInput<V>) : V {
