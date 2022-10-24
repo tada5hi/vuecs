@@ -5,11 +5,12 @@
   - view the LICENSE file that was distributed with this source code.
   -->
 <script lang="ts">
-import { NavigationComponents } from '@vue-layout/basic';
+import { Gravatar, NavigationComponents } from '@vue-layout/basic';
 import { defineNuxtComponent } from '#app';
 
 export default defineNuxtComponent({
     components: {
+        Gravatar,
         NavigationComponents,
     },
     setup() {
@@ -46,6 +47,17 @@ export default defineNuxtComponent({
                         class="navbar-nav"
                         :tier="0"
                     />
+
+                    <ul class="navbar-nav navbar-gadgets nav-items">
+                        <li class="nav-item">
+                            <a
+                                href="javascript:void(0)"
+                                class="nav-link user-link"
+                            >
+                                <gravatar email="peter.placzek1996@gmail.com" />
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </nav>
         </header>
