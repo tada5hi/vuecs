@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/tada5hi/vue-layout/compare/@vue-layout/basic@0.2.4...@vue-layout/basic@0.3.0) (2022-10-24)
+
+
+### Features
+
+* **basic:** add gravatar component ([ce91916](https://github.com/tada5hi/vue-layout/commit/ce91916082e41f333d55bfbca1be7c77a1f7ebbb))
+
+
+
+
+
 ## [0.2.4](https://github.com/tada5hi/vue-layout/compare/@vue-layout/basic@0.2.3...@vue-layout/basic@0.2.4) (2022-10-23)
 
 **Note:** Version bump only for package @vue-layout/basic
