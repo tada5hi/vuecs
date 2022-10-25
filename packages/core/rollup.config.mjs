@@ -5,104 +5,13 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import commonjs from '@rollup/plugin-commonjs';
-import resolve from '@rollup/plugin-node-resolve';
-import babel from '@rollup/plugin-babel';
-import { terser } from 'rollup-plugin-terser';
-import pkg from './package.json' assert { type: 'json' };
+import { readFileSync } from 'fs';
 
-const extensions = [
-    '.js', '.jsx', '.ts', '.tsx',
-];
+import { createConfig } from '../../rollup.config.mjs';
 
-const name = 'VueLayoutCore';
-const external = [
-    'smob',
-    'vue',
-];
-
-export default [
-    {
-        input: './src/index.ts',
-
-        // Specify here external modules which you don't want to include in your bundle (for instance: 'lodash', 'moment' etc.)
-        // https://rollupjs.org/guide/en/#external
-        external,
-
-        plugins: [
-            // Allows node_modules resolution
-            resolve({ extensions }),
-
-            // Allow bundling cjs modules. Rollup doesn't understand cjs
-            commonjs(),
-
-            // Compile TypeScript/JavaScript files
-            babel({
-                extensions,
-                babelHelpers: 'bundled',
-                include: [
-                    'src/**/*',
-                ],
-            }),
-            terser({
-                output: {
-                    ecma: 5,
-                },
-            }),
-        ],
-        output: [
-            {
-                file: pkg.main,
-                format: 'cjs',
-            }, {
-                file: pkg.module,
-                format: 'esm',
-            },
-        ],
-    },
-    {
-        input: './src/index.ts',
-
-        // Specify here external modules which you don't want to include in your bundle (for instance: 'lodash', 'moment' etc.)
-        // https://rollupjs.org/guide/en/#external
-        external,
-
-        plugins: [
-            // Allows node_modules resolution
-            resolve({ extensions }),
-
-            // Allow bundling cjs modules. Rollup doesn't understand cjs
-            commonjs(),
-
-            // Compile TypeScript/JavaScript files
-            babel({
-                extensions,
-                babelHelpers: 'bundled',
-                include: [
-                    'src/**/*',
-                ],
-            }),
-            terser({
-                output: {
-                    ecma: 5,
-                },
-            }),
-        ],
-        output: [
-            {
-                file: pkg.browser,
-                format: 'esm',
-            },
-            {
-                file: pkg.unpkg,
-                format: 'iife',
-                name,
-
-                // https://rollupjs.org/guide/en/#outputglobals
-                globals: {
-
-                },
-            },
-        ],
-    },
-];
+export default {
+    ...createConfig({
+        pkg: JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8'))
+    }),
+    input: 'src/index.ts'
+};

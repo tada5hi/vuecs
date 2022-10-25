@@ -8,7 +8,7 @@
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
 
-        "noEmitOnError": true,
+        "noEmitOnError": false,
 
         "esModuleInterop": true,
         "lib": ["ESNext"],
