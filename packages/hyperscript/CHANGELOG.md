@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.7](https://github.com/tada5hi/vue-layout/compare/@vue-layout/hyperscript@0.1.6...@vue-layout/hyperscript@0.1.7) (2022-10-25)
+
+
+### Bug Fixes
+
+* force version bump ([18fcd29](https://github.com/tada5hi/vue-layout/commit/18fcd297184a382e01dd5646747c458f344f38d5))
+
+
+
+
+
 ## [0.1.6](https://github.com/tada5hi/vue-layout/compare/@vue-layout/hyperscript@0.1.5...@vue-layout/hyperscript@0.1.6) (2022-10-25)
 
 
