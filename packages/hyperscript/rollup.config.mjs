@@ -11,8 +11,7 @@ import { createConfig } from '../../rollup.config.mjs';
 
 export default {
     ...createConfig({
-        pkg: JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')),
-        vuePlugin: false
+        pkg: JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8'))
     }),
     input: 'src/index.ts'
 };
