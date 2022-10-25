@@ -38,7 +38,8 @@ export function createConfig({pkg, vuePlugin = false }) {
                 format: 'cjs',
                 file: pkg.main,
                 exports: 'named',
-                footer: 'module.exports = Object.assign(exports.default, exports);',
+                // in all other cases we do not have a default import...
+                ...(vuePlugin ? {footer: 'module.exports = Object.assign(exports.default, exports);'} : {}),
                 sourcemap: true
             },
             {
