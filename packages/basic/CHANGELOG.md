@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.1](https://github.com/tada5hi/vue-layout/compare/@vue-layout/basic@0.3.0...@vue-layout/basic@0.3.1) (2022-10-25)
+
+**Note:** Version bump only for package @vue-layout/basic
+
+
+
+
+
 # [0.3.0](https://github.com/tada5hi/vue-layout/compare/@vue-layout/basic@0.2.4...@vue-layout/basic@0.3.0) (2022-10-24)
 
 

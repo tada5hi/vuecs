@@ -1,6 +1,6 @@
 {
     "name": "@vue-layout/hyperscript",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "description": "A package containing hyperscript components for usage in render functions.",
     "main": "dist/index.cjs.js",
     "browser": "dist/index.browser.js",
@@ -38,7 +38,7 @@
         "lint:fix": "npm run lint -- --fix"
     },
     "devDependencies": {
-        "@vue-layout/core": "^0.1.3",
+        "@vue-layout/core": "^0.1.4",
         "cross-env": "^7.0.3",
         "vue": "^3.2.41"
     },
