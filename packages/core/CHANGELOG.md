@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.5](https://github.com/tada5hi/vue-layout/compare/@vue-layout/core@0.1.4...@vue-layout/core@0.1.5) (2022-10-25)
+
+
+### Bug Fixes
+
+* build for core & hyperscript package ([734022f](https://github.com/tada5hi/vue-layout/commit/734022fb19bbdd2663d02252ef5699014a1d4558))
+
+
+
+
+
 ## [0.1.4](https://github.com/tada5hi/vue-layout/compare/@vue-layout/core@0.1.3...@vue-layout/core@0.1.4) (2022-10-25)
 
 **Note:** Version bump only for package @vue-layout/core
