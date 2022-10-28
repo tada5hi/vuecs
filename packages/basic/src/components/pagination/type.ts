@@ -5,5 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-export * from './Pagination';
-export * from './type';
+export type PaginationMeta = {
+    total?: number,
+    limit?: number,
+    offset?: number,
+    busy?: boolean,
+};

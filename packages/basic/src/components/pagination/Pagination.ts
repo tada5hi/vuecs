@@ -6,9 +6,10 @@
  */
 
 import {
-    defineComponent,
+    PropType, computed, defineComponent,
 } from 'vue';
 import { buildPagination } from '@vue-layout/hyperscript';
+import { PaginationMeta } from './type';
 
 export const Pagination = defineComponent({
     name: 'Pagination',
@@ -29,13 +30,26 @@ export const Pagination = defineComponent({
             type: Boolean,
             default: false,
         },
+        meta: {
+            type: Object as PropType<PaginationMeta>,
+            default: undefined,
+        },
     },
     emits: ['load'],
     setup(props, { emit }) {
+        const meta = computed<PaginationMeta>(() => {
+            if (typeof props.meta === 'undefined') {
+                return {};
+            }
+
+            return props.meta;
+        });
+
         return () => buildPagination({
-            total: props.total,
-            limit: props.limit,
-            offset: props.offset,
+            total: meta.value.total ?? props.total,
+            limit: meta.value.limit ?? props.limit,
+            offset: meta.value.offset ?? props.offset,
+            busy: meta.value.busy ?? props.busy,
             load: (data) => emit('load', data),
         });
     },

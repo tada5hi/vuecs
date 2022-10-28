@@ -12,6 +12,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import babel from '@rollup/plugin-babel';
 import postcss from 'rollup-plugin-postcss';
+import terser from "@rollup/plugin-terser";
 
 const extensions = [
     '.js', '.jsx', '.ts', '.tsx', '.vue'
@@ -72,7 +73,9 @@ export function createConfig({pkg, vuePlugin = false }) {
                 exclude: 'node_modules/**',
                 extensions,
                 babelHelpers: 'bundled',
-            })
+            }),
+
+            terser()
         ],
     };
 }
