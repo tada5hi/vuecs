@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.4](https://github.com/tada5hi/vue-layout/compare/@vue-layout/basic@0.3.3...@vue-layout/basic@0.3.4) (2022-10-28)
+
+
+### Bug Fixes
+
+* **basic:** enhanced pagination component + use terser for bundling ([e60c0f3](https://github.com/tada5hi/vue-layout/commit/e60c0f3e79e6259872eb5d36726e965f808555e7))
+
+
+
+
+
 ## [0.3.3](https://github.com/tada5hi/vue-layout/compare/@vue-layout/basic@0.3.2...@vue-layout/basic@0.3.3) (2022-10-25)
 
 **Note:** Version bump only for package @vue-layout/basic
