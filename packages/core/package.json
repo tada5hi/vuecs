@@ -32,7 +32,7 @@
     },
     "devDependencies": {
         "smob": "^0.0.6",
-        "vue": "^3.2.41"
+        "vue": "^3.2.45"
     },
     "peerDependencies": {
         "smob": "^0.x",
