@@ -67,7 +67,7 @@
     },
     "dependencies": {
         "md5": "^2.3.0",
-        "regenerator-runtime": "^0.13.10"
+        "regenerator-runtime": "^0.13.11"
     },
     "publishConfig": {
         "access": "public"
