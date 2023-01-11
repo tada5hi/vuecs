@@ -51,7 +51,7 @@
     },
     "dependencies": {
         "regenerator-runtime": "^0.13.11",
-        "smob": "^0.0.6"
+        "smob": "^0.0.7"
     },
     "publishConfig": {
         "access": "public"
