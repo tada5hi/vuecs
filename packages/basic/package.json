@@ -51,7 +51,7 @@
         "@vue-layout/hyperscript": "^0.1.7",
         "cross-env": "^7.0.3",
         "jest": "^29.3.1",
-        "ts-jest": "^29.0.3",
+        "ts-jest": "^29.0.4",
         "vue": "^3.2.45",
         "vue-router": "^4.1.4",
         "vue-tsc": "^1.0.24"
