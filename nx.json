@@ -1,5 +1,10 @@
 {
     "tasksRunnerOptions": {
+        "targetDefaults": {
+            "build": {
+                "dependsOn": ["^build"]
+            }
+        },
         "default": {
             "runner": "nx/tasks-runners/default",
             "options": {
