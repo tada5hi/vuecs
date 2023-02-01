@@ -33,7 +33,7 @@
         "@vuelidate/validators": "^2.0.0",
         "bootstrap": "^5.2.3",
         "nuxt": "3.1.1",
-        "pinia": "^2.0.29",
+        "pinia": "^2.0.30",
         "vue": "^3.2.45",
         "vue-router": "^4.1.4"
     }
