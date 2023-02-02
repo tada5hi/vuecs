@@ -47,8 +47,6 @@
     "devDependencies": {
         "@types/jest": "^29.2.6",
         "@types/md5": "^2.3.2",
-        "@vue-layout/core": "^0.1.6",
-        "@vue-layout/hyperscript": "^0.1.7",
         "cross-env": "^7.0.3",
         "jest": "^29.3.1",
         "ts-jest": "^29.0.5",
@@ -57,8 +55,6 @@
         "vue-tsc": "^1.0.24"
     },
     "peerDependencies": {
-        "@vue-layout/core": "^0.x",
-        "@vue-layout/hyperscript": "^0.x",
         "vue": "^3.x",
         "vue-router": "^4.x"
     },
@@ -66,6 +62,8 @@
         "node": ">=16"
     },
     "dependencies": {
+        "@vue-layout/core": "^0.1.6",
+        "@vue-layout/hyperscript": "^0.1.7",
         "md5": "^2.3.0"
     },
     "publishConfig": {

@@ -38,18 +38,17 @@
         "lint:fix": "npm run lint -- --fix"
     },
     "devDependencies": {
-        "@vue-layout/core": "^0.1.6",
         "cross-env": "^7.0.3",
         "vue": "^3.2.45"
     },
     "peerDependencies": {
-        "@vue-layout/core": "^0.x",
         "vue": "^3.x"
     },
     "engines": {
         "node": ">=16"
     },
     "dependencies": {
+        "@vue-layout/core": "^0.1.6",
         "smob": "^0.1.0"
     },
     "publishConfig": {
