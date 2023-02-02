@@ -7,12 +7,11 @@
 
 import { builtinModules } from 'module';
 import vue from 'rollup-plugin-vue';
-import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
-import babel from '@rollup/plugin-babel';
 import postcss from 'rollup-plugin-postcss';
 import terser from "@rollup/plugin-terser";
+import { transform } from '@swc/core';
 
 const extensions = [
     '.js', '.jsx', '.ts', '.tsx', '.vue'
@@ -30,9 +29,6 @@ export function createConfig({pkg, vuePlugin = false }) {
         external: Object.keys(pkg.dependencies || {})
             .concat(Object.keys(pkg.peerDependencies || {}))
             .concat(builtinModules),
-        onwarn: (warning) => {
-            throw Object.assign(new Error(), warning);
-        },
         strictDeprecations: true,
         output: [
             {
@@ -46,7 +42,6 @@ export function createConfig({pkg, vuePlugin = false }) {
             {
                 format: 'esm',
                 file: pkg.module,
-                exports: 'named',
                 sourcemap: true
             }
         ],
@@ -65,15 +60,22 @@ export function createConfig({pkg, vuePlugin = false }) {
             }),
             ...(vuePlugin ? [vue()] : []),
 
-            // Allow bundling cjs modules. Rollup doesn't understand cjs
-            commonjs(),
-
             // Compile TypeScript/JavaScript files
-            babel({
-                exclude: 'node_modules/**',
-                extensions,
-                babelHelpers: 'bundled',
-            }),
+            {
+                name: 'swc',
+                transform(code) {
+                    return transform(code, {
+                        jsc: {
+                            target: 'es2020',
+                            parser: {
+                                syntax: 'typescript',
+                            },
+                            loose: true
+                        },
+                        sourceMaps: true
+                    })
+                }
+            },
 
             terser()
         ],

@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { VNode, VNodeChild } from 'vue';
+import { VNode, VNodeArrayChildren, VNodeChild } from 'vue';
 import {
     MaybeRef,
     OptionsInput,
@@ -21,6 +21,8 @@ export type FormBaseOptions = {
     labelClass: VNodeClass,
     labelContent: string | VNode | (VNode | string)[] | VNodeChild,
 
+    hint?: VNodeArrayChildren | VNode | string,
+
     class: VNodeClass,
     props: VNodeProperties,
 
@@ -33,7 +35,8 @@ export type FormBaseOptions = {
 };
 export type FormBaseOptionsInput = OptionsInput<FormBaseOptions,
 never,
-'value' | 'onChange' | 'validationTranslator' | 'validationResult'>;
+'value' | 'onChange' | 'validationTranslator' | 'validationResult' | 'hint'
+>;
 
 export type ExpectFormBaseOptions<T extends FormBaseOptions | FormBaseOptionsInput> =
     Omit<T, keyof FormBaseOptions | keyof FormBaseOptionsInput>;

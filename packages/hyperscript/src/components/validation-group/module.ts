@@ -103,6 +103,14 @@ export function buildValidationGroup(input: ValidationGroupOptionsInput) : VNode
             class: 'form-group-hint group-required',
         }, [error])));
 
+        if (options.hint) {
+            children.push(h('div', {
+                class: 'form-group-hint',
+            }, [
+                options.hint,
+            ]));
+        }
+
         return children;
     };
 

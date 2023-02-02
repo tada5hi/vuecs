@@ -19,6 +19,8 @@ export type ValidationGroupOptions = {
     props: VNodeProperties,
     content: VNodeArrayChildren | VNode | ((data: ValidationGroupContentPayload) => VNodeArrayChildren | VNode),
 
+    hint?: VNodeArrayChildren | VNode | string,
+
     errorClass: VNodeClass,
     warningClass: VNodeClass,
 
@@ -30,5 +32,5 @@ export type ValidationGroupOptions = {
 export type ValidationGroupOptionsInput = OptionsInput<
 ValidationGroupOptions,
 'content',
-'validationResult' | 'validationMessages' | 'validationTranslator'
+'validationResult' | 'validationMessages' | 'validationTranslator' | 'hint'
 >;

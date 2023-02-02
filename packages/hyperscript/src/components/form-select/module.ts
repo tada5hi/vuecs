@@ -77,6 +77,7 @@ export function buildFormSelect(
                 ],
             ),
         ],
+        hint: options.hint,
         validationResult: options.validationResult,
         validationMessages: options.validationMessages,
         validationTranslator: options.validationTranslator,
