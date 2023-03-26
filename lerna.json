@@ -1,33 +1,19 @@
 {
+    "$schema": "node_modules/lerna/schemas/lerna-schema.json",
     "packages": [
         "packages/*"
     ],
     "command": {
-        "publish": {
-            "ignoreChanges": [
-                "*.md"
-            ]
-        },
         "version": {
-            "message": "build(release): publish"
+            "ignoreChanges": [
+                "**/*.spec.ts",
+                "**/*.spec.js",
+                "**/*.md"
+            ],
+            "conventionalCommits": true,
+            "message": "chore(release): %s"
         }
     },
-    "useNx": true,
     "useWorkspaces": true,
-    "conventionalCommits": true,
-    "version": "0.4.0",
-    "changelog": {
-        "labels": {
-            "build": "Build",
-            "ci": "Continuous Integration",
-            "docs": "Documentation",
-            "feat": "New Feature",
-            "fix": "Bug Fix",
-            "perf": "Performance",
-            "refactor": "Refactor",
-            "revert": "Revert",
-            "style": "Style",
-            "test": "Test"
-        }
-    }
+    "version": "0.4.0"
 }
