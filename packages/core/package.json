@@ -31,11 +31,11 @@
         "lint:fix": "npm run lint -- --fix"
     },
     "devDependencies": {
-        "smob": "^0.1.0",
+        "smob": "^1.0.0",
         "vue": "^3.2.45"
     },
     "peerDependencies": {
-        "smob": "^0.x",
+        "smob": "^1.x",
         "vue": "^3.x"
     },
     "engines": {

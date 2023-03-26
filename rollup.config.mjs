@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { builtinModules } from 'module';
+import { builtinModules } from 'node:module';
 import vue from 'rollup-plugin-vue';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';

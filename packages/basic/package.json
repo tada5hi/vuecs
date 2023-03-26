@@ -45,6 +45,8 @@
         "test:coverage": "cross-env NODE_ENV=test jest --config ./test/jest.config.js --coverage"
     },
     "devDependencies": {
+        "@vue-layout/core": "^0.4.0",
+        "@vue-layout/hyperscript": "^0.4.0",
         "@types/jest": "^29.2.6",
         "@types/md5": "^2.3.2",
         "cross-env": "^7.0.3",
@@ -55,6 +57,8 @@
         "vue-tsc": "^1.0.24"
     },
     "peerDependencies": {
+        "@vue-layout/core": "^0.4.0",
+        "@vue-layout/hyperscript": "^0.4.0",
         "vue": "^3.x",
         "vue-router": "^4.x"
     },
@@ -62,8 +66,6 @@
         "node": ">=16"
     },
     "dependencies": {
-        "@vue-layout/core": "^0.4.0",
-        "@vue-layout/hyperscript": "^0.4.0",
         "md5": "^2.3.0"
     },
     "publishConfig": {
