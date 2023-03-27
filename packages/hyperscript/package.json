@@ -2,11 +2,17 @@
     "name": "@vue-layout/hyperscript",
     "version": "0.4.0",
     "description": "A package containing hyperscript components for usage in render functions.",
-    "main": "dist/index.cjs.js",
-    "browser": "dist/index.browser.js",
-    "module": "dist/index.esm.js",
-    "unpkg": "dist/index.iife.js",
-    "types": "dist/types/index.d.ts",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.cjs"
+        }
+    },
+    "main": "dist/index.cjs",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
     "files": [
         "dist/*"
     ],

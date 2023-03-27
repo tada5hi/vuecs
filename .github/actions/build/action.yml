@@ -11,10 +11,10 @@ runs:
         -   uses: actions/cache@v3
             id: build-cache
             with:
-                path: '**/dist/**'
+                path: 'packages/**/dist/**'
                 key: ${{ runner.os }}-build-${{ github.sha }}
 
         -   name: Build
             shell: bash
             run: |
-                npm run build --workspace=packages/**
+                npm run build
