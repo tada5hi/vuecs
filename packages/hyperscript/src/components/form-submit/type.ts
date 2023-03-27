@@ -5,8 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { MaybeRef, OptionsInput, VNodeClass } from '@vue-layout/core';
-import { ValidationResult } from '../type';
+import type { MaybeRef, OptionsInput, VNodeClass } from '@vue-layout/core';
+import type { ValidationResult } from '../type';
 
 export type FormSubmitOptions = {
     type: string,

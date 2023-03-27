@@ -5,9 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { VNodeArrayChildren } from 'vue';
-import { OptionsInput, VNodeClass } from '@vue-layout/core';
-import { ListLoadFn } from '../type';
+import type { VNodeArrayChildren } from 'vue';
+import type { OptionsInput, VNodeClass } from '@vue-layout/core';
+import type { ListLoadFn } from '../type';
 
 export type PaginationOptions = {
     limit: number,

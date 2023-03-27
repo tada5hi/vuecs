@@ -5,8 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Slots } from 'vue';
-import {
+import type { Slots } from 'vue';
+import type {
     OptionsInput,
     VNodeClass,
     VNodeProperties,

@@ -5,7 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { NavigationElement, flattenNestedNavigationElements } from '../../../../../src';
+import type { NavigationElement } from '../../../../../src';
+import { flattenNestedNavigationElements } from '../../../../../src';
 
 describe('src/components/navigation/utils/flatten.ts', () => {
     it('should flatten components', () => {

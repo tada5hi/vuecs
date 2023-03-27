@@ -8,7 +8,7 @@
 import { h, mergeProps } from 'vue';
 import { Component } from '../constants';
 import { buildListBaseOptions } from '../list-base';
-import {
+import type {
     ListSearchBuildOptions,
     ListSearchBuildOptionsInput,
 } from './type';

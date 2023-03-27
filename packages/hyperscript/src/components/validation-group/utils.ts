@@ -6,7 +6,7 @@
  */
 
 import { hasOwnProperty } from '@vue-layout/core';
-import { ValidationRuleResultWithParams } from '../type';
+import type { ValidationRuleResultWithParams } from '../type';
 
 export function isValidationRuleResultWithoutParams(input: unknown) : input is ValidationRuleResultWithParams {
     return typeof input === 'object' &&

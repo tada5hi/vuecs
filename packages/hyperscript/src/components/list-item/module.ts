@@ -5,16 +5,15 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {
-    VNode, VNodeArrayChildren, VNodeChild, h, mergeProps, unref,
-} from 'vue';
+import type { VNode, VNodeArrayChildren, VNodeChild } from 'vue';
+import { h, mergeProps, unref } from 'vue';
 import {
     createOptionValueBuilderForComponent, extractValueFromOptionValueInput, hasNormalizedSlot,
     hasOwnProperty, normalizeSlot, unrefWithDefault,
 } from '@vue-layout/core';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions } from '../list-base';
-import { ListItemBuildOptions, ListItemBuildOptionsInput, ListItemSlotProps } from './type';
+import type { ListItemBuildOptions, ListItemBuildOptionsInput, ListItemSlotProps } from './type';
 
 export function buildListItemOptions<T extends Record<string, any>>(
     input: ListItemBuildOptionsInput<T>,

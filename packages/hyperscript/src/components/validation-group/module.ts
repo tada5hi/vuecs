@@ -5,13 +5,12 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {
-    VNode, VNodeArrayChildren, h, unref,
-} from 'vue';
+import type { VNode, VNodeArrayChildren } from 'vue';
+import { h, unref } from 'vue';
 import { createOptionValueBuilderForComponent } from '@vue-layout/core';
 import { Component } from '../constants';
-import { ValidationResult } from '../type';
-import { ValidationGroupOptions, ValidationGroupOptionsInput } from './type';
+import type { ValidationResult } from '../type';
+import type { ValidationGroupOptions, ValidationGroupOptionsInput } from './type';
 import { isValidationRuleResultWithParams, isValidationRuleResultWithoutParams } from './utils';
 
 export function buildValidationGroupOptions(options: ValidationGroupOptionsInput) : ValidationGroupOptions {

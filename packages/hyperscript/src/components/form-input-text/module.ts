@@ -5,10 +5,10 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { VNode } from 'vue';
+import type { VNode } from 'vue';
 import { Component } from '../constants';
+import type { FormInputBuildOptionsInput } from '../form-input';
 import {
-    FormInputBuildOptionsInput,
     buildFormInputFromOptions,
     buildFormInputOptions,
 } from '../form-input';

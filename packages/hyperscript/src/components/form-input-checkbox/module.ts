@@ -5,14 +5,13 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {
-    VNode, VNodeChild, h, mergeProps, unref,
-} from 'vue';
+import type { VNode, VNodeChild } from 'vue';
+import { h, mergeProps, unref } from 'vue';
 import { createOptionValueBuilderForComponent } from '@vue-layout/core';
 import { Component } from '../constants';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
 import { buildValidationGroup } from '../validation-group';
-import { FormInputCheckboxBuildOptions, FormInputCheckboxBuildOptionsInput } from './type';
+import type { FormInputCheckboxBuildOptions, FormInputCheckboxBuildOptionsInput } from './type';
 
 export function buildFormInputCheckboxOptions(
     input: FormInputCheckboxBuildOptionsInput,

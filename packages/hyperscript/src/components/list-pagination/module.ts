@@ -10,8 +10,8 @@ import { extractValueFromOptionValueInput, unrefWithDefault } from '@vue-layout/
 import { Component } from '../constants';
 import { buildListBaseOptions } from '../list-base';
 import { buildPagination } from '../pagination';
-import { ListLoadMeta } from '../type';
-import { ListPaginationBuildOptions, ListPaginationBuildOptionsInput } from './type';
+import type { ListLoadMeta } from '../type';
+import type { ListPaginationBuildOptions, ListPaginationBuildOptionsInput } from './type';
 
 export function buildListPaginationOptions<T extends Record<string, any>>(
     input: ListPaginationBuildOptionsInput<T>,

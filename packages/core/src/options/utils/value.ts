@@ -6,7 +6,7 @@
  */
 
 import { hasOwnProperty } from '../../utils';
-import {
+import type {
     OptionValueConfig, OptionValueInput,
 } from '../type';
 

@@ -6,12 +6,11 @@
  */
 
 import { hasNormalizedSlot, normalizeSlot } from '@vue-layout/core';
-import {
-    PropType, VNode, computed, defineComponent, h,
-} from 'vue';
+import type { PropType, VNode } from 'vue';
+import { computed, defineComponent, h } from 'vue';
 import { SlotName } from './constants';
 import { getComponents, useStore } from './store';
-import { NavigationElement } from './type';
+import type { NavigationElement } from './type';
 import { NavigationComponent } from './NavigationComponent';
 
 export const NavigationComponents = defineComponent({

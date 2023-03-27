@@ -10,8 +10,8 @@ import {
     extractValueFromOptionValueInput,
     setMaybeRefValue, unrefWithDefault,
 } from '@vue-layout/core';
-import { Component } from '../constants';
-import {
+import type { Component } from '../constants';
+import type {
     ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsDefaults, FormBaseOptionsInput,
 } from './type';
 

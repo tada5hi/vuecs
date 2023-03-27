@@ -10,12 +10,11 @@ import {
     extractValueFromOptionValueInput,
     unrefWithDefault,
 } from '@vue-layout/core';
-import {
-    VNodeArrayChildren, VNodeChild, h, mergeProps, unref,
-} from 'vue';
+import type { VNodeArrayChildren, VNodeChild } from 'vue';
+import { h, mergeProps, unref } from 'vue';
 import { Component } from '../constants';
-import { ListLoadMeta } from '../type';
-import { PaginationOptions, PaginationOptionsInput } from './type';
+import type { ListLoadMeta } from '../type';
+import type { PaginationOptions, PaginationOptionsInput } from './type';
 
 export function buildPaginationOptions(
     options: PaginationOptionsInput,

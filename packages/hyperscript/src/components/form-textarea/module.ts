@@ -5,13 +5,12 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {
-    VNode, VNodeChild, h, mergeProps, unref,
-} from 'vue';
+import type { VNode, VNodeChild } from 'vue';
+import { h, mergeProps, unref } from 'vue';
 import { Component } from '../constants';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
 import { buildValidationGroup } from '../validation-group';
-import { FormTextareaBuildOptions, FormTextareaBuildOptionsInput } from './type';
+import type { FormTextareaBuildOptions, FormTextareaBuildOptionsInput } from './type';
 
 export function buildFormTextareaOptions(
     input: FormTextareaBuildOptionsInput,

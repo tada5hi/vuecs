@@ -5,14 +5,14 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { VNode, VNodeArrayChildren, VNodeChild } from 'vue';
-import {
+import type { VNode, VNodeArrayChildren, VNodeChild } from 'vue';
+import type {
     MaybeRef,
     OptionsInput,
     VNodeClass,
     VNodeProperties,
 } from '@vue-layout/core';
-import {
+import type {
     ValidationMessages, ValidationResult, ValidationTranslator,
 } from '../type';
 

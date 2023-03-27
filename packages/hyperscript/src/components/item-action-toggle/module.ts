@@ -5,14 +5,14 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import type { VNode, VNodeArrayChildren } from 'vue';
+import { h, unref } from 'vue';
+import type { MaybeRef } from '@vue-layout/core';
 import {
-    VNode, VNodeArrayChildren, h, unref,
-} from 'vue';
-import {
-    MaybeRef, createOptionValueBuilderForComponent, extractValueFromOptionValueInput,
+    createOptionValueBuilderForComponent, extractValueFromOptionValueInput,
     pushMaybeRefArrayValue, setMaybeRefValue, spliceMaybeRefArray, unrefWithDefault,
 } from '@vue-layout/core';
-import { ItemActionToggleOptions, ItemActionToggleOptionsInput } from './type';
+import type { ItemActionToggleOptions, ItemActionToggleOptionsInput } from './type';
 import { Component } from '../constants';
 
 export function buildItemActionToggleOptions<T>(

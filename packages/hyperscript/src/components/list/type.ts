@@ -5,14 +5,14 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { MaybeRef, OptionsInput } from '@vue-layout/core';
-import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
-import { ListHeaderBuildOptionsInput } from '../list-header';
-import { ListItemsBuildOptionsInput } from '../list-items';
-import { ListNoMoreBuildOptionsInput } from '../list-no-more';
-import { ListPaginationBuildOptionsInput } from '../list-pagination';
-import { ListSearchBuildOptionsInput } from '../list-search';
-import {
+import type { MaybeRef, OptionsInput } from '@vue-layout/core';
+import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
+import type { ListHeaderBuildOptionsInput } from '../list-header';
+import type { ListItemsBuildOptionsInput } from '../list-items';
+import type { ListNoMoreBuildOptionsInput } from '../list-no-more';
+import type { ListPaginationBuildOptionsInput } from '../list-pagination';
+import type { ListSearchBuildOptionsInput } from '../list-search';
+import type {
     ListLoadFn, ListLoadMeta,
 } from '../type';
 

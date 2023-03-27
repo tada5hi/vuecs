@@ -4,14 +4,13 @@
  * For the full copyright and license information,
  * view the LICENSE file that was distributed with this source code.
  */
-import {
-    VNode, VNodeArrayChildren, h, mergeProps, unref,
-} from 'vue';
+import type { VNode, VNodeArrayChildren } from 'vue';
+import { h, mergeProps, unref } from 'vue';
 import {
     createOptionValueBuilderForComponent, isPromise, setMaybeRefValue, unrefWithDefault,
 } from '@vue-layout/core';
 import { Component } from '../constants';
-import { ListActionRefreshBuildOptions, ListActionRefreshBuildOptionsInput } from './type';
+import type { ListActionRefreshBuildOptions, ListActionRefreshBuildOptionsInput } from './type';
 import { buildListBaseOptions } from '../list-base';
 
 export function buildListActionRefreshOptions(

@@ -6,13 +6,14 @@
  */
 
 import { hasNormalizedSlot, normalizeSlot } from '@vue-layout/core';
+import type { PropType, Ref, VNodeChild } from 'vue';
 import {
-    PropType, Ref, VNodeChild, computed, defineComponent, h, resolveComponent, toRef, unref,
+    computed, defineComponent, h, resolveComponent, toRef, unref,
 } from 'vue';
 import { getActiveComponent, selectNavigationElement, toggleNavigation } from './store';
-import { NavigationElement } from './type';
+import type { NavigationElement } from './type';
 import { isAbsoluteURL, isNavigationElementMatch } from './utils';
-import { LinkProperties } from '../my-link';
+import type { LinkProperties } from '../my-link';
 import { SlotName } from './constants';
 import { MyLink } from '../my-link/MyLink';
 

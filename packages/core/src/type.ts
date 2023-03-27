@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Ref, VNodeProps } from 'vue';
+import type { Ref, VNodeProps } from 'vue';
 
 export type MaybeRef<T> = T | Ref<T>;
 export type ToMaybeRef<T> = {

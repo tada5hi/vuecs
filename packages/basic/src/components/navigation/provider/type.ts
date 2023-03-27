@@ -4,7 +4,7 @@
  * For the full copyright and license information,
  * view the LICENSE file that was distributed with this source code.
  */
-import { NavigationElement } from '../type';
+import type { NavigationElement } from '../type';
 
 export type NavigationProvider = {
     getElements: (tier: number, items: NavigationElement[]) => Promise<NavigationElement[]>,

@@ -5,12 +5,12 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {
+import type {
     MaybeRef,
     OptionsInput,
 } from '@vue-layout/core';
-import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
-import { ListItemBuildOptionsInput } from '../list-item';
+import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
+import type { ListItemBuildOptionsInput } from '../list-item';
 
 export type ListItemsBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
     busy: boolean,

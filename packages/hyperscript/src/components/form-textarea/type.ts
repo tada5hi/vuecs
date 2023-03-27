@@ -5,10 +5,10 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {
+import type {
     OptionsInput,
 } from '@vue-layout/core';
-import { ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput } from '../form-base';
+import type { ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput } from '../form-base';
 
 export type FormTextareaBuildOptions = FormBaseOptions;
 

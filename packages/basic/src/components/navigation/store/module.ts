@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { MaybeRef } from '@vue-layout/core';
+import type { MaybeRef } from '@vue-layout/core';
 import { useNavigationProvider } from '../provider';
 import {
     findNavigationElementForTier,
@@ -15,8 +15,8 @@ import {
     resetNavigationExpansion,
     setNavigationExpansion, setTierForNavigationElements,
 } from '../utils';
-import { NavigationElement } from '../type';
-import { NavigationBuildContext } from './type';
+import type { NavigationElement } from '../type';
+import type { NavigationBuildContext } from './type';
 import { setStoreItem, useStoreItem } from './singleton';
 
 function setNavigationElementActive(tier: number, item: NavigationElement | undefined) {

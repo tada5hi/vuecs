@@ -5,13 +5,13 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { VNode, VNodeChild } from 'vue';
-import {
+import type { VNode, VNodeChild } from 'vue';
+import type {
     OptionsInput,
     VNodeClass,
     VNodeProperties,
 } from '@vue-layout/core';
-import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
+import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 
 export type ListTitleBuildOptions = ListBaseOptions & {
     text: boolean,

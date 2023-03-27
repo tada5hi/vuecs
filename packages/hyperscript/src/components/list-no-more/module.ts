@@ -15,7 +15,7 @@ import {
 } from '@vue-layout/core';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions } from '../list-base';
-import { ListNoMoreBuildOptions, ListNoMoreBuildOptionsInput } from './type';
+import type { ListNoMoreBuildOptions, ListNoMoreBuildOptionsInput } from './type';
 
 export function buildListNoMoreOptions<T extends Record<string, any>>(
     input: ListNoMoreBuildOptionsInput<T>,

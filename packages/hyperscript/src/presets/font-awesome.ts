@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { ComponentsOptions } from '../type';
+import type { ComponentsOptions } from '../type';
 
 export const fontAwesome : ComponentsOptions = {
     formSubmit: {

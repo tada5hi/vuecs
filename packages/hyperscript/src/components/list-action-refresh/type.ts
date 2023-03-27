@@ -5,12 +5,12 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { VNode, VNodeChild } from 'vue';
-import {
+import type { VNode, VNodeChild } from 'vue';
+import type {
     MaybeRef, OptionsInput, VNodeClass, VNodeProperties,
 } from '@vue-layout/core';
-import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
-import {
+import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
+import type {
     ListLoadFn,
 } from '../type';
 

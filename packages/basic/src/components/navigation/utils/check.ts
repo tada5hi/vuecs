@@ -6,7 +6,7 @@
  */
 
 import { hasOwnProperty } from '@vue-layout/core';
-import { NavigationElement } from '../type';
+import type { NavigationElement } from '../type';
 
 export function isNavigationElement(value: unknown) : value is NavigationElement {
     if (typeof value !== 'object') {

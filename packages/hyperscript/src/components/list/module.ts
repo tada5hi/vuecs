@@ -5,18 +5,22 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {
-    VNodeArrayChildren, h, mergeProps, unref,
-} from 'vue';
+import type { VNodeArrayChildren } from 'vue';
+import { h, mergeProps, unref } from 'vue';
 import { createOptionValueBuilderForComponent } from '@vue-layout/core';
 import { Component } from '../constants';
-import { ListHeaderBuildOptionsInput, buildListHeader } from '../list-header';
-import { ListItemsBuildOptionsInput, buildListItems } from '../list-items';
-import { ListNoMoreBuildOptionsInput, buildListNoMore } from '../list-no-more';
-import { ListPaginationBuildOptionsInput, buildListPagination } from '../list-pagination';
-import { ListSearchBuildOptionsInput, buildListSearch } from '../list-search';
+import type { ListHeaderBuildOptionsInput } from '../list-header';
+import { buildListHeader } from '../list-header';
+import type { ListItemsBuildOptionsInput } from '../list-items';
+import { buildListItems } from '../list-items';
+import type { ListNoMoreBuildOptionsInput } from '../list-no-more';
+import { buildListNoMore } from '../list-no-more';
+import type { ListPaginationBuildOptionsInput } from '../list-pagination';
+import { buildListPagination } from '../list-pagination';
+import type { ListSearchBuildOptionsInput } from '../list-search';
+import { buildListSearch } from '../list-search';
 import { buildListBaseOptions } from '../list-base';
-import { ListBuildOptions, ListBuildOptionsInput } from './type';
+import type { ListBuildOptions, ListBuildOptionsInput } from './type';
 
 export function buildListOptions<T extends Record<string, any>>(
     input: ListBuildOptionsInput<T>,

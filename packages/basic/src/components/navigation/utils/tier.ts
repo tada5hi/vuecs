@@ -5,9 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { MaybeRef } from '@vue-layout/core';
+import type { MaybeRef } from '@vue-layout/core';
 import { isRef } from 'vue';
-import { NavigationElement } from '../type';
+import type { NavigationElement } from '../type';
 
 export function findNavigationElementsForTier(
     items: MaybeRef<NavigationElement[]>,

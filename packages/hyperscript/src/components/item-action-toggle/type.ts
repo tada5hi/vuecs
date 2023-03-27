@@ -5,8 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { VNodeChild } from 'vue';
-import { MaybeRef, OptionsInput, VNodeClass } from '@vue-layout/core';
+import type { VNodeChild } from 'vue';
+import type { MaybeRef, OptionsInput, VNodeClass } from '@vue-layout/core';
 
 export type ItemActionToggleOptions<T> = {
     type: string,

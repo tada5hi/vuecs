@@ -6,8 +6,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Ref, ref } from 'vue';
-import { NavigationStore, NavigationStoreInitOptions } from './type';
+import type { Ref } from 'vue';
+import { ref } from 'vue';
+import type { NavigationStore, NavigationStoreInitOptions } from './type';
 
 let instance: Ref<NavigationStore> | undefined;
 

@@ -10,7 +10,7 @@ import {
     setPresets as _setPresets,
 } from '@vue-layout/core';
 
-import { ComponentsOptions } from './type';
+import type { ComponentsOptions } from './type';
 
 export function setPresets(
     data: Record<string, ComponentsOptions>,

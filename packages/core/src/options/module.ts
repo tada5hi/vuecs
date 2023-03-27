@@ -6,7 +6,7 @@
  */
 
 import { unref } from 'vue';
-import { InjectionKeys } from '../type';
+import type { InjectionKeys } from '../type';
 import { hasOwnProperty } from '../utils';
 import {
     getGlobalComponentOptionValue,
@@ -14,7 +14,7 @@ import {
     isOptionValueConfig,
     mergeOption,
 } from './utils';
-import { OptionValueBuildContext, OptionValueBuilder } from './type';
+import type { OptionValueBuildContext, OptionValueBuilder } from './type';
 
 export function buildOptionValue<
     O extends Record<string, any>,

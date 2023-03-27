@@ -5,21 +5,22 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {
-    ComponentsOptions, PresetsBuildIn, getBuildInPresets, setDefaults, setPresets,
-} from '@vue-layout/hyperscript';
+import type { ComponentsOptions, PresetsBuildIn } from '@vue-layout/hyperscript';
+import { getBuildInPresets, setDefaults, setPresets } from '@vue-layout/hyperscript';
 
-import { App, Plugin, Ref } from 'vue';
+import type { App, Plugin, Ref } from 'vue';
 
 // Import vue components
+import type {
+    NavigationProvider,
+    NavigationStore,
+} from './components';
 import {
     Countdown,
     Gravatar,
     MyLink,
     NavigationComponent,
     NavigationComponents,
-    NavigationProvider,
-    NavigationStore,
     Pagination,
     setNavigationProvider,
     setStore,

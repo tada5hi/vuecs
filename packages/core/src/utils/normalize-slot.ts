@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Slot, Slots, VNode } from 'vue';
+import type { Slot, Slots, VNode } from 'vue';
 import { hasOwnProperty } from './has-own-property';
 
 /**

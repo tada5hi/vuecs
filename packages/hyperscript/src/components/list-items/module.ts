@@ -5,9 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {
-    VNode, h, mergeProps, unref,
-} from 'vue';
+import type { VNode } from 'vue';
+import { h, mergeProps, unref } from 'vue';
 import {
     extendMaybeRefArrayValue,
     extractValueFromOptionValueInput,
@@ -19,7 +18,7 @@ import {
 } from '@vue-layout/core';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions } from '../list-base';
-import { ListItemsBuildOptions, ListItemsBuildOptionsInput, ListItemsSlotProps } from './type';
+import type { ListItemsBuildOptions, ListItemsBuildOptionsInput, ListItemsSlotProps } from './type';
 import { buildListItem } from '../list-item';
 
 export function buildListItemsOptions<T extends Record<string, any>>(

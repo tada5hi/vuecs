@@ -6,7 +6,7 @@
  */
 
 import { isReadonly, isRef, unref } from 'vue';
-import { MaybeRef } from '../type';
+import type { MaybeRef } from '../type';
 
 export function unrefWithDefault<T>(value: MaybeRef<T>, alt: NonNullable<T>) : NonNullable<T> {
     const raw = unref(value);

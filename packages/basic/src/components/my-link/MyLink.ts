@@ -5,8 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import type { DefineComponent, VNodeProps, VNodeTypes } from 'vue';
 import {
-    DefineComponent, VNodeProps, VNodeTypes, computed, defineComponent, h, resolveDynamicComponent,
+    computed, defineComponent, h, resolveDynamicComponent,
 } from 'vue';
 import { hasOwnProperty } from '@vue-layout/core';
 

@@ -5,9 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { OptionsInput, VNodeClass, VNodeProperties } from '@vue-layout/core';
-import { VNode, VNodeArrayChildren } from 'vue';
-import { ValidationMessages, ValidationResult, ValidationTranslator } from '../type';
+import type { OptionsInput, VNodeClass, VNodeProperties } from '@vue-layout/core';
+import type { VNode, VNodeArrayChildren } from 'vue';
+import type { ValidationMessages, ValidationResult, ValidationTranslator } from '../type';
 
 export type ValidationGroupContentPayload = {
     errors: string[],

@@ -5,14 +5,13 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {
-    VNode, VNodeArrayChildren, h, mergeProps, unref,
-} from 'vue';
+import type { VNode, VNodeArrayChildren } from 'vue';
+import { h, mergeProps, unref } from 'vue';
 import {
     buildOptionValueOrFail, hasNormalizedSlot, normalizeSlot, unrefWithDefault,
 } from '@vue-layout/core';
 import { buildListBaseOptions } from '../list-base';
-import { ListHeaderBuildOptions, ListHeaderBuildOptionsInput } from './type';
+import type { ListHeaderBuildOptions, ListHeaderBuildOptionsInput } from './type';
 import { Component, SlotName } from '../constants';
 import { buildListTitle } from '../list-title';
 import { buildListActionRefresh } from '../list-action-refresh';

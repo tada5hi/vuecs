@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { ComponentsOptions } from '../type';
+import type { ComponentsOptions } from '../type';
 import { bootstrapV4 } from './bootstrap-v4';
 import { bootstrapV5 } from './bootstrap-v5';
 import { PresetsBuildIn } from './constatns';

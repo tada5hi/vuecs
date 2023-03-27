@@ -5,15 +5,15 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {
+import type {
     MaybeRef, OptionsInput, VNodeClass, VNodeProperties,
 } from '@vue-layout/core';
-import { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
-import {
+import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
+import type {
     ListLoadFn,
 } from '../type';
-import { ListActionRefreshBuildOptionsInput } from '../list-action-refresh';
-import { ListTitleBuildOptionsInput } from '../list-title';
+import type { ListActionRefreshBuildOptionsInput } from '../list-action-refresh';
+import type { ListTitleBuildOptionsInput } from '../list-title';
 
 export type ListHeaderBuildOptions = ListBaseOptions & {
     actionType: string,

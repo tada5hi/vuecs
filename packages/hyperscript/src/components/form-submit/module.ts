@@ -14,7 +14,7 @@ import {
     unrefWithDefault,
 } from '@vue-layout/core';
 import { Component } from '../constants';
-import { FormSubmitOptions, FormSubmitOptionsInput } from './type';
+import type { FormSubmitOptions, FormSubmitOptionsInput } from './type';
 
 export function buildFormSubmitOptions(
     options: FormSubmitOptionsInput,
