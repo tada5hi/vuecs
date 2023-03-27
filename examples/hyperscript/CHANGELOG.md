@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0](https://github.com/Tada5hi/vue-layout/compare/v0.4.0...v1.0.0) (2023-03-27)
+
+**Note:** Version bump only for package hyperscript-example
+
+
+
+
+
 # [0.4.0](https://github.com/Tada5hi/vue-layout/compare/v0.1.3...v0.4.0) (2023-02-02)
 
 

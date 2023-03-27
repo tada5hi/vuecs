@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0](https://github.com/tada5hi/vue-layout/compare/v0.4.0...v1.0.0) (2023-03-27)
+
+
+### Bug Fixes
+
+* bump few dependencies + reset lock file ([0188d0f](https://github.com/tada5hi/vue-layout/commit/0188d0f9be312512dc878ba3d2dea2e8e5173d3b))
+
+
+
+
+
 # [0.4.0](https://github.com/tada5hi/vue-layout/compare/v0.1.3...v0.4.0) (2023-02-02)
 
 
