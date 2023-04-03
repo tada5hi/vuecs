@@ -29,7 +29,7 @@
         "@pinia/nuxt": "^0.4.6",
         "@vue-layout/basic": "^1.0.0",
         "bootstrap": "^5.2.3",
-        "nuxt": "3.3.2",
+        "nuxt": "3.3.3",
         "pinia": "^2.0.30",
         "vue": "^3.2.45",
         "vue-router": "^4.1.4"
