@@ -17,6 +17,10 @@ import type {
 } from './components';
 import {
     Countdown,
+    FormInputCheckbox,
+    FormInputText,
+    FormSelect,
+    FormTextarea,
     Gravatar,
     MyLink,
     NavigationComponent,
@@ -59,6 +63,10 @@ export function createPlugin(options?: Partial<PluginOptions>) : Plugin {
     return (instance: App) => {
         Object.entries({
             Countdown,
+            FormInputCheckbox,
+            FormInputText,
+            FormSelect,
+            FormTextarea,
             Gravatar,
             MyLink,
             NavigationComponent,

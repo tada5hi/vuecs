@@ -25,12 +25,12 @@ export type ValidationGroupOptions = {
     warningClass: VNodeClass,
 
     validationResult: Partial<ValidationResult>,
-    validationMessages?: ValidationMessages,
+    validationMessages: ValidationMessages,
     validationTranslator?: ValidationTranslator
 };
 
 export type ValidationGroupOptionsInput = OptionsInput<
 ValidationGroupOptions,
-'content',
-'validationResult' | 'validationMessages' | 'validationTranslator' | 'hint'
+'content' | 'validationTranslator',
+'validationResult' | 'validationMessages' | 'hint'
 >;

@@ -17,15 +17,16 @@ export type ToOptionValueInput<T> = {
     [K in keyof T]: OptionValueInput<T[K]>;
 };
 
-export type OptionsInput<T,
+export type OptionsInput<
+    T,
     R extends keyof T = never,
     P extends keyof T = never,
     MR extends keyof T = never,
     > =
-    Pick<T, R> &
-    Partial<Pick<T, P>> &
-    ToOptionValueInput<ToMaybeRef<Pick<T, MR>>> &
-    Partial<ToOptionValueInput<ToMaybeRef<Pick<T, Exclude<keyof T, R | P | MR>>>>>;
+    Pick<T, R> & // unchanged
+    Partial<Pick<T, P>> & // partial
+    ToOptionValueInput<ToMaybeRef<Pick<T, MR>>> & // unchanged + maybeRef
+    Partial<ToOptionValueInput<ToMaybeRef<Pick<T, Exclude<keyof T, R | P | MR>>>>>; // partial + maybeRef
 
 export type OptionValueBuildContext<O, V> = {
     component: string,

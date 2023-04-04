@@ -7,8 +7,7 @@
 
 import {
     createOptionValueBuilderForComponent,
-    extractValueFromOptionValueInput,
-    setMaybeRefValue, unrefWithDefault,
+    setMaybeRefValue,
 } from '@vue-layout/core';
 import type { Component } from '../constants';
 import type {
@@ -56,7 +55,7 @@ export function buildFormBaseOptions<T extends FormBaseOptionsInput>(
             alt: defaults.labelContent || 'Input',
         }),
 
-        validationMessages: unrefWithDefault(extractValueFromOptionValueInput(options.validationMessages), {}),
+        validationMessages: options.validationMessages || {},
         validationResult: options.validationResult || {},
     };
 }

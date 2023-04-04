@@ -6,6 +6,10 @@
  */
 
 export * from './countdown';
+export * from './form-input-checkbox';
+export * from './form-input-text';
+export * from './form-select';
+export * from './form-textarea';
 export * from './gravatar';
 export * from './navigation';
 export * from './my-link';

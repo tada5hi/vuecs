@@ -35,7 +35,7 @@ export type FormBaseOptions = {
 };
 export type FormBaseOptionsInput = OptionsInput<FormBaseOptions,
 never,
-'value' | 'onChange' | 'validationTranslator' | 'validationResult' | 'hint'
+'value' | 'onChange' | 'validationTranslator' | 'validationMessages' | 'validationResult' | 'hint'
 >;
 
 export type ExpectFormBaseOptions<T extends FormBaseOptions | FormBaseOptionsInput> =

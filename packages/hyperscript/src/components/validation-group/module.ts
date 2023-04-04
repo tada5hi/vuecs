@@ -5,6 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import template from 'lodash.template';
+import { isObject } from 'smob';
 import type { VNode, VNodeArrayChildren } from 'vue';
 import { h, unref } from 'vue';
 import { createOptionValueBuilderForComponent } from '@vue-layout/core';
@@ -42,6 +44,7 @@ export function buildValidationGroupOptions(options: ValidationGroupOptionsInput
             alt: [],
         }),
 
+        validationMessages: options.validationMessages || {},
         validationResult: options.validationResult || {} as ValidationResult<unknown>,
     };
 }
@@ -49,21 +52,31 @@ export function buildValidationGroupOptions(options: ValidationGroupOptionsInput
 export function buildValidationGroup(input: ValidationGroupOptionsInput) : VNode {
     const options = buildValidationGroupOptions(input);
 
+    const formatMessage = (input: string, properties?: Record<string, any>) => {
+        try {
+            return template(input, {
+                interpolate: /{{([\s\S]+?)}}/g,
+            })(properties || {});
+        } catch (e) {
+            return input;
+        }
+    };
+
     const translate = (validator: string, properties?: Record<string, any>) => {
         if (
             options.validationMessages &&
             Object.prototype.hasOwnProperty.call(options.validationMessages, validator)
         ) {
-            return options.validationMessages[validator];
+            return formatMessage(options.validationMessages[validator], properties);
         }
 
         if (typeof options.validationTranslator !== 'undefined') {
-            const translation : string | undefined = options.validationTranslator(validator, properties || {});
-            if (
-                typeof translation === 'string' &&
-                translation !== validator
-            ) {
-                return translation;
+            let translation = options.validationTranslator(validator, properties || {});
+            if (typeof translation === 'string') {
+                translation = formatMessage(translation, properties);
+                if (translation !== validator) {
+                    return translation;
+                }
             }
         }
 
@@ -77,7 +90,10 @@ export function buildValidationGroup(input: ValidationGroupOptionsInput) : VNode
     const errors : string[] = [];
     const keys = Object.keys(options.validationResult);
     for (let i = 0; i < keys.length; i++) {
-        if (options.validationResult[keys[i]].$invalid) {
+        if (
+            isObject(options.validationResult[keys[i]]) &&
+            options.validationResult[keys[i]].$invalid
+        ) {
             if (isValidationRuleResultWithParams(options.validationResult[keys[i]])) {
                 errors.push(translate(keys[i], options.validationResult[keys[i]].$params));
             } else if (isValidationRuleResultWithoutParams(options.validationResult[keys[i]])) {
@@ -118,8 +134,8 @@ export function buildValidationGroup(input: ValidationGroupOptionsInput) : VNode
         {
             class: [
                 options.class,
-                ...(options.validationResult.$invalid && options.validationResult.$dirty ? [options.errorClass] : []),
-                ...(options.validationResult.$invalid && !options.validationResult.$dirty ? [options.warningClass] : []),
+                ...(options.validationResult && options.validationResult.$invalid && options.validationResult.$dirty ? [options.errorClass] : []),
+                ...(options.validationResult && options.validationResult.$invalid && !options.validationResult.$dirty ? [options.warningClass] : []),
             ],
             ...options.props,
         },

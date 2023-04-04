@@ -1,6 +1,8 @@
-import {
+import type {
     NavigationElement,
     NavigationProvider,
+} from '@vue-layout/basic';
+import {
     findNavigationElementForTier,
     flattenNestedNavigationElements,
 } from '@vue-layout/basic';
@@ -28,6 +30,9 @@ const secondaryDefaultItems : NavigationElement[] = [
             },
             {
                 name: 'Pagination', type: 'link', icon: 'fa-solid fa-road', url: '/pagination',
+            },
+            {
+                name: 'FormInput', type: 'link', icon: 'fa-solid fa-road', url: '/form-input',
             },
         ],
     },

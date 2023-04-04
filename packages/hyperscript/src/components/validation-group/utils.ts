@@ -6,10 +6,11 @@
  */
 
 import { hasOwnProperty } from '@vue-layout/core';
+import { isObject } from 'smob';
 import type { ValidationRuleResultWithParams } from '../type';
 
 export function isValidationRuleResultWithoutParams(input: unknown) : input is ValidationRuleResultWithParams {
-    return typeof input === 'object' &&
+    return isObject(input) &&
         hasOwnProperty(input, '$message') &&
         hasOwnProperty(input, '$pending') &&
         hasOwnProperty(input, '$invalid') &&
