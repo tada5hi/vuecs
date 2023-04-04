@@ -23,6 +23,7 @@ export enum Component {
     ListHeader = 'listHeader',
     ListItem = 'listItem',
     ListItems = 'listItems',
+    ListLoading = 'listLoading',
     ListNoMore = 'listNoMore',
     ListPagination = 'listPagination',
     ListSearch = 'listSearch',
@@ -30,11 +31,13 @@ export enum Component {
 }
 
 export enum SlotName {
+    DEFAULT = 'default',
     HEADER = 'header',
     HEADER_TITLE = 'header-title',
     HEADER_ACTIONS = 'header-actions',
     ITEMS = 'items',
-    ITEMS_NO_MORE = 'no-more',
+    LOADING = 'loading',
+    NO_MORE = 'no-more',
     ITEM = 'item',
     ITEM_ACTIONS = 'item-actions',
     ITEM_ACTIONS_EXTRA = 'item-actions-extra',

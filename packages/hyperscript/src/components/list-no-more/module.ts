@@ -56,8 +56,8 @@ export function buildListNoMore<T extends Record<string, any>>(
         return [];
     }
 
-    if (hasNormalizedSlot(SlotName.ITEMS_NO_MORE, options.slotItems)) {
-        return normalizeSlot(SlotName.ITEMS_NO_MORE, {
+    if (hasNormalizedSlot(SlotName.NO_MORE, options.slotItems)) {
+        return normalizeSlot(SlotName.NO_MORE, {
             ...options.slotProps,
             busy: options.busy,
             total: options.total,

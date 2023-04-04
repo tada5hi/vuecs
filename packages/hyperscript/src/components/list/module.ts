@@ -13,6 +13,8 @@ import type { ListHeaderBuildOptionsInput } from '../list-header';
 import { buildListHeader } from '../list-header';
 import type { ListItemsBuildOptionsInput } from '../list-items';
 import { buildListItems } from '../list-items';
+import { buildListLoading } from '../list-loading';
+import type { ListLoadingBuildOptionsInput } from '../list-loading';
 import type { ListNoMoreBuildOptionsInput } from '../list-no-more';
 import { buildListNoMore } from '../list-no-more';
 import type { ListPaginationBuildOptionsInput } from '../list-pagination';
@@ -56,6 +58,11 @@ export function buildListOptions<T extends Record<string, any>>(
             value: unref(options.items),
             alt: true,
         }),
+        loading: buildOrFail({
+            key: 'loading',
+            value: unref(options.loading),
+            alt: true,
+        }),
         noMore: buildOrFail({
             key: 'noMore',
             value: unref(options.noMore),
@@ -86,8 +93,7 @@ export function buildList<T extends Record<string, any>>(
         headerOptions.slotItems = options.slotItems;
         headerOptions.slotProps = options.slotProps;
 
-        const header = buildListHeader(headerOptions);
-        children.push(header);
+        children.push(buildListHeader(headerOptions));
     }
 
     if (options.search) {
@@ -99,8 +105,7 @@ export function buildList<T extends Record<string, any>>(
         searchOptions.slotItems = options.slotItems;
         searchOptions.slotProps = options.slotProps;
 
-        const search = buildListSearch(searchOptions);
-        children.push(search);
+        children.push(buildListSearch(searchOptions));
     }
 
     if (options.items) {
@@ -115,8 +120,16 @@ export function buildList<T extends Record<string, any>>(
         itemsOptions.onDeleted = options.onDeleted;
         itemsOptions.onUpdated = options.onUpdated;
 
-        const items = buildListItems(itemsOptions);
-        children.push(items);
+        children.push(buildListItems(itemsOptions));
+    }
+
+    if (options.loading) {
+        const loadingOptions : ListLoadingBuildOptionsInput<T> = typeof options.loading === 'boolean' ?
+            {} :
+            options.loading;
+
+        loadingOptions.busy = options.busy;
+        children.push(buildListLoading(loadingOptions));
     }
 
     if (options.noMore) {
@@ -137,8 +150,7 @@ export function buildList<T extends Record<string, any>>(
             }
         }
 
-        const noMore = buildListNoMore(noMoreOptions);
-        children.push(noMore);
+        children.push(buildListNoMore(noMoreOptions));
     }
 
     if (options.pagination) {
@@ -152,8 +164,7 @@ export function buildList<T extends Record<string, any>>(
         paginationOptions.slotItems = options.slotItems;
         paginationOptions.slotProps = options.slotProps;
 
-        const pagination = buildListPagination(paginationOptions);
-        children.push(pagination);
+        children.push(buildListPagination(paginationOptions));
     }
 
     return h(

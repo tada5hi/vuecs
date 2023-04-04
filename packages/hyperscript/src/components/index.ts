@@ -20,6 +20,7 @@ export * from './list-action-refresh';
 export * from './list-header';
 export * from './list-item';
 export * from './list-items';
+export * from './list-loading';
 export * from './list-no-more';
 export * from './list-pagination';
 export * from './list-search';

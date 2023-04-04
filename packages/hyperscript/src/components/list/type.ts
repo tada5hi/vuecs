@@ -9,6 +9,7 @@ import type { MaybeRef, OptionsInput } from '@vue-layout/core';
 import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import type { ListHeaderBuildOptionsInput } from '../list-header';
 import type { ListItemsBuildOptionsInput } from '../list-items';
+import type { ListLoadingBuildOptionsInput } from '../list-loading';
 import type { ListNoMoreBuildOptionsInput } from '../list-no-more';
 import type { ListPaginationBuildOptionsInput } from '../list-pagination';
 import type { ListSearchBuildOptionsInput } from '../list-search';
@@ -29,6 +30,7 @@ export type ListBuildOptions<T extends Record<string, any>> = ListBaseOptions & 
     header: Omit<ListHeaderBuildOptionsInput, 'busy' | 'load'> | boolean,
     search: Omit<ListSearchBuildOptionsInput, 'onChange'> | boolean,
     items: Omit<ListItemsBuildOptionsInput<T>, 'busy' | 'data'> | boolean,
+    loading: Omit<ListLoadingBuildOptionsInput<T>, 'busy'> | boolean
     noMore: Omit<ListNoMoreBuildOptionsInput<T>, 'busy' | 'total'> | boolean
     pagination: Omit<ListPaginationBuildOptionsInput<T>, 'busy' | 'meta' | 'load'> | boolean,
 };
