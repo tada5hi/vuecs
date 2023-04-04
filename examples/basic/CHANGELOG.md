@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/Tada5hi/vue-layout/compare/v1.0.0...v1.1.0) (2023-04-04)
+
+
+### Features
+
+* add form-{checkbox,text,selec,textarea} components ([1960654](https://github.com/Tada5hi/vue-layout/commit/19606541c316ff91a603a81bf95e80a56114befe))
+
+
+
+
+
 # [1.0.0](https://github.com/Tada5hi/vue-layout/compare/v0.4.0...v1.0.0) (2023-03-27)
 
 **Note:** Version bump only for package basic-example
