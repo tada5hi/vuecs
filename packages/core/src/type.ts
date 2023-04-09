@@ -17,8 +17,3 @@ export type VNodeProperties = VNodeProps & {
     class?: VNodeClass,
     [key: string]: any
 };
-
-export type InjectionKeys = {
-    components: string,
-    presets: string
-};

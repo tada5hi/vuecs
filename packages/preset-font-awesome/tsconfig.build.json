@@ -1,0 +1,22 @@
+{
+    "extends": "../../tsconfig.build.json",
+
+    "compilerOptions": {
+        "outDir": "./dist",
+        "importHelpers": true,
+        "allowSyntheticDefaultImports": true,
+        "sourceMap": false,
+        "jsx": "preserve",
+
+        "declaration": true,
+        "declarationDir": "./dist",
+        "skipLibCheck": true
+    },
+    "exclude": [
+        "node_modules",
+        "dist"
+    ],
+    "include": [
+        "src/**/*.ts"
+    ]
+}

@@ -1,0 +1,42 @@
+{
+    "name": "@vue-layout/preset-bootstrap-v5",
+    "version": "1.1.0",
+    "description": "",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.cjs"
+        }
+    },
+    "main": "dist/index.cjs",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist/*"
+    ],
+    "keywords": [],
+    "author": {
+        "name": "Peter Placzek",
+        "email": "contact@tada5hi.net",
+        "url": "https://tada5hi.net"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tada5hi/vue-layout.git",
+        "directory": "packages/preset-bootstrap-v5"
+    },
+    "scripts": {
+        "prebuild": "rimraf ./dist",
+        "build:types": "tsc --emitDeclarationOnly -p tsconfig.build.json",
+        "build:js": "rollup -c",
+        "build": "cross-env NODE_ENV=production npm run build:js && npm run build:types"
+    },
+    "engines": {
+        "node": ">=16"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

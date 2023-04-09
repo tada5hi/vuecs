@@ -21,9 +21,10 @@ const extensions = [
  * Create a base rollup config
  * @param {Record<string,any>} pkg Imported package.json
  * @param {boolean} vuePlugin Is vue package
+ * @param {boolean} defaultExport
  * @returns {import('rollup').Options}
  */
-export function createConfig({pkg, vuePlugin = false }) {
+export function createConfig({pkg, vuePlugin = false, defaultExport = false }) {
     return {
         input: 'src/index.ts',
         external: Object.keys(pkg.dependencies || {})
@@ -36,7 +37,7 @@ export function createConfig({pkg, vuePlugin = false }) {
                 file: pkg.main,
                 exports: 'named',
                 // in all other cases we do not have a default import...
-                ...(vuePlugin ? {footer: 'module.exports = Object.assign(exports.default, exports);'} : {}),
+                ...(vuePlugin || defaultExport ? {footer: 'module.exports = Object.assign(exports.default, exports);'} : {}),
                 sourcemap: true
             },
             {

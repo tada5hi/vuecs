@@ -1,0 +1,17 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "lib": [
+            "ESNext"
+        ],
+        "strict": true,
+
+        "importHelpers": true,
+        "allowSyntheticDefaultImports": true,
+        "sourceMap": false,
+        "module": "ESNext",
+        "jsx": "preserve",
+
+        "skipLibCheck": true
+    }
+}

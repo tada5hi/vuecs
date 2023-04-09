@@ -5,8 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { ComponentsOptions, PresetsBuildIn } from '@vue-layout/hyperscript';
-import { getBuildInPresets, setDefaults, setPresets } from '@vue-layout/hyperscript';
+import type { PluginBaseOptions } from '@vue-layout/core';
+import { applyPluginBaseOptions } from '@vue-layout/core';
 
 import type { App, Plugin, Ref } from 'vue';
 
@@ -30,11 +30,9 @@ import {
     setStore,
 } from './components';
 
-export type PluginOptions = {
+export type PluginOptions = PluginBaseOptions & {
     navigationProvider: NavigationProvider,
     navigationStore?: Ref<NavigationStore>,
-    presets?: Record<string, ComponentsOptions> | (`${PresetsBuildIn}`)[],
-    defaults?: ComponentsOptions
 };
 
 export function createPlugin(options?: Partial<PluginOptions>) : Plugin {
@@ -48,17 +46,7 @@ export function createPlugin(options?: Partial<PluginOptions>) : Plugin {
         setStore(options.navigationStore);
     }
 
-    if (options.presets) {
-        if (Array.isArray(options.presets)) {
-            setPresets(getBuildInPresets(options.presets));
-        } else {
-            setPresets(options.presets);
-        }
-    }
-
-    if (options.defaults) {
-        setDefaults(options.defaults);
-    }
+    applyPluginBaseOptions(options);
 
     return (instance: App) => {
         Object.entries({

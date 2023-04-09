@@ -6,11 +6,10 @@
  */
 
 import { unref } from 'vue';
-import type { InjectionKeys } from '../type';
-import { hasOwnProperty } from '../utils';
+import { useDefaultComponentStore } from '../defaults';
+import { getRegisteredPresets, usePresetComponentStore } from '../preset';
+import { hasOwnProperty } from '../../utils';
 import {
-    getGlobalComponentOptionValue,
-    getGlobalPresetsOptionValue,
     isOptionValueConfig,
     mergeOption,
 } from './utils';
@@ -19,7 +18,7 @@ import type { OptionValueBuildContext, OptionValueBuilder } from './type';
 export function buildOptionValue<
     O extends Record<string, any>,
     K extends keyof O,
->(context: OptionValueBuildContext<K, O[K] | undefined>) : O[K] | undefined {
+>(context: OptionValueBuildContext<K, O[K]>) : O[K] | undefined {
     let value : O[K] | undefined;
 
     const presetConfig : Record<string, boolean> = {};
@@ -37,19 +36,11 @@ export function buildOptionValue<
         value = unref(context.value) as O[K];
     }
 
-    const {
-        components: componentsInjectionKey,
-        presets: presetsInjectionKey,
-    } = context.injectionKeys || {};
-
-    const configValue = getGlobalComponentOptionValue(
-        context.component,
-        context.key as string,
-        componentsInjectionKey,
-    ) as O[K];
-
     if (typeof value === 'undefined') {
-        value = configValue;
+        const defaultStore = useDefaultComponentStore();
+        if (defaultStore.hasOption(context.component, context.key as string)) {
+            value = defaultStore.getOption(context.component, context.key as string);
+        }
     }
 
     if (typeof value === 'undefined') {
@@ -60,21 +51,21 @@ export function buildOptionValue<
         return undefined;
     }
 
-    const presetsValue = getGlobalPresetsOptionValue(
-        context.component,
-        context.key as string,
-        presetsInjectionKey,
-    );
-    const presetsKeys = Object.keys(presetsValue);
-    for (let i = 0; i < presetsKeys.length; i++) {
+    const registeredPresets = getRegisteredPresets();
+    for (let i = 0; i < registeredPresets.length; i++) {
         if (
-            !hasOwnProperty(presetConfig, presetsKeys[i]) ||
-            presetConfig[presetsKeys[i]]
+            hasOwnProperty(presetConfig, registeredPresets[i]) &&
+            !presetConfig[registeredPresets[i]]
         ) {
+            continue;
+        }
+
+        const presetStore = usePresetComponentStore(registeredPresets[i]);
+        if (presetStore.hasOption(context.component, context.key as string)) {
             value = mergeOption(
                 context.key as string,
                 value,
-                presetsValue[presetsKeys[i]],
+                presetStore.getOption(context.component, context.key as string),
             );
         }
     }
@@ -85,7 +76,7 @@ export function buildOptionValue<
 export function buildOptionValueOrFail<
     O extends Record<string, any>,
     K extends keyof O = keyof O,
-    >(context: OptionValueBuildContext<K, O[K] | undefined>) : O[K] {
+    >(context: OptionValueBuildContext<K, O[K]>) : O[K] {
     const target = buildOptionValue(context);
 
     if (typeof target === 'undefined') {
@@ -97,22 +88,19 @@ export function buildOptionValueOrFail<
 
 export function createOptionValueBuilderForComponent<O extends Record<string, any>>(
     component: string,
-    injectionKeys?: InjectionKeys,
 ) : OptionValueBuilder<O> {
     return {
         build: <K extends keyof O>(
-            context: Omit<OptionValueBuildContext<K, O[K]>, 'component' | 'injectionKeys'>,
+            context: Omit<OptionValueBuildContext<K, O[K]>, 'component'>,
         ) : O[K] | undefined => buildOptionValue({
             ...context,
             component,
-            ...(injectionKeys ? { injectionKeys } : {}),
         }),
         buildOrFail: <K extends keyof O>(
-            context: Omit<OptionValueBuildContext<K, O[K]>, 'component' | 'injectionKeys'>,
+            context: Omit<OptionValueBuildContext<K, O[K]>, 'component'>,
         ) : O[K] => buildOptionValueOrFail({
             ...context,
             component,
-            ...(injectionKeys ? { injectionKeys } : {}),
         }),
     };
 }

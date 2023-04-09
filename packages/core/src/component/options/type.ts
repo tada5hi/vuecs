@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { InjectionKeys, MaybeRef, ToMaybeRef } from '../type';
+import type { MaybeRef, ToMaybeRef } from '../../type';
 
 export type OptionValueConfig<V> = {
     value: V,
@@ -13,6 +13,7 @@ export type OptionValueConfig<V> = {
 };
 
 export type OptionValueInput<V> = V | OptionValueConfig<V>;
+
 export type ToOptionValueInput<T> = {
     [K in keyof T]: OptionValueInput<T[K]>;
 };
@@ -28,12 +29,25 @@ export type OptionsInput<
     ToOptionValueInput<ToMaybeRef<Pick<T, MR>>> & // unchanged + maybeRef
     Partial<ToOptionValueInput<ToMaybeRef<Pick<T, Exclude<keyof T, R | P | MR>>>>>; // partial + maybeRef
 
-export type OptionValueBuildContext<O, V> = {
+export type OptionValueBuildContext<K, V> = {
+    /**
+     * The name of the component.
+     */
     component: string,
-    key: O,
+    /**
+     * The options key of the component.
+     */
+    key: K,
+    /**
+     * Alternative value if it is not defined or
+     * provided by a preset.
+     */
     alt?: V,
-    value?: OptionValueInput<MaybeRef<V>>,
-    injectionKeys?: InjectionKeys
+    /**
+     * Value with or without configuration for
+     * presets.
+     */
+    value?: OptionValueInput<MaybeRef<V>>
 };
 
 export type OptionValueBuilder<
@@ -45,4 +59,5 @@ export type OptionValueBuilder<
         buildOrFail: <K extends keyof O>(
             context: Omit<OptionValueBuildContext<K, O[K]>, 'component'>,
         ) => O[K],
+
     };
