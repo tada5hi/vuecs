@@ -1,5 +1,5 @@
 {
-    "name": "basic-example",
+    "name": "@vue-layout/nuxt-example",
     "private": true,
     "description": "This package contains an example app for the basic package",
     "scripts": {

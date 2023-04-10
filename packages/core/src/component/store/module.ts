@@ -52,8 +52,8 @@ export class ComponentStore {
     }
 
     hasOption(component: string, option: string) : boolean {
-        return typeof this.data[component] === 'undefined' ||
-            !hasOwnProperty(this.data[component], option);
+        return typeof this.data[component] !== 'undefined' &&
+            hasOwnProperty(this.data[component], option);
     }
 
     getOption(component: string, option: string) {

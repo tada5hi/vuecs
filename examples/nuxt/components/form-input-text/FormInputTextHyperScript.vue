@@ -6,9 +6,7 @@
   -->
 
 <script lang="ts">
-import {
-    FormInputText,
-} from '@vue-layout/form-controls';
+import { buildFormInputText } from '@vue-layout/form-controls';
 import { maxLength, minLength } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {
@@ -16,12 +14,9 @@ import {
 } from 'vue';
 
 export default defineComponent({
-    components: {
-        FormInput: FormInputText,
-    },
     setup() {
         const form = reactive({
-            text: 'a',
+            text: 'foo',
         });
 
         const $v = useVuelidate({
@@ -36,22 +31,16 @@ export default defineComponent({
             minLength: 'The length of the input must be greater than {{min}}.',
         };
 
-        return {
-            form,
+        return () => buildFormInputText({
+            label: true,
+            labelContent: 'Label',
             validationMessages,
-            v$: $v,
-        };
+            validationResult: $v.value.text,
+            value: form.text,
+            onChange(input) {
+                form.text = input;
+            },
+        });
     },
 });
 </script>
-<template>
-    <div>
-        <FormInput
-            v-model="form.text"
-            :label="true"
-            :label-content="'PeterPan'"
-            :validation-result="v$.text"
-            :validation-messages="validationMessages"
-        />
-    </div>
-</template>

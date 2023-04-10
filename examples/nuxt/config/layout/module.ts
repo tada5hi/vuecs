@@ -21,26 +21,27 @@ const secondaryDefaultItems : NavigationElement[] = [
         name: 'Home', type: 'link', icon: 'fas fa-home', url: '/', rootLink: true,
     },
     {
-        name: 'Components',
+        name: 'Countdown', type: 'link', icon: 'fa-solid fa-clock', url: '/countdown',
+    },
+    {
+        name: 'Form Controls',
         type: 'link',
         icon: 'fa-solid fa-bars',
         children: [
-            {
-                name: 'Countdown', type: 'link', icon: 'fa-solid fa-clock', url: '/countdown',
-            },
-            {
-                name: 'Pagination', type: 'link', icon: 'fa-solid fa-road', url: '/pagination',
-            },
-            {
-                name: 'FormInput', type: 'link', icon: 'fa-solid fa-road', url: '/form-input',
-            },
+            { name: 'Input Checkbox', url: '/form-controls/input-checkbox' },
+            { name: 'Input Text', url: '/form-controls/input-text' },
         ],
     },
     {
-        name: 'Info',
+        name: 'List Controls',
         type: 'link',
-        icon: 'fas fa-info',
-        url: '/about',
+        icon: 'fa-solid fa-bars',
+        children: [
+
+        ],
+    },
+    {
+        name: 'Pagination', type: 'link', icon: 'fa-solid fa-road', url: '/pagination',
     },
 ];
 
