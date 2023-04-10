@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/Tada5hi/vue-layout/compare/v2.0.1...v2.1.0) (2023-04-10)
+
+
+### Bug Fixes
+
+* minor variable renaming for child options configuration ([c819a47](https://github.com/Tada5hi/vue-layout/commit/c819a476e35b37263a374338fd8fc9b8ca914490))
+
+
+
+
+
 ## [2.0.1](https://github.com/Tada5hi/vue-layout/compare/v2.0.0...v2.0.1) (2023-04-10)
 
 **Note:** Version bump only for package @vue-layout/nuxt-example
