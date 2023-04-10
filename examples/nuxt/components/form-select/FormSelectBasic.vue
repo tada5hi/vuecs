@@ -25,7 +25,7 @@ export default defineComponent({
         }, form);
 
         const validationMessages = {
-            required: 'The input is required.',
+            required: 'An option must be selected.',
         };
 
         const options = [

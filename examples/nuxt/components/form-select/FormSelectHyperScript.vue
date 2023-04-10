@@ -16,7 +16,7 @@ import {
 export default defineComponent({
     setup() {
         const form = reactive({
-            value: 'foo',
+            value: null,
         });
 
         const $v = useVuelidate({
@@ -26,7 +26,7 @@ export default defineComponent({
         }, form);
 
         const validationMessages = {
-            required: 'The input is required.',
+            required: 'An option must be selected.',
         };
 
         const options = [

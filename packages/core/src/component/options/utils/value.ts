@@ -5,6 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { isObject } from 'smob';
 import { hasOwnProperty } from '../../../utils';
 import type {
     OptionValueConfig, OptionValueInput,
@@ -13,29 +14,40 @@ import type {
 export function isOptionValueConfig(
     value: unknown,
 ): value is OptionValueConfig<any> {
-    if (typeof value !== 'object' || value === null) {
+    if (!isObject(value)) {
         return false;
     }
 
-    if (!hasOwnProperty(value, 'presets') || !hasOwnProperty(value, 'value')) {
+    if (!hasOwnProperty(value, 'value')) {
         return false;
     }
 
-    if (typeof value.presets !== 'object' || value.presets === null) {
+    if (
+        typeof (value as OptionValueConfig<any>).presets === 'undefined' &&
+        typeof (value as OptionValueConfig<any>).defaults === 'undefined'
+    ) {
         return false;
     }
 
-    const keys = Object.keys(value.presets);
-    for (let i = 0; i < keys.length; i++) {
-        if (
-            !hasOwnProperty(value.presets, keys[i]) ||
-            typeof value.presets[keys[i]] !== 'boolean'
-        ) {
+    if (typeof (value as OptionValueConfig<any>).presets !== 'undefined') {
+        const { presets } = value as OptionValueConfig<any>;
+        if (!isObject(presets)) {
             return false;
+        }
+
+        const keys = Object.keys(presets);
+        for (let i = 0; i < keys.length; i++) {
+            if (
+                !hasOwnProperty(presets, keys[i]) ||
+                typeof presets[keys[i]] !== 'boolean'
+            ) {
+                return false;
+            }
         }
     }
 
-    return true;
+    return !(typeof (value as OptionValueConfig<any>).defaults !== 'undefined' &&
+        typeof (value as OptionValueConfig<any>).defaults !== 'boolean');
 }
 
 export function extractValueFromOptionValueInput<V>(input: OptionValueInput<V>) : V {

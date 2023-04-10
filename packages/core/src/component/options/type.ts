@@ -7,10 +7,18 @@
 
 import type { MaybeRef, ToMaybeRef } from '../../type';
 
-export type OptionValueConfig<V> = {
-    value: V,
-    presets: Record<string, boolean>
+type OptionValueConfigWithPresets<V> = {
+    value?: V,
+    presets: Record<string, boolean>,
+    defaults?: boolean
 };
+
+type OptionValueConfigWithDefaults<V> = {
+    value?: V,
+    presets?: Record<string, boolean>,
+    defaults: boolean
+};
+export type OptionValueConfig<V> = OptionValueConfigWithPresets<V> | OptionValueConfigWithDefaults<V>;
 
 export type OptionValueInput<V> = V | OptionValueConfig<V>;
 

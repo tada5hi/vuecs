@@ -30,6 +30,9 @@ const secondaryDefaultItems : NavigationElement[] = [
         children: [
             { name: 'Input Checkbox', url: '/form-controls/input-checkbox' },
             { name: 'Input Text', url: '/form-controls/input-text' },
+            { name: 'Select', url: '/form-controls/select' },
+            { name: 'Submit', url: '/form-controls/submit' },
+            { name: 'Textarea', url: '/form-controls/textarea' },
         ],
     },
     {

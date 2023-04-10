@@ -5,13 +5,13 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { PluginBaseOptions } from '@vue-layout/core';
 import { applyPluginBaseOptions } from '@vue-layout/core';
 import type { App, Plugin } from 'vue';
 import {
     FormInputCheckbox,
     FormInputText,
     FormSelect,
+    FormSubmit,
     FormTextarea,
 } from './components';
 import type { Options } from './type';
@@ -28,6 +28,7 @@ export function install(instance: App, options?: Options) : void {
         FormInputCheckbox,
         FormInputText,
         FormSelect,
+        FormSubmit,
         FormTextarea,
     }).forEach(([componentName, component]) => {
         instance.component(componentName, component);

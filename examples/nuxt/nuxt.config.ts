@@ -24,6 +24,7 @@ export default defineNuxtConfig({
         '@myAssets': path.join(__dirname, '..', '..', 'assets'),
         '@vue-layout/countdown': path.join(__dirname, '..', '..', 'packages', 'countdown', 'src'),
         '@vue-layout/core': path.join(__dirname, '..', '..', 'packages', 'core', 'src'),
+        '@vue-layout/form-controls': path.join(__dirname, '..', '..', 'packages', 'form-controls', 'src'),
         '@vue-layout/pagination': path.join(__dirname, '..', '..', 'packages', 'pagination', 'src'),
     },
     modules: [

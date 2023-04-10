@@ -12,11 +12,13 @@ export type FormSubmitOptions = {
     type: string,
     class: VNodeClass,
 
+    icon: boolean,
+
     updateText: string,
     updateIconClass: VNodeClass,
     updateButtonClass: VNodeClass,
 
-    createText: string
+    createText: string,
     createIconClass: VNodeClass,
     createButtonClass: VNodeClass,
 

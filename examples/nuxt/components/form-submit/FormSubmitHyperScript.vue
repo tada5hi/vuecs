@@ -14,16 +14,18 @@ export default defineComponent({
         const busy = ref< boolean>();
 
         return () => h('div', [
-            buildFormSubmit({
-                busy,
-                submit: () => new Promise<void>((resolve, reject) => {
-                    console.log('Submitted form');
+            h('div', { class: 'form-group' }, [
+                buildFormSubmit({
+                    busy,
+                    submit: () => new Promise<void>((resolve, reject) => {
+                        console.log('Submitted form');
 
-                    setTimeout(() => {
-                        resolve();
-                    }, 5000);
+                        setTimeout(() => {
+                            resolve();
+                        }, 5000);
+                    }),
                 }),
-            }),
+            ]),
             h('div', { class: 'alert alert-info' }, [
                 'Current Value:',
                 ' ',

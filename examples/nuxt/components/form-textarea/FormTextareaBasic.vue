@@ -20,8 +20,8 @@ export default defineComponent({
 
         const $v = useVuelidate({
             text: {
-                minLength: minLength(3),
-                maxLength: maxLength(5),
+                minLength: minLength(5),
+                maxLength: maxLength(10),
             },
         }, form);
 
