@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/Tada5hi/vue-layout/compare/v1.1.0...v2.0.0) (2023-04-10)
+
+
+### Bug Fixes
+
+* cleanup dependencies ([0970437](https://github.com/Tada5hi/vue-layout/commit/097043750fb214fcec252ee16d5a6293372afdd7))
+* rename option value builder + cleanup dist directory before build ([588233b](https://github.com/Tada5hi/vue-layout/commit/588233b0d030b050b46a90ff7d5b9dbb60c1c0d5))
+* store option check + initial example refactoring ([f0d5c6c](https://github.com/Tada5hi/vue-layout/commit/f0d5c6c124b74fb3a06e00586a08026556e88a4b))
+
+
+### Features
+
+* add form-submit component ([4307b8f](https://github.com/Tada5hi/vue-layout/commit/4307b8f8e443a588865b5f7e88e99542ccf6a6b0))
+* reimplemented core package + outsourced presets ([1e7f620](https://github.com/Tada5hi/vue-layout/commit/1e7f6205c0445098c55469ba9599cdfc52f07482))
+* split hyperscript- & core-package ([2e7852a](https://github.com/Tada5hi/vue-layout/commit/2e7852a5c6d9e3de92bcec7faf8675c7bba1bf10))
+
+
+
+
+
 # [1.1.0](https://github.com/Tada5hi/vue-layout/compare/v1.0.0...v1.1.0) (2023-04-04)
 
 

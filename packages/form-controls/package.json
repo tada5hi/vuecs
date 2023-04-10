@@ -1,6 +1,6 @@
 {
     "name": "@vue-layout/form-controls",
-    "version": "1.1.0",
+    "version": "2.0.0",
     "description": "A package containing form controls.",
     "exports": {
         "./package.json": "./package.json",
@@ -45,7 +45,7 @@
         "lint:fix": "npm run lint -- --fix"
     },
     "devDependencies": {
-        "@vue-layout/core": "^1.1.0",
+        "@vue-layout/core": "^2.0.0",
         "cross-env": "^7.0.3",
         "vue": "^3.2.45"
     },
