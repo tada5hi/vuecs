@@ -5,8 +5,6 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { applyPluginBaseOptions } from '@vue-layout/core';
-
 import type { App, Plugin, Ref } from 'vue';
 
 // Import vue components
@@ -20,8 +18,6 @@ export * from './type';
 
 export function install(instance: App, options?: Options) : void {
     options ??= {};
-
-    applyPluginBaseOptions(options);
 
     instance.component('Gravatar', Gravatar);
 }

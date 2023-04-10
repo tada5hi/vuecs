@@ -7,10 +7,7 @@
         ],
         "esModuleInterop": true,
         "skipLibCheck": true,
-        "strict": true,
-        "paths": {
-            "@vue-layout/core": ["./packages/core/src"]
-        }
+        "strict": true
     },
     "include": [
         "src/**/*.ts"
