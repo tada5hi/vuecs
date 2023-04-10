@@ -7,6 +7,8 @@
 
 import type { MaybeRef, OptionsInput } from '@vue-layout/core';
 import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
+import type { ListFooterBuildOptionsInput } from '../list-footer';
+import type { ListHeaderBuildOptionsInput } from '../list-header';
 import type { ListItemsBuildOptionsInput } from '../list-items';
 import type { ListLoadingBuildOptionsInput } from '../list-loading';
 import type { ListNoMoreBuildOptionsInput } from '../list-no-more';
@@ -18,14 +20,14 @@ export type ListBuildOptions<T extends Record<string, any>> = ListBaseOptions & 
     busy?: MaybeRef<boolean>,
     data?: MaybeRef<T[]>,
     load?: ListLoadFn,
-    total?: number,
+    total?: MaybeRef<number>,
 
     onChange?: (input: any) => void,
     onDeleted?: (item: T) => void,
     onUpdated?: (item: T) => void,
 
-    header?: boolean,
-    footer?: boolean,
+    header?: ListHeaderBuildOptionsInput | boolean,
+    footer?: ListFooterBuildOptionsInput | boolean,
 
     items: Omit<ListItemsBuildOptionsInput<T>, 'busy' | 'data'> | boolean,
     loading: Omit<ListLoadingBuildOptionsInput<T>, 'busy'> | boolean,

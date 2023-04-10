@@ -7,6 +7,7 @@
 
 import type { VNode, VNodeChild } from 'vue';
 import type {
+    MaybeRef,
     OptionsInput,
 } from '@vue-layout/core';
 import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
@@ -15,7 +16,7 @@ export type ListNoMoreBuildOptions<T extends Record<string, any>> = ListBaseOpti
     textContent: VNodeChild | VNode | VNode[],
 
     busy: boolean,
-    total?: number
+    total?: MaybeRef<number>
 };
 
 export type ListNoMoreBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput & OptionsInput<

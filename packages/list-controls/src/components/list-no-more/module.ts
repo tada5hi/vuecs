@@ -53,9 +53,11 @@ export function buildListNoMore<T extends Record<string, any>>(
         return [];
     }
 
+    const total = unref(options.total);
+
     if (
-        typeof options.total !== 'undefined' &&
-        options.total > 0
+        typeof total !== 'undefined' &&
+        total > 0
     ) {
         return [];
     }

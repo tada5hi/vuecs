@@ -6,7 +6,8 @@
  */
 
 import { hasNormalizedSlot, normalizeSlot } from '@vue-layout/core';
-import type { VNode } from 'vue';
+import { h, mergeProps } from 'vue';
+import type { VNode, VNodeArrayChildren } from 'vue';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions } from '../list-base';
 import type { ListHeaderBuildOptions, ListHeaderBuildOptionsInput } from './type';
@@ -33,8 +34,28 @@ export function buildListHeader(
     input = input || {};
     const options = buildListHeaderOptions(input);
 
+    let children : VNodeArrayChildren | undefined;
+
     if (hasNormalizedSlot(SlotName.HEADER, options.slotItems)) {
-        return normalizeSlot(SlotName.HEADER, options.slotProps, options.slotItems);
+        children = [
+            normalizeSlot(SlotName.HEADER, options.slotProps, options.slotItems),
+        ];
+    } else if (options.content) {
+        if (typeof options.content === 'function') {
+            children = [options.content(options.slotProps)];
+        } else {
+            children = [options.content];
+        }
+    }
+
+    if (children) {
+        return h(
+            options.tag,
+            mergeProps({ class: options.class }, options.props),
+            [
+                children,
+            ],
+        );
     }
 
     return [];

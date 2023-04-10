@@ -10,6 +10,7 @@ import { h, mergeProps, unref } from 'vue';
 import { createOptionValueBuilder } from '@vue-layout/core';
 import { Component } from '../constants';
 import { buildListFooter } from '../list-footer';
+import type { ListHeaderBuildOptionsInput } from '../list-header';
 import { buildListHeader } from '../list-header';
 import type { ListItemsBuildOptionsInput } from '../list-items';
 import { buildListItems } from '../list-items';
@@ -67,29 +68,33 @@ export function buildList<T extends Record<string, any>>(
     const children : VNodeArrayChildren = [];
 
     if (options.header) {
-        children.push(buildListHeader({
-            slotItems: options.slotItems,
-            slotProps: {
-                total: options.total,
-                load: options.load,
-                busy: options.busy,
-            },
-        }));
+        const child : ListHeaderBuildOptionsInput = typeof options.header === 'boolean' ?
+            {} :
+            options.header;
+
+        child.slotProps = {
+            total: options.total,
+            load: options.load,
+            busy: options.busy,
+        };
+        child.slotItems = options.slotItems;
+
+        children.push(buildListHeader(child));
     }
 
     if (options.items) {
-        const itemsOptions : ListItemsBuildOptionsInput<T> = typeof options.items === 'boolean' ?
+        const child : ListItemsBuildOptionsInput<T> = typeof options.items === 'boolean' ?
             {} :
             options.items;
 
-        itemsOptions.data = options.data;
-        itemsOptions.busy = options.busy;
-        itemsOptions.slotItems = options.slotItems;
-        itemsOptions.slotProps = options.slotProps;
-        itemsOptions.onDeleted = options.onDeleted;
-        itemsOptions.onUpdated = options.onUpdated;
+        child.data = options.data;
+        child.busy = options.busy;
+        child.slotItems = options.slotItems;
+        child.slotProps = options.slotProps;
+        child.onDeleted = options.onDeleted;
+        child.onUpdated = options.onUpdated;
 
-        children.push(buildListItems(itemsOptions));
+        children.push(buildListItems(child));
     }
 
     if (options.loading) {
@@ -115,14 +120,18 @@ export function buildList<T extends Record<string, any>>(
     }
 
     if (options.footer) {
-        children.push(buildListFooter({
-            slotItems: options.slotItems,
-            slotProps: {
-                total: options.total,
-                load: options.load,
-                busy: options.busy,
-            },
-        }));
+        const child : ListHeaderBuildOptionsInput = typeof options.footer === 'boolean' ?
+            {} :
+            options.footer;
+
+        child.slotProps = {
+            total: options.total,
+            load: options.load,
+            busy: options.busy,
+        };
+        child.slotItems = options.slotItems;
+
+        children.push(buildListFooter(child));
     }
 
     return h(

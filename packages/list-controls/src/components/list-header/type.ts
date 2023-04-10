@@ -15,10 +15,18 @@
 import type {
     OptionsInput,
 } from '@vue-layout/core';
+import type { VNode, VNodeChild } from 'vue';
 import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
+import type { ListFooterSlotProps } from '../list-footer';
 
-export type ListHeaderBuildOptions = ListBaseOptions;
+type Content = VNodeChild | VNode | VNode[];
+type ContentFn = (props: ListFooterSlotProps) => Content;
+
+export type ListHeaderBuildOptions = ListBaseOptions & {
+    content?: Content | ContentFn,
+};
 
 export type ListHeaderBuildOptionsInput = ListBaseOptionsInput & OptionsInput<
-ExpectListBaseOptions<ListHeaderBuildOptions>
+ExpectListBaseOptions<ListHeaderBuildOptions>,
+'content'
 >;
