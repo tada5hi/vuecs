@@ -3,11 +3,12 @@
     "private": true,
     "description": "This package contains an example app for the basic package",
     "scripts": {
-        "build": "nuxt build",
-        "dev": "nuxt dev",
-        "generate": "nuxt generate",
-        "preview": "nuxt preview",
-        "postinstall": "nuxt prepare"
+        "build": "nuxi build",
+        "dev": "nuxi dev",
+        "generate": "nuxi generate",
+        "preview": "nuxi preview",
+        "postinstall": "nuxi prepare",
+        "start": "nuxi start"
     },
     "author": {
         "name": "Peter Placzek",

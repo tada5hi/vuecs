@@ -5,15 +5,13 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import template from 'lodash.template';
-import { isObject } from 'smob';
 import type { VNode, VNodeArrayChildren } from 'vue';
 import { h, unref } from 'vue';
-import { createOptionValueBuilderForComponent } from '@vue-layout/core';
+import { createOptionValueBuilderForComponent, isObject } from '@vue-layout/core';
+import { isValidationRuleResultWithParams, isValidationRuleResultWithoutParams, template } from './utils';
 import { Component } from '../constants';
 import type { ValidationResult } from '../type';
 import type { ValidationGroupOptions, ValidationGroupOptionsInput } from './type';
-import { isValidationRuleResultWithParams, isValidationRuleResultWithoutParams } from './utils';
 
 export function buildValidationGroupOptions(options: ValidationGroupOptionsInput) : ValidationGroupOptions {
     const { buildOrFail } = createOptionValueBuilderForComponent<ValidationGroupOptions>(
@@ -52,28 +50,18 @@ export function buildValidationGroupOptions(options: ValidationGroupOptionsInput
 export function buildValidationGroup(input: ValidationGroupOptionsInput) : VNode {
     const options = buildValidationGroupOptions(input);
 
-    const formatMessage = (input: string, properties?: Record<string, any>) => {
-        try {
-            return template(input, {
-                interpolate: /{{([\s\S]+?)}}/g,
-            })(properties || {});
-        } catch (e) {
-            return input;
-        }
-    };
-
     const translate = (validator: string, properties?: Record<string, any>) => {
         if (
             options.validationMessages &&
             Object.prototype.hasOwnProperty.call(options.validationMessages, validator)
         ) {
-            return formatMessage(options.validationMessages[validator], properties);
+            return template(options.validationMessages[validator], properties || {});
         }
 
         if (typeof options.validationTranslator !== 'undefined') {
             let translation = options.validationTranslator(validator, properties || {});
             if (typeof translation === 'string') {
-                translation = formatMessage(translation, properties);
+                translation = template(translation, properties || {});
                 if (translation !== validator) {
                     return translation;
                 }
