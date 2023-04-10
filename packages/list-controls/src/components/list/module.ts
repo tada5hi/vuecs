@@ -35,13 +35,6 @@ export function buildListOptions<T extends Record<string, any>>(
     return {
         ...options,
 
-        load: input.load,
-        busy: options.busy,
-        data: options.data,
-
-        header: options.header,
-        footer: options.footer,
-
         items: buildOrFail({
             key: 'items',
             value: unref(options.items),
@@ -68,33 +61,33 @@ export function buildList<T extends Record<string, any>>(
     const children : VNodeArrayChildren = [];
 
     if (options.header) {
-        const child : ListHeaderBuildOptionsInput = typeof options.header === 'boolean' ?
+        const childOptions : ListHeaderBuildOptionsInput = typeof options.header === 'boolean' ?
             {} :
             options.header;
 
-        child.slotProps = {
+        childOptions.slotProps = {
             total: options.total,
             load: options.load,
             busy: options.busy,
         };
-        child.slotItems = options.slotItems;
+        childOptions.slotItems = options.slotItems;
 
-        children.push(buildListHeader(child));
+        children.push(buildListHeader(childOptions));
     }
 
     if (options.items) {
-        const child : ListItemsBuildOptionsInput<T> = typeof options.items === 'boolean' ?
+        const childOptions : ListItemsBuildOptionsInput<T> = typeof options.items === 'boolean' ?
             {} :
             options.items;
 
-        child.data = options.data;
-        child.busy = options.busy;
-        child.slotItems = options.slotItems;
-        child.slotProps = options.slotProps;
-        child.onDeleted = options.onDeleted;
-        child.onUpdated = options.onUpdated;
+        childOptions.data = options.data;
+        childOptions.busy = options.busy;
+        childOptions.slotItems = options.slotItems;
+        childOptions.slotProps = options.slotProps;
+        childOptions.onDeleted = options.onDeleted;
+        childOptions.onUpdated = options.onUpdated;
 
-        children.push(buildListItems(child));
+        children.push(buildListItems(childOptions));
     }
 
     if (options.loading) {
@@ -107,31 +100,31 @@ export function buildList<T extends Record<string, any>>(
     }
 
     if (options.noMore) {
-        const noMoreOptions : ListNoMoreBuildOptionsInput<T> = typeof options.noMore === 'boolean' ?
+        const childOptions : ListNoMoreBuildOptionsInput<T> = typeof options.noMore === 'boolean' ?
             {} :
             options.noMore;
 
-        noMoreOptions.busy = options.busy;
-        noMoreOptions.slotItems = options.slotItems;
-        noMoreOptions.slotProps = options.slotProps;
-        noMoreOptions.total = options.total;
+        childOptions.busy = options.busy;
+        childOptions.slotItems = options.slotItems;
+        childOptions.slotProps = options.slotProps;
+        childOptions.total = options.total;
 
-        children.push(buildListNoMore(noMoreOptions));
+        children.push(buildListNoMore(childOptions));
     }
 
     if (options.footer) {
-        const child : ListHeaderBuildOptionsInput = typeof options.footer === 'boolean' ?
+        const childOptions : ListHeaderBuildOptionsInput = typeof options.footer === 'boolean' ?
             {} :
             options.footer;
 
-        child.slotProps = {
+        childOptions.slotProps = {
             total: options.total,
             load: options.load,
             busy: options.busy,
         };
-        child.slotItems = options.slotItems;
+        childOptions.slotItems = options.slotItems;
 
-        children.push(buildListFooter(child));
+        children.push(buildListFooter(childOptions));
     }
 
     return h(
