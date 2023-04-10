@@ -1,7 +1,7 @@
 {
     "name": "@vue-layout/countdown",
     "version": "1.1.0",
-    "description": "A package containing basic components, to build for example multi level navigation menus.",
+    "description": "A package containing a countdown component.",
     "exports": {
         "./package.json": "./package.json",
         ".": {
@@ -19,16 +19,9 @@
     "keywords": [
         "vue",
         "layout",
-        "basic",
-        "components",
-        "pagination",
-        "navigation",
-        "navbar",
-        "tier",
-        "multi-tier",
-        "level",
-        "vue-router",
-        "typescript"
+        "countdown",
+        "timer",
+        "component"
     ],
     "author": {
         "name": "Peter Placzek",
@@ -46,11 +39,9 @@
         "build": "cross-env NODE_ENV=production npm run build:js && npm run build:types"
     },
     "devDependencies": {
-        "@vue-layout/core": "^1.1.0",
         "vue": "^3.2.45"
     },
     "peerDependencies": {
-        "@vue-layout/core": "^1.1.0",
         "vue": "^3.x"
     },
     "engines": {

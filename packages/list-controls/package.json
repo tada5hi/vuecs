@@ -1,7 +1,7 @@
 {
     "name": "@vue-layout/list-controls",
     "version": "1.1.0",
-    "description": "A package containing hyperscript components for usage in render functions.",
+    "description": "A package containing list controls.",
     "exports": {
         "./package.json": "./package.json",
         ".": {
@@ -17,12 +17,13 @@
         "dist/*"
     ],
     "keywords": [
+        "list",
+        "list-controls",
         "vue",
         "layout",
         "hyperscript",
         "components",
         "builder",
-        "typescript",
         "template"
     ],
     "author": {
@@ -48,7 +49,7 @@
         "vue": "^3.2.45"
     },
     "peerDependencies": {
-        "@vue-layout/core": "^1.1.0",
+        "@vue-layout/core": "^2.0.0",
         "vue": "^3.x"
     },
     "engines": {

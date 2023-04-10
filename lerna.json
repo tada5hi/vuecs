@@ -1,19 +1,20 @@
 {
-  "$schema": "node_modules/lerna/schemas/lerna-schema.json",
-  "packages": [
-    "packages/*"
-  ],
-  "command": {
-    "version": {
-      "ignoreChanges": [
-        "**/*.spec.ts",
-        "**/*.spec.js",
-        "**/*.md"
-      ],
-      "conventionalCommits": true,
-      "message": "chore(release): %s"
-    }
-  },
-  "useWorkspaces": true,
-  "version": "1.1.0"
+    "$schema": "node_modules/lerna/schemas/lerna-schema.json",
+    "packages": [
+        "packages/*"
+    ],
+    "command": {
+        "version": {
+            "ignoreChanges": [
+                "**/*.spec.ts",
+                "**/*.spec.js",
+                "**/*.md"
+            ],
+            "conventionalCommits": true,
+            "message": "chore(release): %s",
+            "githubRelease": true
+        }
+    },
+    "useWorkspaces": true,
+    "version": "1.1.0"
 }

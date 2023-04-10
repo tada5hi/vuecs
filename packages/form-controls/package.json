@@ -21,8 +21,9 @@
         "layout",
         "hyperscript",
         "components",
+        "forms",
+        "form-control",
         "builder",
-        "typescript",
         "template"
     ],
     "author": {
@@ -49,7 +50,7 @@
         "vue": "^3.2.45"
     },
     "peerDependencies": {
-        "@vue-layout/core": "^1.1.0",
+        "@vue-layout/core": "^2.0.0",
         "vue": "^3.x"
     },
     "engines": {
