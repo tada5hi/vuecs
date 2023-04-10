@@ -3,8 +3,7 @@
 [![npm version](https://badge.fury.io/js/@vue-layout%2Fnavigation.svg)](https://badge.fury.io/js/@vue-layout%2Fnavigation)
 [![CI](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml)
 
-A package containing basic components, 
-to build for example multi level navigation menus.
+A package containing basic components, to build multi level navigation menus.
 
 > **Note**
 > The package is still in development and the API is still subject to change.

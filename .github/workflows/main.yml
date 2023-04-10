@@ -71,7 +71,7 @@ jobs:
         strategy:
             matrix:
                 package: [
-                    'basic'
+                    'navigation'
                 ]
         steps:
             -   name: Checkout

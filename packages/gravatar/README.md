@@ -19,6 +19,31 @@ $ npm i --save @vue-layout/gravatar
 
 ## Usage
 
+Register the plugin.
+
+```typescript
+import install from '@vue-layout/gravatar';
+import { createApp } from 'vue'
+
+const app = createApp({})
+
+app.use(install, {
+  /* optional options */
+})
+```
+
+After the component is registered, it can be used as follows.
+
+```vue
+<template>
+    <Gravatar
+        :email="'max.mustermann@example.com'"
+        :default-img="'retro'"
+        :size="80"
+        :rating="'g'"
+    />
+</template>
+```
 
 ## License
 
