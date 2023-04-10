@@ -1,4 +1,4 @@
-# VUE LAYOUT 	
+# Vue Layout 🧩	
 
 [![main](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml)
 [![Known Vulnerabilities](https://snyk.io/test/github/Tada5hi/vue-layout/badge.svg)](https://snyk.io/test/github/Tada5hi/vue-layout)
@@ -12,6 +12,13 @@ vanilla or hyperscript components.
 **Table of Contents**
 
 - [Packages](#packages)
+  - [Core](#core-)
+  - [Countdown](#countdown-)
+  - [Form Controls](#form-controls-)
+  - [Gravatar](#gravatar-)
+  - [List Controls](#list-controls-)
+  - [Navigation](#navigation-)
+  - [Pagination](#pagination-)
 - [License](#license)
 
 ## Packages
@@ -71,7 +78,7 @@ A package containing basic components, to build multi level navigation menus.
 
 [Documentation](packages/navigation/README.md)
 
-### Pagination 
+### Pagination 📖
 
 **`@vue-layout/pagination`**
 
