@@ -36,7 +36,7 @@
     "scripts": {
         "build:types": "vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json",
         "build:js": "rollup -c",
-        "build": "cross-env NODE_ENV=production npm run build:js && npm run build:types"
+        "build": "cross-env NODE_ENV=production rimraf dist && npm run build:js && npm run build:types"
     },
     "devDependencies": {
         "vue": "^3.2.45"

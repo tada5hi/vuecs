@@ -86,7 +86,7 @@ export function buildOptionValueOrFail<
     return target as O[K];
 }
 
-export function createOptionValueBuilderForComponent<O extends Record<string, any>>(
+export function createOptionValueBuilder<O extends Record<string, any>>(
     component: string,
 ) : OptionValueBuilder<O> {
     return {

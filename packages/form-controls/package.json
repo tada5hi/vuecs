@@ -40,7 +40,7 @@
         "prebuild": "rimraf ./dist",
         "build:types": "tsc --emitDeclarationOnly -p tsconfig.build.json",
         "build:js": "rollup -c",
-        "build": "cross-env NODE_ENV=production npm run build:js && npm run build:types",
+        "build": "cross-env NODE_ENV=production rimraf dist && npm run build:js && npm run build:types",
         "lint": "eslint --ext .ts ./src/",
         "lint:fix": "npm run lint -- --fix"
     },

@@ -8,7 +8,7 @@
 import type { VNode, VNodeArrayChildren, VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
 import {
-    createOptionValueBuilderForComponent, extractValueFromOptionValueInput, hasNormalizedSlot,
+    createOptionValueBuilder, extractValueFromOptionValueInput, hasNormalizedSlot,
     hasOwnProperty, normalizeSlot, unrefWithDefault,
 } from '@vue-layout/core';
 import { Component, SlotName } from '../constants';
@@ -22,7 +22,7 @@ export function buildListItemOptions<T extends Record<string, any>>(
         class: 'list-item',
     });
 
-    const { buildOrFail } = createOptionValueBuilderForComponent<ListItemBuildOptions<T>>(
+    const { buildOrFail } = createOptionValueBuilder<ListItemBuildOptions<T>>(
         Component.ListItem,
     );
 

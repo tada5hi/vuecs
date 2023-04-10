@@ -7,7 +7,7 @@
 
 import type { VNode, VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
-import { createOptionValueBuilderForComponent, extractValueFromOptionValueInput } from '@vue-layout/core';
+import { createOptionValueBuilder, extractValueFromOptionValueInput } from '@vue-layout/core';
 import { Component } from '../constants';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
 import { buildValidationGroup } from '../validation-group';
@@ -18,7 +18,7 @@ export function buildFormSelectOptions(
 ) : FormSelectBuildOptions {
     const options = buildFormBaseOptions(input, Component.FormSelect);
 
-    const { buildOrFail } = createOptionValueBuilderForComponent<FormSelectBuildOptions>(
+    const { buildOrFail } = createOptionValueBuilder<FormSelectBuildOptions>(
         Component.FormSelect,
     );
 

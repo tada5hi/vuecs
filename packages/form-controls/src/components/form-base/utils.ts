@@ -6,7 +6,7 @@
  */
 
 import {
-    createOptionValueBuilderForComponent,
+    createOptionValueBuilder,
     setMaybeRefValue,
 } from '@vue-layout/core';
 import type { Component } from '../constants';
@@ -21,7 +21,7 @@ export function buildFormBaseOptions<T extends FormBaseOptionsInput>(
 ): ExpectFormBaseOptions<T> & FormBaseOptions {
     defaults = defaults || {};
 
-    const { buildOrFail } = createOptionValueBuilderForComponent<FormBaseOptions>(
+    const { buildOrFail } = createOptionValueBuilder<FormBaseOptions>(
         component,
     );
 

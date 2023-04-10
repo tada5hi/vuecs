@@ -8,7 +8,7 @@
 import type { VNodeArrayChildren } from 'vue';
 import { h, unref } from 'vue';
 import {
-    createOptionValueBuilderForComponent,
+    createOptionValueBuilder,
     extractValueFromOptionValueInput,
     isPromise,
     setMaybeRefValue,
@@ -20,7 +20,7 @@ import type { FormSubmitOptions, FormSubmitOptionsInput } from './type';
 export function buildFormSubmitOptions(
     options: FormSubmitOptionsInput,
 ) : FormSubmitOptions {
-    const { buildOrFail } = createOptionValueBuilderForComponent<FormSubmitOptions>(
+    const { buildOrFail } = createOptionValueBuilder<FormSubmitOptions>(
         Component.FormSubmit,
     );
 

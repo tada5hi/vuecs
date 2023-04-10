@@ -7,14 +7,14 @@
 
 import type { VNode, VNodeArrayChildren } from 'vue';
 import { h, unref } from 'vue';
-import { createOptionValueBuilderForComponent, isObject } from '@vue-layout/core';
+import { createOptionValueBuilder, isObject } from '@vue-layout/core';
 import { isValidationRuleResultWithParams, isValidationRuleResultWithoutParams, template } from './utils';
 import { Component } from '../constants';
 import type { ValidationResult } from '../type';
 import type { ValidationGroupOptions, ValidationGroupOptionsInput } from './type';
 
 export function buildValidationGroupOptions(options: ValidationGroupOptionsInput) : ValidationGroupOptions {
-    const { buildOrFail } = createOptionValueBuilderForComponent<ValidationGroupOptions>(
+    const { buildOrFail } = createOptionValueBuilder<ValidationGroupOptions>(
         Component.ValidationGroup,
     );
 
