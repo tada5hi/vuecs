@@ -12,7 +12,7 @@
             ],
             "conventionalCommits": true,
             "message": "chore(release): %s",
-            "githubRelease": true
+            "createRelease": "github"
         }
     },
     "useWorkspaces": true,
