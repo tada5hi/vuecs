@@ -24,6 +24,9 @@ export type ListBuildOptions<T extends Record<string, any>> = ListBaseOptions & 
     onDeleted?: (item: T) => void,
     onUpdated?: (item: T) => void,
 
+    header?: boolean,
+    footer?: boolean,
+
     items: Omit<ListItemsBuildOptionsInput<T>, 'busy' | 'data'> | boolean,
     loading: Omit<ListLoadingBuildOptionsInput<T>, 'busy'> | boolean,
     noMore: Omit<ListNoMoreBuildOptionsInput<T>, 'busy' | 'total'> | boolean
@@ -32,5 +35,5 @@ export type ListBuildOptions<T extends Record<string, any>> = ListBaseOptions & 
 export type ListBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput & OptionsInput<
 ExpectListBaseOptions<ListBuildOptions<T>>,
 'load',
-'busy' | 'data' | 'total' | 'onChange' | 'onDeleted' | 'onUpdated'
+'busy' | 'data' | 'total' | 'onChange' | 'onDeleted' | 'onUpdated' | 'header' | 'footer'
 >;

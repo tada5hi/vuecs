@@ -9,6 +9,8 @@ import type { VNodeArrayChildren } from 'vue';
 import { h, mergeProps, unref } from 'vue';
 import { createOptionValueBuilder } from '@vue-layout/core';
 import { Component } from '../constants';
+import { buildListFooter } from '../list-footer';
+import { buildListHeader } from '../list-header';
 import type { ListItemsBuildOptionsInput } from '../list-items';
 import { buildListItems } from '../list-items';
 import { buildListLoading } from '../list-loading';
@@ -36,6 +38,9 @@ export function buildListOptions<T extends Record<string, any>>(
         busy: options.busy,
         data: options.data,
 
+        header: options.header,
+        footer: options.footer,
+
         items: buildOrFail({
             key: 'items',
             value: unref(options.items),
@@ -60,6 +65,17 @@ export function buildList<T extends Record<string, any>>(
     const options = buildListOptions(input);
 
     const children : VNodeArrayChildren = [];
+
+    if (options.header) {
+        children.push(buildListHeader({
+            slotItems: options.slotItems,
+            slotProps: {
+                total: options.total,
+                load: options.load,
+                busy: options.busy,
+            },
+        }));
+    }
 
     if (options.items) {
         const itemsOptions : ListItemsBuildOptionsInput<T> = typeof options.items === 'boolean' ?
@@ -96,6 +112,17 @@ export function buildList<T extends Record<string, any>>(
         noMoreOptions.total = options.total;
 
         children.push(buildListNoMore(noMoreOptions));
+    }
+
+    if (options.footer) {
+        children.push(buildListFooter({
+            slotItems: options.slotItems,
+            slotProps: {
+                total: options.total,
+                load: options.load,
+                busy: options.busy,
+            },
+        }));
     }
 
     return h(

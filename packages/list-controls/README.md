@@ -29,6 +29,7 @@ The following helpers are provided:
 
 - `buildList`
 - `buildListActionRefresh`
+- `buildListFooter`
 - `buildListHeader`
 - `buildListItem`
 - `buildListItems`
