@@ -1,0 +1,18 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "lib": [
+            "ESNext",
+            "dom"
+        ],
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "paths": {
+            "@vue-layout/core": ["./packages/core/src"]
+        }
+    },
+    "include": [
+        "src/**/*.ts"
+    ]
+}

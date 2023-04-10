@@ -1,0 +1,66 @@
+{
+    "name": "@vue-layout/gravatar",
+    "version": "1.1.0",
+    "description": "A package containing basic components, to build for example multi level navigation menus.",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.cjs"
+        }
+    },
+    "main": "dist/index.cjs",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist/*"
+    ],
+    "keywords": [
+        "vue",
+        "layout",
+        "basic",
+        "components",
+        "pagination",
+        "navigation",
+        "navbar",
+        "tier",
+        "multi-tier",
+        "level",
+        "vue-router",
+        "typescript"
+    ],
+    "author": {
+        "name": "Peter Placzek",
+        "email": "contact@tada5hi.net",
+        "url": "https://tada5hi.net"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tada5hi/vue-layout.git",
+        "directory": "packages/gravatar"
+    },
+    "scripts": {
+        "build:types": "vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json",
+        "build:js": "rollup -c",
+        "build": "cross-env NODE_ENV=production npm run build:js && npm run build:types"
+    },
+    "devDependencies": {
+        "@types/md5": "^2.3.2",
+        "@vue-layout/core": "^1.1.0",
+        "vue": "^3.2.45"
+    },
+    "peerDependencies": {
+        "@vue-layout/core": "^1.1.0",
+        "vue": "^3.x"
+    },
+    "engines": {
+        "node": ">=16"
+    },
+    "dependencies": {
+        "md5": "^2.3.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}
