@@ -35,7 +35,7 @@
         "node": ">=14.0.0"
     },
     "devDependencies": {
-        "@rollup/plugin-alias": "^4.0.3",
+        "@rollup/plugin-alias": "^5.0.0",
         "@rollup/plugin-node-resolve": "^15.0.2",
         "@rollup/plugin-replace": "^5.0.2",
         "@rollup/plugin-terser": "^0.4.1",
