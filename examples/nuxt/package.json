@@ -31,10 +31,10 @@
         "@vue-layout/countdown": "^2.0.1",
         "@vue-layout/form-controls": "^2.0.0",
         "@vue-layout/gravatar": "^2.0.1",
-        "@vue-layout/list-controls": "^2.1.0",
+        "@vue-layout/list-controls": "^2.1.1",
         "@vue-layout/navigation": "^2.0.0",
         "@vue-layout/pagination": "^2.0.0",
-        "@vue-layout/preset-bootstrap-v5": "^2.0.0",
+        "@vue-layout/preset-bootstrap-v5": "^2.1.1",
         "@vue-layout/preset-font-awesome": "^2.0.0",
         "@vuelidate/core": "^2.0.2",
         "@vuelidate/validators": "^2.0.2",
@@ -44,5 +44,5 @@
         "vue": "^3.2.45",
         "vue-router": "^4.1.4"
     },
-    "version": "2.1.0"
+    "version": "2.1.1"
 }
