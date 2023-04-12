@@ -40,10 +40,6 @@ export default {
     listActionRefresh: {
         class: 'btn btn-xs btn-dark',
     },
-    listHeader: {
-        class: 'd-flex flex-row align-items-center',
-        actionClass: 'd-flex flex-row ml-auto',
-    },
     listItem: {
         class: 'd-flex flex-row align-items-center',
         iconClass: 'pr-1',

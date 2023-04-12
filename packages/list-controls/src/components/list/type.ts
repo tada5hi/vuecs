@@ -22,7 +22,6 @@ export type ListBuildOptions<T extends Record<string, any>> = ListBaseOptions & 
     load?: ListLoadFn,
     total?: MaybeRef<number>,
 
-    onChange?: (input: any) => void,
     onDeleted?: (item: T) => void,
     onUpdated?: (item: T) => void,
 
@@ -37,5 +36,5 @@ export type ListBuildOptions<T extends Record<string, any>> = ListBaseOptions & 
 export type ListBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput & OptionsInput<
 ExpectListBaseOptions<ListBuildOptions<T>>,
 'load',
-'busy' | 'data' | 'total' | 'onChange' | 'onDeleted' | 'onUpdated' | 'header' | 'footer'
+'busy' | 'data' | 'total' | 'onDeleted' | 'onUpdated' | 'header' | 'footer'
 >;
