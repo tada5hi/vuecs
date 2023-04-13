@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/Tada5hi/vue-layout/compare/v2.1.1...v2.2.0) (2023-04-13)
+
+
+### Features
+
+* expose core package on export path ([56a0969](https://github.com/Tada5hi/vue-layout/commit/56a0969b174e9dacb2d8ae9cd3bf47ee1502c094))
+
+
+
+
+
 ## [2.1.1](https://github.com/Tada5hi/vue-layout/compare/v2.1.0...v2.1.1) (2023-04-12)
 
 
