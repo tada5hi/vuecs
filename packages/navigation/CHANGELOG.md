@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.1](https://github.com/tada5hi/vue-layout/compare/v2.2.0...v2.2.1) (2023-04-13)
+
+
+### Bug Fixes
+
+* minor change to force version bump ([e1903d2](https://github.com/tada5hi/vue-layout/commit/e1903d234adde009549c14e32038f73601b90a28))
+
+
+
+
+
 # [2.2.0](https://github.com/tada5hi/vue-layout/compare/v2.1.1...v2.2.0) (2023-04-13)
 
 
