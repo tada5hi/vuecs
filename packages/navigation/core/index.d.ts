@@ -5,4 +5,5 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+// eslint-disable-next-line import/no-extraneous-dependencies
 export * from '@vue-layout/core';
