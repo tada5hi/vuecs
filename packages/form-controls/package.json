@@ -8,13 +8,19 @@
             "types": "./dist/index.d.ts",
             "import": "./dist/index.mjs",
             "require": "./dist/index.cjs"
+        },
+        "./core": {
+            "types": "./core/index.d.ts",
+            "import": "./core/index.mjs",
+            "require": "./core/index.cjs"
         }
     },
     "main": "dist/index.cjs",
     "module": "dist/index.mjs",
     "types": "dist/index.d.ts",
     "files": [
-        "dist/*"
+        "core",
+        "dist"
     ],
     "keywords": [
         "vue",

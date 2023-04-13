@@ -43,5 +43,4 @@ type Options = PluginBaseOptions & {
 
 export type {
     Options,
-    PluginBaseOptions,
 };
