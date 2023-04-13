@@ -6,19 +6,19 @@
  */
 
 import { unref } from 'vue';
-import { useDefaultComponentStore } from '../defaults';
-import { getRegisteredPresets, usePresetComponentStore } from '../preset';
+import { useComponentDefaultsStore } from '../defaults';
+import { getRegisteredComponentPresets, useComponentPresetStore } from '../preset';
 import { hasOwnProperty } from '../../utils';
 import {
     isOptionValueConfig,
     mergeOption,
 } from './utils';
-import type { OptionValueBuildContext, OptionValueBuilder } from './type';
+import type { ComponentOptionBuildContext, ComponentOptionBuilder } from './type';
 
-export function buildOptionValue<
+export function buildComponentOption<
     O extends Record<string, any>,
     K extends keyof O,
->(context: OptionValueBuildContext<K, O[K]>) : O[K] | undefined {
+>(context: ComponentOptionBuildContext<K, O[K]>) : O[K] | undefined {
     let value : O[K] | undefined;
 
     const presetConfig : Record<string, boolean> = {};
@@ -37,7 +37,7 @@ export function buildOptionValue<
     }
 
     if (typeof value === 'undefined') {
-        const defaultStore = useDefaultComponentStore();
+        const defaultStore = useComponentDefaultsStore();
         if (defaultStore.hasOption(context.component, context.key as string)) {
             value = defaultStore.getOption(context.component, context.key as string);
         }
@@ -51,7 +51,7 @@ export function buildOptionValue<
         return undefined;
     }
 
-    const registeredPresets = getRegisteredPresets();
+    const registeredPresets = getRegisteredComponentPresets();
     for (let i = 0; i < registeredPresets.length; i++) {
         if (
             hasOwnProperty(presetConfig, registeredPresets[i]) &&
@@ -60,7 +60,7 @@ export function buildOptionValue<
             continue;
         }
 
-        const presetStore = usePresetComponentStore(registeredPresets[i]);
+        const presetStore = useComponentPresetStore(registeredPresets[i]);
         if (presetStore.hasOption(context.component, context.key as string)) {
             value = mergeOption(
                 context.key as string,
@@ -73,11 +73,11 @@ export function buildOptionValue<
     return value;
 }
 
-export function buildOptionValueOrFail<
+export function buildComponentOptionOrFail<
     O extends Record<string, any>,
     K extends keyof O = keyof O,
-    >(context: OptionValueBuildContext<K, O[K]>) : O[K] {
-    const target = buildOptionValue(context);
+    >(context: ComponentOptionBuildContext<K, O[K]>) : O[K] {
+    const target = buildComponentOption(context);
 
     if (typeof target === 'undefined') {
         throw new Error(`A value for option ${context.key as string} of component ${context.component} is required.`);
@@ -86,19 +86,19 @@ export function buildOptionValueOrFail<
     return target as O[K];
 }
 
-export function createOptionValueBuilder<O extends Record<string, any>>(
+export function createComponentOptionBuilder<O extends Record<string, any>>(
     component: string,
-) : OptionValueBuilder<O> {
+) : ComponentOptionBuilder<O> {
     return {
         build: <K extends keyof O>(
-            context: Omit<OptionValueBuildContext<K, O[K]>, 'component'>,
-        ) : O[K] | undefined => buildOptionValue({
+            context: Omit<ComponentOptionBuildContext<K, O[K]>, 'component'>,
+        ) : O[K] | undefined => buildComponentOption({
             ...context,
             component,
         }),
         buildOrFail: <K extends keyof O>(
-            context: Omit<OptionValueBuildContext<K, O[K]>, 'component'>,
-        ) : O[K] => buildOptionValueOrFail({
+            context: Omit<ComponentOptionBuildContext<K, O[K]>, 'component'>,
+        ) : O[K] => buildComponentOptionOrFail({
             ...context,
             component,
         }),

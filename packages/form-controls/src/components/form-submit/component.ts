@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { OptionValueConfig } from '@vue-layout/core';
+import type { ComponentOptionConfig } from '@vue-layout/core';
 import type { PropType } from 'vue';
 import { defineComponent, toRef } from 'vue';
 import { buildFormSubmit } from './module';
@@ -28,28 +28,28 @@ export const FormSubmit = defineComponent({
         },
 
         createText: {
-            type: [String, Object] as PropType<string | OptionValueConfig<string>>,
+            type: [String, Object] as PropType<string | ComponentOptionConfig<string>>,
             default: undefined,
         },
         createIconClass: {
-            type: [String, Object] as PropType<string | OptionValueConfig<string>>,
+            type: [String, Object] as PropType<string | ComponentOptionConfig<string>>,
             default: undefined,
         },
         createButtonClass: {
-            type: [String, Object] as PropType<string | OptionValueConfig<string>>,
+            type: [String, Object] as PropType<string | ComponentOptionConfig<string>>,
             default: undefined,
         },
 
         updateText: {
-            type: [String, Object] as PropType<string | OptionValueConfig<string>>,
+            type: [String, Object] as PropType<string | ComponentOptionConfig<string>>,
             default: undefined,
         },
         updateIconClass: {
-            type: [String, Object] as PropType<string | OptionValueConfig<string>>,
+            type: [String, Object] as PropType<string | ComponentOptionConfig<string>>,
             default: undefined,
         },
         updateButtonClass: {
-            type: [String, Object] as PropType<string | OptionValueConfig<string>>,
+            type: [String, Object] as PropType<string | ComponentOptionConfig<string>>,
             default: undefined,
         },
 

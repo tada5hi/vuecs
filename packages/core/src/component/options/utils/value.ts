@@ -8,12 +8,13 @@
 import { isObject } from 'smob';
 import { hasOwnProperty } from '../../../utils';
 import type {
-    OptionValueConfig, OptionValueInput,
+    ComponentOptionConfig,
+    ComponentOptionInput,
 } from '../type';
 
 export function isOptionValueConfig(
     value: unknown,
-): value is OptionValueConfig<any> {
+): value is ComponentOptionConfig<any> {
     if (!isObject(value)) {
         return false;
     }
@@ -23,14 +24,14 @@ export function isOptionValueConfig(
     }
 
     if (
-        typeof (value as OptionValueConfig<any>).presets === 'undefined' &&
-        typeof (value as OptionValueConfig<any>).defaults === 'undefined'
+        typeof (value as ComponentOptionConfig<any>).presets === 'undefined' &&
+        typeof (value as ComponentOptionConfig<any>).defaults === 'undefined'
     ) {
         return false;
     }
 
-    if (typeof (value as OptionValueConfig<any>).presets !== 'undefined') {
-        const { presets } = value as OptionValueConfig<any>;
+    if (typeof (value as ComponentOptionConfig<any>).presets !== 'undefined') {
+        const { presets } = value as ComponentOptionConfig<any>;
         if (!isObject(presets)) {
             return false;
         }
@@ -46,11 +47,11 @@ export function isOptionValueConfig(
         }
     }
 
-    return !(typeof (value as OptionValueConfig<any>).defaults !== 'undefined' &&
-        typeof (value as OptionValueConfig<any>).defaults !== 'boolean');
+    return !(typeof (value as ComponentOptionConfig<any>).defaults !== 'undefined' &&
+        typeof (value as ComponentOptionConfig<any>).defaults !== 'boolean');
 }
 
-export function extractValueFromOptionValueInput<V>(input: OptionValueInput<V>) : V {
+export function extractValueFromOptionValueInput<V>(input: ComponentOptionInput<V>) : V {
     if (isOptionValueConfig(input)) {
         return input.value;
     }

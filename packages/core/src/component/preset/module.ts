@@ -5,22 +5,22 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { ComponentStore } from '../store';
+import { Store } from '../../store';
 
-const instances : Record<string, ComponentStore> = {};
+const instances : Record<string, Store> = {};
 
-export function usePresetComponentStore(key: string) : ComponentStore {
+export function useComponentPresetStore(key: string) : Store {
     if (typeof instances[key] !== 'undefined') {
         return instances[key];
     }
 
-    const instance = new ComponentStore();
+    const instance = new Store();
 
     instances[key] = instance;
 
     return instance;
 }
 
-export function getRegisteredPresets() {
+export function getRegisteredComponentPresets() {
     return Object.keys(instances);
 }

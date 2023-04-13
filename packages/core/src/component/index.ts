@@ -8,4 +8,3 @@
 export * from './defaults';
 export * from './options';
 export * from './preset';
-export * from './store';

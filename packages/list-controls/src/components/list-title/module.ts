@@ -8,7 +8,7 @@
 import type { VNode, VNodeArrayChildren } from 'vue';
 import { h, mergeProps, unref } from 'vue';
 import {
-    createOptionValueBuilder, hasNormalizedSlot, normalizeSlot,
+    createComponentOptionBuilder, hasNormalizedSlot, normalizeSlot,
 } from '@vue-layout/core';
 import { buildListBaseOptions } from '../list-base';
 import type { ListTitleBuildOptions, ListTitleBuildOptionsInput } from './type';
@@ -21,7 +21,7 @@ export function buildListTitleOptions(
         class: [],
     });
 
-    const { buildOrFail } = createOptionValueBuilder<ListTitleBuildOptions>(
+    const { buildOrFail } = createComponentOptionBuilder<ListTitleBuildOptions>(
         Component.ListTitle,
     );
 

@@ -7,25 +7,26 @@
 
 import type { MaybeRef, ToMaybeRef } from '../../type';
 
-type OptionValueConfigWithPresets<V> = {
-    value?: V,
+type ComponentOptionConfigWithPresets<V> = {
+    value: V,
     presets: Record<string, boolean>,
     defaults?: boolean
 };
 
-type OptionValueConfigWithDefaults<V> = {
-    value?: V,
+type ComponentOptionConfigWithDefaults<V> = {
+    value: V,
     presets?: Record<string, boolean>,
     defaults: boolean
 };
-export type OptionValueConfig<V> = OptionValueConfigWithPresets<V> | OptionValueConfigWithDefaults<V>;
+export type ComponentOptionConfig<V> = ComponentOptionConfigWithPresets<V> | ComponentOptionConfigWithDefaults<V>;
 
-export type OptionValueInput<V> = V | OptionValueConfig<V>;
+export type ComponentOptionInput<V> = V | ComponentOptionConfig<V>;
 
-export type ToOptionValueInput<T> = {
-    [K in keyof T]: OptionValueInput<T[K]>;
+export type ToComponentOptionInput<T> = {
+    [K in keyof T]: ComponentOptionInput<T[K]>;
 };
 
+// todo: remove type and deps
 export type OptionsInput<
     T,
     R extends keyof T = never,
@@ -34,10 +35,10 @@ export type OptionsInput<
     > =
     Pick<T, R> & // unchanged
     Partial<Pick<T, P>> & // partial
-    ToOptionValueInput<ToMaybeRef<Pick<T, MR>>> & // unchanged + maybeRef
-    Partial<ToOptionValueInput<ToMaybeRef<Pick<T, Exclude<keyof T, R | P | MR>>>>>; // partial + maybeRef
+    ToComponentOptionInput<ToMaybeRef<Pick<T, MR>>> & // unchanged + maybeRef
+    Partial<ToComponentOptionInput<ToMaybeRef<Pick<T, Exclude<keyof T, R | P | MR>>>>>; // partial + maybeRef
 
-export type OptionValueBuildContext<K, V> = {
+export type ComponentOptionBuildContext<K, V> = {
     /**
      * The name of the component.
      */
@@ -55,17 +56,17 @@ export type OptionValueBuildContext<K, V> = {
      * Value with or without configuration for
      * presets.
      */
-    value?: OptionValueInput<MaybeRef<V>>
+    value?: ComponentOptionInput<MaybeRef<V>>
 };
 
-export type OptionValueBuilder<
+export type ComponentOptionBuilder<
     O extends Record<string, any>,
     > = {
         build: <K extends keyof O>(
-            context: Omit<OptionValueBuildContext<K, O[K]>, 'component'>,
+            context: Omit<ComponentOptionBuildContext<K, O[K]>, 'component'>,
         ) => O[K] | undefined,
         buildOrFail: <K extends keyof O>(
-            context: Omit<OptionValueBuildContext<K, O[K]>, 'component'>,
+            context: Omit<ComponentOptionBuildContext<K, O[K]>, 'component'>,
         ) => O[K],
 
     };

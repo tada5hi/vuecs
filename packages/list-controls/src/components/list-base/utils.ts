@@ -6,7 +6,7 @@
  */
 
 import { unref } from 'vue';
-import { createOptionValueBuilder } from '@vue-layout/core';
+import { createComponentOptionBuilder } from '@vue-layout/core';
 import type { Component } from '../constants';
 import type {
     ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsDefaults, ListBaseOptionsInput,
@@ -22,7 +22,7 @@ export function buildListBaseOptions<
 ): ExpectListBaseOptions<T> & ListBaseOptions {
     defaults = defaults || {};
 
-    const { buildOrFail } = createOptionValueBuilder<ListBaseOptions>(
+    const { buildOrFail } = createComponentOptionBuilder<ListBaseOptions>(
         component,
     );
 

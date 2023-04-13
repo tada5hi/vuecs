@@ -9,5 +9,4 @@ export * from './has-own-property';
 export * from './object';
 export * from './normalize-slot';
 export * from './promise';
-export * from './proprety';
 export * from './ref';

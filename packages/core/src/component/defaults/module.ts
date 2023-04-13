@@ -5,25 +5,16 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { ComponentStore } from '../store';
+import { Store } from '../../store';
 
-let instance : ComponentStore | undefined;
+let instance : Store | undefined;
 
-export function useDefaultComponentStore() {
+export function useComponentDefaultsStore() {
     if (typeof instance !== 'undefined') {
         return instance;
     }
 
-    instance = new ComponentStore();
+    instance = new Store();
 
     return instance;
-}
-
-export function setDefaultComponentOptionsMap(data: Record<string, Record<string, any>>) {
-    const store = useDefaultComponentStore();
-
-    const keys = Object.keys(data);
-    for (let i = 0; i < keys.length; i++) {
-        store.setOptions(keys[i], data[keys[i]]);
-    }
 }

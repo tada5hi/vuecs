@@ -58,7 +58,7 @@
         "vue-router": "^4.1.4"
     },
     "peerDependencies": {
-        "@vue-layout/core": "^2.0.0",
+        "@vue-layout/core": "^2.1.0",
         "vue": "^3.x",
         "vue-router": "^4.x"
     },
