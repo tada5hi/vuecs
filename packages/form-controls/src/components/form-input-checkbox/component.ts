@@ -14,8 +14,8 @@ export const FormInputCheckbox = defineComponent({
     name: 'FormInputCheckbox',
     props: {
         modelValue: {
-            type: String,
-            default: '',
+            type: Boolean,
+            default: false,
         },
         label: {
             type: Boolean,
