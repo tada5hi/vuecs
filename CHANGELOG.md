@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.2](https://github.com/Tada5hi/vue-layout/compare/v2.2.1...v2.2.2) (2023-04-16)
+
+
+### Bug Fixes
+
+* form-input checkbox mode-value prop ([690b105](https://github.com/Tada5hi/vue-layout/commit/690b105fb754b1a852aaac9a75901cebff2d9209))
+
+
+
+
+
 ## [2.2.1](https://github.com/Tada5hi/vue-layout/compare/v2.2.0...v2.2.1) (2023-04-13)
 
 
