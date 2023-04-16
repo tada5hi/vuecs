@@ -39,7 +39,7 @@ export default defineComponent({
 });
 </script>
 <template>
-    <FormInputText
+    <FormInput
         v-model="form.text"
         :label="true"
         :label-content="'Label'"

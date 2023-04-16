@@ -10,7 +10,7 @@ import { buildFormInputText } from '@vue-layout/form-controls';
 import { maxLength, minLength } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {
-    defineComponent, h, reactive, ref,
+    defineComponent, reactive,
 } from 'vue';
 
 export default defineComponent({

@@ -6,7 +6,7 @@
   -->
 
 <script lang="ts">
-import { buildFormInputCheckbox, buildFormInputText } from '@vue-layout/form-controls';
+import { buildFormInputCheckbox } from '@vue-layout/form-controls';
 import { required } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {
