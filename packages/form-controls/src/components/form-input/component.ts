@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023.
+ * Copyright (c) 2023-2023.
  * Author Peter Placzek (tada5hi)
  * For the full copyright and license information,
  * view the LICENSE file that was distributed with this source code.
@@ -7,11 +7,11 @@
 
 import type { PropType } from 'vue';
 import { defineComponent, toRef } from 'vue';
-import { buildFormInputText } from './module';
+import { buildFormInput } from './module';
 import type { ValidationMessages, ValidationResult, ValidationTranslator } from '../type';
 
-export const FormInputText = defineComponent({
-    name: 'FormInputText',
+export const FormInput = defineComponent({
+    name: 'FormInput',
     props: {
         modelValue: {
             type: String,
@@ -28,6 +28,11 @@ export const FormInputText = defineComponent({
         labelContent: {
             type: String,
             default: '',
+        },
+
+        type: {
+            type: String,
+            default: 'text',
         },
 
         hint: {
@@ -54,6 +59,7 @@ export const FormInputText = defineComponent({
         const labelClass = toRef(props, 'labelClass');
         const labelContent = toRef(props, 'labelContent');
 
+        const type = toRef(props, 'type');
         const hint = toRef(props, 'hint');
 
         const value = toRef(props, 'modelValue');
@@ -61,12 +67,14 @@ export const FormInputText = defineComponent({
         const validationResult = toRef(props, 'validationResult');
         const validationMessages = toRef(props, 'validationMessages');
 
-        return () => buildFormInputText({
+        return () => buildFormInput({
             label,
             labelClass,
             labelContent,
 
             hint: hint.value,
+
+            type,
 
             value: value.value,
 

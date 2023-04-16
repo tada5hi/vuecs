@@ -8,8 +8,8 @@
 import { applyPluginBaseOptions } from '@vue-layout/core';
 import type { App, Plugin } from 'vue';
 import {
+    FormInput,
     FormInputCheckbox,
-    FormInputText,
     FormSelect,
     FormSubmit,
     FormTextarea,
@@ -26,7 +26,7 @@ export function install(instance: App, options?: Options) : void {
 
     Object.entries({
         FormInputCheckbox,
-        FormInputText,
+        FormInput,
         FormSelect,
         FormSubmit,
         FormTextarea,
