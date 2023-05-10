@@ -13,9 +13,18 @@ import type {
 } from '@vue-layout/core';
 import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 
+export type ListItemSlotProps<T> = {
+    data: T,
+    busy: boolean,
+    index?: number,
+    deleted: () => void,
+    updated: (item: T) => void,
+    [key: string]: any
+};
+
 export type ListItemBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
     data: T,
-    fn?: (item: T, index?: number) => VNode,
+    fn?: (item: T, props: ListItemSlotProps<T>) => VNode,
 
     icon: boolean,
     iconClass: VNodeClass,
@@ -40,12 +49,3 @@ never,
 'actions' | 'fn' | 'textFn' | 'onDeleted' | 'onUpdated',
 'data'
 >;
-
-export type ListItemSlotProps<T> = {
-    data: T,
-    busy: boolean,
-    index?: number,
-    deleted: () => void,
-    updated: (item: T) => void,
-    [key: string]: any
-};

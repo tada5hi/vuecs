@@ -90,7 +90,7 @@ export function buildListItem<T extends Record<string, any>>(
 
     // todo: maybe wrap item :)
     if (typeof options.fn === 'function') {
-        return options.fn(options.data, options.index);
+        return options.fn(options.data, slotProps);
     }
 
     const children : VNodeArrayChildren = [];
