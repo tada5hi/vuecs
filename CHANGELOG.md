@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.3](https://github.com/Tada5hi/vue-layout/compare/v2.2.2...v2.2.3) (2023-05-10)
+
+
+### Bug Fixes
+
+* pass slot props as second argument for list item fn ([941397c](https://github.com/Tada5hi/vue-layout/commit/941397c78cd33426de29533378de0aa5fb5b6aa1))
+
+
+
+
+
 ## [2.2.2](https://github.com/Tada5hi/vue-layout/compare/v2.2.1...v2.2.2) (2023-04-16)
 
 
