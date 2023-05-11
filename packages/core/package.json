@@ -40,7 +40,7 @@
     },
     "devDependencies": {
         "smob": "^1.0.0",
-        "vue": "^3.2.45"
+        "vue": "^3.3.1"
     },
     "peerDependencies": {
         "smob": "^1.x",
