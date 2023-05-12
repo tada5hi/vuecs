@@ -53,7 +53,7 @@
     "devDependencies": {
         "@vue-layout/core": "^2.2.1",
         "cross-env": "^7.0.3",
-        "vue": "^3.3.1"
+        "vue": "^3.3.2"
     },
     "peerDependencies": {
         "@vue-layout/core": "^2.2.1",
