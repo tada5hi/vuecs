@@ -52,7 +52,7 @@
         "lerna": "^6.6.2",
         "nx": "^16.1.4",
         "rimraf": "^5.0.0",
-        "rollup": "^3.21.6",
+        "rollup": "^3.22.0",
         "rollup-plugin-postcss": "^4.0.2",
         "rollup-plugin-vue": "^6.0.0-beta.11",
         "typescript": "5.0.4",
