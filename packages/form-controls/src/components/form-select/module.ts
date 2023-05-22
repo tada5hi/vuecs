@@ -42,7 +42,7 @@ export function buildFormSelect(
     const children : VNodeChild = [];
 
     if (options.label) {
-        children.push(h('label', [options.labelContent]));
+        children.push(h('label', { class: options.labelClass }, [options.labelContent]));
     }
 
     const rawValue = unref(options.value);
