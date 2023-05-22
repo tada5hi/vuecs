@@ -9,6 +9,7 @@ A package containing a timeago component.
 
 - [Installation](#installation)
 - [Usage](#usage)
+  - [Locales](#locales)
 - [License](#license)
 
 ## Installation
@@ -48,8 +49,8 @@ After the component is registered, it can be used as follows.
 ### Locales
 
 To support other locales, the corresponding locale 
-object must be defined by [date-fns](https://www.npmjs.com/package/date-fns).
-In the following, this will be shown for the German language.
+object must be imported from the [date-fns](https://www.npmjs.com/package/date-fns) library.
+In the following, this will be shown for the german language.
 
 ```typescript
 import install from '@vue-layout/timeago';
