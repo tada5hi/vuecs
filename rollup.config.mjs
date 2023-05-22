@@ -10,7 +10,6 @@ import vue from 'rollup-plugin-vue';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import postcss from 'rollup-plugin-postcss';
-import terser from "@rollup/plugin-terser";
 import { transform } from '@swc/core';
 
 const extensions = [
@@ -76,9 +75,7 @@ export function createConfig({pkg, vuePlugin = false, defaultExport = false }) {
                         sourceMaps: true
                     })
                 }
-            },
-
-            terser()
+            }
         ],
     };
 }

@@ -53,8 +53,14 @@ const secondaryDefaultItems : NavigationElement[] = [
 
 const secondaryAdminItems : NavigationElement[] = [
     {
-        name: 'Realms', type: 'link', url: '/admin/realms', icon: 'fas fa-university',
+        name: 'Auth',
+        children: [
+            {
+                name: 'Realms', type: 'link', url: '/admin/realms', icon: 'fas fa-university',
+            },
+        ],
     },
+
 ];
 
 export const navigationProvider : NavigationProvider = {

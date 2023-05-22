@@ -59,10 +59,9 @@ export function reduceNavigationElementsByRestriction<T extends NavigationElemen
         }
 
         if (canPass) {
-            if (typeof items[i].children !== 'undefined') {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                items[i].children = reduceComponentsByRestriction(items[i].children, context);
+            const { children } = items[i];
+            if (children) {
+                items[i].children = reduceNavigationElementsByRestriction(children, context);
             }
 
             result.push(items[i]);
