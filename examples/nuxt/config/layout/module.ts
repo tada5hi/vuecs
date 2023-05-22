@@ -46,6 +46,9 @@ const secondaryDefaultItems : NavigationElement[] = [
     {
         name: 'Pagination', type: 'link', icon: 'fa-solid fa-road', url: '/pagination',
     },
+    {
+        name: 'Timeago', type: 'link', icon: 'fa-solid fa-clock', url: '/timeago',
+    },
 ];
 
 const secondaryAdminItems : NavigationElement[] = [

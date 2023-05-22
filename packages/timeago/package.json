@@ -1,0 +1,56 @@
+{
+    "name": "@vue-layout/timeago",
+    "version": "0.0.0",
+    "description": "A package containing a timeago component.",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.cjs"
+        }
+    },
+    "main": "dist/index.cjs",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist/*"
+    ],
+    "keywords": [
+        "gravatar",
+        "avatar",
+        "vue",
+        "size",
+        "picture"
+    ],
+    "author": {
+        "name": "Peter Placzek",
+        "email": "contact@tada5hi.net",
+        "url": "https://tada5hi.net"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tada5hi/vue-layout.git",
+        "directory": "packages/timeago"
+    },
+    "scripts": {
+        "build:types": "vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json",
+        "build:js": "rollup -c",
+        "build": "cross-env NODE_ENV=production rimraf dist && npm run build:js && npm run build:types"
+    },
+    "devDependencies": {
+        "vue": "^3.3.4"
+    },
+    "peerDependencies": {
+        "vue": "^3.x"
+    },
+    "engines": {
+        "node": ">=16"
+    },
+    "dependencies": {
+        "date-fns": "^2.30.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

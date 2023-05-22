@@ -15,6 +15,7 @@ import installFormControl from '@vue-layout/form-controls';
 import installGravatar from '@vue-layout/gravatar';
 import installNavigation from '@vue-layout/navigation';
 import installPagination from '@vue-layout/pagination';
+import installTimeago from '@vue-layout/timeago';
 import { defineNuxtPlugin, useState } from '#app';
 import { navigationProvider } from '~/config/layout';
 
@@ -29,6 +30,7 @@ export default defineNuxtPlugin((ctx) => {
     ctx.vueApp.use(installCountdown, baseOptions);
     ctx.vueApp.use(installFormControl, baseOptions);
     ctx.vueApp.use(installGravatar, baseOptions);
+    ctx.vueApp.use(installTimeago);
 
     const navigationStore = useState<NavigationStore>(() => ({
         items: [],

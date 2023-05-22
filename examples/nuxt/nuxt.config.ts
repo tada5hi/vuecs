@@ -27,6 +27,7 @@ export default defineNuxtConfig({
         '@vue-layout/form-controls': path.join(__dirname, '..', '..', 'packages', 'form-controls', 'src'),
         '@vue-layout/list-controls': path.join(__dirname, '..', '..', 'packages', 'list-controls', 'src'),
         '@vue-layout/pagination': path.join(__dirname, '..', '..', 'packages', 'pagination', 'src'),
+        '@vue-layout/timeago': path.join(__dirname, '..', '..', 'packages', 'timeago', 'src'),
     },
     modules: [
         '@pinia/nuxt',

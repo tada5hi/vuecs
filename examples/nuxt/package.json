@@ -36,6 +36,7 @@
         "@vue-layout/pagination": "^2.2.1",
         "@vue-layout/preset-bootstrap-v5": "^2.1.1",
         "@vue-layout/preset-font-awesome": "^2.0.0",
+        "@vue-layout/timeago": "^0.0.0",
         "@vuelidate/core": "^2.0.2",
         "@vuelidate/validators": "^2.0.2",
         "bootstrap": "^5.2.3",

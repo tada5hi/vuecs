@@ -19,6 +19,7 @@ vanilla or hyperscript components.
   - [List Controls](#list-controls-)
   - [Navigation](#navigation-)
   - [Pagination](#pagination-)
+  - [Timeago](#timeago-)
 - [License](#license)
 
 ## Packages
@@ -88,6 +89,14 @@ the number of visible page links,
 and the layout of the pagination controls.
 
 [Documentation](packages/pagination/README.md)
+
+### Timeago ⏰
+
+**`@vue-layout/timeago`**
+
+A package containing a timeago component.
+
+[Documentation](packages/timeago/README.md)
 
 ## License
 
