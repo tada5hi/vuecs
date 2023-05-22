@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.1](https://github.com/tada5hi/vue-layout/compare/v2.3.0...v2.3.1) (2023-05-22)
+
+
+### Bug Fixes
+
+* reduce navigation components by restriction recursion ([ce99424](https://github.com/tada5hi/vue-layout/commit/ce99424160fb74ef91afc9a837f2672d5f3936b9))
+
+
+
+
+
 # [2.3.0](https://github.com/tada5hi/vue-layout/compare/v2.2.3...v2.3.0) (2023-05-22)
 
 **Note:** Version bump only for package @vue-layout/navigation
