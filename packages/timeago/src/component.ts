@@ -24,7 +24,7 @@ import { convert } from './converter';
 export const Timeago = defineComponent({
     props: {
         datetime: {
-            type: [Object, Number] as PropType<Date | number>,
+            type: [Object, Number, String] as PropType<Date | number | string>,
             required: true,
         },
         title: {
@@ -87,8 +87,16 @@ export const Timeago = defineComponent({
                 converter = convert;
             }
 
+            if (!dateTime) {
+                if (typeof refs.datetime.value === 'string') {
+                    dateTime = new Date(refs.datetime.value);
+                } else {
+                    dateTime = refs.datetime.value;
+                }
+            }
+
             time.value = converter(
-                dateTime || refs.datetime.value,
+                dateTime,
                 locales[refs.locale.value || instanceLocale.value],
                 refs.converterOptions.value || {},
             );

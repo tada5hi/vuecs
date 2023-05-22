@@ -21,8 +21,9 @@ export default defineNuxtComponent({
                 instance.appContext.config.globalProperties.$timeagoLocale.value = 'de';
             }
         }, 3600);
+
         return {
-            dateTime: Date.now() - 3600 * 1000,
+            dateTime: '2023-04-05T06:03:41.334Z',
         };
     },
 });

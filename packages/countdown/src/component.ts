@@ -5,6 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import type { SlotsType } from 'vue';
 import { defineComponent, h } from 'vue';
 
 const MILLISECONDS_SECOND = 1000;
@@ -15,6 +16,21 @@ const EVENT_VISIBILITY_CHANGE = 'visibilitychange';
 
 export const Countdown = defineComponent({
     name: 'Countdown',
+
+    slots: Object as SlotsType<{
+        default: {
+            days: number,
+            hours: number,
+            minutes: number,
+            seconds: number,
+            milliseconds: number,
+            totalDays: number,
+            totalHours: number,
+            totalMinutes: number,
+            totalSeconds: number,
+            totalMilliseconds: number,
+        }
+    }>,
 
     props: {
         /**
@@ -65,14 +81,6 @@ export const Countdown = defineComponent({
             type: Number,
             default: 0,
             validator: (value: number) => value >= 0,
-        },
-
-        /**
-         * Transforms the output props before render.
-         */
-        transform: {
-            type: Function,
-            default: (props: CallableFunction) => props,
         },
     },
 
@@ -423,7 +431,7 @@ export const Countdown = defineComponent({
 
     render() {
         return h(this.tag, this.$slots.default ? [
-            this.$slots.default(this.transform({
+            this.$slots.default({
                 days: this.days,
                 hours: this.hours,
                 minutes: this.minutes,
@@ -434,7 +442,7 @@ export const Countdown = defineComponent({
                 totalMinutes: this.totalMinutes,
                 totalSeconds: this.totalSeconds,
                 totalMilliseconds: this.totalMilliseconds,
-            })),
+            }),
         ] : this.$slots.default);
     },
 });

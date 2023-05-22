@@ -24,9 +24,7 @@ export default defineNuxtComponent({
     <div class="container">
         <div>
             <h3><i class="fa fa-solid fa-clock" /> Countdown</h3>
-            <countdown
-                :time="time"
-            >
+            <Countdown :time="time">
                 <template #default="props">
                     The countdown is still running for
                     <span class="text-success">
@@ -35,7 +33,7 @@ export default defineNuxtComponent({
                         {{ props.seconds }} second(s)
                     </span>.
                 </template>
-            </countdown>
+            </Countdown>
         </div>
     </div>
 </template>
