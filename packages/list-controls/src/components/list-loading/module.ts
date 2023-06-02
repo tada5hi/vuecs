@@ -5,6 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import type { VNode, VNodeArrayChildren } from 'vue';
 import { h, mergeProps } from 'vue';
 import {
     extractValueFromOptionValueInput,
@@ -41,16 +42,18 @@ export function buildListLoading<T extends Record<string, any>>(
         return [];
     }
 
-    if (hasNormalizedSlot(SlotName.LOADING, options.slotItems)) {
-        return normalizeSlot(SlotName.LOADING, {
-            ...options.slotProps,
-            busy: options.busy,
-        }, options.slotItems);
-    }
-
-    return h(
+    const renderContent = (content?: VNode | VNodeArrayChildren) => h(
         options.tag,
         mergeProps({ class: options.class }, options.props),
-        [],
+        content || [],
     );
+
+    if (hasNormalizedSlot(SlotName.LOADING, options.slotItems)) {
+        return renderContent(normalizeSlot(SlotName.LOADING, {
+            ...options.slotProps,
+            busy: options.busy,
+        }, options.slotItems));
+    }
+
+    return renderContent();
 }

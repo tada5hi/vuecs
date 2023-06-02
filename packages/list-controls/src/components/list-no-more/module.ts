@@ -5,6 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import type { VNode, VNodeArrayChildren } from 'vue';
 import { h, mergeProps, unref } from 'vue';
 import {
     createComponentOptionBuilder,
@@ -62,19 +63,19 @@ export function buildListNoMore<T extends Record<string, any>>(
         return [];
     }
 
+    const renderContent = (content?: VNode | VNodeArrayChildren) => h(
+        options.tag,
+        mergeProps({ class: options.class }, options.props),
+        content,
+    );
+
     if (hasNormalizedSlot(SlotName.NO_MORE, options.slotItems)) {
-        return normalizeSlot(SlotName.NO_MORE, {
+        return renderContent(normalizeSlot(SlotName.NO_MORE, {
             ...options.slotProps,
             busy: options.busy,
             total: options.total,
-        }, options.slotItems);
+        }, options.slotItems));
     }
 
-    return h(
-        options.tag,
-        mergeProps({ class: options.class }, options.props),
-        [
-            options.textContent,
-        ],
-    );
+    return renderContent([options.textContent]);
 }

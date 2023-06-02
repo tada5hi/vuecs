@@ -18,7 +18,7 @@ export function buildListTitleOptions(
     input: ListTitleBuildOptionsInput,
 ) : ListTitleBuildOptions {
     const options = buildListBaseOptions(input, Component.ListTitle, {
-        class: [],
+        class: 'list-title',
     });
 
     const { buildOrFail } = createComponentOptionBuilder<ListTitleBuildOptions>(
@@ -77,8 +77,14 @@ export function buildListTitle(
 ) : VNode | VNode[] {
     const options = buildListTitleOptions(input);
 
+    const renderContent = (content: VNode | VNodeArrayChildren) => h(
+        options.tag,
+        mergeProps({ class: options.class }, options.props),
+        content,
+    );
+
     if (hasNormalizedSlot(SlotName.HEADER_TITLE, options.slotItems)) {
-        return normalizeSlot(SlotName.HEADER_TITLE, options.slotItems);
+        return renderContent(normalizeSlot(SlotName.HEADER_TITLE, options.slotItems));
     }
 
     let children: VNodeArrayChildren = [];
@@ -97,5 +103,5 @@ export function buildListTitle(
         children = [h(options.textType, mergeProps({ class: options.textClass }, options.textProps), [...children, options.textContent])];
     }
 
-    return h(options.tag, mergeProps({ class: options.class }, options.props), children);
+    return renderContent(children);
 }

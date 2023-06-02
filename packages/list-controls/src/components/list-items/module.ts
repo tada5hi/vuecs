@@ -26,6 +26,7 @@ export function buildListItemsOptions<T extends Record<string, any>>(
 ) : ListItemsBuildOptions<T> {
     const options = buildListBaseOptions(input, Component.ListItems, {
         class: 'list-items',
+        tag: 'ul',
     });
 
     return {
@@ -83,7 +84,11 @@ export function buildListItems<T extends Record<string, any>>(
             updated,
         };
 
-        return normalizeSlot(SlotName.ITEMS, slotScope, options.slotItems);
+        return h(
+            options.tag,
+            mergeProps({ class: options.class }, options.props),
+            normalizeSlot(SlotName.ITEMS, slotScope, options.slotItems),
+        );
     }
 
     // ----------------------------------------------------------------------

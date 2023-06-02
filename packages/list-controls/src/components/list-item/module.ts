@@ -20,6 +20,7 @@ export function buildListItemOptions<T extends Record<string, any>>(
 ) : ListItemBuildOptions<T> {
     const options = buildListBaseOptions(input, Component.ListItem, {
         class: 'list-item',
+        tag: 'li',
     });
 
     const { buildOrFail } = createComponentOptionBuilder<ListItemBuildOptions<T>>(
@@ -84,13 +85,18 @@ export function buildListItem<T extends Record<string, any>>(
         ...(options.slotProps || {}),
     };
 
+    const renderContent = (content: VNode | VNodeArrayChildren) => h(
+        options.tag,
+        mergeProps({ key: options.index }, { class: options.class }, options.props),
+        content,
+    );
+
     if (hasNormalizedSlot(SlotName.ITEM, options.slotItems)) {
-        return normalizeSlot(SlotName.ITEM, slotProps, options.slotItems);
+        return renderContent(normalizeSlot(SlotName.ITEM, slotProps, options.slotItems));
     }
 
-    // todo: maybe wrap item :)
     if (typeof options.fn === 'function') {
-        return options.fn(options.data, slotProps);
+        return renderContent(options.fn(options.data, slotProps));
     }
 
     const children : VNodeArrayChildren = [];
@@ -132,5 +138,5 @@ export function buildListItem<T extends Record<string, any>>(
         children.push(h('div', { class: 'ms-auto ml-auto' }, actions));
     }
 
-    return h(options.tag, mergeProps({ key: options.index }, { class: options.class }, options.props), children);
+    return renderContent(children);
 }
