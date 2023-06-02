@@ -101,7 +101,6 @@ export function buildListItem<T extends Record<string, any>>(
 
     const children : VNodeArrayChildren = [];
     if (options.icon) {
-        // class: pr-1
         children.push(h('div', [h('i', mergeProps({ class: options.iconClass }, options.iconProps))]));
     }
 

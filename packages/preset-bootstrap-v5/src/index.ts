@@ -44,6 +44,9 @@ export default {
     listActionRefresh: {
         class: 'btn btn-xs btn-dark',
     },
+    list: {
+        class: 'list-unstyled',
+    },
     listItem: {
         class: 'd-flex flex-row align-items-center',
         iconClass: 'pe-1',
