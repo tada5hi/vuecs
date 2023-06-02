@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0](https://github.com/Tada5hi/vue-layout/compare/v2.4.1...v2.5.0) (2023-06-02)
+
+
+### Features
+
+* wrap slot rendering + set default tag to ul & li ([3e74e07](https://github.com/Tada5hi/vue-layout/commit/3e74e0742a52aee24060e5fe29cbae3b9c25e915))
+
+
+
+
+
 ## [2.4.1](https://github.com/Tada5hi/vue-layout/compare/v2.4.0...v2.4.1) (2023-05-22)
 
 

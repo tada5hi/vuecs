@@ -31,7 +31,7 @@
         "@vue-layout/countdown": "^2.4.0",
         "@vue-layout/form-controls": "^2.4.1",
         "@vue-layout/gravatar": "^2.3.0",
-        "@vue-layout/list-controls": "^2.3.0",
+        "@vue-layout/list-controls": "^2.5.0",
         "@vue-layout/navigation": "^2.3.1",
         "@vue-layout/pagination": "^2.3.0",
         "@vue-layout/preset-bootstrap-v5": "^2.1.1",
@@ -45,5 +45,5 @@
         "vue": "^3.3.4",
         "vue-router": "^4.2.1"
     },
-    "version": "2.4.1"
+    "version": "2.5.0"
 }
