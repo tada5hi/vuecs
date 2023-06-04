@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0](https://github.com/Tada5hi/vue-layout/compare/v2.5.0...v2.6.0) (2023-06-04)
+
+
+### Bug Fixes
+
+* add slot content as third argument to list-item fn ([9f22f45](https://github.com/Tada5hi/vue-layout/commit/9f22f45f9d1d461c5250ad86e6d7180a35920062))
+
+
+### Features
+
+* add install support for list-controls ([8024ea6](https://github.com/Tada5hi/vue-layout/commit/8024ea62a7727823af9f4c5f45028e73ad8419d1))
+
+
+
+
+
 # [2.5.0](https://github.com/Tada5hi/vue-layout/compare/v2.4.1...v2.5.0) (2023-06-02)
 
 

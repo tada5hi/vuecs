@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0](https://github.com/tada5hi/vue-layout/compare/v2.5.0...v2.6.0) (2023-06-04)
+
+
+### Features
+
+* add install support for list-controls ([8024ea6](https://github.com/tada5hi/vue-layout/commit/8024ea62a7727823af9f4c5f45028e73ad8419d1))
+
+
+
+
+
 ## [2.1.1](https://github.com/tada5hi/vue-layout/compare/v2.1.0...v2.1.1) (2023-04-12)
 
 
