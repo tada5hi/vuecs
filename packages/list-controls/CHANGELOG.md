@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.1](https://github.com/tada5hi/vue-layout/compare/v2.6.0...v2.6.1) (2023-06-04)
+
+
+### Bug Fixes
+
+* recognize all slots for list item render fn ([180b600](https://github.com/tada5hi/vue-layout/commit/180b600a8bda66b488acc53af72c01cb38cd712c))
+
+
+
+
+
 # [2.6.0](https://github.com/tada5hi/vue-layout/compare/v2.5.0...v2.6.0) (2023-06-04)
 
 
