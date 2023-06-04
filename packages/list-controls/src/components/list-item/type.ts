@@ -24,7 +24,7 @@ export type ListItemSlotProps<T> = {
 
 export type ListItemBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
     data: T,
-    fn?: (item: T, props: ListItemSlotProps<T>) => VNode,
+    fn?: (item: T, props: ListItemSlotProps<T>, node?: VNode | VNode[]) => VNode,
 
     icon: boolean,
     iconClass: VNodeClass,

@@ -91,12 +91,18 @@ export function buildListItem<T extends Record<string, any>>(
         content,
     );
 
+    let slotContent : VNode | VNode[] | undefined;
+
     if (hasNormalizedSlot(SlotName.ITEM, options.slotItems)) {
-        return renderContent(normalizeSlot(SlotName.ITEM, slotProps, options.slotItems));
+        slotContent = normalizeSlot(SlotName.ITEM, slotProps, options.slotItems);
     }
 
     if (typeof options.fn === 'function') {
-        return renderContent(options.fn(options.data, slotProps));
+        return renderContent(options.fn(options.data, slotProps, slotContent));
+    }
+
+    if (slotContent) {
+        return renderContent(slotContent);
     }
 
     const children : VNodeArrayChildren = [];
