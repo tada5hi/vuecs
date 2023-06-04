@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VNode, VNodeArrayChildren, VNodeChild } from 'vue';
+import type { VNode, VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
 import {
     createComponentOptionBuilder, extractValueFromOptionValueInput, hasNormalizedSlot,
@@ -85,63 +85,68 @@ export function buildListItem<T extends Record<string, any>>(
         ...(options.slotProps || {}),
     };
 
-    const renderContent = (content: VNode | VNodeArrayChildren) => h(
+    const renderContent = (content?: VNodeChild) => h(
         options.tag,
         mergeProps({ key: options.index }, { class: options.class }, options.props),
-        content,
+        [content || []],
     );
 
-    let slotContent : VNode | VNode[] | undefined;
+    let content : VNodeChild | undefined;
 
     if (hasNormalizedSlot(SlotName.ITEM, options.slotItems)) {
-        slotContent = normalizeSlot(SlotName.ITEM, slotProps, options.slotItems);
+        content = normalizeSlot(SlotName.ITEM, slotProps, options.slotItems);
+    } else {
+        const children : VNodeChild = [];
+        if (options.icon) {
+            children.push(h('div', [h('i', mergeProps({ class: options.iconClass }, options.iconProps))]));
+        }
+
+        let itemText : VNodeChild | undefined;
+
+        if (options.textFn) {
+            itemText = options.textFn(options.data);
+        } else if (hasOwnProperty(options.data, options.textPropName)) {
+            itemText = options.data[options.textPropName];
+        }
+
+        if (itemText) {
+            children.push(itemText);
+        }
+
+        let actions : VNodeChild[] = [];
+        if (hasNormalizedSlot(SlotName.ITEM_ACTIONS, options.slotItems)) {
+            actions = [
+                normalizeSlot(SlotName.ITEM_ACTIONS, slotProps, options.slotItems),
+            ];
+        } else if (options.actions) {
+            actions = [
+                ...(Array.isArray(options.actions) ? options.actions : [options.actions]) as VNode[],
+            ];
+
+            if (hasNormalizedSlot(SlotName.ITEM_ACTIONS_EXTRA, options.slotItems)) {
+                actions.push(normalizeSlot(SlotName.ITEM_ACTIONS_EXTRA, slotProps, options.slotItems));
+            }
+        }
+        if (
+            actions &&
+            actions.length > 0
+        ) {
+            // todo: make VNode-class an option
+            children.push(h('div', { class: 'ms-auto ml-auto' }, actions));
+        }
+
+        if (children.length > 0) {
+            content = children;
+        }
     }
 
     if (typeof options.fn === 'function') {
-        return renderContent(options.fn(options.data, slotProps, slotContent));
+        return renderContent(options.fn(
+            options.data,
+            slotProps,
+            content,
+        ));
     }
 
-    if (slotContent) {
-        return renderContent(slotContent);
-    }
-
-    const children : VNodeArrayChildren = [];
-    if (options.icon) {
-        children.push(h('div', [h('i', mergeProps({ class: options.iconClass }, options.iconProps))]));
-    }
-
-    let itemText : string | VNode | undefined | (string | VNode)[];
-
-    if (options.textFn) {
-        itemText = options.textFn(options.data);
-    } else if (hasOwnProperty(options.data, options.textPropName)) {
-        itemText = options.data[options.textPropName];
-    }
-    if (itemText) {
-        children.push(itemText);
-    }
-
-    let actions : VNodeChild[] = [];
-    if (hasNormalizedSlot(SlotName.ITEM_ACTIONS, options.slotItems)) {
-        actions = [
-            normalizeSlot(SlotName.ITEM_ACTIONS, slotProps, options.slotItems),
-        ];
-    } else if (options.actions) {
-        actions = [
-            ...(Array.isArray(options.actions) ? options.actions : [options.actions]) as VNode[],
-        ];
-
-        if (hasNormalizedSlot(SlotName.ITEM_ACTIONS_EXTRA, options.slotItems)) {
-            actions.push(normalizeSlot(SlotName.ITEM_ACTIONS_EXTRA, slotProps, options.slotItems));
-        }
-    }
-    if (
-        actions &&
-        actions.length > 0
-    ) {
-        // todo: make VNode-class an option
-        children.push(h('div', { class: 'ms-auto ml-auto' }, actions));
-    }
-
-    return renderContent(children);
+    return renderContent(content);
 }

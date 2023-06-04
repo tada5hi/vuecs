@@ -5,6 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import type { VNodeChild } from '@vue/runtime-core';
 import type { VNode } from 'vue';
 import type {
     OptionsInput,
@@ -24,13 +25,13 @@ export type ListItemSlotProps<T> = {
 
 export type ListItemBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
     data: T,
-    fn?: (item: T, props: ListItemSlotProps<T>, node?: VNode | VNode[]) => VNode,
+    fn?: (item: T, props: ListItemSlotProps<T>, node?: VNodeChild) => VNode,
 
     icon: boolean,
     iconClass: VNodeClass,
     iconProps: VNodeProperties,
 
-    textFn?: (item: T) => string | VNode | (string | VNode)[],
+    textFn?: (item: T) => VNodeChild,
     textPropName: string,
 
     index?: number,
