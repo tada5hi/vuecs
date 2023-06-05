@@ -9,11 +9,13 @@ import { unref } from 'vue';
 import { useComponentDefaultsStore } from '../defaults';
 import { getRegisteredComponentPresets, useComponentPresetStore } from '../preset';
 import { hasOwnProperty } from '../../utils';
+import type { ComponentOptionBuildContext, ComponentOptionBuilder } from './type';
 import {
-    isOptionValueConfig,
+    isComponentOptionConfigWithDefaults,
+    isComponentOptionConfigWithPresets,
+    isComponentOptionConfigWithValue,
     mergeOption,
 } from './utils';
-import type { ComponentOptionBuildContext, ComponentOptionBuilder } from './type';
 
 export function buildComponentOption<
     O extends Record<string, any>,
@@ -23,23 +25,25 @@ export function buildComponentOption<
 
     const presetConfig : Record<string, boolean> = {};
 
-    if (isOptionValueConfig(context.value)) {
-        value = unref(context.value.value);
-
-        if (context.value.presets) {
-            const keys = Object.keys(context.value.presets);
-            for (let i = 0; i < keys.length; i++) {
-                presetConfig[keys[i]] = context.value.presets[keys[i]];
-            }
+    if (isComponentOptionConfigWithPresets(context.value)) {
+        const keys = Object.keys(context.value.presets);
+        for (let i = 0; i < keys.length; i++) {
+            presetConfig[keys[i]] = context.value.presets[keys[i]];
         }
+    }
+
+    if (isComponentOptionConfigWithValue(context.value)) {
+        value = unref(context.value.value);
     } else {
         value = unref(context.value) as O[K];
     }
 
     if (typeof value === 'undefined') {
-        const defaultStore = useComponentDefaultsStore();
-        if (defaultStore.hasOption(context.component, context.key as string)) {
-            value = defaultStore.getOption(context.component, context.key as string);
+        if (!isComponentOptionConfigWithDefaults(context.value) || context.value.defaults) {
+            const defaultStore = useComponentDefaultsStore();
+            if (defaultStore.hasOption(context.component, context.key as string)) {
+                value = defaultStore.getOption(context.component, context.key as string);
+            }
         }
     }
 
