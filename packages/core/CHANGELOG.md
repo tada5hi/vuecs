@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.7.0](https://github.com/tada5hi/vue-layout/compare/v2.6.1...v2.7.0) (2023-06-05)
+
+
+### Features
+
+* make value in component-option--config optional ([7d4e023](https://github.com/tada5hi/vue-layout/commit/7d4e023810cbe57be6e076ae2c3a64fbc8de49a1))
+
+
+
+
+
 # [2.3.0](https://github.com/tada5hi/vue-layout/compare/v2.2.3...v2.3.0) (2023-05-22)
 
 **Note:** Version bump only for package @vue-layout/core

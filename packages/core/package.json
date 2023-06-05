@@ -1,6 +1,6 @@
 {
     "name": "@vue-layout/core",
-    "version": "2.3.0",
+    "version": "2.7.0",
     "description": "",
     "exports": {
         "./package.json": "./package.json",
