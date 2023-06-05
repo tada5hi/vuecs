@@ -6,7 +6,7 @@
  */
 
 import type { VNodeArrayChildren } from 'vue';
-import { h, unref } from 'vue';
+import { h, mergeProps, unref } from 'vue';
 import {
     createComponentOptionBuilder,
     extractValueFromOptionValueInput,
@@ -36,6 +36,11 @@ export function buildFormSubmitOptions(
             key: 'class',
             value: unref(options.class),
             alt: [],
+        }),
+        props: buildOrFail({
+            key: 'props',
+            value: options.props,
+            alt: {},
         }),
 
         icon: buildOrFail({
@@ -99,40 +104,44 @@ export function buildFormSubmit(input: FormSubmitOptionsInput) {
         ];
     }
 
-    return h(options.type, {
-        ...(options.type === 'button' ? { type: 'submit' } : {}),
-        class: [
-            ...(options.isEditing ? [options.updateButtonClass] : []),
-            ...(!options.isEditing ? [options.createButtonClass] : []),
-        ],
-        disabled: options.validationResult.$invalid ||
+    return h(
+        options.type,
+        mergeProps({
+            ...(options.type === 'button' ? { type: 'submit' } : {}),
+            class: [
+                ...(options.isEditing ? [options.updateButtonClass] : []),
+                ...(!options.isEditing ? [options.createButtonClass] : []),
+            ],
+            disabled: options.validationResult.$invalid ||
                 !options.valid ||
                 unref(options.busy),
-        onClick($event: any) {
-            $event.preventDefault();
+            onClick($event: any) {
+                $event.preventDefault();
 
-            setMaybeRefValue(options.busy, true);
+                setMaybeRefValue(options.busy, true);
 
-            const promise = options.submit.apply(null);
+                const promise = options.submit.apply(null);
 
-            if (isPromise(promise)) {
-                promise
-                    .then(() => setMaybeRefValue(options.busy, false))
-                    .catch((e) => {
-                        setMaybeRefValue(options.busy, false);
-                        throw (e);
-                    });
-            }
+                if (isPromise(promise)) {
+                    promise
+                        .then(() => setMaybeRefValue(options.busy, false))
+                        .catch((e) => {
+                            setMaybeRefValue(options.busy, false);
+                            throw (e);
+                        });
+                }
 
-            return promise;
-        },
-    }, [
-        icon,
-        ' ',
-        (
-            options.isEditing ?
-                options.updateText :
-                options.createText
-        ),
-    ]);
+                return promise;
+            },
+        }, options.props),
+        [
+            icon,
+            ' ',
+            (
+                options.isEditing ?
+                    options.updateText :
+                    options.createText
+            ),
+        ],
+    );
 }

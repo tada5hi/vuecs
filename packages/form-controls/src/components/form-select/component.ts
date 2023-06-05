@@ -59,7 +59,7 @@ export const FormSelect = defineComponent({
         },
     },
     emits: ['update:modelValue'],
-    setup(props, { emit }) {
+    setup(props, { attrs, emit }) {
         const label = toRef(props, 'label');
         const labelClass = toRef(props, 'labelClass');
         const labelContent = toRef(props, 'labelContent');
@@ -91,6 +91,8 @@ export const FormSelect = defineComponent({
             validationTranslator: props.validationTranslator,
 
             options: options.value || [],
+
+            props: attrs,
         });
     },
 });

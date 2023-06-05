@@ -53,7 +53,7 @@ export const FormTextarea = defineComponent({
         },
     },
     emits: ['update:modelValue'],
-    setup(props, { emit }) {
+    setup(props, { attrs, emit }) {
         const label = toRef(props, 'label');
         const labelClass = toRef(props, 'labelClass');
         const labelContent = toRef(props, 'labelContent');
@@ -81,6 +81,8 @@ export const FormTextarea = defineComponent({
             validationResult: validationResult.value,
             validationMessages: validationMessages.value,
             validationTranslator: props.validationTranslator,
+
+            props: attrs,
         });
     },
 });

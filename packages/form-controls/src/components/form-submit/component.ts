@@ -63,7 +63,7 @@ export const FormSubmit = defineComponent({
         },
     },
     emits: ['update:modelValue'],
-    setup(props, { emit }) {
+    setup(props, { attrs, emit }) {
         const busy = toRef(props, 'modelValue');
         const icon = toRef(props, 'icon');
         const isEditing = toRef(props, 'isEditing');
@@ -105,6 +105,8 @@ export const FormSubmit = defineComponent({
                     });
             },
             validationResult: validationResult.value,
+
+            props: attrs,
         });
     },
 });
