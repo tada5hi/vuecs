@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.8.0](https://github.com/tada5hi/vue-layout/compare/v2.7.0...v2.8.0) (2023-06-05)
+
+
+### Features
+
+* new utility fail-on-undefined ([bf49135](https://github.com/tada5hi/vue-layout/commit/bf49135c32f08d277508a143ec21c05352d6f825))
+
+
+
+
+
 # [2.7.0](https://github.com/tada5hi/vue-layout/compare/v2.6.1...v2.7.0) (2023-06-05)
 
 

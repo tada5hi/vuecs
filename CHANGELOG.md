@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.8.0](https://github.com/Tada5hi/vue-layout/compare/v2.7.0...v2.8.0) (2023-06-05)
+
+
+### Features
+
+* attribute inheritence for form-control components ([74d9147](https://github.com/Tada5hi/vue-layout/commit/74d9147be97379c18a531adbd82196a9180dac0a))
+* new utility fail-on-undefined ([bf49135](https://github.com/Tada5hi/vue-layout/commit/bf49135c32f08d277508a143ec21c05352d6f825))
+
+
+
+
+
 # [2.7.0](https://github.com/Tada5hi/vue-layout/compare/v2.6.1...v2.7.0) (2023-06-05)
 
 
