@@ -5,9 +5,10 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { isObject } from './object';
+
 export function isPromise(p: unknown) : p is Promise<unknown> {
-    return typeof p === 'object' &&
-        p !== null &&
+    return isObject(p) &&
         (
             p instanceof Promise ||
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
