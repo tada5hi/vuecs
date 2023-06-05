@@ -56,7 +56,7 @@
         "vue": "^3.3.4"
     },
     "peerDependencies": {
-        "@vue-layout/core": "^2.2.1",
+        "@vue-layout/core": "^2.7.0",
         "vue": "^3.x"
     },
     "engines": {
