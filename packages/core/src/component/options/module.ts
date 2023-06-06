@@ -23,6 +23,11 @@ export function buildComponentOption<
 >(context: ComponentOptionBuildContext<K, O[K]>) : O[K] | undefined {
     let value : O[K] | undefined;
 
+    const useDefault = !isComponentOptionConfigWithDefaults(context.value) ||
+        !!context.value.defaults;
+
+    let isConfig = useDefault;
+
     const presetConfig : Record<string, boolean> = {};
 
     if (isComponentOptionConfigWithPresets(context.value)) {
@@ -30,16 +35,22 @@ export function buildComponentOption<
         for (let i = 0; i < keys.length; i++) {
             presetConfig[keys[i]] = context.value.presets[keys[i]];
         }
+
+        isConfig = true;
     }
 
     if (isComponentOptionConfigWithValue(context.value)) {
         value = unref(context.value.value);
-    } else {
+
+        isConfig = true;
+    }
+
+    if (!isConfig) {
         value = unref(context.value) as O[K];
     }
 
     if (typeof value === 'undefined') {
-        if (!isComponentOptionConfigWithDefaults(context.value) || context.value.defaults) {
+        if (useDefault) {
             const defaultStore = useComponentDefaultsStore();
             if (defaultStore.hasOption(context.component, context.key as string)) {
                 value = defaultStore.getOption(context.component, context.key as string);
