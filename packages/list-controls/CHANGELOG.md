@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.1](https://github.com/tada5hi/vue-layout/compare/v2.8.0...v2.8.1) (2023-06-06)
+
+
+### Bug Fixes
+
+* only read raw value if it is no component option config ([fb59054](https://github.com/tada5hi/vue-layout/commit/fb5905475d7419508ebb8c8279572a827b1a998c))
+
+
+
+
+
 # [2.8.0](https://github.com/tada5hi/vue-layout/compare/v2.7.0...v2.8.0) (2023-06-05)
 
 **Note:** Version bump only for package @vue-layout/list-controls
