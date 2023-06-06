@@ -6,5 +6,5 @@
  */
 
 export * from './merge';
-export * from './value';
+export * from './config';
 export * from './vnode';
