@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.2](https://github.com/tada5hi/vue-layout/compare/v2.8.1...v2.8.2) (2023-06-06)
+
+
+### Bug Fixes
+
+* reading value of otpion value config ([7315cbc](https://github.com/tada5hi/vue-layout/commit/7315cbc67b1adbb817be5fa17343be088cc4eac0))
+
+
+
+
+
 ## [2.8.1](https://github.com/tada5hi/vue-layout/compare/v2.8.0...v2.8.1) (2023-06-06)
 
 
