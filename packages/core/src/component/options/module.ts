@@ -11,6 +11,7 @@ import { getRegisteredComponentPresets, useComponentPresetStore } from '../prese
 import { hasOwnProperty } from '../../utils';
 import type { ComponentOptionBuildContext, ComponentOptionBuilder } from './type';
 import {
+    isComponentOptionConfig,
     isComponentOptionConfigWithDefaults,
     isComponentOptionConfigWithPresets,
     isComponentOptionConfigWithValue,
@@ -23,11 +24,6 @@ export function buildComponentOption<
 >(context: ComponentOptionBuildContext<K, O[K]>) : O[K] | undefined {
     let value : O[K] | undefined;
 
-    const useDefault = !isComponentOptionConfigWithDefaults(context.value) ||
-        !!context.value.defaults;
-
-    let isConfig = useDefault;
-
     const presetConfig : Record<string, boolean> = {};
 
     if (isComponentOptionConfigWithPresets(context.value)) {
@@ -35,22 +31,18 @@ export function buildComponentOption<
         for (let i = 0; i < keys.length; i++) {
             presetConfig[keys[i]] = context.value.presets[keys[i]];
         }
-
-        isConfig = true;
     }
 
     if (isComponentOptionConfigWithValue(context.value)) {
         value = unref(context.value.value);
-
-        isConfig = true;
     }
 
-    if (!isConfig) {
+    if (!isComponentOptionConfig(context.value)) {
         value = unref(context.value) as O[K];
     }
 
     if (typeof value === 'undefined') {
-        if (useDefault) {
+        if (!isComponentOptionConfigWithDefaults(context.value) || context.value.defaults) {
             const defaultStore = useComponentDefaultsStore();
             if (defaultStore.hasOption(context.component, context.key as string)) {
                 value = defaultStore.getOption(context.component, context.key as string);
