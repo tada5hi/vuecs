@@ -60,7 +60,7 @@ export function isComponentOptionConfigWithValue(
 
     const { value } = input as ComponentOptionConfig<any>;
 
-    return typeof value === 'boolean';
+    return typeof value !== 'undefined';
 }
 
 export function isComponentOptionConfig(
