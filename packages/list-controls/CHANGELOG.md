@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.4](https://github.com/tada5hi/vue-layout/compare/v2.8.3...v2.8.4) (2023-06-23)
+
+
+### Bug Fixes
+
+* ensure updated/deleted event has valid comparision ([c86bf19](https://github.com/tada5hi/vue-layout/commit/c86bf19d58cdc4e4db28ab5f2a629717c3535c96))
+
+
+
+
+
 ## [2.8.3](https://github.com/tada5hi/vue-layout/compare/v2.8.2...v2.8.3) (2023-06-06)
 
 
