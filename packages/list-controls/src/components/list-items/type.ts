@@ -16,17 +16,18 @@ export type ListItemsBuildOptions<T extends Record<string, any>> = ListBaseOptio
     busy: boolean,
 
     item: Omit<ListItemBuildOptionsInput<T>, 'data' | 'index'>,
+    itemKey?: keyof T,
+    itemId?: (item: T) => string,
     data: MaybeRef<T[]>,
 
     onDeleted?: (item: T) => void,
-    onUpdated?: (item: T) => void,
-    filterFn?: (item: T) => boolean
+    onUpdated?: (item: T) => void
 };
 
 export type ListItemsBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput & OptionsInput<
 ExpectListBaseOptions<ListItemsBuildOptions<T>>,
 never,
-'data' | 'onDeleted' | 'onUpdated' | 'filterFn'
+'data' | 'onDeleted' | 'onUpdated' | 'itemKey' | 'itemId'
 >;
 
 export type ListItemsSlotProps<T> = {
