@@ -5,12 +5,13 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VNode, VNodeChild } from 'vue';
+import type { VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
 import {
     extendMaybeRefArrayValue,
     findIndexOfMaybeRefArray,
-    hasNormalizedSlot, hasOwnProperty,
+    hasNormalizedSlot,
+    hasOwnProperty,
     normalizeSlot,
     spliceMaybeRefArray,
 } from '@vue-layout/core';
@@ -76,12 +77,10 @@ export function buildListItems<T extends Record<string, any>>(
 
             if (index !== -1) {
                 spliceMaybeRefArray(options.data, index, 1);
-
-                if (typeof options.onDeleted === 'function') {
-                    options.onDeleted(item);
-                }
             }
-        } else if (typeof options.onDeleted === 'function') {
+        }
+
+        if (typeof options.onDeleted === 'function') {
             options.onDeleted(item);
         }
     };
@@ -97,12 +96,10 @@ export function buildListItems<T extends Record<string, any>>(
 
             if (index !== -1) {
                 extendMaybeRefArrayValue(options.data, index, item);
-
-                if (typeof options.onUpdated === 'function') {
-                    options.onUpdated(item);
-                }
             }
-        } else if (typeof options.onUpdated === 'function') {
+        }
+
+        if (typeof options.onUpdated === 'function') {
             options.onUpdated(item);
         }
     };
