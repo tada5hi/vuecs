@@ -5,7 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { MaybeRef, OptionsOverride, PartialPick } from '@vue-layout/core';
+import type { OptionsOverride, PartialPick } from '@vue-layout/core';
+import type { MaybeRef } from 'vue';
 import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import type { ListFooterBuildOptionsInput } from '../list-footer';
 import type { ListHeaderBuildOptionsInput } from '../list-header';

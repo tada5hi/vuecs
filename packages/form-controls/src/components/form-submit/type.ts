@@ -6,11 +6,12 @@
  */
 
 import type {
-    MaybeRef, OptionsInputValue,
+    OptionsInputValue,
     OptionsOverride, PartialPick,
     VNodeClass,
     VNodeProperties,
 } from '@vue-layout/core';
+import type { MaybeRef } from 'vue';
 import type { ValidationResult } from '../type';
 
 export type FormSubmitOptions = {

@@ -13,10 +13,10 @@
  */
 
 import type {
-    MaybeRef, OptionsInputValue,
+    OptionsInputValue,
     OptionsOverride,
 } from '@vue-layout/core';
-import type { VNodeChild } from 'vue';
+import type { MaybeRef, VNodeChild } from 'vue';
 import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import type { ListLoadFn } from '../type';
 

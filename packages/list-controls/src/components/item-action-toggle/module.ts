@@ -5,9 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VNode, VNodeArrayChildren } from 'vue';
+import type { MaybeRef, VNode, VNodeArrayChildren } from 'vue';
 import { h, unref } from 'vue';
-import type { MaybeRef } from '@vue-layout/core';
 import {
     createOptionBuilder,
     pushMaybeRefArrayValue,

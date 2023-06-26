@@ -5,9 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { Ref, VNodeProps } from 'vue';
-
-export type MaybeRef<T> = T | Ref<T>;
+import type { VNodeProps } from 'vue';
 
 export type PartialPick<T, K extends keyof T> = Partial<Pick<T, K>>;
 

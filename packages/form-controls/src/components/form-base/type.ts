@@ -6,13 +6,12 @@
  */
 
 import type {
-    MaybeRef,
     OptionsInputValue,
     OptionsOverride, PartialPick,
     VNodeClass,
     VNodeProperties,
 } from '@vue-layout/core';
-import type { VNodeChild } from 'vue';
+import type { MaybeRef, VNodeChild } from 'vue';
 import type {
     ValidationMessages, ValidationResult, ValidationTranslator,
 } from '../type';
