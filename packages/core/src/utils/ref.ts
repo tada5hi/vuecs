@@ -8,23 +8,6 @@
 import { isReadonly, isRef, unref } from 'vue';
 import type { MaybeRef } from '../type';
 
-export function isMaybeRefValueEqual(
-    a: MaybeRef<any>,
-    b: MaybeRef<any>,
-) {
-    if (isRef(a) && isRef(b)) {
-        return a.value === b.value;
-    }
-
-    if (!isRef(a) && !isRef(b)) {
-        return a === b;
-    }
-
-    return isRef(a) ?
-        a.value === b :
-        a === b.value;
-}
-
 export function unrefWithDefault<T>(value: MaybeRef<T>, alt: NonNullable<T>) : NonNullable<T> {
     const raw = unref(value);
     if (typeof raw === 'undefined') {

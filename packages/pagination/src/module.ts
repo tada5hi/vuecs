@@ -87,7 +87,7 @@ export function buildPaginationOptions(
     };
 }
 
-export function buildPagination(input: PaginationOptionsInput) {
+export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
     const options = buildPaginationOptions(input);
 
     let totalPages = 1;

@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VNodeArrayChildren } from 'vue';
+import type { VNodeArrayChildren, VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
 import { createOptionBuilder } from '@vue-layout/core';
 import { Component } from '../constants';
@@ -67,7 +67,7 @@ export function buildListOptions<T extends Record<string, any>>(
 
 export function buildList<T extends Record<string, any>>(
     input: ListBuildOptionsInput<T>,
-) {
+): VNodeChild {
     const options = buildListOptions(input);
 
     const children : VNodeArrayChildren = [];

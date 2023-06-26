@@ -13,7 +13,6 @@ import {
     pushMaybeRefArrayValue,
     setMaybeRefValue,
     spliceMaybeRefArray,
-    unrefWithDefault,
 } from '@vue-layout/core';
 import type { ItemActionToggleOptions, ItemActionToggleOptionsInput } from './type';
 import { Component } from '../constants';

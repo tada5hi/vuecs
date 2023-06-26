@@ -5,7 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-export * from './component';
+export * from './defaults';
+export * from './options';
+export * from './preset';
 export * from './plugin';
 export * from './utils';
 export * from './store';

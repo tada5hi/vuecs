@@ -5,9 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VNode, VNodeChild } from 'vue';
+import type { VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
-import { createOptionBuilder, extractValueFromOptionInputValue } from '@vue-layout/core';
+import { createOptionBuilder } from '@vue-layout/core';
 import { Component } from '../constants';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
 import { buildValidationGroup } from '../validation-group';
@@ -76,7 +76,7 @@ export function buildFormInputOptions(
 
 export function buildFormInput(
     input: FormInputBuildOptionsInput,
-) : VNode {
+) : VNodeChild {
     const options = buildFormInputOptions(input);
 
     return buildFormInputFromOptions(options);
@@ -84,7 +84,7 @@ export function buildFormInput(
 
 export function buildFormInputFromOptions(
     options: FormInputBuildOptions,
-) {
+): VNodeChild {
     const children : VNodeChild = [];
 
     if (options.label) {

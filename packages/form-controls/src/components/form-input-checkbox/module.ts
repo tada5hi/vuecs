@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VNode, VNodeChild } from 'vue';
+import type { VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
 import { createOptionBuilder } from '@vue-layout/core';
 import { Component } from '../constants';
@@ -35,7 +35,7 @@ export function buildFormInputCheckboxOptions(
 
 export function buildFormInputCheckbox(
     input: FormInputCheckboxBuildOptionsInput,
-) : VNode {
+) : VNodeChild {
     const options = buildFormInputCheckboxOptions(input);
 
     const children : VNodeChild = [];

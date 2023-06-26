@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VNode } from 'vue';
+import type { VNode, VNodeChild } from 'vue';
 import { Component } from '../constants';
 import type { FormInputBuildOptionsInput } from '../form-input';
 import {
@@ -15,7 +15,7 @@ import {
 
 export function buildFormInputText(
     input: FormInputBuildOptionsInput,
-) : VNode {
+) : VNodeChild {
     const options = buildFormInputOptions(input, Component.FormInputText);
 
     return buildFormInputFromOptions(options);

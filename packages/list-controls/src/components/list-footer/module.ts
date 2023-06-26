@@ -7,10 +7,9 @@
 
 import { createOptionBuilder, hasNormalizedSlot, normalizeSlot } from '@vue-layout/core';
 import { h, mergeProps } from 'vue';
-import type { VNode, VNodeArrayChildren } from 'vue';
+import type { VNodeArrayChildren, VNodeChild } from 'vue';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions } from '../list-base';
-import type { ListHeaderBuildOptions } from '../list-header';
 import type { ListFooterBuildOptions, ListFooterBuildOptionsInput } from './type';
 
 export function buildListFooterOptions(
@@ -41,7 +40,7 @@ export function buildListFooterOptions(
 
 export function buildListFooter(
     input?: ListFooterBuildOptionsInput,
-) : VNode | VNode[] {
+) : VNodeChild {
     input = input || {};
     const options = buildListFooterOptions(input);
 

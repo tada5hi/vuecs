@@ -7,7 +7,7 @@
 
 import { createOptionBuilder, hasNormalizedSlot, normalizeSlot } from '@vue-layout/core';
 import { h, mergeProps } from 'vue';
-import type { VNode, VNodeArrayChildren } from 'vue';
+import type { VNode, VNodeArrayChildren, VNodeChild } from 'vue';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions } from '../list-base';
 import type { ListHeaderBuildOptions, ListHeaderBuildOptionsInput } from './type';
@@ -40,7 +40,7 @@ export function buildListHeaderOptions(
 
 export function buildListHeader(
     input?: ListHeaderBuildOptionsInput,
-) : VNode | VNode[] {
+) : VNodeChild {
     input = input || {};
     const options = buildListHeaderOptions(input);
 

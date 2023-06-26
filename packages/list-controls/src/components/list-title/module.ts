@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VNode, VNodeArrayChildren } from 'vue';
+import type { VNode, VNodeArrayChildren, VNodeChild } from 'vue';
 import { h, mergeProps } from 'vue';
 import {
     createOptionBuilder, hasNormalizedSlot, normalizeSlot,
@@ -74,7 +74,7 @@ export function buildListTitleOptions(
 
 export function buildListTitle(
     input: ListTitleBuildOptionsInput,
-) : VNode | VNode[] {
+) : VNodeChild {
     const options = buildListTitleOptions(input);
 
     const renderContent = (content: VNode | VNodeArrayChildren) => h(

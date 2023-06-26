@@ -7,7 +7,7 @@
 
 import type { VNode, VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
-import { createOptionBuilder, failOnUndefined } from '@vue-layout/core';
+import { createOptionBuilder } from '@vue-layout/core';
 import { Component } from '../constants';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
 import { buildValidationGroup } from '../validation-group';
@@ -25,7 +25,7 @@ export function buildFormSelectOptions(
     return {
         ...options,
 
-        options: failOnUndefined(unref(options.options)),
+        options: options.options,
         optionDefaultText: buildOrFail({
             key: 'optionDefaultText',
             value: options.optionDefaultText,
@@ -41,7 +41,7 @@ export function buildFormSelectOptions(
 
 export function buildFormSelect(
     input: FormSelectBuildOptionsInput,
-) : VNode {
+) : VNodeChild {
     const options = buildFormSelectOptions(input);
 
     const rawValue = unref(options.value);

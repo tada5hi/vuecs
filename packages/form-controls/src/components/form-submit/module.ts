@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VNodeArrayChildren } from 'vue';
+import type { VNodeArrayChildren, VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
 import {
     createOptionBuilder,
@@ -88,7 +88,7 @@ export function buildFormSubmitOptions(
     };
 }
 
-export function buildFormSubmit(input: FormSubmitOptionsInput) {
+export function buildFormSubmit(input: FormSubmitOptionsInput) : VNodeChild {
     const options = buildFormSubmitOptions(input);
 
     let icon : VNodeArrayChildren = [];

@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VNode, VNodeChild } from 'vue';
+import type { VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
 import type { VNodeClass } from '@vue-layout/core';
 import {
@@ -131,7 +131,7 @@ function maybeWrapContent(input: VNodeChild, ctx: {wrap: boolean, class: VNodeCl
 
 export function buildListItem<T extends Record<string, any>>(
     input: ListItemBuildOptionsInput<T>,
-) : VNode | VNode[] {
+) : VNodeChild {
     const options = buildListItemOptions(input);
 
     const data = unref(options.data);

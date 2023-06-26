@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VNode, VNodeChild } from 'vue';
+import type { VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
 import { Component } from '../constants';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
@@ -24,7 +24,7 @@ export function buildFormTextareaOptions(
 
 export function buildFormTextarea(
     input: FormTextareaBuildOptionsInput,
-) : VNode {
+) : VNodeChild {
     const options = buildFormTextareaOptions(input);
 
     const children : VNodeChild = [];

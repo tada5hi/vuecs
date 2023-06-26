@@ -5,10 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { unref } from 'vue';
 import { useDefaultsStore } from '../defaults';
 import { getRegisteredPresets, usePresetStore } from '../preset';
-import { hasOwnProperty } from '../../utils';
+import { hasOwnProperty } from '../utils';
 import type {
     OptionBuildContext,
 } from './type';
@@ -34,7 +33,7 @@ function buildOption<
         }
 
         if (typeof context.value.value !== 'undefined') {
-            value = unref(context.value.value);
+            value = context.value.value;
         }
     }
 

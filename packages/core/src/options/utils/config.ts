@@ -8,7 +8,7 @@
 import { isObject } from 'smob';
 import type { MaybeRef } from 'vue';
 import { isRef } from 'vue';
-import { hasOwnProperty } from '../../../utils';
+import { hasOwnProperty } from '../../utils';
 import type {
     OptionInputConfig,
     OptionInputConfigWithDefaults,

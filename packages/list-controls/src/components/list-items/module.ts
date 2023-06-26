@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VNode } from 'vue';
+import type { VNode, VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
 import {
     extendMaybeRefArrayValue,
@@ -41,7 +41,7 @@ type FilterFn<T extends Record<string, any>> = (item: T, index?: number) => bool
 
 export function buildListItems<T extends Record<string, any>>(
     input?: ListItemsBuildOptionsInput<T>,
-) : VNode | VNode[] {
+) : VNodeChild {
     input = input || {};
     const options = buildListItemsOptions(input);
 

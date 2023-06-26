@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VNode, VNodeArrayChildren } from 'vue';
+import type { VNodeArrayChildren, VNodeChild } from 'vue';
 import { h } from 'vue';
 import { createOptionBuilder, isObject } from '@vue-layout/core';
 import { isValidationRuleResultWithParams, isValidationRuleResultWithoutParams, template } from './utils';
@@ -50,7 +50,7 @@ export function buildValidationGroupOptions(options: ValidationGroupOptionsInput
     };
 }
 
-export function buildValidationGroup(input: ValidationGroupOptionsInput) : VNode {
+export function buildValidationGroup(input: ValidationGroupOptionsInput) : VNodeChild {
     const options = buildValidationGroupOptions(input);
 
     const translate = (validator: string, properties?: Record<string, any>) => {
