@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/Tada5hi/vue-layout/compare/v3.0.2...v3.1.0) (2023-06-26)
+
+
+### Features
+
+* enhance slot typing for components ([28c5648](https://github.com/Tada5hi/vue-layout/commit/28c564894c31efa9809081607c6151cda3c06358))
+
+
+
+
+
 ## [3.0.2](https://github.com/Tada5hi/vue-layout/compare/v3.0.1...v3.0.2) (2023-06-26)
 
 
