@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.1](https://github.com/tada5hi/vue-layout/compare/v3.1.0...v3.1.1) (2023-06-26)
+
+
+### Bug Fixes
+
+* set list-items default class to list-unstyled ([ad48ab7](https://github.com/tada5hi/vue-layout/commit/ad48ab73d6e65a1d20c2ddb9d12c938428be04f4))
+
+
+
+
+
 # [3.0.0](https://github.com/tada5hi/vue-layout/compare/v2.8.4...v3.0.0) (2023-06-26)
 
 

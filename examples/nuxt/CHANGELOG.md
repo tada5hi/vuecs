@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.1](https://github.com/Tada5hi/vue-layout/compare/v3.1.0...v3.1.1) (2023-06-26)
+
+**Note:** Version bump only for package @vue-layout/nuxt-example
+
+
+
+
+
 # [3.1.0](https://github.com/Tada5hi/vue-layout/compare/v3.0.2...v3.1.0) (2023-06-26)
 
 **Note:** Version bump only for package @vue-layout/nuxt-example
