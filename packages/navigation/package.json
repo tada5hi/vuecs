@@ -1,6 +1,6 @@
 {
     "name": "@vue-layout/navigation",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "description": "A package for multi level navigations.",
     "exports": {
         "./package.json": "./package.json",

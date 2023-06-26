@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.1](https://github.com/Tada5hi/vue-layout/compare/v3.0.0...v3.0.1) (2023-06-26)
+
+
+### Bug Fixes
+
+* adjusted peer-dependency version ([58ed93e](https://github.com/Tada5hi/vue-layout/commit/58ed93e23dbae2d3330191b675a4d4367d9382a5))
+
+
+
+
+
 # [3.0.0](https://github.com/Tada5hi/vue-layout/compare/v2.8.4...v3.0.0) (2023-06-26)
 
 
