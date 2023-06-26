@@ -5,8 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { useDefaultsStore } from '../defaults';
-import { getRegisteredPresets, usePresetStore } from '../preset';
+import { useDefaultsStore } from '../store-defaults';
+import { getRegisteredPresets, usePresetStore } from '../store-preset';
 import { hasOwnProperty } from '../utils';
 import type {
     OptionBuildContext,

@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Store } from '../../store';
+import { Store } from '../store';
 
 let instance : Store | undefined;
 

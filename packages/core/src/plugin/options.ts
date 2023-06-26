@@ -5,7 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { useDefaultsStore, usePresetStore } from '../component';
+import { usePresetStore } from '../store-preset';
+import { useDefaultsStore } from '../store-defaults';
 import type { PluginBaseOptions } from './type';
 
 export function applyPluginBaseOptions(options: PluginBaseOptions) {
