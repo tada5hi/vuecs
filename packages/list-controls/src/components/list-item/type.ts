@@ -19,8 +19,8 @@ export type ListItemSlotProps<T> = {
     data: T,
     busy: boolean,
     index?: number,
-    deleted: () => void,
-    updated: (item: T) => void,
+    deleted: (item?: T) => any,
+    updated: (item: T) => any,
     [key: string]: any
 };
 
@@ -36,7 +36,7 @@ export type ListItemBuildOptions<T extends Record<string, any>> = ListBaseOption
     fn?: (
         item: T,
         props: ListItemSlotProps<T>,
-        sections?: ListItemChildren
+        children: ListItemChildren
     ) => VNodeChild,
 
     icon: boolean,
@@ -64,8 +64,8 @@ export type ListItemBuildOptions<T extends Record<string, any>> = ListBaseOption
 
     busy: boolean,
 
-    onDeleted?: (item: T) => void,
-    onUpdated?: (item: T) => void,
+    onDeleted?: (item: T) => any,
+    onUpdated?: (item: T) => any,
 };
 
 export type ListItemBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput & OptionsOverride<

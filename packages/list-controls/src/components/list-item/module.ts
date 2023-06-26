@@ -225,6 +225,10 @@ export function buildListItem<T extends Record<string, any>>(
         ));
     }
 
+    if (children.slot) {
+        return renderContent(children.slot);
+    }
+
     const content = [
         ...(children.icon ? [children.icon] : []),
         ...(children.text ? [children.text] : []),
