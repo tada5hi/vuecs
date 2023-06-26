@@ -6,7 +6,7 @@
  */
 
 import type {
-    OptionsInputValue, OptionsOverride, VNodeClass,
+    OptionsInputValue, OptionsOverride, PartialPick, VNodeClass,
 } from '@vue-layout/core';
 import type { MaybeRef, VNodeChild } from 'vue';
 
@@ -31,7 +31,7 @@ export type ItemActionToggleOptions<T> = {
 
 export type ItemActionToggleOptionsInput<T> =
     OptionsOverride<ItemActionToggleOptions<T>,
-    OptionsInputValue<Pick<ItemActionToggleOptions<T>,
+    OptionsInputValue<PartialPick<ItemActionToggleOptions<T>,
     'type' |
     'class' |
     'disabledClass' |

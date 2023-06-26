@@ -6,10 +6,12 @@
  */
 
 import {
-    createOptionBuilder,
+    createOptionBuilder, isPromise,
 } from '@vue-layout/core';
 import type { VNodeArrayChildren, VNodeChild } from 'vue';
-import { h, mergeProps } from 'vue';
+import {
+    h, isRef, mergeProps, unref,
+} from 'vue';
 import type { PaginationMeta, PaginationOptions, PaginationOptionsInput } from './type';
 
 export function buildPaginationOptions(
@@ -104,8 +106,16 @@ export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
         }
     }
 
-    const loadPage = (page: number) => {
-        if (options.busy || page === currentPage) return;
+    const busy = unref(options.busy);
+
+    const load = (page: number) : any => {
+        if (busy || page === currentPage) {
+            return undefined;
+        }
+
+        if (isRef(options.busy)) {
+            options.busy.value = true;
+        }
 
         const data : PaginationMeta = {
             page,
@@ -114,7 +124,20 @@ export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
             total: totalPages,
         };
 
-        options.load(data);
+        const output = options.load(data);
+        if (isPromise(output)) {
+            return output.finally(() => {
+                if (isRef(options.busy)) {
+                    options.busy.value = false;
+                }
+            });
+        }
+
+        if (isRef(options.busy)) {
+            options.busy.value = false;
+        }
+
+        return output;
     };
 
     const renderPrevPage = () => {
@@ -147,7 +170,7 @@ export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
                                 onClick($event: any) {
                                     $event.preventDefault();
 
-                                    return loadPage(currentPage - 1);
+                                    return load(currentPage - 1);
                                 },
                             },
                             [content],
@@ -187,7 +210,7 @@ export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
                             $event.preventDefault();
 
                             // eslint-disable-next-line prefer-rest-params
-                            return loadPage(betweenPages[i]);
+                            return load(betweenPages[i]);
                         },
                     }, [
                         betweenPages[i],
@@ -229,7 +252,7 @@ export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
                             onClick($event: any) {
                                 $event.preventDefault();
 
-                                return loadPage(currentPage + 1);
+                                return load(currentPage + 1);
                             },
                         },
                         [content],

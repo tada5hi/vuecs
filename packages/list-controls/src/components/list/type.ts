@@ -38,5 +38,5 @@ export type ListBuildOptions<T extends Record<string, any>> = ListBaseOptions & 
 export type ListBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput &
 OptionsOverride<
 ExpectListBaseOptions<ListBuildOptions<T>>,
-PartialPick<ListBuildOptions<T>, 'busy' | 'data'>
+PartialPick<ListBuildOptions<T>, 'busy' | 'data' | 'items' | 'loading' | 'noMore'>
 >;

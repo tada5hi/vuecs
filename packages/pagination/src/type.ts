@@ -8,7 +8,7 @@
 import type {
     OptionsOverride, PartialPick, PluginBaseOptions, VNodeClass,
 } from '@vue-layout/core';
-import type { VNodeArrayChildren } from 'vue';
+import type { MaybeRef, VNodeArrayChildren } from 'vue';
 
 export type PaginationMeta = {
     busy?: boolean,
@@ -23,7 +23,7 @@ export type PaginationOptions = {
     offset: number,
     total: number,
     load: (meta: PaginationMeta) => (Promise<any> | any),
-    busy: boolean,
+    busy: MaybeRef<boolean>,
 
     tag: string,
     class: VNodeClass,
