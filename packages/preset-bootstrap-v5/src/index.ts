@@ -44,7 +44,7 @@ export default {
     listActionRefresh: {
         class: 'btn btn-xs btn-dark',
     },
-    list: {
+    listItems: {
         class: 'list-unstyled',
     },
     listItem: {
@@ -62,7 +62,7 @@ export default {
         textClass: 'mb-0',
     },
     pagination: {
-        class: 'd-flex justify-content-center pagination',
+        class: 'd-flex justify-content-center',
     },
     validationGroup: {
         class: 'form-group',
