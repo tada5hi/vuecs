@@ -6,7 +6,10 @@
  */
 
 import type {
-    MaybeRef, OptionsInput, VNodeClass, VNodeProperties,
+    MaybeRef, OptionsInputValue,
+    OptionsOverride, PartialPick,
+    VNodeClass,
+    VNodeProperties,
 } from '@vue-layout/core';
 import type { ValidationResult } from '../type';
 
@@ -27,13 +30,30 @@ export type FormSubmitOptions = {
     createButtonClass: VNodeClass,
 
     busy: MaybeRef<boolean>,
-    valid: MaybeRef<boolean>,
+    valid: boolean,
     isEditing: boolean,
     submit: () => void | Promise<void>,
     validationResult: Partial<ValidationResult>
 };
 
-export type FormSubmitOptionsInput = OptionsInput<FormSubmitOptions,
-'submit',
-'busy' | 'valid'
+export type FormSubmitOptionsInput = OptionsOverride<
+FormSubmitOptions,
+PartialPick<FormSubmitOptions,
+'busy' |
+'valid' |
+'validationResult' |
+'isEditing'
+> &
+OptionsInputValue<PartialPick<FormSubmitOptions,
+'type' |
+'props' |
+'class' |
+'icon' |
+'updateText' |
+'updateButtonClass' |
+'updateIconClass' |
+'createText' |
+'createButtonClass' |
+'createIconClass'
+>>
 >;

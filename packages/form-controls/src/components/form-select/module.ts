@@ -7,29 +7,34 @@
 
 import type { VNode, VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
-import { createComponentOptionBuilder, extractValueFromOptionValueInput, failOnUndefined } from '@vue-layout/core';
+import { createOptionBuilder, failOnUndefined } from '@vue-layout/core';
 import { Component } from '../constants';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
 import { buildValidationGroup } from '../validation-group';
-import type { FormSelectBuildOptions, FormSelectBuildOptionsInput, FormSelectOption } from './type';
+import type { FormSelectBuildOptions, FormSelectBuildOptionsInput } from './type';
 
 export function buildFormSelectOptions(
     input: FormSelectBuildOptionsInput,
 ) : FormSelectBuildOptions {
     const options = buildFormBaseOptions(input, Component.FormSelect);
 
-    const { buildOrFail } = createComponentOptionBuilder<FormSelectBuildOptions>(
+    const { buildOrFail } = createOptionBuilder<FormSelectBuildOptions>(
         Component.FormSelect,
     );
 
     return {
         ...options,
 
-        options: failOnUndefined(unref(extractValueFromOptionValueInput(options.options))),
+        options: failOnUndefined(unref(options.options)),
         optionDefaultText: buildOrFail({
             key: 'optionDefaultText',
-            value: unref(options.optionDefaultText),
+            value: options.optionDefaultText,
             alt: 'Select',
+        }),
+        optionDefaultTextEnabled: buildOrFail({
+            key: 'optionDefaultTextEnabled',
+            value: options.optionDefaultTextEnabled,
+            alt: true,
         }),
     };
 }
@@ -39,24 +44,41 @@ export function buildFormSelect(
 ) : VNode {
     const options = buildFormSelectOptions(input);
 
-    const children : VNodeChild = [];
+    const rawValue = unref(options.value);
 
-    if (options.label) {
-        children.push(h('label', { class: options.labelClass }, [options.labelContent]));
+    const children : VNodeChild = [];
+    if (options.optionDefaultTextEnabled) {
+        children.push(h('option', {
+            value: '',
+        }, [
+            '-- ', options.optionDefaultText, ' --',
+        ]));
     }
 
-    const rawValue = unref(options.value);
+    for (let i = 0; i < options.options.length; i++) {
+        children.push(h('option', {
+            key: options.options[i].id,
+            value: options.options[i].id,
+        }, options.options[i].value));
+    }
 
     return buildValidationGroup({
         content: [
-            ...children,
+            ...(options.label ?
+                [h('label', { class: options.labelClass }, [options.labelContent])] :
+                []
+            ),
             h(
                 'select',
                 mergeProps(
                     {
                         class: options.class,
                         onChange($event: any) {
-                            const $$selectedVal = Array.prototype.filter.call($event.target.options, (o) => o.selected).map((o) => ('_value' in o ? o._value : o.value));
+                            const $$selectedVal = Array.prototype.filter.call(
+                                $event.target.options,
+                                (o) => o.selected,
+                            ).map((o) => ('_value' in o ? o._value : o.value));
+
                             const value = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
 
                             handleFormValueChanged(options, value);
@@ -65,15 +87,7 @@ export function buildFormSelect(
                     },
                     options.props,
                 ),
-                [
-                    h('option', {
-                        value: '',
-                    }, ['-- ', options.optionDefaultText, ' --']),
-                    options.options.map((item: FormSelectOption) => h('option', {
-                        key: item.id,
-                        value: item.id,
-                    }, item.value)),
-                ],
+                children,
             ),
         ],
         hint: options.hint,

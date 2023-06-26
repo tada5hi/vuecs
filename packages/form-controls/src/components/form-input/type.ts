@@ -5,11 +5,13 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VNode, VNodeChild } from 'vue';
 import type {
-    OptionsInput,
+    OptionsInputValue,
+    OptionsOverride,
+    PartialPick,
     VNodeClass,
 } from '@vue-layout/core';
+import type { VNodeChild } from 'vue';
 import type { ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput } from '../form-base';
 
 export type FormInputBuildOptions = FormBaseOptions & {
@@ -18,13 +20,25 @@ export type FormInputBuildOptions = FormBaseOptions & {
 
     groupPrepend: boolean,
     groupPrependClass?: VNodeClass,
-    groupPrependContent?: VNode | VNodeChild | string,
+    groupPrependContent?: VNodeChild,
 
     groupAppend: boolean,
     groupAppendClass?: VNodeClass,
-    groupAppendContent?: VNode | VNodeChild | string
+    groupAppendContent?: VNodeChild
 };
 
 export type FormInputBuildOptionsInput =
     FormBaseOptionsInput
-    & OptionsInput<ExpectFormBaseOptions<FormInputBuildOptions>>;
+    & OptionsOverride<
+    ExpectFormBaseOptions<FormInputBuildOptions>,
+    OptionsInputValue<PartialPick<FormInputBuildOptions,
+    'type' |
+    'groupClass' |
+    'groupPrepend' |
+    'groupPrependClass' |
+    'groupPrependContent' |
+    'groupAppend' |
+    'groupAppendClass' |
+    'groupAppendContent'
+    >>
+    >;

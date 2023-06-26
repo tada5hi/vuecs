@@ -9,7 +9,7 @@ import { Store } from '../../store';
 
 const instances : Record<string, Store> = {};
 
-export function useComponentPresetStore(key: string) : Store {
+export function usePresetStore(key: string) : Store {
     if (typeof instances[key] !== 'undefined') {
         return instances[key];
     }
@@ -21,6 +21,6 @@ export function useComponentPresetStore(key: string) : Store {
     return instance;
 }
 
-export function getRegisteredComponentPresets() {
+export function getRegisteredPresets() {
     return Object.keys(instances);
 }

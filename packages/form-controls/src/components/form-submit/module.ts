@@ -8,8 +8,7 @@
 import type { VNodeArrayChildren } from 'vue';
 import { h, mergeProps, unref } from 'vue';
 import {
-    createComponentOptionBuilder,
-    extractValueFromOptionValueInput,
+    createOptionBuilder,
     isPromise,
     setMaybeRefValue,
     unrefWithDefault,
@@ -20,7 +19,7 @@ import type { FormSubmitOptions, FormSubmitOptionsInput } from './type';
 export function buildFormSubmitOptions(
     options: FormSubmitOptionsInput,
 ) : FormSubmitOptions {
-    const { buildOrFail } = createComponentOptionBuilder<FormSubmitOptions>(
+    const { buildOrFail } = createOptionBuilder<FormSubmitOptions>(
         Component.FormSubmit,
     );
 
@@ -29,12 +28,12 @@ export function buildFormSubmitOptions(
 
         type: buildOrFail({
             key: 'type',
-            value: unref(options.type),
+            value: options.type,
             alt: 'button',
         }),
         class: buildOrFail({
             key: 'class',
-            value: unref(options.class),
+            value: options.class,
             alt: [],
         }),
         props: buildOrFail({
@@ -45,7 +44,7 @@ export function buildFormSubmitOptions(
 
         icon: buildOrFail({
             key: 'icon',
-            value: unref(options.icon),
+            value: options.icon,
             alt: true,
         }),
 
@@ -53,39 +52,39 @@ export function buildFormSubmitOptions(
 
         updateText: buildOrFail({
             key: 'updateText',
-            value: unref(options.updateText),
+            value: options.updateText,
             alt: 'Update',
         }),
         updateIconClass: buildOrFail({
             key: 'updateIconClass',
-            value: unref(options.updateIconClass),
+            value: options.updateIconClass,
             alt: [],
         }),
         updateButtonClass: buildOrFail({
             key: 'updateButtonClass',
-            value: unref(options.updateButtonClass),
+            value: options.updateButtonClass,
             alt: [],
         }),
 
         createText: buildOrFail({
             key: 'createText',
-            value: unref(options.createText),
+            value: options.createText,
             alt: 'Create',
         }),
         createIconClass: buildOrFail({
             key: 'createIconClass',
-            value: unref(options.createIconClass),
+            value: options.createIconClass,
             alt: [],
         }),
         createButtonClass: buildOrFail({
             key: 'createButtonClass',
-            value: unref(options.createButtonClass),
+            value: options.createButtonClass,
             alt: [],
         }),
 
         busy: options.busy ?? false,
         valid: options.valid ?? true,
-        isEditing: unrefWithDefault(extractValueFromOptionValueInput(options.isEditing), false),
+        isEditing: options.isEditing ?? false,
     };
 }
 

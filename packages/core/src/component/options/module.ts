@@ -6,59 +6,52 @@
  */
 
 import { unref } from 'vue';
-import { useComponentDefaultsStore } from '../defaults';
-import { getRegisteredComponentPresets, useComponentPresetStore } from '../preset';
+import { useDefaultsStore } from '../defaults';
+import { getRegisteredPresets, usePresetStore } from '../preset';
 import { hasOwnProperty } from '../../utils';
-import type { ComponentOptionBuildContext, ComponentOptionBuilder } from './type';
+import type {
+    OptionBuildContext,
+} from './type';
 import {
-    isComponentOptionConfig,
-    isComponentOptionConfigWithDefaults,
-    isComponentOptionConfigWithPresets,
-    isComponentOptionConfigWithValue,
+    isOptionInputConfig,
+    isOptionInputConfigWithDefaults,
+    isOptionInputConfigWithPresets,
     mergeOption,
 } from './utils';
 
-export function buildComponentOption<
+function buildOption<
     O extends Record<string, any>,
     K extends keyof O,
->(context: ComponentOptionBuildContext<K, O[K]>) : O[K] | undefined {
+>(context: OptionBuildContext<K, O[K]>) : O[K] | undefined {
     let value : O[K] | undefined;
 
     const presetConfig : Record<string, boolean> = {};
 
-    if (isComponentOptionConfigWithPresets(context.value)) {
+    if (isOptionInputConfigWithPresets(context.value)) {
         const keys = Object.keys(context.value.presets);
         for (let i = 0; i < keys.length; i++) {
             presetConfig[keys[i]] = context.value.presets[keys[i]];
         }
+
+        if (typeof context.value.value !== 'undefined') {
+            value = unref(context.value.value);
+        }
     }
 
-    if (isComponentOptionConfigWithValue(context.value)) {
-        value = unref(context.value.value);
-    }
-
-    if (!isComponentOptionConfig(context.value)) {
-        value = unref(context.value) as O[K];
+    if (!isOptionInputConfig(context.value)) {
+        value = context.value;
     }
 
     if (typeof value === 'undefined') {
-        if (!isComponentOptionConfigWithDefaults(context.value) || context.value.defaults) {
-            const defaultStore = useComponentDefaultsStore();
+        if (!isOptionInputConfigWithDefaults(context.value) || context.value.defaults) {
+            const defaultStore = useDefaultsStore();
             if (defaultStore.hasOption(context.component, context.key as string)) {
                 value = defaultStore.getOption(context.component, context.key as string);
             }
         }
     }
 
-    if (typeof value === 'undefined') {
-        value = context.alt;
-    }
-
-    if (typeof value === 'undefined') {
-        return undefined;
-    }
-
-    const registeredPresets = getRegisteredComponentPresets();
+    const registeredPresets = getRegisteredPresets();
     for (let i = 0; i < registeredPresets.length; i++) {
         if (
             hasOwnProperty(presetConfig, registeredPresets[i]) &&
@@ -67,7 +60,7 @@ export function buildComponentOption<
             continue;
         }
 
-        const presetStore = useComponentPresetStore(registeredPresets[i]);
+        const presetStore = usePresetStore(registeredPresets[i]);
         if (presetStore.hasOption(context.component, context.key as string)) {
             value = mergeOption(
                 context.key as string,
@@ -77,37 +70,48 @@ export function buildComponentOption<
         }
     }
 
+    if (typeof value === 'undefined') {
+        return context.alt;
+    }
+
     return value;
 }
 
-export function buildComponentOptionOrFail<
+function buildOptionOrFail<
     O extends Record<string, any>,
     K extends keyof O = keyof O,
-    >(context: ComponentOptionBuildContext<K, O[K]>) : O[K] {
-    const target = buildComponentOption(context);
+    >(context: OptionBuildContext<K, O[K]>) : O[K] {
+    const target = buildOption(context);
 
-    if (typeof target === 'undefined') {
+    if (
+        typeof target === 'undefined' &&
+        !hasOwnProperty(context, 'alt')
+    ) {
         throw new Error(`A value for option ${context.key as string} of component ${context.component} is required.`);
     }
 
     return target as O[K];
 }
 
-export function createComponentOptionBuilder<O extends Record<string, any>>(
+export function createOptionBuilder<O extends Record<string, any>>(
     component: string,
-) : ComponentOptionBuilder<O> {
+) {
+    const build = <K extends keyof O>(
+        context: Omit<OptionBuildContext<K, O[K]>, 'component'>,
+    ) : O[K] | undefined => buildOption({
+            ...context,
+            component,
+        });
+
+    const buildOrFail = <K extends keyof O>(
+        context: Omit<OptionBuildContext<K, O[K]>, 'component'>,
+    ) : O[K] => buildOptionOrFail({
+            ...context,
+            component,
+        });
+
     return {
-        build: <K extends keyof O>(
-            context: Omit<ComponentOptionBuildContext<K, O[K]>, 'component'>,
-        ) : O[K] | undefined => buildComponentOption({
-            ...context,
-            component,
-        }),
-        buildOrFail: <K extends keyof O>(
-            context: Omit<ComponentOptionBuildContext<K, O[K]>, 'component'>,
-        ) : O[K] => buildComponentOptionOrFail({
-            ...context,
-            component,
-        }),
+        build,
+        buildOrFail,
     };
 }

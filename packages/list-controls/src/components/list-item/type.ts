@@ -6,9 +6,10 @@
  */
 
 import type { VNodeChild } from '@vue/runtime-core';
-import type { VNode } from 'vue';
+import type { MaybeRef, VNode } from 'vue';
 import type {
-    OptionsInput,
+    OptionsInputValue,
+    OptionsOverride, PartialPick,
     VNodeClass,
     VNodeProperties,
 } from '@vue-layout/core';
@@ -23,30 +24,70 @@ export type ListItemSlotProps<T> = {
     [key: string]: any
 };
 
+export type ListItemChildren = {
+    icon?: VNodeChild,
+    text?: VNodeChild,
+    actions?: VNodeChild,
+    slot?: VNodeChild
+};
+
 export type ListItemBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
-    data: T,
-    fn?: (item: T, props: ListItemSlotProps<T>, node?: VNodeChild) => VNode,
+    data: MaybeRef<T>,
+    fn?: (
+        item: T,
+        props: ListItemSlotProps<T>,
+        sections?: ListItemChildren
+    ) => VNodeChild,
 
     icon: boolean,
+    iconTag: string,
     iconClass: VNodeClass,
     iconProps: VNodeProperties,
+    iconWrapper: boolean,
+    iconWrapperClass: VNodeClass,
+    iconWrapperTag: string,
 
     textFn?: (item: T) => VNodeChild,
     textPropName: string,
+    textWrapper: boolean,
+    textWrapperClass: VNodeClass,
+    textWrapperTag: string,
 
     index?: number,
     key?: string,
 
-    actions: VNode | VNode[],
+    actions: boolean,
+    actionsContent: VNodeChild,
+    actionsWrapper: boolean,
+    actionsWrapperClass: VNodeClass,
+    actionsWrapperTag: string,
+
     busy: boolean,
 
     onDeleted?: (item: T) => void,
     onUpdated?: (item: T) => void,
 };
 
-export type ListItemBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput & OptionsInput<
+export type ListItemBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput & OptionsOverride<
 ExpectListBaseOptions<ListItemBuildOptions<T>>,
-never,
-'actions' | 'fn' | 'textFn' | 'onDeleted' | 'onUpdated',
-'data'
+PartialPick<ListItemBuildOptions<T>,
+'busy'
+> &
+OptionsInputValue<PartialPick<ListItemBuildOptions<T>,
+'icon' |
+'iconTag' |
+'iconClass' |
+'iconProps' |
+'iconWrapper' |
+'iconWrapperClass' |
+'iconWrapperTag' |
+'textWrapper' |
+'textWrapperClass' |
+'textWrapperTag' |
+'actions' |
+'actionsContent' |
+'actionsWrapper' |
+'actionsWrapperClass' |
+'actionsWrapperTag' |
+'textPropName'>>
 >;

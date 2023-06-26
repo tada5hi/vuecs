@@ -7,13 +7,16 @@
 
 import type { VNode, VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
+import type { VNodeClass } from '@vue-layout/core';
 import {
-    createComponentOptionBuilder, extractValueFromOptionValueInput, hasNormalizedSlot,
-    hasOwnProperty, normalizeSlot, unrefWithDefault,
+    createOptionBuilder, hasNormalizedSlot,
+    hasOwnProperty, normalizeSlot,
 } from '@vue-layout/core';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions } from '../list-base';
-import type { ListItemBuildOptions, ListItemBuildOptionsInput, ListItemSlotProps } from './type';
+import type {
+    ListItemBuildOptions, ListItemBuildOptionsInput, ListItemChildren, ListItemSlotProps,
+} from './type';
 
 export function buildListItemOptions<T extends Record<string, any>>(
     input: ListItemBuildOptionsInput<T>,
@@ -23,7 +26,7 @@ export function buildListItemOptions<T extends Record<string, any>>(
         tag: 'li',
     });
 
-    const { buildOrFail } = createComponentOptionBuilder<ListItemBuildOptions<T>>(
+    const { buildOrFail } = createOptionBuilder<ListItemBuildOptions<T>>(
         Component.ListItem,
     );
 
@@ -32,35 +35,98 @@ export function buildListItemOptions<T extends Record<string, any>>(
 
         icon: buildOrFail({
             key: 'icon',
-            value: unref(options.icon),
+            value: options.icon,
             alt: true,
+        }),
+        iconTag: buildOrFail({
+            key: 'iconTag',
+            value: options.iconTag,
+            alt: 'i',
         }),
         iconClass: buildOrFail({
             key: 'iconClass',
-            value: unref(options.iconClass),
+            value: options.iconClass,
             alt: [],
         }),
-        iconProps: unrefWithDefault(options.iconProps, {}),
+        iconProps: options.iconProps || {},
+        iconWrapper: buildOrFail({
+            key: 'iconWrapper',
+            value: options.iconWrapper,
+            alt: true,
+        }),
+        iconWrapperClass: buildOrFail({
+            key: 'iconWrapperClass',
+            value: options.iconWrapperClass,
+            alt: [],
+        }),
+        iconWrapperTag: buildOrFail({
+            key: 'iconWrapperTag',
+            value: options.iconWrapperTag,
+            alt: 'div',
+        }),
 
         textFn: options.textFn,
         textPropName: buildOrFail({
             key: 'textPropName',
-            value: unref(options.textPropName),
+            value: options.textPropName,
             alt: 'name',
         }),
+        textWrapper: buildOrFail({
+            key: 'textWrapper',
+            value: options.textWrapper,
+            alt: true,
+        }),
+        textWrapperClass: buildOrFail({
+            key: 'textWrapperClass',
+            value: options.textWrapperClass,
+            alt: [],
+        }),
+        textWrapperTag: buildOrFail({
+            key: 'textWrapperTag',
+            value: options.textWrapperTag,
+            alt: 'div',
+        }),
 
-        index: unref(extractValueFromOptionValueInput(options.index)),
-        key: unref(extractValueFromOptionValueInput(options.key)),
+        index: options.index,
+        key: options.key,
 
-        data: unref(extractValueFromOptionValueInput(options.data)),
+        data: options.data,
 
         actions: buildOrFail({
             key: 'actions',
-            value: unref(options.actions),
+            value: options.actions,
+            alt: true,
+        }),
+        actionsContent: buildOrFail({
+            key: 'actionsContent',
+            value: options.actionsContent,
             alt: [],
         }),
-        busy: unrefWithDefault(extractValueFromOptionValueInput(options.busy), false),
+        actionsWrapper: buildOrFail({
+            key: 'actionsWrapper',
+            value: options.actionsWrapper,
+            alt: true,
+        }),
+        actionsWrapperClass: buildOrFail({
+            key: 'actionsWrapperClass',
+            value: options.actionsWrapperClass,
+            alt: [],
+        }),
+        actionsWrapperTag: buildOrFail({
+            key: 'actionsWrapperTag',
+            value: options.actionsWrapperTag,
+            alt: 'div',
+        }),
+        busy: options.busy ?? false,
     };
+}
+
+function maybeWrapContent(input: VNodeChild, ctx: {wrap: boolean, class: VNodeClass, tag: string}) {
+    if (!ctx.wrap) {
+        return input;
+    }
+
+    return h(ctx.tag, { class: ctx.class }, [input]);
 }
 
 export function buildListItem<T extends Record<string, any>>(
@@ -68,13 +134,14 @@ export function buildListItem<T extends Record<string, any>>(
 ) : VNode | VNode[] {
     const options = buildListItemOptions(input);
 
+    const data = unref(options.data);
     const slotProps : ListItemSlotProps<T> = {
-        data: options.data,
+        data,
         busy: options.busy,
         index: options.index,
         deleted: () => {
             if (options.onDeleted) {
-                options.onDeleted(options.data);
+                options.onDeleted(data);
             }
         },
         updated: (item: T) => {
@@ -91,62 +158,78 @@ export function buildListItem<T extends Record<string, any>>(
         [content || []],
     );
 
-    let content : VNodeChild | undefined;
+    const children : ListItemChildren = {};
 
     if (hasNormalizedSlot(SlotName.ITEM, options.slotItems)) {
-        content = normalizeSlot(SlotName.ITEM, slotProps, options.slotItems);
+        children.slot = normalizeSlot(SlotName.ITEM, slotProps, options.slotItems);
     } else {
-        const children : VNodeChild = [];
         if (options.icon) {
-            children.push(h('div', [h('i', mergeProps({ class: options.iconClass }, options.iconProps))]));
+            children.icon = maybeWrapContent(h(options.iconTag, mergeProps({ class: options.iconClass }, options.iconProps)), {
+                wrap: options.iconWrapper,
+                tag: options.iconWrapperTag,
+                class: options.iconWrapperClass,
+            });
         }
 
-        let itemText : VNodeChild | undefined;
+        let text : VNodeChild | undefined;
 
         if (options.textFn) {
-            itemText = options.textFn(options.data);
-        } else if (hasOwnProperty(options.data, options.textPropName)) {
-            itemText = options.data[options.textPropName];
+            text = options.textFn(data);
+        } else if (
+            options.textPropName &&
+            hasOwnProperty(data, options.textPropName)
+        ) {
+            text = data[options.textPropName];
         }
 
-        if (itemText) {
-            children.push(itemText);
+        if (text) {
+            children.text = maybeWrapContent(text, {
+                wrap: options.textWrapper,
+                tag: options.textWrapperTag,
+                class: options.textWrapperClass,
+            });
         }
 
-        let actions : VNodeChild[] = [];
-        if (hasNormalizedSlot(SlotName.ITEM_ACTIONS, options.slotItems)) {
-            actions = [
-                normalizeSlot(SlotName.ITEM_ACTIONS, slotProps, options.slotItems),
-            ];
-        } else if (options.actions) {
-            actions = [
-                ...(Array.isArray(options.actions) ? options.actions : [options.actions]) as VNode[],
-            ];
+        let actions : VNodeChild | undefined;
+        if (options.actions) {
+            if (hasNormalizedSlot(SlotName.ITEM_ACTIONS, options.slotItems)) {
+                actions = [
+                    normalizeSlot(SlotName.ITEM_ACTIONS, slotProps, options.slotItems),
+                ];
+            } else if (options.actionsContent) {
+                actions = options.actionsContent;
+            }
 
             if (hasNormalizedSlot(SlotName.ITEM_ACTIONS_EXTRA, options.slotItems)) {
-                actions.push(normalizeSlot(SlotName.ITEM_ACTIONS_EXTRA, slotProps, options.slotItems));
+                actions = [
+                    actions,
+                    normalizeSlot(SlotName.ITEM_ACTIONS_EXTRA, slotProps, options.slotItems),
+                ];
             }
         }
-        if (
-            actions &&
-            actions.length > 0
-        ) {
-            // todo: make VNode-class an option
-            children.push(h('div', { class: 'ms-auto ml-auto' }, actions));
-        }
 
-        if (children.length > 0) {
-            content = children;
+        if (actions) {
+            children.actions = maybeWrapContent(actions, {
+                wrap: options.actionsWrapper,
+                tag: options.actionsWrapperTag,
+                class: options.actionsWrapperClass,
+            });
         }
     }
 
     if (typeof options.fn === 'function') {
         return renderContent(options.fn(
-            options.data,
+            data,
             slotProps,
-            content,
+            children,
         ));
     }
+
+    const content = [
+        ...(children.icon ? [children.icon] : []),
+        ...(children.text ? [children.text] : []),
+        ...(children.actions ? [children.actions] : []),
+    ];
 
     return renderContent(content);
 }

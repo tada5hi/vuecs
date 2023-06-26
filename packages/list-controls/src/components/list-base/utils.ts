@@ -5,8 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { unref } from 'vue';
-import { createComponentOptionBuilder } from '@vue-layout/core';
+import { createOptionBuilder } from '@vue-layout/core';
 import type { Component } from '../constants';
 import type {
     ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsDefaults, ListBaseOptionsInput,
@@ -22,7 +21,7 @@ export function buildListBaseOptions<
 ): ExpectListBaseOptions<T> & ListBaseOptions {
     defaults = defaults || {};
 
-    const { buildOrFail } = createComponentOptionBuilder<ListBaseOptions>(
+    const { buildOrFail } = createOptionBuilder<ListBaseOptions>(
         component,
     );
 
@@ -31,25 +30,25 @@ export function buildListBaseOptions<
 
         tag: buildOrFail({
             key: 'tag',
-            value: unref(options.tag),
+            value: options.tag,
             alt: defaults.tag || 'div',
         }),
 
         slotItems: options.slotItems || {},
         slotProps: buildOrFail({
             key: 'slotProps',
-            value: unref(options.slotProps),
+            value: options.slotProps,
             alt: defaults.slotProps || {},
         }),
 
         class: buildOrFail({
             key: 'class',
-            value: unref(options.class),
+            value: options.class,
             alt: defaults.class || [],
         }),
         props: buildOrFail({
             key: 'props',
-            value: unref(options.props),
+            value: options.props,
             alt: defaults.props || {},
         }),
     };

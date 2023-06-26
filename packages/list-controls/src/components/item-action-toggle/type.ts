@@ -5,8 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import type {
+    MaybeRef,
+    OptionsInputValue, OptionsOverride, VNodeClass,
+} from '@vue-layout/core';
 import type { VNodeChild } from 'vue';
-import type { MaybeRef, OptionsInput, VNodeClass } from '@vue-layout/core';
 
 export type ItemActionToggleOptions<T> = {
     type: string,
@@ -28,7 +31,16 @@ export type ItemActionToggleOptions<T> = {
 };
 
 export type ItemActionToggleOptionsInput<T> =
-    OptionsInput<ItemActionToggleOptions<T>,
-    'value',
-    'onChange' | 'currentValue'
+    OptionsOverride<ItemActionToggleOptions<T>,
+    OptionsInputValue<Pick<ItemActionToggleOptions<T>,
+    'type' |
+    'class' |
+    'disabledClass' |
+    'enabledClass' |
+    'childType' |
+    'childDisabledClass' |
+    'childDisabledContent' |
+    'childEnabledClass' |
+    'childEnabledContent'
+    >>
     >;

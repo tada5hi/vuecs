@@ -50,6 +50,7 @@ export default {
     listItem: {
         class: 'd-flex flex-row align-items-center',
         iconClass: 'pe-1',
+        actionsWrapperClass: 'ms-auto ml-auto',
     },
     listNoMore: {
         class: 'alert alert-warning alert-sm',
@@ -61,7 +62,7 @@ export default {
         textClass: 'mb-0',
     },
     pagination: {
-        class: 'd-flex justify-content-center',
+        class: 'd-flex justify-content-center pagination',
     },
     validationGroup: {
         class: 'form-group',

@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { hasNormalizedSlot, normalizeSlot } from '@vue-layout/core';
+import { createOptionBuilder, hasNormalizedSlot, normalizeSlot } from '@vue-layout/core';
 import { h, mergeProps } from 'vue';
 import type { VNode, VNodeArrayChildren } from 'vue';
 import { Component, SlotName } from '../constants';
@@ -23,8 +23,18 @@ export function buildListHeaderOptions(
         },
     );
 
+    const { buildOrFail } = createOptionBuilder<ListHeaderBuildOptions>(
+        Component.ListHeader,
+    );
+
     return {
         ...options,
+
+        content: buildOrFail({
+            key: 'content',
+            value: options.content,
+            alt: [],
+        }),
     };
 }
 

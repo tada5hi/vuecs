@@ -6,13 +6,11 @@
  */
 
 import type { VNode, VNodeArrayChildren } from 'vue';
-import { h, mergeProps, unref } from 'vue';
+import { h, mergeProps } from 'vue';
 import {
-    createComponentOptionBuilder,
-    extractValueFromOptionValueInput,
+    createOptionBuilder,
     hasNormalizedSlot,
     normalizeSlot,
-    unrefWithDefault,
 } from '@vue-layout/core';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions } from '../list-base';
@@ -25,7 +23,7 @@ export function buildListNoMoreOptions<T extends Record<string, any>>(
         class: 'list-no-more',
     });
 
-    const { buildOrFail } = createComponentOptionBuilder<ListNoMoreBuildOptions<T>>(
+    const { buildOrFail } = createOptionBuilder<ListNoMoreBuildOptions<T>>(
         Component.ListNoMore,
     );
 
@@ -34,12 +32,12 @@ export function buildListNoMoreOptions<T extends Record<string, any>>(
 
         textContent: buildOrFail({
             key: 'textContent',
-            value: unref(options.textContent),
+            value: options.textContent,
             alt: 'No more items available...',
         }),
 
-        busy: unrefWithDefault(extractValueFromOptionValueInput(options.busy), false),
-        total: unref(options.total),
+        busy: options.busy ?? false,
+        total: options.total,
     };
 }
 
@@ -54,10 +52,10 @@ export function buildListNoMore<T extends Record<string, any>>(
         return [];
     }
 
-    const total = unref(options.total);
+    const { total } = options;
 
     if (
-        typeof total !== 'undefined' &&
+        typeof total === 'number' &&
         total > 0
     ) {
         return [];

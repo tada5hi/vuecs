@@ -6,9 +6,9 @@
  */
 
 import type { VNode, VNodeArrayChildren } from 'vue';
-import { h, mergeProps, unref } from 'vue';
+import { h, mergeProps } from 'vue';
 import {
-    createComponentOptionBuilder, hasNormalizedSlot, normalizeSlot,
+    createOptionBuilder, hasNormalizedSlot, normalizeSlot,
 } from '@vue-layout/core';
 import { buildListBaseOptions } from '../list-base';
 import type { ListTitleBuildOptions, ListTitleBuildOptionsInput } from './type';
@@ -21,7 +21,7 @@ export function buildListTitleOptions(
         class: 'list-title',
     });
 
-    const { buildOrFail } = createComponentOptionBuilder<ListTitleBuildOptions>(
+    const { buildOrFail } = createOptionBuilder<ListTitleBuildOptions>(
         Component.ListTitle,
     );
 
@@ -30,43 +30,43 @@ export function buildListTitleOptions(
 
         text: buildOrFail({
             key: 'text',
-            value: unref(options.text),
+            value: options.text,
             alt: true,
         }),
         textClass: buildOrFail({
             key: 'textClass',
-            value: unref(options.textClass),
+            value: options.textClass,
             alt: [],
         }),
         textType: buildOrFail({
             key: 'textType',
-            value: unref(options.textType),
+            value: options.textType,
             alt: 'h4',
         }),
         textProps: buildOrFail({
             key: 'textProps',
-            value: unref(options.textProps),
+            value: options.textProps,
             alt: {},
         }),
         textContent: buildOrFail({
             key: 'textContent',
-            value: unref(options.textContent),
+            value: options.textContent,
             alt: 'List',
         }),
 
         icon: buildOrFail({
             key: 'icon',
-            value: unref(options.icon),
+            value: options.icon,
             alt: true,
         }),
         iconClass: buildOrFail({
             key: 'iconClass',
-            value: unref(options.iconClass),
+            value: options.iconClass,
             alt: [],
         }),
         iconProps: buildOrFail({
             key: 'iconProps',
-            value: unref(options.iconProps),
+            value: options.iconProps,
             alt: {},
         }),
     };

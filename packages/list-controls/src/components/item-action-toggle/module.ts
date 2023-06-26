@@ -9,8 +9,11 @@ import type { VNode, VNodeArrayChildren } from 'vue';
 import { h, unref } from 'vue';
 import type { MaybeRef } from '@vue-layout/core';
 import {
-    createComponentOptionBuilder, extractValueFromOptionValueInput,
-    pushMaybeRefArrayValue, setMaybeRefValue, spliceMaybeRefArray, unrefWithDefault,
+    createOptionBuilder,
+    pushMaybeRefArrayValue,
+    setMaybeRefValue,
+    spliceMaybeRefArray,
+    unrefWithDefault,
 } from '@vue-layout/core';
 import type { ItemActionToggleOptions, ItemActionToggleOptionsInput } from './type';
 import { Component } from '../constants';
@@ -18,7 +21,7 @@ import { Component } from '../constants';
 export function buildItemActionToggleOptions<T>(
     options: ItemActionToggleOptionsInput<T>,
 ) : ItemActionToggleOptions<T> {
-    const { buildOrFail } = createComponentOptionBuilder<ItemActionToggleOptions<T>>(
+    const { buildOrFail } = createOptionBuilder<ItemActionToggleOptions<T>>(
         Component.ItemActionToggle,
     );
 
@@ -27,53 +30,53 @@ export function buildItemActionToggleOptions<T>(
 
         type: buildOrFail({
             key: 'type',
-            value: unref(options.type),
+            value: options.type,
             alt: 'button',
         }),
         class: buildOrFail({
             key: 'class',
-            value: unref(options.class),
+            value: options.class,
             alt: [],
         }),
 
         disabledClass: buildOrFail({
             key: 'disabledClass',
-            value: unref(options.disabledClass),
+            value: options.disabledClass,
             alt: [],
         }),
         enabledClass: buildOrFail({
             key: 'enabledClass',
-            value: unref(options.enabledClass),
+            value: options.enabledClass,
             alt: [],
         }),
 
         childType: buildOrFail({
             key: 'childType',
-            value: unref(options.childType),
+            value: options.childType,
             alt: 'i',
         }),
         childDisabledContent: buildOrFail({
             key: 'childDisabledContent',
-            value: unref(options.childDisabledContent),
+            value: options.childDisabledContent,
             alt: [],
         }),
         childDisabledClass: buildOrFail({
             key: 'childDisabledClass',
-            value: unref(options.childDisabledClass),
+            value: options.childDisabledClass,
             alt: [],
         }),
         childEnabledContent: buildOrFail({
             key: 'childEnabledContent',
-            value: unref(options.childEnabledContent),
+            value: options.childEnabledContent,
             alt: [],
         }),
         childEnabledClass: buildOrFail({
             key: 'childEnabledClass',
-            value: unref(options.childEnabledClass),
+            value: options.childEnabledClass,
             alt: [],
         }),
 
-        busy: unrefWithDefault(extractValueFromOptionValueInput(options.busy), false),
+        busy: options.busy ?? false,
     };
 }
 
@@ -82,17 +85,18 @@ export function buildItemActionToggle<T>(
 ) : VNode {
     const options = buildItemActionToggleOptions(input);
 
-    const busy = unrefWithDefault(options.busy, false);
-    const value = unref(options.value);
+    const { busy } = options;
+
     const currentValue = unref(options.currentValue);
+    const value = unref(options.value);
 
     let children : VNodeArrayChildren = [];
 
-    const childClass = value === currentValue ?
+    const childClass = currentValue === value ?
         options.childEnabledClass :
         options.childDisabledClass;
 
-    const childContent = value === currentValue ?
+    const childContent = currentValue === value ?
         options.childEnabledContent :
         options.childDisabledContent;
 
@@ -111,8 +115,8 @@ export function buildItemActionToggle<T>(
         disabled: busy,
         class: [
             ...(options.class ? [options.class] : []),
-            ...(options.disabledClass && value !== currentValue ? [options.disabledClass] : []),
-            ...(options.enabledClass && value === currentValue ? [options.enabledClass] : []),
+            ...(options.disabledClass && currentValue !== value ? [options.disabledClass] : []),
+            ...(options.enabledClass && currentValue === value ? [options.enabledClass] : []),
         ],
         onClick($event: any) {
             $event.preventDefault();
@@ -135,10 +139,11 @@ export function buildItemActionToggle<T>(
                 return;
             }
 
-            const setValue = (value: T | T[] | null) => {
-                setMaybeRefValue(options.currentValue, value);
+            const setValue = (v: T | T[] | null) => {
+                setMaybeRefValue(options.currentValue, v);
+
                 if (options.onChange) {
-                    options.onChange(value);
+                    options.onChange(v);
                 }
             };
 

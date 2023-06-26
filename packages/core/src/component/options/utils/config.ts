@@ -6,21 +6,24 @@
  */
 
 import { isObject } from 'smob';
+import type { MaybeRef } from 'vue';
+import { isRef } from 'vue';
 import { hasOwnProperty } from '../../../utils';
 import type {
-    ComponentOptionConfig, ComponentOptionConfigWithDefaults, ComponentOptionConfigWithPresets,
-    ComponentOptionConfigWithValue,
-    ComponentOptionInput,
+    OptionInputConfig,
+    OptionInputConfigWithDefaults,
+    OptionInputConfigWithPresets,
+    OptionInputValue,
 } from '../type';
 
-export function isComponentOptionConfigWithPresets(
+export function isOptionInputConfigWithPresets(
     input: unknown,
-) : input is ComponentOptionConfigWithPresets<any> {
+) : input is OptionInputConfigWithPresets<any> {
     if (!isObject(input)) {
         return false;
     }
 
-    const { presets } = input as ComponentOptionConfig<any>;
+    const { presets } = input as OptionInputConfig<any>;
 
     if (!isObject(presets)) {
         return false;
@@ -39,40 +42,26 @@ export function isComponentOptionConfigWithPresets(
     return true;
 }
 
-export function isComponentOptionConfigWithDefaults(
+export function isOptionInputConfigWithDefaults(
     input: unknown,
-) : input is ComponentOptionConfigWithDefaults<any> {
+) : input is OptionInputConfigWithDefaults<any> {
     if (!isObject(input)) {
         return false;
     }
 
-    const { defaults } = input as ComponentOptionConfig<any>;
+    const { defaults } = input as OptionInputConfig<any>;
 
     return typeof defaults === 'boolean';
 }
-
-export function isComponentOptionConfigWithValue(
-    input: unknown,
-): input is ComponentOptionConfigWithValue<any> {
-    if (!isObject(input)) {
-        return false;
-    }
-
-    const { value } = input as ComponentOptionConfig<any>;
-
-    return typeof value !== 'undefined';
-}
-
-export function isComponentOptionConfig(
+export function isOptionInputConfig(
     value: unknown,
-): value is ComponentOptionConfig<any> {
-    return isComponentOptionConfigWithPresets(value) ||
-        isComponentOptionConfigWithDefaults(value) ||
-        isComponentOptionConfigWithValue(value);
+): value is OptionInputConfig<any> {
+    return isOptionInputConfigWithPresets(value) ||
+        isOptionInputConfigWithDefaults(value);
 }
 
-export function extractValueFromOptionValueInput<V>(input: ComponentOptionInput<V>) : V | undefined {
-    if (isComponentOptionConfig(input)) {
+export function extractValueFromOptionInputValue<V>(input: OptionInputValue<V>) : V | undefined {
+    if (isOptionInputConfig(input)) {
         if (input.value) {
             return input.value;
         }

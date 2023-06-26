@@ -5,9 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VNode, VNodeChild } from 'vue';
+import type { VNodeChild } from 'vue';
 import type {
-    OptionsInput,
+    OptionsInputValue,
+    OptionsOverride,
+    PartialPick,
     VNodeClass,
     VNodeProperties,
 } from '@vue-layout/core';
@@ -18,12 +20,24 @@ export type ListTitleBuildOptions = ListBaseOptions & {
     textType: string,
     textClass: VNodeClass,
     textProps: VNodeProperties,
-    textContent: VNodeChild | VNode | VNode[],
+    textContent: VNodeChild,
 
     icon: boolean,
     iconClass: VNodeClass,
     iconProps: VNodeProperties
 };
 
-export type ListTitleBuildOptionsInput = ListBaseOptionsInput & OptionsInput<
-ExpectListBaseOptions<ListTitleBuildOptions>>;
+export type ListTitleBuildOptionsInput = ListBaseOptionsInput &
+OptionsOverride<
+ExpectListBaseOptions<ListTitleBuildOptions>,
+OptionsInputValue<PartialPick<ListTitleBuildOptions,
+'text' |
+'textType' |
+'textClass' |
+'textProps' |
+'textContent' |
+'icon' |
+'iconClass' |
+'iconProps'
+>>
+>;

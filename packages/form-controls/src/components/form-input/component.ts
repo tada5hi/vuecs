@@ -6,7 +6,7 @@
  */
 
 import type { PropType } from 'vue';
-import { defineComponent, toRef } from 'vue';
+import { defineComponent } from 'vue';
 import { buildFormInput } from './module';
 import type { ValidationMessages, ValidationResult, ValidationTranslator } from '../type';
 
@@ -55,35 +55,23 @@ export const FormInput = defineComponent({
     },
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {
-        const label = toRef(props, 'label');
-        const labelClass = toRef(props, 'labelClass');
-        const labelContent = toRef(props, 'labelContent');
-
-        const type = toRef(props, 'type');
-        const hint = toRef(props, 'hint');
-
-        const value = toRef(props, 'modelValue');
-
-        const validationResult = toRef(props, 'validationResult');
-        const validationMessages = toRef(props, 'validationMessages');
-
         return () => buildFormInput({
-            label,
-            labelClass,
-            labelContent,
+            label: props.label,
+            labelClass: props.labelClass,
+            labelContent: props.labelContent,
 
-            hint: hint.value,
+            hint: props.hint,
 
-            type,
+            type: props.type,
 
-            value: value.value,
+            value: props.modelValue,
 
             onChange(input) {
                 emit('update:modelValue', input);
             },
 
-            validationResult: validationResult.value,
-            validationMessages: validationMessages.value,
+            validationResult: props.validationResult,
+            validationMessages: props.validationMessages,
             validationTranslator: props.validationTranslator,
 
             props: attrs,

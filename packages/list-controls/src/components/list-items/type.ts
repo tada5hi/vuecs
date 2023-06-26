@@ -6,8 +6,7 @@
  */
 
 import type {
-    MaybeRef,
-    OptionsInput,
+    MaybeRef, OptionsOverride, PartialPick,
 } from '@vue-layout/core';
 import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import type { ListItemBuildOptionsInput } from '../list-item';
@@ -15,7 +14,7 @@ import type { ListItemBuildOptionsInput } from '../list-item';
 export type ListItemsBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
     busy: boolean,
 
-    item: Omit<ListItemBuildOptionsInput<T>, 'data' | 'index'>,
+    item?: Omit<ListItemBuildOptionsInput<T>, 'data' | 'index'>,
     itemKey?: keyof T,
     itemId?: (item: T) => string,
     data: MaybeRef<T[]>,
@@ -24,10 +23,12 @@ export type ListItemsBuildOptions<T extends Record<string, any>> = ListBaseOptio
     onUpdated?: (item: T) => void
 };
 
-export type ListItemsBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput & OptionsInput<
+export type ListItemsBuildOptionsInput<
+    T extends Record<string, any>,
+> = ListBaseOptionsInput &
+OptionsOverride<
 ExpectListBaseOptions<ListItemsBuildOptions<T>>,
-never,
-'data' | 'onDeleted' | 'onUpdated' | 'itemKey' | 'itemId'
+PartialPick<ListItemsBuildOptions<T>, 'busy' | 'data'>
 >;
 
 export type ListItemsSlotProps<T> = {

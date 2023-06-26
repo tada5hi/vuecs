@@ -5,13 +5,14 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VNode, VNodeArrayChildren, VNodeChild } from 'vue';
 import type {
     MaybeRef,
-    OptionsInput,
+    OptionsInputValue,
+    OptionsOverride, PartialPick,
     VNodeClass,
     VNodeProperties,
 } from '@vue-layout/core';
+import type { VNodeChild } from 'vue';
 import type {
     ValidationMessages, ValidationResult, ValidationTranslator,
 } from '../type';
@@ -19,9 +20,9 @@ import type {
 export type FormBaseOptions = {
     label: boolean,
     labelClass: VNodeClass,
-    labelContent: string | VNode | (VNode | string)[] | VNodeChild,
+    labelContent: VNodeChild,
 
-    hint?: VNodeArrayChildren | VNode | string,
+    hint?: VNodeChild,
 
     class: VNodeClass,
     props: VNodeProperties,
@@ -33,13 +34,14 @@ export type FormBaseOptions = {
     validationMessages: ValidationMessages,
     validationTranslator?: ValidationTranslator
 };
-export type FormBaseOptionsInput = OptionsInput<FormBaseOptions,
-never,
-'value' | 'onChange' | 'validationTranslator' | 'validationMessages' | 'validationResult' | 'hint'
+
+export type FormBaseOptionsInput = OptionsOverride<
+FormBaseOptions,
+OptionsInputValue<PartialPick<FormBaseOptions, 'label' | 'labelClass' | 'labelContent' | 'hint' | 'class' | 'props'>> &
+PartialPick<FormBaseOptions, 'validationMessages' | 'validationResult'>
 >;
 
-export type ExpectFormBaseOptions<T extends FormBaseOptions | FormBaseOptionsInput> =
-    Omit<T, keyof FormBaseOptions | keyof FormBaseOptionsInput>;
+export type ExpectFormBaseOptions<T> = Omit<T, keyof FormBaseOptions>;
 
 export type FormBaseOptionsDefaults = {
     [K in keyof FormBaseOptions]?: FormBaseOptions[K]

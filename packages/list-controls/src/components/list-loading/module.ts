@@ -5,13 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VNode, VNodeArrayChildren } from 'vue';
+import type { VNode, VNodeArrayChildren, VNodeChild } from 'vue';
 import { h, mergeProps } from 'vue';
 import {
-    extractValueFromOptionValueInput,
     hasNormalizedSlot,
     normalizeSlot,
-    unrefWithDefault,
 } from '@vue-layout/core';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions } from '../list-base';
@@ -27,13 +25,13 @@ export function buildListLoadingOptions<T extends Record<string, any>>(
     return {
         ...options,
 
-        busy: unrefWithDefault(extractValueFromOptionValueInput(options.busy), false),
+        busy: options.busy ?? false,
     };
 }
 
 export function buildListLoading<T extends Record<string, any>>(
     input?: ListLoadingBuildOptionsInput<T>,
-) {
+) : VNodeChild {
     input = input || {};
 
     const options = buildListLoadingOptions(input);

@@ -12,21 +12,19 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type {
-    OptionsInput,
-} from '@vue-layout/core';
-import type { VNode, VNodeChild } from 'vue';
+import type { OptionsInputValue, OptionsOverride } from '@vue-layout/core';
+import type { VNodeChild } from 'vue';
 import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import type { ListFooterSlotProps } from '../list-footer';
 
-type Content = VNodeChild | VNode | VNode[];
-type ContentFn = (props: ListFooterSlotProps) => Content;
+type Fn = (props: ListFooterSlotProps) => VNodeChild;
 
 export type ListHeaderBuildOptions = ListBaseOptions & {
-    content?: Content | ContentFn,
+    content?: VNodeChild | Fn,
 };
 
-export type ListHeaderBuildOptionsInput = ListBaseOptionsInput & OptionsInput<
+export type ListHeaderBuildOptionsInput = ListBaseOptionsInput &
+OptionsOverride<
 ExpectListBaseOptions<ListHeaderBuildOptions>,
-'content'
->;
+OptionsInputValue<Pick<ListHeaderBuildOptions, 'content'>
+>>;

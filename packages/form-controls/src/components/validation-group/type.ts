@@ -5,8 +5,10 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { OptionsInput, VNodeClass, VNodeProperties } from '@vue-layout/core';
-import type { VNode, VNodeArrayChildren } from 'vue';
+import type {
+    OptionsOverride, VNodeClass, VNodeProperties,
+} from '@vue-layout/core';
+import type { VNodeChild } from 'vue';
 import type { ValidationMessages, ValidationResult, ValidationTranslator } from '../type';
 
 export type ValidationGroupContentPayload = {
@@ -17,9 +19,9 @@ export type ValidationGroupContentPayload = {
 export type ValidationGroupOptions = {
     class: VNodeClass,
     props: VNodeProperties,
-    content: VNodeArrayChildren | VNode | ((data: ValidationGroupContentPayload) => VNodeArrayChildren | VNode),
+    content: VNodeChild | ((data: ValidationGroupContentPayload) => VNodeChild),
 
-    hint?: VNodeArrayChildren | VNode | string,
+    hint?: VNodeChild,
 
     errorClass: VNodeClass,
     warningClass: VNodeClass,
@@ -29,8 +31,14 @@ export type ValidationGroupOptions = {
     validationTranslator?: ValidationTranslator
 };
 
-export type ValidationGroupOptionsInput = OptionsInput<
+export type ValidationGroupOptionsInput = OptionsOverride<
 ValidationGroupOptions,
-'content' | 'validationTranslator',
-'validationResult' | 'validationMessages' | 'hint'
+Partial<Pick<ValidationGroupOptions,
+'class' |
+'props' |
+'errorClass' |
+'warningClass' |
+'validationResult' |
+'validationMessages'
+>>
 >;

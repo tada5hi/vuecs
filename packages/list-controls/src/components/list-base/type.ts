@@ -7,7 +7,8 @@
 
 import type { Slots } from 'vue';
 import type {
-    OptionsInput,
+    OptionsInputValue,
+    OptionsOverride,
     VNodeClass,
     VNodeProperties,
 } from '@vue-layout/core';
@@ -20,10 +21,13 @@ export type ListBaseOptions = {
     class: VNodeClass,
     props: VNodeProperties,
 };
-export type ListBaseOptionsInput = OptionsInput<ListBaseOptions, never, 'slotItems'>;
+export type ListBaseOptionsInput = OptionsOverride<
+ListBaseOptions,
+Partial<Pick<ListBaseOptions, 'slotItems' | 'slotProps'>> &
+Partial<Pick<OptionsInputValue<ListBaseOptions>, 'tag' | 'class' | 'props'>>
+>;
 
-export type ExpectListBaseOptions<T extends ListBaseOptions | ListBaseOptionsInput,
-    > = Omit<T, keyof ListBaseOptions | keyof ListBaseOptionsInput>;
+export type ExpectListBaseOptions<T > = Omit<T, keyof ListBaseOptions>;
 
 export type ListBaseOptionsDefaults = {
     [K in keyof ListBaseOptions]?: ListBaseOptions[K]

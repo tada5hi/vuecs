@@ -6,15 +6,15 @@
  */
 
 import type { VNode, VNodeArrayChildren } from 'vue';
-import { h, unref } from 'vue';
-import { createComponentOptionBuilder, isObject } from '@vue-layout/core';
+import { h } from 'vue';
+import { createOptionBuilder, isObject } from '@vue-layout/core';
 import { isValidationRuleResultWithParams, isValidationRuleResultWithoutParams, template } from './utils';
 import { Component } from '../constants';
 import type { ValidationResult } from '../type';
 import type { ValidationGroupOptions, ValidationGroupOptionsInput } from './type';
 
 export function buildValidationGroupOptions(options: ValidationGroupOptionsInput) : ValidationGroupOptions {
-    const { buildOrFail } = createComponentOptionBuilder<ValidationGroupOptions>(
+    const { buildOrFail } = createOptionBuilder<ValidationGroupOptions>(
         Component.ValidationGroup,
     );
 
@@ -23,22 +23,25 @@ export function buildValidationGroupOptions(options: ValidationGroupOptionsInput
 
         class: buildOrFail({
             key: 'class',
+            value: options.class,
             alt: [],
         }),
 
         props: buildOrFail({
             key: 'props',
-            value: unref(options.props),
+            value: options.props,
             alt: {},
         }),
 
         errorClass: buildOrFail({
             key: 'errorClass',
+            value: options.errorClass,
             alt: [],
         }),
 
         warningClass: buildOrFail({
             key: 'warningClass',
+            value: options.warningClass,
             alt: [],
         }),
 

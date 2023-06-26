@@ -6,7 +6,8 @@
  */
 
 import type {
-    OptionsInput,
+    OptionsInputValue,
+    OptionsOverride, PartialPick,
     VNodeClass,
 } from '@vue-layout/core';
 import type { ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput } from '../form-base';
@@ -17,4 +18,7 @@ export type FormInputCheckboxBuildOptions = FormBaseOptions & {
 
 export type FormInputCheckboxBuildOptionsInput =
     FormBaseOptionsInput
-    & OptionsInput<ExpectFormBaseOptions<FormInputCheckboxBuildOptions>>;
+    & OptionsOverride<
+    ExpectFormBaseOptions<FormInputCheckboxBuildOptions>,
+    OptionsInputValue<PartialPick<FormInputCheckboxBuildOptions, 'groupClass'>>
+    >;

@@ -7,7 +7,7 @@
 
 import type { VNodeArrayChildren } from 'vue';
 import { h, mergeProps, unref } from 'vue';
-import { createComponentOptionBuilder } from '@vue-layout/core';
+import { createOptionBuilder } from '@vue-layout/core';
 import { Component } from '../constants';
 import { buildListFooter } from '../list-footer';
 import type { ListHeaderBuildOptionsInput } from '../list-header';
@@ -28,26 +28,38 @@ export function buildListOptions<T extends Record<string, any>>(
         class: 'list',
     });
 
-    const { buildOrFail } = createComponentOptionBuilder<ListBuildOptions<T>>(
+    const { buildOrFail } = createOptionBuilder<ListBuildOptions<T>>(
         Component.List,
     );
 
     return {
         ...options,
 
+        busy: buildOrFail({
+            key: 'busy',
+            value: options.busy,
+            alt: false,
+        }),
+
+        data: buildOrFail({
+            key: 'data',
+            value: options.data,
+            alt: [],
+        }),
+
         items: buildOrFail({
             key: 'items',
-            value: unref(options.items),
+            value: options.items,
             alt: true,
         }),
         loading: buildOrFail({
             key: 'loading',
-            value: unref(options.loading),
+            value: options.loading,
             alt: true,
         }),
         noMore: buildOrFail({
             key: 'noMore',
-            value: unref(options.noMore),
+            value: options.noMore,
             alt: true,
         }),
     };
@@ -75,13 +87,21 @@ export function buildList<T extends Record<string, any>>(
         children.push(buildListHeader(childOptions));
     }
 
-    if (options.items) {
-        const childOptions : ListItemsBuildOptionsInput<T> = typeof options.items === 'boolean' ?
-            {} :
-            options.items;
+    const busy = unref(options.busy);
 
-        childOptions.data = options.data;
-        childOptions.busy = options.busy;
+    if (options.items) {
+        let childOptions : ListItemsBuildOptionsInput<T>;
+        if (typeof options.items === 'boolean') {
+            childOptions = {
+                data: options.data,
+                busy,
+            };
+        } else {
+            childOptions = options.items;
+            childOptions.data = options.data;
+            childOptions.busy = busy;
+        }
+
         childOptions.slotItems = options.slotItems;
         childOptions.slotProps = options.slotProps;
         childOptions.onDeleted = options.onDeleted;
@@ -91,11 +111,14 @@ export function buildList<T extends Record<string, any>>(
     }
 
     if (options.loading) {
-        const loadingOptions : ListLoadingBuildOptionsInput<T> = typeof options.loading === 'boolean' ?
-            {} :
-            options.loading;
+        let loadingOptions : ListLoadingBuildOptionsInput<T>;
+        if (typeof options.loading === 'boolean') {
+            loadingOptions = {};
+        } else {
+            loadingOptions = options.loading;
+        }
 
-        loadingOptions.busy = options.busy;
+        loadingOptions.busy = busy;
         children.push(buildListLoading(loadingOptions));
     }
 
@@ -104,7 +127,7 @@ export function buildList<T extends Record<string, any>>(
             {} :
             options.noMore;
 
-        childOptions.busy = options.busy;
+        childOptions.busy = busy;
         childOptions.slotItems = options.slotItems;
         childOptions.slotProps = options.slotProps;
         childOptions.total = options.total;
@@ -120,7 +143,7 @@ export function buildList<T extends Record<string, any>>(
         childOptions.slotProps = {
             total: options.total,
             load: options.load,
-            busy: options.busy,
+            busy,
         };
         childOptions.slotItems = options.slotItems;
 

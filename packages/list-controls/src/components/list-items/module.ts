@@ -9,12 +9,10 @@ import type { VNode } from 'vue';
 import { h, mergeProps, unref } from 'vue';
 import {
     extendMaybeRefArrayValue,
-    extractValueFromOptionValueInput,
     findIndexOfMaybeRefArray,
     hasNormalizedSlot, hasOwnProperty,
     normalizeSlot,
     spliceMaybeRefArray,
-    unrefWithDefault,
 } from '@vue-layout/core';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions } from '../list-base';
@@ -32,10 +30,10 @@ export function buildListItemsOptions<T extends Record<string, any>>(
     return {
         ...options,
 
-        busy: unrefWithDefault(extractValueFromOptionValueInput(options.busy), false),
+        busy: options.busy ?? false,
 
-        data: extractValueFromOptionValueInput(options.data) || [],
-        item: unrefWithDefault(extractValueFromOptionValueInput(options.item), {}),
+        data: options.data || [],
+        item: options.item,
     };
 }
 
@@ -138,6 +136,7 @@ export function buildListItems<T extends Record<string, any>>(
             index,
             onDeleted: deleted,
             onUpdated: updated,
+            busy: options.busy,
         })),
     );
 }

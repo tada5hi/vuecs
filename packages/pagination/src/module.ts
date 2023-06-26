@@ -6,76 +6,83 @@
  */
 
 import {
-    createComponentOptionBuilder,
-    extractValueFromOptionValueInput,
-    unrefWithDefault,
+    createOptionBuilder,
 } from '@vue-layout/core';
 import type { VNodeArrayChildren, VNodeChild } from 'vue';
-import { h, mergeProps, unref } from 'vue';
+import { h, mergeProps } from 'vue';
 import type { PaginationMeta, PaginationOptions, PaginationOptionsInput } from './type';
 
 export function buildPaginationOptions(
     options: PaginationOptionsInput,
 ) : PaginationOptions {
-    const { buildOrFail, build } = createComponentOptionBuilder<PaginationOptions>('pagination');
+    const { buildOrFail, build } = createOptionBuilder<PaginationOptions>('pagination');
 
     return {
         ...options,
 
-        busy: unrefWithDefault(extractValueFromOptionValueInput(options.busy), false),
+        busy: options.busy ?? false,
 
         tag: buildOrFail({
             key: 'tag',
-            value: unref(options.tag),
+            value: options.tag,
             alt: 'ul',
         }),
         class: buildOrFail({
             key: 'class',
-            value: unref(options.class),
+            value: options.class,
             alt: 'pagination',
         }),
 
         itemTag: buildOrFail({
             key: 'itemTag',
-            value: unref(options.itemTag),
+            value: options.itemTag,
             alt: 'li',
         }),
         itemClass: buildOrFail({
             key: 'itemClass',
+            value: options.itemClass,
             alt: 'page-item',
         }),
 
         linkClass: buildOrFail({
             key: 'linkClass',
+            value: options.linkClass,
             alt: 'page-link',
         }),
         linkActiveClass: buildOrFail({
             key: 'linkActiveClass',
+            value: options.linkActiveClass,
             alt: 'active',
         }),
 
-        prevType: buildOrFail({
-            key: 'prevType',
+        prevTag: buildOrFail({
+            key: 'prevTag',
+            value: options.prevTag,
             alt: 'i',
         }),
         prevClass: build({
             key: 'prevClass',
+            value: options.prevClass,
             alt: [],
         }),
         prevContent: build({
             key: 'prevContent',
+            value: options.prevContent,
         }),
 
-        nextType: buildOrFail({
-            key: 'nextType',
+        nextTag: buildOrFail({
+            key: 'nextTag',
+            value: options.nextTag,
             alt: 'i',
         }),
         nextClass: build({
             key: 'nextClass',
+            value: options.nextClass,
             alt: [],
         }),
         nextContent: build({
             key: 'nextContent',
+            value: options.nextContent,
         }),
     };
 }
@@ -115,7 +122,7 @@ export function buildPagination(input: PaginationOptionsInput) {
 
         if (options.prevClass || options.prevContent) {
             content = h(
-                options.prevType,
+                options.prevTag,
                 { class: options.prevClass },
                 options.prevContent,
             );
@@ -201,7 +208,7 @@ export function buildPagination(input: PaginationOptionsInput) {
 
         if (options.nextClass || options.nextContent) {
             content = h(
-                options.nextType,
+                options.nextTag,
                 { class: options.nextClass },
                 options.nextContent,
             );

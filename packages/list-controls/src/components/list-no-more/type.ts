@@ -5,22 +5,24 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VNode, VNodeChild } from 'vue';
 import type {
-    MaybeRef,
-    OptionsInput,
+    OptionsInputValue,
+    OptionsOverride,
+    PartialPick,
 } from '@vue-layout/core';
+import type { VNodeChild } from 'vue';
 import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 
 export type ListNoMoreBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
-    textContent: VNodeChild | VNode | VNode[],
+    textContent: VNodeChild,
 
     busy: boolean,
-    total?: MaybeRef<number>
+    total?: number
 };
 
-export type ListNoMoreBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput & OptionsInput<
+export type ListNoMoreBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput &
+OptionsOverride<
 ExpectListBaseOptions<ListNoMoreBuildOptions<T>>,
-never,
-'total'
+PartialPick<ListNoMoreBuildOptions<T>, 'busy' | 'total'> &
+OptionsInputValue<PartialPick<ListNoMoreBuildOptions<T>, 'textContent'>>
 >;

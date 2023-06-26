@@ -7,7 +7,7 @@
 
 import type { VNode, VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
-import { createComponentOptionBuilder } from '@vue-layout/core';
+import { createOptionBuilder, extractValueFromOptionInputValue } from '@vue-layout/core';
 import { Component } from '../constants';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
 import { buildValidationGroup } from '../validation-group';
@@ -20,7 +20,7 @@ export function buildFormInputOptions(
     component = component || Component.FormInput;
     const options = buildFormBaseOptions(input, component);
 
-    const { build, buildOrFail } = createComponentOptionBuilder<FormInputBuildOptions>(
+    const { build, buildOrFail } = createOptionBuilder<FormInputBuildOptions>(
         component,
     );
 
@@ -29,46 +29,46 @@ export function buildFormInputOptions(
 
         type: buildOrFail({
             key: 'type',
-            value: unref(options.type),
+            value: options.type,
             alt: 'text',
         }),
 
         groupClass: buildOrFail({
             key: 'groupClass',
-            value: unref(options.groupClass),
+            value: options.groupClass,
             alt: [],
         }),
 
         groupAppend: buildOrFail({
             key: 'groupAppend',
-            value: unref(options.groupAppend),
+            value: options.groupAppend,
             alt: false,
         }),
         groupAppendClass: build({
             key: 'groupAppendClass',
-            value: unref(options.groupAppendClass),
+            value: options.groupAppendClass,
             alt: '',
         }),
         groupAppendContent: build({
             key: 'groupAppendContent',
-            value: unref(options.groupAppendContent),
+            value: options.groupAppendContent,
             alt: '',
         }),
 
         groupPrepend: buildOrFail({
             key: 'groupPrepend',
-            value: unref(options.groupPrepend),
+            value: options.groupPrepend,
             alt: false,
 
         }),
         groupPrependClass: build({
             key: 'groupPrependClass',
-            value: unref(options.groupPrependClass),
+            value: options.groupPrependClass,
             alt: '',
         }),
         groupPrependContent: build({
             key: 'groupPrependContent',
-            value: unref(options.groupPrependContent),
+            value: options.groupPrependContent,
             alt: '',
         }),
     };

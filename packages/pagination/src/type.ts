@@ -5,7 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { OptionsInput, PluginBaseOptions, VNodeClass } from '@vue-layout/core';
+import type {
+    OptionsOverride, PartialPick, PluginBaseOptions, VNodeClass,
+} from '@vue-layout/core';
 import type { VNodeArrayChildren } from 'vue';
 
 export type PaginationMeta = {
@@ -32,18 +34,27 @@ export type PaginationOptions = {
     linkClass: VNodeClass,
     linkActiveClass: VNodeClass,
 
-    prevType: string,
+    prevTag: string,
     prevClass?: VNodeClass,
     prevContent?: VNodeArrayChildren,
 
-    nextType: string,
+    nextTag: string,
     nextClass?: VNodeClass,
     nextContent?: VNodeArrayChildren
 };
 
-export type PaginationOptionsInput = OptionsInput<
+export type PaginationOptionsInput = OptionsOverride<
 PaginationOptions,
-'limit' | 'offset' | 'total' | 'load'
+PartialPick<PaginationOptions,
+'tag' |
+'class' |
+'itemTag' |
+'itemClass' |
+'linkClass' |
+'linkActiveClass' |
+'prevTag' |
+'nextTag'
+>
 >;
 
 type Options = PluginBaseOptions;

@@ -5,20 +5,20 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { useComponentDefaultsStore, useComponentPresetStore } from '../component';
+import { useDefaultsStore, usePresetStore } from '../component';
 import type { PluginBaseOptions } from './type';
 
 export function applyPluginBaseOptions(options: PluginBaseOptions) {
     if (options.presets) {
         const presetKeys = Object.keys(options.presets);
         for (let i = 0; i < presetKeys.length; i++) {
-            const store = useComponentPresetStore(presetKeys[i]);
+            const store = usePresetStore(presetKeys[i]);
             store.setAll(options.presets[presetKeys[i]]);
         }
     }
 
     if (options.defaults) {
-        const store = useComponentDefaultsStore();
+        const store = useDefaultsStore();
         store.setAll(options.defaults);
     }
 }

@@ -5,49 +5,31 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { MaybeRef, ToMaybeRef } from '../../type';
-
-export type ComponentOptionConfigWithPresets<V> = {
+export type OptionInputConfigWithPresets<V> = {
     value?: V,
     presets: Record<string, boolean>,
     defaults?: boolean
 };
 
-export type ComponentOptionConfigWithDefaults<V> = {
+export type OptionInputConfigWithDefaults<V> = {
     value?: V,
     presets?: Record<string, boolean>,
     defaults: boolean
 };
 
-export type ComponentOptionConfigWithValue<V> = {
-    value: V,
-    presets?: Record<string, boolean>,
-    defaults?: boolean
+export type OptionInputConfig<V> = OptionInputConfigWithPresets<V> | OptionInputConfigWithDefaults<V>;
+
+export type OptionInputValue<V> = V | OptionInputConfig<V>;
+export type OptionsInputValue<T> = {
+    [K in keyof T]: OptionInputValue<T[K]>;
 };
 
-export type ComponentOptionConfig<V> = ComponentOptionConfigWithPresets<V> |
-ComponentOptionConfigWithDefaults<V> |
-ComponentOptionConfigWithValue<V>;
+export type OptionsOverride<
+    T extends Record<string, any>,
+    C extends Record<string, any>,
+> = Omit<T, keyof C> & C;
 
-export type ComponentOptionInput<V> = V | ComponentOptionConfig<V>;
-
-export type ToComponentOptionInput<T> = {
-    [K in keyof T]: ComponentOptionInput<T[K]>;
-};
-
-// todo: remove type and deps
-export type OptionsInput<
-    T,
-    R extends keyof T = never,
-    P extends keyof T = never,
-    MR extends keyof T = never,
-    > =
-    Pick<T, R> & // unchanged
-    Partial<Pick<T, P>> & // partial
-    ToComponentOptionInput<ToMaybeRef<Pick<T, MR>>> & // unchanged + maybeRef
-    Partial<ToComponentOptionInput<ToMaybeRef<Pick<T, Exclude<keyof T, R | P | MR>>>>>; // partial + maybeRef
-
-export type ComponentOptionBuildContext<K, V> = {
+export type OptionBuildContext<K, V> = {
     /**
      * The name of the component.
      */
@@ -65,17 +47,5 @@ export type ComponentOptionBuildContext<K, V> = {
      * Value with or without configuration for
      * presets.
      */
-    value?: ComponentOptionInput<MaybeRef<V>>
+    value: OptionInputValue<V | undefined>,
 };
-
-export type ComponentOptionBuilder<
-    O extends Record<string, any>,
-    > = {
-        build: <K extends keyof O>(
-            context: Omit<ComponentOptionBuildContext<K, O[K]>, 'component'>,
-        ) => O[K] | undefined,
-        buildOrFail: <K extends keyof O>(
-            context: Omit<ComponentOptionBuildContext<K, O[K]>, 'component'>,
-        ) => O[K],
-
-    };

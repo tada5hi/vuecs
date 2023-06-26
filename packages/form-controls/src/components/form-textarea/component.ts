@@ -6,7 +6,7 @@
  */
 
 import type { PropType } from 'vue';
-import { defineComponent, toRef } from 'vue';
+import { defineComponent } from 'vue';
 import type {
     ValidationMessages,
     ValidationResult,
@@ -54,32 +54,21 @@ export const FormTextarea = defineComponent({
     },
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {
-        const label = toRef(props, 'label');
-        const labelClass = toRef(props, 'labelClass');
-        const labelContent = toRef(props, 'labelContent');
-
-        const hint = toRef(props, 'hint');
-
-        const value = toRef(props, 'modelValue');
-
-        const validationResult = toRef(props, 'validationResult');
-        const validationMessages = toRef(props, 'validationMessages');
-
         return () => buildFormTextarea({
-            label,
-            labelClass,
-            labelContent,
+            label: props.label,
+            labelClass: props.labelClass,
+            labelContent: props.labelContent,
 
-            hint: hint.value,
+            hint: props.hint,
 
-            value: value.value,
+            value: props.modelValue,
 
             onChange(input) {
                 emit('update:modelValue', input);
             },
 
-            validationResult: validationResult.value,
-            validationMessages: validationMessages.value,
+            validationResult: props.validationResult,
+            validationMessages: props.validationMessages,
             validationTranslator: props.validationTranslator,
 
             props: attrs,

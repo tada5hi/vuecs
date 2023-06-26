@@ -13,10 +13,10 @@
  */
 
 import type {
-    MaybeRef,
-    OptionsInput,
+    MaybeRef, OptionsInputValue,
+    OptionsOverride,
 } from '@vue-layout/core';
-import type { VNode, VNodeChild } from 'vue';
+import type { VNodeChild } from 'vue';
 import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import type { ListLoadFn } from '../type';
 
@@ -26,14 +26,14 @@ export type ListFooterSlotProps = {
     total?: MaybeRef<number>,
 };
 
-type Content = VNodeChild | VNode | VNode[];
-type ContentFn = (props: ListFooterSlotProps) => Content;
+type Fn = (props: ListFooterSlotProps) => VNodeChild;
 
 export type ListFooterBuildOptions = ListBaseOptions & {
-    content?: Content | ContentFn,
+    content?: VNodeChild | Fn,
 };
 
-export type ListFooterBuildOptionsInput = ListBaseOptionsInput & OptionsInput<
+export type ListFooterBuildOptionsInput = ListBaseOptionsInput &
+OptionsOverride<
 ExpectListBaseOptions<ListFooterBuildOptions>,
-'content'
->;
+OptionsInputValue<Pick<ListFooterBuildOptions, 'content'>
+>>;

@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { MaybeRef, OptionsInput } from '@vue-layout/core';
+import type { MaybeRef, OptionsOverride } from '@vue-layout/core';
 import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import type { ListFooterBuildOptionsInput } from '../list-footer';
 import type { ListHeaderBuildOptionsInput } from '../list-header';
@@ -13,17 +13,18 @@ import type { ListItemsBuildOptionsInput } from '../list-items';
 import type { ListLoadingBuildOptionsInput } from '../list-loading';
 import type { ListNoMoreBuildOptionsInput } from '../list-no-more';
 import type {
-    ListLoadFn, ListLoadMeta,
+    ListLoadFn,
 } from '../type';
 
 export type ListBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
-    busy?: MaybeRef<boolean>,
-    data?: MaybeRef<T[]>,
+    busy: MaybeRef<boolean>,
+    data: MaybeRef<T[]>,
     load?: ListLoadFn,
-    total?: MaybeRef<number>,
+    total?: number,
 
-    onDeleted?: (item: T) => void,
-    onUpdated?: (item: T) => void,
+    onCreated?: (item: T) => any,
+    onDeleted?: (item: T) => any,
+    onUpdated?: (item: T) => any,
 
     header?: ListHeaderBuildOptionsInput | boolean,
     footer?: ListFooterBuildOptionsInput | boolean,
@@ -33,8 +34,8 @@ export type ListBuildOptions<T extends Record<string, any>> = ListBaseOptions & 
     noMore: Omit<ListNoMoreBuildOptionsInput<T>, 'busy' | 'total'> | boolean
 };
 
-export type ListBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput & OptionsInput<
+export type ListBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput &
+OptionsOverride<
 ExpectListBaseOptions<ListBuildOptions<T>>,
-'load',
-'busy' | 'data' | 'total' | 'onDeleted' | 'onUpdated' | 'header' | 'footer'
+Partial<Pick<ListBuildOptions<T>, 'busy' | 'data'>>
 >;

@@ -6,7 +6,7 @@
  */
 
 import type {
-    OptionsInput,
+    OptionsInputValue, OptionsOverride, PartialPick,
 } from '@vue-layout/core';
 import type { ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput } from '../form-base';
 
@@ -17,11 +17,12 @@ export type FormSelectOption = {
 export type FormSelectBuildOptions = FormBaseOptions & {
     options: FormSelectOption[],
     optionDefaultText: string,
+    optionDefaultTextEnabled: boolean
 };
 
 export type FormSelectBuildOptionsInput =
     FormBaseOptionsInput
-    & OptionsInput<ExpectFormBaseOptions<FormSelectBuildOptions>,
-    never,
-    never,
-    'options'>;
+    & OptionsOverride<
+    ExpectFormBaseOptions<FormSelectBuildOptions>,
+    OptionsInputValue<PartialPick<FormSelectBuildOptions, 'optionDefaultText' | 'optionDefaultTextEnabled'>>
+    >;

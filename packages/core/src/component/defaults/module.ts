@@ -9,7 +9,7 @@ import { Store } from '../../store';
 
 let instance : Store | undefined;
 
-export function useComponentDefaultsStore() {
+export function useDefaultsStore() {
     if (typeof instance !== 'undefined') {
         return instance;
     }

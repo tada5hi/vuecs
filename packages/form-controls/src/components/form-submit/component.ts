@@ -5,9 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { ComponentOptionConfig } from '@vue-layout/core';
+import type { OptionInputConfig } from '@vue-layout/core';
 import type { PropType } from 'vue';
-import { defineComponent, toRef } from 'vue';
+import { defineComponent } from 'vue';
 import { buildFormSubmit } from './module';
 import type { ValidationResult } from '../type';
 
@@ -26,30 +26,34 @@ export const FormSubmit = defineComponent({
             type: Boolean,
             default: false,
         },
+        busy: {
+            type: Boolean,
+            default: false,
+        },
 
         createText: {
-            type: [String, Object] as PropType<string | ComponentOptionConfig<string>>,
+            type: [String, Object] as PropType<string | OptionInputConfig<string>>,
             default: undefined,
         },
         createIconClass: {
-            type: [String, Object] as PropType<string | ComponentOptionConfig<string>>,
+            type: [String, Object] as PropType<string | OptionInputConfig<string>>,
             default: undefined,
         },
         createButtonClass: {
-            type: [String, Object] as PropType<string | ComponentOptionConfig<string>>,
+            type: [String, Object] as PropType<string | OptionInputConfig<string>>,
             default: undefined,
         },
 
         updateText: {
-            type: [String, Object] as PropType<string | ComponentOptionConfig<string>>,
+            type: [String, Object] as PropType<string | OptionInputConfig<string>>,
             default: undefined,
         },
         updateIconClass: {
-            type: [String, Object] as PropType<string | ComponentOptionConfig<string>>,
+            type: [String, Object] as PropType<string | OptionInputConfig<string>>,
             default: undefined,
         },
         updateButtonClass: {
-            type: [String, Object] as PropType<string | ComponentOptionConfig<string>>,
+            type: [String, Object] as PropType<string | OptionInputConfig<string>>,
             default: undefined,
         },
 
@@ -64,32 +68,18 @@ export const FormSubmit = defineComponent({
     },
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {
-        const busy = toRef(props, 'modelValue');
-        const icon = toRef(props, 'icon');
-        const isEditing = toRef(props, 'isEditing');
-
-        const createText = toRef(props, 'createText');
-        const createIconClass = toRef(props, 'createIconClass');
-        const createButtonClass = toRef(props, 'createButtonClass');
-
-        const updateText = toRef(props, 'updateText');
-        const updateIconClass = toRef(props, 'updateIconClass');
-        const updateButtonClass = toRef(props, 'updateButtonClass');
-
-        const validationResult = toRef(props, 'validationResult');
-
         return () => buildFormSubmit({
-            icon,
-            busy,
-            isEditing,
+            icon: props.icon,
+            busy: props.busy,
+            isEditing: props.isEditing,
 
-            createText: createText.value,
-            createIconClass: createIconClass.value,
-            createButtonClass: createButtonClass.value,
+            createText: props.createText,
+            createIconClass: props.createIconClass,
+            createButtonClass: props.createButtonClass,
 
-            updateText: updateText.value,
-            updateIconClass: updateIconClass.value,
-            updateButtonClass: updateButtonClass.value,
+            updateText: props.updateText,
+            updateIconClass: props.updateIconClass,
+            updateButtonClass: props.updateButtonClass,
 
             submit() {
                 if (!props.submit) {
@@ -104,7 +94,7 @@ export const FormSubmit = defineComponent({
                         emit('update:modelValue', false);
                     });
             },
-            validationResult: validationResult.value,
+            validationResult: props.validationResult,
 
             props: attrs,
         });

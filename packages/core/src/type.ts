@@ -9,9 +9,7 @@ import type { Ref, VNodeProps } from 'vue';
 
 export type MaybeRef<T> = T | Ref<T>;
 
-export type ToMaybeRef<T> = {
-    [K in keyof T]: MaybeRef<T[K]>;
-};
+export type PartialPick<T, K extends keyof T> = Partial<Pick<T, K>>;
 
 export type VNodeClass = string | string[] | Record<string, boolean> | VNodeClass[];
 export type VNodeProperties = VNodeProps & {
