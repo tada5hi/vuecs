@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/tada5hi/vue-layout/compare/v2.8.4...v3.0.0) (2023-06-26)
+
+
+### Bug Fixes
+
+* remove duplicate type mayberef ([34b4fa9](https://github.com/tada5hi/vue-layout/commit/34b4fa91dbeb93822628a351bdb881d022c8c68d))
+
+
+
+
+
 ## [2.8.3](https://github.com/tada5hi/vue-layout/compare/v2.8.2...v2.8.3) (2023-06-06)
 
 

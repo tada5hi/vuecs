@@ -1,6 +1,6 @@
 {
     "name": "@vue-layout/pagination",
-    "version": "2.8.3",
+    "version": "3.0.0",
     "description": "A package containing a vue pagination component.",
     "exports": {
         "./package.json": "./package.json",
@@ -44,7 +44,7 @@
         "build": "cross-env NODE_ENV=production rimraf dist && npm run build:js && npm run build:types"
     },
     "devDependencies": {
-        "@vue-layout/core": "^2.8.3",
+        "@vue-layout/core": "^3.0.0",
         "vue": "^3.3.4"
     },
     "peerDependencies": {

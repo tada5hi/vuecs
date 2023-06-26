@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/tada5hi/vue-layout/compare/v2.8.4...v3.0.0) (2023-06-26)
+
+
+### Features
+
+* add explicit return types for render fn ([687da1b](https://github.com/tada5hi/vue-layout/commit/687da1bbae63b58d294bfd3c00725f9f7e70ba71))
+* refactored options typing + enhanced options building ([31fe2ca](https://github.com/tada5hi/vue-layout/commit/31fe2cae756d9ed7e01d8dd09e02cc0c9dba1ab0))
+
+
+
+
+
 ## [2.8.3](https://github.com/tada5hi/vue-layout/compare/v2.8.2...v2.8.3) (2023-06-06)
 
 

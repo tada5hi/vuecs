@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/tada5hi/vue-layout/compare/v2.8.4...v3.0.0) (2023-06-26)
+
+**Note:** Version bump only for package @vue-layout/preset-bootstrap-v4
+
+
+
+
+
 ## [2.1.1](https://github.com/tada5hi/vue-layout/compare/v2.1.0...v2.1.1) (2023-04-12)
 
 

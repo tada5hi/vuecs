@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/tada5hi/vue-layout/compare/v2.8.4...v3.0.0) (2023-06-26)
+
+**Note:** Version bump only for package @vue-layout/gravatar
+
+
+
+
+
 # [2.3.0](https://github.com/tada5hi/vue-layout/compare/v2.2.3...v2.3.0) (2023-05-22)
 
 **Note:** Version bump only for package @vue-layout/gravatar

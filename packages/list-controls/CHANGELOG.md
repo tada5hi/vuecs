@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/tada5hi/vue-layout/compare/v2.8.4...v3.0.0) (2023-06-26)
+
+
+### Bug Fixes
+
+* modify busy state on list load if it is a ref ([2b248f8](https://github.com/tada5hi/vue-layout/commit/2b248f815c4a333ab45bdc4d9608d972d5991edd))
+* remove duplicate type mayberef ([34b4fa9](https://github.com/tada5hi/vue-layout/commit/34b4fa91dbeb93822628a351bdb881d022c8c68d))
+* simplify list builindg process ([fd0b34c](https://github.com/tada5hi/vue-layout/commit/fd0b34c27be7617ec9b21b00bcf5ee4e93872941))
+* some typings + render list item slot if present ([3c821e5](https://github.com/tada5hi/vue-layout/commit/3c821e563d7117f7282e688b95bd1823d027faa0))
+
+
+### Features
+
+* add explicit return types for render fn ([687da1b](https://github.com/tada5hi/vue-layout/commit/687da1bbae63b58d294bfd3c00725f9f7e70ba71))
+* allways emit updated & deleted event if handler is defined ([bc53b0f](https://github.com/tada5hi/vue-layout/commit/bc53b0fedeb727fa3185fabe5a9f9af179e5f71e))
+* refactored options typing + enhanced options building ([31fe2ca](https://github.com/tada5hi/vue-layout/commit/31fe2cae756d9ed7e01d8dd09e02cc0c9dba1ab0))
+
+
+
+
+
 ## [2.8.4](https://github.com/tada5hi/vue-layout/compare/v2.8.3...v2.8.4) (2023-06-23)
 
 

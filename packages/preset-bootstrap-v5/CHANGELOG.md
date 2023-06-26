@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/tada5hi/vue-layout/compare/v2.8.4...v3.0.0) (2023-06-26)
+
+
+### Features
+
+* refactored options typing + enhanced options building ([31fe2ca](https://github.com/tada5hi/vue-layout/commit/31fe2cae756d9ed7e01d8dd09e02cc0c9dba1ab0))
+
+
+
+
+
 # [2.6.0](https://github.com/tada5hi/vue-layout/compare/v2.5.0...v2.6.0) (2023-06-04)
 
 
