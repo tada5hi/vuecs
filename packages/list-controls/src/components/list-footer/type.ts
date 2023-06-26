@@ -16,15 +16,12 @@ import type {
     OptionsInputValue,
     OptionsOverride,
 } from '@vue-layout/core';
-import type { MaybeRef, VNodeChild } from 'vue';
-import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
-import type { ListLoadFn } from '../type';
+import type { VNodeChild } from 'vue';
+import type {
+    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListBaseSlotProps,
+} from '../list-base';
 
-export type ListFooterSlotProps = {
-    busy?: MaybeRef<boolean>,
-    load?: ListLoadFn,
-    total?: MaybeRef<number>,
-};
+export type ListFooterSlotProps = ListBaseSlotProps;
 
 type Fn = (props: ListFooterSlotProps) => VNodeChild;
 

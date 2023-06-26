@@ -9,11 +9,20 @@ import type { MaybeRef } from 'vue';
 import type {
     OptionsOverride, PartialPick,
 } from '@vue-layout/core';
-import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
+import type {
+    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListBaseSlotProps,
+} from '../list-base';
 import type { ListItemBuildOptionsInput } from '../list-item';
 
+export type ListItemsSlotProps<T> = ListBaseSlotProps & {
+    data: T[],
+    deleted: (item: T) => void,
+    updated: (item: T) => void,
+    [key: string]: any
+};
+
 export type ListItemsBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
-    busy: boolean,
+    busy?: boolean,
 
     item?: Omit<ListItemBuildOptionsInput<T>, 'data' | 'index'>,
     itemKey?: keyof T,
@@ -31,11 +40,3 @@ OptionsOverride<
 ExpectListBaseOptions<ListItemsBuildOptions<T>>,
 PartialPick<ListItemsBuildOptions<T>, 'busy' | 'data'>
 >;
-
-export type ListItemsSlotProps<T> = {
-    data: T[],
-    busy: boolean,
-    deleted: (item: T) => void,
-    updated: (item: T) => void,
-    [key: string]: any
-};

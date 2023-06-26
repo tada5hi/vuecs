@@ -14,10 +14,13 @@
 
 import type { OptionsInputValue, OptionsOverride } from '@vue-layout/core';
 import type { VNodeChild } from 'vue';
-import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
-import type { ListFooterSlotProps } from '../list-footer';
+import type {
+    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListBaseSlotProps,
+} from '../list-base';
 
-type Fn = (props: ListFooterSlotProps) => VNodeChild;
+export type ListHeaderSlotProps = ListBaseSlotProps;
+
+type Fn = (props: ListHeaderSlotProps) => VNodeChild;
 
 export type ListHeaderBuildOptions = ListBaseOptions & {
     content?: VNodeChild | Fn,

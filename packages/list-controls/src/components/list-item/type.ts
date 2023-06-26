@@ -13,11 +13,12 @@ import type {
     VNodeClass,
     VNodeProperties,
 } from '@vue-layout/core';
-import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
+import type {
+    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListBaseSlotProps,
+} from '../list-base';
 
-export type ListItemSlotProps<T> = {
+export type ListItemSlotProps<T> = ListBaseSlotProps & {
     data: T,
-    busy: boolean,
     index?: number,
     deleted: (item?: T) => any,
     updated: (item: T) => any,
@@ -68,7 +69,8 @@ export type ListItemBuildOptions<T extends Record<string, any>> = ListBaseOption
     onUpdated?: (item: T) => any,
 };
 
-export type ListItemBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput & OptionsOverride<
+export type ListItemBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput &
+OptionsOverride<
 ExpectListBaseOptions<ListItemBuildOptions<T>>,
 PartialPick<ListItemBuildOptions<T>,
 'busy'

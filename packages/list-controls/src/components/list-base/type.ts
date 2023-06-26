@@ -12,10 +12,18 @@ import type {
     VNodeClass,
     VNodeProperties,
 } from '@vue-layout/core';
+import type { ListLoadFn } from '../type';
+
+export type ListBaseSlotProps = {
+    busy?: boolean,
+    load?: ListLoadFn,
+    total?: number,
+    [key: string]: any
+};
 
 export type ListBaseOptions = {
     slotItems: Slots,
-    slotProps: Record<string, any>,
+    slotProps: ListBaseSlotProps,
 
     tag: string,
     class: VNodeClass,
@@ -27,7 +35,7 @@ Partial<Pick<ListBaseOptions, 'slotItems' | 'slotProps'>> &
 Partial<Pick<OptionsInputValue<ListBaseOptions>, 'tag' | 'class' | 'props'>>
 >;
 
-export type ExpectListBaseOptions<T > = Omit<T, keyof ListBaseOptions>;
+export type ExpectListBaseOptions<T> = Omit<T, keyof ListBaseOptions>;
 
 export type ListBaseOptionsDefaults = {
     [K in keyof ListBaseOptions]?: ListBaseOptions[K]

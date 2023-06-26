@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VNode, VNodeArrayChildren, VNodeChild } from 'vue';
+import type { VNodeChild } from 'vue';
 import { h, mergeProps } from 'vue';
 import {
     createOptionBuilder,
@@ -30,9 +30,9 @@ export function buildListNoMoreOptions<T extends Record<string, any>>(
     return {
         ...options,
 
-        textContent: buildOrFail({
-            key: 'textContent',
-            value: options.textContent,
+        content: buildOrFail({
+            key: 'content',
+            value: options.content,
             alt: 'No more items available...',
         }),
 
@@ -61,10 +61,10 @@ export function buildListNoMore<T extends Record<string, any>>(
         return [];
     }
 
-    const renderContent = (content?: VNode | VNodeArrayChildren) => h(
+    const renderContent = (content?: VNodeChild) : VNodeChild => h(
         options.tag,
         mergeProps({ class: options.class }, options.props),
-        content,
+        [content],
     );
 
     if (hasNormalizedSlot(SlotName.NO_MORE, options.slotItems)) {
@@ -75,5 +75,9 @@ export function buildListNoMore<T extends Record<string, any>>(
         }, options.slotItems));
     }
 
-    return renderContent([options.textContent]);
+    if (typeof options.content === 'function') {
+        return renderContent(options.content(options.slotProps));
+    }
+
+    return renderContent(options.content);
 }

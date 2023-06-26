@@ -11,10 +11,16 @@ import type {
     PartialPick,
 } from '@vue-layout/core';
 import type { VNodeChild } from 'vue';
-import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
+import type {
+    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListBaseSlotProps,
+} from '../list-base';
+
+export type ListNoMoreSlotProps = ListBaseSlotProps;
+
+type Fn = (props: ListNoMoreSlotProps) => VNodeChild;
 
 export type ListNoMoreBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
-    textContent: VNodeChild,
+    content: VNodeChild | Fn,
 
     busy: boolean,
     total?: number
@@ -24,5 +30,5 @@ export type ListNoMoreBuildOptionsInput<T extends Record<string, any>> = ListBas
 OptionsOverride<
 ExpectListBaseOptions<ListNoMoreBuildOptions<T>>,
 PartialPick<ListNoMoreBuildOptions<T>, 'busy' | 'total'> &
-OptionsInputValue<PartialPick<ListNoMoreBuildOptions<T>, 'textContent'>>
+OptionsInputValue<PartialPick<ListNoMoreBuildOptions<T>, 'content'>>
 >;
