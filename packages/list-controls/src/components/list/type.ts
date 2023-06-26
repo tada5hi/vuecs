@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { MaybeRef, OptionsOverride } from '@vue-layout/core';
+import type { MaybeRef, OptionsOverride, PartialPick } from '@vue-layout/core';
 import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import type { ListFooterBuildOptionsInput } from '../list-footer';
 import type { ListHeaderBuildOptionsInput } from '../list-header';
@@ -37,5 +37,5 @@ export type ListBuildOptions<T extends Record<string, any>> = ListBaseOptions & 
 export type ListBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput &
 OptionsOverride<
 ExpectListBaseOptions<ListBuildOptions<T>>,
-Partial<Pick<ListBuildOptions<T>, 'busy' | 'data'>>
+PartialPick<ListBuildOptions<T>, 'busy' | 'data'>
 >;

@@ -9,7 +9,7 @@ import type { VNodeArrayChildren, VNodeChild } from 'vue';
 import {
     h, isRef, mergeProps, unref,
 } from 'vue';
-import { createOptionBuilder, isPromise } from '@vue-layout/core';
+import { isPromise } from '@vue-layout/core';
 import { Component } from '../constants';
 import { buildListFooter } from '../list-footer';
 import type { ListHeaderBuildOptionsInput } from '../list-header';
@@ -31,40 +31,16 @@ export function buildListOptions<T extends Record<string, any>>(
         class: 'list',
     });
 
-    const { buildOrFail } = createOptionBuilder<ListBuildOptions<T>>(
-        Component.List,
-    );
-
     return {
         ...options,
 
-        busy: buildOrFail({
-            key: 'busy',
-            value: options.busy,
-            alt: false,
-        }),
+        busy: options.busy ?? false,
 
-        data: buildOrFail({
-            key: 'data',
-            value: options.data,
-            alt: [],
-        }),
+        data: options.data ?? [],
 
-        items: buildOrFail({
-            key: 'items',
-            value: options.items,
-            alt: true,
-        }),
-        loading: buildOrFail({
-            key: 'loading',
-            value: options.loading,
-            alt: true,
-        }),
-        noMore: buildOrFail({
-            key: 'noMore',
-            value: options.noMore,
-            alt: true,
-        }),
+        items: options.items ?? true,
+        loading: options.loading ?? true,
+        noMore: options.noMore ?? true,
     };
 }
 
