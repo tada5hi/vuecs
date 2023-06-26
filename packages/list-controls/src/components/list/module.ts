@@ -6,8 +6,10 @@
  */
 
 import type { VNodeArrayChildren, VNodeChild } from 'vue';
-import { h, mergeProps, unref } from 'vue';
-import { createOptionBuilder } from '@vue-layout/core';
+import {
+    h, isRef, mergeProps, unref,
+} from 'vue';
+import { createOptionBuilder, isPromise } from '@vue-layout/core';
 import { Component } from '../constants';
 import { buildListFooter } from '../list-footer';
 import type { ListHeaderBuildOptionsInput } from '../list-header';
@@ -19,6 +21,7 @@ import type { ListLoadingBuildOptionsInput } from '../list-loading';
 import type { ListNoMoreBuildOptionsInput } from '../list-no-more';
 import { buildListNoMore } from '../list-no-more';
 import { buildListBaseOptions } from '../list-base';
+import type { ListLoadFn } from '../type';
 import type { ListBuildOptions, ListBuildOptionsInput } from './type';
 
 export function buildListOptions<T extends Record<string, any>>(
@@ -70,6 +73,29 @@ export function buildList<T extends Record<string, any>>(
 ): VNodeChild {
     const options = buildListOptions(input);
 
+    let load : ListLoadFn | undefined;
+    if (options.load) {
+        load = (meta) => {
+            if (!isRef(options.busy)) {
+                return options.load!(meta);
+            }
+
+            options.busy.value = true;
+
+            const output = options.load!(meta);
+            if (isPromise(output)) {
+                return output.finally(() => {
+                    if (isRef(options.busy)) {
+                        options.busy.value = false;
+                    }
+                });
+            }
+
+            options.busy.value = false;
+
+            return output;
+        };
+    }
     const children : VNodeArrayChildren = [];
 
     if (options.header) {
@@ -79,7 +105,7 @@ export function buildList<T extends Record<string, any>>(
 
         childOptions.slotProps = {
             total: options.total,
-            load: options.load,
+            load,
             busy: options.busy,
         };
         childOptions.slotItems = options.slotItems;
@@ -142,7 +168,7 @@ export function buildList<T extends Record<string, any>>(
 
         childOptions.slotProps = {
             total: options.total,
-            load: options.load,
+            load,
             busy,
         };
         childOptions.slotItems = options.slotItems;
