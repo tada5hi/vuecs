@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/tada5hi/vue-layout/compare/v3.1.1...v3.2.0) (2023-06-27)
+
+
+### Features
+
+* rename list-items to list-body ([8929f78](https://github.com/tada5hi/vue-layout/commit/8929f78d078e778ada6a13acefb190bde50d24c4))
+
+
+
+
+
 # [3.0.0](https://github.com/tada5hi/vue-layout/compare/v2.8.4...v3.0.0) (2023-06-26)
 
 **Note:** Version bump only for package @vue-layout/preset-bootstrap-v4

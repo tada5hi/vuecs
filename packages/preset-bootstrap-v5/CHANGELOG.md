@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/tada5hi/vue-layout/compare/v3.1.1...v3.2.0) (2023-06-27)
+
+
+### Features
+
+* rename list-items to list-body ([8929f78](https://github.com/tada5hi/vue-layout/commit/8929f78d078e778ada6a13acefb190bde50d24c4))
+
+
+
+
+
 ## [3.1.1](https://github.com/tada5hi/vue-layout/compare/v3.1.0...v3.1.1) (2023-06-26)
 
 
