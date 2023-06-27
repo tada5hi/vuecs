@@ -11,7 +11,7 @@ export * from './list-base';
 export * from './list-header';
 export * from './list-footer';
 export * from './list-item';
-export * from './list-items';
+export * from './list-body';
 export * from './list-loading';
 export * from './list-no-more';
 export * from './list-title';

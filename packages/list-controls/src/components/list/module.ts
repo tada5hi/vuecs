@@ -15,8 +15,8 @@ import type { ListFooterBuildOptionsInput } from '../list-footer';
 import { buildListFooter } from '../list-footer';
 import type { ListHeaderBuildOptionsInput } from '../list-header';
 import { buildListHeader } from '../list-header';
-import type { ListItemsBuildOptionsInput } from '../list-items';
-import { buildListItems } from '../list-items';
+import type { ListBodyBuildOptionsInput } from '../list-body';
+import { buildListBody } from '../list-body';
 import { buildListLoading } from '../list-loading';
 import type { ListLoadingBuildOptionsInput } from '../list-loading';
 import type { ListNoMoreBuildOptionsInput } from '../list-no-more';
@@ -98,7 +98,7 @@ export function buildList<T extends Record<string, any>>(
     }
 
     if (options.items) {
-        let childOptions : ListItemsBuildOptionsInput<T>;
+        let childOptions : ListBodyBuildOptionsInput<T>;
         if (typeof options.items === 'boolean') {
             childOptions = {
                 data: options.data,
@@ -116,7 +116,7 @@ export function buildList<T extends Record<string, any>>(
         childOptions.onUpdated = options.onUpdated;
         // childOptions.load = load;
 
-        children.push(buildListItems(childOptions));
+        children.push(buildListBody(childOptions));
     }
 
     if (options.loading) {

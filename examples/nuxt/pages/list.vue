@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import {
-    buildListItems,
+    buildListBody,
     buildListNoMore,
 } from '@vue-layout/list-controls';
 import { defineComponent, h, ref } from 'vue';

@@ -44,13 +44,13 @@ export default {
     listActionRefresh: {
         class: 'btn btn-xs btn-dark',
     },
-    listItems: {
+    listBody: {
         class: 'list-unstyled',
     },
     listItem: {
         class: 'd-flex flex-row align-items-center',
         iconClass: 'pe-1',
-        actionsWrapperClass: 'ms-auto ml-auto',
+        actionsWrapperClass: 'ms-auto',
     },
     listNoMore: {
         class: 'alert alert-warning alert-sm',

@@ -10,7 +10,7 @@ import type { MaybeRef } from 'vue';
 import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 import type { ListFooterBuildOptionsInput } from '../list-footer';
 import type { ListHeaderBuildOptionsInput } from '../list-header';
-import type { ListItemsBuildOptionsInput } from '../list-items';
+import type { ListBodyBuildOptionsInput } from '../list-body';
 import type { ListLoadingBuildOptionsInput } from '../list-loading';
 import type { ListNoMoreBuildOptionsInput } from '../list-no-more';
 import type {
@@ -30,7 +30,7 @@ export type ListBuildOptions<T extends Record<string, any>> = ListBaseOptions & 
     header?: ListHeaderBuildOptionsInput | boolean,
     footer?: ListFooterBuildOptionsInput | boolean,
 
-    items: Omit<ListItemsBuildOptionsInput<T>, 'busy' | 'data'> | boolean,
+    items: Omit<ListBodyBuildOptionsInput<T>, 'busy' | 'data'> | boolean,
     loading: Omit<ListLoadingBuildOptionsInput<T>, 'busy'> | boolean,
     noMore: Omit<ListNoMoreBuildOptionsInput<T>, 'busy' | 'total'> | boolean
 };

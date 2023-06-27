@@ -17,12 +17,12 @@ import {
 } from '@vue-layout/core';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions } from '../list-base';
-import type { ListItemsBuildOptions, ListItemsBuildOptionsInput, ListItemsSlotProps } from './type';
+import type { ListBodyBuildOptions, ListBodyBuildOptionsInput, ListBodySlotProps } from './type';
 import { buildListItem } from '../list-item';
 
-export function buildListItemsOptions<T extends Record<string, any>>(
-    input: ListItemsBuildOptionsInput<T>,
-) : ListItemsBuildOptions<T> {
+export function buildListBodyOptions<T extends Record<string, any>>(
+    input: ListBodyBuildOptionsInput<T>,
+) : ListBodyBuildOptions<T> {
     const options = buildListBaseOptions(input, Component.ListItems, {
         class: 'list-items',
         tag: 'ul',
@@ -40,20 +40,22 @@ export function buildListItemsOptions<T extends Record<string, any>>(
 
 type FilterFn<T extends Record<string, any>> = (item: T, index?: number) => boolean;
 
-export function buildListItems<T extends Record<string, any>>(
-    input?: ListItemsBuildOptionsInput<T>,
+export function buildListBody<T extends Record<string, any>>(
+    input?: ListBodyBuildOptionsInput<T>,
 ) : VNodeChild {
     input = input || {};
-    const options = buildListItemsOptions(input);
+    const options = buildListBodyOptions(input);
 
     const buildFilterFn = (item: T) : FilterFn<T> | undefined => {
         let filterFn : FilterFn<T> | undefined;
         if (options.itemId) {
-            filterFn = (el) => options && options.itemId(el) === options.itemId(item);
+            const { itemId } = options;
+            filterFn = (el) => itemId(el) === itemId(item);
         }
 
         if (options.itemKey) {
-            filterFn = (el) => options && el[options.itemKey as keyof T] === item[options.itemKey as keyof T];
+            const { itemKey } = options;
+            filterFn = (el) => el[itemKey] === item[itemKey];
         }
 
         if (
@@ -104,8 +106,8 @@ export function buildListItems<T extends Record<string, any>>(
         }
     };
 
-    if (hasNormalizedSlot(SlotName.ITEMS, options.slotItems)) {
-        const slotScope : ListItemsSlotProps<T> = {
+    if (hasNormalizedSlot(SlotName.BODY, options.slotItems)) {
+        const slotScope : ListBodySlotProps<T> = {
             ...options.slotProps,
             data: unref(options.data),
             busy: options.busy,
@@ -116,7 +118,7 @@ export function buildListItems<T extends Record<string, any>>(
         return h(
             options.tag,
             mergeProps({ class: options.class }, options.props),
-            normalizeSlot(SlotName.ITEMS, slotScope, options.slotItems),
+            normalizeSlot(SlotName.BODY, slotScope, options.slotItems),
         );
     }
 

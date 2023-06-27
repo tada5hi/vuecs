@@ -40,9 +40,13 @@ export default {
     listActionRefresh: {
         class: 'btn btn-xs btn-dark',
     },
+    listBody: {
+        class: 'list-unstyled',
+    },
     listItem: {
         class: 'd-flex flex-row align-items-center',
         iconClass: 'pr-1',
+        actionsWrapperClass: 'ml-auto',
     },
     listNoMore: {
         class: 'alert alert-warning alert-sm',

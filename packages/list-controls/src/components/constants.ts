@@ -22,7 +22,7 @@ export enum SlotName {
     FOOTER = 'footer',
     HEADER = 'header',
     HEADER_TITLE = 'headerTitle',
-    ITEMS = 'items',
+    BODY = 'body',
     LOADING = 'loading',
     NO_MORE = 'noMore',
     ITEM = 'item',
