@@ -162,6 +162,10 @@ export function buildListBaseSlotProps<T extends Record<string, any>>(
     }
 
     props.created = (item: T) => {
+        if (ctx.meta && typeof ctx.meta.total === 'number') {
+            ctx.meta.total++;
+        }
+
         if (typeof ctx.data === 'undefined') {
             if (ctx.onCreated) {
                 ctx.onCreated(item);
@@ -191,6 +195,10 @@ export function buildListBaseSlotProps<T extends Record<string, any>>(
     };
 
     props.deleted = (item: T | undefined) => {
+        if (ctx.meta && typeof ctx.meta.total === 'number') {
+            ctx.meta.total--;
+        }
+
         if (typeof ctx.data === 'undefined') {
             if (ctx.onDeleted && typeof item !== 'undefined') {
                 ctx.onDeleted(item);

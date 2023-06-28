@@ -9,7 +9,7 @@
 import type { ListItemSlotProps, SlotName } from '@vue-layout/list-controls';
 import { buildList } from '@vue-layout/list-controls';
 import type { SlotsType } from 'vue';
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, watch } from 'vue';
 
 export default defineComponent({
     slots: Object as SlotsType<{
@@ -20,11 +20,20 @@ export default defineComponent({
             { id: 1, name: 'Peter' },
             { id: 2, name: 'Admin' },
         ]);
+        const meta = ref({
+            total: 2,
+        });
+
+        watch(meta, () => {
+            console.log(meta.value);
+        });
+
         return () => buildList({
             slotItems: ctx.slots,
             data: data.value,
-            onUpdated(item) {
-                console.log(item);
+            meta: meta.value,
+            onDeleted(item) {
+
             },
             footer: true,
         });
