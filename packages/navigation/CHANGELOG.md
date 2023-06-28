@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0](https://github.com/tada5hi/vue-layout/compare/v3.2.0...v3.3.0) (2023-06-28)
+
+**Note:** Version bump only for package @vue-layout/navigation
+
+
+
+
+
 ## [3.0.1](https://github.com/tada5hi/vue-layout/compare/v3.0.0...v3.0.1) (2023-06-26)
 
 

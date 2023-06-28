@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0](https://github.com/tada5hi/vue-layout/compare/v3.2.0...v3.3.0) (2023-06-28)
+
+
+### Features
+
+* enhance slot building and inheritance between list elements ([73ed2a2](https://github.com/tada5hi/vue-layout/commit/73ed2a24e386f2b56ccdb99e307f1a306ed82788))
+* override list-item created & updated event fns ([bcf8287](https://github.com/tada5hi/vue-layout/commit/bcf8287791c1b627db52df0189074e9bab1131f6))
+
+
+
+
+
 # [3.2.0](https://github.com/tada5hi/vue-layout/compare/v3.1.1...v3.2.0) (2023-06-27)
 
 
