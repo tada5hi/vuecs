@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.1](https://github.com/Tada5hi/vue-layout/compare/v3.3.0...v3.3.1) (2023-06-28)
+
+
+### Bug Fixes
+
+* increase & decrease meta total on update/delete ([7d27686](https://github.com/Tada5hi/vue-layout/commit/7d27686b97e4383a261bf64fd79b559e6cef3de5))
+
+
+
+
+
 # [3.3.0](https://github.com/Tada5hi/vue-layout/compare/v3.2.0...v3.3.0) (2023-06-28)
 
 
