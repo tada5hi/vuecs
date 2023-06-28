@@ -117,13 +117,15 @@ export function buildFormSubmit(input: FormSubmitOptionsInput) : VNodeChild {
             onClick($event: any) {
                 $event.preventDefault();
 
-                setMaybeRefValue(options.busy, true);
+                options.busy = setMaybeRefValue(options.busy, true);
 
                 const promise = options.submit();
 
                 if (isPromise(promise)) {
                     promise
-                        .finally(() => setMaybeRefValue(options.busy, false));
+                        .finally(() => {
+                            options.busy = setMaybeRefValue(options.busy, false);
+                        });
                 }
 
                 return promise;

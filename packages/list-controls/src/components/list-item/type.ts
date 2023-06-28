@@ -15,9 +15,15 @@ import type {
 import type {
     ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListBaseSlotProps,
 } from '../list-base';
+import type { ListEventFn } from '../type';
 
-export type ListItemSlotProps<T extends Record<string, any>> = ListBaseSlotProps<T> & {
+export type ListItemSlotProps<T extends Record<string, any>> = Omit<
+ListBaseSlotProps<T>,
+'updated' | 'created'
+> & {
     data: T,
+    updated?: ListEventFn<T | undefined>,
+    deleted?: ListEventFn<T | undefined>,
     index?: number,
     [key: string]: any
 };
@@ -74,6 +80,7 @@ OptionsInputValue<PartialPick<ListItemBuildOptions<T>,
 'iconWrapper' |
 'iconWrapperClass' |
 'iconWrapperTag' |
+'text' |
 'textWrapper' |
 'textWrapperClass' |
 'textWrapperTag' |

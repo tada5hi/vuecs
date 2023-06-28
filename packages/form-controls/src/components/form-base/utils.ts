@@ -68,7 +68,7 @@ export function buildFormBaseOptions<T extends FormBaseOptionsInput>(
 
 export function handleFormValueChanged(options: FormBaseOptions, value: unknown) {
     if (typeof options.value !== 'undefined') {
-        setMaybeRefValue(options.value, value);
+        options.value = setMaybeRefValue(options.value, value);
     }
 
     if (options.onChange) {

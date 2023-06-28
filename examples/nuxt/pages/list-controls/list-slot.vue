@@ -16,6 +16,14 @@ export default defineComponent({
 <template>
     <example-list>
         <template #itemActions="props">
+            {{ props }}
+
+            <button
+                class="btn btn-xs btn-primary"
+                @click.prevent="props.updated({name: 'foo'})"
+            >
+                <i class="fa fa-refresh" />
+            </button>
             <button
                 class="btn btn-xs btn-dark"
                 @click.prevent="props.deleted()"

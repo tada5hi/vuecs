@@ -22,7 +22,7 @@ export type ListBaseSlotProps<
     busy?: boolean,
     load?: ListLoadFn,
     updated?: ListEventFn<T>,
-    deleted?: ListEventFn<T | undefined>,
+    deleted?: ListEventFn<T>,
     created?: ListEventFn<T>,
     meta?: ListMeta,
     [key: string]: any

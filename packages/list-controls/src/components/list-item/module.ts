@@ -6,14 +6,21 @@
  */
 
 import type { VNodeChild } from 'vue';
-import { h, mergeProps, unref } from 'vue';
+import {
+    h, mergeProps, unref,
+} from 'vue';
 import type { VNodeClass } from '@vue-layout/core';
 import {
-    createOptionBuilder, hasNormalizedSlot,
-    hasOwnProperty, normalizeSlot,
+    createOptionBuilder,
+    hasNormalizedSlot,
+    hasOwnProperty,
+    merge,
+    normalizeSlot,
+    setMaybeRefValue,
 } from '@vue-layout/core';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
+import type { ListEventFn } from '../type';
 import type {
     ListItemBuildOptions, ListItemBuildOptionsInput, ListItemChildren, ListItemSlotProps,
 } from './type';
@@ -138,20 +145,56 @@ export function buildListItem<T extends Record<string, any>>(
     const options = buildListItemOptions(input);
 
     const data = unref(options.data);
+
+    const overrideUpdatedFn = (fn: ListEventFn<T>, item?: T) : ListEventFn<T | undefined> => {
+        options.data = setMaybeRefValue(options.data, merge(item || {}, data) as T);
+        return fn(unref(options.data));
+    };
+
     let slotProps : ListItemSlotProps<T>;
     if (options.slotPropsBuilt) {
+        const {
+            updated,
+            deleted,
+            ...original
+        } = options.slotProps;
+
         slotProps = {
-            ...options.slotProps,
+            ...original,
             data,
             index: options.index,
         };
+
+        if (updated) {
+            slotProps.updated = (item?: T) => overrideUpdatedFn(updated, item);
+        }
+
+        if (deleted) {
+            slotProps.deleted = (item?: T) => deleted(item || data);
+        }
     } else {
+        const {
+            updated,
+            deleted,
+            ...original
+        } = buildListBaseSlotProps<T>({
+            ...options,
+            data: options.data,
+        });
+
         slotProps = {
-            ...buildListBaseSlotProps<T>(options),
-            ...options.slotProps,
+            ...original,
             data,
             index: options.index,
         };
+
+        if (updated) {
+            slotProps.updated = (item?: T) => overrideUpdatedFn(updated, item);
+        }
+
+        if (deleted) {
+            slotProps.deleted = (item?: T) => deleted(item || data);
+        }
     }
 
     const renderContent = (content?: VNodeChild) => h(

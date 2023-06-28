@@ -138,7 +138,7 @@ export function buildItemActionToggle<T>(
             }
 
             const setValue = (v: T | T[] | null) => {
-                setMaybeRefValue(options.currentValue, v);
+                options.currentValue = setMaybeRefValue(options.currentValue, v) as T;
 
                 if (options.onChange) {
                     options.onChange(v);
