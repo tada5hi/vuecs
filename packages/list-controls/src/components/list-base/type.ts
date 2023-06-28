@@ -5,38 +5,61 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { Slots } from 'vue';
+import type { MaybeRef, Slots } from 'vue';
 import type {
     OptionsInputValue,
-    OptionsOverride,
+    OptionsOverride, PartialPick,
     VNodeClass,
     VNodeProperties,
 } from '@vue-layout/core';
-import type { ListLoadFn } from '../type';
+import type {
+    ListEventFn, ListItemId, ListItemKey, ListLoadFn, ListMeta,
+} from '../type';
 
-export type ListBaseSlotProps = {
+export type ListBaseSlotProps<
+    T extends Record<string, any>,
+> = {
     busy?: boolean,
     load?: ListLoadFn,
-    total?: number,
+    updated?: ListEventFn<T>,
+    deleted?: ListEventFn<T | undefined>,
+    created?: ListEventFn<T>,
+    meta?: ListMeta,
     [key: string]: any
 };
 
-export type ListBaseOptions = {
+export type ListBaseOptions<
+    T extends Record<string, any>,
+> = {
     slotItems: Slots,
-    slotProps: ListBaseSlotProps,
+    slotProps: ListBaseSlotProps<T>,
+    slotPropsBuilt?: boolean,
 
     tag: string,
     class: VNodeClass,
     props: VNodeProperties,
+
+    load?: ListLoadFn,
+    busy?: MaybeRef<boolean>,
+    meta: ListMeta,
+
+    itemId?: ListItemId<T>,
+    itemKey?: ListItemKey<T>,
+
+    onCreated?: ListEventFn<T>,
+    onDeleted?: ListEventFn<T>,
+    onUpdated?: ListEventFn<T>
 };
-export type ListBaseOptionsInput = OptionsOverride<
-ListBaseOptions,
-Partial<Pick<ListBaseOptions, 'slotItems' | 'slotProps'>> &
-Partial<Pick<OptionsInputValue<ListBaseOptions>, 'tag' | 'class' | 'props'>>
+export type ListBaseOptionsInput<
+    T extends Record<string, any>,
+> = OptionsOverride<
+ListBaseOptions<T>,
+PartialPick<ListBaseOptions<T>, 'meta' | 'slotItems' | 'slotProps'> &
+PartialPick<OptionsInputValue<ListBaseOptions<T>>, 'tag' | 'class' | 'props'>
 >;
 
-export type ExpectListBaseOptions<T> = Omit<T, keyof ListBaseOptions>;
+export type ExpectListBaseOptions<T extends Record<string, any>> = Omit<T, keyof ListBaseOptions<T>>;
 
-export type ListBaseOptionsDefaults = {
-    [K in keyof ListBaseOptions]?: ListBaseOptions[K]
+export type ListBaseOptionsDefaults<T extends Record<string, any>> = {
+    [K in keyof ListBaseOptions<T>]?: ListBaseOptions<T>[K]
 };

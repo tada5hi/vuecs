@@ -10,7 +10,7 @@ export enum Component {
     ListFooter = 'listFooter',
     ListHeader = 'listHeader',
     ListItem = 'listItem',
-    ListItems = 'listItems',
+    ListBody = 'listBody',
     ListLoading = 'listLoading',
     ListNoMore = 'listNoMore',
     ListTitle = 'listTitle',

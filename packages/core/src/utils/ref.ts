@@ -29,6 +29,27 @@ export function setMaybeRefValue<T>(input: MaybeRef<T>, value: T) {
     return input;
 }
 
+export function extendMaybeRefObject<T extends Record<string, any>>(
+    input: MaybeRef<T>,
+    value: Partial<T>,
+) {
+    const keys = Object.keys(value) as (keyof T)[];
+
+    if (isRef(input)) {
+        if (!isReadonly(input)) {
+            for (let i = 0; i < keys.length; i++) {
+                input.value[keys[i] as keyof T] = value[keys[i]] as T[keyof T];
+            }
+        }
+    } else {
+        for (let i = 0; i < keys.length; i++) {
+            input[keys[i] as keyof T] = value[keys[i]] as T[keyof T];
+        }
+    }
+
+    return input;
+}
+
 export function pushMaybeRefArrayValue<T>(
     input: MaybeRef<T[]>,
     value: T,

@@ -4,17 +4,26 @@
  * For the full copyright and license information,
  * view the LICENSE file that was distributed with this source code.
  */
+import type { OptionsInputValue, OptionsOverride } from '@vue-layout/core';
+import type { VNodeChild } from 'vue';
+import type {
+    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListBaseSlotProps,
+} from '../list-base';
 
-import type { OptionsOverride, PartialPick } from '@vue-layout/core';
-import type { MaybeRef } from 'vue';
-import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
+export type ListLoadingSlotProps<
+    T extends Record<string, any>,
+> = ListBaseSlotProps<T>;
 
-export type ListLoadingBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
-    busy: boolean
+type Fn<
+    T extends Record<string, any>,
+> = (props: ListLoadingSlotProps<T>) => VNodeChild;
+
+export type ListLoadingBuildOptions<T extends Record<string, any>> = ListBaseOptions<T> & {
+    content?: VNodeChild | Fn<T>,
 };
 
-export type ListLoadingBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput &
+export type ListLoadingBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput<T> &
 OptionsOverride<
 ExpectListBaseOptions<ListLoadingBuildOptions<T>>,
-PartialPick<ListLoadingBuildOptions<T>, 'busy'>
->;
+OptionsInputValue<Pick<ListLoadingBuildOptions<T>, 'content'>
+>>;

@@ -7,7 +7,7 @@
 
 import type { PluginBaseOptions } from '@vue-layout/core';
 import type { NavigationStore } from '@vue-layout/navigation';
-import bootstrap from '@vue-layout/preset-bootstrap-v5';
+import bootstrapV5 from '@vue-layout/preset-bootstrap-v5';
 import fontAwesome from '@vue-layout/preset-font-awesome';
 
 import installCountdown from '@vue-layout/countdown';
@@ -22,7 +22,7 @@ import { navigationProvider } from '~/config/layout';
 export default defineNuxtPlugin((ctx) => {
     const baseOptions : PluginBaseOptions = {
         presets: {
-            bootstrapV5: bootstrap,
+            bootstrapV5,
             fontAwesome,
         },
     };

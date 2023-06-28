@@ -14,28 +14,19 @@ import type {
 } from '../list-base';
 import type { ListItemBuildOptionsInput } from '../list-item';
 
-export type ListBodySlotProps<T> = ListBaseSlotProps & {
+export type ListBodySlotProps<T extends Record<string, any>> = ListBaseSlotProps<T> & {
     data: T[],
-    deleted: (item: T) => void,
-    updated: (item: T) => void,
     [key: string]: any
 };
 
-export type ListBodyBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
-    busy?: boolean,
-
+export type ListBodyBuildOptions<T extends Record<string, any>> = ListBaseOptions<T> & {
     item?: Omit<ListItemBuildOptionsInput<T>, 'data' | 'index'>,
-    itemKey?: keyof T,
-    itemId?: (item: T) => string | number,
     data: MaybeRef<T[]>,
-
-    onDeleted?: (item: T) => void,
-    onUpdated?: (item: T) => void
 };
 
 export type ListBodyBuildOptionsInput<
     T extends Record<string, any>,
-> = ListBaseOptionsInput &
+> = ListBaseOptionsInput<T> &
 OptionsOverride<
 ExpectListBaseOptions<ListBodyBuildOptions<T>>,
 PartialPick<ListBodyBuildOptions<T>, 'busy' | 'data'>

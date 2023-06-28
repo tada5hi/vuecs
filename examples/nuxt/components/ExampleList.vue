@@ -6,17 +6,27 @@
   -->
 
 <script lang="ts">
+import type { ListItemSlotProps, SlotName } from '@vue-layout/list-controls';
 import { buildList } from '@vue-layout/list-controls';
-import { defineComponent } from 'vue';
+import type { SlotsType } from 'vue';
+import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
+    slots: Object as SlotsType<{
+        [SlotName.ITEM_ACTIONS]: ListItemSlotProps<any>
+    }>,
     setup(props, ctx) {
+        const data = ref([
+            { id: 1, name: 'Peter' },
+            { id: 2, name: 'Admin' },
+        ]);
         return () => buildList({
             slotItems: ctx.slots,
-            data: [
-                { id: 1, name: 'Peter' },
-                { id: 1, name: 'Admin' },
-            ],
+            data: data.value,
+            onUpdated(item) {
+                console.log(item);
+            },
+            footer: true,
         });
     },
 });

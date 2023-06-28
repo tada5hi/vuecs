@@ -13,7 +13,7 @@ import {
     hasOwnProperty, normalizeSlot,
 } from '@vue-layout/core';
 import { Component, SlotName } from '../constants';
-import { buildListBaseOptions } from '../list-base';
+import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
 import type {
     ListItemBuildOptions, ListItemBuildOptionsInput, ListItemChildren, ListItemSlotProps,
 } from './type';
@@ -33,91 +33,94 @@ export function buildListItemOptions<T extends Record<string, any>>(
     return {
         ...options,
 
+        data: input.data,
+        content: input.content,
+        index: input.index,
+
         icon: buildOrFail({
             key: 'icon',
-            value: options.icon,
+            value: input.icon,
             alt: true,
         }),
         iconTag: buildOrFail({
             key: 'iconTag',
-            value: options.iconTag,
+            value: input.iconTag,
             alt: 'i',
         }),
         iconClass: buildOrFail({
             key: 'iconClass',
-            value: options.iconClass,
+            value: input.iconClass,
             alt: [],
         }),
-        iconProps: options.iconProps || {},
+        iconProps: input.iconProps || {},
         iconWrapper: buildOrFail({
             key: 'iconWrapper',
-            value: options.iconWrapper,
+            value: input.iconWrapper,
             alt: true,
         }),
         iconWrapperClass: buildOrFail({
             key: 'iconWrapperClass',
-            value: options.iconWrapperClass,
+            value: input.iconWrapperClass,
             alt: [],
         }),
         iconWrapperTag: buildOrFail({
             key: 'iconWrapperTag',
-            value: options.iconWrapperTag,
+            value: input.iconWrapperTag,
             alt: 'div',
         }),
 
-        textFn: options.textFn,
+        text: buildOrFail({
+            key: 'text',
+            value: input.text,
+            alt: true,
+        }),
+        textContent: input.textContent,
         textPropName: buildOrFail({
             key: 'textPropName',
-            value: options.textPropName,
+            value: input.textPropName,
             alt: 'name',
         }),
         textWrapper: buildOrFail({
             key: 'textWrapper',
-            value: options.textWrapper,
+            value: input.textWrapper,
             alt: true,
         }),
         textWrapperClass: buildOrFail({
             key: 'textWrapperClass',
-            value: options.textWrapperClass,
+            value: input.textWrapperClass,
             alt: [],
         }),
         textWrapperTag: buildOrFail({
             key: 'textWrapperTag',
-            value: options.textWrapperTag,
+            value: input.textWrapperTag,
             alt: 'div',
         }),
 
-        index: options.index,
-        key: options.key,
-
-        data: options.data,
-
         actions: buildOrFail({
             key: 'actions',
-            value: options.actions,
+            value: input.actions,
             alt: true,
         }),
         actionsContent: buildOrFail({
             key: 'actionsContent',
-            value: options.actionsContent,
+            value: input.actionsContent,
             alt: [],
         }),
         actionsWrapper: buildOrFail({
             key: 'actionsWrapper',
-            value: options.actionsWrapper,
+            value: input.actionsWrapper,
             alt: true,
         }),
         actionsWrapperClass: buildOrFail({
             key: 'actionsWrapperClass',
-            value: options.actionsWrapperClass,
+            value: input.actionsWrapperClass,
             alt: [],
         }),
         actionsWrapperTag: buildOrFail({
             key: 'actionsWrapperTag',
-            value: options.actionsWrapperTag,
+            value: input.actionsWrapperTag,
             alt: 'div',
         }),
-        busy: options.busy ?? false,
     };
 }
 
@@ -135,22 +138,21 @@ export function buildListItem<T extends Record<string, any>>(
     const options = buildListItemOptions(input);
 
     const data = unref(options.data);
-    const slotProps : ListItemSlotProps<T> = {
-        data,
-        busy: options.busy,
-        index: options.index,
-        deleted: () => {
-            if (options.onDeleted) {
-                options.onDeleted(data);
-            }
-        },
-        updated: (item: T) => {
-            if (options.onUpdated) {
-                options.onUpdated(item);
-            }
-        },
-        ...(options.slotProps || {}),
-    };
+    let slotProps : ListItemSlotProps<T>;
+    if (options.slotPropsBuilt) {
+        slotProps = {
+            ...options.slotProps,
+            data,
+            index: options.index,
+        };
+    } else {
+        slotProps = {
+            ...buildListBaseSlotProps<T>(options),
+            ...options.slotProps,
+            data,
+            index: options.index,
+        };
+    }
 
     const renderContent = (content?: VNodeChild) => h(
         options.tag,
@@ -164,30 +166,39 @@ export function buildListItem<T extends Record<string, any>>(
         children.slot = normalizeSlot(SlotName.ITEM, slotProps, options.slotItems);
     } else {
         if (options.icon) {
-            children.icon = maybeWrapContent(h(options.iconTag, mergeProps({ class: options.iconClass }, options.iconProps)), {
-                wrap: options.iconWrapper,
-                tag: options.iconWrapperTag,
-                class: options.iconWrapperClass,
-            });
+            children.icon = maybeWrapContent(
+                h(options.iconTag, mergeProps({ class: options.iconClass }, options.iconProps)),
+                {
+                    wrap: options.iconWrapper,
+                    tag: options.iconWrapperTag,
+                    class: options.iconWrapperClass,
+                },
+            );
         }
 
-        let text : VNodeChild | undefined;
+        if (options.text) {
+            let text: VNodeChild | undefined;
 
-        if (options.textFn) {
-            text = options.textFn(data);
-        } else if (
-            options.textPropName &&
-            hasOwnProperty(data, options.textPropName)
-        ) {
-            text = data[options.textPropName];
-        }
+            if (options.textContent) {
+                if (typeof options.textContent === 'function') {
+                    text = options.textContent(data);
+                } else {
+                    text = options.textContent;
+                }
+            } else if (
+                options.textPropName &&
+                hasOwnProperty(data, options.textPropName)
+            ) {
+                text = data[options.textPropName];
+            }
 
-        if (text) {
-            children.text = maybeWrapContent(text, {
-                wrap: options.textWrapper,
-                tag: options.textWrapperTag,
-                class: options.textWrapperClass,
-            });
+            if (text) {
+                children.text = maybeWrapContent(text, {
+                    wrap: options.textWrapper,
+                    tag: options.textWrapperTag,
+                    class: options.textWrapperClass,
+                });
+            }
         }
 
         let actions : VNodeChild | undefined;
@@ -217,12 +228,16 @@ export function buildListItem<T extends Record<string, any>>(
         }
     }
 
-    if (typeof options.fn === 'function') {
-        return renderContent(options.fn(
-            data,
-            slotProps,
-            children,
-        ));
+    if (options.content) {
+        if (typeof options.content === 'function') {
+            return renderContent(options.content(
+                data,
+                slotProps,
+                children,
+            ));
+        }
+
+        return renderContent(options.content);
     }
 
     if (children.slot) {

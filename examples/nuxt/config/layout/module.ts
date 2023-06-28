@@ -40,7 +40,8 @@ const secondaryDefaultItems : NavigationElement[] = [
         type: 'link',
         icon: 'fa-solid fa-bars',
         children: [
-
+            { name: 'default', url: '/list-controls/list' },
+            { name: 'Slot', url: '/list-controls/list-slot' },
         ],
     },
     {

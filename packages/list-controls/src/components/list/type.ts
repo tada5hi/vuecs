@@ -13,30 +13,19 @@ import type { ListHeaderBuildOptionsInput } from '../list-header';
 import type { ListBodyBuildOptionsInput } from '../list-body';
 import type { ListLoadingBuildOptionsInput } from '../list-loading';
 import type { ListNoMoreBuildOptionsInput } from '../list-no-more';
-import type {
-    ListLoadFn,
-} from '../type';
 
-export type ListBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
-    busy: MaybeRef<boolean>,
+export type ListBuildOptions<T extends Record<string, any>> = ListBaseOptions<T> & {
     data: MaybeRef<T[]>,
-    load?: ListLoadFn,
-    total?: number,
 
-    onCreated?: (item: T) => any,
-    onDeleted?: (item: T) => any,
-    onUpdated?: (item: T) => any,
-
-    header?: ListHeaderBuildOptionsInput | boolean,
-    footer?: ListFooterBuildOptionsInput | boolean,
-
-    items: Omit<ListBodyBuildOptionsInput<T>, 'busy' | 'data'> | boolean,
+    header: ListHeaderBuildOptionsInput<T> | boolean,
+    footer: ListFooterBuildOptionsInput<T> | boolean,
+    body: Omit<ListBodyBuildOptionsInput<T>, 'busy' | 'data'> | boolean,
     loading: Omit<ListLoadingBuildOptionsInput<T>, 'busy'> | boolean,
     noMore: Omit<ListNoMoreBuildOptionsInput<T>, 'busy' | 'total'> | boolean
 };
 
-export type ListBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput &
+export type ListBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput<T> &
 OptionsOverride<
 ExpectListBaseOptions<ListBuildOptions<T>>,
-PartialPick<ListBuildOptions<T>, 'busy' | 'data' | 'items' | 'loading' | 'noMore'>
+PartialPick<ListBuildOptions<T>, 'busy' | 'data' | 'header' | 'footer' | 'body' | 'loading' | 'noMore'>
 >;

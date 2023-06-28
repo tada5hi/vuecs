@@ -6,15 +6,15 @@
  */
 
 import type { VNodeChild } from 'vue';
-import { h, mergeProps } from 'vue';
+import { h, mergeProps, unref } from 'vue';
 import {
     createOptionBuilder,
     hasNormalizedSlot,
     normalizeSlot,
 } from '@vue-layout/core';
 import { Component, SlotName } from '../constants';
-import { buildListBaseOptions } from '../list-base';
-import type { ListNoMoreBuildOptions, ListNoMoreBuildOptionsInput } from './type';
+import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
+import type { ListNoMoreBuildOptions, ListNoMoreBuildOptionsInput, ListNoMoreSlotProps } from './type';
 
 export function buildListNoMoreOptions<T extends Record<string, any>>(
     input: ListNoMoreBuildOptionsInput<T>,
@@ -32,12 +32,9 @@ export function buildListNoMoreOptions<T extends Record<string, any>>(
 
         content: buildOrFail({
             key: 'content',
-            value: options.content,
+            value: input.content,
             alt: 'No more items available...',
         }),
-
-        busy: options.busy ?? false,
-        total: options.total,
     };
 }
 
@@ -48,17 +45,28 @@ export function buildListNoMore<T extends Record<string, any>>(
 
     const options = buildListNoMoreOptions(input);
 
-    if (options.busy) {
+    const busy = unref(options.busy);
+    const { meta } = options;
+
+    if (busy) {
         return [];
     }
 
-    const { total } = options;
-
     if (
-        typeof total === 'number' &&
-        total > 0
+        typeof meta.total === 'number' &&
+        meta.total > 0
     ) {
         return [];
+    }
+
+    let slotProps : ListNoMoreSlotProps<T>;
+    if (options.slotPropsBuilt) {
+        slotProps = options.slotProps;
+    } else {
+        slotProps = {
+            ...buildListBaseSlotProps<T>(options),
+            ...options.slotProps,
+        };
     }
 
     const renderContent = (content?: VNodeChild) : VNodeChild => h(
@@ -68,15 +76,11 @@ export function buildListNoMore<T extends Record<string, any>>(
     );
 
     if (hasNormalizedSlot(SlotName.NO_MORE, options.slotItems)) {
-        return renderContent(normalizeSlot(SlotName.NO_MORE, {
-            ...options.slotProps,
-            busy: options.busy,
-            total: options.total,
-        }, options.slotItems));
+        return renderContent(normalizeSlot(SlotName.NO_MORE, slotProps, options.slotItems));
     }
 
     if (typeof options.content === 'function') {
-        return renderContent(options.content(options.slotProps));
+        return renderContent(options.content(slotProps));
     }
 
     return renderContent(options.content);

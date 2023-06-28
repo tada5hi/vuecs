@@ -5,8 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VNodeChild } from '@vue/runtime-core';
-import type { MaybeRef, VNode } from 'vue';
+import type { MaybeRef, VNodeChild } from 'vue';
 import type {
     OptionsInputValue,
     OptionsOverride, PartialPick,
@@ -17,11 +16,9 @@ import type {
     ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListBaseSlotProps,
 } from '../list-base';
 
-export type ListItemSlotProps<T> = ListBaseSlotProps & {
+export type ListItemSlotProps<T extends Record<string, any>> = ListBaseSlotProps<T> & {
     data: T,
     index?: number,
-    deleted: (item?: T) => any,
-    updated: (item: T) => any,
     [key: string]: any
 };
 
@@ -32,13 +29,14 @@ export type ListItemChildren = {
     slot?: VNodeChild
 };
 
-export type ListItemBuildOptions<T extends Record<string, any>> = ListBaseOptions & {
+export type ListItemBuildOptions<T extends Record<string, any>> = ListBaseOptions<T> & {
     data: MaybeRef<T>,
-    fn?: (
+    content?: VNodeChild | ((
         item: T,
         props: ListItemSlotProps<T>,
         children: ListItemChildren
-    ) => VNodeChild,
+    ) => VNodeChild),
+    index?: number,
 
     icon: boolean,
     iconTag: string,
@@ -48,28 +46,21 @@ export type ListItemBuildOptions<T extends Record<string, any>> = ListBaseOption
     iconWrapperClass: VNodeClass,
     iconWrapperTag: string,
 
-    textFn?: (item: T) => VNodeChild,
+    text: boolean,
+    textContent?: VNodeChild | ((item: T) => VNodeChild),
     textPropName: string,
     textWrapper: boolean,
     textWrapperClass: VNodeClass,
     textWrapperTag: string,
-
-    index?: number,
-    key?: string,
 
     actions: boolean,
     actionsContent: VNodeChild,
     actionsWrapper: boolean,
     actionsWrapperClass: VNodeClass,
     actionsWrapperTag: string,
-
-    busy: boolean,
-
-    onDeleted?: (item: T) => any,
-    onUpdated?: (item: T) => any,
 };
 
-export type ListItemBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput &
+export type ListItemBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput<T> &
 OptionsOverride<
 ExpectListBaseOptions<ListItemBuildOptions<T>>,
 PartialPick<ListItemBuildOptions<T>,

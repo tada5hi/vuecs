@@ -9,12 +9,12 @@ import { createOptionBuilder, hasNormalizedSlot, normalizeSlot } from '@vue-layo
 import { h, mergeProps } from 'vue';
 import type { VNodeArrayChildren, VNodeChild } from 'vue';
 import { Component, SlotName } from '../constants';
-import { buildListBaseOptions } from '../list-base';
-import type { ListFooterBuildOptions, ListFooterBuildOptionsInput } from './type';
+import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
+import type { ListFooterBuildOptions, ListFooterBuildOptionsInput, ListFooterSlotProps } from './type';
 
-export function buildListFooterOptions(
-    input: ListFooterBuildOptionsInput,
-) : ListFooterBuildOptions {
+export function buildListFooterOptions<T extends Record<string, any> = Record<string, any>>(
+    input: ListFooterBuildOptionsInput<T>,
+) : ListFooterBuildOptions<T> {
     const options = buildListBaseOptions(
         input,
         Component.ListFooter,
@@ -23,7 +23,7 @@ export function buildListFooterOptions(
         },
     );
 
-    const { buildOrFail } = createOptionBuilder<ListFooterBuildOptions>(
+    const { buildOrFail } = createOptionBuilder<ListFooterBuildOptions<T>>(
         Component.ListHeader,
     );
 
@@ -32,27 +32,39 @@ export function buildListFooterOptions(
 
         content: buildOrFail({
             key: 'content',
-            value: options.content,
+            value: input.content,
             alt: [],
         }),
     };
 }
 
-export function buildListFooter(
-    input?: ListFooterBuildOptionsInput,
+export function buildListFooter<
+    T extends Record<string, any> = Record<string, any>,
+>(
+    input?: ListFooterBuildOptionsInput<T>,
 ) : VNodeChild {
     input = input || {};
     const options = buildListFooterOptions(input);
+
+    let slotProps : ListFooterSlotProps<T>;
+    if (options.slotPropsBuilt) {
+        slotProps = options.slotProps;
+    } else {
+        slotProps = {
+            ...buildListBaseSlotProps<T>(options),
+            ...options.slotProps,
+        };
+    }
 
     let children : VNodeArrayChildren | undefined;
 
     if (hasNormalizedSlot(SlotName.FOOTER, options.slotItems)) {
         children = [
-            normalizeSlot(SlotName.FOOTER, options.slotProps, options.slotItems),
+            normalizeSlot(SlotName.FOOTER, slotProps, options.slotItems),
         ];
     } else if (options.content) {
         if (typeof options.content === 'function') {
-            children = [options.content(options.slotProps)];
+            children = [options.content(slotProps)];
         } else {
             children = [options.content];
         }

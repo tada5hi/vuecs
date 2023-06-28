@@ -16,13 +16,12 @@ export default defineComponent({
     setup() {
         const busy = ref(false);
 
-        const searchRef = ref('');
         const items = ref([
             { name: 'ABC' },
             { name: 'DEF' },
         ]);
 
-        const renderItems = () => buildListItems({
+        const renderItems = () => buildListBody({
             data: items,
         });
 

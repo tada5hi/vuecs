@@ -15,7 +15,7 @@ import type {
 } from '@vue-layout/core';
 import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
 
-export type ListTitleBuildOptions = ListBaseOptions & {
+export type ListTitleBuildOptions<T extends Record<string, any>> = ListBaseOptions<T> & {
     text: boolean,
     textType: string,
     textClass: VNodeClass,
@@ -27,10 +27,10 @@ export type ListTitleBuildOptions = ListBaseOptions & {
     iconProps: VNodeProperties
 };
 
-export type ListTitleBuildOptionsInput = ListBaseOptionsInput &
+export type ListTitleBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput<T> &
 OptionsOverride<
-ExpectListBaseOptions<ListTitleBuildOptions>,
-OptionsInputValue<PartialPick<ListTitleBuildOptions,
+ExpectListBaseOptions<ListTitleBuildOptions<T>>,
+OptionsInputValue<PartialPick<ListTitleBuildOptions<T>,
 'text' |
 'textType' |
 'textClass' |

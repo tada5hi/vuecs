@@ -14,14 +14,14 @@ import { buildListBaseOptions } from '../list-base';
 import type { ListTitleBuildOptions, ListTitleBuildOptionsInput } from './type';
 import { Component, SlotName } from '../constants';
 
-export function buildListTitleOptions(
-    input: ListTitleBuildOptionsInput,
-) : ListTitleBuildOptions {
+export function buildListTitleOptions<T extends Record<string, any> = Record<string, any>>(
+    input: ListTitleBuildOptionsInput<T>,
+) : ListTitleBuildOptions<T> {
     const options = buildListBaseOptions(input, Component.ListTitle, {
         class: 'list-title',
     });
 
-    const { buildOrFail } = createOptionBuilder<ListTitleBuildOptions>(
+    const { buildOrFail } = createOptionBuilder<ListTitleBuildOptions<T>>(
         Component.ListTitle,
     );
 
@@ -30,50 +30,50 @@ export function buildListTitleOptions(
 
         text: buildOrFail({
             key: 'text',
-            value: options.text,
+            value: input.text,
             alt: true,
         }),
         textClass: buildOrFail({
             key: 'textClass',
-            value: options.textClass,
+            value: input.textClass,
             alt: [],
         }),
         textType: buildOrFail({
             key: 'textType',
-            value: options.textType,
+            value: input.textType,
             alt: 'h4',
         }),
         textProps: buildOrFail({
             key: 'textProps',
-            value: options.textProps,
+            value: input.textProps,
             alt: {},
         }),
         textContent: buildOrFail({
             key: 'textContent',
-            value: options.textContent,
+            value: input.textContent,
             alt: 'List',
         }),
 
         icon: buildOrFail({
             key: 'icon',
-            value: options.icon,
+            value: input.icon,
             alt: true,
         }),
         iconClass: buildOrFail({
             key: 'iconClass',
-            value: options.iconClass,
+            value: input.iconClass,
             alt: [],
         }),
         iconProps: buildOrFail({
             key: 'iconProps',
-            value: options.iconProps,
+            value: input.iconProps,
             alt: {},
         }),
     };
 }
 
-export function buildListTitle(
-    input: ListTitleBuildOptionsInput,
+export function buildListTitle<T extends Record<string, any> = Record<string, any>>(
+    input: ListTitleBuildOptionsInput<T>,
 ) : VNodeChild {
     const options = buildListTitleOptions(input);
 
@@ -84,7 +84,7 @@ export function buildListTitle(
     );
 
     if (hasNormalizedSlot(SlotName.HEADER_TITLE, options.slotItems)) {
-        return renderContent(normalizeSlot(SlotName.HEADER_TITLE, options.slotItems));
+        return renderContent(normalizeSlot(SlotName.HEADER_TITLE, {}, options.slotItems));
     }
 
     let children: VNodeArrayChildren = [];
@@ -100,7 +100,16 @@ export function buildListTitle(
             children.push(' ');
         }
 
-        children = [h(options.textType, mergeProps({ class: options.textClass }, options.textProps), [...children, options.textContent])];
+        children = [h(
+            options.textType,
+            mergeProps({
+                class: options.textClass,
+            }, options.textProps),
+            [
+                ...children,
+                options.textContent,
+            ],
+        )];
     }
 
     return renderContent(children);

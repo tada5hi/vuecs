@@ -7,14 +7,16 @@
 
 import { createOptionBuilder, hasNormalizedSlot, normalizeSlot } from '@vue-layout/core';
 import { h, mergeProps } from 'vue';
-import type { VNode, VNodeArrayChildren, VNodeChild } from 'vue';
+import type { VNodeChild } from 'vue';
 import { Component, SlotName } from '../constants';
-import { buildListBaseOptions } from '../list-base';
-import type { ListHeaderBuildOptions, ListHeaderBuildOptionsInput } from './type';
+import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
+import type { ListHeaderBuildOptions, ListHeaderBuildOptionsInput, ListHeaderSlotProps } from './type';
 
-export function buildListHeaderOptions(
-    input: ListHeaderBuildOptionsInput,
-) : ListHeaderBuildOptions {
+export function buildListHeaderOptions<
+    T extends Record<string, any> = Record<string, any>,
+>(
+    input: ListHeaderBuildOptionsInput<T>,
+) : ListHeaderBuildOptions<T> {
     const options = buildListBaseOptions(
         input,
         Component.ListHeader,
@@ -23,7 +25,7 @@ export function buildListHeaderOptions(
         },
     );
 
-    const { buildOrFail } = createOptionBuilder<ListHeaderBuildOptions>(
+    const { buildOrFail } = createOptionBuilder<ListHeaderBuildOptions<T>>(
         Component.ListHeader,
     );
 
@@ -32,38 +34,48 @@ export function buildListHeaderOptions(
 
         content: buildOrFail({
             key: 'content',
-            value: options.content,
+            value: input.content,
             alt: [],
         }),
     };
 }
 
-export function buildListHeader(
-    input?: ListHeaderBuildOptionsInput,
+export function buildListHeader<
+    T extends Record<string, any> = Record<string, any>,
+>(
+    input?: ListHeaderBuildOptionsInput<T>,
 ) : VNodeChild {
     input = input || {};
     const options = buildListHeaderOptions(input);
 
-    let children : VNodeArrayChildren | undefined;
+    let slotProps : ListHeaderSlotProps<T>;
+    if (options.slotPropsBuilt) {
+        slotProps = options.slotProps;
+    } else {
+        slotProps = {
+            ...buildListBaseSlotProps<T>(options),
+            ...options.slotProps,
+        };
+    }
+
+    let content : VNodeChild | undefined;
 
     if (hasNormalizedSlot(SlotName.HEADER, options.slotItems)) {
-        children = [
-            normalizeSlot(SlotName.HEADER, options.slotProps, options.slotItems),
-        ];
+        content = normalizeSlot(SlotName.HEADER, slotProps, options.slotItems);
     } else if (options.content) {
         if (typeof options.content === 'function') {
-            children = [options.content(options.slotProps)];
+            content = [options.content(slotProps)];
         } else {
-            children = [options.content];
+            content = [options.content];
         }
     }
 
-    if (children) {
+    if (content) {
         return h(
             options.tag,
             mergeProps({ class: options.class }, options.props),
             [
-                children,
+                content,
             ],
         );
     }
