@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.2](https://github.com/Tada5hi/vue-layout/compare/v3.3.1...v3.3.2) (2023-06-29)
+
+
+### Bug Fixes
+
+* component-name when building options for list ([13ccd12](https://github.com/Tada5hi/vue-layout/commit/13ccd125353428e1ccfe6735634e11b10f815d0c))
+
+
+
+
+
 ## [3.3.1](https://github.com/Tada5hi/vue-layout/compare/v3.3.0...v3.3.1) (2023-06-28)
 
 
