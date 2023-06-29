@@ -23,7 +23,7 @@ export function buildListBodyOptions<T extends Record<string, any>>(
         input,
         Component.ListBody,
         {
-            class: 'list-items',
+            class: 'list-body',
             tag: 'ul',
         },
     );

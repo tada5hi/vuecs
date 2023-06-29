@@ -27,7 +27,7 @@ import type { ListBuildOptions, ListBuildOptionsInput } from './type';
 export function buildListOptions<T extends Record<string, any>>(
     input: ListBuildOptionsInput<T>,
 ) : ListBuildOptions<T> {
-    const options = buildListBaseOptions(input, Component.ListBody, {
+    const options = buildListBaseOptions(input, Component.List, {
         class: 'list',
     });
 
