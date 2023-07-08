@@ -53,14 +53,14 @@ export type ListItemBuildOptions<T extends Record<string, any>> = ListBaseOption
     iconWrapperTag: string,
 
     text: boolean,
-    textContent?: VNodeChild | ((item: T) => VNodeChild),
+    textContent?: VNodeChild | ((item: T, props: ListItemSlotProps<T>) => VNodeChild),
     textPropName: string,
     textWrapper: boolean,
     textWrapperClass: VNodeClass,
     textWrapperTag: string,
 
     actions: boolean,
-    actionsContent: VNodeChild,
+    actionsContent: VNodeChild | ((item: T, props: ListItemSlotProps<T>) => VNodeChild),
     actionsWrapper: boolean,
     actionsWrapperClass: VNodeClass,
     actionsWrapperTag: string,

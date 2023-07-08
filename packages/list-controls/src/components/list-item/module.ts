@@ -21,6 +21,7 @@ import {
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
 import type { ListEventFn } from '../type';
+import { evaluateFnOrValue } from '../utils';
 import type {
     ListItemBuildOptions, ListItemBuildOptionsInput, ListItemChildren, ListItemSlotProps,
 } from './type';
@@ -223,11 +224,7 @@ export function buildListItem<T extends Record<string, any>>(
             let text: VNodeChild | undefined;
 
             if (options.textContent) {
-                if (typeof options.textContent === 'function') {
-                    text = options.textContent(data);
-                } else {
-                    text = options.textContent;
-                }
+                text = evaluateFnOrValue(options.textContent, data, slotProps);
             } else if (
                 options.textPropName &&
                 hasOwnProperty(data, options.textPropName)
@@ -251,7 +248,7 @@ export function buildListItem<T extends Record<string, any>>(
                     normalizeSlot(SlotName.ITEM_ACTIONS, slotProps, options.slotItems),
                 ];
             } else if (options.actionsContent) {
-                actions = options.actionsContent;
+                actions = evaluateFnOrValue(options.actionsContent, data, slotProps);
             }
 
             if (hasNormalizedSlot(SlotName.ITEM_ACTIONS_EXTRA, options.slotItems)) {
