@@ -38,7 +38,7 @@
         "@vue-layout/preset-font-awesome": "^3.0.0",
         "@vue-layout/timeago": "^3.0.0",
         "@vuelidate/core": "^2.0.2",
-        "@vuelidate/validators": "^2.0.2",
+        "@vuelidate/validators": "^2.0.3",
         "bootstrap": "^5.3.0",
         "nuxt": "3.6.1",
         "pinia": "^2.1.4",
