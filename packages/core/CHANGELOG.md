@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.4.0](https://github.com/tada5hi/vue-layout/compare/v3.3.2...v3.4.0) (2023-08-08)
+
+
+### Features
+
+* make generic argument more felxible ([8bfd005](https://github.com/tada5hi/vue-layout/commit/8bfd0057cac973b3c9dabe3a9f9390453901942e))
+
+
+
+
+
 # [3.3.0](https://github.com/tada5hi/vue-layout/compare/v3.2.0...v3.3.0) (2023-06-28)
 
 
