@@ -24,7 +24,7 @@ import type { ListBaseSlotProps } from '../list-base';
 import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
 import type { ListBuildOptions, ListBuildOptionsInput } from './type';
 
-export function buildListOptions<T extends Record<string, any>>(
+export function buildListOptions<T>(
     input: ListBuildOptionsInput<T>,
 ) : ListBuildOptions<T> {
     const options = buildListBaseOptions(input, Component.List, {
@@ -44,7 +44,7 @@ export function buildListOptions<T extends Record<string, any>>(
     };
 }
 
-export function buildList<T extends Record<string, any>>(
+export function buildList<T>(
     input: ListBuildOptionsInput<T>,
 ): VNodeChild {
     const options = buildListOptions(input);

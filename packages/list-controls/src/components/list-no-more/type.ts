@@ -15,19 +15,15 @@ import type {
     ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListBaseSlotProps,
 } from '../list-base';
 
-export type ListNoMoreSlotProps<
-    T extends Record<string, any> = Record<string, any>,
-> = ListBaseSlotProps<T>;
+export type ListNoMoreSlotProps<T> = ListBaseSlotProps<T>;
 
-type Fn<
-    T extends Record<string, any>,
-> = (props: ListNoMoreSlotProps<T>) => VNodeChild;
+type Fn<T> = (props: ListNoMoreSlotProps<T>) => VNodeChild;
 
-export type ListNoMoreBuildOptions<T extends Record<string, any>> = ListBaseOptions<T> & {
+export type ListNoMoreBuildOptions<T> = ListBaseOptions<T> & {
     content: VNodeChild | Fn<T>
 };
 
-export type ListNoMoreBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput<T> &
+export type ListNoMoreBuildOptionsInput<T> = ListBaseOptionsInput<T> &
 OptionsOverride<
 ExpectListBaseOptions<ListNoMoreBuildOptions<T>>,
 OptionsInputValue<PartialPick<ListNoMoreBuildOptions<T>, 'content'>>

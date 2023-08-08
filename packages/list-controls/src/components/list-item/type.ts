@@ -17,7 +17,7 @@ import type {
 } from '../list-base';
 import type { ListEventFn } from '../type';
 
-export type ListItemSlotProps<T extends Record<string, any>> = Omit<
+export type ListItemSlotProps<T> = Omit<
 ListBaseSlotProps<T>,
 'updated' | 'created'
 > & {
@@ -35,7 +35,7 @@ export type ListItemChildren = {
     slot?: VNodeChild
 };
 
-export type ListItemBuildOptions<T extends Record<string, any>> = ListBaseOptions<T> & {
+export type ListItemBuildOptions<T> = ListBaseOptions<T> & {
     data: MaybeRef<T>,
     content?: VNodeChild | ((
         item: T,
@@ -66,7 +66,7 @@ export type ListItemBuildOptions<T extends Record<string, any>> = ListBaseOption
     actionsWrapperTag: string,
 };
 
-export type ListItemBuildOptionsInput<T extends Record<string, any>> = ListBaseOptionsInput<T> &
+export type ListItemBuildOptionsInput<T> = ListBaseOptionsInput<T> &
 OptionsOverride<
 ExpectListBaseOptions<ListItemBuildOptions<T>>,
 PartialPick<ListItemBuildOptions<T>,

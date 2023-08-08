@@ -16,7 +16,7 @@ import { Component, SlotName } from '../constants';
 import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
 import type { ListNoMoreBuildOptions, ListNoMoreBuildOptionsInput, ListNoMoreSlotProps } from './type';
 
-export function buildListNoMoreOptions<T extends Record<string, any>>(
+export function buildListNoMoreOptions<T>(
     input: ListNoMoreBuildOptionsInput<T>,
 ) : ListNoMoreBuildOptions<T> {
     const options = buildListBaseOptions(input, Component.ListNoMore, {
@@ -38,7 +38,7 @@ export function buildListNoMoreOptions<T extends Record<string, any>>(
     };
 }
 
-export function buildListNoMore<T extends Record<string, any>>(
+export function buildListNoMore<T>(
     input?: ListNoMoreBuildOptionsInput<T>,
 ) : VNodeChild {
     input = input || {};

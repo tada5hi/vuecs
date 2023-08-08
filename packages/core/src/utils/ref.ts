@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { merge } from 'smob';
+import { isObject, merge } from 'smob';
 import { isReadonly, isRef, unref } from 'vue';
 import type { MaybeRef } from 'vue';
 
@@ -32,7 +32,7 @@ export function setMaybeRefValue<T>(input: MaybeRef<T>, value: T) {
     return input;
 }
 
-export function extendMaybeRefObject<T extends Record<string, any>>(
+export function extendMaybeRefObject<T>(
     input: MaybeRef<T>,
     value: Partial<T>,
 ) {
@@ -91,17 +91,29 @@ export function getMaybeRefArrayValue<T>(
     return input[index];
 }
 
-export function extendMaybeRefArrayValue<T extends Record<string, any>>(
+export function extendMaybeRefArrayValue<T>(
     input: MaybeRef<T[]>,
     index: number,
     value: T,
 ) {
+    if (
+        !isObject(value) &&
+        !Array.isArray(value)
+    ) {
+        return input;
+    }
+
     const item : T = getMaybeRefArrayValue(input, index);
 
-    if (isRef(input)) {
-        input.value[index] = merge(value, item) as T;
-    } else {
-        input[index] = merge(value, item) as T;
+    if (
+        isObject(item) ||
+        Array.isArray(item)
+    ) {
+        if (isRef(input)) {
+            input.value[index] = merge(value, item) as T;
+        } else {
+            input[index] = merge(value, item) as T;
+        }
     }
 
     return input;

@@ -12,9 +12,7 @@ import { Component, SlotName } from '../constants';
 import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
 import type { ListHeaderBuildOptions, ListHeaderBuildOptionsInput, ListHeaderSlotProps } from './type';
 
-export function buildListHeaderOptions<
-    T extends Record<string, any> = Record<string, any>,
->(
+export function buildListHeaderOptions<T>(
     input: ListHeaderBuildOptionsInput<T>,
 ) : ListHeaderBuildOptions<T> {
     const options = buildListBaseOptions(
@@ -40,9 +38,7 @@ export function buildListHeaderOptions<
     };
 }
 
-export function buildListHeader<
-    T extends Record<string, any> = Record<string, any>,
->(
+export function buildListHeader<T>(
     input?: ListHeaderBuildOptionsInput<T>,
 ) : VNodeChild {
     input = input || {};

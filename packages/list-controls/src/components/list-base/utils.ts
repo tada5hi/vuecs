@@ -10,7 +10,7 @@ import {
     extendMaybeRefArrayValue,
     extendMaybeRefObject,
     findIndexOfMaybeRefArray,
-    hasOwnProperty,
+    hasOwnProperty, isObject,
     isPromise,
     pushMaybeRefArrayValue,
     spliceMaybeRefArray,
@@ -80,7 +80,7 @@ export function buildListBaseOptions<
     };
 }
 
-type ListBaseSlotPropsBuildContext<T extends Record<string, any>> = Pick<
+type ListBaseSlotPropsBuildContext<T> = Pick<
 ListBaseOptions<T>,
 'meta' |
 'busy' |
@@ -95,8 +95,8 @@ ListBaseOptions<T>,
     [key: string]: any
 };
 
-type FilterFn<T extends Record<string, any>> = (item: T, index?: number) => boolean;
-const buildFilterFn = <T extends Record<string, any>>(
+type FilterFn<T> = (item: T, index?: number) => boolean;
+const buildFilterFn = <T>(
     item: T,
     itemId?: ListItemId<T>,
     itemKey?: ListItemKey<T>,
@@ -118,6 +118,7 @@ const buildFilterFn = <T extends Record<string, any>>(
 
     if (
         !filterFn &&
+        isObject(item) &&
         hasOwnProperty(item, 'id')
     ) {
         filterFn = (el) => el['id' as keyof T] === item['id' as keyof T];
@@ -125,7 +126,7 @@ const buildFilterFn = <T extends Record<string, any>>(
 
     return filterFn;
 };
-export function buildListBaseSlotProps<T extends Record<string, any>>(
+export function buildListBaseSlotProps<T>(
     ctx: ListBaseSlotPropsBuildContext<T>,
 ) : ListBaseSlotProps<T> {
     const props : ListBaseSlotProps<T> = {};
@@ -213,7 +214,12 @@ export function buildListBaseSlotProps<T extends Record<string, any>>(
             Array.isArray(data) &&
             item
         ) {
-            const filterFn = buildFilterFn(item, ctx.itemId, ctx.itemKey);
+            const filterFn = buildFilterFn(
+                item,
+                ctx.itemId,
+                ctx.itemKey,
+            ) as FilterFn<T> | undefined;
+
             if (filterFn) {
                 const index = findIndexOfMaybeRefArray<T>(
                     ctx.data as MaybeRef<T[]>,

@@ -14,7 +14,7 @@ import { buildListBaseOptions } from '../list-base';
 import type { ListTitleBuildOptions, ListTitleBuildOptionsInput } from './type';
 import { Component, SlotName } from '../constants';
 
-export function buildListTitleOptions<T extends Record<string, any> = Record<string, any>>(
+export function buildListTitleOptions<T>(
     input: ListTitleBuildOptionsInput<T>,
 ) : ListTitleBuildOptions<T> {
     const options = buildListBaseOptions(input, Component.ListTitle, {
@@ -72,7 +72,7 @@ export function buildListTitleOptions<T extends Record<string, any> = Record<str
     };
 }
 
-export function buildListTitle<T extends Record<string, any> = Record<string, any>>(
+export function buildListTitle<T>(
     input: ListTitleBuildOptionsInput<T>,
 ) : VNodeChild {
     const options = buildListTitleOptions(input);

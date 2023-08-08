@@ -16,7 +16,7 @@ import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
 import type { ListBodyBuildOptions, ListBodyBuildOptionsInput, ListBodySlotProps } from './type';
 import { buildListItem } from '../list-item';
 
-export function buildListBodyOptions<T extends Record<string, any>>(
+export function buildListBodyOptions<T>(
     input: ListBodyBuildOptionsInput<T>,
 ) : ListBodyBuildOptions<T> {
     const options = buildListBaseOptions(
@@ -36,7 +36,7 @@ export function buildListBodyOptions<T extends Record<string, any>>(
     };
 }
 
-export function buildListBody<T extends Record<string, any>>(
+export function buildListBody<T>(
     input?: ListBodyBuildOptionsInput<T>,
 ) : VNodeChild {
     input = input || {};

@@ -12,8 +12,9 @@ import {
 import type { VNodeClass } from '@vue-layout/core';
 import {
     createOptionBuilder,
+    evaluateFnOrValue,
     hasNormalizedSlot,
-    hasOwnProperty,
+    hasOwnProperty, isObject,
     merge,
     normalizeSlot,
     setMaybeRefValue,
@@ -21,12 +22,11 @@ import {
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
 import type { ListEventFn } from '../type';
-import { evaluateFnOrValue } from '../utils';
 import type {
     ListItemBuildOptions, ListItemBuildOptionsInput, ListItemChildren, ListItemSlotProps,
 } from './type';
 
-export function buildListItemOptions<T extends Record<string, any>>(
+export function buildListItemOptions<T>(
     input: ListItemBuildOptionsInput<T>,
 ) : ListItemBuildOptions<T> {
     const options = buildListBaseOptions(input, Component.ListItem, {
@@ -140,7 +140,7 @@ function maybeWrapContent(input: VNodeChild, ctx: {wrap: boolean, class: VNodeCl
     return h(ctx.tag, { class: ctx.class }, [input]);
 }
 
-export function buildListItem<T extends Record<string, any>>(
+export function buildListItem<T>(
     input: ListItemBuildOptionsInput<T>,
 ) : VNodeChild {
     const options = buildListItemOptions(input);
@@ -148,7 +148,15 @@ export function buildListItem<T extends Record<string, any>>(
     const data = unref(options.data);
 
     const overrideUpdatedFn = (fn: ListEventFn<T>, item?: T) : ListEventFn<T | undefined> => {
-        options.data = setMaybeRefValue(options.data, merge(item || {}, data) as T);
+        if (
+            isObject(item) &&
+            isObject(data)
+        ) {
+            options.data = setMaybeRefValue(options.data, merge(item || {}, data) as T);
+        } else if (item) {
+            options.data = setMaybeRefValue(options.data, item);
+        }
+
         return fn(unref(options.data));
     };
 
@@ -227,9 +235,10 @@ export function buildListItem<T extends Record<string, any>>(
                 text = evaluateFnOrValue(options.textContent, data, slotProps);
             } else if (
                 options.textPropName &&
+                isObject(data) &&
                 hasOwnProperty(data, options.textPropName)
             ) {
-                text = data[options.textPropName];
+                text = data[options.textPropName] as VNodeChild;
             }
 
             if (text) {
@@ -269,15 +278,7 @@ export function buildListItem<T extends Record<string, any>>(
     }
 
     if (options.content) {
-        if (typeof options.content === 'function') {
-            return renderContent(options.content(
-                data,
-                slotProps,
-                children,
-            ));
-        }
-
-        return renderContent(options.content);
+        return renderContent(evaluateFnOrValue(options.content, data, slotProps, children));
     }
 
     if (children.slot) {

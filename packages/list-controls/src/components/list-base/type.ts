@@ -16,9 +16,7 @@ import type {
     ListEventFn, ListItemId, ListItemKey, ListLoadFn, ListMeta,
 } from '../type';
 
-export type ListBaseSlotProps<
-    T extends Record<string, any>,
-> = {
+export type ListBaseSlotProps<T> = {
     busy?: boolean,
     load?: ListLoadFn,
     updated?: ListEventFn<T>,
@@ -28,9 +26,7 @@ export type ListBaseSlotProps<
     [key: string]: any
 };
 
-export type ListBaseOptions<
-    T extends Record<string, any>,
-> = {
+export type ListBaseOptions<T> = {
     slotItems: Slots,
     slotProps: ListBaseSlotProps<T>,
     slotPropsBuilt?: boolean,
@@ -50,9 +46,7 @@ export type ListBaseOptions<
     onDeleted?: ListEventFn<T>,
     onUpdated?: ListEventFn<T>
 };
-export type ListBaseOptionsInput<
-    T extends Record<string, any>,
-> = OptionsOverride<
+export type ListBaseOptionsInput<T> = OptionsOverride<
 ListBaseOptions<T>,
 PartialPick<ListBaseOptions<T>, 'meta' | 'slotItems' | 'slotProps'> &
 PartialPick<OptionsInputValue<ListBaseOptions<T>>, 'tag' | 'class' | 'props'>

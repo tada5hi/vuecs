@@ -6,6 +6,7 @@
  */
 
 export * from './has-own-property';
+export * from './evaluate';
 export * from './object';
 export * from './merge';
 export * from './normalize-slot';
