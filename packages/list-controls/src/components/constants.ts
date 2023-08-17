@@ -21,7 +21,6 @@ export enum SlotName {
     DEFAULT = 'default',
     FOOTER = 'footer',
     HEADER = 'header',
-    HEADER_TITLE = 'headerTitle',
     BODY = 'body',
     LOADING = 'loading',
     NO_MORE = 'noMore',

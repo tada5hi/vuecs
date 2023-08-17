@@ -5,11 +5,12 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { hasNormalizedSlot, normalizeSlot } from '@vue-layout/core';
 import type { VNodeArrayChildren, VNodeChild } from 'vue';
 import {
     h, mergeProps, unref,
 } from 'vue';
-import { Component } from '../constants';
+import { Component, SlotName } from '../constants';
 import type { ListFooterBuildOptionsInput } from '../list-footer';
 import { buildListFooter } from '../list-footer';
 import type { ListHeaderBuildOptionsInput } from '../list-header';
@@ -22,7 +23,7 @@ import type { ListNoMoreBuildOptionsInput } from '../list-no-more';
 import { buildListNoMore } from '../list-no-more';
 import type { ListBaseSlotProps } from '../list-base';
 import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
-import type { ListBuildOptions, ListBuildOptionsInput } from './type';
+import type { ListBuildOptions, ListBuildOptionsInput, ListSlotProps } from './type';
 
 export function buildListOptions<T>(
     input: ListBuildOptionsInput<T>,
@@ -58,6 +59,15 @@ export function buildList<T>(
         ...props,
         ...buildListBaseSlotProps(options),
     });
+
+    if (hasNormalizedSlot(SlotName.DEFAULT, options.slotItems)) {
+        const slotProps : ListSlotProps<T> = {
+            ...buildSlotProps(options.slotProps),
+            data: unref(options.data),
+        };
+
+        return normalizeSlot(SlotName.DEFAULT, slotProps, options.slotItems);
+    }
 
     const children : VNodeArrayChildren = [];
 

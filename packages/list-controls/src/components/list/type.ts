@@ -7,7 +7,9 @@
 
 import type { OptionsOverride, PartialPick } from '@vue-layout/core';
 import type { MaybeRef } from 'vue';
-import type { ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput } from '../list-base';
+import type {
+    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListBaseSlotProps,
+} from '../list-base';
 import type { ListFooterBuildOptionsInput } from '../list-footer';
 import type { ListHeaderBuildOptionsInput } from '../list-header';
 import type { ListBodyBuildOptionsInput } from '../list-body';
@@ -29,3 +31,8 @@ OptionsOverride<
 ExpectListBaseOptions<ListBuildOptions<T>>,
 PartialPick<ListBuildOptions<T>, 'busy' | 'data' | 'header' | 'footer' | 'body' | 'loading' | 'noMore'>
 >;
+
+export type ListSlotProps<T> = ListBaseSlotProps<T> & {
+    data: T[],
+    [key: string]: any
+};

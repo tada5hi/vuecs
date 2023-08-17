@@ -14,6 +14,5 @@ export * from './list-item';
 export * from './list-body';
 export * from './list-loading';
 export * from './list-no-more';
-export * from './list-title';
 export * from './constants';
 export * from './type';
