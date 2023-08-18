@@ -16,23 +16,24 @@ import type { ListBodyBuildOptionsInput } from '../list-body';
 import type { ListLoadingBuildOptionsInput } from '../list-loading';
 import type { ListNoMoreBuildOptionsInput } from '../list-no-more';
 
-export type ListBuildOptions<T> = ListBaseOptions<T> & {
+export type ListBuildOptions<T, M = any> = ListBaseOptions<T, M> & {
     data: MaybeRef<T[]>,
+    total?: number,
 
-    header: ListHeaderBuildOptionsInput<T> | boolean,
-    footer: ListFooterBuildOptionsInput<T> | boolean,
-    body: Omit<ListBodyBuildOptionsInput<T>, 'busy' | 'data'> | boolean,
-    loading: Omit<ListLoadingBuildOptionsInput<T>, 'busy'> | boolean,
-    noMore: Omit<ListNoMoreBuildOptionsInput<T>, 'busy' | 'total'> | boolean
+    header: ListHeaderBuildOptionsInput<T, M> | boolean,
+    footer: ListFooterBuildOptionsInput<T, M> | boolean,
+    body: Omit<ListBodyBuildOptionsInput<T, M>, 'busy' | 'data'> | boolean,
+    loading: Omit<ListLoadingBuildOptionsInput<T, M>, 'busy'> | boolean,
+    noMore: Omit<ListNoMoreBuildOptionsInput<T, M>, 'busy' | 'total'> | boolean
 };
 
-export type ListBuildOptionsInput<T> = ListBaseOptionsInput<T> &
+export type ListBuildOptionsInput<T, M = any> = ListBaseOptionsInput<T, M> &
 OptionsOverride<
-ExpectListBaseOptions<ListBuildOptions<T>>,
-PartialPick<ListBuildOptions<T>, 'busy' | 'data' | 'header' | 'footer' | 'body' | 'loading' | 'noMore'>
+ExpectListBaseOptions<ListBuildOptions<T, M>>,
+PartialPick<ListBuildOptions<T, M>, 'busy' | 'data' | 'header' | 'footer' | 'body' | 'loading' | 'noMore'>
 >;
 
-export type ListSlotProps<T> = ListBaseSlotProps<T> & {
+export type ListSlotProps<T, M = any> = ListBaseSlotProps<T, M> & {
     data: T[],
     [key: string]: any
 };

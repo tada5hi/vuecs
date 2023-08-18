@@ -25,9 +25,9 @@ import type { ListBaseSlotProps } from '../list-base';
 import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
 import type { ListBuildOptions, ListBuildOptionsInput, ListSlotProps } from './type';
 
-export function buildListOptions<T>(
-    input: ListBuildOptionsInput<T>,
-) : ListBuildOptions<T> {
+export function buildListOptions<T, M = any>(
+    input: ListBuildOptionsInput<T, M>,
+) : ListBuildOptions<T, M> {
     const options = buildListBaseOptions(input, Component.List, {
         class: 'list',
     });
@@ -45,12 +45,12 @@ export function buildListOptions<T>(
     };
 }
 
-export function buildList<T>(
-    input: ListBuildOptionsInput<T>,
+export function buildList<T, M = any>(
+    input: ListBuildOptionsInput<T, M>,
 ): VNodeChild {
     const options = buildListOptions(input);
-    if (typeof options.meta.total === 'undefined') {
-        options.meta.total = unref(options.data).length;
+    if (typeof options.total === 'undefined') {
+        options.total = unref(options.data).length;
     }
 
     const busy = unref(options.busy);
@@ -61,7 +61,7 @@ export function buildList<T>(
     });
 
     if (hasNormalizedSlot(SlotName.DEFAULT, options.slotItems)) {
-        const slotProps : ListSlotProps<T> = {
+        const slotProps : ListSlotProps<T, M> = {
             ...buildSlotProps(options.slotProps),
             data: unref(options.data),
         };
@@ -72,7 +72,7 @@ export function buildList<T>(
     const children : VNodeArrayChildren = [];
 
     if (options.header) {
-        const childOptions : ListHeaderBuildOptionsInput<T> = typeof options.header === 'boolean' ?
+        const childOptions : ListHeaderBuildOptionsInput<T, M> = typeof options.header === 'boolean' ?
             {} :
             options.header;
 
@@ -86,7 +86,7 @@ export function buildList<T>(
     }
 
     if (options.body) {
-        let childOptions : ListBodyBuildOptionsInput<T>;
+        let childOptions : ListBodyBuildOptionsInput<T, M>;
         if (typeof options.body === 'boolean') {
             childOptions = {
                 data: options.data,
@@ -108,7 +108,7 @@ export function buildList<T>(
     }
 
     if (options.loading) {
-        let childOptions : ListLoadingBuildOptionsInput<T>;
+        let childOptions : ListLoadingBuildOptionsInput<T, M>;
         if (typeof options.loading === 'boolean') {
             childOptions = {};
         } else {
@@ -126,7 +126,7 @@ export function buildList<T>(
     }
 
     if (options.noMore) {
-        const childOptions : ListNoMoreBuildOptionsInput<T> = typeof options.noMore === 'boolean' ?
+        const childOptions : ListNoMoreBuildOptionsInput<T, M> = typeof options.noMore === 'boolean' ?
             {} :
             options.noMore;
 
@@ -136,12 +136,13 @@ export function buildList<T>(
 
         childOptions.meta = options.meta;
         childOptions.busy = busy;
+        childOptions.total = options.total;
 
         children.push(buildListNoMore(childOptions));
     }
 
     if (options.footer) {
-        const childOptions : ListFooterBuildOptionsInput<T> = typeof options.footer === 'boolean' ?
+        const childOptions : ListFooterBuildOptionsInput<T, M> = typeof options.footer === 'boolean' ?
             {} :
             options.footer;
 

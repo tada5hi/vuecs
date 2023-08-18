@@ -16,9 +16,9 @@ import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
 import type { ListBodyBuildOptions, ListBodyBuildOptionsInput, ListBodySlotProps } from './type';
 import { buildListItem } from '../list-item';
 
-export function buildListBodyOptions<T>(
-    input: ListBodyBuildOptionsInput<T>,
-) : ListBodyBuildOptions<T> {
+export function buildListBodyOptions<T, M = any>(
+    input: ListBodyBuildOptionsInput<T, M>,
+) : ListBodyBuildOptions<T, M> {
     const options = buildListBaseOptions(
         input,
         Component.ListBody,
@@ -36,13 +36,13 @@ export function buildListBodyOptions<T>(
     };
 }
 
-export function buildListBody<T>(
-    input?: ListBodyBuildOptionsInput<T>,
+export function buildListBody<T, M = any>(
+    input?: ListBodyBuildOptionsInput<T, M>,
 ) : VNodeChild {
     input = input || {};
     const options = buildListBodyOptions(input);
 
-    let slotProps : ListBodySlotProps<T>;
+    let slotProps : ListBodySlotProps<T, M>;
     if (options.slotPropsBuilt) {
         slotProps = {
             data: unref(options.data),
@@ -50,7 +50,7 @@ export function buildListBody<T>(
         };
     } else {
         slotProps = {
-            ...buildListBaseSlotProps<T>(options),
+            ...buildListBaseSlotProps<T, M>(options),
             data: unref(options.data),
             ...options.slotProps,
         };

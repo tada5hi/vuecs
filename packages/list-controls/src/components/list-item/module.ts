@@ -26,9 +26,9 @@ import type {
     ListItemBuildOptions, ListItemBuildOptionsInput, ListItemChildren, ListItemSlotProps,
 } from './type';
 
-export function buildListItemOptions<T>(
-    input: ListItemBuildOptionsInput<T>,
-) : ListItemBuildOptions<T> {
+export function buildListItemOptions<T, M = any>(
+    input: ListItemBuildOptionsInput<T, M>,
+) : ListItemBuildOptions<T, M> {
     const options = buildListBaseOptions(input, Component.ListItem, {
         class: 'list-item',
         tag: 'li',
@@ -140,8 +140,8 @@ function maybeWrapContent(input: VNodeChild, ctx: {wrap: boolean, class: VNodeCl
     return h(ctx.tag, { class: ctx.class }, [input]);
 }
 
-export function buildListItem<T>(
-    input: ListItemBuildOptionsInput<T>,
+export function buildListItem<T, M = any>(
+    input: ListItemBuildOptionsInput<T, M>,
 ) : VNodeChild {
     const options = buildListItemOptions(input);
 
@@ -186,7 +186,7 @@ export function buildListItem<T>(
             updated,
             deleted,
             ...original
-        } = buildListBaseSlotProps<T>({
+        } = buildListBaseSlotProps<T, M>({
             ...options,
             data: options.data,
         });

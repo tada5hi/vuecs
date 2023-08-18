@@ -15,9 +15,9 @@ import { Component, SlotName } from '../constants';
 import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
 import type { ListLoadingBuildOptions, ListLoadingBuildOptionsInput, ListLoadingSlotProps } from './type';
 
-export function buildListLoadingOptions<T>(
-    input: ListLoadingBuildOptionsInput<T>,
-) : ListLoadingBuildOptions<T> {
+export function buildListLoadingOptions<T, M = any>(
+    input: ListLoadingBuildOptionsInput<T, M>,
+) : ListLoadingBuildOptions<T, M> {
     const options = buildListBaseOptions(input, Component.ListLoading, {
         class: 'list-loading',
     });
@@ -27,19 +27,19 @@ export function buildListLoadingOptions<T>(
     };
 }
 
-export function buildListLoading<T>(
-    input?: ListLoadingBuildOptionsInput<T>,
+export function buildListLoading<T, M = any>(
+    input?: ListLoadingBuildOptionsInput<T, M>,
 ) : VNodeChild {
     input = input || {};
 
     const options = buildListLoadingOptions(input);
 
-    let slotProps : ListLoadingSlotProps<T>;
+    let slotProps : ListLoadingSlotProps<T, M>;
     if (options.slotPropsBuilt) {
         slotProps = options.slotProps;
     } else {
         slotProps = {
-            ...buildListBaseSlotProps<T>(options),
+            ...buildListBaseSlotProps<T, M>(options),
             ...options.slotProps,
         };
     }

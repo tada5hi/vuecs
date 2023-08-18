@@ -9,16 +9,17 @@ import type { VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
 import {
     createOptionBuilder,
-    hasNormalizedSlot,
+    hasNormalizedSlot, hasOwnProperty,
+    isObject,
     normalizeSlot,
 } from '@vue-layout/core';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
 import type { ListNoMoreBuildOptions, ListNoMoreBuildOptionsInput, ListNoMoreSlotProps } from './type';
 
-export function buildListNoMoreOptions<T>(
-    input: ListNoMoreBuildOptionsInput<T>,
-) : ListNoMoreBuildOptions<T> {
+export function buildListNoMoreOptions<T, M = any>(
+    input: ListNoMoreBuildOptionsInput<T, M>,
+) : ListNoMoreBuildOptions<T, M> {
     const options = buildListBaseOptions(input, Component.ListNoMore, {
         class: 'list-no-more',
     });
@@ -38,23 +39,31 @@ export function buildListNoMoreOptions<T>(
     };
 }
 
-export function buildListNoMore<T>(
-    input?: ListNoMoreBuildOptionsInput<T>,
+export function buildListNoMore<T, M = any>(
+    input?: ListNoMoreBuildOptionsInput<T, M>,
 ) : VNodeChild {
     input = input || {};
 
     const options = buildListNoMoreOptions(input);
 
     const busy = unref(options.busy);
-    const { meta } = options;
 
     if (busy) {
         return [];
     }
 
     if (
-        typeof meta.total === 'number' &&
-        meta.total > 0
+        typeof options.total === 'number' &&
+        options.total > 0
+    ) {
+        return [];
+    }
+
+    if (
+        isObject(options.meta) &&
+        hasOwnProperty(options.meta, 'total') &&
+        typeof options.meta.total === 'number' &&
+        options.meta.total > 0
     ) {
         return [];
     }

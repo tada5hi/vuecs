@@ -21,16 +21,16 @@ import type {
     ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListBaseSlotProps,
 } from '../list-base';
 
-export type ListFooterSlotProps<T> = ListBaseSlotProps<T>;
+export type ListFooterSlotProps<T, M = any> = ListBaseSlotProps<T, M>;
 
-type Fn<T> = (props: ListFooterSlotProps<T>) => VNodeChild;
+type Fn<T, M = any> = (props: ListFooterSlotProps<T, M>) => VNodeChild;
 
-export type ListFooterBuildOptions<T> = ListBaseOptions<T> & {
-    content?: VNodeChild | Fn<T>,
+export type ListFooterBuildOptions<T, M = any> = ListBaseOptions<T, M> & {
+    content?: VNodeChild | Fn<T, M>,
 };
 
-export type ListFooterBuildOptionsInput<T> = ListBaseOptionsInput<T> &
+export type ListFooterBuildOptionsInput<T, M = any> = ListBaseOptionsInput<T, M> &
 OptionsOverride<
-ExpectListBaseOptions<ListFooterBuildOptions<T>>,
-OptionsInputValue<Pick<ListFooterBuildOptions<T>, 'content'>
+ExpectListBaseOptions<ListFooterBuildOptions<T, M>>,
+OptionsInputValue<Pick<ListFooterBuildOptions<T, M>, 'content'>
 >>;

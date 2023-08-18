@@ -13,31 +13,35 @@ import type {
     VNodeProperties,
 } from '@vue-layout/core';
 import type {
-    ListEventFn, ListItemId, ListItemKey, ListLoadFn, ListMeta,
+    ListEventFn,
+    ListItemId,
+    ListItemKey,
+    ListLoadFn,
+    ObjectLiteral,
 } from '../type';
 
-export type ListBaseSlotProps<T> = {
+export type ListBaseSlotProps<T, M = any> = {
     busy?: boolean,
-    load?: ListLoadFn,
+    load?: ListLoadFn<M>,
     updated?: ListEventFn<T>,
     deleted?: ListEventFn<T>,
     created?: ListEventFn<T>,
-    meta?: ListMeta,
+    meta?: M,
     [key: string]: any
 };
 
-export type ListBaseOptions<T> = {
+export type ListBaseOptions<T, M = any> = {
     slotItems: Slots,
-    slotProps: ListBaseSlotProps<T>,
+    slotProps: ListBaseSlotProps<T, M>,
     slotPropsBuilt?: boolean,
 
     tag: string,
     class: VNodeClass,
     props: VNodeProperties,
 
-    load?: ListLoadFn,
+    load?: ListLoadFn<M>,
     busy?: MaybeRef<boolean>,
-    meta: ListMeta,
+    meta: M,
 
     itemId?: ListItemId<T>,
     itemKey?: ListItemKey<T>,
@@ -46,14 +50,20 @@ export type ListBaseOptions<T> = {
     onDeleted?: ListEventFn<T>,
     onUpdated?: ListEventFn<T>
 };
-export type ListBaseOptionsInput<T> = OptionsOverride<
-ListBaseOptions<T>,
-PartialPick<ListBaseOptions<T>, 'meta' | 'slotItems' | 'slotProps'> &
-PartialPick<OptionsInputValue<ListBaseOptions<T>>, 'tag' | 'class' | 'props'>
+export type ListBaseOptionsInput<T, M = any> = OptionsOverride<
+ListBaseOptions<T, M>,
+PartialPick<ListBaseOptions<T, M>, 'meta' | 'slotItems' | 'slotProps'> &
+PartialPick<OptionsInputValue<ListBaseOptions<T, M>>, 'tag' | 'class' | 'props'>
 >;
 
-export type ExpectListBaseOptions<T extends Record<string, any>> = Omit<T, keyof ListBaseOptions<T>>;
+export type ExpectListBaseOptions<
+    T extends ObjectLiteral,
+    M = any,
+> = Omit<T, keyof ListBaseOptions<T, M>>;
 
-export type ListBaseOptionsDefaults<T extends Record<string, any>> = {
-    [K in keyof ListBaseOptions<T>]?: ListBaseOptions<T>[K]
+export type ListBaseOptionsDefaults<
+    T extends ObjectLiteral,
+    M = any,
+> = {
+    [K in keyof ListBaseOptions<T, M>]?: ListBaseOptions<T, M>[K]
 };

@@ -35,7 +35,7 @@ export type ListItemChildren = {
     slot?: VNodeChild
 };
 
-export type ListItemBuildOptions<T> = ListBaseOptions<T> & {
+export type ListItemBuildOptions<T, M = any> = ListBaseOptions<T, M> & {
     data: MaybeRef<T>,
     content?: VNodeChild | ((
         item: T,
@@ -66,13 +66,13 @@ export type ListItemBuildOptions<T> = ListBaseOptions<T> & {
     actionsWrapperTag: string,
 };
 
-export type ListItemBuildOptionsInput<T> = ListBaseOptionsInput<T> &
+export type ListItemBuildOptionsInput<T, M = any> = ListBaseOptionsInput<T, M> &
 OptionsOverride<
-ExpectListBaseOptions<ListItemBuildOptions<T>>,
-PartialPick<ListItemBuildOptions<T>,
+ExpectListBaseOptions<ListItemBuildOptions<T, M>>,
+PartialPick<ListItemBuildOptions<T, M>,
 'busy'
 > &
-OptionsInputValue<PartialPick<ListItemBuildOptions<T>,
+OptionsInputValue<PartialPick<ListItemBuildOptions<T, M>,
 'icon' |
 'iconTag' |
 'iconClass' |

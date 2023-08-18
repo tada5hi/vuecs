@@ -20,25 +20,25 @@ import type { MaybeRef, Ref } from 'vue';
 import type { Component } from '../constants';
 import type {
     ListItemId,
-    ListItemKey,
+    ListItemKey, ObjectLiteral,
 } from '../type';
 import type {
     ListBaseOptions, ListBaseOptionsDefaults, ListBaseOptionsInput, ListBaseSlotProps,
 } from './type';
 
-type Entity<T extends ListBaseOptionsInput<any>> = T extends ListBaseOptionsInput<infer U> ? U : never;
-
+type Entity<T extends ListBaseOptionsInput<any, any>> = T extends ListBaseOptionsInput<infer U, any> ? U : never;
+type Meta<T extends ListBaseOptionsInput<any, any>> = T extends ListBaseOptionsInput<any, infer U> ? U : never;
 export function buildListBaseOptions<
-    T extends ListBaseOptionsInput<any>,
-    C extends Component,
+    T extends ListBaseOptionsInput<any, any>,
+    M = Meta<T>,
 >(
     options: T,
     component: Component,
-    defaults?: ListBaseOptionsDefaults<Entity<T>>,
-): ListBaseOptions<Entity<T>> {
+    defaults?: ListBaseOptionsDefaults<Entity<T>, M>,
+): ListBaseOptions<Entity<T>, M> {
     defaults = defaults || {};
 
-    const { buildOrFail } = createOptionBuilder<ListBaseOptions<Entity<T>>>(
+    const { buildOrFail } = createOptionBuilder<ListBaseOptions<Entity<T>, M>>(
         component,
     );
 
@@ -68,7 +68,7 @@ export function buildListBaseOptions<
         }),
 
         load: options.load,
-        meta: options.meta || {},
+        meta: (options.meta || {}) as M,
         busy: options.busy,
 
         itemId: options.itemId,
@@ -80,8 +80,8 @@ export function buildListBaseOptions<
     };
 }
 
-type ListBaseSlotPropsBuildContext<T> = Pick<
-ListBaseOptions<T>,
+type ListBaseSlotPropsBuildContext<T, M> = Pick<
+ListBaseOptions<T, M>,
 'meta' |
 'busy' |
 'load' |
@@ -126,10 +126,10 @@ const buildFilterFn = <T>(
 
     return filterFn;
 };
-export function buildListBaseSlotProps<T>(
-    ctx: ListBaseSlotPropsBuildContext<T>,
-) : ListBaseSlotProps<T> {
-    const props : ListBaseSlotProps<T> = {};
+export function buildListBaseSlotProps<T, M = any>(
+    ctx: ListBaseSlotPropsBuildContext<T, M>,
+) : ListBaseSlotProps<T, M> {
+    const props : ListBaseSlotProps<T, M> = {};
 
     if (typeof ctx.busy !== 'undefined') {
         props.busy = unref(ctx.busy);
@@ -163,10 +163,6 @@ export function buildListBaseSlotProps<T>(
     }
 
     props.created = (item: T) => {
-        if (ctx.meta && typeof ctx.meta.total === 'number') {
-            ctx.meta.total++;
-        }
-
         if (typeof ctx.data === 'undefined') {
             if (ctx.onCreated) {
                 ctx.onCreated(item);
@@ -196,10 +192,6 @@ export function buildListBaseSlotProps<T>(
     };
 
     props.deleted = (item: T | undefined) => {
-        if (ctx.meta && typeof ctx.meta.total === 'number') {
-            ctx.meta.total--;
-        }
-
         if (typeof ctx.data === 'undefined') {
             if (ctx.onDeleted && typeof item !== 'undefined') {
                 ctx.onDeleted(item);

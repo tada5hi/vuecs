@@ -10,11 +10,12 @@ import { h, mergeProps } from 'vue';
 import type { VNodeChild } from 'vue';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
+import type { ObjectLiteral } from '../type';
 import type { ListHeaderBuildOptions, ListHeaderBuildOptionsInput, ListHeaderSlotProps } from './type';
 
-export function buildListHeaderOptions<T>(
-    input: ListHeaderBuildOptionsInput<T>,
-) : ListHeaderBuildOptions<T> {
+export function buildListHeaderOptions<T, M = any>(
+    input: ListHeaderBuildOptionsInput<T, M>,
+) : ListHeaderBuildOptions<T, M> {
     const options = buildListBaseOptions(
         input,
         Component.ListHeader,
@@ -23,7 +24,7 @@ export function buildListHeaderOptions<T>(
         },
     );
 
-    const { buildOrFail } = createOptionBuilder<ListHeaderBuildOptions<T>>(
+    const { buildOrFail } = createOptionBuilder(
         Component.ListHeader,
     );
 
@@ -38,18 +39,18 @@ export function buildListHeaderOptions<T>(
     };
 }
 
-export function buildListHeader<T>(
-    input?: ListHeaderBuildOptionsInput<T>,
+export function buildListHeader<T, M = any>(
+    input?: ListHeaderBuildOptionsInput<T, M>,
 ) : VNodeChild {
     input = input || {};
     const options = buildListHeaderOptions(input);
 
-    let slotProps : ListHeaderSlotProps<T>;
+    let slotProps : ListHeaderSlotProps<T, M>;
     if (options.slotPropsBuilt) {
         slotProps = options.slotProps;
     } else {
         slotProps = {
-            ...buildListBaseSlotProps<T>(options),
+            ...buildListBaseSlotProps<T, M>(options),
             ...options.slotProps,
         };
     }

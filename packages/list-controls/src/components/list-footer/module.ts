@@ -12,9 +12,9 @@ import { Component, SlotName } from '../constants';
 import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
 import type { ListFooterBuildOptions, ListFooterBuildOptionsInput, ListFooterSlotProps } from './type';
 
-export function buildListFooterOptions<T>(
-    input: ListFooterBuildOptionsInput<T>,
-) : ListFooterBuildOptions<T> {
+export function buildListFooterOptions<T, M = any>(
+    input: ListFooterBuildOptionsInput<T, M>,
+) : ListFooterBuildOptions<T, M> {
     const options = buildListBaseOptions(
         input,
         Component.ListFooter,
@@ -23,7 +23,7 @@ export function buildListFooterOptions<T>(
         },
     );
 
-    const { buildOrFail } = createOptionBuilder<ListFooterBuildOptions<T>>(
+    const { buildOrFail } = createOptionBuilder(
         Component.ListHeader,
     );
 
@@ -38,18 +38,18 @@ export function buildListFooterOptions<T>(
     };
 }
 
-export function buildListFooter<T>(
-    input?: ListFooterBuildOptionsInput<T>,
+export function buildListFooter<T, M = any>(
+    input?: ListFooterBuildOptionsInput<T, M>,
 ) : VNodeChild {
     input = input || {};
     const options = buildListFooterOptions(input);
 
-    let slotProps : ListFooterSlotProps<T>;
+    let slotProps : ListFooterSlotProps<T, M>;
     if (options.slotPropsBuilt) {
         slotProps = options.slotProps;
     } else {
         slotProps = {
-            ...buildListBaseSlotProps<T>(options),
+            ...buildListBaseSlotProps<T, M>(options),
             ...options.slotProps,
         };
     }
