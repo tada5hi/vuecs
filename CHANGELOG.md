@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0](https://github.com/Tada5hi/vue-layout/compare/v3.4.0...v3.5.0) (2023-08-18)
+
+
+### Features
+
+* default slot for list rendering ([fd0fee6](https://github.com/Tada5hi/vue-layout/commit/fd0fee651b7cbe7cffaaa5c0fef59754b090d69e))
+* make meta attribute generic ([dc80a5c](https://github.com/Tada5hi/vue-layout/commit/dc80a5cf6024717b5c5b7eb8e7282396402d4a2d))
+
+
+
+
+
 # [3.4.0](https://github.com/Tada5hi/vue-layout/compare/v3.3.2...v3.4.0) (2023-08-08)
 
 
