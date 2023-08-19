@@ -13,8 +13,6 @@ export enum Component {
     ListBody = 'listBody',
     ListLoading = 'listLoading',
     ListNoMore = 'listNoMore',
-    ListTitle = 'listTitle',
-    ItemActionToggle = 'itemActionToggle',
 }
 
 export enum SlotName {

@@ -7,7 +7,7 @@
 
 import { createOptionBuilder, hasNormalizedSlot, normalizeSlot } from '@vue-layout/core';
 import { h, mergeProps } from 'vue';
-import type { VNodeChild } from 'vue';
+import type { VNodeArrayChildren, VNodeChild } from 'vue';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
 import type { ObjectLiteral } from '../type';
@@ -55,10 +55,12 @@ export function buildListHeader<T, M = any>(
         };
     }
 
-    let content : VNodeChild | undefined;
+    let content : VNodeArrayChildren = [];
 
     if (hasNormalizedSlot(SlotName.HEADER, options.slotItems)) {
-        content = normalizeSlot(SlotName.HEADER, slotProps, options.slotItems);
+        content = [
+            normalizeSlot(SlotName.HEADER, slotProps, options.slotItems),
+        ];
     } else if (options.content) {
         if (typeof options.content === 'function') {
             content = [options.content(slotProps)];
@@ -67,7 +69,7 @@ export function buildListHeader<T, M = any>(
         }
     }
 
-    if (content) {
+    if (content.length > 0) {
         return h(
             options.tag,
             mergeProps({ class: options.class }, options.props),

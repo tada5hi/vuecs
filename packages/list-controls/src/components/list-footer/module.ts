@@ -54,7 +54,7 @@ export function buildListFooter<T, M = any>(
         };
     }
 
-    let children : VNodeArrayChildren | undefined;
+    let children : VNodeArrayChildren = [];
 
     if (hasNormalizedSlot(SlotName.FOOTER, options.slotItems)) {
         children = [
@@ -68,7 +68,7 @@ export function buildListFooter<T, M = any>(
         }
     }
 
-    if (children) {
+    if (children.length > 0) {
         return h(
             options.tag,
             mergeProps({ class: options.class }, options.props),

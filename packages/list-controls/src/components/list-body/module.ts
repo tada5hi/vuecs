@@ -66,10 +66,15 @@ export function buildListBody<T, M = any>(
 
     // ----------------------------------------------------------------------
 
+    const items = unref(options.data);
+    if (items.length === 0) {
+        return [];
+    }
+
     return h(
         options.tag,
         mergeProps({ class: options.class }, options.props),
-        unref(options.data).map((item: T, index) => buildListItem({
+        items.map((item: T, index) => buildListItem({
             slotProps,
             slotPropsBuilt: true,
             slotItems: options.slotItems,
