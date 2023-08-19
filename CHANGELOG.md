@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.5.1](https://github.com/Tada5hi/vue-layout/compare/v3.5.0...v3.5.1) (2023-08-19)
+
+
+### Bug Fixes
+
+* pass total option to slot properties ([0f24ed4](https://github.com/Tada5hi/vue-layout/commit/0f24ed485edff392d9eb37abdd44bf3d633307e3))
+
+
+
+
+
 # [3.5.0](https://github.com/Tada5hi/vue-layout/compare/v3.4.0...v3.5.0) (2023-08-18)
 
 
