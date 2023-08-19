@@ -145,6 +145,28 @@ export function buildListBaseSlotProps<T, M = any>(
         props.total = unref(ctx.total);
     }
 
+    const incrTotal = () => {
+        if (typeof ctx.total === 'undefined') {
+            return;
+        }
+
+        if (isRef(ctx.total)) {
+            ctx.total.value++;
+            props.total = ctx.total.value;
+        }
+    };
+
+    const decrTotal = () => {
+        if (typeof ctx.total === 'undefined') {
+            return;
+        }
+
+        if (isRef(ctx.total)) {
+            ctx.total.value--;
+            props.total = ctx.total.value;
+        }
+    };
+
     if (typeof ctx.load === 'function') {
         props.load = (meta) => {
             if (!isRef(ctx.busy)) {
@@ -170,9 +192,13 @@ export function buildListBaseSlotProps<T, M = any>(
 
     props.created = (item: T) => {
         if (typeof ctx.data === 'undefined') {
-            if (ctx.onCreated) {
+            if (typeof ctx.onCreated === 'function') {
                 ctx.onCreated(item);
             }
+
+            incrTotal();
+
+            return;
         }
 
         const data = unref(ctx.data);
@@ -188,67 +214,81 @@ export function buildListBaseSlotProps<T, M = any>(
 
                 if (index === -1) {
                     pushMaybeRefArrayValue(ctx.data as MaybeRef<T[]>, item);
+
+                    incrTotal();
+
+                    if (typeof ctx.onCreated === 'function') {
+                        ctx.onCreated(item);
+                    }
                 }
             }
-        }
+        } else {
+            incrTotal();
 
-        if (typeof ctx.onCreated === 'function') {
-            ctx.onCreated(item);
+            if (typeof ctx.onCreated === 'function') {
+                ctx.onCreated(item);
+            }
         }
     };
 
     props.deleted = (item: T | undefined) => {
         if (typeof ctx.data === 'undefined') {
-            if (ctx.onDeleted && typeof item !== 'undefined') {
+            if (typeof ctx.onDeleted === 'function' && item) {
                 ctx.onDeleted(item);
             }
+
+            decrTotal();
 
             return;
         }
 
         const data = unref(ctx.data);
 
-        if (
-            Array.isArray(data) &&
-            item
-        ) {
-            const filterFn = buildFilterFn(
-                item,
-                ctx.itemId,
-                ctx.itemKey,
-            ) as FilterFn<T> | undefined;
+        if (Array.isArray(data)) {
+            if (item) {
+                const filterFn = buildFilterFn(
+                    item,
+                    ctx.itemId,
+                    ctx.itemKey,
+                ) as FilterFn<T> | undefined;
 
-            if (filterFn) {
-                const index = findIndexOfMaybeRefArray<T>(
-                    ctx.data as MaybeRef<T[]>,
-                    filterFn,
-                );
+                if (filterFn) {
+                    const index = findIndexOfMaybeRefArray<T>(
+                        ctx.data as MaybeRef<T[]>,
+                        filterFn,
+                    );
 
-                if (index !== -1) {
-                    spliceMaybeRefArray(ctx.data as MaybeRef<T[]>, index, 1);
+                    if (index !== -1) {
+                        spliceMaybeRefArray(ctx.data as MaybeRef<T[]>, index, 1);
+
+                        decrTotal();
+
+                        if (typeof ctx.onDeleted === 'function') {
+                            if (item) {
+                                ctx.onDeleted(item);
+                            } else {
+                                ctx.onDeleted(data[index]);
+                            }
+                        }
+                    }
                 }
             }
-        }
+        } else {
+            decrTotal();
 
-        if (typeof ctx.onDeleted === 'function') {
-            if (typeof item !== 'undefined') {
-                ctx.onDeleted(item);
-                return;
-            }
-
-            if (isRef(ctx.data)) {
-                if (!Array.isArray(ctx.data.value)) {
-                    ctx.onDeleted(ctx.data.value);
+            if (typeof ctx.onDeleted === 'function') {
+                if (item) {
+                    ctx.onDeleted(item);
+                } else {
+                    ctx.onDeleted(data);
                 }
-            } else if (!Array.isArray(ctx.data)) {
-                ctx.onDeleted(ctx.data);
             }
         }
     };
 
     props.updated = (item: T) => {
         if (typeof ctx.data === 'undefined') {
-            if (ctx.onUpdated) {
+            if (typeof ctx.onUpdated === 'function') {
                 ctx.onUpdated(item);
             }
 
@@ -268,17 +308,21 @@ export function buildListBaseSlotProps<T, M = any>(
 
                 if (index !== -1) {
                     extendMaybeRefArrayValue(ctx.data as MaybeRef<T[]>, index, item);
-                }
-            }
 
-            if (typeof ctx.onUpdated === 'function') {
-                ctx.onUpdated(item);
+                    if (typeof ctx.onUpdated === 'function') {
+                        ctx.onUpdated(item); // todo: extend with data
+                    }
+                }
             }
         } else {
             extendMaybeRefObject(ctx.data as MaybeRef<T>, item);
 
             if (typeof ctx.onUpdated === 'function') {
-                ctx.onUpdated(data);
+                if (item) {
+                    ctx.onUpdated(item); // todo: extend with data
+                } else {
+                    ctx.onUpdated(data);
+                }
             }
         }
     };

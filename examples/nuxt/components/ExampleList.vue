@@ -20,20 +20,21 @@ export default defineComponent({
             { id: 1, name: 'Peter' },
             { id: 2, name: 'Admin' },
         ]);
-        const meta = ref({
-            total: 2,
-        });
+        const total = ref(2);
 
-        watch(meta, () => {
-            console.log(meta.value);
+        watch(total, () => {
+            console.log(total.value);
         });
 
         return () => buildList({
             slotItems: ctx.slots,
             data: data.value,
-            meta: meta.value,
+            total,
+            onCreated(item) {
+                console.log(item);
+            },
             onDeleted(item) {
-
+                console.log(item);
             },
             footer: true,
         });
