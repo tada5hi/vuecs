@@ -47,14 +47,15 @@ export function buildListNoMore<T, M = any>(
     const options = buildListNoMoreOptions(input);
 
     const busy = unref(options.busy);
+    const total = unref(options.total);
 
     if (busy) {
         return [];
     }
 
     if (
-        typeof options.total === 'number' &&
-        options.total > 0
+        typeof total === 'number' &&
+        total > 0
     ) {
         return [];
     }

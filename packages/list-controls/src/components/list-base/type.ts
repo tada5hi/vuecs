@@ -22,6 +22,7 @@ import type {
 
 export type ListBaseSlotProps<T, M = any> = {
     busy?: boolean,
+    total?: number,
     load?: ListLoadFn<M>,
     updated?: ListEventFn<T>,
     deleted?: ListEventFn<T>,
@@ -41,6 +42,7 @@ export type ListBaseOptions<T, M = any> = {
 
     load?: ListLoadFn<M>,
     busy?: MaybeRef<boolean>,
+    total?: MaybeRef<number>,
     meta: M,
 
     itemId?: ListItemId<T>,

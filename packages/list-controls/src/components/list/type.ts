@@ -18,7 +18,6 @@ import type { ListNoMoreBuildOptionsInput } from '../list-no-more';
 
 export type ListBuildOptions<T, M = any> = ListBaseOptions<T, M> & {
     data: MaybeRef<T[]>,
-    total?: number,
 
     header: ListHeaderBuildOptionsInput<T, M> | boolean,
     footer: ListFooterBuildOptionsInput<T, M> | boolean,

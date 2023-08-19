@@ -16,11 +16,11 @@ import {
     spliceMaybeRefArray,
 } from '@vue-layout/core';
 import { isRef, unref } from 'vue';
-import type { MaybeRef, Ref } from 'vue';
+import type { MaybeRef } from 'vue';
 import type { Component } from '../constants';
 import type {
     ListItemId,
-    ListItemKey, ObjectLiteral,
+    ListItemKey,
 } from '../type';
 import type {
     ListBaseOptions, ListBaseOptionsDefaults, ListBaseOptionsInput, ListBaseSlotProps,
@@ -67,6 +67,7 @@ export function buildListBaseOptions<
             alt: defaults.props || {},
         }),
 
+        total: options.total,
         load: options.load,
         meta: (options.meta || {}) as M,
         busy: options.busy,
@@ -83,6 +84,7 @@ export function buildListBaseOptions<
 type ListBaseSlotPropsBuildContext<T, M> = Pick<
 ListBaseOptions<T, M>,
 'meta' |
+'total' |
 'busy' |
 'load' |
 'onUpdated' |
@@ -137,6 +139,10 @@ export function buildListBaseSlotProps<T, M = any>(
 
     if (typeof ctx.meta !== 'undefined') {
         props.meta = ctx.meta;
+    }
+
+    if (typeof ctx.total !== 'undefined') {
+        props.total = unref(ctx.total);
     }
 
     if (typeof ctx.load === 'function') {
