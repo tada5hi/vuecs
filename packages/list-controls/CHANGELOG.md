@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.6.0](https://github.com/tada5hi/vue-layout/compare/v3.5.1...v3.6.0) (2023-08-19)
+
+
+### Features
+
+* don't render body, header & footer if no content exists ([4bbd445](https://github.com/tada5hi/vue-layout/commit/4bbd44550cb204942c778e7d795f924483d46fd8))
+
+
+
+
+
 ## [3.5.1](https://github.com/tada5hi/vue-layout/compare/v3.5.0...v3.5.1) (2023-08-19)
 
 
