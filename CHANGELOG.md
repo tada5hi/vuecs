@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.6.1](https://github.com/Tada5hi/vue-layout/compare/v3.6.0...v3.6.1) (2023-08-19)
+
+
+### Bug Fixes
+
+* create, updated & delete handler in slot props ([689080c](https://github.com/Tada5hi/vue-layout/commit/689080c08c4d850f7603691de6b5689281085bfc))
+
+
+
+
+
 # [3.6.0](https://github.com/Tada5hi/vue-layout/compare/v3.5.1...v3.6.0) (2023-08-19)
 
 
