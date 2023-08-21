@@ -33,7 +33,7 @@ export function install(instance: App, options: Options) : void {
         setStore(options.store);
     }
 
-    applyPluginBaseOptions(options);
+    applyPluginBaseOptions(instance, options);
 
     Object.entries({
         MyLink,

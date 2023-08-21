@@ -23,7 +23,7 @@ export * from './type';
 export function install(instance: App, options?: Options) : void {
     options ??= {};
 
-    applyPluginBaseOptions(options);
+    applyPluginBaseOptions(instance, options);
 
     instance.component('Pagination', Pagination);
 }

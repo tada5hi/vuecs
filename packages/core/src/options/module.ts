@@ -5,8 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { useDefaultsStore } from '../store-defaults';
-import { getRegisteredPresets, usePresetStore } from '../store-preset';
+import { StoreName } from '../store';
+import { injectStoreManager } from '../store-manager';
 import { hasOwnProperty } from '../utils';
 import type {
     OptionBuildContext,
@@ -41,25 +41,31 @@ function buildOption<
         value = context.value;
     }
 
+    const storeManager = injectStoreManager();
+
     if (typeof value === 'undefined') {
         if (!isOptionInputConfigWithDefaults(context.value) || context.value.defaults) {
-            const defaultStore = useDefaultsStore();
-            if (defaultStore.hasOption(context.component, context.key as string)) {
-                value = defaultStore.getOption(context.component, context.key as string);
+            const store = storeManager.use(StoreName.DEFAULT);
+            if (store.hasOption(context.component, context.key as string)) {
+                value = store.getOption(context.component, context.key as string);
             }
         }
     }
 
-    const registeredPresets = getRegisteredPresets();
-    for (let i = 0; i < registeredPresets.length; i++) {
+    const keys = storeManager.keys();
+    for (let i = 0; i < keys.length; i++) {
+        if (keys[i] === StoreName.DEFAULT) {
+            continue;
+        }
+
         if (
-            hasOwnProperty(presetConfig, registeredPresets[i]) &&
-            !presetConfig[registeredPresets[i]]
+            hasOwnProperty(presetConfig, keys[i]) &&
+            !presetConfig[keys[i]]
         ) {
             continue;
         }
 
-        const presetStore = usePresetStore(registeredPresets[i]);
+        const presetStore = storeManager.use(keys[i]);
         if (presetStore.hasOption(context.component, context.key as string)) {
             value = mergeOption(
                 context.key as string,

@@ -5,6 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { applyPluginBaseOptions } from '@vue-layout/core';
 import type { PluginBaseOptions } from '@vue-layout/core';
 import type { NavigationStore } from '@vue-layout/navigation';
 import bootstrapV5 from '@vue-layout/preset-bootstrap-v5';
@@ -27,9 +28,11 @@ export default defineNuxtPlugin((ctx) => {
         },
     };
 
-    ctx.vueApp.use(installCountdown, baseOptions);
-    ctx.vueApp.use(installFormControl, baseOptions);
-    ctx.vueApp.use(installGravatar, baseOptions);
+    applyPluginBaseOptions(ctx.vueApp, baseOptions);
+
+    ctx.vueApp.use(installCountdown);
+    ctx.vueApp.use(installFormControl);
+    ctx.vueApp.use(installGravatar);
     ctx.vueApp.use(installTimeago);
 
     const navigationStore = useState<NavigationStore>(() => ({
@@ -38,10 +41,9 @@ export default defineNuxtPlugin((ctx) => {
     }));
 
     ctx.vueApp.use(installNavigation, {
-        ...baseOptions,
         store: navigationStore,
         provider: navigationProvider,
     });
 
-    ctx.vueApp.use(installPagination, baseOptions);
+    ctx.vueApp.use(installPagination);
 });
