@@ -3,18 +3,5 @@
   "packages": [
     "packages/*"
   ],
-  "command": {
-    "version": {
-      "ignoreChanges": [
-        "**/*.spec.ts",
-        "**/*.spec.js",
-        "**/*.md"
-      ],
-      "conventionalCommits": true,
-      "message": "chore(release): %s",
-      "createRelease": "github"
-    }
-  },
-  "useWorkspaces": true,
   "version": "3.6.1"
 }

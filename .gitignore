@@ -22,4 +22,5 @@ yarn-error.log*
 *.sln
 *.sw*
 
+.nx
 .env
