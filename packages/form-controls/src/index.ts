@@ -7,7 +7,11 @@
 
 import { applyPluginBaseOptions } from '@vue-layout/core';
 import type { App, Plugin } from 'vue';
+
+import './vue';
+
 import {
+    FormGroup,
     FormInput,
     FormInputCheckbox,
     FormSelect,
@@ -25,6 +29,7 @@ export function install(instance: App, options?: Options) : void {
     applyPluginBaseOptions(instance, options);
 
     Object.entries({
+        FormGroup,
         FormInputCheckbox,
         FormInput,
         FormSelect,

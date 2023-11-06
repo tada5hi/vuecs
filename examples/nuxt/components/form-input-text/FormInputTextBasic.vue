@@ -39,11 +39,14 @@ export default defineComponent({
 });
 </script>
 <template>
-    <FormInput
-        v-model="form.text"
+    <FormGroup
         :label="true"
         :label-content="'Label'"
         :validation-messages="validationMessages"
         :validation-result="v$.text"
-    />
+    >
+        <FormInput
+            v-model="form.text"
+        />
+    </FormGroup>
 </template>

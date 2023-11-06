@@ -87,21 +87,15 @@ export function buildFormInputFromOptions(
 ): VNodeChild {
     const children : VNodeChild = [];
 
-    if (options.label) {
-        children.push(h('label', { class: options.labelClass }, [options.labelContent]));
-    }
-
-    const inputGroupChildren : VNodeChild = [];
-
     if (options.groupPrepend) {
-        inputGroupChildren.push(
+        children.push(
             h('span', { class: options.groupPrependClass }, [options.groupPrependContent]),
         );
     }
 
     const rawValue = unref(options.value);
 
-    inputGroupChildren.push(h(
+    children.push(h(
         'input',
         mergeProps(
             {
@@ -121,24 +115,21 @@ export function buildFormInputFromOptions(
     ));
 
     if (options.groupAppend) {
-        inputGroupChildren.push(
+        children.push(
             h('span', { class: options.groupAppendClass }, [options.groupAppendContent]),
         );
     }
 
-    children.push(h(
+    // todo: maybe by boolean group option ?
+    if (children.length === 1) {
+        return children[0];
+    }
+
+    return h(
         'div',
         {
             class: options.groupClass,
         },
-        inputGroupChildren,
-    ));
-
-    return buildValidationGroup({
-        content: children,
-        hint: options.hint,
-        validationResult: options.validationResult,
-        validationMessages: options.validationMessages,
-        validationTranslator: options.validationTranslator,
-    });
+        children,
+    );
 }

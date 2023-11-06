@@ -37,11 +37,18 @@ export default defineComponent({
 });
 </script>
 <template>
-    <FormInputCheckbox
-        v-model="form.value"
+    <FormGroup
         :label="true"
         :label-content="'Label'"
         :validation-messages="validationMessages"
         :validation-result="v$.value"
-    />
+    >
+        <FormInputCheckbox
+            v-model="form.value"
+            :label="true"
+            :label-content="'switch'"
+            :group="true"
+            :group-class="'form-switch'"
+        />
+    </FormGroup>
 </template>

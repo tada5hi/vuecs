@@ -11,33 +11,23 @@ import type {
     VNodeClass,
     VNodeProperties,
 } from '@vue-layout/core';
-import type { MaybeRef, VNodeChild } from 'vue';
-import type {
-    ValidationMessages, ValidationResult, ValidationTranslator,
-} from '../type';
+import type { MaybeRef, Slots } from 'vue';
 
 export type FormBaseOptions = {
-    label: boolean,
-    labelClass: VNodeClass,
-    labelContent: VNodeChild,
-
-    hint?: VNodeChild,
+    slotItems: Slots,
 
     class: VNodeClass,
     props: VNodeProperties,
 
     value?: MaybeRef<unknown>,
 
-    onChange?: (input: any) => void,
-    validationResult: Partial<ValidationResult>,
-    validationMessages: ValidationMessages,
-    validationTranslator?: ValidationTranslator
+    onChange?: (input: any) => void
 };
 
 export type FormBaseOptionsInput = OptionsOverride<
 FormBaseOptions,
-OptionsInputValue<PartialPick<FormBaseOptions, 'label' | 'labelClass' | 'labelContent' | 'hint' | 'class' | 'props'>> &
-PartialPick<FormBaseOptions, 'validationMessages' | 'validationResult'>
+OptionsInputValue<PartialPick<FormBaseOptions, 'class' | 'props'>> &
+PartialPick<FormBaseOptions, 'slotItems'>
 >;
 
 export type ExpectFormBaseOptions<T> = Omit<T, keyof FormBaseOptions>;

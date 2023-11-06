@@ -7,43 +7,19 @@
 
 import type { VNodeArrayChildren, VNodeChild } from 'vue';
 import { h } from 'vue';
-import { createOptionBuilder, isObject } from '@vue-layout/core';
+import {
+    hasNormalizedSlot, isObject, normalizeSlot,
+} from '@vue-layout/core';
+import { SlotName } from '../constants';
 import { isValidationRuleResultWithParams, isValidationRuleResultWithoutParams, template } from './utils';
-import { Component } from '../constants';
 import type { ValidationResult } from '../type';
 import type { ValidationGroupOptions, ValidationGroupOptionsInput } from './type';
 
 export function buildValidationGroupOptions(options: ValidationGroupOptionsInput) : ValidationGroupOptions {
-    const { buildOrFail } = createOptionBuilder<ValidationGroupOptions>(
-        Component.ValidationGroup,
-    );
-
     return {
         ...options,
 
-        class: buildOrFail({
-            key: 'class',
-            value: options.class,
-            alt: [],
-        }),
-
-        props: buildOrFail({
-            key: 'props',
-            value: options.props,
-            alt: {},
-        }),
-
-        errorClass: buildOrFail({
-            key: 'errorClass',
-            value: options.errorClass,
-            alt: [],
-        }),
-
-        warningClass: buildOrFail({
-            key: 'warningClass',
-            value: options.warningClass,
-            alt: [],
-        }),
+        slotItems: options.slotItems || {},
 
         validationMessages: options.validationMessages || {},
         validationResult: options.validationResult || {} as ValidationResult<unknown>,
@@ -74,10 +50,6 @@ export function buildValidationGroup(input: ValidationGroupOptionsInput) : VNode
         return `The ${validator} operator condition is not fulfilled.`;
     };
 
-    const invalid : boolean = !!options.validationResult &&
-        !!options.validationResult.$dirty &&
-        !!options.validationResult.$invalid;
-
     const errors : string[] = [];
     const keys = Object.keys(options.validationResult);
     for (let i = 0; i < keys.length; i++) {
@@ -93,43 +65,25 @@ export function buildValidationGroup(input: ValidationGroupOptionsInput) : VNode
         }
     }
 
-    const renderChildren = () => {
-        const children : VNodeArrayChildren = [];
+    const invalid : boolean = !!options.validationResult &&
+        !!options.validationResult.$dirty &&
+        !!options.validationResult.$invalid;
 
-        if (typeof options.content === 'function') {
-            children.push(options.content({
-                errors,
-                invalid,
-            }));
+    if (hasNormalizedSlot(SlotName.VALIDATION_GROUP, options.slotItems)) {
+        return normalizeSlot(SlotName.VALIDATION_GROUP, { data: errors, invalid }, options.slotItems);
+    }
+
+    const children : VNodeArrayChildren = [];
+
+    for (let i = 0; i < errors.length; i++) {
+        if (hasNormalizedSlot(SlotName.VALIDATION_ITEM, options.slotItems)) {
+            children.push(normalizeSlot(SlotName.VALIDATION_ITEM, { data: errors[i], invalid }, options.slotItems));
         } else {
-            children.push(options.content);
-        }
-
-        children.push(errors.map((error) => h('div', {
-            class: 'form-group-hint group-required',
-        }, [error])));
-
-        if (options.hint) {
             children.push(h('div', {
-                class: 'form-group-hint',
-            }, [
-                options.hint,
-            ]));
+                class: 'form-group-hint group-required',
+            }, [errors[i]]));
         }
+    }
 
-        return children;
-    };
-
-    return h(
-        'div',
-        {
-            class: [
-                options.class,
-                ...(options.validationResult && options.validationResult.$invalid && options.validationResult.$dirty ? [options.errorClass] : []),
-                ...(options.validationResult && options.validationResult.$invalid && !options.validationResult.$dirty ? [options.warningClass] : []),
-            ],
-            ...options.props,
-        },
-        renderChildren(),
-    );
+    return children;
 }

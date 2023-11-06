@@ -6,26 +6,13 @@
  */
 
 import type {
-    OptionsOverride, VNodeClass, VNodeProperties,
+    OptionsOverride,
 } from '@vue-layout/core';
-import type { VNodeChild } from 'vue';
+import type { Slots } from 'vue';
 import type { ValidationMessages, ValidationResult, ValidationTranslator } from '../type';
 
-export type ValidationGroupContentPayload = {
-    errors: string[],
-    invalid: boolean,
-};
-
 export type ValidationGroupOptions = {
-    class: VNodeClass,
-    props: VNodeProperties,
-    content: VNodeChild | ((data: ValidationGroupContentPayload) => VNodeChild),
-
-    hint?: VNodeChild,
-
-    errorClass: VNodeClass,
-    warningClass: VNodeClass,
-
+    slotItems: Slots,
     validationResult: Partial<ValidationResult>,
     validationMessages: ValidationMessages,
     validationTranslator?: ValidationTranslator
@@ -34,10 +21,7 @@ export type ValidationGroupOptions = {
 export type ValidationGroupOptionsInput = OptionsOverride<
 ValidationGroupOptions,
 Partial<Pick<ValidationGroupOptions,
-'class' |
-'props' |
-'errorClass' |
-'warningClass' |
+'slotItems' |
 'validationResult' |
 'validationMessages'
 >>

@@ -70,7 +70,7 @@ export const FormSubmit = defineComponent({
     setup(props, { attrs, emit }) {
         return () => buildFormSubmit({
             icon: props.icon,
-            busy: props.busy,
+            busy: props.modelValue || props.busy,
             isEditing: props.isEditing,
 
             createText: props.createText,

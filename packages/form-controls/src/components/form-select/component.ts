@@ -7,11 +7,6 @@
 
 import type { PropType } from 'vue';
 import { defineComponent } from 'vue';
-import type {
-    ValidationMessages,
-    ValidationResult,
-    ValidationTranslator,
-} from '../type';
 import { buildFormSelect } from './module';
 import type { FormSelectOption } from './type';
 
@@ -22,36 +17,6 @@ export const FormSelect = defineComponent({
             type: String,
             default: '',
         },
-        label: {
-            type: Boolean,
-            default: false,
-        },
-        labelClass: {
-            type: String,
-            default: '',
-        },
-        labelContent: {
-            type: String,
-            default: '',
-        },
-
-        hint: {
-            type: String,
-            default: undefined,
-        },
-
-        validationResult: {
-            type: Object as PropType<Partial<ValidationResult>>,
-            default: undefined,
-        },
-        validationMessages: {
-            type: Object as PropType<ValidationMessages>,
-            default: undefined,
-        },
-        validationTranslator: {
-            type: Function as PropType<ValidationTranslator>,
-            default: undefined,
-        },
 
         options: {
             type: Object as PropType<FormSelectOption[]>,
@@ -61,21 +26,11 @@ export const FormSelect = defineComponent({
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {
         return () => buildFormSelect({
-            label: props.label,
-            labelClass: props.labelClass,
-            labelContent: props.labelContent,
-
-            hint: props.hint,
-
             value: props.modelValue,
 
             onChange(input) {
                 emit('update:modelValue', input);
             },
-
-            validationResult: props.validationResult,
-            validationMessages: props.validationMessages,
-            validationTranslator: props.validationTranslator,
 
             props: attrs,
             options: props.options,

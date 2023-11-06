@@ -6,7 +6,7 @@
   -->
 
 <script lang="ts">
-import { buildFormInputText } from '@vue-layout/form-controls';
+import { buildFormGroup, buildFormInputText } from '@vue-layout/form-controls';
 import { maxLength, minLength } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {
@@ -31,15 +31,17 @@ export default defineComponent({
             minLength: 'The length of the input must be greater than {{min}}.',
         };
 
-        return () => buildFormInputText({
+        return () => buildFormGroup({
             label: true,
             labelContent: 'Label',
             validationMessages,
             validationResult: $v.value.text,
-            value: form.text,
-            onChange(input) {
-                form.text = input;
-            },
+            content: buildFormInputText({
+                value: form.text,
+                onChange(input) {
+                    form.text = input;
+                },
+            }),
         });
     },
 });

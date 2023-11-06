@@ -6,9 +6,9 @@
   -->
 
 <script lang="ts">
-import { buildFormInputCheckbox } from '@vue-layout/form-controls';
+import { buildFormGroup, buildFormInputCheckbox } from '@vue-layout/form-controls';
 import { required } from '@vuelidate/validators';
-import useVuelidate from '@vuelidate/core';
+import { useVuelidate } from '@vuelidate/core';
 import {
     defineComponent, h, reactive, ref,
 } from 'vue';
@@ -29,15 +29,17 @@ export default defineComponent({
             required: 'The input is required.',
         };
 
-        return () => buildFormInputCheckbox({
+        return () => buildFormGroup({
             label: true,
             labelContent: 'Label',
             validationMessages,
             validationResult: $v.value.value,
-            value: form.value,
-            onChange(input) {
-                form.value = input;
-            },
+            content: buildFormInputCheckbox({
+                value: form.value,
+                onChange(input) {
+                    form.value = input;
+                },
+            }),
         });
     },
 });

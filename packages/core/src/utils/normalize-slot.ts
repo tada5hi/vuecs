@@ -36,7 +36,7 @@ export function normalizeSlot(
     name : string,
     scope: Record<string, any> = {},
     $slots : Slots = {},
-) : VNode[] | VNode {
+) : VNode[] {
     if (hasOwnProperty($slots, name)) {
         return ($slots[name] as Slot)(scope);
     }

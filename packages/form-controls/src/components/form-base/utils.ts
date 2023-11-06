@@ -28,11 +28,7 @@ export function buildFormBaseOptions<T extends FormBaseOptionsInput>(
     return {
         ...options,
 
-        hint: buildOrFail({
-            key: 'hint',
-            value: options.hint,
-            alt: undefined,
-        }),
+        slotItems: options.slotItems || {},
 
         class: buildOrFail({
             key: 'class',
@@ -44,25 +40,6 @@ export function buildFormBaseOptions<T extends FormBaseOptionsInput>(
             value: options.props,
             alt: defaults.props || {},
         }),
-
-        label: buildOrFail({
-            key: 'label',
-            value: options.label,
-            alt: defaults.label ?? true,
-        }),
-        labelClass: buildOrFail({
-            key: 'labelClass',
-            value: options.labelClass,
-            alt: defaults.labelClass || '',
-        }),
-        labelContent: buildOrFail({
-            key: 'labelContent',
-            value: options.labelContent,
-            alt: defaults.labelContent || 'Input',
-        }),
-
-        validationMessages: options.validationMessages || {},
-        validationResult: options.validationResult || {},
     };
 }
 

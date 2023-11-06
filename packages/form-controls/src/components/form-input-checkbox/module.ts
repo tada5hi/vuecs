@@ -25,10 +25,31 @@ export function buildFormInputCheckboxOptions(
     return {
         ...options,
 
+        group: buildOrFail({
+            key: 'group',
+            value: options.group,
+            alt: false,
+        }),
         groupClass: buildOrFail({
             key: 'groupClass',
             value: unref(options.groupClass),
             alt: '',
+        }),
+
+        label: buildOrFail({
+            key: 'label',
+            value: options.label,
+            alt: true,
+        }),
+        labelClass: buildOrFail({
+            key: 'labelClass',
+            value: options.labelClass,
+            alt: [],
+        }),
+        labelContent: buildOrFail({
+            key: 'labelContent',
+            value: options.labelContent,
+            alt: 'Input',
         }),
     };
 }
@@ -38,12 +59,10 @@ export function buildFormInputCheckbox(
 ) : VNodeChild {
     const options = buildFormInputCheckboxOptions(input);
 
-    const children : VNodeChild = [];
-
     const id = (Math.random() + 1).toString(36).substring(7);
 
     const rawValue = unref(options.value);
-    children.push(h(
+    const element = h(
         'input',
         mergeProps(
             {
@@ -61,23 +80,32 @@ export function buildFormInputCheckbox(
             },
             options.props,
         ),
-    ));
+    );
 
-    if (options.label) {
-        children.push(h('label', { class: options.labelClass, for: id }, [options.labelContent]));
+    if (!options.group) {
+        return element;
     }
 
-    return buildValidationGroup({
-        content: h(
-            'div',
+    const children : VNodeChild[] = [];
+
+    if (options.label) {
+        children.push(h(
+            'label',
             {
-                class: options.groupClass,
+                class: options.labelClass,
+                for: id,
             },
-            children,
-        ),
-        hint: options.hint,
-        validationResult: options.validationResult,
-        validationMessages: options.validationMessages,
-        validationTranslator: options.validationTranslator,
-    });
+            [options.labelContent],
+        ));
+    }
+
+    children.push(element);
+
+    return h(
+        'div',
+        {
+            class: options.groupClass,
+        },
+        children,
+    );
 }

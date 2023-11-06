@@ -9,7 +9,6 @@ import type { VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
 import { Component } from '../constants';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
-import { buildValidationGroup } from '../validation-group';
 import type { FormTextareaBuildOptions, FormTextareaBuildOptionsInput } from './type';
 
 export function buildFormTextareaOptions(
@@ -27,39 +26,24 @@ export function buildFormTextarea(
 ) : VNodeChild {
     const options = buildFormTextareaOptions(input);
 
-    const children : VNodeChild = [];
-
-    if (options.label) {
-        children.push(h('label', { class: options.labelClass }, [options.labelContent]));
-    }
-
     const rawValue = unref(options.value);
 
-    return buildValidationGroup({
-        content: [
-            ...children,
-            h(
-                'textarea',
-                mergeProps(
-                    {
-                        placeholder: '...',
-                        class: options.class,
-                        onInput($event: any) {
-                            if ($event.target.composing) {
-                                return;
-                            }
+    return h(
+        'textarea',
+        mergeProps(
+            {
+                placeholder: '...',
+                class: options.class,
+                onInput($event: any) {
+                    if ($event.target.composing) {
+                        return;
+                    }
 
-                            handleFormValueChanged(options, $event.target.value);
-                        },
-                        ...(typeof rawValue !== 'undefined' ? { value: rawValue } : {}),
-                    },
-                    options.props,
-                ),
-            ),
-        ],
-        hint: options.hint,
-        validationResult: options.validationResult,
-        validationMessages: options.validationMessages,
-        validationTranslator: options.validationTranslator,
-    });
+                    handleFormValueChanged(options, $event.target.value);
+                },
+                ...(typeof rawValue !== 'undefined' ? { value: rawValue } : {}),
+            },
+            options.props,
+        ),
+    );
 }

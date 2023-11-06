@@ -39,11 +39,14 @@ export default defineComponent({
 });
 </script>
 <template>
-    <FormTextarea
-        v-model="form.text"
+    <FormGroup
         :label="true"
         :label-content="'Label'"
         :validation-messages="validationMessages"
         :validation-result="v$.text"
-    />
+    >
+        <FormTextarea
+            v-model="form.text"
+        />
+    </FormGroup>
 </template>

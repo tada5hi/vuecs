@@ -6,6 +6,7 @@
  */
 
 export * from './form-base';
+export * from './form-group';
 export * from './form-input';
 export * from './form-input-checkbox';
 export * from './form-input-text';

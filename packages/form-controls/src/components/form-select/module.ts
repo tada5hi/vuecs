@@ -5,12 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VNode, VNodeChild } from 'vue';
+import type { VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
 import { createOptionBuilder } from '@vue-layout/core';
 import { Component } from '../constants';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
-import { buildValidationGroup } from '../validation-group';
 import type { FormSelectBuildOptions, FormSelectBuildOptionsInput } from './type';
 
 export function buildFormSelectOptions(
@@ -62,37 +61,25 @@ export function buildFormSelect(
         }, options.options[i].value));
     }
 
-    return buildValidationGroup({
-        content: [
-            ...(options.label ?
-                [h('label', { class: options.labelClass }, [options.labelContent])] :
-                []
-            ),
-            h(
-                'select',
-                mergeProps(
-                    {
-                        class: options.class,
-                        onChange($event: any) {
-                            const $$selectedVal = Array.prototype.filter.call(
-                                $event.target.options,
-                                (o) => o.selected,
-                            ).map((o) => ('_value' in o ? o._value : o.value));
+    return h(
+        'select',
+        mergeProps(
+            {
+                class: options.class,
+                onChange($event: any) {
+                    const $$selectedVal = Array.prototype.filter.call(
+                        $event.target.options,
+                        (o) => o.selected,
+                    ).map((o) => ('_value' in o ? o._value : o.value));
 
-                            const value = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+                    const value = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
 
-                            handleFormValueChanged(options, value);
-                        },
-                        ...(typeof rawValue !== 'undefined' ? { value: rawValue } : {}),
-                    },
-                    options.props,
-                ),
-                children,
-            ),
-        ],
-        hint: options.hint,
-        validationResult: options.validationResult,
-        validationMessages: options.validationMessages,
-        validationTranslator: options.validationTranslator,
-    });
+                    handleFormValueChanged(options, value);
+                },
+                ...(typeof rawValue !== 'undefined' ? { value: rawValue } : {}),
+            },
+            options.props,
+        ),
+        children,
+    );
 }

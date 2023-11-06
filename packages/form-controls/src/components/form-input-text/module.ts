@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VNode, VNodeChild } from 'vue';
+import type { VNodeChild } from 'vue';
 import { Component } from '../constants';
 import type { FormInputBuildOptionsInput } from '../form-input';
 import {

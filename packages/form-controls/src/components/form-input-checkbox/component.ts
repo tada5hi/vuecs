@@ -5,9 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { PropType } from 'vue';
 import { defineComponent } from 'vue';
-import type { ValidationMessages, ValidationResult, ValidationTranslator } from '../type';
 import { buildFormInputCheckbox } from './module';
 
 export const FormInputCheckbox = defineComponent({
@@ -17,55 +15,39 @@ export const FormInputCheckbox = defineComponent({
             type: Boolean,
             default: false,
         },
+
+        group: {
+            type: Boolean,
+        },
+        groupClass: {
+            type: String,
+        },
+
         label: {
             type: Boolean,
-            default: false,
         },
         labelClass: {
             type: String,
-            default: '',
         },
         labelContent: {
             type: String,
-            default: '',
-        },
-
-        hint: {
-            type: String,
-            default: undefined,
-        },
-
-        validationResult: {
-            type: Object as PropType<Partial<ValidationResult>>,
-            default: undefined,
-        },
-        validationMessages: {
-            type: Object as PropType<ValidationMessages>,
-            default: undefined,
-        },
-        validationTranslator: {
-            type: Function as PropType<ValidationTranslator>,
-            default: undefined,
         },
     },
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {
         return () => buildFormInputCheckbox({
+            group: props.group,
+            groupClass: props.groupClass,
+
             label: props.label,
             labelClass: props.labelClass,
             labelContent: props.labelContent,
-
-            hint: props.hint,
 
             value: props.modelValue,
 
             onChange(input) {
                 emit('update:modelValue', input);
             },
-
-            validationResult: props.validationResult,
-            validationMessages: props.validationMessages,
-            validationTranslator: props.validationTranslator,
 
             props: attrs,
         });

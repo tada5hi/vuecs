@@ -6,7 +6,7 @@
   -->
 
 <script lang="ts">
-import { buildFormSelect } from '@vue-layout/form-controls';
+import { buildFormGroup, buildFormSelect } from '@vue-layout/form-controls';
 import { required } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {
@@ -34,16 +34,18 @@ export default defineComponent({
             { id: 2, value: 'Option 2' },
         ];
 
-        return () => buildFormSelect({
+        return () => buildFormGroup({
             label: true,
             labelContent: 'Label',
             validationMessages,
             validationResult: $v.value.value,
-            value: form.value,
-            onChange(input) {
-                form.value = input;
-            },
-            options,
+            content: buildFormSelect({
+                value: form.value,
+                onChange(input) {
+                    form.value = input;
+                },
+                options,
+            }),
         });
     },
 });

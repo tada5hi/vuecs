@@ -6,7 +6,7 @@
   -->
 
 <script lang="ts">
-import { maxLength, minLength, required } from '@vuelidate/validators';
+import { required } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {
     defineComponent, h, reactive, ref,
@@ -43,12 +43,15 @@ export default defineComponent({
 });
 </script>
 <template>
-    <FormSelect
-        v-model="form.value"
+    <FormGroup
         :label="true"
         :label-content="'Label'"
         :validation-messages="validationMessages"
         :validation-result="v$.value"
-        :options="options"
-    />
+    >
+        <FormSelect
+            v-model="form.value"
+            :options="options"
+        />
+    </FormGroup>
 </template>

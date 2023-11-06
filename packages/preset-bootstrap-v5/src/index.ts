@@ -6,6 +6,11 @@
  */
 
 export default {
+    formGroup: {
+        class: 'form-group',
+        validationErrorClass: 'form-group-error',
+        validationWarningClass: 'form-group-warning',
+    },
     formInput: {
         class: 'form-control',
         labelClass: 'form-label',
@@ -63,10 +68,5 @@ export default {
     },
     pagination: {
         class: 'd-flex justify-content-center',
-    },
-    validationGroup: {
-        class: 'form-group',
-        errorClass: 'form-group-error',
-        warningClass: 'form-group-warning',
     },
 };
