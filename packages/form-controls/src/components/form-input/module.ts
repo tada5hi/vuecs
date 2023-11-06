@@ -10,7 +10,6 @@ import { h, mergeProps, unref } from 'vue';
 import { createOptionBuilder } from '@vue-layout/core';
 import { Component } from '../constants';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
-import { buildValidationGroup } from '../validation-group';
 import type { FormInputBuildOptions, FormInputBuildOptionsInput } from './type';
 
 export function buildFormInputOptions(
@@ -33,6 +32,11 @@ export function buildFormInputOptions(
             alt: 'text',
         }),
 
+        group: buildOrFail({
+            key: 'group',
+            value: options.group,
+            alt: false,
+        }),
         groupClass: buildOrFail({
             key: 'groupClass',
             value: options.groupClass,
@@ -120,16 +124,18 @@ export function buildFormInputFromOptions(
         );
     }
 
-    // todo: maybe by boolean group option ?
-    if (children.length === 1) {
-        return children[0];
+    if (
+        children.length > 1 ||
+        options.group
+    ) {
+        return h(
+            'div',
+            {
+                class: options.groupClass,
+            },
+            children,
+        );
     }
 
-    return h(
-        'div',
-        {
-            class: options.groupClass,
-        },
-        children,
-    );
+    return children[0];
 }

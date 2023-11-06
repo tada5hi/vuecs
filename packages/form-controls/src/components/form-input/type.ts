@@ -16,6 +16,7 @@ import type { ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput } fro
 
 export type FormInputBuildOptions = FormBaseOptions & {
     type: string,
+    group: boolean,
     groupClass: VNodeClass,
 
     groupPrepend: boolean,
@@ -33,6 +34,7 @@ export type FormInputBuildOptionsInput =
     ExpectFormBaseOptions<FormInputBuildOptions>,
     OptionsInputValue<PartialPick<FormInputBuildOptions,
     'type' |
+    'group' |
     'groupClass' |
     'groupPrepend' |
     'groupPrependClass' |
