@@ -1,6 +1,6 @@
 {
     "name": "@vue-layout/navigation",
-    "version": "3.6.2",
+    "version": "4.0.0",
     "description": "A package for multi level navigations.",
     "exports": {
         "./package.json": "./package.json",
@@ -53,12 +53,12 @@
         "test:coverage": "cross-env NODE_ENV=test jest --config ./test/jest.config.js --coverage"
     },
     "devDependencies": {
-        "@vue-layout/core": "^3.6.2",
+        "@vue-layout/core": "^4.0.0",
         "vue": "^3.3.7",
         "vue-router": "^4.2.2"
     },
     "peerDependencies": {
-        "@vue-layout/core": "^3.6.2",
+        "@vue-layout/core": "^4.0.0",
         "vue": "^3.x",
         "vue-router": "^4.x"
     },
