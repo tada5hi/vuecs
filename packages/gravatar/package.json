@@ -1,6 +1,6 @@
 {
     "name": "@vue-layout/gravatar",
-    "version": "3.0.0",
+    "version": "3.6.2",
     "description": "A package containing a gravatar component.",
     "exports": {
         "./package.json": "./package.json",

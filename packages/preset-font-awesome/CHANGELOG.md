@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.0.1
+
+### Patch Changes
+
+- [`4451c72`](https://github.com/tada5hi/vue-layout/commit/4451c729042652256800a1cd1f94d78fe00d7f48) Thanks [@tada5hi](https://github.com/tada5hi)! - changeset release
+
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
@@ -7,18 +13,12 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package @vue-layout/preset-font-awesome
 
-
-
-
-
 # [2.0.0](https://github.com/tada5hi/vue-layout/compare/v1.1.0...v2.0.0) (2023-04-10)
-
 
 ### Bug Fixes
 
-* rename option value builder + cleanup dist directory before build ([588233b](https://github.com/tada5hi/vue-layout/commit/588233b0d030b050b46a90ff7d5b9dbb60c1c0d5))
-
+- rename option value builder + cleanup dist directory before build ([588233b](https://github.com/tada5hi/vue-layout/commit/588233b0d030b050b46a90ff7d5b9dbb60c1c0d5))
 
 ### Features
 
-* reimplemented core package + outsourced presets ([1e7f620](https://github.com/tada5hi/vue-layout/commit/1e7f6205c0445098c55469ba9599cdfc52f07482))
+- reimplemented core package + outsourced presets ([1e7f620](https://github.com/tada5hi/vue-layout/commit/1e7f6205c0445098c55469ba9599cdfc52f07482))
