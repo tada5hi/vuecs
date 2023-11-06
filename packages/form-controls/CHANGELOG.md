@@ -1,5 +1,16 @@
 # Change Log
 
+## 4.0.0
+
+### Major Changes
+
+- [`d8f76bf`](https://github.com/tada5hi/vue-layout/commit/d8f76bfe0e302b7925eacda3be89db94df72075c) Thanks [@tada5hi](https://github.com/tada5hi)! - breaking change for form-controls rendering
+
+### Patch Changes
+
+- Updated dependencies [[`d8f76bf`](https://github.com/tada5hi/vue-layout/commit/d8f76bfe0e302b7925eacda3be89db94df72075c)]:
+  - @vue-layout/core@4.0.0
+
 ## 3.6.2
 
 ### Patch Changes
