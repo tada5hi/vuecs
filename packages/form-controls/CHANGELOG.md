@@ -1,5 +1,11 @@
 # Change Log
 
+## 4.1.0
+
+### Minor Changes
+
+- [`443af35`](https://github.com/tada5hi/vue-layout/commit/443af35467dc45984e7edf99d300049a0f882a8f) Thanks [@tada5hi](https://github.com/tada5hi)! - bump
+
 ## 4.0.0
 
 ### Major Changes
