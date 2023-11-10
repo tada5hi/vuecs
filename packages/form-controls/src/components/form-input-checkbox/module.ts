@@ -64,15 +64,18 @@ export function buildFormInputCheckbox(
 
     const rawValue = unref(options.value);
 
-    let isChecked : boolean = false;
+    let isChecked : boolean | undefined;
     let index : number = -1;
-    if (Array.isArray(rawValue)) {
-        if (typeof options.props.value !== 'undefined') {
-            index = rawValue.indexOf(options.props.value);
-            isChecked = index !== -1;
+
+    if (typeof rawValue !== 'undefined') {
+        if (Array.isArray(rawValue)) {
+            if (typeof options.props.value !== 'undefined') {
+                index = rawValue.indexOf(options.props.value);
+                isChecked = index !== -1;
+            }
+        } else {
+            isChecked = !!rawValue;
         }
-    } else {
-        isChecked = !!rawValue;
     }
 
     const element = h(
@@ -101,7 +104,7 @@ export function buildFormInputCheckbox(
                         handleFormValueChanged(options, !rawValue);
                     }
                 },
-                checked: isChecked,
+                ...(typeof isChecked === 'boolean' ? { checked: isChecked } : {}),
             },
             options.props,
         ),

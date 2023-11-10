@@ -14,7 +14,6 @@ export const FormInputCheckbox = defineComponent({
     props: {
         modelValue: {
             type: [Object, Boolean, String, Number, Array] as PropType<unknown | unknown[]>,
-            default: false,
         },
 
         group: {
