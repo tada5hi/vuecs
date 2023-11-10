@@ -6,11 +6,12 @@
  */
 
 import type { VNodeChild } from 'vue';
-import { h, mergeProps, unref } from 'vue';
+import {
+    h, mergeProps, unref,
+} from 'vue';
 import { createOptionBuilder } from '@vue-layout/core';
 import { Component } from '../constants';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
-import { buildValidationGroup } from '../validation-group';
 import type { FormInputCheckboxBuildOptions, FormInputCheckboxBuildOptionsInput } from './type';
 
 export function buildFormInputCheckboxOptions(
@@ -62,6 +63,18 @@ export function buildFormInputCheckbox(
     const id = (Math.random() + 1).toString(36).substring(7);
 
     const rawValue = unref(options.value);
+
+    let isChecked : boolean = false;
+    let index : number = -1;
+    if (Array.isArray(rawValue)) {
+        if (typeof options.props.value !== 'undefined') {
+            index = rawValue.indexOf(options.props.value);
+            isChecked = index !== -1;
+        }
+    } else {
+        isChecked = !!rawValue;
+    }
+
     const element = h(
         'input',
         mergeProps(
@@ -74,38 +87,50 @@ export function buildFormInputCheckbox(
                         return;
                     }
 
-                    handleFormValueChanged(options, !rawValue);
+                    if (Array.isArray(rawValue)) {
+                        if (typeof options.props.value !== 'undefined') {
+                            if (index === -1) {
+                                rawValue.push(options.props.value);
+                            } else {
+                                rawValue.splice(index, 1);
+                            }
+                        }
+
+                        handleFormValueChanged(options, rawValue);
+                    } else {
+                        handleFormValueChanged(options, !rawValue);
+                    }
                 },
-                ...(typeof rawValue !== 'undefined' ? { checked: rawValue } : {}),
+                checked: isChecked,
             },
             options.props,
         ),
     );
 
-    if (!options.group) {
-        return element;
-    }
+    if (options.label || options.group) {
+        const children: VNodeChild[] = [];
 
-    const children : VNodeChild[] = [];
+        if (options.label) {
+            children.push(h(
+                'label',
+                {
+                    class: options.labelClass,
+                    for: id,
+                },
+                [options.labelContent],
+            ));
+        }
 
-    if (options.label) {
-        children.push(h(
-            'label',
+        children.push(element);
+
+        return h(
+            'div',
             {
-                class: options.labelClass,
-                for: id,
+                class: options.groupClass,
             },
-            [options.labelContent],
-        ));
+            children,
+        );
     }
 
-    children.push(element);
-
-    return h(
-        'div',
-        {
-            class: options.groupClass,
-        },
-        children,
-    );
+    return element;
 }

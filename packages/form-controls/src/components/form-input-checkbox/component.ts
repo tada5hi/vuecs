@@ -5,6 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import type { PropType } from 'vue';
 import { defineComponent } from 'vue';
 import { buildFormInputCheckbox } from './module';
 
@@ -12,7 +13,7 @@ export const FormInputCheckbox = defineComponent({
     name: 'FormInputCheckbox',
     props: {
         modelValue: {
-            type: Boolean,
+            type: [Object, Boolean, String, Number, Array] as PropType<unknown | unknown[]>,
             default: false,
         },
 
