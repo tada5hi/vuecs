@@ -6,7 +6,7 @@
  */
 
 import { hasNormalizedSlot, normalizeSlot } from '@vue-layout/core';
-import type { PropType, VNode } from 'vue';
+import type { PropType, VNode, VNodeChild } from 'vue';
 import { computed, defineComponent, h } from 'vue';
 import { SlotName } from '../constants';
 import { getComponents, useStore } from '../store';
@@ -39,7 +39,7 @@ export const NavigationComponents = defineComponent({
         const buildChild = (context: {
             tier?: number,
             component: NavigationElement
-        }) => {
+        }) : VNodeChild => {
             if (hasNormalizedSlot(SlotName.ITEM, slots)) {
                 return normalizeSlot(SlotName.ITEM, context, slots);
             }
@@ -47,7 +47,7 @@ export const NavigationComponents = defineComponent({
             return h(NavigationComponent, context);
         };
 
-        const buildChildren = () => {
+        const buildChildren = () : VNodeChild => {
             const entities : VNode[] = [];
 
             if (items.value) {
@@ -74,7 +74,7 @@ export const NavigationComponents = defineComponent({
 
         return () => h('ul', {
             class: 'nav-items',
-        }, buildChildren());
+        }, [buildChildren()]);
     },
 });
 

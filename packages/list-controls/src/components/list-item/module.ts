@@ -206,7 +206,7 @@ export function buildListItem<T, M = any>(
         }
     }
 
-    const renderContent = (content?: VNodeChild) => h(
+    const renderContent = (content?: VNodeChild) : VNodeChild => h(
         options.tag,
         mergeProps({ key: options.index }, { class: options.class }, options.props),
         [content || []],

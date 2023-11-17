@@ -43,7 +43,7 @@ export const NavigationComponent = defineComponent({
             await toggleNavigation(props.tier, value);
         };
 
-        const buildItem = () => {
+        const buildItem = () : VNodeChild => {
             let item : VNodeChild;
 
             switch (component.value.type) {
