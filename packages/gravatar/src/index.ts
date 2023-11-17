@@ -7,6 +7,8 @@
 
 import type { App, Plugin, Ref } from 'vue';
 
+import './vue';
+
 // Import vue components
 import {
     Gravatar,
