@@ -8,6 +8,8 @@
 import { ref } from 'vue';
 import type { App, Plugin, Ref } from 'vue';
 
+import './vue';
+
 // Import vue components
 import {
     Timeago,
