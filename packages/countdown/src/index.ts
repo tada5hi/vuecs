@@ -8,6 +8,8 @@
 import type { App, Plugin } from 'vue';
 import type { Options } from './type';
 
+import './vue';
+
 // Import vue components
 import {
     Countdown,
