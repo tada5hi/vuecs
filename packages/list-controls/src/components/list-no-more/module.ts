@@ -9,7 +9,7 @@ import type { VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
 import {
     createOptionBuilder,
-    hasNormalizedSlot,
+    hasNormalizedSlot, hasOwnProperty,
     isObject,
     normalizeSlot,
 } from '@vue-layout/core';
@@ -59,6 +59,7 @@ export function buildListNoMore<T, M = any>(
         }
     } else if (
         isObject(options.meta) &&
+        hasOwnProperty(options.meta, 'total') &&
         typeof options.meta.total === 'number' &&
         options.meta.total > 0
     ) {
