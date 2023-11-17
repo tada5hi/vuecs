@@ -10,6 +10,8 @@ import { applyPluginBaseOptions } from '@vue-layout/core';
 
 import type { App, Plugin } from 'vue';
 
+import './vue';
+
 // Import vue components
 import {
     Pagination,
