@@ -121,22 +121,34 @@ export function toggleNavigation(tier: number, component: NavigationElement) {
     refreshNavigationElements(tier);
 }
 
-export async function buildNavigation(context?: NavigationBuildContext) : Promise<void> {
+export async function buildNavigation(context: NavigationBuildContext) : Promise<void> {
     const navigationProvider = useNavigationProvider();
 
     context = context || {};
 
-    let itemsActive : NavigationElement[] = context.items ?? [];
+    let itemsActive : NavigationElement[];
 
-    if (
-        itemsActive.length === 0 &&
-        context.url
+    if (typeof context.itemsActive !== 'undefined') {
+        itemsActive = context.itemsActive;
+    } else if (
+        context.url &&
+        typeof navigationProvider.getElementsActiveByURL !== 'undefined'
     ) {
-        itemsActive = await navigationProvider
-            .getElementsActive(context.url);
+        itemsActive = await navigationProvider.getElementsActiveByURL(context.url);
+    } else if (
+        context.route &&
+        typeof navigationProvider.getElementsActiveByRoute !== 'undefined'
+    ) {
+        itemsActive = await navigationProvider.getElementsActiveByRoute(context.route);
+    } else {
+        itemsActive = [];
+    }
 
+    if (itemsActive.length > 0) {
         for (let i = 0; i < itemsActive.length; i++) {
-            itemsActive[i].tier = i;
+            if (typeof itemsActive[i] === 'undefined') {
+                itemsActive[i].tier = i;
+            }
         }
     }
 
@@ -161,7 +173,9 @@ export async function buildNavigation(context?: NavigationBuildContext) : Promis
 
         if (!currentItem) {
             if (context.url) {
-                const urlMatches = items.filter((item) => isNavigationElementMatch(item, { url: context?.url }));
+                const urlMatches = items.filter(
+                    (item) => isNavigationElementMatch(item, { url: context?.url }),
+                );
                 if (urlMatches && urlMatches.length > 0) {
                     // eslint-disable-next-line prefer-destructuring
                     currentItem = urlMatches[0];
@@ -174,8 +188,7 @@ export async function buildNavigation(context?: NavigationBuildContext) : Promis
                 if (defaultItem.length > 0) {
                     currentItem = defaultItem;
                 } else {
-                    // eslint-disable-next-line prefer-destructuring
-                    currentItem = items[0];
+                    [currentItem] = items;
                 }
             }
 

@@ -5,6 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import type { RouteLocationNormalized } from 'vue-router';
 import type { NavigationElement } from '../type';
 
 export type NavigationStore = {
@@ -18,6 +19,7 @@ export type NavigationStoreInitOptions = {
 };
 
 export type NavigationBuildContext = {
-    items?: NavigationElement[],
+    itemsActive?: NavigationElement[],
     url?: string
+    route?: RouteLocationNormalized
 };

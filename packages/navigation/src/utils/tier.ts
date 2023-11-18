@@ -13,7 +13,9 @@ export function findNavigationElementsForTier(
     items: MaybeRef<NavigationElement[]>,
     tier: number,
 ) : NavigationElement[] {
-    const filterFn = (component: NavigationElement) => typeof component.tier !== 'undefined' && component.tier === tier;
+    const filterFn = (
+        component: NavigationElement,
+    ) => typeof component.tier !== 'undefined' && component.tier === tier;
 
     if (isRef(items)) {
         return items.value.filter(filterFn);

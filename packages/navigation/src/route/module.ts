@@ -101,6 +101,6 @@ export async function buildNavigationWithRoute(
 
     await buildNavigation({
         url: route.fullPath,
-        items: elements,
+        itemsActive: elements,
     });
 }
