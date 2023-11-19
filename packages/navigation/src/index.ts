@@ -5,40 +5,38 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { PluginBaseOptions } from '@vue-layout/core';
 import { applyPluginBaseOptions } from '@vue-layout/core';
 
 import type { App, Plugin } from 'vue';
 import { setNavigationProvider } from './provider';
-import { setStore } from './store';
+import { setupStore } from './store';
 import {
     MyLink,
-    NavigationComponent,
-    NavigationComponents,
+    VLNavItem,
+    VLNavItems,
 } from './components';
 import type { Options } from './type';
 
 export * from './components';
 export * from './provider';
 export * from './store';
-export * from './utils';
+export * from './module';
 export * from './type';
+export * from './core/flatten';
 
 export function install(instance: App, options: Options) : void {
     if (options.provider) {
         setNavigationProvider(options.provider);
     }
 
-    if (options.store) {
-        setStore(options.store);
-    }
+    setupStore(instance);
 
     applyPluginBaseOptions(instance, options);
 
     Object.entries({
         MyLink,
-        NavigationComponent,
-        NavigationComponents,
+        VLNavItem,
+        VLNavItems,
     }).forEach(([componentName, component]) => {
         instance.component(componentName, component);
     });
@@ -47,3 +45,4 @@ export function install(instance: App, options: Options) : void {
 export default {
     install,
 } satisfies Plugin<Options>;
+export { buildNavigationForTier } from './core';

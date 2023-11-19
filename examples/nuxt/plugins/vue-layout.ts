@@ -7,7 +7,6 @@
 
 import { applyPluginBaseOptions } from '@vue-layout/core';
 import type { PluginBaseOptions } from '@vue-layout/core';
-import type { NavigationStore } from '@vue-layout/navigation';
 import bootstrapV5 from '@vue-layout/preset-bootstrap-v5';
 import fontAwesome from '@vue-layout/preset-font-awesome';
 
@@ -35,13 +34,7 @@ export default defineNuxtPlugin((ctx) => {
     ctx.vueApp.use(installGravatar);
     ctx.vueApp.use(installTimeago);
 
-    const navigationStore = useState<NavigationStore>(() => ({
-        items: [],
-        itemsActive: [],
-    }));
-
     ctx.vueApp.use(installNavigation, {
-        store: navigationStore,
         provider: navigationProvider,
     });
 

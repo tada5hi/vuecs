@@ -5,16 +5,16 @@
   - view the LICENSE file that was distributed with this source code.
   -->
 <script lang="ts">
-import { NavigationComponents } from '@vue-layout/navigation';
+import { VLNavItems } from '@vue-layout/navigation';
 import { defineNuxtComponent } from '#app';
 
 export default defineNuxtComponent({
-    components: { NavigationComponents },
+    components: { VLNavItems },
 });
 </script>
 <template>
     <div class="page-sidebar">
-        <navigation-components
+        <VLNavItems
             class="sidebar-menu navbar-nav"
             :tier="1"
         />

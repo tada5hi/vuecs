@@ -6,13 +6,13 @@
   -->
 <script lang="ts">
 import { Gravatar } from '@vue-layout/gravatar';
-import { NavigationComponents } from '@vue-layout/navigation';
+import { VLNavItems } from '@vue-layout/navigation';
 import { defineNuxtComponent } from '#app';
 
 export default defineNuxtComponent({
     components: {
         Gravatar,
-        NavigationComponents,
+        VLNavItems,
     },
     setup() {
 
@@ -44,7 +44,7 @@ export default defineNuxtComponent({
                     id="page-navbar"
                     class="navbar-content navbar-collapse"
                 >
-                    <navigation-components
+                    <VLNavItems
                         class="navbar-nav"
                         :tier="0"
                     />

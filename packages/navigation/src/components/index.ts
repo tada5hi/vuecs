@@ -6,6 +6,6 @@
  */
 
 export * from './my-link';
-export * from './navigation-component';
-export * from './navigation-components';
+export * from './item';
+export * from './items';
 export * from './type';

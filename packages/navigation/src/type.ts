@@ -6,9 +6,8 @@
  */
 
 import type { PluginBaseOptions } from '@vue-layout/core';
-import type { Ref } from 'vue';
+import type { ElementType } from './constants';
 import type { NavigationProvider } from './provider';
-import type { NavigationStore } from './store';
 
 export type NavigationElement = {
     id?: string | number,
@@ -19,9 +18,11 @@ export type NavigationElement = {
     urlTarget?: '_self' | '_blank' | '_parent' | '_top' | string,
 
     default?: boolean,
-    type?: 'separator' | 'link',
+    type?: `${ElementType}`,
 
     icon?: string,
+
+    active?: boolean,
 
     display?: boolean,
     displayChildren?: boolean,
@@ -36,11 +37,6 @@ export type NavigationElement = {
     [key: string]: any
 };
 
-type Options = PluginBaseOptions & {
-    provider: NavigationProvider,
-    store?: Ref<NavigationStore>,
-};
-
-export type {
-    Options,
+export type Options = PluginBaseOptions & {
+    provider: NavigationProvider
 };

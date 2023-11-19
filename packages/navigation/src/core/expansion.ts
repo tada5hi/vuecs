@@ -10,24 +10,6 @@ import { isNavigationElementMatch } from './match';
 
 // --------------------------------------------------
 
-export function resetNavigationExpansion(
-    items: NavigationElement[],
-    rootTier = true,
-) {
-    for (let i = 0; i < items.length; i++) {
-        items[i].display = rootTier;
-        items[i].displayChildren = false;
-
-        const { children } = items[i];
-
-        if (typeof children !== 'undefined') {
-            items[i].children = resetNavigationExpansion(children, false);
-        }
-    }
-
-    return items;
-}
-
 export function setNavigationExpansion(
     items: NavigationElement[],
     item: NavigationElement,
@@ -45,6 +27,10 @@ export function setNavigationExpansion(
             const { items: childItems, match: childMatch } = setNavigationExpansion(children, item, isMatch);
             items[i].children = childItems;
             isChildMatch = childMatch;
+        }
+
+        if (isMatch) {
+            items[i].active = true;
         }
 
         if (isMatch || isChildMatch) {

@@ -7,25 +7,23 @@
 
 import type { MaybeRef } from 'vue';
 import { isRef } from 'vue';
+import { useNavigationProvider } from '../provider';
+import type { NavigationStore } from '../store';
 import type { NavigationElement } from '../type';
 
 export function findNavigationElementsForTier(
-    items: MaybeRef<NavigationElement[]>,
+    items: NavigationElement[],
     tier: number,
 ) : NavigationElement[] {
     const filterFn = (
         component: NavigationElement,
     ) => typeof component.tier !== 'undefined' && component.tier === tier;
 
-    if (isRef(items)) {
-        return items.value.filter(filterFn);
-    }
-
     return items.filter(filterFn);
 }
 
 export function findNavigationElementForTier(
-    items: MaybeRef<NavigationElement[]>,
+    items: NavigationElement[],
     tier: number,
 ) : NavigationElement | undefined {
     const data = findNavigationElementsForTier(items, tier);
@@ -62,4 +60,27 @@ export function removeTierFromNavigationElements(
     }
 
     return items.filter(filterFn);
+}
+
+export async function calculateNavigationTiers(store: NavigationStore): Promise<number> {
+    if (typeof store.tiers.value !== 'undefined') {
+        return store.tiers.value;
+    }
+
+    let tiers = 0;
+
+    let match = true;
+    while (match) {
+        const hasTier = await useNavigationProvider()
+            .hasTier(tiers);
+        if (!hasTier) {
+            match = false;
+        } else {
+            tiers++;
+        }
+    }
+
+    store.tiers.value = tiers;
+
+    return tiers;
 }

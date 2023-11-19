@@ -9,12 +9,12 @@ import { hasNormalizedSlot, normalizeSlot } from '@vue-layout/core';
 import type { PropType, VNode, VNodeChild } from 'vue';
 import { computed, defineComponent, h } from 'vue';
 import { SlotName } from '../constants';
-import { getComponents, useStore } from '../store';
+import { injectStore } from '../store';
 import type { NavigationElement } from '../type';
-import { NavigationComponent } from './navigation-component';
+import { findNavigationElementsForTier } from '../core';
+import { VLNavItem } from './item';
 
-export const NavigationComponents = defineComponent({
-    name: 'NavigationComponents',
+export const VLNavItems = defineComponent({
     props: {
         tier: {
             type: Number,
@@ -26,14 +26,14 @@ export const NavigationComponents = defineComponent({
         },
     },
     setup(props, { slots }) {
-        useStore();
+        const store = injectStore();
 
         const items = computed(() => {
             if (typeof props.entities !== 'undefined') {
                 return props.entities;
             }
 
-            return getComponents(props.tier);
+            return findNavigationElementsForTier(store.items.value, props.tier);
         });
 
         const buildChild = (context: {
@@ -44,7 +44,7 @@ export const NavigationComponents = defineComponent({
                 return normalizeSlot(SlotName.ITEM, context, slots);
             }
 
-            return h(NavigationComponent, context);
+            return h(VLNavItem, context);
         };
 
         const buildChildren = () : VNodeChild => {
@@ -78,4 +78,4 @@ export const NavigationComponents = defineComponent({
     },
 });
 
-export default NavigationComponents;
+export default VLNavItems;

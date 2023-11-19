@@ -7,9 +7,9 @@
 
 import { useRoute } from 'vue-router';
 import { hasOwnProperty } from '@vue-layout/core';
-import { buildNavigation } from '../store';
+import { buildNavigation } from '../module';
 import type { NavigationElement } from '../type';
-import { isNavigationElement } from '../utils/check';
+import { isNavigationElement } from '../core/check';
 import type { NavigationBuildRouteContext } from './type';
 
 function transformToElements(input: unknown) : NavigationElement[] {

@@ -1,26 +1,26 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2023.
  * Author Peter Placzek (tada5hi)
  * For the full copyright and license information,
  * view the LICENSE file that was distributed with this source code.
  */
-
 import type { NavigationElement } from '../type';
 
-export function flattenNestedNavigationElements(
+export function resetNavigationElements(
     items: NavigationElement[],
-) : NavigationElement[] {
-    const output : NavigationElement[] = [];
-
+    root = true,
+) {
     for (let i = 0; i < items.length; i++) {
-        const { children, ...data } = items[i];
+        items[i].display = root;
+        items[i].displayChildren = false;
+        items[i].active = false;
 
-        output.push(data);
+        const { children } = items[i];
 
         if (typeof children !== 'undefined') {
-            output.push(...flattenNestedNavigationElements([...children]));
+            items[i].children = resetNavigationElements(children, false);
         }
     }
 
-    return output;
+    return items;
 }

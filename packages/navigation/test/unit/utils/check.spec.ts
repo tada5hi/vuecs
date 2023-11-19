@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { isNavigationElement } from '../../../src/utils/check';
+import { isNavigationElement } from '../../../src/core/check';
 
 describe('src/components/navigation/utils/check.ts', () => {
     it('should identify unknown value correctly', () => {

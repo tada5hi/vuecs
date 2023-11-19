@@ -13,3 +13,8 @@ export enum SlotName {
     SUB_TITLE = 'sub-title',
     SUB_ITEMS = 'sub-items',
 }
+
+export enum ElementType {
+    LINK = 'link',
+    SEPARATOR = 'separator',
+}

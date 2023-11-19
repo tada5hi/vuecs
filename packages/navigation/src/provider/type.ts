@@ -8,7 +8,7 @@ import type { RouteLocationNormalized } from 'vue-router';
 import type { NavigationElement } from '../type';
 
 export type NavigationProvider = {
-    getElements: (tier: number, items: NavigationElement[]) => Promise<NavigationElement[]> | NavigationElement[],
+    getElements: (tier: number, itemsActive: NavigationElement[]) => Promise<NavigationElement[]> | NavigationElement[],
     getElementsActiveByURL?: (url: string) => Promise<NavigationElement[]> | NavigationElement[],
     getElementsActiveByRoute?: (route: RouteLocationNormalized) => Promise<NavigationElement[]> | NavigationElement[],
     hasTier: (tier: number) => Promise<boolean>

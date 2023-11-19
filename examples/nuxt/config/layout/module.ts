@@ -3,7 +3,6 @@ import type {
     NavigationProvider,
 } from '@vue-layout/navigation';
 import {
-    findNavigationElementForTier,
     flattenNestedNavigationElements,
 } from '@vue-layout/navigation';
 
@@ -68,7 +67,7 @@ export const navigationProvider : NavigationProvider = {
     hasTier(tier: number): Promise<boolean> {
         return Promise.resolve([0, 1].indexOf(tier) !== -1);
     },
-    async getElements(tier: number, elements: NavigationElement[]): Promise<NavigationElement[]> {
+    async getElements(tier: number, elementsActive: NavigationElement[]): Promise<NavigationElement[]> {
         if (!await this.hasTier(tier)) {
             return [];
         }
@@ -80,7 +79,13 @@ export const navigationProvider : NavigationProvider = {
                 items = primaryItems;
                 break;
             case 1: {
-                const component : NavigationElement = findNavigationElementForTier(elements, 0) || { id: 'default' };
+                let component : NavigationElement;
+                if (elementsActive.length > 0) {
+                    [component] = elementsActive;
+                } else {
+                    component = { id: 'default' };
+                }
+
                 switch (component.id) {
                     case 'default':
                         items = secondaryDefaultItems;
@@ -96,7 +101,7 @@ export const navigationProvider : NavigationProvider = {
 
         return items;
     },
-    async getElementsActive(url: string): Promise<NavigationElement[]> {
+    async getElementsActiveByURL(url: string): Promise<NavigationElement[]> {
         const sortFunc = (a: NavigationElement, b: NavigationElement) => (b.url?.length ?? 0) - (a.url?.length ?? 0);
         const filterFunc = (item: NavigationElement) => {
             if (!item.url) return false;

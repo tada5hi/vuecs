@@ -5,13 +5,14 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import type { Ref } from 'vue';
 import type { RouteLocationNormalized } from 'vue-router';
 import type { NavigationElement } from '../type';
 
 export type NavigationStore = {
-    items: NavigationElement[],
-    itemsActive: NavigationElement[],
-    tiers?: number
+    items: Ref<NavigationElement[]>,
+    itemsActive: Ref<NavigationElement[]>,
+    tiers: Ref<number | undefined>
 };
 
 export type NavigationStoreInitOptions = {
