@@ -15,7 +15,6 @@ A package containing basic components, to build multi level navigation menus.
 - [Usage](#usage)
 - [Functions](#functions)
     - [buildNavigation](#buildnavigation)
-    - [buildNavigationWithRoute](#buildnavigationwithroute)
 - [Types](#types)
     - [NavigationBuildContext](#navigationbuildcontext)
     - [NavigationBuildRouteContext](#navigationbuildroutecontext)
@@ -64,7 +63,7 @@ export const navigationProvider : NavigationProvider = {
         // check if the tier exists.
         return Promise.resolve(tier === 1);
     },
-    async getElements(tier: number, items: NavigationElement[]): Promise<NavigationElement[]> {
+    async getElements(tier: number, itemsActive: NavigationElement[]): Promise<NavigationElement[]> {
         // Return elements for a specific tier.
         // The context provides the current active elements for
         // the parent tiers.
@@ -75,7 +74,7 @@ export const navigationProvider : NavigationProvider = {
             // ....
         }
     },
-    async getElementsActive(url: string): Promise<NavigationElement[]> {
+    async getElementsActiveByURL(url: string): Promise<NavigationElement[]> {
         // build element context for url
         if (url === '/') {
             return [
@@ -131,14 +130,14 @@ app.use(router);
 
 --- 
 
-After those steps are completed, the `NavigationComponents` SFC can be placed anywhere, if registered globally.
+After those steps are completed, the `VLNavItems` SFC can be placed anywhere, if registered globally.
 
 ```vue
 <template>
     <div>
-        <navigation-components :tier="0" />
+        <VLNavItems :tier="0" />
         
-        <navigation-components :tier="1" />
+        <VLNavItems :tier="1" />
     </div>
 </template>
 ```
@@ -179,14 +178,6 @@ await buildNavigation({
 This `element` array will be provided as second argument as context to the `getElements` method of
 the `NavigationProvider` implementation, to build a specific tier navigation.
 
-### buildNavigationWithRoute
-
-▸ `function` **buildNavigationWithRoute**(`context?: Partial<NavigationBuildRouteContext>`): `Promise`<`void`>
-
-Build all navigation tiers, by `route` (url) or by interpreting the `metaKey` attribute of 
-a route component.
-
-#### Example
 **`route`**
 ```typescript
 import { RouteLocation } from 'vue-router';
@@ -197,35 +188,10 @@ const route : RouteLocation = {
     ...
 };
 
-await buildNavigationWithRoute({
+await buildNavigation({
     route
 })
 ```
-This method call is under the hood equal to: `buildNavigation({url: '/'})`.
-
-**`metaKey`**
-```typescript
-import { defineComponent } from 'vue';
-import { buildNavigationWithRoute } from '@vue-layout/navigation';
-
-const metaKey = 'navigation';
-
-const pageComponent = defineComponent({
-    meta: {
-        [metaKey]: [
-            {id: 'default', tier: 0, name: 'Home'}
-        ]
-    },
-    ...
-});
-
-await buildNavigationWithRoute({
-    metaKey
-})
-```
-This method call is under the hood equal to:
-`buildNavigation({items: [{id: 'default', tier: 0, name: 'Home'}]})`.
-
 
 ## Types
 

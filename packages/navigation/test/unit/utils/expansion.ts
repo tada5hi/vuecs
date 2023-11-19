@@ -6,7 +6,7 @@
  */
 
 import type { NavigationElement } from '../../../src';
-import { setNavigationExpansion } from '../../../src';
+import { setNavigationExpansion } from '../../../src/core';
 
 describe('src/components/navigation/utils/toggle.ts', () => {
     it('should expand navigation correctly', () => {
