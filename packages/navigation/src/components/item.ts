@@ -16,9 +16,9 @@ import {
 import {
     injectStore,
 } from '../store';
-import type { NavigationElement } from '../type';
+import type { NavigationItem } from '../type';
 import {
-    selectNavigationTierElement,
+    selectNavigationTierItem,
     toggleNavigation,
 } from '../core';
 import { isAbsoluteURL } from '../utils';
@@ -33,20 +33,20 @@ export const VLNavItem = defineComponent({
             default: 0,
         },
         component: {
-            type: Object as PropType<NavigationElement>,
+            type: Object as PropType<NavigationItem>,
             required: true,
         },
     },
     setup(props, { slots }) {
         const store = injectStore();
-        const component = toRef(props, 'component') as Ref<NavigationElement>;
+        const component = toRef(props, 'component') as Ref<NavigationItem>;
 
-        const selectComponent = async (value: NavigationElement) => {
-            await selectNavigationTierElement(store, props.tier, value);
+        const selectComponent = async (value: NavigationItem) => {
+            await selectNavigationTierItem(store, props.tier, value);
         };
 
         const toggleComponentExpansion = async (
-            value: NavigationElement,
+            value: NavigationItem,
         ) => toggleNavigation(store, props.tier, value);
 
         return () => {

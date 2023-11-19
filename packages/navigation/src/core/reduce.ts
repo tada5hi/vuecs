@@ -5,14 +5,14 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { NavigationElement } from '../type';
+import type { NavigationItem } from '../type';
 
 type ComponentRestrictionContext = {
     hasPermission: (name: string) => boolean;
     isLoggedIn: () => boolean
 };
 
-export function reduceNavigationElementsByRestriction<T extends NavigationElement>(
+export function reduceNavigationElementsByRestriction<T extends NavigationItem>(
     items: T[],
     context: ComponentRestrictionContext,
 ) : T[] {

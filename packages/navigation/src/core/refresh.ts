@@ -7,19 +7,19 @@
 
 import type { NavigationStore } from '../store';
 import { setNavigationExpansion } from './expansion';
-import { resetNavigationElements } from './reset';
-import { replaceNavigationTierElements } from './replace';
-import { findNavigationElementForTier, findNavigationElementsForTier } from './tier';
+import { resetNavigationItem } from './reset';
+import { replaceNavigationTierItems } from './replace';
+import { findNavigationItemForTier, findNavigationItemsForTier } from './tier';
 
-export function refreshNavigationTierElements(store: NavigationStore, tier: number) {
-    const components = resetNavigationElements(findNavigationElementsForTier(store.items.value, tier));
+export function refreshNavigationTierItems(store: NavigationStore, tier: number) {
+    const components = resetNavigationItem(findNavigationItemsForTier(store.items.value, tier));
 
-    const component = findNavigationElementForTier(store.itemsActive.value, tier);
+    const component = findNavigationItemForTier(store.itemsActive.value, tier);
     if (component) {
         const { items } = setNavigationExpansion(components, component);
-        replaceNavigationTierElements(store, tier, items);
+        replaceNavigationTierItems(store, tier, items);
         return;
     }
 
-    replaceNavigationTierElements(store, tier, components);
+    replaceNavigationTierItems(store, tier, components);
 }

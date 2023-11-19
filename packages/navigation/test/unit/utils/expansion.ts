@@ -5,12 +5,12 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { NavigationElement } from '../../../src';
+import type { NavigationItem } from '../../../src';
 import { setNavigationExpansion } from '../../../src/core';
 
 describe('src/components/navigation/utils/toggle.ts', () => {
     it('should expand navigation correctly', () => {
-        const items : NavigationElement[] = [
+        const items : NavigationItem[] = [
             {
                 name: 'Benutzer',
                 type: 'link',

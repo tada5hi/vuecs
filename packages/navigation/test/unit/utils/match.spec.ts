@@ -5,11 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { isNavigationElementMatch } from '../../../src/core';
+import { isNavigationItemMatch } from '../../../src/core';
 
 describe('src/components/navigation/utils.ts', () => {
     it('should match correctly', () => {
-        const isMatch = isNavigationElementMatch({
+        const isMatch = isNavigationItemMatch({
             url: '/admin/users',
         }, {
             name: 'Allgemein',

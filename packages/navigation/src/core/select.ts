@@ -6,20 +6,20 @@
  */
 
 import type { NavigationStore } from '../store';
-import type { NavigationElement } from '../type';
+import type { NavigationItem } from '../type';
 import { buildNavigationForTier } from './build';
-import { isNavigationElementMatch } from './match';
-import { refreshNavigationTierElements } from './refresh';
-import { replaceNavigationTierElementActive } from './replace';
-import { calculateNavigationTiers, findNavigationElementForTier } from './tier';
+import { isNavigationItemMatch } from './match';
+import { refreshNavigationTierItems } from './refresh';
+import { replaceNavigationTierItemActive } from './replace';
+import { calculateNavigationTiers, findNavigationItemForTier } from './tier';
 
-export async function selectNavigationTierElement(
+export async function selectNavigationTierItem(
     store: NavigationStore,
     tier: number,
-    component: NavigationElement,
+    component: NavigationItem,
 ) {
-    const isMatch = isNavigationElementMatch(
-        findNavigationElementForTier(store.itemsActive.value, tier),
+    const isMatch = isNavigationItemMatch(
+        findNavigationItemForTier(store.itemsActive.value, tier),
         component,
     );
 
@@ -27,8 +27,8 @@ export async function selectNavigationTierElement(
         return;
     }
 
-    replaceNavigationTierElementActive(store, tier, component);
-    refreshNavigationTierElements(store, tier);
+    replaceNavigationTierItemActive(store, tier, component);
+    refreshNavigationTierItems(store, tier);
 
     const tiers = await calculateNavigationTiers(store);
 

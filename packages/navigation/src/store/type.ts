@@ -7,11 +7,11 @@
 
 import type { Ref } from 'vue';
 import type { RouteLocationNormalized } from 'vue-router';
-import type { NavigationElement } from '../type';
+import type { NavigationItem } from '../type';
 
 export type NavigationStore = {
-    items: Ref<NavigationElement[]>,
-    itemsActive: Ref<NavigationElement[]>,
+    items: Ref<NavigationItem[]>,
+    itemsActive: Ref<NavigationItem[]>,
     tiers: Ref<number | undefined>
 };
 
@@ -20,7 +20,7 @@ export type NavigationStoreInitOptions = {
 };
 
 export type NavigationBuildContext = {
-    itemsActive?: NavigationElement[],
+    itemsActive?: NavigationItem[],
     url?: string
     route?: RouteLocationNormalized
 };

@@ -7,15 +7,15 @@
 
 import type { MaybeRef } from 'vue';
 import type { NavigationStore } from '../store';
-import type { NavigationElement } from '../type';
-import { removeTierFromNavigationElements, setTierForNavigationElements } from './tier';
+import type { NavigationItem } from '../type';
+import { removeTierFromNavigationItems, setTierForNavigationItems } from './tier';
 
-export function replaceNavigationTierElementActive(
+export function replaceNavigationTierItemActive(
     store: NavigationStore,
     tier: number,
-    item: NavigationElement | undefined,
+    item: NavigationItem | undefined,
 ) {
-    const items = removeTierFromNavigationElements(store.itemsActive.value, tier);
+    const items = removeTierFromNavigationItems(store.itemsActive.value, tier);
 
     if (item) {
         item.tier = tier;
@@ -29,15 +29,15 @@ export function replaceNavigationTierElementActive(
     }
 }
 
-export function replaceNavigationTierElements(
+export function replaceNavigationTierItems(
     store: NavigationStore,
     tier: number,
-    items: MaybeRef<NavigationElement[]>,
+    items: MaybeRef<NavigationItem[]>,
 ) {
-    const componentsExisting = removeTierFromNavigationElements(store.items.value, tier);
+    const componentsExisting = removeTierFromNavigationItems(store.items.value, tier);
 
     store.items.value = [
         ...componentsExisting,
-        ...setTierForNavigationElements(items, tier),
+        ...setTierForNavigationItems(items, tier),
     ];
 }

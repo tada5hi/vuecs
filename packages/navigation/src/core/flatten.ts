@@ -5,12 +5,12 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { NavigationElement } from '../type';
+import type { NavigationItem } from '../type';
 
-export function flattenNestedNavigationElements(
-    items: NavigationElement[],
-) : NavigationElement[] {
-    const output : NavigationElement[] = [];
+export function flattenNestedNavigationItems(
+    items: NavigationItem[],
+) : NavigationItem[] {
+    const output : NavigationItem[] = [];
 
     for (let i = 0; i < items.length; i++) {
         const { children, ...data } = items[i];
@@ -21,7 +21,7 @@ export function flattenNestedNavigationElements(
             children &&
             children.length > 0
         ) {
-            output.push(...flattenNestedNavigationElements([...children]));
+            output.push(...flattenNestedNavigationItems([...children]));
         }
     }
 

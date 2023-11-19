@@ -5,20 +5,20 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { NavigationElement } from '../type';
-import { isNavigationElementMatch } from './match';
+import type { NavigationItem } from '../type';
+import { isNavigationItemMatch } from './match';
 
 // --------------------------------------------------
 
 export function setNavigationExpansion(
-    items: NavigationElement[],
-    item: NavigationElement,
+    items: NavigationItem[],
+    item: NavigationItem,
     parentMatch = false,
-) : { items: NavigationElement[], match: boolean} {
+) : { items: NavigationItem[], match: boolean} {
     let matchInIteration = false;
 
     for (let i = 0; i < items.length; i++) {
-        const isMatch = isNavigationElementMatch(items[i], item);
+        const isMatch = isNavigationItemMatch(items[i], item);
         let isChildMatch = false;
 
         const { children } = items[i];

@@ -4,10 +4,10 @@
  * For the full copyright and license information,
  * view the LICENSE file that was distributed with this source code.
  */
-import type { NavigationElement } from '../type';
+import type { NavigationItem } from '../type';
 
-export function resetNavigationElements(
-    items: NavigationElement[],
+export function resetNavigationItem(
+    items: NavigationItem[],
     root = true,
 ) {
     for (let i = 0; i < items.length; i++) {
@@ -18,7 +18,7 @@ export function resetNavigationElements(
         const { children } = items[i];
 
         if (typeof children !== 'undefined') {
-            items[i].children = resetNavigationElements(children, false);
+            items[i].children = resetNavigationItem(children, false);
         }
     }
 

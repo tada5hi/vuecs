@@ -8,15 +8,15 @@
 import {
     buildNavigationForTier,
     calculateNavigationTiers,
-    findNavigationElementForTier,
-    isNavigationElementMatch,
-    replaceNavigationTierElementActive,
-    setTierForNavigationElements,
+    findNavigationItemForTier,
+    isNavigationItemMatch,
+    replaceNavigationTierItemActive,
+    setTierForNavigationItems,
 } from './core';
 import { useNavigationProvider } from './provider';
 import type { NavigationBuildContext } from './store';
 import { injectStore } from './store';
-import type { NavigationElement } from './type';
+import type { NavigationItem } from './type';
 
 export async function buildNavigation(
     context: NavigationBuildContext = {},
@@ -24,7 +24,7 @@ export async function buildNavigation(
     const store = injectStore();
     const navigationProvider = useNavigationProvider();
 
-    let itemsActive: NavigationElement[] = [];
+    let itemsActive: NavigationItem[] = [];
 
     if (typeof context.itemsActive !== 'undefined') {
         itemsActive = context.itemsActive;
@@ -68,14 +68,14 @@ export async function buildNavigation(
         }
 
         // ensure tier property
-        items = setTierForNavigationElements(items, tierIndex);
+        items = setTierForNavigationItems(items, tierIndex);
 
-        let currentItem = findNavigationElementForTier(itemsActive, tierIndex);
+        let currentItem = findNavigationItemForTier(itemsActive, tierIndex);
 
         if (!currentItem) {
             if (url) {
                 const urlMatches = items.filter(
-                    (item) => isNavigationElementMatch(item, { url }),
+                    (item) => isNavigationItemMatch(item, { url }),
                 );
                 if (urlMatches.length > 0) {
                     [currentItem] = urlMatches;
@@ -100,7 +100,7 @@ export async function buildNavigation(
             continue;
         }
 
-        replaceNavigationTierElementActive(store, tierIndex, currentItem);
+        replaceNavigationTierItemActive(store, tierIndex, currentItem);
 
         await buildNavigationForTier(store, tierIndex, itemsActive);
 

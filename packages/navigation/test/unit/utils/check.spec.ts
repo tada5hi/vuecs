@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { isNavigationElement } from '../../../src/core/check';
+import { isNavigationItem } from '../../../src/core/check';
 
 describe('src/components/navigation/utils/check.ts', () => {
     it('should identify unknown value correctly', () => {
@@ -13,13 +13,13 @@ describe('src/components/navigation/utils/check.ts', () => {
             id: 'default',
         };
 
-        expect(isNavigationElement(value)).toBeTruthy();
+        expect(isNavigationItem(value)).toBeTruthy();
 
         value = {
             url: '/',
         };
 
-        expect(isNavigationElement(value)).toBeTruthy();
+        expect(isNavigationItem(value)).toBeTruthy();
     });
 
     it('should not identify unknown value correctly', () => {
@@ -27,20 +27,20 @@ describe('src/components/navigation/utils/check.ts', () => {
             id: true,
         };
 
-        expect(isNavigationElement(value)).toBeFalsy();
+        expect(isNavigationItem(value)).toBeFalsy();
 
         value = {
             url: null,
         };
 
-        expect(isNavigationElement(value)).toBeFalsy();
+        expect(isNavigationItem(value)).toBeFalsy();
 
         value = 1;
 
-        expect(isNavigationElement(value)).toBeFalsy();
+        expect(isNavigationItem(value)).toBeFalsy();
 
         value = true;
 
-        expect(isNavigationElement(value)).toBeFalsy();
+        expect(isNavigationItem(value)).toBeFalsy();
     });
 });

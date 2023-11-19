@@ -1,12 +1,12 @@
 import type {
-    NavigationElement,
+    NavigationItem,
     NavigationProvider,
 } from '@vue-layout/navigation';
 import {
-    flattenNestedNavigationElements,
+    flattenNestedNavigationItems,
 } from '@vue-layout/navigation';
 
-const primaryItems : NavigationElement[] = [
+const primaryItems : NavigationItem[] = [
     {
         id: 'default', name: 'Home', icon: 'fa fa-home', default: true,
     },
@@ -15,7 +15,7 @@ const primaryItems : NavigationElement[] = [
     },
 ];
 
-const secondaryDefaultItems : NavigationElement[] = [
+const secondaryDefaultItems : NavigationItem[] = [
     {
         name: 'Home', type: 'link', icon: 'fas fa-home', url: '/', rootLink: true,
     },
@@ -51,7 +51,7 @@ const secondaryDefaultItems : NavigationElement[] = [
     },
 ];
 
-const secondaryAdminItems : NavigationElement[] = [
+const secondaryAdminItems : NavigationItem[] = [
     {
         name: 'Auth',
         children: [
@@ -67,19 +67,19 @@ export const navigationProvider : NavigationProvider = {
     hasTier(tier: number): Promise<boolean> {
         return Promise.resolve([0, 1].indexOf(tier) !== -1);
     },
-    async getElements(tier: number, elementsActive: NavigationElement[]): Promise<NavigationElement[]> {
+    async getElements(tier: number, elementsActive: NavigationItem[]): Promise<NavigationItem[]> {
         if (!await this.hasTier(tier)) {
             return [];
         }
 
-        let items : NavigationElement[] = [];
+        let items : NavigationItem[] = [];
 
         switch (tier) {
             case 0:
                 items = primaryItems;
                 break;
             case 1: {
-                let component : NavigationElement;
+                let component : NavigationItem;
                 if (elementsActive.length > 0) {
                     [component] = elementsActive;
                 } else {
@@ -101,9 +101,9 @@ export const navigationProvider : NavigationProvider = {
 
         return items;
     },
-    async getElementsActiveByURL(url: string): Promise<NavigationElement[]> {
-        const sortFunc = (a: NavigationElement, b: NavigationElement) => (b.url?.length ?? 0) - (a.url?.length ?? 0);
-        const filterFunc = (item: NavigationElement) => {
+    async getElementsActiveByURL(url: string): Promise<NavigationItem[]> {
+        const sortFunc = (a: NavigationItem, b: NavigationItem) => (b.url?.length ?? 0) - (a.url?.length ?? 0);
+        const filterFunc = (item: NavigationItem) => {
             if (!item.url) return false;
 
             if (item.rootLink) {
@@ -115,7 +115,7 @@ export const navigationProvider : NavigationProvider = {
 
         // ------------------------
 
-        let items = flattenNestedNavigationElements([...secondaryDefaultItems])
+        let items = flattenNestedNavigationItems([...secondaryDefaultItems])
             .sort(sortFunc)
             .filter(filterFunc);
 
@@ -126,7 +126,7 @@ export const navigationProvider : NavigationProvider = {
             ];
         }
 
-        items = flattenNestedNavigationElements([...secondaryAdminItems])
+        items = flattenNestedNavigationItems([...secondaryAdminItems])
             .sort(sortFunc)
             .filter(filterFunc);
 

@@ -6,27 +6,27 @@
  */
 
 import type { NavigationStore } from '../store';
-import type { NavigationElement } from '../type';
-import { isNavigationElementMatch } from './match';
-import { refreshNavigationTierElements } from './refresh';
-import { replaceNavigationTierElementActive } from './replace';
-import { findNavigationElementForTier } from './tier';
+import type { NavigationItem } from '../type';
+import { isNavigationItemMatch } from './match';
+import { refreshNavigationTierItems } from './refresh';
+import { replaceNavigationTierItemActive } from './replace';
+import { findNavigationItemForTier } from './tier';
 
 export function toggleNavigation(
     store: NavigationStore,
     tier: number,
-    component: NavigationElement,
+    component: NavigationItem,
 ) {
-    const isMatch = component.displayChildren || isNavigationElementMatch(
-        findNavigationElementForTier(store.itemsActive.value, tier),
+    const isMatch = component.displayChildren || isNavigationItemMatch(
+        findNavigationItemForTier(store.itemsActive.value, tier),
         component,
     );
 
     if (isMatch) {
-        replaceNavigationTierElementActive(store, tier, undefined);
+        replaceNavigationTierItemActive(store, tier, undefined);
     } else {
-        replaceNavigationTierElementActive(store, tier, component);
+        replaceNavigationTierItemActive(store, tier, component);
     }
 
-    refreshNavigationTierElements(store, tier);
+    refreshNavigationTierItems(store, tier);
 }

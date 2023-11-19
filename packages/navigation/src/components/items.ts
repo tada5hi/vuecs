@@ -10,8 +10,8 @@ import type { PropType, VNode, VNodeChild } from 'vue';
 import { computed, defineComponent, h } from 'vue';
 import { SlotName } from '../constants';
 import { injectStore } from '../store';
-import type { NavigationElement } from '../type';
-import { findNavigationElementsForTier } from '../core';
+import type { NavigationItem } from '../type';
+import { findNavigationItemsForTier } from '../core';
 import { VLNavItem } from './item';
 
 export const VLNavItems = defineComponent({
@@ -21,7 +21,7 @@ export const VLNavItems = defineComponent({
             default: 0,
         },
         entities: {
-            type: Array as PropType<NavigationElement[]>,
+            type: Array as PropType<NavigationItem[]>,
             default: undefined,
         },
     },
@@ -33,12 +33,12 @@ export const VLNavItems = defineComponent({
                 return props.entities;
             }
 
-            return findNavigationElementsForTier(store.items.value, props.tier);
+            return findNavigationItemsForTier(store.items.value, props.tier);
         });
 
         const buildChild = (context: {
             tier?: number,
-            component: NavigationElement
+            component: NavigationItem
         }) : VNodeChild => {
             if (hasNormalizedSlot(SlotName.ITEM, slots)) {
                 return normalizeSlot(SlotName.ITEM, context, slots);

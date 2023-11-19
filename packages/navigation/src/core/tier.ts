@@ -9,24 +9,24 @@ import type { MaybeRef } from 'vue';
 import { isRef } from 'vue';
 import { useNavigationProvider } from '../provider';
 import type { NavigationStore } from '../store';
-import type { NavigationElement } from '../type';
+import type { NavigationItem } from '../type';
 
-export function findNavigationElementsForTier(
-    items: NavigationElement[],
+export function findNavigationItemsForTier(
+    items: NavigationItem[],
     tier: number,
-) : NavigationElement[] {
+) : NavigationItem[] {
     const filterFn = (
-        component: NavigationElement,
+        component: NavigationItem,
     ) => typeof component.tier !== 'undefined' && component.tier === tier;
 
     return items.filter(filterFn);
 }
 
-export function findNavigationElementForTier(
-    items: NavigationElement[],
+export function findNavigationItemForTier(
+    items: NavigationItem[],
     tier: number,
-) : NavigationElement | undefined {
-    const data = findNavigationElementsForTier(items, tier);
+) : NavigationItem | undefined {
+    const data = findNavigationItemsForTier(items, tier);
     if (data.length >= 1) {
         return data[0];
     }
@@ -34,11 +34,11 @@ export function findNavigationElementForTier(
     return undefined;
 }
 
-export function setTierForNavigationElements(
-    items: MaybeRef<NavigationElement[]>,
+export function setTierForNavigationItems(
+    items: MaybeRef<NavigationItem[]>,
     tier: number,
 ) {
-    const mapFn = (component: NavigationElement) => {
+    const mapFn = (component: NavigationItem) => {
         component.tier = tier;
         return component;
     };
@@ -50,11 +50,11 @@ export function setTierForNavigationElements(
     return items.map(mapFn);
 }
 
-export function removeTierFromNavigationElements(
-    items: MaybeRef<NavigationElement[]>,
+export function removeTierFromNavigationItems(
+    items: MaybeRef<NavigationItem[]>,
     tier: number,
 ) {
-    const filterFn = (items: NavigationElement) => typeof items.tier === 'undefined' || items.tier !== tier;
+    const filterFn = (items: NavigationItem) => typeof items.tier === 'undefined' || items.tier !== tier;
     if (isRef(items)) {
         return items.value.filter(filterFn);
     }

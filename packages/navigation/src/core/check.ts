@@ -6,9 +6,9 @@
  */
 
 import { hasOwnProperty, isObject } from '@vue-layout/core';
-import type { NavigationElement } from '../type';
+import type { NavigationItem } from '../type';
 
-export function isNavigationElement(value: unknown) : value is NavigationElement {
+export function isNavigationItem(value: unknown) : value is NavigationItem {
     if (!isObject(value)) {
         return false;
     }
@@ -104,7 +104,7 @@ export function isNavigationElement(value: unknown) : value is NavigationElement
         }
 
         for (let i = 0; i < value.children.length; i++) {
-            if (!isNavigationElement(value.children[i])) {
+            if (!isNavigationItem(value.children[i])) {
                 return false;
             }
         }

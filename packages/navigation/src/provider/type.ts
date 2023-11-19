@@ -5,11 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 import type { RouteLocationNormalized } from 'vue-router';
-import type { NavigationElement } from '../type';
+import type { NavigationItem } from '../type';
 
 export type NavigationProvider = {
-    getElements: (tier: number, itemsActive: NavigationElement[]) => Promise<NavigationElement[]> | NavigationElement[],
-    getElementsActiveByURL?: (url: string) => Promise<NavigationElement[]> | NavigationElement[],
-    getElementsActiveByRoute?: (route: RouteLocationNormalized) => Promise<NavigationElement[]> | NavigationElement[],
+    getElements: (tier: number, itemsActive: NavigationItem[]) => Promise<NavigationItem[]> | NavigationItem[],
+    getElementsActiveByURL?: (url: string) => Promise<NavigationItem[]> | NavigationItem[],
+    getElementsActiveByRoute?: (route: RouteLocationNormalized) => Promise<NavigationItem[]> | NavigationItem[],
     hasTier: (tier: number) => Promise<boolean>
 };

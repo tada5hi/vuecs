@@ -5,11 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { NavigationElement } from '../type';
+import type { NavigationItem } from '../type';
 
-export function isNavigationElementMatch(
-    one?: NavigationElement,
-    two?: NavigationElement,
+export function isNavigationItemMatch(
+    one?: NavigationItem,
+    two?: NavigationItem,
 ): boolean {
     if (!one || !two) {
         return false;
@@ -45,7 +45,7 @@ export function isNavigationElementMatch(
         one.children.length === two.children.length
     ) {
         for (let i = 0; i < one.children.length; i++) {
-            if (!isNavigationElementMatch(one.children[i], two.children[i])) {
+            if (!isNavigationItemMatch(one.children[i], two.children[i])) {
                 return false;
             }
         }

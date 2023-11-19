@@ -9,7 +9,7 @@ import type { PluginBaseOptions } from '@vue-layout/core';
 import type { ElementType } from './constants';
 import type { NavigationProvider } from './provider';
 
-export type NavigationElement = {
+export type NavigationItem = {
     id?: string | number,
     tier?: number,
     name?: string,
@@ -28,7 +28,7 @@ export type NavigationElement = {
     displayChildren?: boolean,
 
     rootLink?: boolean,
-    children?: NavigationElement[],
+    children?: NavigationItem[],
 
     requireLoggedIn?: boolean,
     requireLoggedOut?: boolean,
