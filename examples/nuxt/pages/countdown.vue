@@ -11,7 +11,7 @@ import { defineNuxtComponent } from '#app';
 
 export default defineNuxtComponent({
     components: {
-        Countdown: VCCountdown,
+        VCCountdown,
     },
     setup() {
         return {
@@ -24,7 +24,7 @@ export default defineNuxtComponent({
     <div class="container">
         <div>
             <h3><i class="fa fa-solid fa-clock" /> Countdown</h3>
-            <Countdown :time="time">
+            <VCCountdown :time="time">
                 <template #default="props">
                     The countdown is still running for
                     <span class="text-success">
@@ -33,7 +33,7 @@ export default defineNuxtComponent({
                         {{ props.seconds }} second(s)
                     </span>.
                 </template>
-            </Countdown>
+            </VCCountdown>
         </div>
     </div>
 </template>

@@ -12,7 +12,7 @@ import { defineNuxtComponent } from '#app';
 
 export default defineNuxtComponent({
     components: {
-        Pagination: VCPagination,
+        VCPagination,
     },
     setup() {
         const items = [];
@@ -55,7 +55,7 @@ export default defineNuxtComponent({
             </li>
         </ul>
         <div class="mt-3 text-center">
-            <pagination
+            <VCPagination
                 :total="total"
                 :limit="limit"
                 :offset="offset"

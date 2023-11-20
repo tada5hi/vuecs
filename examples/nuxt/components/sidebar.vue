@@ -9,12 +9,12 @@ import { VCNavItems } from '@vue-layout/navigation';
 import { defineNuxtComponent } from '#app';
 
 export default defineNuxtComponent({
-    components: { VLNavItems: VCNavItems },
+    components: { VCNavItems },
 });
 </script>
 <template>
     <div class="page-sidebar">
-        <VLNavItems
+        <VCNavItems
             class="sidebar-menu navbar-nav"
             :tier="1"
         />

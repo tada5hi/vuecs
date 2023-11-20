@@ -12,7 +12,7 @@ import { defineNuxtComponent } from '#app';
 
 export default defineNuxtComponent({
     components: {
-        Timeago: VCTimeago,
+        VCTimeago,
     },
     setup() {
         const instance = getCurrentInstance();
@@ -32,7 +32,7 @@ export default defineNuxtComponent({
     <div class="container">
         <div>
             <h3><i class="fa fa-solid fa-clock" /> Timeago</h3>
-            <Timeago :datetime="dateTime" />
+            <VCTimeago :datetime="dateTime" />
         </div>
     </div>
 </template>

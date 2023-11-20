@@ -97,7 +97,7 @@ export const VCNavItem = defineComponent({
                                     }
                                 }
 
-                                item = h(VLLink, {
+                                item = h(VCLink, {
                                     class: [
                                         'nav-link',
                                         {

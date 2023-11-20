@@ -29,12 +29,12 @@ export function install(instance: App, options?: Options) : void {
     applyPluginBaseOptions(instance, options);
 
     Object.entries({
-        VLFormGroup: VCFormGroup,
-        VLFormInputCheckbox: VCFormInputCheckbox,
-        VLFormInput: VCFormInput,
-        VLFormSelect: VCFormSelect,
-        VLFormSubmit: VCFormSubmit,
-        VLFormTextarea: VCFormTextarea,
+        VCFormGroup,
+        VCFormInputCheckbox,
+        VCFormInput,
+        VCFormSelect,
+        VCFormSubmit,
+        VCFormTextarea,
     }).forEach(([componentName, component]) => {
         instance.component(componentName, component);
     });

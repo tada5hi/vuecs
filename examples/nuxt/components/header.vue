@@ -5,14 +5,14 @@
   - view the LICENSE file that was distributed with this source code.
   -->
 <script lang="ts">
-import { Gravatar } from '@vue-layout/gravatar';
+import { VCGravatar } from '@vue-layout/gravatar';
 import { VCNavItems } from '@vue-layout/navigation';
 import { defineNuxtComponent } from '#app';
 
 export default defineNuxtComponent({
     components: {
-        Gravatar,
-        VLNavItems: VCNavItems,
+        VCGravatar,
+        VCNavItems,
     },
     setup() {
 
@@ -44,7 +44,7 @@ export default defineNuxtComponent({
                     id="page-navbar"
                     class="navbar-content navbar-collapse"
                 >
-                    <VLNavItems
+                    <VCNavItems
                         class="navbar-nav"
                         :tier="0"
                     />
@@ -55,7 +55,7 @@ export default defineNuxtComponent({
                                 href="javascript:void(0)"
                                 class="nav-link user-link"
                             >
-                                <gravatar email="peter.placzek1996@gmail.com" />
+                                <VCGravatar email="peter.placzek1996@gmail.com" />
                             </a>
                         </li>
                     </ul>
