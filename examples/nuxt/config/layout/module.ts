@@ -64,12 +64,9 @@ const secondaryAdminItems : NavigationItem[] = [
 ];
 
 export const navigationProvider : NavigationProvider = {
-    hasTier(tier: number): Promise<boolean> {
-        return Promise.resolve([0, 1].indexOf(tier) !== -1);
-    },
-    async getElements(tier: number, elementsActive: NavigationItem[]): Promise<NavigationItem[]> {
-        if (!await this.hasTier(tier)) {
-            return [];
+    async getItems(tier: number, elementsActive: NavigationItem[]) {
+        if (tier > 1) {
+            return undefined;
         }
 
         let items : NavigationItem[] = [];
@@ -101,7 +98,7 @@ export const navigationProvider : NavigationProvider = {
 
         return items;
     },
-    async getElementsActiveByURL(url: string): Promise<NavigationItem[]> {
+    async getItemsActiveByURL(url: string) {
         const sortFunc = (a: NavigationItem, b: NavigationItem) => (b.url?.length ?? 0) - (a.url?.length ?? 0);
         const filterFunc = (item: NavigationItem) => {
             if (!item.url) return false;

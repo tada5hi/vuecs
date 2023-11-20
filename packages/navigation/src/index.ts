@@ -21,7 +21,6 @@ import type { Options } from './type';
 
 export * from './components';
 export * from './provider';
-export * from './store';
 export * from './module';
 export * from './type';
 export * from './core/flatten';

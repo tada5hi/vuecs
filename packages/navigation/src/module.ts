@@ -7,7 +7,6 @@
 
 import {
     buildNavigationForTier,
-    calculateNavigationTiers,
     findNavigationItemForTier,
     isNavigationItemMatch,
     replaceNavigationTierItemActive,
@@ -29,16 +28,16 @@ export async function buildNavigation(
     if (typeof context.itemsActive !== 'undefined') {
         itemsActive = context.itemsActive;
     } else if (context.route) {
-        if (typeof navigationProvider.getElementsActiveByRoute !== 'undefined') {
-            itemsActive = await navigationProvider.getElementsActiveByRoute(context.route);
-        } else if (typeof navigationProvider.getElementsActiveByURL !== 'undefined') {
-            itemsActive = await navigationProvider.getElementsActiveByURL(context.route.fullPath);
+        if (typeof navigationProvider.getItemsActiveByRoute !== 'undefined') {
+            itemsActive = await navigationProvider.getItemsActiveByRoute(context.route);
+        } else if (typeof navigationProvider.getItemsActiveByURL !== 'undefined') {
+            itemsActive = await navigationProvider.getItemsActiveByURL(context.route.fullPath);
         }
     } else if (
         context.url &&
-        typeof navigationProvider.getElementsActiveByURL !== 'undefined'
+        typeof navigationProvider.getItemsActiveByURL !== 'undefined'
     ) {
-        itemsActive = await navigationProvider.getElementsActiveByURL(context.url);
+        itemsActive = await navigationProvider.getItemsActiveByURL(context.url);
     }
 
     if (itemsActive.length > 0) {
@@ -49,7 +48,6 @@ export async function buildNavigation(
         }
     }
 
-    const numTiers = await calculateNavigationTiers(store);
     let tierIndex = 0;
 
     let url: string | undefined;
@@ -59,11 +57,12 @@ export async function buildNavigation(
         url = context.route.fullPath;
     }
 
-    while (tierIndex < numTiers) {
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
         let items = await navigationProvider
-            .getElements(tierIndex, itemsActive);
+            .getItems(tierIndex, itemsActive);
 
-        if (items.length === 0) {
+        if (!items || items.length === 0) {
             break;
         }
 

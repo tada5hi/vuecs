@@ -27,7 +27,6 @@ export function setupStore(app?: App) {
     const store : NavigationStore = {
         items: ref([]),
         itemsActive: ref([]),
-        tiers: ref(undefined),
     };
 
     if (typeof app === 'undefined') {

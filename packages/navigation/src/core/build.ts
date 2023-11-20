@@ -16,20 +16,20 @@ export async function buildNavigationForTier(
     store: NavigationStore,
     tier: number,
     itemsActive?: NavigationItem[],
-): Promise<void> {
-    if (typeof itemsActive === 'undefined' || itemsActive.length === 0) {
+): Promise<boolean> {
+    if (
+        typeof itemsActive === 'undefined' ||
+        itemsActive.length === 0
+    ) {
         let tierStartIndex = 0;
         const tierEndIndex = tier;
 
         itemsActive = [];
 
-        let found = true;
-
-        while (tierStartIndex <= tierEndIndex && found) {
+        while (tierStartIndex <= tierEndIndex) {
             const component = findNavigationItemForTier(store.itemsActive.value, tierStartIndex);
             if (!component) {
-                found = false;
-                continue;
+                break;
             }
 
             itemsActive.push(component);
@@ -38,12 +38,18 @@ export async function buildNavigationForTier(
         }
     }
 
-    const items: NavigationItem[] = await useNavigationProvider()
-        .getElements(
+    const items = await useNavigationProvider()
+        .getItems(
             tier,
             itemsActive,
         );
 
+    if (typeof items === 'undefined') {
+        return false;
+    }
+
     replaceNavigationTierItems(store, tier, items);
     refreshNavigationTierItems(store, tier);
+
+    return true;
 }

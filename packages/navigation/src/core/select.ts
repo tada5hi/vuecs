@@ -11,7 +11,7 @@ import { buildNavigationForTier } from './build';
 import { isNavigationItemMatch } from './match';
 import { refreshNavigationTierItems } from './refresh';
 import { replaceNavigationTierItemActive } from './replace';
-import { calculateNavigationTiers, findNavigationItemForTier } from './tier';
+import { findNavigationItemForTier } from './tier';
 
 export async function selectNavigationTierItem(
     store: NavigationStore,
@@ -30,13 +30,15 @@ export async function selectNavigationTierItem(
     replaceNavigationTierItemActive(store, tier, component);
     refreshNavigationTierItems(store, tier);
 
-    const tiers = await calculateNavigationTiers(store);
+    tier++;
 
-    let tierStartIndex = tier + 1;
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+        const built = await buildNavigationForTier(store, tier);
+        if (!built) {
+            break;
+        }
 
-    while (tierStartIndex <= tiers) {
-        await buildNavigationForTier(store, tierStartIndex);
-
-        tierStartIndex++;
+        tier++;
     }
 }

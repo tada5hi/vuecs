@@ -11,8 +11,7 @@ import type { NavigationItem } from '../type';
 
 export type NavigationStore = {
     items: Ref<NavigationItem[]>,
-    itemsActive: Ref<NavigationItem[]>,
-    tiers: Ref<number | undefined>
+    itemsActive: Ref<NavigationItem[]>
 };
 
 export type NavigationStoreInitOptions = {
