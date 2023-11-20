@@ -1,8 +1,8 @@
 import type {
     NavigationItem,
-    NavigationProvider,
 } from '@vue-layout/navigation';
 import {
+    createNavigationProvider,
     flattenNestedNavigationItems,
 } from '@vue-layout/navigation';
 
@@ -63,8 +63,8 @@ const secondaryAdminItems : NavigationItem[] = [
 
 ];
 
-export const navigationProvider : NavigationProvider = {
-    async getItems(tier: number, elementsActive: NavigationItem[]) {
+export const navigationProvider = createNavigationProvider({
+    async getItems(tier: number, itemsActive: NavigationItem[]) {
         if (tier > 1) {
             return undefined;
         }
@@ -77,8 +77,8 @@ export const navigationProvider : NavigationProvider = {
                 break;
             case 1: {
                 let component : NavigationItem;
-                if (elementsActive.length > 0) {
-                    [component] = elementsActive;
+                if (itemsActive.length > 0) {
+                    [component] = itemsActive;
                 } else {
                     component = { id: 'default' };
                 }
@@ -136,4 +136,4 @@ export const navigationProvider : NavigationProvider = {
 
         return [];
     },
-};
+});

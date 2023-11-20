@@ -26,3 +26,7 @@ export function useNavigationProvider(module?: NavigationProvider) : NavigationP
 export function setNavigationProvider(module: NavigationProvider) {
     instance = module;
 }
+
+export function createNavigationProvider(input: NavigationProvider) : NavigationProvider {
+    return input;
+}

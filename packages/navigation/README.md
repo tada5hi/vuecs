@@ -17,8 +17,7 @@ A package containing basic components, to build multi level navigation menus.
     - [buildNavigation](#buildnavigation)
 - [Types](#types)
     - [NavigationBuildContext](#navigationbuildcontext)
-    - [NavigationBuildRouteContext](#navigationbuildroutecontext)
-    - [NavigationElement](#navigationelement)
+    - [NavigationItem](#NavigationItem)
     - [NavigationProvider](#navigationprovider)
 - [Example](#example)
 - [License](#license)
@@ -32,20 +31,20 @@ $ npm i --save @vue-layout/navigation
 ## Usage
 
 To use the navigation component, a constant must be defined, 
-which satisfy the type: `NavigationProvider`.
+which satisfy the [NavigationProvider](#navigationprovider) type.
 
-The implementation will provide different navigation elements for each `tier`.
-The `tier` is a numeric value, which can reach from 0 to n (infinity).
+The implementation will provide different navigation elements for each tier.
+The tier is a numeric value, which can be any positive integer (including 0).
 
 `module.ts`
 
 ```typescript
 import {
-    NavigationElement,
-    NavigationProvider
+    NavigationItem,
+    createNavigationProvider
 } from "@vue-layout/navigation";
 
-const primaryItems : NavigationElement[] = [
+const primaryItems: NavigationItem[] = [
     {
         name: 'Home',
         url: '/',
@@ -58,23 +57,20 @@ const primaryItems : NavigationElement[] = [
     }
 ]
 
-export const navigationProvider : NavigationProvider = {
-    async hasTier(tier: number): Promise<boolean> {
-        // check if the tier exists.
-        return Promise.resolve(tier === 1);
-    },
-    async getElements(tier: number, itemsActive: NavigationElement[]): Promise<NavigationElement[]> {
+export const navigationProvider = createNavigationProvider({
+    async getItems(tier: number, itemsActive: NavigationItem[]) {
         // Return elements for a specific tier.
         // The context provides the current active elements for
         // the parent tiers.
-
-        switch (tier) {
-            case 0:
-                return primaryItems;
-            // ....
+        
+        if(tier === 0) {
+            return primaryItems;
         }
+        
+        // tier does not exist
+        return undefined;
     },
-    async getElementsActiveByURL(url: string): Promise<NavigationElement[]> {
+    async getItemsActiveByURL(url: string) {
         // build element context for url
         if (url === '/') {
             return [
@@ -90,7 +86,7 @@ export const navigationProvider : NavigationProvider = {
 
         return undefined;
     }
-};
+});
 ```
 
 The next step is to create the vue entrypoint. 
@@ -100,7 +96,7 @@ The next step is to create the vue entrypoint.
 ```typescript
 import {
     buildNavigation,
-    createPlugin
+    install
 } from '@vue-layout/navigation';
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
@@ -108,7 +104,7 @@ import { navigationProvider } from './module';
 
 const app = createApp();
 
-app.use(createPlugin({
+app.use(install({
     navigationProvider
 }));
 
@@ -130,7 +126,8 @@ app.use(router);
 
 --- 
 
-After those steps are completed, the `VCNavItems` SFC can be placed anywhere, if registered globally.
+After those steps are completed, the `VCNavItems` SFC can be placed anywhere, 
+if registered globally.
 
 ```vue
 <template>
@@ -161,8 +158,8 @@ await buildNavigation({
 });
 ```
 
-This will call the `getElementsActive` method of the `NavigationProvider` implementation,
-to calculate the active `elements`.
+This will call the `getItemsActive` method of the `NavigationProvider` implementation,
+to calculate the active items.
 
 **`items`**
 ```typescript
@@ -175,7 +172,7 @@ await buildNavigation({
 })
 ```
 
-This `element` array will be provided as second argument as context to the `getElements` method of
+The `items` property will be passed as second argument to the `getItems` method of
 the `NavigationProvider` implementation, to build a specific tier navigation.
 
 **`route`**
@@ -206,21 +203,10 @@ type NavigationBuildContext = {
 };
 ```
 
-### NavigationBuildRouteContext
+### NavigationItem
 
 ```typescript
-import { RouteLocationNormalized } from 'vue-router';
-
-type NavigationBuildRouteContext = {
-    route: RouteLocationNormalized,
-    metaKey: string
-};
-```
-
-### NavigationElement
-
-```typescript
-type NavigationElement = {
+type NavigationItem = {
     id?: string | number,
     tier?: number,
     name?: string,
@@ -238,7 +224,7 @@ type NavigationElement = {
     displayChildren?: boolean,
 
     rootLink?: boolean,
-    children?: NavigationElement[],
+    children?: NavigationItem[],
 
     requireLoggedIn?: boolean,
     requireLoggedOut?: boolean,
@@ -252,12 +238,15 @@ type NavigationElement = {
 ### NavigationProvider
 
 ```typescript
-import { NavigationElement } from '@vue-layout/navigation';
+import { NavigationItem } from '@vue-layout/navigation';
 
 declare type NavigationProvider = {
-    getElements: (tier: number, items: NavigationElement[]) => Promise<NavigationElement[]>,
-    getElementsActive: (url: string) => Promise<NavigationElement[]>,
-    hasTier: (tier: number) => Promise<boolean>
+    getItems: (
+        tier: number, items: NavigationItem[]
+    ) => Promise<NavigationItem[] | undefined> | undefined | NavigationItem[],
+    getItemsActive: (
+        url: string
+    ) => Promise<NavigationItem[]> | NavigationItem[]
 };
 ```
 
