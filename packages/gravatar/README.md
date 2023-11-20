@@ -36,7 +36,7 @@ After the component is registered, it can be used as follows.
 
 ```vue
 <template>
-    <Gravatar
+    <VCGravatar
         :email="'max.mustermann@example.com'"
         :default-img="'retro'"
         :size="80"

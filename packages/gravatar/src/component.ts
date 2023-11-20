@@ -8,7 +8,7 @@
 import md5 from 'md5';
 import { computed, defineComponent, h } from 'vue';
 
-export const Gravatar = defineComponent({
+export const VCGravatar = defineComponent({
     name: 'Gravatar',
     inheritAttrs: false,
     props: {

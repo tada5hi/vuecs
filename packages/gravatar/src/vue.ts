@@ -5,10 +5,10 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { Gravatar } from './component';
+import type { VCGravatar } from './component';
 
 declare module '@vue/runtime-core' {
     export interface GlobalComponents {
-        Gravatar: typeof Gravatar;
+        VCGravatar: typeof VCGravatar;
     }
 }

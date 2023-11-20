@@ -11,7 +11,7 @@ import './vue';
 
 // Import vue components
 import {
-    Gravatar,
+    VCGravatar,
 } from './component';
 import type { Options } from './type';
 
@@ -21,7 +21,7 @@ export * from './type';
 export function install(instance: App, options?: Options) : void {
     options ??= {};
 
-    instance.component('Gravatar', Gravatar);
+    instance.component('VCGravatar', VCGravatar);
 }
 
 export default {
