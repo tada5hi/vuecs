@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VNodeChild } from 'vue';
+import type { VNodeArrayChildren, VNodeChild } from 'vue';
 import {
     h, mergeProps, unref,
 } from 'vue';
@@ -285,10 +285,10 @@ export function buildListItem<T, M = any>(
         return renderContent(children.slot);
     }
 
-    const content = [
-        ...(children.icon ? [children.icon] : []),
-        ...(children.text ? [children.text] : []),
-        ...(children.actions ? [children.actions] : []),
+    const content : VNodeChild = [
+        ...(children.icon ? [children.icon] : []) as VNodeArrayChildren,
+        ...(children.text ? [children.text] : []) as VNodeArrayChildren,
+        ...(children.actions ? [children.actions] : []) as VNodeArrayChildren,
     ];
 
     return renderContent(content);
