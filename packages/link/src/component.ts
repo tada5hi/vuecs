@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022.
+ * Copyright (c) 2022.
  * Author Peter Placzek (tada5hi)
  * For the full copyright and license information,
  * view the LICENSE file that was distributed with this source code.
@@ -9,10 +9,9 @@ import type { DefineComponent, VNodeProps, VNodeTypes } from 'vue';
 import {
     computed, defineComponent, h, resolveDynamicComponent,
 } from 'vue';
-import { hasOwnProperty } from '@vue-layout/core';
 
-export const MyLink = defineComponent({
-    name: 'MyLink',
+export const VLLink = defineComponent({
+    name: 'VLLink',
     props: {
         active: {
             type: Boolean,
@@ -91,10 +90,10 @@ export const MyLink = defineComponent({
         }));
 
         const buildVNodeProps = () => {
-            const onClick = (event: any) => {
-                const isEvent: boolean = hasOwnProperty(event, 'preventDefault') &&
-                    hasOwnProperty(event, 'stopPropagation') &&
-                    hasOwnProperty(event, 'stopImmediatePropagation');
+            const onClick = (event: Record<string, any>) => {
+                const isEvent: boolean = typeof event.preventDefault !== 'undefined' &&
+                    typeof event.stopPropagation !== 'undefined' &&
+                    typeof event.stopImmediatePropagation !== 'undefined';
 
                 if (isEvent && props.disabled) {
                     event.preventDefault();
@@ -164,5 +163,3 @@ export const MyLink = defineComponent({
         );
     },
 });
-
-export default MyLink;

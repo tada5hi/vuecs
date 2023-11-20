@@ -54,11 +54,13 @@
     },
     "devDependencies": {
         "@vue-layout/core": "^4.0.0",
+        "@vue-layout/link": "^0.0.0",
         "vue": "^3.3.7",
         "vue-router": "^4.2.2"
     },
     "peerDependencies": {
         "@vue-layout/core": "^4.0.0",
+        "@vue-layout/link": "^0.0.0",
         "vue": "^3.x",
         "vue-router": "^4.x"
     },

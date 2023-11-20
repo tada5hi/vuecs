@@ -63,6 +63,14 @@ with minimal effort.
 
 [Documentation](packages/gravatar/README.md)
 
+### Link 🔗
+
+**`@vue-layout/link`**
+
+This package provides an easy way to use nuxt or vue-router links in a Vue3 web applications.
+
+[Documentation](packages/link/README.md)
+
 ### List Controls 📋
 
 **`@vue-layout/list-controls`**

@@ -5,7 +5,5 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-export * from './my-link';
 export * from './item';
 export * from './items';
-export * from './type';

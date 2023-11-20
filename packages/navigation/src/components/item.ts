@@ -6,6 +6,8 @@
  */
 
 import { hasNormalizedSlot, normalizeSlot } from '@vue-layout/core';
+import type { LinkProperties } from '@vue-layout/link';
+import { VLLink } from '@vue-layout/link';
 import type { PropType, Ref, VNodeChild } from 'vue';
 import {
     defineComponent,
@@ -22,9 +24,7 @@ import {
     toggleNavigation,
 } from '../core';
 import { isAbsoluteURL } from '../utils';
-import type { LinkProperties } from './type';
 import { ElementType, SlotName } from '../constants';
-import { MyLink } from './my-link';
 
 export const VLNavItem = defineComponent({
     props: {
@@ -97,7 +97,7 @@ export const VLNavItem = defineComponent({
                                     }
                                 }
 
-                                item = h(MyLink, {
+                                item = h(VLLink, {
                                     class: [
                                         'nav-link',
                                         {

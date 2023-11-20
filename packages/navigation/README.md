@@ -149,7 +149,7 @@ After those steps are completed, the `VLNavItems` SFC can be placed anywhere, if
 
 ▸ `function` **buildNavigation**(`context?: NavigationBuildContext`): `Promise`<`void`>
 
-Build all navigation tiers, by `url` or active `elements`. 
+Build all navigation tiers, by `url` or active `items`. 
 
 #### Example
 **`URL`**

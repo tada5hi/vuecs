@@ -11,7 +11,6 @@ import type { App, Plugin } from 'vue';
 import { setNavigationProvider } from './provider';
 import { setupStore } from './store';
 import {
-    MyLink,
     VLNavItem,
     VLNavItems,
 } from './components';
@@ -34,7 +33,6 @@ export function install(instance: App, options: Options) : void {
     applyPluginBaseOptions(instance, options);
 
     Object.entries({
-        MyLink,
         VLNavItem,
         VLNavItems,
     }).forEach(([componentName, component]) => {
