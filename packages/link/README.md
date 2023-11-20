@@ -22,7 +22,7 @@ $ npm i --save @vue-layout/link
 Register the plugin.
 
 ```typescript
-import install from '@vue-layout/gravatar';
+import install from '@vue-layout/link';
 import { createApp } from 'vue'
 
 const app = createApp({})

@@ -16,6 +16,7 @@ vanilla or hyperscript components.
   - [Countdown](#countdown-)
   - [Form Controls](#form-controls-)
   - [Gravatar](#gravatar-)
+  - [Link](#link-)
   - [List Controls](#list-controls-)
   - [Navigation](#navigation-)
   - [Pagination](#pagination-)
