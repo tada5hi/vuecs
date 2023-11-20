@@ -4,11 +4,11 @@
  * For the full copyright and license information,
  * view the LICENSE file that was distributed with this source code.
  */
-import type { Countdown } from './component';
+import type { VCCountdown } from './component';
 
 declare module '@vue/runtime-core' {
 
     export interface GlobalComponents {
-        Countdown: typeof Countdown
+        VCCountdown: typeof VCCountdown
     }
 }

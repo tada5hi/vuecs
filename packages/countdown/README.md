@@ -38,7 +38,7 @@ After the component is registered, it can be used as follows.
 
 ```vue
 <template>
-    <Countdown
+    <VCCountdown
         :auto-start="true"
         :emit-events="true"
         :interval="1000"
@@ -52,7 +52,7 @@ After the component is registered, it can be used as follows.
                 {{ props.seconds }} second(s)
             </span>.
         </template>
-    </Countdown>
+    </VCCountdown>
 </template>
 ```
 

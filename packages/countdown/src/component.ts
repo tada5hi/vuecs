@@ -14,9 +14,7 @@ const MILLISECONDS_HOUR = 60 * MILLISECONDS_MINUTE;
 const MILLISECONDS_DAY = 24 * MILLISECONDS_HOUR;
 const EVENT_VISIBILITY_CHANGE = 'visibilitychange';
 
-export const Countdown = defineComponent({
-    name: 'Countdown',
-
+export const VCCountdown = defineComponent({
     slots: Object as SlotsType<{
         default: {
             days: number,
@@ -228,7 +226,7 @@ export const Countdown = defineComponent({
         /**
          * Starts to countdown.
          * @public
-         * @emits Countdown#start
+         * @emits VCCountdown#start
          */
         start() {
             if (this.counting) {
@@ -240,7 +238,7 @@ export const Countdown = defineComponent({
             if (this.emitEvents) {
                 /**
                  * Countdown start event.
-                 * @event Countdown#start
+                 * @event VCCountdown#start
                  */
                 this.$emit('start');
             }
@@ -321,7 +319,7 @@ export const Countdown = defineComponent({
         /**
          * Progresses to countdown.
          * @private
-         * @emits Countdown#progress
+         * @emits VCCountdown#progress
          */
         progress() {
             if (!this.counting) {
@@ -333,7 +331,7 @@ export const Countdown = defineComponent({
             if (this.emitEvents && this.totalMilliseconds > 0) {
                 /**
                  * Countdown progress event.
-                 * @event Countdown#progress
+                 * @event VCCountdown#progress
                  */
                 this.$emit('progress', {
                     days: this.days,
@@ -355,7 +353,7 @@ export const Countdown = defineComponent({
         /**
          * Aborts the countdown.
          * @public
-         * @emits Countdown#abort
+         * @emits VCCountdown#abort
          */
         abort() {
             if (!this.counting) {
@@ -368,7 +366,7 @@ export const Countdown = defineComponent({
             if (this.emitEvents) {
                 /**
                  * Countdown abort event.
-                 * @event Countdown#abort
+                 * @event VCCountdown#abort
                  */
                 this.$emit('abort');
             }
@@ -377,7 +375,7 @@ export const Countdown = defineComponent({
         /**
          * Ends the countdown.
          * @public
-         * @emits Countdown#end
+         * @emits VCCountdown#end
          */
         end() {
             if (!this.counting) {
@@ -391,7 +389,7 @@ export const Countdown = defineComponent({
             if (this.emitEvents) {
                 /**
                  * Countdown end event.
-                 * @event Countdown#end
+                 * @event VCCountdown#end
                  */
                 this.$emit('end');
             }
@@ -447,4 +445,4 @@ export const Countdown = defineComponent({
     },
 });
 
-export default Countdown;
+export default VCCountdown;

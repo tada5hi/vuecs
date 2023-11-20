@@ -12,7 +12,7 @@ import './vue';
 
 // Import vue components
 import {
-    Countdown,
+    VCCountdown,
 } from './component';
 
 export * from './component';
@@ -21,7 +21,7 @@ export * from './type';
 export function install(instance: App, options?: Options) : void {
     options ??= {};
 
-    instance.component('Countdown', Countdown);
+    instance.component('VCCountdown', VCCountdown);
 }
 
 export default {
