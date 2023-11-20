@@ -38,7 +38,7 @@ After the component is registered, it can be used as follows.
 
 ```vue
 <template>
-    <Timeago
+    <VCTimeago
         :date-time="1684746631769"
         :locale="'en'"
         :auto-update="true"

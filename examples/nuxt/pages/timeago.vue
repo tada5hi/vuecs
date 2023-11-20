@@ -6,13 +6,13 @@
   -->
 
 <script lang="ts">
-import { Timeago } from '@vue-layout/timeago';
+import { VCTimeago } from '@vue-layout/timeago';
 import { getCurrentInstance } from 'vue';
 import { defineNuxtComponent } from '#app';
 
 export default defineNuxtComponent({
     components: {
-        Timeago,
+        Timeago: VCTimeago,
     },
     setup() {
         const instance = getCurrentInstance();

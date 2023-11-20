@@ -21,7 +21,7 @@ import { InjectionKey } from './constants';
 import type { Converter, ConverterOptions, InjectionContext } from './type';
 import { convert } from './converter';
 
-export const Timeago = defineComponent({
+export const VCTimeago = defineComponent({
     props: {
         datetime: {
             type: [Object, Number, String] as PropType<Date | number | string>,

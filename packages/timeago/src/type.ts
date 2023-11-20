@@ -21,10 +21,6 @@ export type InjectionContext = {
 
 type Options = {
     /**
-     * default: Timeago
-     */
-    name?: string,
-    /**
      * default: en
      */
     locale?: string,

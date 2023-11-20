@@ -12,20 +12,13 @@ import './vue';
 
 // Import vue components
 import {
-    Timeago,
+    VCTimeago,
 } from './component';
 import { InjectionKey } from './constants';
 import type { InjectionContext, Options } from './type';
 
 export * from './component';
 export * from './type';
-
-declare module '@vue/runtime-core' {
-    interface ComponentCustomProperties {
-        $timeagoLocale?: Ref<string>;
-        // Add other custom properties here
-    }
-}
 
 export function install(instance: App, options?: Options) : void {
     options ??= {};
@@ -37,7 +30,7 @@ export function install(instance: App, options?: Options) : void {
 
     instance.config.globalProperties.$timeagoLocale = ref(options.locale || 'en');
 
-    instance.component(options.name || 'Timeago', Timeago);
+    instance.component('VCTimeago', VCTimeago);
 }
 
 export default {

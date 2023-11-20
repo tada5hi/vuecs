@@ -5,10 +5,16 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { Timeago } from './component';
+import type { Ref } from 'vue';
+import type { VCTimeago } from './component';
 
 declare module '@vue/runtime-core' {
     export interface GlobalComponents {
-        Timeago: typeof Timeago;
+        VCTimeago: typeof VCTimeago;
+    }
+
+    interface ComponentCustomProperties {
+        $timeagoLocale?: Ref<string>;
+        // Add other custom properties here
     }
 }
