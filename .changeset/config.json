@@ -7,6 +7,7 @@
         "@vue-layout/countdown",
         "@vue-layout/form-controls",
         "@vue-layout/gravatar",
+        "@vue-layout/link",
         "@vue-layout/list-controls",
         "@vue-layout/navigation",
         "@vue-layout/pagination",

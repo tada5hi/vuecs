@@ -50,7 +50,7 @@ const load = async ({page, limit, offset}) => {
 }
 </script>
 <template>
-    <Pagination
+    <VCPagination
         :busy="busy"
         :total="100"
         :limit="10"
