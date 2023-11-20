@@ -5,10 +5,10 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { VLLink } from './component';
+import type { VCLink } from './component';
 
 declare module '@vue/runtime-core' {
     export interface GlobalComponents {
-        VLLink: typeof VLLink;
+        VCLink: typeof VCLink;
     }
 }

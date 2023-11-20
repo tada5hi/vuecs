@@ -10,8 +10,7 @@ import {
     computed, defineComponent, h, resolveDynamicComponent,
 } from 'vue';
 
-export const VLLink = defineComponent({
-    name: 'VLLink',
+export const VCLink = defineComponent({
     props: {
         active: {
             type: Boolean,
