@@ -6,13 +6,13 @@
   -->
 <script lang="ts">
 import { Gravatar } from '@vue-layout/gravatar';
-import { VLNavItems } from '@vue-layout/navigation';
+import { VCNavItems } from '@vue-layout/navigation';
 import { defineNuxtComponent } from '#app';
 
 export default defineNuxtComponent({
     components: {
         Gravatar,
-        VLNavItems,
+        VLNavItems: VCNavItems,
     },
     setup() {
 

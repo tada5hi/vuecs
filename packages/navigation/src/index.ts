@@ -8,11 +8,14 @@
 import { applyPluginBaseOptions } from '@vue-layout/core';
 
 import type { App, Plugin } from 'vue';
+
+import './vue';
+
 import { setNavigationProvider } from './provider';
 import { setupStore } from './store';
 import {
-    VLNavItem,
-    VLNavItems,
+    VCNavItem,
+    VCNavItems,
 } from './components';
 import type { Options } from './type';
 
@@ -33,8 +36,8 @@ export function install(instance: App, options: Options) : void {
     applyPluginBaseOptions(instance, options);
 
     Object.entries({
-        VLNavItem,
-        VLNavItems,
+        VCNavItem,
+        VCNavItems,
     }).forEach(([componentName, component]) => {
         instance.component(componentName, component);
     });

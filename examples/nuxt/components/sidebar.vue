@@ -5,11 +5,11 @@
   - view the LICENSE file that was distributed with this source code.
   -->
 <script lang="ts">
-import { VLNavItems } from '@vue-layout/navigation';
+import { VCNavItems } from '@vue-layout/navigation';
 import { defineNuxtComponent } from '#app';
 
 export default defineNuxtComponent({
-    components: { VLNavItems },
+    components: { VLNavItems: VCNavItems },
 });
 </script>
 <template>

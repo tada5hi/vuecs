@@ -12,9 +12,9 @@ import { SlotName } from '../constants';
 import { injectStore } from '../store';
 import type { NavigationItem } from '../type';
 import { findNavigationItemsForTier } from '../core';
-import { VLNavItem } from './item';
+import { VCNavItem } from './item';
 
-export const VLNavItems = defineComponent({
+export const VCNavItems = defineComponent({
     props: {
         tier: {
             type: Number,
@@ -44,7 +44,7 @@ export const VLNavItems = defineComponent({
                 return normalizeSlot(SlotName.ITEM, context, slots);
             }
 
-            return h(VLNavItem, context);
+            return h(VCNavItem, context);
         };
 
         const buildChildren = () : VNodeChild => {
@@ -77,5 +77,3 @@ export const VLNavItems = defineComponent({
         }, [buildChildren()]);
     },
 });
-
-export default VLNavItems;

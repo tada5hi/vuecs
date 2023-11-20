@@ -130,14 +130,14 @@ app.use(router);
 
 --- 
 
-After those steps are completed, the `VLNavItems` SFC can be placed anywhere, if registered globally.
+After those steps are completed, the `VCNavItems` SFC can be placed anywhere, if registered globally.
 
 ```vue
 <template>
     <div>
-        <VLNavItems :tier="0" />
+        <VCNavItems :tier="0" />
         
-        <VLNavItems :tier="1" />
+        <VCNavItems :tier="1" />
     </div>
 </template>
 ```

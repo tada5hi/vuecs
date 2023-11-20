@@ -7,7 +7,7 @@
 
 import { hasNormalizedSlot, normalizeSlot } from '@vue-layout/core';
 import type { LinkProperties } from '@vue-layout/link';
-import { VLLink } from '@vue-layout/link';
+import { VCLink } from '@vue-layout/link';
 import type { PropType, Ref, VNodeChild } from 'vue';
 import {
     defineComponent,
@@ -26,7 +26,7 @@ import {
 import { isAbsoluteURL } from '../utils';
 import { ElementType, SlotName } from '../constants';
 
-export const VLNavItem = defineComponent({
+export const VCNavItem = defineComponent({
     props: {
         tier: {
             type: Number,
@@ -159,7 +159,7 @@ export const VLNavItem = defineComponent({
                                     toggleComponentExpansion,
                                 });
                             } else if (component.value.displayChildren) {
-                                const navigationComponents = resolveComponent('VLNavItems');
+                                const navigationComponents = resolveComponent('VCNavItems');
                                 items = h(navigationComponents, {
                                     class: 'list-unstyled nav-sub-items',
                                     tier: props.tier,
@@ -192,5 +192,3 @@ export const VLNavItem = defineComponent({
         };
     },
 });
-
-export default VLNavItem;
