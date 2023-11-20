@@ -5,10 +5,10 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { Pagination } from './component';
+import type { VCPagination } from './component';
 
 declare module '@vue/runtime-core' {
     export interface GlobalComponents {
-        Pagination: typeof Pagination
+        VCPagination: typeof VCPagination
     }
 }

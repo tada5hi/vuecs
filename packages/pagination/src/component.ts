@@ -10,8 +10,7 @@ import { computed, defineComponent } from 'vue';
 import { buildPagination } from './module';
 import type { PaginationMeta } from './type';
 
-export const Pagination = defineComponent({
-    name: 'Pagination',
+export const VCPagination = defineComponent({
     props: {
         total: {
             type: Number,
@@ -54,4 +53,4 @@ export const Pagination = defineComponent({
     },
 });
 
-export default Pagination;
+export default VCPagination;

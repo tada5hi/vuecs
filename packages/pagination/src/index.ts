@@ -14,7 +14,7 @@ import './vue';
 
 // Import vue components
 import {
-    Pagination,
+    VCPagination,
 } from './component';
 import type { Options } from './type';
 
@@ -27,7 +27,7 @@ export function install(instance: App, options?: Options) : void {
 
     applyPluginBaseOptions(instance, options);
 
-    instance.component('Pagination', Pagination);
+    instance.component('VCPagination', VCPagination);
 }
 
 export default {

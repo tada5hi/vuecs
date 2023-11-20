@@ -6,13 +6,13 @@
   -->
 
 <script lang="ts">
-import { Pagination } from '@vue-layout/pagination';
+import { VCPagination } from '@vue-layout/pagination';
 import { ref } from '#imports';
 import { defineNuxtComponent } from '#app';
 
 export default defineNuxtComponent({
     components: {
-        Pagination,
+        Pagination: VCPagination,
     },
     setup() {
         const items = [];
