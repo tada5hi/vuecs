@@ -35,7 +35,7 @@ export default defineComponent({
 <template>
     <div>
         <div class="form-group">
-            <FormSubmit
+            <VCFormSubmit
                 v-model="busy"
                 :submit="submit"
                 :icon="true"

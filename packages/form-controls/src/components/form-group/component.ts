@@ -10,8 +10,7 @@ import { defineComponent } from 'vue';
 import type { ValidationMessages, ValidationResult, ValidationTranslator } from '../type';
 import { buildFormGroup } from './module';
 
-export const FormGroup = defineComponent({
-    name: 'FormGroup',
+export const VCFormGroup = defineComponent({
     props: {
         label: {
             type: Boolean,

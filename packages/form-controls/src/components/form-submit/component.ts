@@ -11,8 +11,7 @@ import { defineComponent } from 'vue';
 import { buildFormSubmit } from './module';
 import type { ValidationResult } from '../type';
 
-export const FormSubmit = defineComponent({
-    name: 'FormSubmit',
+export const VCFormSubmit = defineComponent({
     props: {
         modelValue: {
             type: Boolean,

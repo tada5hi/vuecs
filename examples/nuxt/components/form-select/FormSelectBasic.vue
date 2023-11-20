@@ -43,15 +43,15 @@ export default defineComponent({
 });
 </script>
 <template>
-    <FormGroup
+    <VCFormGroup
         :label="true"
         :label-content="'Label'"
         :validation-messages="validationMessages"
         :validation-result="v$.value"
     >
-        <FormSelect
+        <VCFormSelect
             v-model="form.value"
             :options="options"
         />
-    </FormGroup>
+    </VCFormGroup>
 </template>

@@ -9,8 +9,7 @@ import type { PropType } from 'vue';
 import { defineComponent } from 'vue';
 import { buildFormInputCheckbox } from './module';
 
-export const FormInputCheckbox = defineComponent({
-    name: 'FormInputCheckbox',
+export const VCFormInputCheckbox = defineComponent({
     props: {
         modelValue: {
             type: [Object, Boolean, String, Number, Array] as PropType<unknown | unknown[]>,

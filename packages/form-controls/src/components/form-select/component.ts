@@ -10,8 +10,7 @@ import { defineComponent } from 'vue';
 import { buildFormSelect } from './module';
 import type { FormSelectOption } from './type';
 
-export const FormSelect = defineComponent({
-    name: 'FormSelect',
+export const VCFormSelect = defineComponent({
     props: {
         modelValue: {
             type: String,

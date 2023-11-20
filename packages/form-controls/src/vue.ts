@@ -6,21 +6,21 @@
  */
 
 import type {
-    FormGroup,
-    FormInput,
-    FormInputCheckbox,
-    FormSelect,
-    FormSubmit,
-    FormTextarea,
+    VCFormGroup,
+    VCFormInput,
+    VCFormInputCheckbox,
+    VCFormSelect,
+    VCFormSubmit,
+    VCFormTextarea,
 } from './components';
 
 declare module '@vue/runtime-core' {
     export interface GlobalComponents {
-        FormGroup: typeof FormGroup,
-        FormInput: typeof FormInput,
-        FormInputCheckbox: typeof FormInputCheckbox,
-        FormSelect: typeof FormSelect,
-        FormSubmit: typeof FormSubmit,
-        FormTextarea: typeof FormTextarea,
+        VCFormGroup: typeof VCFormGroup,
+        VCFormInput: typeof VCFormInput,
+        VCFormInputCheckbox: typeof VCFormInputCheckbox,
+        VCFormSelect: typeof VCFormSelect,
+        VCFormSubmit: typeof VCFormSubmit,
+        VCFormTextarea: typeof VCFormTextarea,
     }
 }

@@ -8,8 +8,7 @@
 import { defineComponent } from 'vue';
 import { buildFormInput } from './module';
 
-export const FormInput = defineComponent({
-    name: 'FormInput',
+export const VCFormInput = defineComponent({
     props: {
         modelValue: {
             type: String,

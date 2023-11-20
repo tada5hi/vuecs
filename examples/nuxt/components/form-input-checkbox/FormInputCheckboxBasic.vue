@@ -42,27 +42,27 @@ export default defineComponent({
 <template>
     <div class="row">
         <div class="col">
-            <FormGroup
+            <VCFormGroup
                 :label="true"
                 :label-content="'Label'"
                 :validation-messages="validationMessages"
                 :validation-result="v$.value"
             >
-                <FormInputCheckbox
+                <VCFormInputCheckbox
                     v-model="form.value"
                     :label="true"
                     :label-content="'switch'"
                     :group="true"
                     :group-class="'form-switch'"
                 />
-            </FormGroup>
+            </VCFormGroup>
         </div>
         <div class="col">
-            <FormGroup
+            <VCFormGroup
                 :label="true"
                 :label-content="'Label'"
             >
-                <FormInputCheckbox
+                <VCFormInputCheckbox
                     v-model="valueMultiple"
                     :value="0"
                     :label="true"
@@ -70,12 +70,12 @@ export default defineComponent({
                     :group="true"
                     :group-class="'form-switch'"
                 />
-            </FormGroup>
-            <FormGroup
+            </VCFormGroup>
+            <VCFormGroup
                 :label="true"
                 :label-content="'Label'"
             >
-                <FormInputCheckbox
+                <VCFormInputCheckbox
                     v-model="valueMultiple"
                     :value="1"
                     :label="true"
@@ -83,7 +83,7 @@ export default defineComponent({
                     :group="true"
                     :group-class="'form-switch'"
                 />
-            </FormGroup>
+            </VCFormGroup>
             {{ valueMultiple }}
         </div>
     </div>

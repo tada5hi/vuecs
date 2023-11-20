@@ -11,12 +11,12 @@ import type { App, Plugin } from 'vue';
 import './vue';
 
 import {
-    FormGroup,
-    FormInput,
-    FormInputCheckbox,
-    FormSelect,
-    FormSubmit,
-    FormTextarea,
+    VCFormGroup,
+    VCFormInput,
+    VCFormInputCheckbox,
+    VCFormSelect,
+    VCFormSubmit,
+    VCFormTextarea,
 } from './components';
 import type { Options } from './type';
 
@@ -29,12 +29,12 @@ export function install(instance: App, options?: Options) : void {
     applyPluginBaseOptions(instance, options);
 
     Object.entries({
-        FormGroup,
-        FormInputCheckbox,
-        FormInput,
-        FormSelect,
-        FormSubmit,
-        FormTextarea,
+        VLFormGroup: VCFormGroup,
+        VLFormInputCheckbox: VCFormInputCheckbox,
+        VLFormInput: VCFormInput,
+        VLFormSelect: VCFormSelect,
+        VLFormSubmit: VCFormSubmit,
+        VLFormTextarea: VCFormTextarea,
     }).forEach(([componentName, component]) => {
         instance.component(componentName, component);
     });

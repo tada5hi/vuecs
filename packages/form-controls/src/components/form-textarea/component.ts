@@ -8,8 +8,7 @@
 import { defineComponent } from 'vue';
 import { buildFormTextarea } from './module';
 
-export const FormTextarea = defineComponent({
-    name: 'FormTextarea',
+export const VCFormTextarea = defineComponent({
     props: {
         modelValue: {
             type: String,
