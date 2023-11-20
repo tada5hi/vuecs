@@ -28,3 +28,8 @@ ExpectFormBaseOptions<FormInputCheckboxBuildOptions>,
 OptionsInputValue<PartialPick<FormInputCheckboxBuildOptions, 'groupClass' | 'label' | 'labelClass' | 'labelContent'>> &
 PartialPick<FormInputCheckboxBuildOptions, 'group'>
 >;
+
+export type FormInputCheckboxLabelSlotProps = {
+    class: VNodeClass,
+    id: string
+};

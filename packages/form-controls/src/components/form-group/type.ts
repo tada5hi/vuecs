@@ -50,3 +50,7 @@ PartialPick<FormGroupOptions,
 'validationWarningClass'>
 > &
 PartialPick<FormGroupOptions, 'content' | 'slotItems' | 'validationMessages' | 'validationResult' | 'validationTranslator'>;
+
+export type FormGroupLabelSlotProps = {
+    class: VNodeClass
+};

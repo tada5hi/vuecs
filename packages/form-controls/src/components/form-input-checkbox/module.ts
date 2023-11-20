@@ -9,10 +9,10 @@ import type { VNodeChild } from 'vue';
 import {
     h, mergeProps, unref,
 } from 'vue';
-import { createOptionBuilder } from '@vue-layout/core';
-import { Component } from '../constants';
+import { createOptionBuilder, hasNormalizedSlot, normalizeSlot } from '@vue-layout/core';
+import { Component, SlotName } from '../constants';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
-import type { FormInputCheckboxBuildOptions, FormInputCheckboxBuildOptionsInput } from './type';
+import type { FormInputCheckboxBuildOptions, FormInputCheckboxBuildOptionsInput, FormInputCheckboxLabelSlotProps } from './type';
 
 export function buildFormInputCheckboxOptions(
     input: FormInputCheckboxBuildOptionsInput,
@@ -114,14 +114,21 @@ export function buildFormInputCheckbox(
         const children: VNodeChild[] = [];
 
         if (options.label) {
-            children.push(h(
-                'label',
-                {
-                    class: options.labelClass,
-                    for: id,
-                },
-                [options.labelContent],
-            ));
+            if (hasNormalizedSlot(SlotName.LABEL, options.slotItems)) {
+                children.push(normalizeSlot(SlotName.LABEL, {
+                    class: options.class,
+                    id,
+                } satisfies FormInputCheckboxLabelSlotProps, options.slotItems));
+            } else {
+                children.push(h(
+                    'label',
+                    {
+                        class: options.labelClass,
+                        for: id,
+                    },
+                    [options.labelContent],
+                ));
+            }
         }
 
         children.push(element);

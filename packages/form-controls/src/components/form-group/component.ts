@@ -5,12 +5,18 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { PropType } from 'vue';
+import type { PropType, SlotsType } from 'vue';
 import { defineComponent } from 'vue';
+import type { SlotName } from '../constants';
 import type { ValidationMessages, ValidationResult, ValidationTranslator } from '../type';
 import { buildFormGroup } from './module';
+import type { FormGroupLabelSlotProps } from './type';
 
 export const VCFormGroup = defineComponent({
+    slots: Object as SlotsType<{
+        [SlotName.DEFAULT]: undefined,
+        [SlotName.LABEL]: FormGroupLabelSlotProps
+    }>,
     props: {
         label: {
             type: Boolean,

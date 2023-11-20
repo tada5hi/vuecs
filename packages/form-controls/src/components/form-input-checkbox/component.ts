@@ -5,11 +5,16 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { PropType } from 'vue';
+import type { PropType, SlotsType } from 'vue';
 import { defineComponent } from 'vue';
+import type { SlotName } from '../constants';
 import { buildFormInputCheckbox } from './module';
+import type { FormInputCheckboxLabelSlotProps } from './type';
 
 export const VCFormInputCheckbox = defineComponent({
+    slots: Object as SlotsType<{
+        [SlotName.LABEL]: FormInputCheckboxLabelSlotProps
+    }>,
     props: {
         modelValue: {
             type: [Object, Boolean, String, Number, Array] as PropType<unknown | unknown[]>,
@@ -33,7 +38,7 @@ export const VCFormInputCheckbox = defineComponent({
         },
     },
     emits: ['update:modelValue'],
-    setup(props, { attrs, emit }) {
+    setup(props, { attrs, emit, slots }) {
         return () => buildFormInputCheckbox({
             group: props.group,
             groupClass: props.groupClass,
@@ -48,6 +53,7 @@ export const VCFormInputCheckbox = defineComponent({
                 emit('update:modelValue', input);
             },
 
+            slotItems: slots,
             props: attrs,
         });
     },

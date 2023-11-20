@@ -10,7 +10,7 @@ import type { VNodeChild } from 'vue';
 import { h } from 'vue';
 import { Component, SlotName } from '../constants';
 import { buildValidationGroup } from '../validation-group';
-import type { FormGroupOptions, FormGroupOptionsInput } from './type';
+import type { FormGroupLabelSlotProps, FormGroupOptions, FormGroupOptionsInput } from './type';
 
 export function buildFormGroupOptions(
     input: FormGroupOptionsInput,
@@ -97,13 +97,19 @@ export function buildFormGroup(
     const children : VNodeChild = [];
 
     if (options.label) {
-        children.push(
-            h(
-                'label',
-                { class: options.labelClass },
-                [options.labelContent],
-            ),
-        );
+        if (hasNormalizedSlot(SlotName.LABEL, options.slotItems)) {
+            children.push(normalizeSlot(SlotName.LABEL, {
+                class: options.class,
+            } satisfies FormGroupLabelSlotProps, options.slotItems));
+        } else {
+            children.push(
+                h(
+                    'label',
+                    { class: options.labelClass },
+                    [options.labelContent],
+                ),
+            );
+        }
     }
 
     if (hasNormalizedSlot(SlotName.DEFAULT, options.slotItems)) {
