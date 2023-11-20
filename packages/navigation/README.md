@@ -195,10 +195,12 @@ await buildNavigation({
 ### NavigationBuildContext
 
 ```typescript
-import { Component } from '@vue-layout/navigation';
+import { NavigationItem } from '@vue-layout/navigation';
+import { RouteLocationNormalized } from 'vue-router';
 
-type NavigationBuildContext = {
-    items?: Component[],
+declare type NavigationBuildContext = {
+    items?: NavigationItem[],
+    route?: RouteLocationNormalized,
     url?: string
 };
 ```
@@ -206,7 +208,9 @@ type NavigationBuildContext = {
 ### NavigationItem
 
 ```typescript
-type NavigationItem = {
+import { ElementType } from '@vue-layout/navigation';
+
+declare type NavigationItem = {
     id?: string | number,
     tier?: number,
     name?: string,
@@ -215,10 +219,12 @@ type NavigationItem = {
     urlTarget?: '_self' | '_blank' | '_parent' | '_top' | string,
 
     default?: boolean,
-    type?: 'separator' | 'link',
+    // link or separator
+    type?: `${ElementType}`,
 
     icon?: string,
-    environment?: 'development' | 'production' | 'testing',
+
+    active?: boolean,
 
     display?: boolean,
     displayChildren?: boolean,
@@ -229,7 +235,6 @@ type NavigationItem = {
     requireLoggedIn?: boolean,
     requireLoggedOut?: boolean,
     requirePermissions?: string | string[] | ((checker: (name: string) => boolean) => boolean)
-
 
     [key: string]: any
 };
