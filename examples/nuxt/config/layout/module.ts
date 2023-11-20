@@ -17,7 +17,7 @@ const primaryItems : NavigationItem[] = [
 
 const secondaryDefaultItems : NavigationItem[] = [
     {
-        name: 'Home', type: 'link', icon: 'fas fa-home', url: '/', rootLink: true,
+        name: 'Home', type: 'link', icon: 'fas fa-home', url: '/', root: true,
     },
     {
         name: 'Countdown', type: 'link', icon: 'fa-solid fa-clock', url: '/countdown',
@@ -103,7 +103,7 @@ export const navigationProvider = createNavigationProvider({
         const filterFunc = (item: NavigationItem) => {
             if (!item.url) return false;
 
-            if (item.rootLink) {
+            if (item.root) {
                 return url === item.url;
             }
 

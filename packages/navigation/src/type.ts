@@ -27,7 +27,7 @@ export type NavigationItem = {
     display?: boolean,
     displayChildren?: boolean,
 
-    rootLink?: boolean,
+    root?: boolean,
     children?: NavigationItem[],
 
     requireLoggedIn?: boolean,

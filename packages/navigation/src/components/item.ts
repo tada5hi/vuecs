@@ -101,7 +101,7 @@ export const VCNavItem = defineComponent({
                                     class: [
                                         'nav-link',
                                         {
-                                            'root-link': component.value.rootLink,
+                                            'root-link': component.value.root,
                                         },
                                     ],
                                     ...linkProps,
