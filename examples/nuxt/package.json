@@ -28,15 +28,15 @@
     "devDependencies": {
         "@fortawesome/fontawesome-free": "^6.4.2",
         "@pinia/nuxt": "^0.5.1",
-        "@vue-layout/countdown": "^5.0.0",
-        "@vue-layout/form-controls": "^5.0.0",
-        "@vue-layout/gravatar": "^5.0.0",
-        "@vue-layout/list-controls": "^5.0.0",
-        "@vue-layout/navigation": "^5.0.0",
-        "@vue-layout/pagination": "^5.0.0",
-        "@vue-layout/preset-bootstrap-v5": "^5.0.0",
-        "@vue-layout/preset-font-awesome": "^4.0.0",
-        "@vue-layout/timeago": "^5.0.0",
+        "@vue-layout/countdown": "^5.0.1",
+        "@vue-layout/form-controls": "^5.0.1",
+        "@vue-layout/gravatar": "^5.0.1",
+        "@vue-layout/list-controls": "^5.0.1",
+        "@vue-layout/navigation": "^5.0.1",
+        "@vue-layout/pagination": "^5.0.1",
+        "@vue-layout/preset-bootstrap-v5": "^5.0.1",
+        "@vue-layout/preset-font-awesome": "^4.0.1",
+        "@vue-layout/timeago": "^5.0.1",
         "@vuelidate/core": "^2.0.3",
         "@vuelidate/validators": "^2.0.4",
         "bootstrap": "^5.3.2",
@@ -45,5 +45,5 @@
         "vue": "^3.3.8",
         "vue-router": "^4.2.2"
     },
-    "version": "5.0.0"
+    "version": "5.0.1"
 }
