@@ -26,7 +26,7 @@
     },
     "homepage": "https://github.com/Tada5hi/vue-layout#readme",
     "devDependencies": {
-        "@fortawesome/fontawesome-free": "^6.4.2",
+        "@fortawesome/fontawesome-free": "^6.5.0",
         "@pinia/nuxt": "^0.5.1",
         "@vue-layout/countdown": "^5.0.1",
         "@vue-layout/form-controls": "^5.0.1",
