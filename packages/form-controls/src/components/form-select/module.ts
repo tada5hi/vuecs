@@ -25,15 +25,20 @@ export function buildFormSelectOptions(
         ...options,
 
         options: options.options,
-        optionDefaultText: buildOrFail({
-            key: 'optionDefaultText',
-            value: options.optionDefaultText,
-            alt: 'Select',
-        }),
-        optionDefaultTextEnabled: buildOrFail({
-            key: 'optionDefaultTextEnabled',
-            value: options.optionDefaultTextEnabled,
+        optionDefault: buildOrFail({
+            key: 'optionDefault',
+            value: options.optionDefault,
             alt: true,
+        }),
+        optionDefaultId: buildOrFail({
+            key: 'optionDefaultId',
+            value: options.optionDefaultId,
+            alt: '',
+        }),
+        optionDefaultValue: buildOrFail({
+            key: 'optionDefaultValue',
+            value: options.optionDefaultValue,
+            alt: '-- Select --',
         }),
     };
 }
@@ -46,11 +51,11 @@ export function buildFormSelect(
     const rawValue = unref(options.value);
 
     const children : VNodeChild = [];
-    if (options.optionDefaultTextEnabled) {
+    if (options.optionDefault) {
         children.push(h('option', {
-            value: '',
+            value: options.optionDefaultId,
         }, [
-            '-- ', options.optionDefaultText, ' --',
+            options.optionDefaultValue,
         ]));
     }
 
@@ -58,6 +63,7 @@ export function buildFormSelect(
         children.push(h('option', {
             key: options.options[i].id,
             value: options.options[i].id,
+            selected: options.options[i].id === rawValue,
         }, options.options[i].value));
     }
 

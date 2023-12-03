@@ -16,13 +16,14 @@ export type FormSelectOption = {
 };
 export type FormSelectBuildOptions = FormBaseOptions & {
     options: FormSelectOption[],
-    optionDefaultText: string,
-    optionDefaultTextEnabled: boolean
+    optionDefault: boolean,
+    optionDefaultId: string | number,
+    optionDefaultValue: string
 };
 
 export type FormSelectBuildOptionsInput =
     FormBaseOptionsInput
     & OptionsOverride<
     ExpectFormBaseOptions<FormSelectBuildOptions>,
-    OptionsInputValue<PartialPick<FormSelectBuildOptions, 'optionDefaultText' | 'optionDefaultTextEnabled'>>
+    OptionsInputValue<PartialPick<FormSelectBuildOptions, 'optionDefault' | 'optionDefaultId' | 'optionDefaultValue'>>
     >;

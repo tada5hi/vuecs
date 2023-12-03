@@ -21,6 +21,17 @@ export const VCFormSelect = defineComponent({
             type: Object as PropType<FormSelectOption[]>,
             required: true,
         },
+
+        optionDefault: {
+            type: Boolean,
+            default: true,
+        },
+        optionDefaultId: {
+            type: [String, Number],
+        },
+        optionDefaultValue: {
+            type: String,
+        },
     },
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {
@@ -33,6 +44,10 @@ export const VCFormSelect = defineComponent({
 
             props: attrs,
             options: props.options,
+
+            optionDefault: props.optionDefault,
+            optionDefaultId: props.optionDefaultId,
+            optionDefaultValue: props.optionDefaultValue,
         });
     },
 });
