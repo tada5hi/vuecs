@@ -1,6 +1,6 @@
 {
     "name": "@vue-layout/form-controls",
-    "version": "5.0.1",
+    "version": "5.0.2",
     "description": "A package containing form controls.",
     "exports": {
         "./package.json": "./package.json",
