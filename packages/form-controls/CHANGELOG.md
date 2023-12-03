@@ -1,5 +1,11 @@
 # Change Log
 
+## 5.0.2
+
+### Patch Changes
+
+- [`00e8bb8`](https://github.com/tada5hi/vue-layout/commit/00e8bb8b8717347f683f7d199b022a75743298e5) Thanks [@tada5hi](https://github.com/tada5hi)! - fix form default selection
+
 ## 5.0.1
 
 ### Patch Changes
