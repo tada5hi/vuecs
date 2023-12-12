@@ -52,7 +52,7 @@
     },
     "devDependencies": {
         "@vue-layout/core": "^5.0.1",
-        "vue": "^3.3.9"
+        "vue": "^3.3.11"
     },
     "peerDependencies": {
         "@vue-layout/core": "^5.0.1",
