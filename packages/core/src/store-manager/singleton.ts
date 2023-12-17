@@ -9,7 +9,7 @@ import { hasInjectionContext, inject } from 'vue';
 import type { App } from 'vue';
 import { StoreManager } from './module';
 
-const symbol = Symbol.for('VLStoreManager');
+const symbol = Symbol.for('VCStoreManager');
 
 export function installStoreManager(
     instance: App,

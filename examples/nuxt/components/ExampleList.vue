@@ -6,8 +6,8 @@
   -->
 
 <script lang="ts">
-import type { ListItemSlotProps, SlotName } from '@vue-layout/list-controls';
-import { buildList } from '@vue-layout/list-controls';
+import type { ListItemSlotProps, SlotName } from '@vuecs/list-controls';
+import { buildList } from '@vuecs/list-controls';
 import type { SlotsType } from 'vue';
 import { defineComponent, ref, watch } from 'vue';
 

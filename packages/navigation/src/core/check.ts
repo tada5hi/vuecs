@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { hasOwnProperty, isObject } from '@vue-layout/core';
+import { hasOwnProperty, isObject } from '@vuecs/core';
 import type { NavigationItem } from '../type';
 
 export function isNavigationItem(value: unknown) : value is NavigationItem {

@@ -9,8 +9,8 @@
         "skipLibCheck": true,
         "strict": true,
         "paths": {
-            "@vue-layout/core": ["./packages/core/src"],
-            "@vue-layout/hyperscript": ["./packages/hyperscript/src"]
+            "@vuecs/core": ["./packages/core/src"],
+            "@vuecs/link": ["./packages/link/src"]
         }
     },
     "include": [

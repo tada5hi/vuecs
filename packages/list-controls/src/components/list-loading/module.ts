@@ -10,7 +10,7 @@ import { h, mergeProps } from 'vue';
 import {
     hasNormalizedSlot,
     normalizeSlot,
-} from '@vue-layout/core';
+} from '@vuecs/core';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
 import type { ListLoadingBuildOptions, ListLoadingBuildOptionsInput, ListLoadingSlotProps } from './type';

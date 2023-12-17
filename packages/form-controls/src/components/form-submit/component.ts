@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { OptionInputConfig } from '@vue-layout/core';
+import type { OptionInputConfig } from '@vuecs/core';
 import type { PropType } from 'vue';
 import { defineComponent } from 'vue';
 import { buildFormSubmit } from './module';

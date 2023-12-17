@@ -15,7 +15,7 @@
 import type {
     OptionsInputValue,
     OptionsOverride,
-} from '@vue-layout/core';
+} from '@vuecs/core';
 import type { VNodeChild } from 'vue';
 import type {
     ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListBaseSlotProps,

@@ -10,7 +10,7 @@ import type {
     OptionsOverride, PartialPick,
     VNodeClass,
     VNodeProperties,
-} from '@vue-layout/core';
+} from '@vuecs/core';
 import type { MaybeRef, Slots } from 'vue';
 
 export type FormBaseOptions = {

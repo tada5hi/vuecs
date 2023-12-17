@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { hasNormalizedSlot, normalizeSlot } from '@vue-layout/core';
+import { hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
 import type { PropType, VNode, VNodeChild } from 'vue';
 import { computed, defineComponent, h } from 'vue';
 import { SlotName } from '../constants';

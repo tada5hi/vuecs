@@ -7,7 +7,7 @@
 
 import {
     createOptionBuilder, isPromise,
-} from '@vue-layout/core';
+} from '@vuecs/core';
 import type { VNodeArrayChildren, VNodeChild } from 'vue';
 import {
     h, isRef, mergeProps, unref,

@@ -5,8 +5,8 @@
   - view the LICENSE file that was distributed with this source code.
   -->
 <script lang="ts">
-import { VCGravatar } from '@vue-layout/gravatar';
-import { VCNavItems } from '@vue-layout/navigation';
+import { VCGravatar } from '@vuecs/gravatar';
+import { VCNavItems } from '@vuecs/navigation';
 import { defineNuxtComponent } from '#app';
 
 export default defineNuxtComponent({

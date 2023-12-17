@@ -1,5 +1,5 @@
 {
-    "name": "@vue-layout/nuxt-example",
+    "name": "@vuecs/nuxt-example",
     "private": true,
     "description": "This package contains an example app for the basic package",
     "scripts": {
@@ -18,25 +18,25 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Tada5hi/vue-layout.git",
+        "url": "git+https://github.com/Tada5hi/vuecs.git",
         "directory": "examples/basic"
     },
     "bugs": {
-        "url": "https://github.com/Tada5hi/vue-layout/issues"
+        "url": "https://github.com/Tada5hi/vuecs/issues"
     },
-    "homepage": "https://github.com/Tada5hi/vue-layout#readme",
+    "homepage": "https://github.com/Tada5hi/vuecs#readme",
     "devDependencies": {
         "@fortawesome/fontawesome-free": "^6.5.1",
         "@pinia/nuxt": "^0.5.1",
-        "@vue-layout/countdown": "^5.0.1",
-        "@vue-layout/form-controls": "^5.0.1",
-        "@vue-layout/gravatar": "^5.0.1",
-        "@vue-layout/list-controls": "^5.0.1",
-        "@vue-layout/navigation": "^5.0.1",
-        "@vue-layout/pagination": "^5.0.1",
-        "@vue-layout/preset-bootstrap-v5": "^5.0.1",
-        "@vue-layout/preset-font-awesome": "^4.0.1",
-        "@vue-layout/timeago": "^5.0.1",
+        "@vuecs/countdown": "^0.0.0",
+        "@vuecs/form-controls": "^0.0.0",
+        "@vuecs/gravatar": "^0.0.0",
+        "@vuecs/list-controls": "^0.0.0",
+        "@vuecs/navigation": "^0.0.0",
+        "@vuecs/pagination": "^0.0.0",
+        "@vuecs/preset-bootstrap-v5": "^0.0.0",
+        "@vuecs/preset-font-awesome": "^0.0.0",
+        "@vuecs/timeago": "^0.0.0",
         "@vuelidate/core": "^2.0.3",
         "@vuelidate/validators": "^2.0.4",
         "bootstrap": "^5.3.2",

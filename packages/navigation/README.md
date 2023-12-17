@@ -1,7 +1,7 @@
-# @vue-layout/navigation 🧭
+# @vuecs/navigation 🧭
 
-[![npm version](https://badge.fury.io/js/@vue-layout%2Fnavigation.svg)](https://badge.fury.io/js/@vue-layout%2Fnavigation)
-[![CI](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml)
+[![npm version](https://badge.fury.io/js/@vuecs%2Fnavigation.svg)](https://badge.fury.io/js/@vuecs%2Fnavigation)
+[![CI](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
 
 A package containing basic components, to build multi level navigation menus.
 
@@ -25,7 +25,7 @@ A package containing basic components, to build multi level navigation menus.
 ## Installation
 
 ```
-$ npm i --save @vue-layout/navigation
+$ npm i --save @vuecs/navigation
 ```
 
 ## Usage
@@ -42,7 +42,7 @@ The tier is a numeric value, which can be any positive integer (including 0).
 import {
     NavigationItem,
     createNavigationProvider
-} from "@vue-layout/navigation";
+} from "@vuecs/navigation";
 
 const primaryItems: NavigationItem[] = [
     {
@@ -97,7 +97,7 @@ The next step is to create the vue entrypoint.
 import {
     buildNavigation,
     install
-} from '@vue-layout/navigation';
+} from '@vuecs/navigation';
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import { navigationProvider } from './module';
@@ -151,7 +151,7 @@ Build all navigation tiers, by `url` or active `items`.
 #### Example
 **`URL`**
 ```typescript
-import { buildNavigation } from '@vue-layout/navigation';
+import { buildNavigation } from '@vuecs/navigation';
 
 await buildNavigation({
     url: '/'
@@ -163,7 +163,7 @@ to calculate the active items.
 
 **`items`**
 ```typescript
-import { buildNavigation } from '@vue-layout/navigation';
+import { buildNavigation } from '@vuecs/navigation';
 
 await buildNavigation({
     items: [
@@ -178,7 +178,7 @@ the `NavigationProvider` implementation, to build a specific tier navigation.
 **`route`**
 ```typescript
 import { RouteLocation } from 'vue-router';
-import { buildNavigationWithRoute } from '@vue-layout/navigation';
+import { buildNavigationWithRoute } from '@vuecs/navigation';
 
 const route : RouteLocation = {
     fullPath: '/',
@@ -195,7 +195,7 @@ await buildNavigation({
 ### NavigationBuildContext
 
 ```typescript
-import { NavigationItem } from '@vue-layout/navigation';
+import { NavigationItem } from '@vuecs/navigation';
 import { RouteLocationNormalized } from 'vue-router';
 
 declare type NavigationBuildContext = {
@@ -208,7 +208,7 @@ declare type NavigationBuildContext = {
 ### NavigationItem
 
 ```typescript
-import { ElementType } from '@vue-layout/navigation';
+import { ElementType } from '@vuecs/navigation';
 
 declare type NavigationItem = {
     id?: string | number,
@@ -243,7 +243,7 @@ declare type NavigationItem = {
 ### NavigationProvider
 
 ```typescript
-import { NavigationItem } from '@vue-layout/navigation';
+import { NavigationItem } from '@vuecs/navigation';
 
 declare type NavigationProvider = {
     getItems: (
@@ -258,7 +258,7 @@ declare type NavigationProvider = {
 ## Example
 
 For an implementation example, on how to use this library, check out the example
-[package](https://github.com/tada5hi/vue-layout/tree/master/examples/basic).
+[package](https://github.com/tada5hi/vuecs/tree/master/examples/basic).
 
 ## License
 

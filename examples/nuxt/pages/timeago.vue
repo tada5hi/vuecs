@@ -6,7 +6,7 @@
   -->
 
 <script lang="ts">
-import { VCTimeago } from '@vue-layout/timeago';
+import { VCTimeago } from '@vuecs/timeago';
 import { getCurrentInstance } from 'vue';
 import { defineNuxtComponent } from '#app';
 

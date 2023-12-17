@@ -6,7 +6,7 @@
   -->
 
 <script lang="ts">
-import { buildFormGroup, buildFormTextarea } from '@vue-layout/form-controls';
+import { buildFormGroup, buildFormTextarea } from '@vuecs/form-controls';
 import { maxLength, minLength } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {

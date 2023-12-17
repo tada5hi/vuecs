@@ -11,7 +11,7 @@ import { hasOwnProperty } from './has-own-property';
 /**
  * Returns true if either scoped or unscoped named slot exists
  *
- * @returns {Array|undefined} VNodes
+ * @returns bool
  *
  * @param name
  * @param $slots
@@ -19,7 +19,7 @@ import { hasOwnProperty } from './has-own-property';
 export function hasNormalizedSlot(
     name : string,
     $slots : Slots = {},
-) {
+) : boolean {
     return hasOwnProperty($slots, name);
 }
 

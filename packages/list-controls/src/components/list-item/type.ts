@@ -11,7 +11,7 @@ import type {
     OptionsOverride, PartialPick,
     VNodeClass,
     VNodeProperties,
-} from '@vue-layout/core';
+} from '@vuecs/core';
 import type {
     ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListBaseSlotProps,
 } from '../list-base';

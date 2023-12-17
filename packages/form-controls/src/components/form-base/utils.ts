@@ -8,7 +8,7 @@
 import {
     createOptionBuilder,
     setMaybeRefValue,
-} from '@vue-layout/core';
+} from '@vuecs/core';
 import type { Component } from '../constants';
 import type {
     ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsDefaults, FormBaseOptionsInput,

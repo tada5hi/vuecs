@@ -1,12 +1,11 @@
-# Vue Layout 🧩	
+# Vuecs 🧩	
 
-[![main](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml)
-[![Known Vulnerabilities](https://snyk.io/test/github/Tada5hi/vue-layout/badge.svg)](https://snyk.io/test/github/Tada5hi/vue-layout)
+[![main](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
+[![Known Vulnerabilities](https://snyk.io/test/github/Tada5hi/vuecs/badge.svg)](https://snyk.io/test/github/Tada5hi/vuecs)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
 
 ## What is it?
-**Vue-Layout** is a collection of packages containing basic components as 
-vanilla or hyperscript components.
+**Vuecs** is a collection of packages containing minimal components.
 
 
 **Table of Contents**
@@ -28,7 +27,7 @@ The repository contains the following packages:
 
 ### Core 🌱
 
-**`@vue-layout/core`**
+**`@vuecs/core`**
 
 This package provides basic functionalities like building component options depending on the configuration.
 In addition, presets and defaults for these options can be stored in a global store.
@@ -37,7 +36,7 @@ In addition, presets and defaults for these options can be stored in a global st
 
 ### Countdown ⏰
 
-**`@vue-layout/countdown`**
+**`@vuecs/countdown`**
 
 This package provides a customizable countdown timer for Vue3 web applications. 
 It offers a range of options for customization, including start and end times, step length, and more.
@@ -47,7 +46,7 @@ Ideal for time-based events such as auctions, sales, or promotions.
 
 ### Form Controls 📜
 
-**`@vue-layout/form-controls`**
+**`@vuecs/form-controls`**
 
 This package provides a set of customizable form controls, including input-text, input-checkbox, textarea,
 and more, that can be used in vanilla or hyperscript syntax.
@@ -56,7 +55,7 @@ and more, that can be used in vanilla or hyperscript syntax.
 
 ### Gravatar 📷
 
-**`@vue-layout/gravatar`**
+**`@vuecs/gravatar`**
 
 This package provides an easy way to integrate Gravatar avatars in a Vue3 web applications.
 This component can be added to user profiles, comments, or other parts of a web applications 
@@ -66,7 +65,7 @@ with minimal effort.
 
 ### Link 🔗
 
-**`@vue-layout/link`**
+**`@vuecs/link`**
 
 This package provides an easy way to use nuxt or vue-router links in a Vue3 web applications.
 
@@ -74,7 +73,7 @@ This package provides an easy way to use nuxt or vue-router links in a Vue3 web 
 
 ### List Controls 📋
 
-**`@vue-layout/list-controls`**
+**`@vuecs/list-controls`**
 
 This package provides a set of customizable list controls, that can be used in vanilla or hyperscript syntax.
 
@@ -82,7 +81,7 @@ This package provides a set of customizable list controls, that can be used in v
 
 ### Navigation 🧭
 
-**`@vue-layout/navgiation`**
+**`@vuecs/navgiation`**
 
 A package containing basic components, to build multi level navigation menus.
 
@@ -90,7 +89,7 @@ A package containing basic components, to build multi level navigation menus.
 
 ### Pagination 📖
 
-**`@vue-layout/pagination`**
+**`@vuecs/pagination`**
 
 This library provides an easy way to paginate large datasets by providing a range
 of customization options, including the number of items per page, 
@@ -101,7 +100,7 @@ and the layout of the pagination controls.
 
 ### Timeago ⏰
 
-**`@vue-layout/timeago`**
+**`@vuecs/timeago`**
 
 A package containing a timeago component.
 

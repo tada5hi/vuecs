@@ -6,4 +6,4 @@
  */
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-export * from '@vue-layout/core';
+export * from '@vuecs/core';

@@ -1,7 +1,7 @@
-# @vue-layout/core 🌱
+# @vuecs/core 🌱
 
-[![npm version](https://badge.fury.io/js/@vue-layout%2Fcore.svg)](https://badge.fury.io/js/@vue-layout%2Fcore)
-[![CI](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml)
+[![npm version](https://badge.fury.io/js/@vuecs%2Fcore.svg)](https://badge.fury.io/js/@vuecs%2Fcore)
+[![CI](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
 
 This package contains core utils and helpers for the package collection.
 
@@ -17,7 +17,7 @@ This package contains core utils and helpers for the package collection.
 ## Installation
 
 ```
-$ npm i --save @vue-layout/core
+$ npm i --save @vuecs/core
 ```
 
 ## License

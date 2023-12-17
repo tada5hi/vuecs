@@ -9,7 +9,7 @@
         "skipLibCheck": true,
         "strict": true,
         "paths": {
-            "@vue-layout/core": ["./packages/core/src"]
+            "@vuecs/core": ["./packages/core/src"]
         }
     },
     "include": [

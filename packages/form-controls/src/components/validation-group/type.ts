@@ -7,7 +7,7 @@
 
 import type {
     OptionsOverride,
-} from '@vue-layout/core';
+} from '@vuecs/core';
 import type { Slots } from 'vue';
 import type { ValidationMessages, ValidationResult, ValidationTranslator } from '../type';
 

@@ -6,7 +6,7 @@
   -->
 
 <script lang="ts">
-import { VCPagination } from '@vue-layout/pagination';
+import { VCPagination } from '@vuecs/pagination';
 import { ref } from '#imports';
 import { defineNuxtComponent } from '#app';
 

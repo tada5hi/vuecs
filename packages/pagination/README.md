@@ -1,7 +1,7 @@
-# @vue-layout/pagination 📖
+# @vuecs/pagination 📖
 
-[![npm version](https://badge.fury.io/js/@vue-layout%2Fpagination.svg)](https://badge.fury.io/js/@vue-layout%2Fpagination)
-[![CI](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml)
+[![npm version](https://badge.fury.io/js/@vuecs%2Fpagination.svg)](https://badge.fury.io/js/@vuecs%2Fpagination)
+[![CI](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
 
 This library provides an easy way to paginate large datasets by providing a range
 of customization options, including the number of items per page,
@@ -17,7 +17,7 @@ and the layout of the pagination controls. .
 ## Installation
 
 ```
-$ npm i --save @vue-layout/pagination
+$ npm i --save @vuecs/pagination
 ```
 
 ## Usage
@@ -25,7 +25,7 @@ $ npm i --save @vue-layout/pagination
 Register the plugin.
 
 ```typescript
-import install from '@vue-layout/pagination';
+import install from '@vuecs/pagination';
 import { createApp } from 'vue'
 
 const app = createApp({})

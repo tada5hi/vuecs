@@ -7,7 +7,7 @@
 
 import type {
     OptionsInputValue, PartialPick, VNodeClass, VNodeProperties,
-} from '@vue-layout/core';
+} from '@vuecs/core';
 import type { Slots, VNodeChild } from 'vue';
 import type { ValidationMessages, ValidationResult, ValidationTranslator } from '../type';
 

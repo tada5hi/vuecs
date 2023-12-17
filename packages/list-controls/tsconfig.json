@@ -5,8 +5,8 @@
         "skipLibCheck": true,
         "strict": true,
         "paths": {
-            "@vue-layout/core": ["./packages/core/src"],
-            "@vue-layout/pagination": ["./packages/pagination/src"]
+            "@vuecs/core": ["./packages/core/src"],
+            "@vuecs/pagination": ["./packages/pagination/src"]
         }
     }
 }

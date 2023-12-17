@@ -1,6 +1,6 @@
 {
-    "name": "@vue-layout/core",
-    "version": "5.0.1",
+    "name": "@vuecs/core",
+    "version": "0.0.0",
     "description": "",
     "exports": {
         "./package.json": "./package.json",
@@ -47,7 +47,7 @@
         "vue": "^3.x"
     },
     "engines": {
-        "node": ">=16"
+        "node": ">=18"
     },
     "publishConfig": {
         "access": "public"

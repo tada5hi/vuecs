@@ -1,5 +1,5 @@
 {
-    "name": "vue-layout",
+    "name": "vuecs",
     "private": true,
     "author": {
         "name": "Peter Placzek",
@@ -9,12 +9,13 @@
     "license": "MIT",
     "version": "1.0.0",
     "workspaces": [
-        "./packages/*",
-        "./examples/*"
+        "packages/*",
+        "examples/*"
     ],
     "keywords": [
         "vue",
-        "layout",
+        "components",
+        "vuecs",
         "navigation",
         "tier",
         "multi-tier",
@@ -25,12 +26,12 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Tada5hi/vue-layout.git"
+        "url": "git+https://github.com/Tada5hi/vuecs.git"
     },
     "bugs": {
-        "url": "https://github.com/Tada5hi/vue-layout/issues"
+        "url": "https://github.com/Tada5hi/vuecs/issues"
     },
-    "homepage": "https://github.com/Tada5hi/vue-layout#readme",
+    "homepage": "https://github.com/Tada5hi/vuecs#readme",
     "engines": {
         "node": ">=14.0.0"
     },

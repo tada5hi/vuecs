@@ -9,7 +9,7 @@ import type {
     OptionsInputValue,
     OptionsOverride, PartialPick,
     VNodeClass,
-} from '@vue-layout/core';
+} from '@vuecs/core';
 import type { VNodeChild } from 'vue/dist/vue';
 import type { ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput } from '../form-base';
 

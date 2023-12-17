@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { createOptionBuilder, hasNormalizedSlot, normalizeSlot } from '@vue-layout/core';
+import { createOptionBuilder, hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
 import { h, mergeProps } from 'vue';
 import type { VNodeArrayChildren, VNodeChild } from 'vue';
 import { Component, SlotName } from '../constants';

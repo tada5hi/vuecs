@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { applyPluginBaseOptions } from '@vue-layout/core';
+import { applyPluginBaseOptions } from '@vuecs/core';
 import type { App, Plugin } from 'vue';
 import type { Options } from './type';
 

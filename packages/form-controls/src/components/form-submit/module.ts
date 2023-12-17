@@ -12,7 +12,7 @@ import {
     isPromise,
     setMaybeRefValue,
     unrefWithDefault,
-} from '@vue-layout/core';
+} from '@vuecs/core';
 import { Component } from '../constants';
 import type { FormSubmitOptions, FormSubmitOptionsInput } from './type';
 

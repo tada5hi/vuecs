@@ -9,7 +9,7 @@ import type { VNodeArrayChildren, VNodeChild } from 'vue';
 import { h } from 'vue';
 import {
     hasNormalizedSlot, isObject, normalizeSlot,
-} from '@vue-layout/core';
+} from '@vuecs/core';
 import { SlotName } from '../constants';
 import { isValidationRuleResultWithParams, isValidationRuleResultWithoutParams, template } from './utils';
 import type { ValidationResult } from '../type';

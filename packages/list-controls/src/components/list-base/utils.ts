@@ -14,7 +14,7 @@ import {
     isPromise,
     pushMaybeRefArrayValue,
     spliceMaybeRefArray,
-} from '@vue-layout/core';
+} from '@vuecs/core';
 import { isRef, unref } from 'vue';
 import type { MaybeRef } from 'vue';
 import type { Component } from '../constants';

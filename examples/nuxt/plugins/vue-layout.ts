@@ -5,17 +5,17 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { applyPluginBaseOptions } from '@vue-layout/core';
-import type { PluginBaseOptions } from '@vue-layout/core';
-import bootstrapV5 from '@vue-layout/preset-bootstrap-v5';
-import fontAwesome from '@vue-layout/preset-font-awesome';
+import { applyPluginBaseOptions } from '@vuecs/core';
+import type { PluginBaseOptions } from '@vuecs/core';
+import bootstrapV5 from '@vuecs/preset-bootstrap-v5';
+import fontAwesome from '@vuecs/preset-font-awesome';
 
-import installCountdown from '@vue-layout/countdown';
-import installFormControl from '@vue-layout/form-controls';
-import installGravatar from '@vue-layout/gravatar';
-import installNavigation from '@vue-layout/navigation';
-import installPagination from '@vue-layout/pagination';
-import installTimeago from '@vue-layout/timeago';
+import installCountdown from '@vuecs/countdown';
+import installFormControl from '@vuecs/form-controls';
+import installGravatar from '@vuecs/gravatar';
+import installNavigation from '@vuecs/navigation';
+import installPagination from '@vuecs/pagination';
+import installTimeago from '@vuecs/timeago';
 import { defineNuxtPlugin, useState } from '#app';
 import { navigationProvider } from '~/config/layout';
 

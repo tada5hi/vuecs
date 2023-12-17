@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { OptionsOverride, PartialPick } from '@vue-layout/core';
+import type { OptionsOverride, PartialPick } from '@vuecs/core';
 import type { MaybeRef } from 'vue';
 import type {
     ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListBaseSlotProps,

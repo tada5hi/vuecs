@@ -6,7 +6,7 @@
   -->
 
 <script lang="ts">
-import { buildFormGroup, buildFormSelect } from '@vue-layout/form-controls';
+import { buildFormGroup, buildFormSelect } from '@vuecs/form-controls';
 import { required } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {

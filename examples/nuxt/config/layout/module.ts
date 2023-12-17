@@ -1,10 +1,10 @@
 import type {
     NavigationItem,
-} from '@vue-layout/navigation';
+} from '@vuecs/navigation';
 import {
     createNavigationProvider,
     flattenNestedNavigationItems,
-} from '@vue-layout/navigation';
+} from '@vuecs/navigation';
 
 const primaryItems : NavigationItem[] = [
     {

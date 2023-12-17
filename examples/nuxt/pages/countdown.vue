@@ -6,7 +6,7 @@
   -->
 
 <script lang="ts">
-import { VCCountdown } from '@vue-layout/countdown';
+import { VCCountdown } from '@vuecs/countdown';
 import { defineNuxtComponent } from '#app';
 
 export default defineNuxtComponent({

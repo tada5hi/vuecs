@@ -12,7 +12,7 @@ import {
     hasNormalizedSlot, hasOwnProperty,
     isObject,
     normalizeSlot,
-} from '@vue-layout/core';
+} from '@vuecs/core';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
 import type { ListNoMoreBuildOptions, ListNoMoreBuildOptionsInput, ListNoMoreSlotProps } from './type';

@@ -9,7 +9,7 @@ import type { VNodeChild } from 'vue';
 import {
     h, mergeProps, unref,
 } from 'vue';
-import { createOptionBuilder, hasNormalizedSlot, normalizeSlot } from '@vue-layout/core';
+import { createOptionBuilder, hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
 import { Component, SlotName } from '../constants';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
 import type { FormInputCheckboxBuildOptions, FormInputCheckboxBuildOptionsInput, FormInputCheckboxLabelSlotProps } from './type';

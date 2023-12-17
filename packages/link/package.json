@@ -1,6 +1,6 @@
 {
-    "name": "@vue-layout/link",
-    "version": "5.0.1",
+    "name": "@vuecs/link",
+    "version": "0.0.0",
     "description": "A package containing a link component.",
     "exports": {
         "./package.json": "./package.json",
@@ -31,7 +31,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/tada5hi/vue-layout.git",
+        "url": "https://github.com/tada5hi/vuecs.git",
         "directory": "packages/link"
     },
     "scripts": {

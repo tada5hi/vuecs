@@ -7,7 +7,7 @@
 
 import type {
     OptionsInputValue, OptionsOverride, PartialPick,
-} from '@vue-layout/core';
+} from '@vuecs/core';
 import type { ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput } from '../form-base';
 
 export type FormSelectOption = {

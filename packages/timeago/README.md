@@ -1,7 +1,7 @@
-# @vue-layout/timeago ⏰
+# @vuecs/timeago ⏰
 
-[![npm version](https://badge.fury.io/js/@vue-layout%2Ftimeago.svg)](https://badge.fury.io/js/@vue-layout%2Ftimeago)
-[![CI](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml)
+[![npm version](https://badge.fury.io/js/@vuecs%2Ftimeago.svg)](https://badge.fury.io/js/@vuecs%2Ftimeago)
+[![CI](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
 
 A package containing a timeago component.
 
@@ -15,7 +15,7 @@ A package containing a timeago component.
 ## Installation
 
 ```
-$ npm i --save @vue-layout/timeago
+$ npm i --save @vuecs/timeago
 ```
 
 ## Usage
@@ -23,7 +23,7 @@ $ npm i --save @vue-layout/timeago
 Register the plugin.
 
 ```typescript
-import install from '@vue-layout/timeago';
+import install from '@vuecs/timeago';
 import { createApp } from 'vue'
 
 const app = createApp({})
@@ -53,7 +53,7 @@ object must be imported from the [date-fns](https://www.npmjs.com/package/date-f
 In the following, this will be shown for the german language.
 
 ```typescript
-import install from '@vue-layout/timeago';
+import install from '@vuecs/timeago';
 import { createApp } from 'vue'
 
 import de from 'date-fns/locale/de';

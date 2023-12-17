@@ -5,9 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { hasNormalizedSlot, normalizeSlot } from '@vue-layout/core';
-import type { LinkProperties } from '@vue-layout/link';
-import { VCLink } from '@vue-layout/link';
+import { hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
+import type { LinkProperties } from '@vuecs/link';
+import { VCLink } from '@vuecs/link';
 import type { PropType, Ref, VNodeChild } from 'vue';
 import {
     defineComponent,

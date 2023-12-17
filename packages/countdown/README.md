@@ -1,7 +1,7 @@
-# @vue-layout/countdown ⏰
+# @vuecs/countdown ⏰
 
-[![npm version](https://badge.fury.io/js/@vue-layout%2Fbasic.svg)](https://badge.fury.io/js/@vue-layout%2Fbasic)
-[![CI](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml)
+[![npm version](https://badge.fury.io/js/@vuecs%2Fbasic.svg)](https://badge.fury.io/js/@vuecs%2Fbasic)
+[![CI](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
 
 This package provides a customizable countdown timer for Vue3 web applications.
 It offers a range of options for customization, including start and end times, step length, and more.
@@ -16,7 +16,7 @@ Ideal for time-based events such as auctions, sales, or promotions.
 ## Installation
 
 ```
-$ npm i --save @vue-layout/countdown
+$ npm i --save @vuecs/countdown
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ $ npm i --save @vue-layout/countdown
 Register the plugin.
 
 ```typescript
-import install from '@vue-layout/countdown';
+import install from '@vuecs/countdown';
 import { createApp } from 'vue'
 
 const app = createApp({})

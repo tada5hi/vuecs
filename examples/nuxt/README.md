@@ -1,9 +1,5 @@
 # Basic Example 🧱
 
-
-This package provides a simple example for the
-`@vue-layout/basic` package.
-
 **Table of Contents**
 
 - [Installation](#installation)
@@ -12,8 +8,8 @@ This package provides a simple example for the
 ## Installation
 
 ```shell
-$ git clone https://github.com/tada5hi/vue-layout
-$ cd vue-layout
+$ git clone https://github.com/tada5hi/vuecs
+$ cd vuecs
 $ npm i
 ```
 
@@ -22,7 +18,7 @@ $ npm i
 To run the example simply execute the following command: 
 
 ```shell
-$ npm run dev --workspace=examples/basic
+$ npm run dev --workspace=examples/nuxt
 ```
 
 This will boot up the development server on Port `3000`.

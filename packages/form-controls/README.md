@@ -1,7 +1,7 @@
-# @vue-layout/form-controls 📜
+# @vuecs/form-controls 📜
 
-[![npm version](https://badge.fury.io/js/@vue-layout%2Fform-controls.svg)](https://badge.fury.io/js/@vue-layout%2Fform-controls)
-[![CI](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml)
+[![npm version](https://badge.fury.io/js/@vuecs%2Fform-controls.svg)](https://badge.fury.io/js/@vuecs%2Fform-controls)
+[![CI](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
 
 This package provides helpers for building **forms** elements on the fly using hyperscript.
 Those can be used directly in the vue render function 🔥.
@@ -20,7 +20,7 @@ Those can be used directly in the vue render function 🔥.
 ## Installation
 
 ```
-$ npm i --save @vue-layout/form-controls
+$ npm i --save @vuecs/form-controls
 ```
 
 ## Usage

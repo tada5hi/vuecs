@@ -7,7 +7,7 @@
 
 import type { VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
-import { createOptionBuilder } from '@vue-layout/core';
+import { createOptionBuilder } from '@vuecs/core';
 import { Component } from '../constants';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
 import type { FormInputBuildOptions, FormInputBuildOptionsInput } from './type';

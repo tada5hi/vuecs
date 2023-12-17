@@ -9,7 +9,7 @@ import type { VNodeArrayChildren, VNodeChild } from 'vue';
 import {
     h, mergeProps, unref,
 } from 'vue';
-import type { VNodeClass } from '@vue-layout/core';
+import type { VNodeClass } from '@vuecs/core';
 import {
     createOptionBuilder,
     evaluateFnOrValue,
@@ -18,7 +18,7 @@ import {
     merge,
     normalizeSlot,
     setMaybeRefValue,
-} from '@vue-layout/core';
+} from '@vuecs/core';
 import { Component, SlotName } from '../constants';
 import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
 import type { ListEventFn } from '../type';

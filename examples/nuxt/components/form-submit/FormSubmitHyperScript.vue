@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import { defineComponent, h, ref } from 'vue';
-import { buildFormSubmit } from '@vue-layout/form-controls';
+import { buildFormSubmit } from '@vuecs/form-controls';
 
 export default defineComponent({
     setup() {

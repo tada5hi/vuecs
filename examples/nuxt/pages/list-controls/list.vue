@@ -9,7 +9,7 @@
 import {
     buildListBody,
     buildListNoMore,
-} from '@vue-layout/list-controls';
+} from '@vuecs/list-controls';
 import { defineComponent, h, ref } from 'vue';
 
 export default defineComponent({

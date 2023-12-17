@@ -7,7 +7,7 @@
 
 import type {
     OptionsOverride, PartialPick, PluginBaseOptions, VNodeClass,
-} from '@vue-layout/core';
+} from '@vuecs/core';
 import type { MaybeRef, VNodeArrayChildren } from 'vue';
 
 export type PaginationMeta = {
