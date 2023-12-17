@@ -1,0 +1,27 @@
+{
+    "include-component-in-tag": true,
+    "release-type": "node",
+    "bump-minor-pre-major": true,
+    "bump-patch-for-minor-pre-major": true,
+    "packages": {
+        "packages/core": {"component": "core" },
+        "packages/countdown": {"component": "countdown" },
+        "packages/form-controls": {"component": "form-controls" },
+        "packages/gravatar": {"component": "gravatar" },
+        "packages/link": {"component": "link" },
+        "packages/list-controls": {"component": "list-controls" },
+        "packages/navigation": {"component": "navigation" },
+        "packages/pagination": {"component": "pagination" },
+        "packages/preset-bootstrap-v4": {"component": "preset-bootstrap-v4" },
+        "packages/preset-bootstrap-v5": {"component": "preset-bootstrap-v5" },
+        "packages/preset-font-awesome": {"component": "preset-font-awesome" },
+        "packages/timeago": {"component": "timeago" }
+    },
+    "plugins": [
+        {
+            "type": "node-workspace",
+            "updatePeerDependencies": true
+        }
+    ],
+    "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
+}

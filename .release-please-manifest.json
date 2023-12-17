@@ -1,0 +1,13 @@
+{
+    "packages/core": "^0.0.0",
+    "packages/countdown": "^0.0.0",
+    "packages/form-controls": "^0.0.0",
+    "packages/gravatar": "^0.0.0",
+    "packages/link": "^0.0.0",
+    "packages/list-controls": "^0.0.0",
+    "packages/navigation": "^0.0.0",
+    "packages/pagination": "^0.0.0",
+    "packages/preset-bootstrap-v4": "^0.0.0",
+    "packages/preset-bootstrap-v5": "^0.0.0",
+    "packages/preset-font-awesome": "^0.0.0"
+}
