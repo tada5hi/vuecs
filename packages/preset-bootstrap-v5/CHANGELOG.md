@@ -1,5 +1,23 @@
 # Change Log
 
+## 1.0.0 (2023-12-17)
+
+
+### Features
+
+* add install support for list-controls ([8024ea6](https://github.com/tada5hi/vue-layout/commit/8024ea62a7727823af9f4c5f45028e73ad8419d1))
+* refactored options typing + enhanced options building ([31fe2ca](https://github.com/tada5hi/vue-layout/commit/31fe2cae756d9ed7e01d8dd09e02cc0c9dba1ab0))
+* reimplemented core package + outsourced presets ([1e7f620](https://github.com/tada5hi/vue-layout/commit/1e7f6205c0445098c55469ba9599cdfc52f07482))
+* rename list-items to list-body ([8929f78](https://github.com/tada5hi/vue-layout/commit/8929f78d078e778ada6a13acefb190bde50d24c4))
+* simplified form-controls + added form-group component ([bda094c](https://github.com/tada5hi/vue-layout/commit/bda094c0a1cd96eea8f94812e5a552c324541d2c))
+
+
+### Bug Fixes
+
+* cleanup presets configurations ([86ec907](https://github.com/tada5hi/vue-layout/commit/86ec907178074f3c351f48cf35acb2652ad17f45))
+* rename option value builder + cleanup dist directory before build ([588233b](https://github.com/tada5hi/vue-layout/commit/588233b0d030b050b46a90ff7d5b9dbb60c1c0d5))
+* set list-items default class to list-unstyled ([ad48ab7](https://github.com/tada5hi/vue-layout/commit/ad48ab73d6e65a1d20c2ddb9d12c938428be04f4))
+
 ## 5.0.1
 
 ### Patch Changes

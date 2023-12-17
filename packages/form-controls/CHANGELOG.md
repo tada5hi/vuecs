@@ -1,5 +1,60 @@
 # Change Log
 
+## 1.0.0 (2023-12-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* public api changed
+
+### Features
+
+* add explicit return types for render fn ([687da1b](https://github.com/tada5hi/vue-layout/commit/687da1bbae63b58d294bfd3c00725f9f7e70ba71))
+* add form-submit component ([4307b8f](https://github.com/tada5hi/vue-layout/commit/4307b8f8e443a588865b5f7e88e99542ccf6a6b0))
+* add group option to form-input ([f9e3943](https://github.com/tada5hi/vue-layout/commit/f9e394306b6d5c31ff83ee0da11b963c57c42072))
+* attribute inheritence for form-control components ([74d9147](https://github.com/tada5hi/vue-layout/commit/74d9147be97379c18a531adbd82196a9180dac0a))
+* expose core package on export path ([56a0969](https://github.com/tada5hi/vue-layout/commit/56a0969b174e9dacb2d8ae9cd3bf47ee1502c094))
+* **form-controls:** prefix components with VC ([5c5a86b](https://github.com/tada5hi/vue-layout/commit/5c5a86b29d8f454395364dc76947ffe916e5eea0))
+* label slot for form-group & form-input-checbox ([82c2a32](https://github.com/tada5hi/vue-layout/commit/82c2a32a56ca166099a24de7bf1b98469faeba3e))
+* new utility fail-on-undefined ([bf49135](https://github.com/tada5hi/vue-layout/commit/bf49135c32f08d277508a143ec21c05352d6f825))
+* override list-item created & updated event fns ([bcf8287](https://github.com/tada5hi/vue-layout/commit/bcf8287791c1b627db52df0189074e9bab1131f6))
+* refactored options typing + enhanced options building ([31fe2ca](https://github.com/tada5hi/vue-layout/commit/31fe2cae756d9ed7e01d8dd09e02cc0c9dba1ab0))
+* simplified form-controls + added form-group component ([bda094c](https://github.com/tada5hi/vue-layout/commit/bda094c0a1cd96eea8f94812e5a552c324541d2c))
+* split hyperscript- & core-package ([2e7852a](https://github.com/tada5hi/vue-layout/commit/2e7852a5c6d9e3de92bcec7faf8675c7bba1bf10))
+* support multi value model binding for input checkbox ([2308397](https://github.com/tada5hi/vue-layout/commit/230839761ef9d149fb66751f0ee4b74f10eb2cd1))
+
+
+### Bug Fixes
+
+* add missing label class to form-select component ([80d2378](https://github.com/tada5hi/vue-layout/commit/80d2378643503dfed0d3b896b8ecc74a88f75068))
+* adjusted peer-dependency version ([58ed93e](https://github.com/tada5hi/vue-layout/commit/58ed93e23dbae2d3330191b675a4d4367d9382a5))
+* cleanup dependencies ([0970437](https://github.com/tada5hi/vue-layout/commit/097043750fb214fcec252ee16d5a6293372afdd7))
+* component config option default detection ([165fb8d](https://github.com/tada5hi/vue-layout/commit/165fb8d3386a649a3635291f896483d7d03ffafe))
+* form-input checkbox mode-value prop ([690b105](https://github.com/tada5hi/vue-layout/commit/690b105fb754b1a852aaac9a75901cebff2d9209))
+* mark initial value as selected + better option-default handling ([00e8bb8](https://github.com/tada5hi/vue-layout/commit/00e8bb8b8717347f683f7d199b022a75743298e5))
+* minor change to force version bump ([e1903d2](https://github.com/tada5hi/vue-layout/commit/e1903d234adde009549c14e32038f73601b90a28))
+* minor naming issues + updated example components ([ce1f1ef](https://github.com/tada5hi/vue-layout/commit/ce1f1efb01976c1623fc3d188491c92363e41722))
+* only read raw value if it is no component option config ([fb59054](https://github.com/tada5hi/vue-layout/commit/fb5905475d7419508ebb8c8279572a827b1a998c))
+* only set checked attribute if value is set ([03b2512](https://github.com/tada5hi/vue-layout/commit/03b25122e79236bd5dce6b36047ec507f78aa179))
+* reading value of otpion value config ([7315cbc](https://github.com/tada5hi/vue-layout/commit/7315cbc67b1adbb817be5fa17343be088cc4eac0))
+* remove duplicate type mayberef ([34b4fa9](https://github.com/tada5hi/vue-layout/commit/34b4fa91dbeb93822628a351bdb881d022c8c68d))
+* rename option value builder + cleanup dist directory before build ([588233b](https://github.com/tada5hi/vue-layout/commit/588233b0d030b050b46a90ff7d5b9dbb60c1c0d5))
+* set few type properties optional ([f0c4225](https://github.com/tada5hi/vue-layout/commit/f0c42256db09d109f0ea0aa58948dcaa53a4e568))
+
+
+### Code Refactoring
+
+* default- & preset-store management ([d9f7b71](https://github.com/tada5hi/vue-layout/commit/d9f7b7183e027e8f1de3d1aeb1f47a71566c83eb))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vue-layout/core bumped from ^5.0.1 to ^1.0.0
+  * peerDependencies
+    * @vue-layout/core bumped from ^5.0.1 to ^1.0.0
+
 ## 5.0.2
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
     "name": "@vue-layout/timeago",
-    "version": "5.0.1",
+    "version": "1.0.0",
     "description": "A package containing a timeago component.",
     "exports": {
         "./package.json": "./package.json",

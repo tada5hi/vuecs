@@ -1,6 +1,6 @@
 {
     "name": "@vue-layout/link",
-    "version": "5.0.1",
+    "version": "1.0.0",
     "description": "A package containing a link component.",
     "exports": {
         "./package.json": "./package.json",

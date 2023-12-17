@@ -1,5 +1,19 @@
 # Change Log
 
+## 1.0.0 (2023-12-17)
+
+
+### Features
+
+* **gravatar:** extend vue runtime interface with component ([d5a50a8](https://github.com/tada5hi/vue-layout/commit/d5a50a8cb1c11001672a8d7abd248e316e2de410))
+* split hyperscript- & core-package ([2e7852a](https://github.com/tada5hi/vue-layout/commit/2e7852a5c6d9e3de92bcec7faf8675c7bba1bf10))
+
+
+### Bug Fixes
+
+* core package usage for countdown & gravatar ([8c3c8b8](https://github.com/tada5hi/vue-layout/commit/8c3c8b8b7298ad22f3a9b074174e74da71736930))
+* rename option value builder + cleanup dist directory before build ([588233b](https://github.com/tada5hi/vue-layout/commit/588233b0d030b050b46a90ff7d5b9dbb60c1c0d5))
+
 ## 5.0.1
 
 ### Patch Changes

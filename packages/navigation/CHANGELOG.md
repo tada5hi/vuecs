@@ -1,5 +1,52 @@
 # Change Log
 
+## 1.0.0 (2023-12-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* public api changed
+
+### Features
+
+* create navigation provider utility ([c734cfe](https://github.com/tada5hi/vue-layout/commit/c734cfe2d0a48afa47c9d4b25db96492563bfe93))
+* expose core package on export path ([56a0969](https://github.com/tada5hi/vue-layout/commit/56a0969b174e9dacb2d8ae9cd3bf47ee1502c094))
+* externalized link component in a separate package ([8449635](https://github.com/tada5hi/vue-layout/commit/8449635da2c1531809cd6423cc2d7b246ae6ecae))
+* **navigation:** get active elements by url or route ([0c2db0c](https://github.com/tada5hi/vue-layout/commit/0c2db0c36a9de6c15bd28d132340330fca77f815))
+* **navigation:** refactor and optimized navigation management ([2e5ad9c](https://github.com/tada5hi/vue-layout/commit/2e5ad9cc55e4f63d7906606c509d76a251bb2ac6))
+* split hyperscript- & core-package ([2e7852a](https://github.com/tada5hi/vue-layout/commit/2e7852a5c6d9e3de92bcec7faf8675c7bba1bf10))
+
+
+### Bug Fixes
+
+* adjusted peer-dependency version ([58ed93e](https://github.com/tada5hi/vue-layout/commit/58ed93e23dbae2d3330191b675a4d4367d9382a5))
+* component config option default detection ([165fb8d](https://github.com/tada5hi/vue-layout/commit/165fb8d3386a649a3635291f896483d7d03ffafe))
+* minor change to force version bump ([e1903d2](https://github.com/tada5hi/vue-layout/commit/e1903d234adde009549c14e32038f73601b90a28))
+* minor naming issues + updated example components ([ce1f1ef](https://github.com/tada5hi/vue-layout/commit/ce1f1efb01976c1623fc3d188491c92363e41722))
+* minor type fixes ([e16607a](https://github.com/tada5hi/vue-layout/commit/e16607a1149eb36215947ced724b88221c4eb8e9))
+* only read raw value if it is no component option config ([fb59054](https://github.com/tada5hi/vue-layout/commit/fb5905475d7419508ebb8c8279572a827b1a998c))
+* reading value of otpion value config ([7315cbc](https://github.com/tada5hi/vue-layout/commit/7315cbc67b1adbb817be5fa17343be088cc4eac0))
+* reduce navigation components by restriction recursion ([ce99424](https://github.com/tada5hi/vue-layout/commit/ce99424160fb74ef91afc9a837f2672d5f3936b9))
+* remove duplicate type mayberef ([34b4fa9](https://github.com/tada5hi/vue-layout/commit/34b4fa91dbeb93822628a351bdb881d022c8c68d))
+* remove navigation provider hasTier method ([3d6c8d0](https://github.com/tada5hi/vue-layout/commit/3d6c8d0613c1b36eb6e5da3d19451b88fc01a13c))
+* rename option value builder + cleanup dist directory before build ([588233b](https://github.com/tada5hi/vue-layout/commit/588233b0d030b050b46a90ff7d5b9dbb60c1c0d5))
+
+
+### Code Refactoring
+
+* default- & preset-store management ([d9f7b71](https://github.com/tada5hi/vue-layout/commit/d9f7b7183e027e8f1de3d1aeb1f47a71566c83eb))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vue-layout/core bumped from ^5.0.1 to ^1.0.0
+    * @vue-layout/link bumped from ^5.0.1 to ^1.0.0
+  * peerDependencies
+    * @vue-layout/core bumped from ^5.0.1 to ^1.0.0
+    * @vue-layout/link bumped from ^5.0.1 to ^1.0.0
+
 ## 5.0.1
 
 ### Patch Changes

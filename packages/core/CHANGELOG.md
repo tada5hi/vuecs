@@ -1,5 +1,48 @@
 # Change Log
 
+## 1.0.0 (2023-12-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* public api changed
+
+### Features
+
+* add explicit return types for render fn ([687da1b](https://github.com/tada5hi/vue-layout/commit/687da1bbae63b58d294bfd3c00725f9f7e70ba71))
+* add form-{checkbox,text,selec,textarea} components ([1960654](https://github.com/tada5hi/vue-layout/commit/19606541c316ff91a603a81bf95e80a56114befe))
+* add form-submit component ([4307b8f](https://github.com/tada5hi/vue-layout/commit/4307b8f8e443a588865b5f7e88e99542ccf6a6b0))
+* enhance slot building and inheritance between list elements ([73ed2a2](https://github.com/tada5hi/vue-layout/commit/73ed2a24e386f2b56ccdb99e307f1a306ed82788))
+* make generic argument more felxible ([8bfd005](https://github.com/tada5hi/vue-layout/commit/8bfd0057cac973b3c9dabe3a9f9390453901942e))
+* make value in component-option--config optional ([7d4e023](https://github.com/tada5hi/vue-layout/commit/7d4e023810cbe57be6e076ae2c3a64fbc8de49a1))
+* new utility fail-on-undefined ([bf49135](https://github.com/tada5hi/vue-layout/commit/bf49135c32f08d277508a143ec21c05352d6f825))
+* override list-item created & updated event fns ([bcf8287](https://github.com/tada5hi/vue-layout/commit/bcf8287791c1b627db52df0189074e9bab1131f6))
+* refactored options typing + enhanced options building ([31fe2ca](https://github.com/tada5hi/vue-layout/commit/31fe2cae756d9ed7e01d8dd09e02cc0c9dba1ab0))
+* reimplemented core package + outsourced presets ([1e7f620](https://github.com/tada5hi/vue-layout/commit/1e7f6205c0445098c55469ba9599cdfc52f07482))
+* simplified form-controls + added form-group component ([bda094c](https://github.com/tada5hi/vue-layout/commit/bda094c0a1cd96eea8f94812e5a552c324541d2c))
+
+
+### Bug Fixes
+
+* bump few dependencies + reset lock file ([0188d0f](https://github.com/tada5hi/vue-layout/commit/0188d0f9be312512dc878ba3d2dea2e8e5173d3b))
+* cleanup dependencies ([0970437](https://github.com/tada5hi/vue-layout/commit/097043750fb214fcec252ee16d5a6293372afdd7))
+* component config option default detection ([165fb8d](https://github.com/tada5hi/vue-layout/commit/165fb8d3386a649a3635291f896483d7d03ffafe))
+* core package imports ([317bb37](https://github.com/tada5hi/vue-layout/commit/317bb3783ca00630ace7dc78a7e87b24e1e35436))
+* **deps:** bump smob from 0.0.6 to 0.0.7 ([e2f2fda](https://github.com/tada5hi/vue-layout/commit/e2f2fda3d6ecfa75204a34d20554c346fde5b805))
+* **deps:** bump smob from 0.0.7 to 0.1.0 ([#487](https://github.com/tada5hi/vue-layout/issues/487)) ([79ae8e7](https://github.com/tada5hi/vue-layout/commit/79ae8e77e85f03cbe069130cfc9992f9b8905c61))
+* minor change to force version bump ([e1903d2](https://github.com/tada5hi/vue-layout/commit/e1903d234adde009549c14e32038f73601b90a28))
+* only read raw value if it is no component option config ([fb59054](https://github.com/tada5hi/vue-layout/commit/fb5905475d7419508ebb8c8279572a827b1a998c))
+* reading value of otpion value config ([7315cbc](https://github.com/tada5hi/vue-layout/commit/7315cbc67b1adbb817be5fa17343be088cc4eac0))
+* reading value of otpion value config ([c248f83](https://github.com/tada5hi/vue-layout/commit/c248f8377d07290549d075e341992f4ee697a0db))
+* remove duplicate type mayberef ([34b4fa9](https://github.com/tada5hi/vue-layout/commit/34b4fa91dbeb93822628a351bdb881d022c8c68d))
+* rename option value builder + cleanup dist directory before build ([588233b](https://github.com/tada5hi/vue-layout/commit/588233b0d030b050b46a90ff7d5b9dbb60c1c0d5))
+* store option check + initial example refactoring ([f0d5c6c](https://github.com/tada5hi/vue-layout/commit/f0d5c6c124b74fb3a06e00586a08026556e88a4b))
+
+
+### Code Refactoring
+
+* default- & preset-store management ([d9f7b71](https://github.com/tada5hi/vue-layout/commit/d9f7b7183e027e8f1de3d1aeb1f47a71566c83eb))
+
 ## 5.0.1
 
 ### Patch Changes

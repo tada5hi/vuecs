@@ -1,6 +1,6 @@
 {
     "name": "@vue-layout/preset-bootstrap-v5",
-    "version": "5.0.1",
+    "version": "1.0.0",
     "description": "",
     "exports": {
         "./package.json": "./package.json",

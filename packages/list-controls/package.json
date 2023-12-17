@@ -1,6 +1,6 @@
 {
     "name": "@vue-layout/list-controls",
-    "version": "5.0.1",
+    "version": "1.0.0",
     "description": "A package containing list controls.",
     "exports": {
         "./package.json": "./package.json",
@@ -51,11 +51,11 @@
         "lint:fix": "npm run lint -- --fix"
     },
     "devDependencies": {
-        "@vue-layout/core": "^5.0.1",
+        "@vue-layout/core": "^1.0.0",
         "vue": "^3.3.9"
     },
     "peerDependencies": {
-        "@vue-layout/core": "^5.0.1",
+        "@vue-layout/core": "^1.0.0",
         "vue": "^3.x"
     },
     "engines": {

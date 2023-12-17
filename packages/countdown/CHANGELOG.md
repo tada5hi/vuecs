@@ -1,5 +1,20 @@
 # Change Log
 
+## 1.0.0 (2023-12-17)
+
+
+### Features
+
+* allow string to be passed as date-time + add slot typing for countdown ([00f2c78](https://github.com/tada5hi/vue-layout/commit/00f2c7889f3a4ae6e051605be1a5332ed85b1259))
+* **countdown:** extend vue runtime interface with component ([d2f2219](https://github.com/tada5hi/vue-layout/commit/d2f2219d2c5f73fc673ceb86e5e8b2e7f41011cd))
+* split hyperscript- & core-package ([2e7852a](https://github.com/tada5hi/vue-layout/commit/2e7852a5c6d9e3de92bcec7faf8675c7bba1bf10))
+
+
+### Bug Fixes
+
+* core package usage for countdown & gravatar ([8c3c8b8](https://github.com/tada5hi/vue-layout/commit/8c3c8b8b7298ad22f3a9b074174e74da71736930))
+* rename option value builder + cleanup dist directory before build ([588233b](https://github.com/tada5hi/vue-layout/commit/588233b0d030b050b46a90ff7d5b9dbb60c1c0d5))
+
 ## 5.0.1
 
 ### Patch Changes

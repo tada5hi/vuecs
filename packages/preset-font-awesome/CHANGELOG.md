@@ -1,5 +1,17 @@
 # Change Log
 
+## 1.0.0 (2023-12-17)
+
+
+### Features
+
+* reimplemented core package + outsourced presets ([1e7f620](https://github.com/tada5hi/vue-layout/commit/1e7f6205c0445098c55469ba9599cdfc52f07482))
+
+
+### Bug Fixes
+
+* rename option value builder + cleanup dist directory before build ([588233b](https://github.com/tada5hi/vue-layout/commit/588233b0d030b050b46a90ff7d5b9dbb60c1c0d5))
+
 ## 4.0.1
 
 ### Patch Changes

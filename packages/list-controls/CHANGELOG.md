@@ -1,5 +1,76 @@
 # Change Log
 
+## 1.0.0 (2023-12-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* public api changed
+
+### Features
+
+* add explicit return types for render fn ([687da1b](https://github.com/tada5hi/vue-layout/commit/687da1bbae63b58d294bfd3c00725f9f7e70ba71))
+* add install support for list-controls ([8024ea6](https://github.com/tada5hi/vue-layout/commit/8024ea62a7727823af9f4c5f45028e73ad8419d1))
+* add list-header & list-footer builder ([20001c4](https://github.com/tada5hi/vue-layout/commit/20001c4ff5a2b78c1d0d7bc6121a50c5bc8cb05a))
+* allow hypescript content besides slot for list-header & list-footer ([56f757a](https://github.com/tada5hi/vue-layout/commit/56f757a070869ee4b7c282a9e597952b4b60068a))
+* allow item {text,action}-content to be fn or value ([e799f39](https://github.com/tada5hi/vue-layout/commit/e799f39e0cc81c6de8c79367556ff6429a129a7e))
+* allways emit updated & deleted event if handler is defined ([bc53b0f](https://github.com/tada5hi/vue-layout/commit/bc53b0fedeb727fa3185fabe5a9f9af179e5f71e))
+* default slot for list rendering ([fd0fee6](https://github.com/tada5hi/vue-layout/commit/fd0fee651b7cbe7cffaaa5c0fef59754b090d69e))
+* don't render body, header & footer if no content exists ([4bbd445](https://github.com/tada5hi/vue-layout/commit/4bbd44550cb204942c778e7d795f924483d46fd8))
+* enhance slot building and inheritance between list elements ([73ed2a2](https://github.com/tada5hi/vue-layout/commit/73ed2a24e386f2b56ccdb99e307f1a306ed82788))
+* enhance slot typing for components ([28c5648](https://github.com/tada5hi/vue-layout/commit/28c564894c31efa9809081607c6151cda3c06358))
+* expose core package on export path ([56a0969](https://github.com/tada5hi/vue-layout/commit/56a0969b174e9dacb2d8ae9cd3bf47ee1502c094))
+* make generic argument more felxible ([8bfd005](https://github.com/tada5hi/vue-layout/commit/8bfd0057cac973b3c9dabe3a9f9390453901942e))
+* make meta attribute generic ([dc80a5c](https://github.com/tada5hi/vue-layout/commit/dc80a5cf6024717b5c5b7eb8e7282396402d4a2d))
+* override list-item created & updated event fns ([bcf8287](https://github.com/tada5hi/vue-layout/commit/bcf8287791c1b627db52df0189074e9bab1131f6))
+* refactored options typing + enhanced options building ([31fe2ca](https://github.com/tada5hi/vue-layout/commit/31fe2cae756d9ed7e01d8dd09e02cc0c9dba1ab0))
+* rename list-items to list-body ([8929f78](https://github.com/tada5hi/vue-layout/commit/8929f78d078e778ada6a13acefb190bde50d24c4))
+* split hyperscript- & core-package ([2e7852a](https://github.com/tada5hi/vue-layout/commit/2e7852a5c6d9e3de92bcec7faf8675c7bba1bf10))
+* wrap slot rendering + set default tag to ul & li ([3e74e07](https://github.com/tada5hi/vue-layout/commit/3e74e0742a52aee24060e5fe29cbae3b9c25e915))
+
+
+### Bug Fixes
+
+* add slot content as third argument to list-item fn ([9f22f45](https://github.com/tada5hi/vue-layout/commit/9f22f45f9d1d461c5250ad86e6d7180a35920062))
+* adjusted peer-dependency version ([58ed93e](https://github.com/tada5hi/vue-layout/commit/58ed93e23dbae2d3330191b675a4d4367d9382a5))
+* cleanup presets configurations ([86ec907](https://github.com/tada5hi/vue-layout/commit/86ec907178074f3c351f48cf35acb2652ad17f45))
+* component config option default detection ([165fb8d](https://github.com/tada5hi/vue-layout/commit/165fb8d3386a649a3635291f896483d7d03ffafe))
+* component-name when building options for list ([13ccd12](https://github.com/tada5hi/vue-layout/commit/13ccd125353428e1ccfe6735634e11b10f815d0c))
+* create, updated & delete handler in slot props ([689080c](https://github.com/tada5hi/vue-layout/commit/689080c08c4d850f7603691de6b5689281085bfc))
+* ensure updated/deleted event has valid comparision ([c86bf19](https://github.com/tada5hi/vue-layout/commit/c86bf19d58cdc4e4db28ab5f2a629717c3535c96))
+* increase & decrease meta total on update/delete ([7d27686](https://github.com/tada5hi/vue-layout/commit/7d27686b97e4383a261bf64fd79b559e6cef3de5))
+* **list-controls:** ignore meta prop if total is defined ([940a75b](https://github.com/tada5hi/vue-layout/commit/940a75b8a81b5cebba4de831c0461233265b0532))
+* **list-controls:** meta total access typing ([c0f7e14](https://github.com/tada5hi/vue-layout/commit/c0f7e14d06ac2b8af2416918e3bbac376e05516e))
+* minor change to force version bump ([e1903d2](https://github.com/tada5hi/vue-layout/commit/e1903d234adde009549c14e32038f73601b90a28))
+* minor type fixes ([e16607a](https://github.com/tada5hi/vue-layout/commit/e16607a1149eb36215947ced724b88221c4eb8e9))
+* minor variable renaming for child options configuration ([c819a47](https://github.com/tada5hi/vue-layout/commit/c819a476e35b37263a374338fd8fc9b8ca914490))
+* modify busy state on list load if it is a ref ([2b248f8](https://github.com/tada5hi/vue-layout/commit/2b248f815c4a333ab45bdc4d9608d972d5991edd))
+* only read raw value if it is no component option config ([fb59054](https://github.com/tada5hi/vue-layout/commit/fb5905475d7419508ebb8c8279572a827b1a998c))
+* pass slot props as second argument for list item fn ([941397c](https://github.com/tada5hi/vue-layout/commit/941397c78cd33426de29533378de0aa5fb5b6aa1))
+* pass total option to slot properties ([0f24ed4](https://github.com/tada5hi/vue-layout/commit/0f24ed485edff392d9eb37abdd44bf3d633307e3))
+* reading value of otpion value config ([7315cbc](https://github.com/tada5hi/vue-layout/commit/7315cbc67b1adbb817be5fa17343be088cc4eac0))
+* recognize all slots for list item render fn ([180b600](https://github.com/tada5hi/vue-layout/commit/180b600a8bda66b488acc53af72c01cb38cd712c))
+* remove duplicate type mayberef ([34b4fa9](https://github.com/tada5hi/vue-layout/commit/34b4fa91dbeb93822628a351bdb881d022c8c68d))
+* rename option value builder + cleanup dist directory before build ([588233b](https://github.com/tada5hi/vue-layout/commit/588233b0d030b050b46a90ff7d5b9dbb60c1c0d5))
+* set few type properties optional ([f0c4225](https://github.com/tada5hi/vue-layout/commit/f0c42256db09d109f0ea0aa58948dcaa53a4e568))
+* simplify list builindg process ([fd0b34c](https://github.com/tada5hi/vue-layout/commit/fd0b34c27be7617ec9b21b00bcf5ee4e93872941))
+* some typings + render list item slot if present ([3c821e5](https://github.com/tada5hi/vue-layout/commit/3c821e563d7117f7282e688b95bd1823d027faa0))
+* typings due vue upgrade ([ce363e8](https://github.com/tada5hi/vue-layout/commit/ce363e8f25b5cd7ce5804755dbdf1cdd108018ec))
+
+
+### Code Refactoring
+
+* default- & preset-store management ([d9f7b71](https://github.com/tada5hi/vue-layout/commit/d9f7b7183e027e8f1de3d1aeb1f47a71566c83eb))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vue-layout/core bumped from ^5.0.1 to ^1.0.0
+  * peerDependencies
+    * @vue-layout/core bumped from ^5.0.1 to ^1.0.0
+
 ## 5.0.1
 
 ### Patch Changes

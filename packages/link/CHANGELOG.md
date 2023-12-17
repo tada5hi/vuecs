@@ -1,5 +1,12 @@
 # @vue-layout/link
 
+## 1.0.0 (2023-12-17)
+
+
+### Features
+
+* externalized link component in a separate package ([8449635](https://github.com/tada5hi/vue-layout/commit/8449635da2c1531809cd6423cc2d7b246ae6ecae))
+
 ## 5.0.1
 
 ### Patch Changes

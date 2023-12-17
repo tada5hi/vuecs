@@ -1,5 +1,45 @@
 # Change Log
 
+## 1.0.0 (2023-12-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* public api changed
+
+### Features
+
+* add explicit return types for render fn ([687da1b](https://github.com/tada5hi/vue-layout/commit/687da1bbae63b58d294bfd3c00725f9f7e70ba71))
+* expose core package on export path ([56a0969](https://github.com/tada5hi/vue-layout/commit/56a0969b174e9dacb2d8ae9cd3bf47ee1502c094))
+* **pagination:** extend vue runtime interface with component ([8774afb](https://github.com/tada5hi/vue-layout/commit/8774afb4599c22ec9417ed7a45c9eb6dd4ab554d))
+* refactored options typing + enhanced options building ([31fe2ca](https://github.com/tada5hi/vue-layout/commit/31fe2cae756d9ed7e01d8dd09e02cc0c9dba1ab0))
+* split hyperscript- & core-package ([2e7852a](https://github.com/tada5hi/vue-layout/commit/2e7852a5c6d9e3de92bcec7faf8675c7bba1bf10))
+
+
+### Bug Fixes
+
+* adjusted peer-dependency version ([58ed93e](https://github.com/tada5hi/vue-layout/commit/58ed93e23dbae2d3330191b675a4d4367d9382a5))
+* component config option default detection ([165fb8d](https://github.com/tada5hi/vue-layout/commit/165fb8d3386a649a3635291f896483d7d03ffafe))
+* minor change to force version bump ([e1903d2](https://github.com/tada5hi/vue-layout/commit/e1903d234adde009549c14e32038f73601b90a28))
+* only read raw value if it is no component option config ([fb59054](https://github.com/tada5hi/vue-layout/commit/fb5905475d7419508ebb8c8279572a827b1a998c))
+* reading value of otpion value config ([7315cbc](https://github.com/tada5hi/vue-layout/commit/7315cbc67b1adbb817be5fa17343be088cc4eac0))
+* rename option value builder + cleanup dist directory before build ([588233b](https://github.com/tada5hi/vue-layout/commit/588233b0d030b050b46a90ff7d5b9dbb60c1c0d5))
+* set few type properties optional ([f0c4225](https://github.com/tada5hi/vue-layout/commit/f0c42256db09d109f0ea0aa58948dcaa53a4e568))
+
+
+### Code Refactoring
+
+* default- & preset-store management ([d9f7b71](https://github.com/tada5hi/vue-layout/commit/d9f7b7183e027e8f1de3d1aeb1f47a71566c83eb))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vue-layout/core bumped from ^5.0.1 to ^1.0.0
+  * peerDependencies
+    * @vue-layout/core bumped from ^5.0.1 to ^1.0.0
+
 ## 5.0.1
 
 ### Patch Changes
