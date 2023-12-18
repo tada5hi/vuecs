@@ -10,7 +10,10 @@ import type {
     DefineComponent, PropType, VNodeProps, VNodeTypes,
 } from 'vue';
 import {
-    computed, defineComponent, h, resolveDynamicComponent,
+    computed,
+    defineComponent,
+    h,
+    resolveDynamicComponent,
 } from 'vue';
 import type { LocationQuery, RouteLocationRaw } from 'vue-router';
 import { useRoute } from 'vue-router';
@@ -91,10 +94,14 @@ export const VCLink = defineComponent({
         });
 
         const extendLinkWithQuery = (link: string, query: Record<string, any>) => {
+            const keys = Object.keys(query);
+            if (keys.length === 0) {
+                return link;
+            }
+
             let searchParams : URLSearchParams;
             if (link.includes('?')) {
                 const url = new URL(link, 'http://localhost:3000');
-                const keys = Object.keys(query);
                 for (let i = 0; i < keys.length; i++) {
                     url.searchParams.set(keys[i], query[keys[i]]);
                 }
@@ -133,7 +140,7 @@ export const VCLink = defineComponent({
             }
 
             let to : RouteLocationRaw | undefined;
-            if (props.query && route) {
+            if (props.query) {
                 if (typeof props.to === 'string') {
                     to = extendLinkWithQuery(props.to, query.value);
                 } else if (isObject(props.to)) {
