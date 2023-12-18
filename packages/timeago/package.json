@@ -48,7 +48,7 @@
         "node": ">=16"
     },
     "dependencies": {
-        "date-fns": "^2.30.0"
+        "date-fns": "^3.0.0"
     },
     "publishConfig": {
         "access": "public"
