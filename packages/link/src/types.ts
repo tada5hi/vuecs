@@ -17,6 +17,10 @@ export type LinkProperties = {
     [key: string]: any
 };
 
+export type LinkQueryValue = string | null;
+
+export type LinkQuery = Record<string, LinkQueryValue | LinkQueryValue[]>;
+
 export type {
     Options,
 };

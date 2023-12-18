@@ -14,9 +14,9 @@ import {
     defineComponent,
     h,
     resolveDynamicComponent,
+    toRef,
 } from 'vue';
-import type { LocationQuery, RouteLocationRaw } from 'vue-router';
-import { useRoute } from 'vue-router';
+import type { LinkQuery } from './types';
 
 export const VCLink = defineComponent({
     props: {
@@ -41,40 +41,16 @@ export const VCLink = defineComponent({
             default: '_self',
         },
         to: {
-            type: [String, Object] as PropType<string | RouteLocationRaw>,
+            type: [String, Object] as PropType<string | Record<string, any>>,
             default: undefined,
         },
         query: {
-            type: Boolean,
-            default: false,
-        },
-        queryKeys: {
-            type: Array as PropType<string[]>,
+            type: Object as PropType<LinkQuery>,
         },
     },
     emits: ['click', 'clicked'],
     setup(props, { emit, slots }) {
-        const route = useRoute();
-        const query = computed<LocationQuery>(() => {
-            if (!route) {
-                return {};
-            }
-
-            if (typeof props.queryKeys === 'undefined') {
-                return route.query;
-            }
-
-            const output : LocationQuery = {};
-            const keys = Object.keys(route.query);
-            for (let i = 0; i < keys.length; i++) {
-                const key = keys[i];
-                if (props.queryKeys.indexOf(key) !== -1) {
-                    output[key] = route.query[keys[i]];
-                }
-            }
-
-            return output;
-        });
+        const query = toRef(props, 'query');
 
         const routerLink = resolveDynamicComponent('RouterLink');
         const nuxtLink = resolveDynamicComponent('NuxtLink');
@@ -120,7 +96,10 @@ export const VCLink = defineComponent({
 
         const computedHref = computed(() => {
             if (props.href) {
-                if (props.query) {
+                if (
+                    props.query &&
+                    query.value
+                ) {
                     return extendLinkWithQuery(props.href, query.value);
                 }
 
@@ -139,8 +118,12 @@ export const VCLink = defineComponent({
                 return {};
             }
 
-            let to : RouteLocationRaw | undefined;
-            if (props.query) {
+            let to : Record<string, any> | string | undefined;
+
+            if (
+                props.query &&
+                query.value
+            ) {
                 if (typeof props.to === 'string') {
                     to = extendLinkWithQuery(props.to, query.value);
                 } else if (isObject(props.to)) {

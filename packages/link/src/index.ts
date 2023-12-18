@@ -13,10 +13,10 @@ import './vue';
 import {
     VCLink,
 } from './component';
-import type { Options } from './type';
+import type { Options } from './types';
 
 export * from './component';
-export * from './type';
+export * from './types';
 
 export function install(instance: App, options?: Options) : void {
     instance.component('VCLink', VCLink);
