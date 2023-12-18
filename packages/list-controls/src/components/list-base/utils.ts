@@ -5,12 +5,14 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { merge } from 'smob';
 import {
     createOptionBuilder,
     extendMaybeRefArrayValue,
     findIndexOfMaybeRefArray,
-    hasOwnProperty, isObject,
-    isPromise, merge,
+    hasOwnProperty,
+    isObject,
+    isPromise,
     pushMaybeRefArrayValue, setMaybeRefValue,
     spliceMaybeRefArray,
 } from '@vuecs/core';

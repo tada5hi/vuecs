@@ -13,12 +13,13 @@ import {
     unref,
 } from 'vue';
 import type { VNodeClass } from '@vuecs/core';
+import { merge } from 'smob';
 import {
     createOptionBuilder,
     evaluateFnOrValue,
     hasNormalizedSlot,
-    hasOwnProperty, isObject,
-    merge,
+    hasOwnProperty,
+    isObject,
     normalizeSlot,
     setMaybeRefValue,
 } from '@vuecs/core';
