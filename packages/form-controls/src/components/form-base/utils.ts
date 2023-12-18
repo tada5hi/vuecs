@@ -9,6 +9,7 @@ import {
     createOptionBuilder,
     setMaybeRefValue,
 } from '@vuecs/core';
+import { isReactive } from 'vue';
 import type { Component } from '../constants';
 import type {
     ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsDefaults, FormBaseOptionsInput,
@@ -45,7 +46,11 @@ export function buildFormBaseOptions<T extends FormBaseOptionsInput>(
 
 export function handleFormValueChanged(options: FormBaseOptions, value: unknown) {
     if (typeof options.value !== 'undefined') {
-        options.value = setMaybeRefValue(options.value, value);
+        if (isReactive(options.value)) {
+            options.value = value;
+        } else {
+            setMaybeRefValue(options.value, value);
+        }
     }
 
     if (options.onChange) {

@@ -35,7 +35,7 @@ export default defineComponent({
             <button
                 class="btn btn-xs btn-dark"
                 @click.prevent="props.created({
-                    id: Math.random() * 100,
+                    id: Math.ceil(Math.random() * 100),
                     name: 'Max'
                 })"
             >

@@ -7,7 +7,10 @@
 
 import type { VNodeArrayChildren, VNodeChild } from 'vue';
 import {
-    h, mergeProps, unref,
+    h,
+    isReactive,
+    mergeProps,
+    unref,
 } from 'vue';
 import type { VNodeClass } from '@vuecs/core';
 import {
@@ -145,19 +148,29 @@ export function buildListItem<T, M = any>(
 ) : VNodeChild {
     const options = buildListItemOptions(input);
 
-    const data = unref(options.data);
+    let data = unref(options.data);
 
     const overrideUpdatedFn = (fn: ListEventFn<T>, item?: T) : ListEventFn<T | undefined> => {
+        if (typeof item === 'undefined') {
+            return fn(data);
+        }
+
         if (
             isObject(item) &&
             isObject(data)
         ) {
-            options.data = setMaybeRefValue(options.data, merge(item || {}, data) as T);
-        } else if (item) {
-            options.data = setMaybeRefValue(options.data, item);
+            data = merge(item, data) as T;
+        } else {
+            data = item;
         }
 
-        return fn(unref(options.data));
+        if (isReactive(options.data)) {
+            options.data = data;
+            return fn(data);
+        }
+
+        setMaybeRefValue(options.data, data);
+        return fn(data);
     };
 
     let slotProps : ListItemSlotProps<T>;

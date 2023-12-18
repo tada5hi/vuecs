@@ -1,4 +1,5 @@
 {
+    "bootstrap-sha": "bd113b0b69a3cb0256338f512e8a97c834481ee5",
     "include-component-in-tag": true,
     "release-type": "node",
     "bump-minor-pre-major": true,

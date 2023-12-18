@@ -6,7 +6,9 @@
  */
 
 import { isObject, merge } from 'smob';
-import { isReadonly, isRef, unref } from 'vue';
+import {
+    isReadonly, isRef, unref,
+} from 'vue';
 import type { MaybeRef } from 'vue';
 
 export function unrefWithDefault<T>(value: MaybeRef<T>, alt: NonNullable<T>) : NonNullable<T> {
@@ -23,34 +25,7 @@ export function setMaybeRefValue<T>(input: MaybeRef<T>, value: T) {
         if (!isReadonly(input)) {
             input.value = value;
         }
-
-        return input;
     }
-
-    input = value;
-
-    return input;
-}
-
-export function extendMaybeRefObject<T>(
-    input: MaybeRef<T>,
-    value: Partial<T>,
-) {
-    const keys = Object.keys(value) as (keyof T)[];
-
-    if (isRef(input)) {
-        if (!isReadonly(input)) {
-            for (let i = 0; i < keys.length; i++) {
-                input.value[keys[i] as keyof T] = value[keys[i]] as T[keyof T];
-            }
-        }
-    } else {
-        for (let i = 0; i < keys.length; i++) {
-            input[keys[i] as keyof T] = value[keys[i]] as T[keyof T];
-        }
-    }
-
-    return input;
 }
 
 export function pushMaybeRefArrayValue<T>(

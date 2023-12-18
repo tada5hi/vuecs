@@ -8,14 +8,13 @@
 import {
     createOptionBuilder,
     extendMaybeRefArrayValue,
-    extendMaybeRefObject,
     findIndexOfMaybeRefArray,
     hasOwnProperty, isObject,
-    isPromise,
-    pushMaybeRefArrayValue,
+    isPromise, merge,
+    pushMaybeRefArrayValue, setMaybeRefValue,
     spliceMaybeRefArray,
 } from '@vuecs/core';
-import { isRef, unref } from 'vue';
+import { isReactive, isRef, unref } from 'vue';
 import type { MaybeRef } from 'vue';
 import type { Component } from '../constants';
 import type {
@@ -295,7 +294,7 @@ export function buildListBaseSlotProps<T, M = any>(
             return;
         }
 
-        const data = unref(ctx.data);
+        let data = unref(ctx.data);
 
         if (Array.isArray(data)) {
             const filterFn = buildFilterFn(item, ctx.itemId, ctx.itemKey);
@@ -315,14 +314,23 @@ export function buildListBaseSlotProps<T, M = any>(
                 }
             }
         } else {
-            extendMaybeRefObject(ctx.data as MaybeRef<T>, item);
+            if (
+                isObject(item) &&
+                isObject(data)
+            ) {
+                data = merge(item, data) as T;
+            } else {
+                data = item;
+            }
+
+            if (isReactive(ctx.data)) {
+                ctx.data = data;
+            } else {
+                setMaybeRefValue(ctx.data, data);
+            }
 
             if (typeof ctx.onUpdated === 'function') {
-                if (item) {
-                    ctx.onUpdated(item); // todo: extend with data
-                } else {
-                    ctx.onUpdated(data);
-                }
+                ctx.onUpdated(data);
             }
         }
     };
