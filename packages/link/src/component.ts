@@ -5,10 +5,15 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { DefineComponent, VNodeProps, VNodeTypes } from 'vue';
+import { isObject } from '@vuecs/core';
+import type {
+    DefineComponent, PropType, VNodeProps, VNodeTypes,
+} from 'vue';
 import {
     computed, defineComponent, h, resolveDynamicComponent,
 } from 'vue';
+import type { LocationQuery, RouteLocationRaw } from 'vue-router';
+import { useRoute } from 'vue-router';
 
 export const VCLink = defineComponent({
     props: {
@@ -33,12 +38,41 @@ export const VCLink = defineComponent({
             default: '_self',
         },
         to: {
-            type: String,
+            type: [String, Object] as PropType<string | RouteLocationRaw>,
             default: undefined,
+        },
+        query: {
+            type: Boolean,
+            default: false,
+        },
+        queryKeys: {
+            type: Array as PropType<string[]>,
         },
     },
     emits: ['click', 'clicked'],
     setup(props, { emit, slots }) {
+        const route = useRoute();
+        const query = computed<LocationQuery>(() => {
+            if (!route) {
+                return {};
+            }
+
+            if (typeof props.queryKeys === 'undefined') {
+                return route.query;
+            }
+
+            const output : LocationQuery = {};
+            const keys = Object.keys(route.query);
+            for (let i = 0; i < keys.length; i++) {
+                const key = keys[i];
+                if (props.queryKeys.indexOf(key) !== -1) {
+                    output[key] = route.query[keys[i]];
+                }
+            }
+
+            return output;
+        });
+
         const routerLink = resolveDynamicComponent('RouterLink');
         const nuxtLink = resolveDynamicComponent('NuxtLink');
 
@@ -56,10 +90,33 @@ export const VCLink = defineComponent({
             return 'router-link';
         });
 
+        const extendLinkWithQuery = (link: string, query: Record<string, any>) => {
+            let searchParams : URLSearchParams;
+            if (link.includes('?')) {
+                const url = new URL(link, 'http://localhost:3000');
+                const keys = Object.keys(query);
+                for (let i = 0; i < keys.length; i++) {
+                    url.searchParams.set(keys[i], query[keys[i]]);
+                }
+
+                searchParams = url.searchParams;
+
+                [link] = link.split('?');
+            } else {
+                searchParams = new URLSearchParams(query);
+            }
+
+            return `${link}?${searchParams.toString()}`;
+        };
+
         const isRouterLink = computed(() => computedTag.value !== 'a');
 
         const computedHref = computed(() => {
             if (props.href) {
+                if (props.query) {
+                    return extendLinkWithQuery(props.href, query.value);
+                }
+
                 return props.href;
             }
 
@@ -75,8 +132,25 @@ export const VCLink = defineComponent({
                 return {};
             }
 
+            let to : RouteLocationRaw | undefined;
+            if (props.query && route) {
+                if (typeof props.to === 'string') {
+                    to = extendLinkWithQuery(props.to, query.value);
+                } else if (isObject(props.to)) {
+                    to = {
+                        ...props.to,
+                        query: {
+                            ...query.value,
+                            ...(props.to.query ? { ...props.to.query } : {}),
+                        },
+                    };
+                }
+            } else {
+                to = props.to;
+            }
+
             return {
-                ...(props.to ? { to: props.to } : {}),
+                ...(to ? { to } : {}),
                 ...(typeof props.prefetch !== 'undefined' ? { prefetch: props.prefetch } : {}),
             };
         });

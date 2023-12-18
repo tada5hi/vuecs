@@ -40,10 +40,12 @@
         "build": "cross-env NODE_ENV=production rimraf dist && npm run build:js && npm run build:types"
     },
     "devDependencies": {
-        "vue": "^3.3.9"
+        "vue": "^3.3.9",
+        "vue-router": "^4.2.5"
     },
     "peerDependencies": {
-        "vue": "^3.x"
+        "vue": "^3.x",
+        "vue-router": "^4.2.5"
     },
     "engines": {
         "node": ">=16"

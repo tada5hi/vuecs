@@ -13,6 +13,7 @@ import fontAwesome from '@vuecs/preset-font-awesome';
 import installCountdown from '@vuecs/countdown';
 import installFormControl from '@vuecs/form-controls';
 import installGravatar from '@vuecs/gravatar';
+import installLink from '@vuecs/link';
 import installNavigation from '@vuecs/navigation';
 import installPagination from '@vuecs/pagination';
 import installTimeago from '@vuecs/timeago';
@@ -32,6 +33,7 @@ export default defineNuxtPlugin((ctx) => {
     ctx.vueApp.use(installCountdown);
     ctx.vueApp.use(installFormControl);
     ctx.vueApp.use(installGravatar);
+    ctx.vueApp.use(installLink);
     ctx.vueApp.use(installTimeago);
 
     ctx.vueApp.use(installNavigation, {
