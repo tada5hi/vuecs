@@ -1,13 +1,14 @@
 {
-    "packages/core": "^0.0.0",
-    "packages/countdown": "^0.0.0",
-    "packages/form-controls": "^0.0.0",
-    "packages/gravatar": "^0.0.0",
-    "packages/link": "^0.0.0",
-    "packages/list-controls": "^0.0.0",
-    "packages/navigation": "^0.0.0",
-    "packages/pagination": "^0.0.0",
-    "packages/preset-bootstrap-v4": "^0.0.0",
-    "packages/preset-bootstrap-v5": "^0.0.0",
-    "packages/preset-font-awesome": "^0.0.0"
+    "packages/core": "1.0.0",
+    "packages/countdown": "1.0.0",
+    "packages/form-controls": "1.0.0",
+    "packages/gravatar": "1.0.0",
+    "packages/link": "1.0.0",
+    "packages/list-controls": "1.0.0",
+    "packages/navigation": "1.0.0",
+    "packages/pagination": "1.0.0",
+    "packages/preset-bootstrap-v4": "1.0.0",
+    "packages/preset-bootstrap-v5": "1.0.0",
+    "packages/preset-font-awesome": "1.0.0",
+    "packages/timeago": "1.0.0"
 }
