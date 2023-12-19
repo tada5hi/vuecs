@@ -1,10 +1,3 @@
-/*
- * Copyright (c) 2022.
- * Author Peter Placzek (tada5hi)
- * For the full copyright and license information,
- * view the LICENSE file that was distributed with this source code.
- */
-
 import type { App, Plugin } from 'vue';
 import type { Options } from './type';
 
@@ -18,9 +11,7 @@ import {
 export * from './component';
 export * from './type';
 
-export function install(instance: App, options?: Options) : void {
-    options ??= {};
-
+export function install(instance: App, options: Options = {}) : void {
     instance.component('VCCountdown', VCCountdown);
 }
 
