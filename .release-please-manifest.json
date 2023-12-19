@@ -10,5 +10,6 @@
     "packages/preset-bootstrap-v4": "1.0.0",
     "packages/preset-bootstrap-v5": "1.0.0",
     "packages/preset-font-awesome": "1.0.0",
-    "packages/timeago": "1.0.0"
+    "packages/timeago": "1.0.0",
+    "examples/nuxt": "0.0.0"
 }

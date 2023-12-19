@@ -16,7 +16,8 @@
         "packages/preset-bootstrap-v4": {"component": "preset-bootstrap-v4" },
         "packages/preset-bootstrap-v5": {"component": "preset-bootstrap-v5" },
         "packages/preset-font-awesome": {"component": "preset-font-awesome" },
-        "packages/timeago": {"component": "timeago" }
+        "packages/timeago": {"component": "timeago" },
+        "examples/nuxt": {"component": "examples-nuxt"}
     },
     "plugins": [
         {
