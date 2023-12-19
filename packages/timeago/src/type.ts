@@ -7,6 +7,10 @@
 
 import type { Locale } from 'date-fns';
 
+export {
+    Locale,
+};
+
 export type ConverterOptions = {
     includeSeconds?: boolean | undefined,
     addSuffix?: boolean | undefined,

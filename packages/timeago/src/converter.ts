@@ -6,7 +6,7 @@
  */
 
 import { formatDistanceToNow } from 'date-fns';
-import type { Converter, ConverterOptions } from './type';
+import type { Converter, ConverterOptions, Locale } from './type';
 
 export const convert : Converter = (date: Date | number, locale?: Locale, converterOptions?: ConverterOptions) => {
     const { includeSeconds, addSuffix = true } = converterOptions || {};
