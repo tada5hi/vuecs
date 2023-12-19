@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/preset-bootstrap-v4",
-    "version": "0.0.0",
+    "version": "1.0.0",
     "description": "",
     "exports": {
         "./package.json": "./package.json",
