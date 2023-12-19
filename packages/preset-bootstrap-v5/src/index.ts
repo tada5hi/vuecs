@@ -67,6 +67,6 @@ export default {
         textClass: 'mb-0',
     },
     pagination: {
-        class: 'd-flex justify-content-center',
+        class: 'd-flex justify-content-center pagination',
     },
 };

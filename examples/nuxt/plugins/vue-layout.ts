@@ -15,9 +15,10 @@ import installFormControl from '@vuecs/form-controls';
 import installGravatar from '@vuecs/gravatar';
 import installLink from '@vuecs/link';
 import installNavigation from '@vuecs/navigation';
+import '@vuecs/pagination/../dist/index.css';
 import installPagination from '@vuecs/pagination';
 import installTimeago from '@vuecs/timeago';
-import { defineNuxtPlugin, useState } from '#app';
+import { defineNuxtPlugin } from '#app';
 import { navigationProvider } from '~/config/layout';
 
 export default defineNuxtPlugin((ctx) => {

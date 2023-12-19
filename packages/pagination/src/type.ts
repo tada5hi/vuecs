@@ -18,10 +18,16 @@ export type PaginationMeta = {
     page: number
 };
 
+export type PaginationMetaInput = Omit<PaginationMeta, 'page' | 'offset'> &
+Partial<Pick<PaginationMeta, 'page' | 'offset'>>;
+
 export type PaginationOptions = {
+    offset?: number,
     limit: number,
-    offset: number,
     total: number,
+
+    page?: number,
+
     load: (meta: PaginationMeta) => (Promise<any> | any),
     busy: MaybeRef<boolean>,
 

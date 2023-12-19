@@ -13,6 +13,7 @@ import {
     h, isRef, mergeProps, unref,
 } from 'vue';
 import type { PaginationMeta, PaginationOptions, PaginationOptionsInput } from './type';
+import { calculateOffset, calculatePage, calculatePagesTotal } from './utils';
 
 export function buildPaginationOptions(
     options: PaginationOptionsInput,
@@ -92,24 +93,53 @@ export function buildPaginationOptions(
 export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
     const options = buildPaginationOptions(input);
 
-    let totalPages = 1;
-    let currentPage = 1;
-    if (options.total > 0 && options.limit > 0) {
-        totalPages = Math.max(Math.ceil(options.total / options.limit), 1);
-        currentPage = Math.floor(options.offset / options.limit) + 1;
+    let pagesTotal = 1;
+    let pageCurrent = 1;
+
+    let offset : number;
+
+    if (typeof options.offset === 'undefined') {
+        if (
+            typeof options.page !== 'undefined' &&
+            typeof options.limit !== 'undefined'
+        ) {
+            offset = calculateOffset({
+                page: options.page,
+                limit: options.limit,
+            });
+        } else {
+            offset = 0;
+        }
+    } else {
+        offset = options.offset;
     }
 
-    const betweenPages : number[] = [];
-    for (let i = currentPage - 2; i < (currentPage + 2); i++) {
-        if (i > 0 && i <= totalPages) {
-            betweenPages.push(i);
+    if (
+        typeof options.total !== 'undefined' &&
+        typeof options.limit !== 'undefined'
+    ) {
+        pagesTotal = calculatePagesTotal({
+            limit: options.limit,
+            total: options.total,
+        });
+
+        pageCurrent = calculatePage({
+            limit: options.limit,
+            offset,
+        });
+    }
+
+    const pagesBetween : number[] = [];
+    for (let i = pageCurrent - 2; i < (pageCurrent + 2); i++) {
+        if (i > 0 && i <= pagesTotal) {
+            pagesBetween.push(i);
         }
     }
 
     const busy = unref(options.busy);
 
     const load = (page: number) : any => {
-        if (busy || page === currentPage) {
+        if (busy || page === pageCurrent) {
             return undefined;
         }
 
@@ -119,10 +149,12 @@ export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
 
         const data : PaginationMeta = {
             page,
-            offset: (page - 1) * options.limit,
+            offset: calculateOffset({ page, limit: options.limit }),
             limit: options.limit,
-            total: totalPages,
+            total: pagesTotal,
         };
+
+        console.log(data);
 
         const output = options.load(data);
         if (isPromise(output)) {
@@ -140,7 +172,7 @@ export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
         return output;
     };
 
-    const renderPrevPage = () => {
+    const renderPagePrevious = () => {
         let content : VNodeChild;
 
         if (options.prevClass || options.prevContent) {
@@ -150,11 +182,11 @@ export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
                 options.prevContent,
             );
         } else {
-            content = [currentPage - 1];
+            content = [pageCurrent - 1];
         }
 
         let prevPage : VNodeArrayChildren = [];
-        if (currentPage > 1) {
+        if (pageCurrent > 1) {
             prevPage = [
                 h(
                     options.itemTag,
@@ -170,7 +202,7 @@ export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
                                 onClick($event: any) {
                                     $event.preventDefault();
 
-                                    return load(currentPage - 1);
+                                    return load(pageCurrent - 1);
                                 },
                             },
                             [content],
@@ -183,10 +215,10 @@ export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
         return prevPage;
     };
 
-    const renderBetweenPages = () => {
+    const renderPagesBetween = () => {
         const children : VNodeArrayChildren = [];
 
-        for (let i = 0; i < betweenPages.length; i++) {
+        for (let i = 0; i < pagesBetween.length; i++) {
             const node = h(
                 options.itemTag,
                 {
@@ -196,7 +228,7 @@ export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
                     h('button', {
                         ...mergeProps({
                             ...(
-                                betweenPages[i] === currentPage ?
+                                pagesBetween[i] === pageCurrent ?
                                     {
                                         class: options.linkActiveClass,
                                     } :
@@ -210,10 +242,10 @@ export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
                             $event.preventDefault();
 
                             // eslint-disable-next-line prefer-rest-params
-                            return load(betweenPages[i]);
+                            return load(pagesBetween[i]);
                         },
                     }, [
-                        betweenPages[i],
+                        pagesBetween[i],
                     ]),
                 ],
             );
@@ -224,7 +256,7 @@ export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
         return children;
     };
 
-    const renderNextPage = () => {
+    const renderPageNext = () => {
         let nextPage : VNodeArrayChildren = [];
 
         let content : VNodeChild;
@@ -236,10 +268,10 @@ export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
                 options.nextContent,
             );
         } else {
-            content = [currentPage + 1];
+            content = [pageCurrent + 1];
         }
 
-        if (currentPage < totalPages) {
+        if (pageCurrent < pagesTotal) {
             nextPage = [
                 h(options.itemTag, {
                     class: options.itemClass,
@@ -252,7 +284,7 @@ export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
                             onClick($event: any) {
                                 $event.preventDefault();
 
-                                return load(currentPage + 1);
+                                return load(pageCurrent + 1);
                             },
                         },
                         [content],
@@ -270,9 +302,9 @@ export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
             class: options.class,
         },
         [
-            renderPrevPage(),
-            renderBetweenPages(),
-            renderNextPage(),
+            renderPagePrevious(),
+            renderPagesBetween(),
+            renderPageNext(),
         ],
     );
 }

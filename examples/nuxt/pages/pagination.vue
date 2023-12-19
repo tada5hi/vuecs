@@ -6,7 +6,7 @@
   -->
 
 <script lang="ts">
-import { VCPagination } from '@vuecs/pagination';
+import { type PaginationMetaInput, VCPagination } from '@vuecs/pagination';
 import { ref } from '#imports';
 import { defineNuxtComponent } from '#app';
 
@@ -23,19 +23,21 @@ export default defineNuxtComponent({
             });
         }
 
-        const offset = ref(0);
+        const meta = ref<PaginationMetaInput>({
+            total: items.length,
+            offset: 0,
+            limit: 10,
+        });
 
         const data = ref(items.slice(0, 10));
 
-        const load = (meta: Record<string, any>) => {
-            offset.value = meta.offset;
-            data.value = items.slice(offset.value, offset.value + 10);
+        const load = (temp: Record<string, any>) => {
+            meta.value.offset = temp.offset;
+            data.value = items.slice(meta.value.offset, meta.value.offset + 10);
         };
 
         return {
-            limit: 10,
-            total: items.length,
-            offset,
+            meta,
             load,
             data,
         };
@@ -56,9 +58,7 @@ export default defineNuxtComponent({
         </ul>
         <div class="mt-3 text-center">
             <VCPagination
-                :total="total"
-                :limit="limit"
-                :offset="offset"
+                :meta="meta"
                 @load="load"
             />
         </div>

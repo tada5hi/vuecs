@@ -6,9 +6,9 @@
  */
 
 import type { PropType } from 'vue';
-import { computed, defineComponent } from 'vue';
+import { defineComponent } from 'vue';
 import { buildPagination } from './module';
-import type { PaginationMeta } from './type';
+import type { PaginationMetaInput } from './type';
 
 export const VCPagination = defineComponent({
     props: {
@@ -22,32 +22,23 @@ export const VCPagination = defineComponent({
         },
         offset: {
             type: Number,
-            default: 0,
         },
         busy: {
             type: Boolean,
             default: false,
         },
         meta: {
-            type: Object as PropType<PaginationMeta>,
+            type: Object as PropType<PaginationMetaInput>,
             default: undefined,
         },
     },
     emits: ['load'],
     setup(props, { emit }) {
-        const meta = computed<Partial<PaginationMeta>>(() => {
-            if (typeof props.meta === 'undefined') {
-                return {};
-            }
-
-            return props.meta;
-        });
-
         return () => buildPagination({
-            total: meta.value.total ?? props.total,
-            limit: meta.value.limit ?? props.limit,
-            offset: meta.value.offset ?? props.offset,
-            busy: meta.value.busy ?? props.busy,
+            total: props.meta?.total ?? props.total,
+            limit: props.meta?.limit ?? props.limit,
+            offset: props.meta?.offset ?? props.offset,
+            busy: props.meta?.busy ?? props.busy,
             load: (data) => emit('load', data),
         });
     },
