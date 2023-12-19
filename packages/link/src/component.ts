@@ -5,7 +5,6 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { isObject } from '@vuecs/core';
 import type {
     DefineComponent, PropType, VNodeProps, VNodeTypes,
 } from 'vue';
@@ -17,6 +16,7 @@ import {
     toRef,
 } from 'vue';
 import type { LinkQuery } from './types';
+import { isObject } from './utils';
 
 export const VCLink = defineComponent({
     props: {
