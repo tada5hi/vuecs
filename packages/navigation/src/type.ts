@@ -30,6 +30,7 @@ export type NavigationItem = {
     [key: string]: any
 };
 
-export type Options = StoreManagerOptions & {
-    provider: NavigationProvider
+export type Options = {
+    provider: NavigationProvider,
+    storeManager?: StoreManagerOptions
 };

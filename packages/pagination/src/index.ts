@@ -1,5 +1,5 @@
 import type { StoreManagerOptions } from '@vuecs/core';
-import { applyStoreManagerOptions } from '@vuecs/core';
+import { applyStoreManagerOptions, installStoreManager } from '@vuecs/core';
 
 import type { App, Plugin } from 'vue';
 
@@ -18,7 +18,11 @@ export * from './type';
 export * from './utils';
 
 export function install(instance: App, options: Options = {}) : void {
-    applyStoreManagerOptions(instance, options);
+    if (options.storeManager) {
+        applyStoreManagerOptions(instance, options.storeManager);
+    } else {
+        installStoreManager(instance);
+    }
 
     instance.component('VCPagination', VCPagination);
 }

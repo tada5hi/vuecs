@@ -56,7 +56,9 @@ PartialPick<PaginationOptions,
 >
 >;
 
-type Options = StoreManagerOptions;
+type Options = {
+    storeManager?: StoreManagerOptions
+};
 
 export type {
     Options,

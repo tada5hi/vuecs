@@ -57,7 +57,7 @@ const primaryItems: NavigationItem[] = [
     }
 ]
 
-export const navigationProvider = createNavigationProvider({
+export const provider = createNavigationProvider({
     async getItems(tier: number, itemsActive: NavigationItem[]) {
         // Return elements for a specific tier.
         // The context provides the current active elements for
@@ -100,12 +100,12 @@ import {
 } from '@vuecs/navigation';
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
-import { navigationProvider } from './module';
+import { provider } from './module';
 
 const app = createApp();
 
 app.use(install({
-    navigationProvider
+    provider
 }));
 
 const router = createRouter({

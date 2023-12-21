@@ -1,4 +1,4 @@
-import { applyStoreManagerOptions } from '@vuecs/core';
+import { applyStoreManagerOptions, installStoreManager } from '@vuecs/core';
 
 import type { App, Plugin } from 'vue';
 
@@ -25,7 +25,11 @@ export function install(instance: App, options: Options) : void {
 
     setupStore(instance);
 
-    applyStoreManagerOptions(instance, options);
+    if (options.storeManager) {
+        applyStoreManagerOptions(instance, options.storeManager);
+    } else {
+        installStoreManager(instance);
+    }
 
     Object.entries({
         VCNavItem,
