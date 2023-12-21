@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/tada5hi/vuecs/compare/core-v1.0.0...core-v1.1.0) (2023-12-21)
+
+
+### Features
+
+* refactor and enhanced component options management ([e5edb6d](https://github.com/tada5hi/vuecs/commit/e5edb6d354a44f242a952385db85e14c1b0be223))
+
 ## 1.0.0 (2023-12-19)
 
 

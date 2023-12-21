@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/tada5hi/vuecs/compare/timeago-v1.0.0...timeago-v1.0.1) (2023-12-21)
+
+
+### Bug Fixes
+
+* **deps:** bump date-fns from 3.0.0 to 3.0.1 ([#848](https://github.com/tada5hi/vuecs/issues/848)) ([067aadf](https://github.com/tada5hi/vuecs/commit/067aadf962b39d48c8b631b8016dddb9b3d49fef))
+
 ## 1.0.0 (2023-12-19)
 
 

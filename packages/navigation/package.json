@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/navigation",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "A package for multi level navigations.",
     "exports": {
         "./package.json": "./package.json",
@@ -53,13 +53,13 @@
         "test:coverage": "cross-env NODE_ENV=test jest --config ./test/jest.config.js --coverage"
     },
     "devDependencies": {
-        "@vuecs/core": "^1.0.0",
+        "@vuecs/core": "^1.1.0",
         "@vuecs/link": "^1.0.0",
-        "vue": "^3.3.13",
+        "vue": "^3.3.9",
         "vue-router": "^4.2.2"
     },
     "peerDependencies": {
-        "@vuecs/core": "^1.0.0",
+        "@vuecs/core": "^1.1.0",
         "@vuecs/link": "^1.0.0",
         "vue": "^3.x",
         "vue-router": "^4.x"

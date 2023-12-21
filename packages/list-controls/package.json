@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/list-controls",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "A package containing list controls.",
     "exports": {
         "./package.json": "./package.json",
@@ -51,14 +51,14 @@
         "lint:fix": "npm run lint -- --fix"
     },
     "devDependencies": {
-        "@vuecs/core": "^1.0.0",
+        "@vuecs/core": "^1.1.0",
         "smob": "^1.4.1",
-        "vue": "^3.3.13"
+        "vue": "^3.3.9"
     },
     "peerDependencies": {
-        "@vuecs/core": "^1.0.0",
+        "@vuecs/core": "^1.1.0",
         "smob": "^1.4.1",
-        "vue": "^3.3.13"
+        "vue": "^3.3.9"
     },
     "engines": {
         "node": ">=16"
