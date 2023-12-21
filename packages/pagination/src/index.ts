@@ -29,4 +29,4 @@ export function install(instance: App, options: Options = {}) : void {
 
 export default {
     install,
-} satisfies Plugin<StoreManagerOptions | undefined>;
+} satisfies Plugin<Options | undefined>;
