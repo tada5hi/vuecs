@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.1.0](https://github.com/tada5hi/vuecs/compare/pagination-v1.0.0...pagination-v1.1.0) (2023-12-21)
+
+
+### Features
+
+* refactor and enhanced component options management ([e5edb6d](https://github.com/tada5hi/vuecs/commit/e5edb6d354a44f242a952385db85e14c1b0be223))
+
+
+### Bug Fixes
+
+* options schema for component packages ([33751f8](https://github.com/tada5hi/vuecs/commit/33751f8a0295ef821063cb3243bfa2c08a010fad))
+* typing for pagination package ([118229a](https://github.com/tada5hi/vuecs/commit/118229a338101896d85c0756a4516e0f08a08dd3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^1.0.0 to ^1.1.0
+  * peerDependencies
+    * @vuecs/core bumped from ^1.0.0 to ^1.1.0
+
 ## 1.0.0 (2023-12-19)
 
 

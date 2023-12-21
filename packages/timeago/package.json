@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/timeago",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "A package containing a timeago component.",
     "exports": {
         "./package.json": "./package.json",
@@ -39,7 +39,7 @@
         "build": "cross-env NODE_ENV=production rimraf dist && npm run build:js && npm run build:types"
     },
     "devDependencies": {
-        "vue": "^3.3.13"
+        "vue": "^3.3.9"
     },
     "peerDependencies": {
         "vue": "^3.x"
