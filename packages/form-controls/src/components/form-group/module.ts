@@ -1,4 +1,4 @@
-import { createOptionBuilder, hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
+import { createComponentOptionsManager, hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
 import type { VNodeChild } from 'vue';
 import { h } from 'vue';
 import { Component, SlotName } from '../constants';
@@ -8,59 +8,59 @@ import type { FormGroupLabelSlotProps, FormGroupOptions, FormGroupOptionsInput }
 export function buildFormGroupOptions(
     input: FormGroupOptionsInput,
 ) : FormGroupOptions {
-    const { buildOrFail } = createOptionBuilder<FormGroupOptions>(
-        Component.FormGroup,
-    );
+    const manager = createComponentOptionsManager<FormGroupOptions>({
+        name: Component.FormGroup,
+    });
 
     return {
         ...input,
 
         slotItems: input.slotItems || {},
 
-        hint: buildOrFail({
+        hint: manager.buildOrFail({
             key: 'hint',
             value: input.hint,
             alt: undefined,
         }),
-        hintClass: buildOrFail({
+        hintClass: manager.buildOrFail({
             key: 'hintClass',
             value: input.hintClass,
             alt: [],
         }),
-        hintContent: buildOrFail({
+        hintContent: manager.buildOrFail({
             key: 'hintContent',
             value: input.hintContent,
             alt: '',
         }),
 
-        class: buildOrFail({
+        class: manager.buildOrFail({
             key: 'class',
             value: input.class,
             alt: [],
         }),
-        props: buildOrFail({
+        props: manager.buildOrFail({
             key: 'props',
             value: input.props,
             alt: {},
         }),
 
-        label: buildOrFail({
+        label: manager.buildOrFail({
             key: 'label',
             value: input.label,
             alt: true,
         }),
-        labelClass: buildOrFail({
+        labelClass: manager.buildOrFail({
             key: 'labelClass',
             value: input.labelClass,
             alt: [],
         }),
-        labelContent: buildOrFail({
+        labelContent: manager.buildOrFail({
             key: 'labelContent',
             value: input.labelContent,
             alt: 'Input',
         }),
 
-        validation: buildOrFail({
+        validation: manager.buildOrFail({
             key: 'validation',
             value: input.validation,
             alt: true,
@@ -68,13 +68,13 @@ export function buildFormGroupOptions(
         validationMessages: input.validationMessages || {},
         validationResult: input.validationResult || {},
         // errorClass
-        validationErrorClass: buildOrFail({
+        validationErrorClass: manager.buildOrFail({
             key: 'validationErrorClass',
             value: input.validationErrorClass,
             alt: [],
         }),
         // warningClass
-        validationWarningClass: buildOrFail({
+        validationWarningClass: manager.buildOrFail({
             key: 'validationWarningClass',
             value: input.validationWarningClass,
             alt: [],

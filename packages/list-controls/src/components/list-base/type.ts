@@ -1,7 +1,7 @@
 import type { MaybeRef, Slots } from 'vue';
 import type {
-    OptionsInputValue,
-    OptionsOverride, PartialPick,
+    ComponentOptionsInputValue,
+    ComponentOptionsOverride, PartialPick,
     VNodeClass,
     VNodeProperties,
 } from '@vuecs/core';
@@ -45,10 +45,10 @@ export type ListBaseOptions<T, M = any> = {
     onDeleted?: ListEventFn<T>,
     onUpdated?: ListEventFn<T>
 };
-export type ListBaseOptionsInput<T, M = any> = OptionsOverride<
+export type ListBaseOptionsInput<T, M = any> = ComponentOptionsOverride<
 ListBaseOptions<T, M>,
 PartialPick<ListBaseOptions<T, M>, 'meta' | 'slotItems' | 'slotProps'> &
-PartialPick<OptionsInputValue<ListBaseOptions<T, M>>, 'tag' | 'class' | 'props'>
+PartialPick<ComponentOptionsInputValue<ListBaseOptions<T, M>>, 'tag' | 'class' | 'props'>
 >;
 
 export type ExpectListBaseOptions<

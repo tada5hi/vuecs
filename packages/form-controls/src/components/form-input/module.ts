@@ -1,6 +1,6 @@
 import type { VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
-import { createOptionBuilder } from '@vuecs/core';
+import { createComponentOptionsManager } from '@vuecs/core';
 import { Component } from '../constants';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
 import type { FormInputBuildOptions, FormInputBuildOptionsInput } from './type';
@@ -12,58 +12,58 @@ export function buildFormInputOptions(
     component = component || Component.FormInput;
     const options = buildFormBaseOptions(input, component);
 
-    const { build, buildOrFail } = createOptionBuilder<FormInputBuildOptions>(
-        component,
-    );
+    const manager = createComponentOptionsManager<FormInputBuildOptions>({
+        name: component,
+    });
 
     return {
         ...options,
 
-        type: buildOrFail({
+        type: manager.buildOrFail({
             key: 'type',
             value: options.type,
             alt: 'text',
         }),
 
-        group: buildOrFail({
+        group: manager.buildOrFail({
             key: 'group',
             value: options.group,
             alt: false,
         }),
-        groupClass: buildOrFail({
+        groupClass: manager.buildOrFail({
             key: 'groupClass',
             value: options.groupClass,
             alt: [],
         }),
 
-        groupAppend: buildOrFail({
+        groupAppend: manager.buildOrFail({
             key: 'groupAppend',
             value: options.groupAppend,
             alt: false,
         }),
-        groupAppendClass: build({
+        groupAppendClass: manager.build({
             key: 'groupAppendClass',
             value: options.groupAppendClass,
             alt: '',
         }),
-        groupAppendContent: build({
+        groupAppendContent: manager.build({
             key: 'groupAppendContent',
             value: options.groupAppendContent,
             alt: '',
         }),
 
-        groupPrepend: buildOrFail({
+        groupPrepend: manager.buildOrFail({
             key: 'groupPrepend',
             value: options.groupPrepend,
             alt: false,
 
         }),
-        groupPrependClass: build({
+        groupPrependClass: manager.build({
             key: 'groupPrependClass',
             value: options.groupPrependClass,
             alt: '',
         }),
-        groupPrependContent: build({
+        groupPrependContent: manager.build({
             key: 'groupPrependContent',
             value: options.groupPrependContent,
             alt: '',

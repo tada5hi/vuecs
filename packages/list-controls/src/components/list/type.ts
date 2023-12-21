@@ -1,4 +1,4 @@
-import type { OptionsOverride, PartialPick } from '@vuecs/core';
+import type { ComponentOptionsOverride, PartialPick } from '@vuecs/core';
 import type { MaybeRef } from 'vue';
 import type {
     ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListBaseSlotProps,
@@ -20,7 +20,7 @@ export type ListBuildOptions<T, M = any> = ListBaseOptions<T, M> & {
 };
 
 export type ListBuildOptionsInput<T, M = any> = ListBaseOptionsInput<T, M> &
-OptionsOverride<
+ComponentOptionsOverride<
 ExpectListBaseOptions<ListBuildOptions<T, M>>,
 PartialPick<ListBuildOptions<T, M>, 'busy' | 'data' | 'header' | 'footer' | 'body' | 'loading' | 'noMore'>
 >;

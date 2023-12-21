@@ -1,6 +1,6 @@
-import type { PluginBaseOptions } from '@vuecs/core';
+import type { StoreManagerOptions } from '@vuecs/core';
 
-type Options = PluginBaseOptions;
+type Options = StoreManagerOptions;
 
 export type {
     Options,

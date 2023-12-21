@@ -1,5 +1,5 @@
 import {
-    createOptionBuilder,
+    createComponentOptionsManager,
     setMaybeRefValue,
 } from '@vuecs/core';
 import { isReactive } from 'vue';
@@ -15,21 +15,21 @@ export function buildFormBaseOptions<T extends FormBaseOptionsInput>(
 ): ExpectFormBaseOptions<T> & FormBaseOptions {
     defaults = defaults || {};
 
-    const { buildOrFail } = createOptionBuilder<FormBaseOptions>(
-        component,
-    );
+    const manager = createComponentOptionsManager<FormBaseOptions>({
+        name: component,
+    });
 
     return {
         ...options,
 
         slotItems: options.slotItems || {},
 
-        class: buildOrFail({
+        class: manager.buildOrFail({
             key: 'class',
             value: options.class,
             alt: defaults.class || '',
         }),
-        props: buildOrFail({
+        props: manager.buildOrFail({
             key: 'props',
             value: options.props,
             alt: defaults.props || {},

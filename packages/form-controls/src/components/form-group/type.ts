@@ -1,5 +1,5 @@
 import type {
-    OptionsInputValue, PartialPick, VNodeClass, VNodeProperties,
+    ComponentOptionsInputValue, PartialPick, VNodeClass, VNodeProperties,
 } from '@vuecs/core';
 import type { Slots, VNodeChild } from 'vue';
 import type { ValidationMessages, ValidationResult, ValidationTranslator } from '../type';
@@ -28,7 +28,7 @@ export type FormGroupOptions = {
     validationWarningClass: VNodeClass,
 };
 
-export type FormGroupOptionsInput = OptionsInputValue<
+export type FormGroupOptionsInput = ComponentOptionsInputValue<
 PartialPick<FormGroupOptions,
 'label' |
 'labelClass' |

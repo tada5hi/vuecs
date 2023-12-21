@@ -1,7 +1,7 @@
 import type { VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
 import {
-    createOptionBuilder,
+    createComponentOptionsManager,
     hasNormalizedSlot, hasOwnProperty,
     isObject,
     normalizeSlot,
@@ -17,14 +17,14 @@ export function buildListNoMoreOptions<T, M = any>(
         class: 'list-no-more',
     });
 
-    const { buildOrFail } = createOptionBuilder<ListNoMoreBuildOptions<T>>(
-        Component.ListNoMore,
-    );
+    const manager = createComponentOptionsManager<ListNoMoreBuildOptions<T>>({
+        name: Component.ListNoMore,
+    });
 
     return {
         ...options,
 
-        content: buildOrFail({
+        content: manager.buildOrFail({
             key: 'content',
             value: input.content,
             alt: 'No more items available...',

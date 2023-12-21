@@ -1,7 +1,7 @@
 import type { MaybeRef, VNodeChild } from 'vue';
 import type {
-    OptionsInputValue,
-    OptionsOverride, PartialPick,
+    ComponentOptionsInputValue,
+    ComponentOptionsOverride, PartialPick,
     VNodeClass,
     VNodeProperties,
 } from '@vuecs/core';
@@ -60,12 +60,12 @@ export type ListItemBuildOptions<T, M = any> = ListBaseOptions<T, M> & {
 };
 
 export type ListItemBuildOptionsInput<T, M = any> = ListBaseOptionsInput<T, M> &
-OptionsOverride<
+ComponentOptionsOverride<
 ExpectListBaseOptions<ListItemBuildOptions<T, M>>,
 PartialPick<ListItemBuildOptions<T, M>,
 'busy'
 > &
-OptionsInputValue<PartialPick<ListItemBuildOptions<T, M>,
+ComponentOptionsInputValue<PartialPick<ListItemBuildOptions<T, M>,
 'icon' |
 'iconTag' |
 'iconClass' |

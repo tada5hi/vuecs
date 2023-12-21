@@ -5,8 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { applyPluginBaseOptions } from '@vuecs/core';
-import type { PluginBaseOptions } from '@vuecs/core';
+import { applyStoreManagerOptions } from '@vuecs/core';
+import type { StoreManagerOptions } from '@vuecs/core';
 import bootstrapV5 from '@vuecs/preset-bootstrap-v5';
 import fontAwesome from '@vuecs/preset-font-awesome';
 
@@ -22,14 +22,14 @@ import { defineNuxtPlugin } from '#app';
 import { navigationProvider } from '~/config/layout';
 
 export default defineNuxtPlugin((ctx) => {
-    const baseOptions : PluginBaseOptions = {
+    const baseOptions : StoreManagerOptions = {
         presets: {
             bootstrapV5,
             fontAwesome,
         },
     };
 
-    applyPluginBaseOptions(ctx.vueApp, baseOptions);
+    applyStoreManagerOptions(ctx.vueApp, baseOptions);
 
     ctx.vueApp.use(installCountdown);
     ctx.vueApp.use(installFormControl);

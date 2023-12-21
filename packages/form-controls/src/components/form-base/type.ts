@@ -1,6 +1,6 @@
 import type {
-    OptionsInputValue,
-    OptionsOverride, PartialPick,
+    ComponentOptionsInputValue,
+    ComponentOptionsOverride, PartialPick,
     VNodeClass,
     VNodeProperties,
 } from '@vuecs/core';
@@ -17,9 +17,9 @@ export type FormBaseOptions = {
     onChange?: (input: any) => void
 };
 
-export type FormBaseOptionsInput = OptionsOverride<
+export type FormBaseOptionsInput = ComponentOptionsOverride<
 FormBaseOptions,
-OptionsInputValue<PartialPick<FormBaseOptions, 'class' | 'props'>> &
+ComponentOptionsInputValue<PartialPick<FormBaseOptions, 'class' | 'props'>> &
 PartialPick<FormBaseOptions, 'slotItems'>
 >;
 

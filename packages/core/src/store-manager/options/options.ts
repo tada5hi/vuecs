@@ -1,11 +1,11 @@
 import type { App } from 'vue';
-import { StoreName } from '../store';
-import { installStoreManager } from '../store-manager';
-import type { PluginBaseOptions } from './type';
+import { StoreName } from '../../store';
+import { installStoreManager } from '../singleton';
+import type { StoreManagerOptions } from './type';
 
-export function applyPluginBaseOptions(
+export function applyStoreManagerOptions(
     instance: App,
-    options: PluginBaseOptions,
+    options: StoreManagerOptions,
 ) {
     const manager = installStoreManager(instance);
 

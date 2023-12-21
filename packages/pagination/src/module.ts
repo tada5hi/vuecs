@@ -1,5 +1,5 @@
 import {
-    createOptionBuilder, isPromise,
+    createComponentOptionsManager, isPromise,
 } from '@vuecs/core';
 import type { VNodeArrayChildren, VNodeChild } from 'vue';
 import {
@@ -11,72 +11,74 @@ import { calculateOffset, calculatePage, calculatePagesTotal } from './utils';
 export function buildPaginationOptions(
     options: PaginationOptionsInput,
 ) : PaginationOptions {
-    const { buildOrFail, build } = createOptionBuilder<PaginationOptions>('pagination');
+    const manager = createComponentOptionsManager<PaginationOptions>({
+        name: 'pagination',
+    });
 
     return {
         ...options,
 
         busy: options.busy ?? false,
 
-        tag: buildOrFail({
+        tag: manager.buildOrFail({
             key: 'tag',
             value: options.tag,
             alt: 'ul',
         }),
-        class: buildOrFail({
+        class: manager.buildOrFail({
             key: 'class',
             value: options.class,
             alt: 'pagination',
         }),
 
-        itemTag: buildOrFail({
+        itemTag: manager.buildOrFail({
             key: 'itemTag',
             value: options.itemTag,
             alt: 'li',
         }),
-        itemClass: buildOrFail({
+        itemClass: manager.buildOrFail({
             key: 'itemClass',
             value: options.itemClass,
             alt: 'page-item',
         }),
 
-        linkClass: buildOrFail({
+        linkClass: manager.buildOrFail({
             key: 'linkClass',
             value: options.linkClass,
             alt: 'page-link',
         }),
-        linkActiveClass: buildOrFail({
+        linkActiveClass: manager.buildOrFail({
             key: 'linkActiveClass',
             value: options.linkActiveClass,
             alt: 'active',
         }),
 
-        prevTag: buildOrFail({
+        prevTag: manager.buildOrFail({
             key: 'prevTag',
             value: options.prevTag,
             alt: 'i',
         }),
-        prevClass: build({
+        prevClass: manager.build({
             key: 'prevClass',
             value: options.prevClass,
             alt: [],
         }),
-        prevContent: build({
+        prevContent: manager.build({
             key: 'prevContent',
             value: options.prevContent,
         }),
 
-        nextTag: buildOrFail({
+        nextTag: manager.buildOrFail({
             key: 'nextTag',
             value: options.nextTag,
             alt: 'i',
         }),
-        nextClass: build({
+        nextClass: manager.build({
             key: 'nextClass',
             value: options.nextClass,
             alt: [],
         }),
-        nextContent: build({
+        nextContent: manager.build({
             key: 'nextContent',
             value: options.nextContent,
         }),
@@ -146,8 +148,6 @@ export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
             limit: options.limit,
             total: pagesTotal,
         };
-
-        console.log(data);
 
         const output = options.load(data);
         if (isPromise(output)) {

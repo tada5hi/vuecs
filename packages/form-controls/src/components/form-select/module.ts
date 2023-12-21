@@ -1,7 +1,8 @@
 import type { VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
-import { createOptionBuilder } from '@vuecs/core';
+import { createComponentOptionsManager } from '@vuecs/core';
 import { Component } from '../constants';
+import type { FormBaseOptions } from '../form-base';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
 import type { FormSelectBuildOptions, FormSelectBuildOptionsInput } from './type';
 
@@ -10,25 +11,25 @@ export function buildFormSelectOptions(
 ) : FormSelectBuildOptions {
     const options = buildFormBaseOptions(input, Component.FormSelect);
 
-    const { buildOrFail } = createOptionBuilder<FormSelectBuildOptions>(
-        Component.FormSelect,
-    );
+    const manager = createComponentOptionsManager<FormSelectBuildOptions>({
+        name: Component.FormSelect,
+    });
 
     return {
         ...options,
 
         options: options.options,
-        optionDefault: buildOrFail({
+        optionDefault: manager.buildOrFail({
             key: 'optionDefault',
             value: options.optionDefault,
             alt: true,
         }),
-        optionDefaultId: buildOrFail({
+        optionDefaultId: manager.buildOrFail({
             key: 'optionDefaultId',
             value: options.optionDefaultId,
             alt: '',
         }),
-        optionDefaultValue: buildOrFail({
+        optionDefaultValue: manager.buildOrFail({
             key: 'optionDefaultValue',
             value: options.optionDefaultValue,
             alt: '-- Select --',

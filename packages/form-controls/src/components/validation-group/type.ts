@@ -1,5 +1,5 @@
 import type {
-    OptionsOverride,
+    ComponentOptionsOverride,
 } from '@vuecs/core';
 import type { Slots } from 'vue';
 import type { ValidationMessages, ValidationResult, ValidationTranslator } from '../type';
@@ -11,7 +11,7 @@ export type ValidationGroupOptions = {
     validationTranslator?: ValidationTranslator
 };
 
-export type ValidationGroupOptionsInput = OptionsOverride<
+export type ValidationGroupOptionsInput = ComponentOptionsOverride<
 ValidationGroupOptions,
 Partial<Pick<ValidationGroupOptions,
 'slotItems' |

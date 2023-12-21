@@ -1,7 +1,7 @@
 import type { VNodeArrayChildren, VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
 import {
-    createOptionBuilder,
+    createComponentOptionsManager,
     isPromise,
     setMaybeRefValue,
     unrefWithDefault,
@@ -12,30 +12,30 @@ import type { FormSubmitOptions, FormSubmitOptionsInput } from './type';
 export function buildFormSubmitOptions(
     options: FormSubmitOptionsInput,
 ) : FormSubmitOptions {
-    const { buildOrFail } = createOptionBuilder<FormSubmitOptions>(
-        Component.FormSubmit,
-    );
+    const manager = createComponentOptionsManager<FormSubmitOptions>({
+        name: Component.FormSubmit,
+    });
 
     return {
         ...options,
 
-        type: buildOrFail({
+        type: manager.buildOrFail({
             key: 'type',
             value: options.type,
             alt: 'button',
         }),
-        class: buildOrFail({
+        class: manager.buildOrFail({
             key: 'class',
             value: options.class,
             alt: [],
         }),
-        props: buildOrFail({
+        props: manager.buildOrFail({
             key: 'props',
             value: options.props,
             alt: {},
         }),
 
-        icon: buildOrFail({
+        icon: manager.buildOrFail({
             key: 'icon',
             value: options.icon,
             alt: true,
@@ -43,33 +43,33 @@ export function buildFormSubmitOptions(
 
         validationResult: unrefWithDefault(options.validationResult, {}),
 
-        updateText: buildOrFail({
+        updateText: manager.buildOrFail({
             key: 'updateText',
             value: options.updateText,
             alt: 'Update',
         }),
-        updateIconClass: buildOrFail({
+        updateIconClass: manager.buildOrFail({
             key: 'updateIconClass',
             value: options.updateIconClass,
             alt: [],
         }),
-        updateButtonClass: buildOrFail({
+        updateButtonClass: manager.buildOrFail({
             key: 'updateButtonClass',
             value: options.updateButtonClass,
             alt: [],
         }),
 
-        createText: buildOrFail({
+        createText: manager.buildOrFail({
             key: 'createText',
             value: options.createText,
             alt: 'Create',
         }),
-        createIconClass: buildOrFail({
+        createIconClass: manager.buildOrFail({
             key: 'createIconClass',
             value: options.createIconClass,
             alt: [],
         }),
-        createButtonClass: buildOrFail({
+        createButtonClass: manager.buildOrFail({
             key: 'createButtonClass',
             value: options.createButtonClass,
             alt: [],

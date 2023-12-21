@@ -1,4 +1,4 @@
-import { createOptionBuilder, hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
+import { createComponentOptionsManager, hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
 import { h, mergeProps } from 'vue';
 import type { VNodeArrayChildren, VNodeChild } from 'vue';
 import { Component, SlotName } from '../constants';
@@ -16,14 +16,14 @@ export function buildListFooterOptions<T, M = any>(
         },
     );
 
-    const { buildOrFail } = createOptionBuilder(
-        Component.ListHeader,
-    );
+    const manager = createComponentOptionsManager<ListFooterBuildOptions<T, M>>({
+        name: Component.ListFooter,
+    });
 
     return {
         ...options,
 
-        content: buildOrFail({
+        content: manager.buildOrFail({
             key: 'content',
             value: input.content,
             alt: [],

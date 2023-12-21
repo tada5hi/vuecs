@@ -1,4 +1,4 @@
-import type { PluginBaseOptions } from '@vuecs/core';
+import type { StoreManagerOptions } from '@vuecs/core';
 import type { ElementType } from './constants';
 import type { NavigationProvider } from './provider';
 
@@ -30,6 +30,6 @@ export type NavigationItem = {
     [key: string]: any
 };
 
-export type Options = PluginBaseOptions & {
+export type Options = StoreManagerOptions & {
     provider: NavigationProvider
 };

@@ -1,5 +1,5 @@
 import type {
-    OptionsInputValue, OptionsOverride, PartialPick,
+    ComponentOptionsInputValue, ComponentOptionsOverride, PartialPick,
 } from '@vuecs/core';
 import type { ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput } from '../form-base';
 
@@ -16,7 +16,7 @@ export type FormSelectBuildOptions = FormBaseOptions & {
 
 export type FormSelectBuildOptionsInput =
     FormBaseOptionsInput
-    & OptionsOverride<
+    & ComponentOptionsOverride<
     ExpectFormBaseOptions<FormSelectBuildOptions>,
-    OptionsInputValue<PartialPick<FormSelectBuildOptions, 'optionDefault' | 'optionDefaultId' | 'optionDefaultValue'>>
+    ComponentOptionsInputValue<PartialPick<FormSelectBuildOptions, 'optionDefault' | 'optionDefaultId' | 'optionDefaultValue'>>
     >;

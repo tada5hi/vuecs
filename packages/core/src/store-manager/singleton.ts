@@ -2,12 +2,21 @@ import { hasInjectionContext, inject } from 'vue';
 import type { App } from 'vue';
 import { StoreManager } from './module';
 
-const symbol = Symbol.for('VCStoreManager');
+function getSymbol(key?: string) {
+    if (typeof key === 'string') {
+        return Symbol.for(`VCStoreManager#${key}`);
+    }
+
+    return Symbol.for('VCStoreManager');
+}
 
 export function installStoreManager(
     instance: App,
+    key?: string,
 ) : StoreManager {
     let manager : StoreManager | undefined;
+
+    const symbol = getSymbol(key);
 
     if (
         instance._context &&
@@ -30,7 +39,8 @@ export function installStoreManager(
     return manager;
 }
 
-export function injectStoreManager() {
+export function injectStoreManager(key?: string) {
+    const symbol = getSymbol(key);
     const manager = inject(symbol);
     if (!manager) {
         throw new Error('The store manager has not been setup.');

@@ -8,7 +8,7 @@ import {
 import type { VNodeClass } from '@vuecs/core';
 import { merge } from 'smob';
 import {
-    createOptionBuilder,
+    createComponentOptionsManager,
     evaluateFnOrValue,
     hasNormalizedSlot,
     hasOwnProperty,
@@ -31,9 +31,9 @@ export function buildListItemOptions<T, M = any>(
         tag: 'li',
     });
 
-    const { buildOrFail } = createOptionBuilder<ListItemBuildOptions<T>>(
-        Component.ListItem,
-    );
+    const manager = createComponentOptionsManager<ListItemBuildOptions<T>>({
+        name: Component.ListItem,
+    });
 
     return {
         ...options,
@@ -42,86 +42,86 @@ export function buildListItemOptions<T, M = any>(
         content: input.content,
         index: input.index,
 
-        icon: buildOrFail({
+        icon: manager.buildOrFail({
             key: 'icon',
             value: input.icon,
             alt: true,
         }),
-        iconTag: buildOrFail({
+        iconTag: manager.buildOrFail({
             key: 'iconTag',
             value: input.iconTag,
             alt: 'i',
         }),
-        iconClass: buildOrFail({
+        iconClass: manager.buildOrFail({
             key: 'iconClass',
             value: input.iconClass,
             alt: [],
         }),
         iconProps: input.iconProps || {},
-        iconWrapper: buildOrFail({
+        iconWrapper: manager.buildOrFail({
             key: 'iconWrapper',
             value: input.iconWrapper,
             alt: true,
         }),
-        iconWrapperClass: buildOrFail({
+        iconWrapperClass: manager.buildOrFail({
             key: 'iconWrapperClass',
             value: input.iconWrapperClass,
             alt: [],
         }),
-        iconWrapperTag: buildOrFail({
+        iconWrapperTag: manager.buildOrFail({
             key: 'iconWrapperTag',
             value: input.iconWrapperTag,
             alt: 'div',
         }),
 
-        text: buildOrFail({
+        text: manager.buildOrFail({
             key: 'text',
             value: input.text,
             alt: true,
         }),
         textContent: input.textContent,
-        textPropName: buildOrFail({
+        textPropName: manager.buildOrFail({
             key: 'textPropName',
             value: input.textPropName,
             alt: 'name',
         }),
-        textWrapper: buildOrFail({
+        textWrapper: manager.buildOrFail({
             key: 'textWrapper',
             value: input.textWrapper,
             alt: true,
         }),
-        textWrapperClass: buildOrFail({
+        textWrapperClass: manager.buildOrFail({
             key: 'textWrapperClass',
             value: input.textWrapperClass,
             alt: [],
         }),
-        textWrapperTag: buildOrFail({
+        textWrapperTag: manager.buildOrFail({
             key: 'textWrapperTag',
             value: input.textWrapperTag,
             alt: 'div',
         }),
 
-        actions: buildOrFail({
+        actions: manager.buildOrFail({
             key: 'actions',
             value: input.actions,
             alt: true,
         }),
-        actionsContent: buildOrFail({
+        actionsContent: manager.buildOrFail({
             key: 'actionsContent',
             value: input.actionsContent,
             alt: [],
         }),
-        actionsWrapper: buildOrFail({
+        actionsWrapper: manager.buildOrFail({
             key: 'actionsWrapper',
             value: input.actionsWrapper,
             alt: true,
         }),
-        actionsWrapperClass: buildOrFail({
+        actionsWrapperClass: manager.buildOrFail({
             key: 'actionsWrapperClass',
             value: input.actionsWrapperClass,
             alt: [],
         }),
-        actionsWrapperTag: buildOrFail({
+        actionsWrapperTag: manager.buildOrFail({
             key: 'actionsWrapperTag',
             value: input.actionsWrapperTag,
             alt: 'div',

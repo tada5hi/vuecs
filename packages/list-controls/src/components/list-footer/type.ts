@@ -1,6 +1,6 @@
 import type {
-    OptionsInputValue,
-    OptionsOverride,
+    ComponentOptionsInputValue,
+    ComponentOptionsOverride,
 } from '@vuecs/core';
 import type { VNodeChild } from 'vue';
 import type {
@@ -16,7 +16,7 @@ export type ListFooterBuildOptions<T, M = any> = ListBaseOptions<T, M> & {
 };
 
 export type ListFooterBuildOptionsInput<T, M = any> = ListBaseOptionsInput<T, M> &
-OptionsOverride<
+ComponentOptionsOverride<
 ExpectListBaseOptions<ListFooterBuildOptions<T, M>>,
-OptionsInputValue<Pick<ListFooterBuildOptions<T, M>, 'content'>
+ComponentOptionsInputValue<Pick<ListFooterBuildOptions<T, M>, 'content'>
 >>;

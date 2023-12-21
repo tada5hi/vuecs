@@ -1,6 +1,6 @@
 import { merge } from 'smob';
 import {
-    createOptionBuilder,
+    createComponentOptionsManager,
     extendMaybeRefArrayValue,
     findIndexOfMaybeRefArray,
     hasOwnProperty,
@@ -32,30 +32,30 @@ export function buildListBaseOptions<
 ): ListBaseOptions<Entity<T>, M> {
     defaults = defaults || {};
 
-    const { buildOrFail } = createOptionBuilder<ListBaseOptions<Entity<T>, M>>(
-        component,
-    );
+    const manager = createComponentOptionsManager<ListBaseOptions<Entity<T>, M>>({
+        name: component,
+    });
 
     return {
         slotItems: options.slotItems || {},
-        slotProps: buildOrFail({
+        slotProps: manager.buildOrFail({
             key: 'slotProps',
             value: options.slotProps,
             alt: defaults.slotProps || {},
         }),
         slotPropsBuilt: options.slotPropsBuilt,
 
-        tag: buildOrFail({
+        tag: manager.buildOrFail({
             key: 'tag',
             value: options.tag,
             alt: defaults.tag || 'div',
         }),
-        class: buildOrFail({
+        class: manager.buildOrFail({
             key: 'class',
             value: options.class,
             alt: defaults.class || [],
         }),
-        props: buildOrFail({
+        props: manager.buildOrFail({
             key: 'props',
             value: options.props,
             alt: defaults.props || {},

@@ -1,4 +1,4 @@
-import type { OptionInputConfig } from '@vuecs/core';
+import type { ComponentOptionInputConfig } from '@vuecs/core';
 import type { PropType } from 'vue';
 import { defineComponent } from 'vue';
 import { buildFormSubmit } from './module';
@@ -24,28 +24,28 @@ export const VCFormSubmit = defineComponent({
         },
 
         createText: {
-            type: [String, Object] as PropType<string | OptionInputConfig<string>>,
+            type: [String, Object] as PropType<string | ComponentOptionInputConfig<string>>,
             default: undefined,
         },
         createIconClass: {
-            type: [String, Object] as PropType<string | OptionInputConfig<string>>,
+            type: [String, Object] as PropType<string | ComponentOptionInputConfig<string>>,
             default: undefined,
         },
         createButtonClass: {
-            type: [String, Object] as PropType<string | OptionInputConfig<string>>,
+            type: [String, Object] as PropType<string | ComponentOptionInputConfig<string>>,
             default: undefined,
         },
 
         updateText: {
-            type: [String, Object] as PropType<string | OptionInputConfig<string>>,
+            type: [String, Object] as PropType<string | ComponentOptionInputConfig<string>>,
             default: undefined,
         },
         updateIconClass: {
-            type: [String, Object] as PropType<string | OptionInputConfig<string>>,
+            type: [String, Object] as PropType<string | ComponentOptionInputConfig<string>>,
             default: undefined,
         },
         updateButtonClass: {
-            type: [String, Object] as PropType<string | OptionInputConfig<string>>,
+            type: [String, Object] as PropType<string | ComponentOptionInputConfig<string>>,
             default: undefined,
         },
 

@@ -1,4 +1,4 @@
-import type { OptionsInputValue, OptionsOverride } from '@vuecs/core';
+import type { ComponentOptionsInputValue, ComponentOptionsOverride } from '@vuecs/core';
 import type { VNodeChild } from 'vue';
 import type {
     ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListBaseSlotProps,
@@ -13,7 +13,7 @@ export type ListHeaderBuildOptions<T, M = any> = ListBaseOptions<T, M> & {
 };
 
 export type ListHeaderBuildOptionsInput<T, M = any> = ListBaseOptionsInput<T, M> &
-OptionsOverride<
+ComponentOptionsOverride<
 ExpectListBaseOptions<ListHeaderBuildOptions<T, M>>,
-OptionsInputValue<Pick<ListHeaderBuildOptions<T, M>, 'content'>
+ComponentOptionsInputValue<Pick<ListHeaderBuildOptions<T, M>, 'content'>
 >>;

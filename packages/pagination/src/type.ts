@@ -1,5 +1,5 @@
 import type {
-    OptionsOverride, PartialPick, PluginBaseOptions, VNodeClass,
+    ComponentOptionsOverride, PartialPick, StoreManagerOptions, VNodeClass,
 } from '@vuecs/core';
 import type { MaybeRef, VNodeArrayChildren } from 'vue';
 
@@ -42,7 +42,7 @@ export type PaginationOptions = {
     nextContent?: VNodeArrayChildren
 };
 
-export type PaginationOptionsInput = OptionsOverride<
+export type PaginationOptionsInput = ComponentOptionsOverride<
 PaginationOptions,
 PartialPick<PaginationOptions,
 'tag' |
@@ -56,7 +56,7 @@ PartialPick<PaginationOptions,
 >
 >;
 
-type Options = PluginBaseOptions;
+type Options = StoreManagerOptions;
 
 export type {
     Options,

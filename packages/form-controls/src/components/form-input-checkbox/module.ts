@@ -2,8 +2,9 @@ import type { VNodeChild } from 'vue';
 import {
     h, mergeProps, unref,
 } from 'vue';
-import { createOptionBuilder, hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
+import { createComponentOptionsManager, hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
 import { Component, SlotName } from '../constants';
+import type { FormBaseOptions } from '../form-base';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
 import type { FormInputCheckboxBuildOptions, FormInputCheckboxBuildOptionsInput, FormInputCheckboxLabelSlotProps } from './type';
 
@@ -12,35 +13,35 @@ export function buildFormInputCheckboxOptions(
 ) : FormInputCheckboxBuildOptions {
     const options = buildFormBaseOptions(input, Component.FormInputCheckbox);
 
-    const { buildOrFail } = createOptionBuilder<FormInputCheckboxBuildOptions>(
-        Component.FormInputCheckbox,
-    );
+    const manager = createComponentOptionsManager<FormInputCheckboxBuildOptions>({
+        name: Component.FormInputCheckbox,
+    });
 
     return {
         ...options,
 
-        group: buildOrFail({
+        group: manager.buildOrFail({
             key: 'group',
             value: options.group,
             alt: false,
         }),
-        groupClass: buildOrFail({
+        groupClass: manager.buildOrFail({
             key: 'groupClass',
             value: unref(options.groupClass),
             alt: '',
         }),
 
-        label: buildOrFail({
+        label: manager.buildOrFail({
             key: 'label',
             value: options.label,
             alt: true,
         }),
-        labelClass: buildOrFail({
+        labelClass: manager.buildOrFail({
             key: 'labelClass',
             value: options.labelClass,
             alt: [],
         }),
-        labelContent: buildOrFail({
+        labelContent: manager.buildOrFail({
             key: 'labelContent',
             value: options.labelContent,
             alt: 'Input',
