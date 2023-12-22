@@ -16,10 +16,9 @@ export class ComponentOptionsManager<T extends ComponentOptions> {
 
     // ---------------------------------------------------------
 
-    constructor(config: ComponentOptionsManagerContext) {
-        this.component = config.name;
-
-        this.storeManager = injectStoreManager(config.storeManagerKey);
+    constructor(context: ComponentOptionsManagerContext) {
+        this.component = context.name;
+        this.storeManager = context.storeManager || injectStoreManager(context.storeManagerKey);
     }
 
     // ---------------------------------------------------------

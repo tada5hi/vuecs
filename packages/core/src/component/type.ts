@@ -1,3 +1,5 @@
+import type { StoreManager } from '../store-manager';
+
 export type ComponentOptionInputConfigWithPresets<V> = {
     value?: V,
     presets: Record<string, boolean>,
@@ -53,4 +55,9 @@ export type ComponentOptionsManagerContext = {
      * default: 'default'
      */
     storeManagerKey?: string
+
+    /**
+     * Store manager
+     */
+    storeManager?: StoreManager
 };
