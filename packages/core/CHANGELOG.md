@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.2.0](https://github.com/tada5hi/vuecs/compare/core-v1.1.0...core-v1.2.0) (2023-12-22)
+
+
+### Features
+
+* allow passing custom storeManager instance to component-options-manager ([74a9ed8](https://github.com/tada5hi/vuecs/commit/74a9ed8a5572d87f7da214865c979b010e888797))
+
+
+### Bug Fixes
+
+* core package on custom export path ([44d58fd](https://github.com/tada5hi/vuecs/commit/44d58fd3ca0584575bae5cfe6e833b5dafbf8379))
+* fn to apply store manager options ([41836ea](https://github.com/tada5hi/vuecs/commit/41836eae3502b5c1854eacf801d2c64f08fcd650))
+
 ## [1.1.0](https://github.com/tada5hi/vuecs/compare/core-v1.0.0...core-v1.1.0) (2023-12-21)
 
 

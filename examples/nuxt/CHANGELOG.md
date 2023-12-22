@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.0.1](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v1.0.0...examples-nuxt-v1.0.1) (2023-12-22)
+
+
+### Bug Fixes
+
+* fn to apply store manager options ([41836ea](https://github.com/tada5hi/vuecs/commit/41836eae3502b5c1854eacf801d2c64f08fcd650))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/form-controls bumped from ^1.1.0 to ^1.1.1
+    * @vuecs/gravatar bumped from ^1.0.0 to ^1.0.1
+    * @vuecs/list-controls bumped from ^1.1.0 to ^1.1.1
+    * @vuecs/navigation bumped from ^1.1.0 to ^1.1.1
+    * @vuecs/pagination bumped from ^1.1.0 to ^1.1.1
+    * @vuecs/timeago bumped from ^1.0.1 to ^1.0.2
+
 ## 1.0.0 (2023-12-21)
 
 

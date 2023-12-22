@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.1.1](https://github.com/tada5hi/vuecs/compare/list-controls-v1.1.0...list-controls-v1.1.1) (2023-12-22)
+
+
+### Bug Fixes
+
+* core package on custom export path ([44d58fd](https://github.com/tada5hi/vuecs/commit/44d58fd3ca0584575bae5cfe6e833b5dafbf8379))
+* fn to apply store manager options ([41836ea](https://github.com/tada5hi/vuecs/commit/41836eae3502b5c1854eacf801d2c64f08fcd650))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^1.1.0 to ^1.2.0
+  * peerDependencies
+    * @vuecs/core bumped from ^1.1.0 to ^1.2.0
+
 ## [1.1.0](https://github.com/tada5hi/vuecs/compare/list-controls-v1.0.0...list-controls-v1.1.0) (2023-12-21)
 
 
