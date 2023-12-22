@@ -1,7 +1,7 @@
-# @vue-layout/gravatar 📷
+# @vuecs/gravatar 📷
 
-[![npm version](https://badge.fury.io/js/@vue-layout%2Fgravatar.svg)](https://badge.fury.io/js/@vue-layout%2Fgravatar)
-[![CI](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vue-layout/actions/workflows/main.yml)
+[![npm version](https://badge.fury.io/js/@vuecs%2Fgravatar.svg)](https://badge.fury.io/js/@vuecs%2Fgravatar)
+[![CI](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
 
 A package containing a gravatar component.
 
@@ -14,7 +14,7 @@ A package containing a gravatar component.
 ## Installation
 
 ```
-$ npm i --save @vue-layout/gravatar
+$ npm i --save @vuecs/gravatar
 ```
 
 ## Usage
@@ -22,7 +22,7 @@ $ npm i --save @vue-layout/gravatar
 Register the plugin.
 
 ```typescript
-import install from '@vue-layout/gravatar';
+import install from '@vuecs/gravatar';
 import { createApp } from 'vue'
 
 const app = createApp({})

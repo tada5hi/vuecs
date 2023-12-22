@@ -1,1 +1,1 @@
-module.exports = require('@vue-layout/core');
+module.exports = require('@vuecs/core');

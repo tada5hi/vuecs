@@ -1,1 +1,1 @@
-export * from '@vue-layout/core';
+export * from '@vuecs/core';
