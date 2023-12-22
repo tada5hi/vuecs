@@ -25,10 +25,9 @@ export function install(instance: App, options: Options) : void {
 
     setupStore(instance);
 
+    const storeManager = installStoreManager(instance);
     if (options.storeManager) {
-        applyStoreManagerOptions(instance, options.storeManager);
-    } else {
-        installStoreManager(instance);
+        applyStoreManagerOptions(storeManager, options.storeManager);
     }
 
     Object.entries({

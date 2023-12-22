@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { applyStoreManagerOptions } from '@vuecs/core';
+import { applyStoreManagerOptions, installStoreManager } from '@vuecs/core';
 import type { StoreManagerOptions } from '@vuecs/core';
 import bootstrapV5 from '@vuecs/preset-bootstrap-v5';
 import fontAwesome from '@vuecs/preset-font-awesome';
@@ -29,7 +29,8 @@ export default defineNuxtPlugin((ctx) => {
         },
     };
 
-    applyStoreManagerOptions(ctx.vueApp, baseOptions);
+    const storeManager = installStoreManager(ctx.vueApp);
+    applyStoreManagerOptions(storeManager, baseOptions);
 
     ctx.vueApp.use(installCountdown);
     ctx.vueApp.use(installFormControl);

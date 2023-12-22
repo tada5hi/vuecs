@@ -1,14 +1,11 @@
-import type { App } from 'vue';
 import { StoreName } from '../../store';
-import { installStoreManager } from '../singleton';
+import type { StoreManager } from '../module';
 import type { StoreManagerOptions } from './type';
 
 export function applyStoreManagerOptions(
-    instance: App,
+    manager: StoreManager,
     options: StoreManagerOptions,
 ) {
-    const manager = installStoreManager(instance);
-
     if (options.presets) {
         const presetKeys = Object.keys(options.presets);
         for (let i = 0; i < presetKeys.length; i++) {

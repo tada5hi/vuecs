@@ -6,10 +6,9 @@ export * from './components';
 export * from './type';
 
 export function install(instance: App, options: Options = {}) : void {
+    const storeManager = installStoreManager(instance);
     if (options.storeManager) {
-        applyStoreManagerOptions(instance, options.storeManager);
-    } else {
-        installStoreManager(instance);
+        applyStoreManagerOptions(storeManager, options.storeManager);
     }
 }
 
