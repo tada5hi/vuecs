@@ -7,18 +7,20 @@ import type { ValidationMessages, ValidationResult, ValidationTranslator } from 
 export type FormGroupOptions = {
     slotItems: Slots,
 
-    label: boolean,
+    label?: boolean,
+    labelTag: string,
     labelClass: VNodeClass,
-    labelContent: VNodeChild,
+    labelContent?: VNodeChild,
 
     content?: VNodeChild,
 
     class: VNodeClass,
     props: VNodeProperties,
 
-    hint: boolean,
+    hint?: boolean,
+    hintTag: string,
     hintClass: VNodeClass,
-    hintContent: VNodeChild,
+    hintContent?: VNodeChild,
 
     validation: boolean,
     validationResult: Partial<ValidationResult>,
@@ -33,9 +35,11 @@ PartialPick<FormGroupOptions,
 'label' |
 'labelClass' |
 'labelContent' |
+'labelTag' |
 'hint' |
 'hintClass' |
 'hintContent' |
+'hintTag' |
 'class' |
 'props' |
 'validation' |
@@ -43,7 +47,3 @@ PartialPick<FormGroupOptions,
 'validationWarningClass'>
 > &
 PartialPick<FormGroupOptions, 'content' | 'slotItems' | 'validationMessages' | 'validationResult' | 'validationTranslator'>;
-
-export type FormGroupLabelSlotProps = {
-    class: VNodeClass
-};

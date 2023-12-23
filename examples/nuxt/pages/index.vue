@@ -17,12 +17,3 @@
         </ul>
     </div>
 </template>
-<script setup>
-import { useRouter } from '#imports';
-
-const router = useRouter();
-
-setTimeout(() => {
-    router.replace({ query: { foo: 'baz', bar: 'baz' } });
-}, 5000);
-</script>

@@ -3,25 +3,23 @@ import { defineComponent } from 'vue';
 import type { SlotName } from '../constants';
 import type { ValidationMessages, ValidationResult, ValidationTranslator } from '../type';
 import { buildFormGroup } from './module';
-import type { FormGroupLabelSlotProps } from './type';
 
 export const VCFormGroup = defineComponent({
     slots: Object as SlotsType<{
         [SlotName.DEFAULT]: undefined,
-        [SlotName.LABEL]: FormGroupLabelSlotProps
+        [SlotName.LABEL]: undefined,
+        [SlotName.HINT]: undefined
     }>,
     props: {
         label: {
             type: Boolean,
-            default: false,
+            default: undefined,
         },
         labelClass: {
             type: String,
-            default: '',
         },
         labelContent: {
             type: String,
-            default: '',
         },
 
         hint: {
@@ -29,17 +27,15 @@ export const VCFormGroup = defineComponent({
             default: undefined,
         },
         hintClass: {
-            type: [String, Array, Object],
-            default: '',
+            type: String,
         },
         hintContent: {
             type: String,
-            default: '',
         },
 
         validation: {
             type: Boolean,
-            default: true,
+            default: undefined,
         },
         validationResult: {
             type: Object as PropType<Partial<ValidationResult>>,
@@ -61,6 +57,8 @@ export const VCFormGroup = defineComponent({
             labelContent: props.labelContent,
 
             hint: props.hint,
+            hintClass: props.hintClass,
+            hintContent: props.hintContent,
 
             validation: props.validation,
             validationResult: props.validationResult,

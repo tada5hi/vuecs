@@ -40,11 +40,12 @@ export default defineComponent({
 </script>
 <template>
     <VCFormGroup
-        :label="true"
-        :label-content="'Label'"
         :validation-messages="validationMessages"
         :validation-result="v$.text"
     >
+        <template #label>
+            Text
+        </template>
         <VCFormInput
             v-model="form.text"
         />

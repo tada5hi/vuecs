@@ -3,7 +3,9 @@ import type { VNodeChild } from 'vue';
 import { h } from 'vue';
 import { Component, SlotName } from '../constants';
 import { buildValidationGroup } from '../validation-group';
-import type { FormGroupLabelSlotProps, FormGroupOptions, FormGroupOptionsInput } from './type';
+import type {
+    FormGroupOptions, FormGroupOptionsInput,
+} from './type';
 
 export function buildFormGroupOptions(
     input: FormGroupOptionsInput,
@@ -17,20 +19,23 @@ export function buildFormGroupOptions(
 
         slotItems: input.slotItems || {},
 
-        hint: manager.buildOrFail({
+        hint: manager.build({
             key: 'hint',
             value: input.hint,
-            alt: undefined,
         }),
         hintClass: manager.buildOrFail({
             key: 'hintClass',
             value: input.hintClass,
             alt: [],
         }),
-        hintContent: manager.buildOrFail({
+        hintContent: manager.build({
             key: 'hintContent',
             value: input.hintContent,
-            alt: '',
+        }),
+        hintTag: manager.buildOrFail({
+            key: 'hintTag',
+            value: input.hintTag,
+            alt: 'div',
         }),
 
         class: manager.buildOrFail({
@@ -44,20 +49,23 @@ export function buildFormGroupOptions(
             alt: {},
         }),
 
-        label: manager.buildOrFail({
+        label: manager.build({
             key: 'label',
             value: input.label,
-            alt: true,
         }),
         labelClass: manager.buildOrFail({
             key: 'labelClass',
             value: input.labelClass,
             alt: [],
         }),
-        labelContent: manager.buildOrFail({
+        labelContent: manager.build({
             key: 'labelContent',
             value: input.labelContent,
-            alt: 'Input',
+        }),
+        labelTag: manager.buildOrFail({
+            key: 'labelTag',
+            value: input.labelTag,
+            alt: 'label',
         }),
 
         validation: manager.buildOrFail({
@@ -89,15 +97,26 @@ export function buildFormGroup(
 
     const children : VNodeChild = [];
 
-    if (options.label) {
+    let label : boolean;
+    if (typeof options.label === 'boolean') {
+        label = options.label;
+    } else {
+        label = !!options.labelContent || hasNormalizedSlot(SlotName.LABEL, options.slotItems);
+    }
+
+    if (label) {
         if (hasNormalizedSlot(SlotName.LABEL, options.slotItems)) {
-            children.push(normalizeSlot(SlotName.LABEL, {
-                class: options.class,
-            } satisfies FormGroupLabelSlotProps, options.slotItems));
-        } else {
+            children.push(h(
+                options.labelTag,
+                { class: options.labelClass },
+                [
+                    normalizeSlot(SlotName.LABEL, {}, options.slotItems),
+                ],
+            ));
+        } else if (options.labelContent) {
             children.push(
                 h(
-                    'label',
+                    options.labelTag,
                     { class: options.labelClass },
                     [options.labelContent],
                 ),
@@ -120,12 +139,29 @@ export function buildFormGroup(
         }));
     }
 
-    if (options.hint && options.hintContent) {
-        children.push(h('div', {
-            class: options.hintClass,
-        }, [
-            options.hintContent,
-        ]));
+    let hint : boolean;
+    if (typeof options.hint === 'boolean') {
+        hint = options.hint;
+    } else {
+        hint = !!options.hintContent || hasNormalizedSlot(SlotName.HINT, options.slotItems);
+    }
+
+    if (hint) {
+        if (hasNormalizedSlot(SlotName.HINT, options.slotItems)) {
+            children.push(h(
+                options.hintTag,
+                { class: options.hintClass },
+                [
+                    normalizeSlot(SlotName.HINT, {}, options.slotItems),
+                ],
+            ));
+        } else if (options.hintContent) {
+            children.push(h(options.hintTag, {
+                class: options.hintClass,
+            }, [
+                options.hintContent,
+            ]));
+        }
     }
 
     return h(

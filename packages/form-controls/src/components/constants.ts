@@ -11,6 +11,7 @@ export enum Component {
 export enum SlotName {
     DEFAULT = 'default',
     LABEL = 'label',
+    HINT = 'hint',
     VALIDATION_GROUP = 'validationGroup',
     VALIDATION_ITEM = 'validationItem',
 }
