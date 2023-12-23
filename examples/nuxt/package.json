@@ -29,7 +29,7 @@
         "@fortawesome/fontawesome-free": "^6.5.1",
         "@pinia/nuxt": "^0.5.1",
         "@vuecs/countdown": "^1.0.0",
-        "@vuecs/form-controls": "^1.1.1",
+        "@vuecs/form-controls": "^1.2.0",
         "@vuecs/gravatar": "^1.0.1",
         "@vuecs/list-controls": "^1.1.1",
         "@vuecs/navigation": "^1.1.1",
@@ -45,5 +45,5 @@
         "vue": "^3.3.9",
         "vue-router": "^4.2.2"
     },
-    "version": "1.0.1"
+    "version": "1.1.0"
 }
