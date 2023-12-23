@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/tada5hi/vuecs/compare/form-controls-v1.1.1...form-controls-v1.2.0) (2023-12-23)
+
+
+### Features
+
+* hint slot for form-group component & minor fixes ([64d25d2](https://github.com/tada5hi/vuecs/commit/64d25d2be6f0a13c3dd284ea6d4ceb790181dfb8))
+
 ## [1.1.1](https://github.com/tada5hi/vuecs/compare/form-controls-v1.1.0...form-controls-v1.1.1) (2023-12-22)
 
 

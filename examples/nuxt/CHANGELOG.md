@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.1.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v1.0.1...examples-nuxt-v1.1.0) (2023-12-23)
+
+
+### Features
+
+* hint slot for form-group component & minor fixes ([64d25d2](https://github.com/tada5hi/vuecs/commit/64d25d2be6f0a13c3dd284ea6d4ceb790181dfb8))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/form-controls bumped from ^1.1.1 to ^1.2.0
+
 ## [1.0.1](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v1.0.0...examples-nuxt-v1.0.1) (2023-12-22)
 
 
