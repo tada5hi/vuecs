@@ -40,7 +40,7 @@
         "@rollup/plugin-node-resolve": "^15.2.3",
         "@rollup/plugin-replace": "^5.0.5",
         "@rollup/plugin-terser": "^0.4.4",
-        "@swc/core": "^1.3.101",
+        "@swc/core": "^1.3.102",
         "@tada5hi/commitlint-config": "^1.1.4",
         "@tada5hi/eslint-config-vue-typescript": "^1.3.7",
         "@types/jest": "^29.5.10",
