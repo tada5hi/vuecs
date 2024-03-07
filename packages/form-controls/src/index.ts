@@ -1,13 +1,15 @@
 import { applyStoreManagerOptions, installStoreManager } from '@vuecs/core';
 import type { App, Plugin } from 'vue';
 
-import '../assets/index.css';
+import '../assets/form-select-search.css';
+import '../assets/form-range-multi-slider.css';
 import './vue';
 
 import {
     VCFormGroup,
     VCFormInput,
     VCFormInputCheckbox,
+    VCFormRangeMultiSlider,
     VCFormSelect,
     VCFormSelectSearch,
     VCFormSubmit,
@@ -28,6 +30,7 @@ export function install(instance: App, options: Options = {}) : void {
         VCFormGroup,
         VCFormInputCheckbox,
         VCFormInput,
+        VCFormRangeMultiSlider,
         VCFormSelect,
         VCFormSelectSearch,
         VCFormSubmit,

@@ -3,6 +3,7 @@ export * from './form-group';
 export * from './form-input';
 export * from './form-input-checkbox';
 export * from './form-input-text';
+export * from './form-range-multi-slider';
 export * from './form-select';
 export * from './form-select-search';
 export * from './form-submit';

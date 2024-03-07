@@ -1,0 +1,40 @@
+.form-range-multi-slider {
+    width: 100%;
+}
+
+.form-range-multi-slider>.track {
+    width: 100%;
+    background: #f0f0f0;
+    height: 8px;
+    border-radius: 1rem;
+}
+
+.form-range-multi-slider .thumb {
+    z-index: 1;
+    height: 16px;
+    width: 16px;
+
+    background: #6d7fcc;
+
+    border-radius: 100%;
+
+    position: relative;
+
+    cursor: pointer;
+}
+
+.form-range-multi-slider .upper {
+    bottom: calc(16px / 4);
+}
+
+.form-range-multi-slider .lower {
+    bottom: calc(calc(16px / 4) + 16px)
+}
+
+.form-range-multi-slider .track-diff {
+    height: 8px;
+    position: relative;
+    left: 0;
+    bottom: 32px;
+    background: lightgray;
+}

@@ -29,6 +29,7 @@ const secondaryDefaultItems : NavigationItem[] = [
         children: [
             { name: 'Input Checkbox', url: '/form-controls/input-checkbox' },
             { name: 'Input Text', url: '/form-controls/input-text' },
+            { name: 'Range Multi Slider', url: '/form-controls/range-multi-slider' },
             { name: 'Select', url: '/form-controls/select' },
             { name: 'Select Search', url: '/form-controls/select-search' },
             { name: 'Submit', url: '/form-controls/submit' },

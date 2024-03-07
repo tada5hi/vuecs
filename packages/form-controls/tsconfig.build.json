@@ -7,6 +7,7 @@
         "allowSyntheticDefaultImports": true,
         "sourceMap": false,
         "jsx": "preserve",
+        "lib": ["ESNext", "DOM"],
 
         "declaration": true,
         "declarationDir": "./dist",
