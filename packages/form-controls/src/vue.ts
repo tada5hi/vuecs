@@ -3,6 +3,7 @@ import type {
     VCFormInput,
     VCFormInputCheckbox,
     VCFormSelect,
+    VCFormSelectSearch,
     VCFormSubmit,
     VCFormTextarea,
 } from './components';
@@ -13,6 +14,7 @@ declare module '@vue/runtime-core' {
         VCFormInput: typeof VCFormInput,
         VCFormInputCheckbox: typeof VCFormInputCheckbox,
         VCFormSelect: typeof VCFormSelect,
+        VCFromSelectSearch: typeof VCFormSelectSearch,
         VCFormSubmit: typeof VCFormSubmit,
         VCFormTextarea: typeof VCFormTextarea,
     }

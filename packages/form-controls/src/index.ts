@@ -1,6 +1,7 @@
 import { applyStoreManagerOptions, installStoreManager } from '@vuecs/core';
 import type { App, Plugin } from 'vue';
 
+import '../assets/index.css';
 import './vue';
 
 import {
@@ -8,6 +9,7 @@ import {
     VCFormInput,
     VCFormInputCheckbox,
     VCFormSelect,
+    VCFormSelectSearch,
     VCFormSubmit,
     VCFormTextarea,
 } from './components';
@@ -27,6 +29,7 @@ export function install(instance: App, options: Options = {}) : void {
         VCFormInputCheckbox,
         VCFormInput,
         VCFormSelect,
+        VCFormSelectSearch,
         VCFormSubmit,
         VCFormTextarea,
     }).forEach(([componentName, component]) => {

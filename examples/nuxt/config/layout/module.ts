@@ -30,6 +30,7 @@ const secondaryDefaultItems : NavigationItem[] = [
             { name: 'Input Checkbox', url: '/form-controls/input-checkbox' },
             { name: 'Input Text', url: '/form-controls/input-text' },
             { name: 'Select', url: '/form-controls/select' },
+            { name: 'Select Search', url: '/form-controls/select-search' },
             { name: 'Submit', url: '/form-controls/submit' },
             { name: 'Textarea', url: '/form-controls/textarea' },
         ],

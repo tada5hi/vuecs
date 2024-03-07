@@ -6,11 +6,11 @@
  */
 
 import { builtinModules } from 'node:module';
-import vue from 'rollup-plugin-vue';
+import vue from '@vitejs/plugin-vue';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import postcss from 'rollup-plugin-postcss';
-import { transform } from '@swc/core';
+import swc from "@rollup/plugin-swc";
 
 const extensions = [
     '.js', '.jsx', '.ts', '.tsx', '.vue'
@@ -61,21 +61,7 @@ export function createConfig({pkg, vuePlugin = false, defaultExport = false }) {
             ...(vuePlugin ? [vue()] : []),
 
             // Compile TypeScript/JavaScript files
-            {
-                name: 'swc',
-                transform(code) {
-                    return transform(code, {
-                        jsc: {
-                            target: 'es2020',
-                            parser: {
-                                syntax: 'typescript',
-                            },
-                            loose: true
-                        },
-                        sourceMaps: true
-                    })
-                }
-            }
+            swc()
         ],
     };
 }

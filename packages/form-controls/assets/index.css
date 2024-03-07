@@ -1,0 +1,54 @@
+.form-select-search {
+    position: relative;
+    display: block;
+}
+
+.form-select-search .form-select-search-input {
+    cursor: pointer;
+    border: 1px solid #e7ecf5;
+    display: block;
+    padding: 0.375rem 0.75rem;
+    width: 100%;
+    color: var(--bs-body-color);
+    appearance: none;
+    background-color: var(--bs-body-bg);
+    background-clip: padding-box;
+    border: var(--bs-border-width) solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-select-search .form-select-search-input:disabled {
+    background-color: var(--bs-secondary-bg);
+    opacity: 1;
+}
+
+.form-select-search .form-select-search-content {
+    display: block;
+    position: absolute;
+    background-color: #fff;
+    width:100%;
+    border: var(--bs-border-width) solid var(--bs-border-color);
+    overflow: auto;
+    z-index: 999;
+}
+
+.form-select-search .form-select-search-content .form-select-search-item {
+    color: black;
+    cursor: pointer;
+    display: block;
+    padding: 0.35rem;
+}
+
+.form-select-search .form-select-search-content .form-select-search-item:hover,
+.form-select-search .form-select-search-content .form-select-search-item.current {
+    background-color: #e7ecf5 !important;
+}
+
+.form-select-search .form-select-search-content .form-select-search-item.active {
+    background-color: #a2b1f1;
+}
+
+.form-select-search .form-select-search-selected {
+    margin-top: 0.25rem;
+}

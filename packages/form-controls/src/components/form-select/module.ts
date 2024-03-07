@@ -2,7 +2,6 @@ import type { VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
 import { createComponentOptionsManager } from '@vuecs/core';
 import { Component } from '../constants';
-import type { FormBaseOptions } from '../form-base';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
 import type { FormSelectBuildOptions, FormSelectBuildOptionsInput } from './type';
 
