@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0](https://github.com/tada5hi/vuecs/compare/form-controls-v1.2.0...form-controls-v1.3.0) (2024-03-07)
+
+
+### Features
+
+* experimental form-select-search component ([62a1981](https://github.com/tada5hi/vuecs/commit/62a19816c3b204a7e42cb9d9671f99437a3b9007))
+* experimental multi range form slider ([1fde444](https://github.com/tada5hi/vuecs/commit/1fde444ef6c0743f8699d6114eb8d72cca5bf565))
+
 ## [1.2.0](https://github.com/tada5hi/vuecs/compare/form-controls-v1.1.1...form-controls-v1.2.0) (2023-12-23)
 
 

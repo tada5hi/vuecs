@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.2.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v1.1.0...examples-nuxt-v1.2.0) (2024-03-07)
+
+
+### Features
+
+* experimental form-select-search component ([62a1981](https://github.com/tada5hi/vuecs/commit/62a19816c3b204a7e42cb9d9671f99437a3b9007))
+* experimental multi range form slider ([1fde444](https://github.com/tada5hi/vuecs/commit/1fde444ef6c0743f8699d6114eb8d72cca5bf565))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/form-controls bumped from ^1.2.0 to ^1.3.0
+    * @vuecs/timeago bumped from ^1.0.2 to ^1.0.3
+
 ## [1.1.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v1.0.1...examples-nuxt-v1.1.0) (2023-12-23)
 
 
