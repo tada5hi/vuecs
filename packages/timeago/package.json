@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/timeago",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "A package containing a timeago component.",
     "exports": {
         "./package.json": "./package.json",
