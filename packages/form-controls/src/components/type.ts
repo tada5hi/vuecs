@@ -11,18 +11,6 @@ export type ValidationResult<T = unknown> = {
     [key: string]: any
 };
 
-export interface ValidationRuleResultWithoutParams {
-    readonly $message: string
-    readonly $pending: boolean
-    readonly $invalid: boolean
-    readonly $response: any
-}
-
-export interface ValidationRuleResultWithParams<P extends object = object> extends ValidationRuleResultWithoutParams {
-    readonly $params: P
-}
-
-export type ValidationTranslator = (input: string, parameters: Record<string, any>) => string | undefined;
 export type ValidationMessages = Record<string, string>;
 
 // --------------------------------------

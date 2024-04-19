@@ -6,6 +6,7 @@
   -->
 
 <script lang="ts">
+import { useTranslationsForBaseValidation } from '@ilingo/vuelidate';
 import { maxLength, minLength } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {
@@ -25,10 +26,7 @@ export default defineComponent({
             },
         }, form);
 
-        const validationMessages = {
-            maxLength: 'The length of the input must be less than {{max}}.',
-            minLength: 'The length of the input must be greater than {{min}}.',
-        };
+        const validationMessages = useTranslationsForBaseValidation($v.value.text);
 
         return {
             form,
@@ -41,7 +39,6 @@ export default defineComponent({
 <template>
     <VCFormGroup
         :validation-messages="validationMessages"
-        :validation-result="v$.text"
     >
         <template #label>
             Text

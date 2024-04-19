@@ -6,6 +6,7 @@
   -->
 
 <script lang="ts">
+import { useTranslationsForBaseValidation } from '@ilingo/vuelidate';
 import { required } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {
@@ -15,18 +16,16 @@ import {
 export default defineComponent({
     setup() {
         const form = reactive({
-            value: '',
+            text: '',
         });
 
         const $v = useVuelidate({
-            value: {
+            text: {
                 required,
             },
         }, form);
 
-        const validationMessages = {
-            required: 'An option must be selected.',
-        };
+        const validationMessages = useTranslationsForBaseValidation($v.value.text);
 
         const options = [
             { id: 1, value: 'Option 1' },
@@ -47,10 +46,9 @@ export default defineComponent({
         :label="true"
         :label-content="'Label'"
         :validation-messages="validationMessages"
-        :validation-result="v$.value"
     >
         <VCFormSelect
-            v-model="form.value"
+            v-model="form.text"
             :options="options"
         />
     </VCFormGroup>

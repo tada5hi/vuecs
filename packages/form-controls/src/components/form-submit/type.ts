@@ -5,7 +5,6 @@ import type {
     VNodeProperties,
 } from '@vuecs/core';
 import type { MaybeRef } from 'vue';
-import type { ValidationResult } from '../type';
 
 export type FormSubmitOptions = {
     type: string,
@@ -27,7 +26,6 @@ export type FormSubmitOptions = {
     valid: boolean,
     isEditing: boolean,
     submit: () => void | Promise<void>,
-    validationResult: Partial<ValidationResult>
 };
 
 export type FormSubmitOptionsInput = ComponentOptionsOverride<
@@ -35,7 +33,6 @@ FormSubmitOptions,
 PartialPick<FormSubmitOptions,
 'busy' |
 'valid' |
-'validationResult' |
 'isEditing'
 > &
 ComponentOptionsInputValue<PartialPick<FormSubmitOptions,

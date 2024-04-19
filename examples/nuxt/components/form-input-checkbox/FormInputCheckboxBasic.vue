@@ -6,6 +6,7 @@
   -->
 
 <script lang="ts">
+import { useTranslationsForBaseValidation } from '@ilingo/vuelidate';
 import { required } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {
@@ -15,20 +16,18 @@ import {
 export default defineComponent({
     setup() {
         const form = reactive({
-            value: null,
+            text: null,
         });
 
         const valueMultiple = ref([]);
 
         const $v = useVuelidate({
-            value: {
+            text: {
                 required,
             },
         }, form);
 
-        const validationMessages = {
-            required: 'The input is required.',
-        };
+        const validationMessages = useTranslationsForBaseValidation($v.value.text);
 
         return {
             valueMultiple,
@@ -46,10 +45,9 @@ export default defineComponent({
                 :label="true"
                 :label-content="'Label'"
                 :validation-messages="validationMessages"
-                :validation-result="v$.value"
             >
                 <VCFormInputCheckbox
-                    v-model="form.value"
+                    v-model="form.text"
                     :label="true"
                     :label-content="'switch'"
                     :group="true"

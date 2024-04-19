@@ -4,7 +4,6 @@ import {
     createComponentOptionsManager,
     isPromise,
     setMaybeRefValue,
-    unrefWithDefault,
 } from '@vuecs/core';
 import { Component } from '../constants';
 import type { FormSubmitOptions, FormSubmitOptionsInput } from './type';
@@ -40,8 +39,6 @@ export function buildFormSubmitOptions(
             value: options.icon,
             alt: true,
         }),
-
-        validationResult: unrefWithDefault(options.validationResult, {}),
 
         updateText: manager.buildOrFail({
             key: 'updateText',
@@ -104,8 +101,7 @@ export function buildFormSubmit(input: FormSubmitOptionsInput) : VNodeChild {
                 ...(options.isEditing ? [options.updateButtonClass] : []),
                 ...(!options.isEditing ? [options.createButtonClass] : []),
             ],
-            disabled: options.validationResult.$invalid ||
-                !options.valid ||
+            disabled: !options.valid ||
                 unref(options.busy),
             onClick($event: any) {
                 $event.preventDefault();

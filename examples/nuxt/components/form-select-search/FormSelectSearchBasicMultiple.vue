@@ -6,6 +6,7 @@
   -->
 
 <script lang="ts">
+import { useTranslationsForBaseValidation } from '@ilingo/vuelidate';
 import { required } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {
@@ -24,9 +25,7 @@ export default defineComponent({
             },
         }, form);
 
-        const validationMessages = {
-            required: 'An option must be selected.',
-        };
+        const validationMessages = useTranslationsForBaseValidation($v.value.value);
 
         const options = [
             { id: 1, value: 'Option 1' },

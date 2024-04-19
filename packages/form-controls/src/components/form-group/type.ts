@@ -2,7 +2,7 @@ import type {
     ComponentOptionsInputValue, PartialPick, VNodeClass, VNodeProperties,
 } from '@vuecs/core';
 import type { Slots, VNodeChild } from 'vue';
-import type { ValidationMessages, ValidationResult, ValidationTranslator } from '../type';
+import type { ValidationMessages } from '../type';
 
 export type FormGroupOptions = {
     slotItems: Slots,
@@ -23,9 +23,7 @@ export type FormGroupOptions = {
     hintContent?: VNodeChild,
 
     validation: boolean,
-    validationResult: Partial<ValidationResult>,
     validationMessages: ValidationMessages,
-    validationTranslator?: ValidationTranslator,
     validationErrorClass: VNodeClass,
     validationWarningClass: VNodeClass,
 };
@@ -46,4 +44,4 @@ PartialPick<FormGroupOptions,
 'validationErrorClass' |
 'validationWarningClass'>
 > &
-PartialPick<FormGroupOptions, 'content' | 'slotItems' | 'validationMessages' | 'validationResult' | 'validationTranslator'>;
+PartialPick<FormGroupOptions, 'content' | 'slotItems' | 'validationMessages'>;

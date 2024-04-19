@@ -2,7 +2,7 @@ import type { ComponentOptionInputConfig } from '@vuecs/core';
 import type { PropType } from 'vue';
 import { defineComponent } from 'vue';
 import { buildFormSubmit } from './module';
-import type { ValidationResult } from '../type';
+import type { ValidationMessages, ValidationResult } from '../type';
 
 export const VCFormSubmit = defineComponent({
     props: {
@@ -53,9 +53,9 @@ export const VCFormSubmit = defineComponent({
             type: Function as PropType<() => Promise<any> | any>,
         },
 
-        validationResult: {
-            type: Object as PropType<Partial<ValidationResult>>,
-            default: undefined,
+        valid: {
+            type: Boolean,
+            default: true,
         },
     },
     emits: ['update:modelValue'],
@@ -64,6 +64,7 @@ export const VCFormSubmit = defineComponent({
             icon: props.icon,
             busy: props.modelValue || props.busy,
             isEditing: props.isEditing,
+            valid: props.valid,
 
             createText: props.createText,
             createIconClass: props.createIconClass,
@@ -86,7 +87,6 @@ export const VCFormSubmit = defineComponent({
                         emit('update:modelValue', false);
                     });
             },
-            validationResult: props.validationResult,
 
             props: attrs,
         });

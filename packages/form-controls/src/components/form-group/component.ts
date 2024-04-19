@@ -1,7 +1,7 @@
 import type { PropType, SlotsType } from 'vue';
 import { defineComponent } from 'vue';
 import type { SlotName } from '../constants';
-import type { ValidationMessages, ValidationResult, ValidationTranslator } from '../type';
+import type { ValidationMessages } from '../type';
 import { buildFormGroup } from './module';
 
 export const VCFormGroup = defineComponent({
@@ -37,16 +37,8 @@ export const VCFormGroup = defineComponent({
             type: Boolean,
             default: undefined,
         },
-        validationResult: {
-            type: Object as PropType<Partial<ValidationResult>>,
-            default: undefined,
-        },
         validationMessages: {
             type: Object as PropType<ValidationMessages>,
-            default: undefined,
-        },
-        validationTranslator: {
-            type: Function as PropType<ValidationTranslator>,
             default: undefined,
         },
     },
@@ -61,9 +53,7 @@ export const VCFormGroup = defineComponent({
             hintContent: props.hintContent,
 
             validation: props.validation,
-            validationResult: props.validationResult,
             validationMessages: props.validationMessages,
-            validationTranslator: props.validationTranslator,
 
             slotItems: slots,
 
