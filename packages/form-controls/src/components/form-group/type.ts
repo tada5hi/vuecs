@@ -17,6 +17,8 @@ export type FormGroupOptions = {
     class: VNodeClass,
     props: VNodeProperties,
 
+    dirty: boolean,
+
     hint?: boolean,
     hintTag: string,
     hintClass: VNodeClass,
@@ -44,4 +46,4 @@ PartialPick<FormGroupOptions,
 'validationErrorClass' |
 'validationWarningClass'>
 > &
-PartialPick<FormGroupOptions, 'content' | 'slotItems' | 'validationMessages'>;
+PartialPick<FormGroupOptions, 'content' | 'slotItems' | 'dirty' | 'validationMessages'>;

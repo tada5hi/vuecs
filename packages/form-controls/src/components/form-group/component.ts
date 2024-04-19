@@ -33,6 +33,11 @@ export const VCFormGroup = defineComponent({
             type: String,
         },
 
+        dirty: {
+            type: Boolean,
+            default: undefined,
+        },
+
         validation: {
             type: Boolean,
             default: undefined,
@@ -51,6 +56,8 @@ export const VCFormGroup = defineComponent({
             hint: props.hint,
             hintClass: props.hintClass,
             hintContent: props.hintContent,
+
+            dirty: props.dirty,
 
             validation: props.validation,
             validationMessages: props.validationMessages,

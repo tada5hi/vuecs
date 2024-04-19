@@ -1,3 +1,4 @@
+import type { VNodeClass } from '@vuecs/core';
 import { createComponentOptionsManager, hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
 import type { VNodeChild } from 'vue';
 import { h } from 'vue';
@@ -68,13 +69,14 @@ export function buildFormGroupOptions(
             alt: 'label',
         }),
 
+        dirty: input.dirty ?? true,
+
         validation: manager.buildOrFail({
             key: 'validation',
             value: input.validation,
             alt: true,
         }),
         validationMessages: input.validationMessages || {},
-        validationResult: input.validationResult || {},
         // errorClass
         validationErrorClass: manager.buildOrFail({
             key: 'validationErrorClass',
@@ -132,10 +134,9 @@ export function buildFormGroup(
 
     if (options.validation) {
         children.push(buildValidationGroup({
+            dirty: options.dirty,
             slotItems: options.slotItems,
-            validationResult: options.validationResult,
             validationMessages: options.validationMessages,
-            validationTranslator: options.validationTranslator,
         }));
     }
 
@@ -164,25 +165,24 @@ export function buildFormGroup(
         }
     }
 
+    let validationClass : VNodeClass | undefined;
+    if (options.validation) {
+        const isValidationInvalid = Object.keys(options.validationMessages).length > 0;
+        if (isValidationInvalid) {
+            if (options.dirty) {
+                validationClass = options.validationErrorClass;
+            } else {
+                validationClass = options.validationWarningClass;
+            }
+        }
+    }
+
     return h(
         'div',
         {
             class: [
                 options.class,
-                ...(
-                    options.validationResult &&
-                    options.validationResult.$invalid &&
-                    options.validationResult.$dirty ?
-                        [options.validationErrorClass] :
-                        []
-                ),
-                ...(
-                    options.validationResult &&
-                    options.validationResult.$invalid &&
-                    !options.validationResult.$dirty ?
-                        [options.validationWarningClass] :
-                        []
-                ),
+                validationClass,
             ],
             ...options.props,
         },

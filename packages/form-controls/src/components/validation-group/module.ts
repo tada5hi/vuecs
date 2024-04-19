@@ -13,6 +13,7 @@ export function buildValidationGroupOptions(options: ValidationGroupOptionsInput
 
         slotItems: options.slotItems || {},
 
+        dirty: options.dirty ?? true,
         validationMessages: options.validationMessages || {},
     };
 }
@@ -27,14 +28,20 @@ export function buildValidationGroup(input: ValidationGroupOptionsInput) : VNode
     }
 
     if (hasNormalizedSlot(SlotName.VALIDATION_GROUP, options.slotItems)) {
-        return normalizeSlot(SlotName.VALIDATION_GROUP, { data: errors }, options.slotItems);
+        return normalizeSlot(SlotName.VALIDATION_GROUP, {
+            data: errors,
+            dirty: options.dirty,
+        }, options.slotItems);
     }
 
     const children : VNodeArrayChildren = [];
 
     for (let i = 0; i < errors.length; i++) {
         if (hasNormalizedSlot(SlotName.VALIDATION_ITEM, options.slotItems)) {
-            children.push(normalizeSlot(SlotName.VALIDATION_ITEM, { data: errors[i] }, options.slotItems));
+            children.push(normalizeSlot(SlotName.VALIDATION_ITEM, {
+                data: errors[i],
+                dirty: options.dirty,
+            }, options.slotItems));
         } else {
             children.push(h('div', {
                 class: 'form-group-hint group-required',
