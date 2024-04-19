@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/tada5hi/vuecs/compare/form-controls-v1.3.0...form-controls-v2.0.0) (2024-04-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* removed validation{Result,Translator} option
+
+### Features
+
+* refactored validation group rendering ([cbc6db6](https://github.com/tada5hi/vuecs/commit/cbc6db655d5e909e160f575ce7e07777f1b0044c))
+
 ## [1.3.0](https://github.com/tada5hi/vuecs/compare/form-controls-v1.2.0...form-controls-v1.3.0) (2024-03-07)
 
 

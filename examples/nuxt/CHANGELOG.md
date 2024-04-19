@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.0.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v1.2.0...examples-nuxt-v2.0.0) (2024-04-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* removed validation{Result,Translator} option
+
+### Features
+
+* refactored validation group rendering ([cbc6db6](https://github.com/tada5hi/vuecs/commit/cbc6db655d5e909e160f575ce7e07777f1b0044c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/form-controls bumped from ^1.3.0 to ^2.0.0
+    * @vuecs/timeago bumped from ^1.0.3 to ^1.0.4
+
 ## [1.2.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v1.1.0...examples-nuxt-v1.2.0) (2024-03-07)
 
 
