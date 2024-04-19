@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/tada5hi/vuecs/compare/form-controls-v2.0.0...form-controls-v2.1.0) (2024-04-19)
+
+
+### Features
+
+* add dirty option to indicate form has been touched ([1e67f90](https://github.com/tada5hi/vuecs/commit/1e67f90603a7203b77b1ee7740707a7d19de5136))
+
 ## [2.0.0](https://github.com/tada5hi/vuecs/compare/form-controls-v1.3.0...form-controls-v2.0.0) (2024-04-19)
 
 
