@@ -1,7 +1,7 @@
 {
     "packages/core": "1.2.0",
     "packages/countdown": "1.0.0",
-    "packages/form-controls": "2.0.0",
+    "packages/form-controls": "2.1.0",
     "packages/gravatar": "1.0.1",
     "packages/link": "1.0.0",
     "packages/list-controls": "1.1.1",
@@ -11,5 +11,5 @@
     "packages/preset-bootstrap-v5": "1.0.0",
     "packages/preset-font-awesome": "1.0.0",
     "packages/timeago": "1.0.4",
-    "examples/nuxt": "2.0.0"
+    "examples/nuxt": "2.0.1"
 }

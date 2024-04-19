@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.0.1](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v2.0.0...examples-nuxt-v2.0.1) (2024-04-19)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/form-controls bumped from ^2.0.0 to ^2.1.0
+
 ## [2.0.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v1.2.0...examples-nuxt-v2.0.0) (2024-04-19)
 
 
