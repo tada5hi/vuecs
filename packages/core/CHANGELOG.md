@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/tada5hi/vuecs/compare/core-v1.2.0...core-v1.2.1) (2024-04-20)
+
+
+### Bug Fixes
+
+* renamed form submit property valid to invalid ([5f1bd6c](https://github.com/tada5hi/vuecs/commit/5f1bd6c6c5d441fd8e87051ff6992243b11c83f5))
+
 ## [1.2.0](https://github.com/tada5hi/vuecs/compare/core-v1.1.0...core-v1.2.0) (2023-12-22)
 
 

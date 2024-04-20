@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.1.1](https://github.com/tada5hi/vuecs/compare/form-controls-v2.1.0...form-controls-v2.1.1) (2024-04-20)
+
+
+### Bug Fixes
+
+* renamed form submit property valid to invalid ([5f1bd6c](https://github.com/tada5hi/vuecs/commit/5f1bd6c6c5d441fd8e87051ff6992243b11c83f5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^1.2.0 to ^1.2.1
+  * peerDependencies
+    * @vuecs/core bumped from ^1.2.0 to ^1.2.1
+
 ## [2.1.0](https://github.com/tada5hi/vuecs/compare/form-controls-v2.0.0...form-controls-v2.1.0) (2024-04-19)
 
 
