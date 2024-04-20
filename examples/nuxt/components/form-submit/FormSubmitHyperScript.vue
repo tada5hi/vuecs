@@ -6,17 +6,26 @@
   -->
 
 <script lang="ts">
-import { defineComponent, h, ref } from 'vue';
+import { useTranslation } from '@ilingo/vuelidate/vue';
+import {
+    computed, defineComponent, h, ref,
+} from 'vue';
 import { buildFormSubmit } from '@vuecs/form-controls';
 
 export default defineComponent({
     setup() {
-        const busy = ref< boolean>();
+        const busy = ref<boolean>();
+
+        const translation = useTranslation({
+            group: 'form',
+            key: 'createText',
+        });
 
         return () => h('div', [
             h('div', { class: 'form-group' }, [
                 buildFormSubmit({
                     busy,
+                    createText: translation.value || 'abc',
                     submit: () => new Promise<void>((resolve, reject) => {
                         console.log('Submitted form');
 

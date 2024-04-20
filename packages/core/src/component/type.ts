@@ -39,6 +39,8 @@ export type ComponentOptionBuildContext<K, V> = {
      * presets.
      */
     value: ComponentOptionInputValue<V | undefined>,
+
+    merge?: boolean,
 };
 
 export type ComponentOptions = Record<string, any>;
