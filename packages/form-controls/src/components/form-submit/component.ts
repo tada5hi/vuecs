@@ -53,7 +53,7 @@ export const VCFormSubmit = defineComponent({
             type: Function as PropType<() => Promise<any> | any>,
         },
 
-        valid: {
+        invalid: {
             type: Boolean,
             default: true,
         },
@@ -64,7 +64,7 @@ export const VCFormSubmit = defineComponent({
             icon: props.icon,
             busy: props.modelValue || props.busy,
             isEditing: props.isEditing,
-            valid: props.valid,
+            invalid: props.invalid,
 
             createText: props.createText,
             createIconClass: props.createIconClass,

@@ -5,9 +5,27 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { MemoryStore } from '@ilingo/vuelidate/core';
 import { install } from '@ilingo/vuelidate';
 import { defineNuxtPlugin } from '#app';
 
 export default defineNuxtPlugin((ctx) => {
-    ctx.vueApp.use(install);
+    ctx.vueApp.use(install, {
+        store: new MemoryStore({
+            data: {
+                en: {
+                    form: {
+                        createText: 'Create',
+                        updateText: 'Update',
+                    },
+                },
+                de: {
+                    form: {
+                        createText: 'Erstellen',
+                        updateText: 'Aktualisieren',
+                    },
+                },
+            },
+        }),
+    });
 });
