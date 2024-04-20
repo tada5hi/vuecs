@@ -23,7 +23,7 @@ export type FormSubmitOptions = {
     createButtonClass: VNodeClass,
 
     busy: MaybeRef<boolean>,
-    valid: boolean,
+    invalid: boolean,
     isEditing: boolean,
     submit: () => void | Promise<void>,
 };
@@ -32,7 +32,7 @@ export type FormSubmitOptionsInput = ComponentOptionsOverride<
 FormSubmitOptions,
 PartialPick<FormSubmitOptions,
 'busy' |
-'valid' |
+'invalid' |
 'isEditing'
 > &
 ComponentOptionsInputValue<PartialPick<FormSubmitOptions,

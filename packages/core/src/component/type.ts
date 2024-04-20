@@ -38,7 +38,7 @@ export type ComponentOptionBuildContext<K, V> = {
      * Value with or without configuration for
      * presets.
      */
-    value: ComponentOptionInputValue<V | undefined>,
+    value: ComponentOptionInputValue<V | undefined>
 };
 
 export type ComponentOptions = Record<string, any>;

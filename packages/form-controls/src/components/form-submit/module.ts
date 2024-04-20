@@ -73,7 +73,7 @@ export function buildFormSubmitOptions(
         }),
 
         busy: options.busy ?? false,
-        valid: options.valid ?? true,
+        invalid: options.invalid ?? false,
         isEditing: options.isEditing ?? false,
     };
 }
@@ -101,7 +101,7 @@ export function buildFormSubmit(input: FormSubmitOptionsInput) : VNodeChild {
                 ...(options.isEditing ? [options.updateButtonClass] : []),
                 ...(!options.isEditing ? [options.createButtonClass] : []),
             ],
-            disabled: !options.valid ||
+            disabled: !options.invalid ||
                 unref(options.busy),
             onClick($event: any) {
                 $event.preventDefault();
