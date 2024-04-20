@@ -30,11 +30,11 @@
         "@fortawesome/fontawesome-free": "^6.5.2",
         "@pinia/nuxt": "^0.5.1",
         "@vuecs/countdown": "^1.0.0",
-        "@vuecs/form-controls": "^2.1.0",
+        "@vuecs/form-controls": "^2.1.1",
         "@vuecs/gravatar": "^1.0.1",
-        "@vuecs/list-controls": "^1.1.1",
-        "@vuecs/navigation": "^1.1.1",
-        "@vuecs/pagination": "^1.1.1",
+        "@vuecs/list-controls": "^1.1.2",
+        "@vuecs/navigation": "^1.1.2",
+        "@vuecs/pagination": "^1.1.2",
         "@vuecs/preset-bootstrap-v5": "^1.0.0",
         "@vuecs/preset-font-awesome": "^1.0.0",
         "@vuecs/timeago": "^1.0.4",
@@ -46,5 +46,5 @@
         "vue": "^3.4.21",
         "vue-router": "^4.2.2"
     },
-    "version": "2.0.1"
+    "version": "2.0.2"
 }

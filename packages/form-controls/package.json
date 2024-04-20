@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/form-controls",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "description": "A package containing form controls.",
     "exports": {
         "./package.json": "./package.json",
@@ -52,12 +52,12 @@
         "lint:fix": "npm run lint -- --fix"
     },
     "devDependencies": {
-        "@vuecs/core": "^1.2.0",
+        "@vuecs/core": "^1.2.1",
         "cross-env": "^7.0.3",
         "vue": "^3.4.21"
     },
     "peerDependencies": {
-        "@vuecs/core": "^1.2.0",
+        "@vuecs/core": "^1.2.1",
         "vue": "^3.x"
     },
     "engines": {
