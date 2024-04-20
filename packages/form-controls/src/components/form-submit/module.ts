@@ -101,7 +101,7 @@ export function buildFormSubmit(input: FormSubmitOptionsInput) : VNodeChild {
                 ...(options.isEditing ? [options.updateButtonClass] : []),
                 ...(!options.isEditing ? [options.createButtonClass] : []),
             ],
-            disabled: !options.invalid ||
+            disabled: options.invalid ||
                 unref(options.busy),
             onClick($event: any) {
                 $event.preventDefault();
