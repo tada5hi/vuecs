@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.0.2](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v2.0.1...examples-nuxt-v2.0.2) (2024-04-20)
+
+
+### Bug Fixes
+
+* renamed form submit property valid to invalid ([7178d41](https://github.com/tada5hi/vuecs/commit/7178d412d3acaa3e17e74fc52a8b4c5161d3520b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/form-controls bumped from ^2.1.0 to ^2.1.1
+
 ## [2.0.1](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v2.0.0...examples-nuxt-v2.0.1) (2024-04-19)
 
 

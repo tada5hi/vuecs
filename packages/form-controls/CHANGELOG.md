@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.1](https://github.com/tada5hi/vuecs/compare/form-controls-v2.1.0...form-controls-v2.1.1) (2024-04-20)
+
+
+### Bug Fixes
+
+* negating invalid option value ([f4be70a](https://github.com/tada5hi/vuecs/commit/f4be70a359216639778d46472582ad2e1a132517))
+* renamed form submit property valid to invalid ([7178d41](https://github.com/tada5hi/vuecs/commit/7178d412d3acaa3e17e74fc52a8b4c5161d3520b))
+
 ## [2.1.0](https://github.com/tada5hi/vuecs/compare/form-controls-v2.0.0...form-controls-v2.1.0) (2024-04-19)
 
 
