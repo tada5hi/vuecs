@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.1.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v2.0.2...examples-nuxt-v2.1.0) (2024-04-21)
+
+
+### Features
+
+* refactor and optimized component & dependency management ([eb85211](https://github.com/tada5hi/vuecs/commit/eb85211b9efaa08cfde06c2ad6dc5eaca2a87fc8))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/timeago bumped from ^1.0.4 to ^1.1.0
+
 ## [2.0.2](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v2.0.1...examples-nuxt-v2.0.2) (2024-04-20)
 
 
