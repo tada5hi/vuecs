@@ -11,6 +11,8 @@ export type ConverterOptions = {
 
 export type Converter = (date: number | Date, locale: Locale, options?: ConverterOptions) => string;
 
+export type Locales = Record<string, Locale>;
+
 export type InjectionContext = {
     locales: Record<string, Locale>,
     converter?: Converter
@@ -24,7 +26,7 @@ type Options = {
     /**
      * default: {}
      */
-    locales?: Record<string, Locale>
+    locales?: Locales,
     converter?: Converter
 };
 

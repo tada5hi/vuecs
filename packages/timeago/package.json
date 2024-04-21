@@ -17,11 +17,10 @@
         "dist/*"
     ],
     "keywords": [
-        "gravatar",
-        "avatar",
+        "timeago",
+        "time",
         "vue",
-        "size",
-        "picture"
+        "date"
     ],
     "author": {
         "name": "Peter Placzek",
@@ -39,16 +38,15 @@
         "build": "cross-env NODE_ENV=production rimraf dist && npm run build:js && npm run build:types"
     },
     "devDependencies": {
+        "date-fns": "^3.3.1",
         "vue": "^3.4.21"
     },
     "peerDependencies": {
+        "date-fns": "^3.3.1",
         "vue": "^3.x"
     },
     "engines": {
         "node": ">=16"
-    },
-    "dependencies": {
-        "date-fns": "^3.3.1"
     },
     "publishConfig": {
         "access": "public"

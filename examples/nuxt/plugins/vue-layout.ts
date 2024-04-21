@@ -18,6 +18,7 @@ import installNavigation from '@vuecs/navigation';
 import '@vuecs/pagination/../dist/index.css';
 import installPagination from '@vuecs/pagination';
 import installTimeago from '@vuecs/timeago';
+import { de } from 'date-fns/locale';
 import { defineNuxtPlugin } from '#app';
 import { navigationProvider } from '~/config/layout';
 
@@ -36,7 +37,11 @@ export default defineNuxtPlugin((ctx) => {
     ctx.vueApp.use(installFormControl);
     ctx.vueApp.use(installGravatar);
     ctx.vueApp.use(installLink);
-    ctx.vueApp.use(installTimeago);
+    ctx.vueApp.use(installTimeago, {
+        locales: {
+            de,
+        },
+    });
 
     ctx.vueApp.use(installNavigation, {
         provider: navigationProvider,

@@ -6,8 +6,7 @@
   -->
 
 <script lang="ts">
-import { VCTimeago } from '@vuecs/timeago';
-import { getCurrentInstance } from 'vue';
+import { VCTimeago, injectLocale } from '@vuecs/timeago';
 import { defineNuxtComponent } from '#app';
 
 export default defineNuxtComponent({
@@ -15,15 +14,14 @@ export default defineNuxtComponent({
         VCTimeago,
     },
     setup() {
-        const instance = getCurrentInstance();
+        const locale = injectLocale();
+
         setTimeout(() => {
-            if (instance) {
-                instance.appContext.config.globalProperties.$timeagoLocale.value = 'de';
-            }
+            locale.value = 'de';
         }, 3600);
 
         return {
-            dateTime: '2023-04-05T06:03:41.334Z',
+            dateTime: Date.now() - (1000 * 10),
         };
     },
 });

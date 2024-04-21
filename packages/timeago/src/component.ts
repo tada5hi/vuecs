@@ -2,17 +2,17 @@ import type { PropType } from 'vue';
 import {
     computed,
     defineComponent,
-    getCurrentInstance,
     h,
-    inject,
-    isRef,
+    onMounted,
+    onUnmounted,
     ref,
-    toRefs,
+    toRef,
     watch,
 } from 'vue';
-import { InjectionKey } from './constants';
-import type { Converter, ConverterOptions, InjectionContext } from './type';
-import { convert } from './converter';
+import { injectLocale } from './locale';
+import { injectLocales } from './locales';
+import type { Converter, ConverterOptions } from './type';
+import { convert, injectConverter } from './converter';
 
 export const VCTimeago = defineComponent({
     props: {
@@ -28,6 +28,7 @@ export const VCTimeago = defineComponent({
         },
         autoUpdate: {
             type: [Number, Boolean],
+            default: true,
         },
         converter: {
             type: Function as PropType<Converter>,
@@ -36,86 +37,75 @@ export const VCTimeago = defineComponent({
             type: Object as PropType<ConverterOptions>,
         },
     },
-    setup(props, ctx) {
-        const refs = toRefs(props);
+    setup(props) {
+        const dateTimeProp = toRef(props, 'datetime');
+        const localeProp = toRef(props, 'locale');
+        const titleProp = toRef(props, 'title');
+        const autoUpdateProp = toRef(props, 'autoUpdate');
 
-        const context = inject<InjectionContext>(InjectionKey);
+        const locale = injectLocale();
+        const locales = injectLocales() || {};
 
-        const getContextProperty = <K extends keyof InjectionContext>(key: K) : InjectionContext[K] | undefined => {
-            if (!context) {
-                return undefined;
+        let converter = injectConverter();
+        if (props.converter) {
+            converter = props.converter;
+        }
+        if (!converter) {
+            converter = convert;
+        }
+
+        const dateTime = computed(() => {
+            let value : Date;
+            if (typeof dateTimeProp.value === 'string') {
+                value = new Date(dateTimeProp.value);
+            } else if (typeof dateTimeProp.value === 'number') {
+                value = new Date(dateTimeProp.value);
+            } else {
+                value = dateTimeProp.value;
             }
 
-            return context[key];
-        };
-
-        const locales = getContextProperty('locales') || {};
-
-        const instance = getCurrentInstance();
-        const instanceLocale = computed(() => {
-            if (!instance) {
-                return 'en';
-            }
-
-            const value = instance.appContext.config.globalProperties.$timeagoLocale;
-            if (!value) {
-                return 'en';
-            }
-
-            return isRef(value) ? value.value : value;
+            return value;
         });
 
         const time = ref('');
-        const calculate = (dateTime?: number | Date) => {
-            let converter = refs.converter.value;
-            if (
-                !converter &&
-                context &&
-                context.converter
-            ) {
-                converter = context.converter;
-            }
 
-            if (!converter) {
-                converter = convert;
-            }
-
-            if (!dateTime) {
-                if (typeof refs.datetime.value === 'string') {
-                    dateTime = new Date(refs.datetime.value);
-                } else {
-                    dateTime = refs.datetime.value;
-                }
-            }
-
+        const calculate = () => {
             time.value = converter(
-                dateTime,
-                locales[refs.locale.value || instanceLocale.value],
-                refs.converterOptions.value || {},
+                dateTime.value,
+                locales[localeProp.value || locale.value],
+                props.converterOptions,
             );
         };
 
         calculate();
 
-        let updater : any;
+        let updater : ReturnType<typeof setInterval> | undefined;
 
         const startUpdater = () => {
-            if (refs.autoUpdate.value) {
-                const autoUpdate = refs.autoUpdate.value === true ? 60 : refs.autoUpdate.value;
-                updater = setInterval(() => {
-                    calculate();
-                }, autoUpdate * 1000);
-            }
+            if (!autoUpdateProp.value) return;
+
+            stopUpdater();
+
+            const autoUpdate = autoUpdateProp.value === true ?
+                60 :
+                autoUpdateProp.value;
+
+            updater = setInterval(() => {
+                calculate();
+            }, autoUpdate * 1000);
         };
 
         const stopUpdater = () => {
-            if (updater) {
-                clearInterval(updater);
-                updater = null;
-            }
+            if (!updater) return;
+
+            clearInterval(updater);
+            updater = undefined;
         };
 
-        watch(refs.autoUpdate, (val) => {
+        onMounted(() => startUpdater());
+        onUnmounted(() => stopUpdater());
+
+        watch(autoUpdateProp, (val) => {
             stopUpdater();
 
             if (val) {
@@ -123,23 +113,15 @@ export const VCTimeago = defineComponent({
             }
         });
 
-        watch(refs.datetime, () => {
+        watch(dateTimeProp, () => {
             calculate();
         });
 
-        watch(refs.locale, () => {
+        watch(localeProp, () => {
             calculate();
         });
 
-        watch(refs.converter, () => {
-            calculate();
-        });
-
-        watch(refs.converterOptions, () => {
-            calculate();
-        }, { deep: true });
-
-        watch(instanceLocale, () => {
+        watch(locale, () => {
             calculate();
         });
 
@@ -147,9 +129,9 @@ export const VCTimeago = defineComponent({
             'time',
             {
                 attrs: {
-                    datetime: new Date(refs.datetime.value).toISOString(),
-                    title: typeof refs.title.value === 'string' ?
-                        refs.title.value :
+                    datetime: new Date(dateTimeProp.value).toISOString(),
+                    title: typeof titleProp.value === 'string' ?
+                        titleProp.value :
                         time.value,
                 },
             },

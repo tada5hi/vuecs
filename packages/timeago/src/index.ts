@@ -1,5 +1,4 @@
-import { ref } from 'vue';
-import type { App, Plugin, Ref } from 'vue';
+import type { App, Plugin } from 'vue';
 
 import './vue';
 
@@ -7,23 +6,28 @@ import './vue';
 import {
     VCTimeago,
 } from './component';
-import { InjectionKey } from './constants';
-import type { InjectionContext, Options } from './type';
+import { provideConverter } from './converter';
+import { provideLocale } from './locale';
+import { provideLocales } from './locales';
+import type { Options } from './type';
 
 export * from './component';
+export * from './locale';
 export * from './type';
 
-export function install(instance: App, options?: Options) : void {
-    options ??= {};
+export function install(app: App, options: Options = {}) : void {
+    if (options.converter) {
+        provideConverter(options.converter, app);
+    }
 
-    instance.provide<InjectionContext>(InjectionKey, {
-        converter: options.converter,
-        locales: options.locales || {},
-    });
+    if (options.locales) {
+        provideLocales(options.locales, app);
+    }
 
-    instance.config.globalProperties.$timeagoLocale = ref(options.locale || 'en');
+    const locale = options.locale || 'en';
+    provideLocale(locale, app);
 
-    instance.component('VCTimeago', VCTimeago);
+    app.component('VCTimeago', VCTimeago);
 }
 
 export default {
