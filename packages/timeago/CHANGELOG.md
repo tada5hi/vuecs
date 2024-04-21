@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/tada5hi/vuecs/compare/timeago-v1.0.4...timeago-v1.1.0) (2024-04-21)
+
+
+### Features
+
+* refactor and optimized component & dependency management ([eb85211](https://github.com/tada5hi/vuecs/commit/eb85211b9efaa08cfde06c2ad6dc5eaca2a87fc8))
+
 ## [1.0.4](https://github.com/tada5hi/vuecs/compare/timeago-v1.0.3...timeago-v1.0.4) (2024-04-19)
 
 
