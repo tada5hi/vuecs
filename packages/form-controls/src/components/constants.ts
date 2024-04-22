@@ -6,6 +6,7 @@ export enum Component {
     FormSelect = 'formSelect',
     FormSubmit = 'formSubmit',
     FormTextarea = 'formTextarea',
+    VALIDATION = 'validation',
 }
 
 export enum SlotName {
