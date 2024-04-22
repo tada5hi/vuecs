@@ -26,7 +26,7 @@
     },
     "homepage": "https://github.com/Tada5hi/vuecs#readme",
     "devDependencies": {
-        "@ilingo/vuelidate": "^4.1.0",
+        "@ilingo/vuelidate": "^4.3.1",
         "@fortawesome/fontawesome-free": "^6.5.2",
         "@pinia/nuxt": "^0.5.1",
         "@vuecs/countdown": "^1.0.0",

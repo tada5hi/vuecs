@@ -11,7 +11,10 @@ export type ValidationResult<T = unknown> = {
     [key: string]: any
 };
 
-export type ValidationMessages = Record<string, string>;
+export type ValidationMessagesRecordStyle = Record<string, string>;
+export type ValidationMessagesArrayStyle = { key: string, value: string }[];
+
+export type ValidationMessages = ValidationMessagesArrayStyle | ValidationMessagesRecordStyle;
 
 // --------------------------------------
 

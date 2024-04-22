@@ -6,14 +6,17 @@
   -->
 
 <script lang="ts">
-import { useTranslationsForBaseValidation } from '@ilingo/vuelidate';
+import { IVuelidate } from '@ilingo/vuelidate';
 import { maxLength, minLength } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {
-    defineComponent, h, reactive, ref,
+    defineComponent, h, reactive,
 } from 'vue';
 
 export default defineComponent({
+    components: {
+        IVuelidate,
+    },
     setup() {
         const form = reactive({
             text: 'foo',
@@ -26,25 +29,27 @@ export default defineComponent({
             },
         }, form);
 
-        const validationMessages = useTranslationsForBaseValidation($v.value.text);
-
         return {
             form,
-            validationMessages,
             v$: $v,
         };
     },
 });
 </script>
 <template>
-    <VCFormGroup
-        :validation-messages="validationMessages"
-    >
-        <template #label>
-            Text
+    <IVuelidate :validation="v$.text">
+        <template #default="props">
+            <VCFormGroup
+                :validation-messages="props.data"
+                :validation-severity="props.severity"
+            >
+                <template #label>
+                    Text
+                </template>
+                <VCFormInput
+                    v-model="v$.text.$model"
+                />
+            </VCFormGroup>
         </template>
-        <VCFormInput
-            v-model="form.text"
-        />
-    </VCFormGroup>
+    </IVuelidate>
 </template>

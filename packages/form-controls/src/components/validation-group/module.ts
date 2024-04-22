@@ -5,12 +5,13 @@ import {
     hasNormalizedSlot,
     normalizeSlot,
 } from '@vuecs/core';
-import { Component, SlotName } from '../constants';
+import { Component, SlotName, ValidationSeverity } from '../constants';
+import type { ValidationMessagesArrayStyle } from '../type';
 import type { ValidationGroupOptions, ValidationGroupOptionsInput } from './type';
 
 export function buildValidationGroupOptions(options: ValidationGroupOptionsInput) : ValidationGroupOptions {
     const manager = createComponentOptionsManager<ValidationGroupOptions>({
-        name: Component.VALIDATION,
+        name: Component.VALIDATION_GROUP,
     });
 
     return {
@@ -21,7 +22,7 @@ export function buildValidationGroupOptions(options: ValidationGroupOptionsInput
         itemClass: manager.buildOrFail({
             key: 'itemClass',
             value: options.itemClass,
-            alt: [],
+            alt: 'form-group-hint group-required',
         }),
         itemTag: manager.buildOrFail({
             key: 'itemTag',
@@ -29,24 +30,33 @@ export function buildValidationGroupOptions(options: ValidationGroupOptionsInput
             alt: 'div',
         }),
 
-        dirty: options.dirty ?? true,
-        validationMessages: options.validationMessages || {},
+        severity: options.severity || ValidationSeverity.ERROR,
+        messages: options.messages || {},
     };
 }
 
 export function buildValidationGroup(input: ValidationGroupOptionsInput) : VNodeChild {
     const options = buildValidationGroupOptions(input);
 
-    const keys = Object.keys(options.validationMessages);
-    const errors : string[] = [];
-    for (let i = 0; i < keys.length; i++) {
-        errors.push(options.validationMessages[keys[i]]);
+    let errors : ValidationMessagesArrayStyle;
+
+    if (Array.isArray(options.messages)) {
+        errors = options.messages;
+    } else {
+        errors = [];
+        const keys = Object.keys(options.messages);
+        for (let i = 0; i < keys.length; i++) {
+            errors.push({
+                key: keys[i],
+                value: options.messages[keys[i]],
+            });
+        }
     }
 
     if (hasNormalizedSlot(SlotName.VALIDATION_GROUP, options.slotItems)) {
         return normalizeSlot(SlotName.VALIDATION_GROUP, {
             data: errors,
-            dirty: options.dirty,
+            severity: options.severity,
             itemClass: options.itemClass,
             itemTag: options.itemTag,
         }, options.slotItems);
@@ -57,15 +67,16 @@ export function buildValidationGroup(input: ValidationGroupOptionsInput) : VNode
     for (let i = 0; i < errors.length; i++) {
         if (hasNormalizedSlot(SlotName.VALIDATION_ITEM, options.slotItems)) {
             children.push(normalizeSlot(SlotName.VALIDATION_ITEM, {
+                key: errors[i].key,
+                value: errors[i].value,
                 class: options.itemClass,
                 tag: options.itemTag,
-                data: errors[i],
-                dirty: options.dirty,
+                severity: options.severity,
             }, options.slotItems));
         } else {
             children.push(h(options.itemTag, {
                 class: options.itemClass,
-            }, [errors[i]]));
+            }, [errors[i].value]));
         }
     }
 

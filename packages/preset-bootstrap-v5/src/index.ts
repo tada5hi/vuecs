@@ -35,10 +35,6 @@ export default {
         class: 'form-control',
         labelClass: 'form-label',
     },
-    validation: {
-        itemClass: 'form-group-hint group-required',
-        itemTag: 'div',
-    },
     itemActionToggle: {
         disabledClass: 'btn btn-xs btn-dark',
         enabledClass: 'btn btn-xs btn-warning',

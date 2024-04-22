@@ -1,6 +1,6 @@
 import type { PropType, SlotsType } from 'vue';
 import { defineComponent } from 'vue';
-import type { SlotName } from '../constants';
+import type { SlotName, ValidationSeverity } from '../constants';
 import type { ValidationMessages } from '../type';
 import { buildFormGroup } from './module';
 
@@ -33,17 +33,16 @@ export const VCFormGroup = defineComponent({
             type: String,
         },
 
-        dirty: {
-            type: Boolean,
-            default: undefined,
-        },
-
         validation: {
             type: Boolean,
             default: undefined,
         },
+        validationSeverity: {
+            type: String as PropType<`${ValidationSeverity}` | undefined>,
+            default: undefined,
+        },
         validationMessages: {
-            type: Object as PropType<ValidationMessages>,
+            type: [Object, Array] as PropType<ValidationMessages>,
             default: undefined,
         },
     },
@@ -57,7 +56,7 @@ export const VCFormGroup = defineComponent({
             hintClass: props.hintClass,
             hintContent: props.hintContent,
 
-            dirty: props.dirty,
+            validationSeverity: props.validationSeverity,
 
             validation: props.validation,
             validationMessages: props.validationMessages,

@@ -2,7 +2,7 @@ import type { VNodeClass } from '@vuecs/core';
 import { createComponentOptionsManager, hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
 import type { VNodeChild } from 'vue';
 import { h } from 'vue';
-import { Component, SlotName } from '../constants';
+import { Component, SlotName, ValidationSeverity } from '../constants';
 import { buildValidationGroup } from '../validation-group';
 import type {
     FormGroupOptions, FormGroupOptionsInput,
@@ -69,8 +69,6 @@ export function buildFormGroupOptions(
             alt: 'label',
         }),
 
-        dirty: input.dirty ?? true,
-
         validation: manager.buildOrFail({
             key: 'validation',
             value: input.validation,
@@ -89,6 +87,7 @@ export function buildFormGroupOptions(
             value: input.validationWarningClass,
             alt: [],
         }),
+        validationSeverity: input.validationSeverity,
     };
 }
 
@@ -134,9 +133,9 @@ export function buildFormGroup(
 
     if (options.validation) {
         children.push(buildValidationGroup({
-            dirty: options.dirty,
+            severity: options.validationSeverity,
             slotItems: options.slotItems,
-            validationMessages: options.validationMessages,
+            messages: options.validationMessages,
         }));
     }
 
@@ -167,13 +166,14 @@ export function buildFormGroup(
 
     let validationClass : VNodeClass | undefined;
     if (options.validation) {
-        const isValidationInvalid = Object.keys(options.validationMessages).length > 0;
+        const isValidationInvalid = Array.isArray(options.validationMessages) ?
+            options.validationMessages.length > 0 :
+            Object.keys(options.validationMessages).length > 0;
+
         if (isValidationInvalid) {
-            if (options.dirty) {
-                validationClass = options.validationErrorClass;
-            } else {
-                validationClass = options.validationWarningClass;
-            }
+            validationClass = options.validationSeverity === ValidationSeverity.WARNING ?
+                options.validationWarningClass :
+                options.validationErrorClass;
         }
     }
 

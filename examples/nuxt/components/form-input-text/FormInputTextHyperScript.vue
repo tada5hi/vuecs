@@ -6,7 +6,7 @@
   -->
 
 <script lang="ts">
-import { useTranslationsForBaseValidation } from '@ilingo/vuelidate';
+import { getSeverity, useTranslationsForBaseValidation } from '@ilingo/vuelidate';
 import { buildFormGroup, buildFormInputText } from '@vuecs/form-controls';
 import { maxLength, minLength } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
@@ -32,11 +32,12 @@ export default defineComponent({
         return () => buildFormGroup({
             label: true,
             labelContent: 'Label',
+            validationSeverity: getSeverity($v.value.text),
             validationMessages: validationMessages.value,
             content: buildFormInputText({
-                value: form.text,
+                value: $v.value.text.$model,
                 onChange(input) {
-                    form.text = input;
+                    $v.value.text.$model = input;
                 },
             }),
         });

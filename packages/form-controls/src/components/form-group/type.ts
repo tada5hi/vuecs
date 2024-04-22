@@ -2,6 +2,7 @@ import type {
     ComponentOptionsInputValue, PartialPick, VNodeClass, VNodeProperties,
 } from '@vuecs/core';
 import type { Slots, VNodeChild } from 'vue';
+import type { ValidationSeverity } from '../constants';
 import type { ValidationMessages } from '../type';
 
 export type FormGroupOptions = {
@@ -17,8 +18,6 @@ export type FormGroupOptions = {
     class: VNodeClass,
     props: VNodeProperties,
 
-    dirty: boolean,
-
     hint?: boolean,
     hintTag: string,
     hintClass: VNodeClass,
@@ -26,6 +25,7 @@ export type FormGroupOptions = {
 
     validation: boolean,
     validationMessages: ValidationMessages,
+    validationSeverity?: `${ValidationSeverity}`,
     validationErrorClass: VNodeClass,
     validationWarningClass: VNodeClass,
 };
@@ -46,4 +46,9 @@ PartialPick<FormGroupOptions,
 'validationErrorClass' |
 'validationWarningClass'>
 > &
-PartialPick<FormGroupOptions, 'content' | 'slotItems' | 'dirty' | 'validationMessages'>;
+PartialPick<FormGroupOptions,
+'content' |
+'slotItems' |
+'validationSeverity' |
+'validationMessages'
+>;

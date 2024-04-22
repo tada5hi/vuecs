@@ -6,7 +6,7 @@ export enum Component {
     FormSelect = 'formSelect',
     FormSubmit = 'formSubmit',
     FormTextarea = 'formTextarea',
-    VALIDATION = 'validation',
+    VALIDATION_GROUP = 'validationGroup',
 }
 
 export enum SlotName {
@@ -15,4 +15,9 @@ export enum SlotName {
     HINT = 'hint',
     VALIDATION_GROUP = 'validationGroup',
     VALIDATION_ITEM = 'validationItem',
+}
+
+export enum ValidationSeverity {
+    ERROR = 'error',
+    WARNING = 'warning',
 }
