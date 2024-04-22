@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.2.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v2.1.0...examples-nuxt-v2.2.0) (2024-04-22)
+
+
+### Features
+
+* introduce validation severity property ([ac84834](https://github.com/tada5hi/vuecs/commit/ac84834ca88608821aa3b8f45197b7ed3bb7f5f6))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/form-controls bumped from ^2.1.1 to ^2.2.0
+    * @vuecs/preset-bootstrap-v5 bumped from ^1.0.0 to ^1.1.0
+
 ## [2.1.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v2.0.2...examples-nuxt-v2.1.0) (2024-04-21)
 
 
