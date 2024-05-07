@@ -40,11 +40,11 @@
     },
     "devDependencies": {
         "smob": "^1.4.1",
-        "vue": "^3.4.21"
+        "vue": "^3.4.27"
     },
     "peerDependencies": {
         "smob": "^1.4.1",
-        "vue": "^3.4.21"
+        "vue": "^3.4.27"
     },
     "engines": {
         "node": ">=18"
