@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.3.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v2.2.0...examples-nuxt-v2.3.0) (2024-06-13)
+
+
+### Features
+
+* use infinity scroll for form-select-search ([eba1e1e](https://github.com/tada5hi/vuecs/commit/eba1e1e475da75d5ba436b3cd65d52886119d8f9))
+
+
+### Bug Fixes
+
+* enhance interaction with form-select-search ([cd60e8a](https://github.com/tada5hi/vuecs/commit/cd60e8a5a4441b118b655b717843447417596e47))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/form-controls bumped from ^2.2.0 to ^2.3.0
+
 ## [2.2.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v2.1.0...examples-nuxt-v2.2.0) (2024-04-22)
 
 
