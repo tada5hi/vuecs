@@ -29,8 +29,15 @@
     background-color: #fff;
     width:100%;
     border: var(--bs-border-width) solid var(--bs-border-color);
-    overflow: auto;
+    overflow-y: scroll;
     z-index: 999;
+    max-height: 150px;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.form-select-search .form-select-search-content::-webkit-scrollbar {
+    display: none;
 }
 
 .form-select-search .form-select-search-content .form-select-search-item {

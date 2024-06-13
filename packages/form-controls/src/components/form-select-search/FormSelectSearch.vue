@@ -1,7 +1,9 @@
 <script lang="ts">
+import { useInfiniteScroll } from '@vueuse/core';
 import type { PropType } from 'vue';
 import {
-    computed, defineComponent, ref, toRef, watch,
+    computed,
+    defineComponent, ref, toRef, watch,
 } from 'vue';
 import type { FormSelectOption } from '../form-select';
 import FormSelectSearchEntry from './FormSelectSearchEntry.vue';
@@ -31,11 +33,19 @@ export default defineComponent({
         maxItems: {
             type: Number,
             required: false,
-            default: 6,
+            default: 10,
+        },
+        scrollDistance: {
+            type: Number,
+            required: false,
+            default: 10,
         },
     },
     emits: ['update:modelValue', 'change'],
     async setup(props, { emit }) {
+        const listElement = ref<HTMLElement | null>(null);
+        const inputElement = ref<HTMLElement | null>(null);
+
         const q = ref('');
         const currentIndex = ref(-1);
 
@@ -82,25 +92,46 @@ export default defineComponent({
         );
 
         const items = computed(() => {
-            const output = [];
+            const output : FormSelectOption[] = [];
             const pattern = new RegExp(q.value, 'ig');
             for (let i = 0; i < props.options.length; i++) {
                 const option = props.options[i];
 
                 if (!q.value || q.value.length < 1 || option.value.match(pattern)) {
-                    if (output.length < props.maxItems) {
-                        output.push(option);
-                    }
+                    output.push(option);
                 }
             }
 
             return output;
         });
+
         const itemsLength = computed(() => items.value.length);
+
+        const itemsDisplayed = ref<FormSelectOption[]>([]);
+        const setItemsDisplayed = () => {
+            itemsDisplayed.value = items.value.slice(0, props.maxItems - 1);
+        };
+
+        setItemsDisplayed();
+
         watch(itemsLength, (val, oldValue) => {
             if (val !== oldValue) {
                 currentIndex.value = 0;
+                setItemsDisplayed();
             }
+        });
+
+        useInfiniteScroll(listElement, () => {
+            const startIndex = itemsDisplayed.value.length - 1;
+            const endIndex = Math.min(startIndex + props.scrollDistance, items.value.length);
+            if (startIndex === endIndex) {
+                return;
+            }
+            itemsDisplayed.value.push(...items.value.slice(startIndex, endIndex));
+        }, {
+            canLoadMore() {
+                return itemsDisplayed.value.length < items.value.length;
+            },
         });
 
         const isDisplayed = ref(false);
@@ -135,7 +166,9 @@ export default defineComponent({
                 selected.value = [option];
             }
 
-            isDisplayed.value = false;
+            if (!isMulti.value) {
+                isDisplayed.value = false;
+            }
 
             if (isBlank) {
                 emit('update:modelValue', null);
@@ -170,12 +203,14 @@ export default defineComponent({
         };
 
         const toggleHide = (option: FormSelectOption) => {
-            isDisplayed.value = false;
+            if (!isMulti.value) {
+                isDisplayed.value = false;
+            }
             toggle(option);
         };
 
         const onBlur = () => {
-            hide();
+            // hide();
         };
 
         const onFocus = () => {
@@ -195,7 +230,7 @@ export default defineComponent({
                     return;
                 }
 
-                if (currentIndex.value < items.value.length - 1) {
+                if (currentIndex.value < itemsDisplayed.value.length - 1) {
                     currentIndex.value++;
                 }
             }
@@ -211,23 +246,23 @@ export default defineComponent({
                     return;
                 }
 
-                if (items.value.length === 1) {
-                    toggleHide(items.value[0]);
+                if (itemsDisplayed.value.length === 1) {
+                    toggleHide(itemsDisplayed.value[0]);
                     return;
                 }
 
                 if (
                     currentIndex.value >= 0 &&
-                    items.value[currentIndex.value]
+                    itemsDisplayed.value[currentIndex.value]
                 ) {
-                    toggleHide(items.value[currentIndex.value]);
+                    toggleHide(itemsDisplayed.value[currentIndex.value]);
 
                     return;
                 }
 
                 if (selected.value.length === 0) {
-                    if (items.value[0]) {
-                        toggleHide(items.value[0]);
+                    if (itemsDisplayed.value[0]) {
+                        toggleHide(itemsDisplayed.value[0]);
                     }
 
                     return;
@@ -243,25 +278,22 @@ export default defineComponent({
             }
         };
 
-        const onMouseLeave = (event: any) => {
-            event.preventDefault();
-            hide();
-        };
-
         return {
+            listElement,
+            inputElement,
+
             isMulti,
             toggle,
             toggleHide,
             currentIndex,
             q,
-            items,
+            items: itemsDisplayed,
             selected,
             display,
             onBlur,
             onFocus,
             onKeyUp,
             onKeyDown,
-            onMouseLeave,
             isDisplayed,
         };
     },
@@ -270,6 +302,7 @@ export default defineComponent({
 <template>
     <div class="form-select-search">
         <input
+            ref="inputElement"
             v-model="q"
             class="form-select-search-input"
             :disabled="disabled"
@@ -282,8 +315,8 @@ export default defineComponent({
 
         <div
             v-show="isDisplayed"
+            ref="listElement"
             class="form-select-search-content"
-            @mouseleave="onMouseLeave"
         >
             <template
                 v-for="(option, index) in items"
