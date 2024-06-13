@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.3.0](https://github.com/tada5hi/vuecs/compare/form-controls-v2.2.0...form-controls-v2.3.0) (2024-06-13)
+
+
+### Features
+
+* use infinity scroll for form-select-search ([eba1e1e](https://github.com/tada5hi/vuecs/commit/eba1e1e475da75d5ba436b3cd65d52886119d8f9))
+
+
+### Bug Fixes
+
+* enhance interaction with form-select-search ([cd60e8a](https://github.com/tada5hi/vuecs/commit/cd60e8a5a4441b118b655b717843447417596e47))
+
 ## [2.2.0](https://github.com/tada5hi/vuecs/compare/form-controls-v2.1.1...form-controls-v2.2.0) (2024-04-22)
 
 
