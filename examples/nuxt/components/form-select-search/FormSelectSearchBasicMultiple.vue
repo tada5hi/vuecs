@@ -7,6 +7,7 @@
 
 <script lang="ts">
 import { useTranslationsForBaseValidation } from '@ilingo/vuelidate';
+import type { FormSelectOption } from '@vuecs/form-controls';
 import { required } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {
@@ -27,11 +28,11 @@ export default defineComponent({
 
         const validationMessages = useTranslationsForBaseValidation($v.value.value);
 
-        const options = [
-            { id: 1, value: 'Option 1' },
-            { id: 2, value: 'Option 2' },
-            { id: 3, value: 'Option 3' },
-        ];
+        const options : FormSelectOption[] = [];
+
+        for (let i = 1; i <= 100; i++) {
+            options.push({ id: i, value: `Option ${i}` });
+        }
 
         return {
             form,

@@ -49,11 +49,11 @@
 
 .form-select-search .form-select-search-content .form-select-search-item:hover,
 .form-select-search .form-select-search-content .form-select-search-item.current {
-    background-color: #e7ecf5 !important;
+    background-color: #e7ecf5;
 }
 
 .form-select-search .form-select-search-content .form-select-search-item.active {
-    background-color: #a2b1f1;
+    background-color: #a2b1f1 !important;
 }
 
 .form-select-search .form-select-search-selected {

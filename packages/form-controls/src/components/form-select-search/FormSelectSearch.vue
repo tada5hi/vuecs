@@ -1,5 +1,7 @@
 <script lang="ts">
-import { useInfiniteScroll } from '@vueuse/core';
+import {
+    onClickOutside, useInfiniteScroll,
+} from '@vueuse/core';
 import type { PropType } from 'vue';
 import {
     computed,
@@ -112,6 +114,15 @@ export default defineComponent({
             itemsDisplayed.value = items.value.slice(0, props.maxItems - 1);
         };
 
+        const showMoreItemsDisplayed = () => {
+            const startIndex = itemsDisplayed.value.length - 1;
+            const endIndex = Math.min(startIndex + props.scrollDistance, items.value.length);
+            if (startIndex === endIndex) {
+                return;
+            }
+            itemsDisplayed.value.push(...items.value.slice(startIndex, endIndex));
+        };
+
         setItemsDisplayed();
 
         watch(itemsLength, (val, oldValue) => {
@@ -122,12 +133,7 @@ export default defineComponent({
         });
 
         useInfiniteScroll(listElement, () => {
-            const startIndex = itemsDisplayed.value.length - 1;
-            const endIndex = Math.min(startIndex + props.scrollDistance, items.value.length);
-            if (startIndex === endIndex) {
-                return;
-            }
-            itemsDisplayed.value.push(...items.value.slice(startIndex, endIndex));
+            showMoreItemsDisplayed();
         }, {
             canLoadMore() {
                 return itemsDisplayed.value.length < items.value.length;
@@ -203,15 +209,13 @@ export default defineComponent({
         };
 
         const toggleHide = (option: FormSelectOption) => {
-            if (!isMulti.value) {
-                isDisplayed.value = false;
-            }
+            isDisplayed.value = false;
             toggle(option);
         };
 
-        const onBlur = () => {
-            // hide();
-        };
+        onClickOutside(listElement, () => {
+            hide();
+        }, { ignore: [inputElement] });
 
         const onFocus = () => {
             q.value = '';
@@ -290,7 +294,6 @@ export default defineComponent({
             items: itemsDisplayed,
             selected,
             display,
-            onBlur,
             onFocus,
             onKeyUp,
             onKeyDown,
@@ -310,7 +313,6 @@ export default defineComponent({
             @focus="onFocus"
             @keyup="onKeyUp"
             @keydown="onKeyDown"
-            @blur="onBlur"
         >
 
         <div
@@ -333,7 +335,7 @@ export default defineComponent({
                                 'active': active,
                                 'current': index === currentIndex || (index === 0 && currentIndex === -1)
                             }"
-                            @mousedown="toggleHide(entry)"
+                            @mousedown="toggle(entry)"
                         >
                             {{ entry.value }}
                         </div>
