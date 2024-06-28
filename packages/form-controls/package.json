@@ -57,7 +57,7 @@
     "devDependencies": {
         "@vuecs/core": "^1.2.0",
         "cross-env": "^7.0.3",
-        "vue": "^3.4.21"
+        "vue": "^3.4.31"
     },
     "peerDependencies": {
         "@vuecs/core": "^1.2.0",
