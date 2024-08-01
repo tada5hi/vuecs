@@ -56,7 +56,7 @@
         "@vuecs/core": "^1.2.0",
         "@vuecs/link": "^1.0.0",
         "vue": "^3.4.21",
-        "vue-router": "^4.3.2"
+        "vue-router": "^4.4.2"
     },
     "peerDependencies": {
         "@vuecs/core": "^1.2.0",
