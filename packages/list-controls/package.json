@@ -53,12 +53,12 @@
     "devDependencies": {
         "@vuecs/core": "^1.2.0",
         "smob": "^1.4.1",
-        "vue": "^3.4.21"
+        "vue": "^3.5.1"
     },
     "peerDependencies": {
         "@vuecs/core": "^1.2.0",
         "smob": "^1.4.1",
-        "vue": "^3.4.21"
+        "vue": "^3.5.1"
     },
     "engines": {
         "node": ">=16"
