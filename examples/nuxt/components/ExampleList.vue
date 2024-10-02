@@ -33,7 +33,7 @@ export default defineComponent({
             onCreated(item) {
                 console.log(item);
             },
-            onUpdated(item) {
+            onUpdated: (item) => {
                 console.log(item);
             },
             onDeleted(item) {
