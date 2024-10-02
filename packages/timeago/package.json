@@ -38,11 +38,11 @@
         "build": "cross-env NODE_ENV=production rimraf dist && npm run build:js && npm run build:types"
     },
     "devDependencies": {
-        "date-fns": "^3.3.1",
+        "date-fns": "^4.1.0",
         "vue": "^3.5.10"
     },
     "peerDependencies": {
-        "date-fns": "^3.3.1",
+        "date-fns": "^4.1.0",
         "vue": "^3.x"
     },
     "engines": {
