@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/tada5hi/vuecs/compare/preset-bootstrap-v5-v1.1.0...preset-bootstrap-v5-v1.2.0) (2024-10-04)
+
+
+### Features
+
+* custom prefix for list-control css classes ([e0b3817](https://github.com/tada5hi/vuecs/commit/e0b38173afb9b5f1f67241d897b9216c8ab2d3fc))
+
 ## [1.1.0](https://github.com/tada5hi/vuecs/compare/preset-bootstrap-v5-v1.0.0...preset-bootstrap-v5-v1.1.0) (2024-04-22)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/tada5hi/vuecs/compare/pagination-v1.1.1...pagination-v1.2.0) (2024-10-04)
+
+
+### Features
+
+* css preset for list-controls ([3e7e698](https://github.com/tada5hi/vuecs/commit/3e7e698d515f0c37f811964c72222c8c14e1183c))
+
 ## [1.1.1](https://github.com/tada5hi/vuecs/compare/pagination-v1.1.0...pagination-v1.1.1) (2023-12-22)
 
 
