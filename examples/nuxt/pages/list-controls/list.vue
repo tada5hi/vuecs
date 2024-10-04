@@ -7,8 +7,7 @@
 
 <script lang="ts">
 import {
-    buildListBody,
-    buildListNoMore,
+    buildList,
 } from '@vuecs/list-controls';
 import { defineComponent, h, ref } from 'vue';
 
@@ -19,15 +18,10 @@ export default defineComponent({
             { name: 'DEF' },
         ]);
 
-        return () => h('div', [
-            buildListBody({
-                data: items.value,
-            }),
-            h('hr'),
-            buildListNoMore({
-                total: items.value.length,
-            }),
-        ]);
+        return () => buildList({
+            data: items.value,
+            total: items.value.length,
+        });
     },
 });
 </script>

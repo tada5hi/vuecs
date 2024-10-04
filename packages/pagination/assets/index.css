@@ -1,4 +1,30 @@
-.pagination > li > .page-link {
+.vc-pagination {
+    display: flex;
+    flex-direction: row;
+    list-style: none !important;
+}
+
+.vc-pagination .vc-pagination-item {
+    margin-top: 0;
+}
+
+.vc-pagination .vc-pagination-item .vc-pagination-link {
+    padding: 0.25rem 0.75rem;
+    background-color: #eee;
+    border: 1px solid #eee;
+    cursor: pointer;
+    font-size: 0.75rem;
+}
+
+.vc-pagination .vc-pagination-item:first-child:not(:last-child) .vc-pagination-link {
+    border-radius: 6px 0 0 6px;
+}
+
+.vc-pagination .vc-pagination-item:last-child:not(:first-child) .vc-pagination-link {
+    border-radius: 0 6px 6px 0;
+}
+
+.vc-pagination .vc-pagination-item .vc-pagination-link {
     color: #333;
     background-color: #eee;
     border: 1px solid #eee;
@@ -7,12 +33,12 @@
     font-size: 0.75rem;
 }
 
-.pagination > .active > .page-link,
-.pagination > .active > .page-link:focus,
-.pagination > .active > .page-link:hover,
-.pagination > li > .page-link:focus,
-.pagination > li > .page-link:hover,
-.pagination > li > .page-link.active {
+.vc-pagination > .vc-pagination-item.active > .vc-pagination-link,
+.vc-pagination > .vc-pagination-item.active > .vc-pagination-link:focus,
+.vc-pagination > .vc-pagination-item.active > .vc-pagination-link:hover,
+.vc-pagination > .vc-pagination-item > .vc-pagination-link:focus,
+.vc-pagination > .vc-pagination-item > .vc-pagination-link:hover,
+.vc-pagination > .vc-pagination-item > .vc-pagination-link.active {
     background-color: #30373e;
     color: #FFF;
     border: 1px solid #30373e;

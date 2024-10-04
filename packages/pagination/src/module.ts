@@ -1,10 +1,11 @@
 import {
-    createComponentOptionsManager, isPromise,
+    createComponentOptionsManager, isPromise, mergeOption,
 } from '@vuecs/core';
 import type { VNodeArrayChildren, VNodeChild } from 'vue';
 import {
     h, isRef, mergeProps, unref,
 } from 'vue';
+import { CSSClassDefault } from './constants';
 import type { PaginationMeta, PaginationOptions, PaginationOptionsInput } from './type';
 import { calculateOffset, calculatePage, calculatePagesTotal } from './utils';
 
@@ -25,28 +26,40 @@ export function buildPaginationOptions(
             value: options.tag,
             alt: 'ul',
         }),
-        class: manager.buildOrFail({
-            key: 'class',
-            value: options.class,
-            alt: 'pagination',
-        }),
+        class: mergeOption(
+            'class',
+            manager.buildOrFail({
+                key: 'class',
+                value: options.class,
+                alt: [],
+            }),
+            [CSSClassDefault.ROOT],
+        ),
 
         itemTag: manager.buildOrFail({
             key: 'itemTag',
             value: options.itemTag,
             alt: 'li',
         }),
-        itemClass: manager.buildOrFail({
-            key: 'itemClass',
-            value: options.itemClass,
-            alt: 'page-item',
-        }),
+        itemClass: mergeOption(
+            'class',
+            manager.buildOrFail({
+                key: 'itemClass',
+                value: options.itemClass,
+                alt: [],
+            }),
+            [CSSClassDefault.ITEM],
+        ),
 
-        linkClass: manager.buildOrFail({
-            key: 'linkClass',
-            value: options.linkClass,
-            alt: 'page-link',
-        }),
+        linkClass: mergeOption(
+            'class',
+            manager.buildOrFail({
+                key: 'linkClass',
+                value: options.linkClass,
+                alt: [],
+            }),
+            [CSSClassDefault.LINK],
+        ),
         linkActiveClass: manager.buildOrFail({
             key: 'linkActiveClass',
             value: options.linkActiveClass,
