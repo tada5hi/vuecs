@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/tada5hi/vuecs/compare/list-controls-v1.1.1...list-controls-v2.0.0) (2024-10-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* refs in list-controls no longer permitted
+
+### Features
+
+* only allow non reactive values for list build fns ([944252e](https://github.com/tada5hi/vuecs/commit/944252e11562c7bf401faf7823446b9231ba802f))
+
 ## [1.1.1](https://github.com/tada5hi/vuecs/compare/list-controls-v1.1.0...list-controls-v1.1.1) (2023-12-22)
 
 
