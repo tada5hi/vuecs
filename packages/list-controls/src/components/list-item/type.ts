@@ -1,4 +1,4 @@
-import type { MaybeRef, VNodeChild } from 'vue';
+import type { VNodeChild } from 'vue';
 import type {
     ComponentOptionsInputValue,
     ComponentOptionsOverride, PartialPick,
@@ -29,7 +29,7 @@ export type ListItemChildren = {
 };
 
 export type ListItemBuildOptions<T, M = any> = ListBaseOptions<T, M> & {
-    data: MaybeRef<T>,
+    data: T,
     content?: VNodeChild | ((
         item: T,
         props: ListItemSlotProps<T>,

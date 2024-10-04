@@ -1,31 +1,17 @@
+import { hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
 import type { VNodeChild } from 'vue';
 import { h, mergeProps } from 'vue';
-import {
-    hasNormalizedSlot,
-    normalizeSlot,
-} from '@vuecs/core';
-import { Component, SlotName } from '../constants';
-import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
-import type { ListLoadingBuildOptions, ListLoadingBuildOptionsInput, ListLoadingSlotProps } from './type';
-
-export function buildListLoadingOptions<T, M = any>(
-    input: ListLoadingBuildOptionsInput<T, M>,
-) : ListLoadingBuildOptions<T, M> {
-    const options = buildListBaseOptions(input, Component.ListLoading, {
-        class: 'list-loading',
-    });
-
-    return {
-        ...options,
-    };
-}
+import { SlotName } from '../constants';
+import { buildListBaseSlotProps } from '../list-base';
+import { normalizeListLoadingOptions } from './normalize';
+import type { ListLoadingBuildOptionsInput, ListLoadingSlotProps } from './type';
 
 export function buildListLoading<T, M = any>(
     input?: ListLoadingBuildOptionsInput<T, M>,
 ) : VNodeChild {
     input = input || {};
 
-    const options = buildListLoadingOptions(input);
+    const options = normalizeListLoadingOptions(input);
 
     let slotProps : ListLoadingSlotProps<T, M>;
     if (options.slotPropsBuilt) {

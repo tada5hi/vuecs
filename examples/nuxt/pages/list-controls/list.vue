@@ -14,23 +14,19 @@ import { defineComponent, h, ref } from 'vue';
 
 export default defineComponent({
     setup() {
-        const busy = ref(false);
-
         const items = ref([
             { name: 'ABC' },
             { name: 'DEF' },
         ]);
 
-        const renderItems = () => buildListBody({
-            data: items,
-        });
-
-        const renderNoMore = () => buildListNoMore();
-
         return () => h('div', [
-            renderItems(),
+            buildListBody({
+                data: items.value,
+            }),
             h('hr'),
-            renderNoMore(),
+            buildListNoMore({
+                total: items.value.length,
+            }),
         ]);
     },
 });

@@ -1,5 +1,11 @@
+/*
+ * Copyright (c) 2024.
+ * Author Peter Placzek (tada5hi)
+ * For the full copyright and license information,
+ * view the LICENSE file that was distributed with this source code.
+ */
+
 import type { ComponentOptionsOverride, PartialPick } from '@vuecs/core';
-import type { MaybeRef } from 'vue';
 import type {
     ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListBaseSlotProps,
 } from '../list-base';
@@ -10,7 +16,7 @@ import type { ListLoadingBuildOptionsInput } from '../list-loading';
 import type { ListNoMoreBuildOptionsInput } from '../list-no-more';
 
 export type ListBuildOptions<T, M = any> = ListBaseOptions<T, M> & {
-    data: MaybeRef<T[]>,
+    data: T[],
 
     header: ListHeaderBuildOptionsInput<T, M> | boolean,
     footer: ListFooterBuildOptionsInput<T, M> | boolean,

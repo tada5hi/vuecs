@@ -1,133 +1,15 @@
-import type { VNodeArrayChildren, VNodeChild } from 'vue';
-import {
-    h,
-    isReactive,
-    mergeProps,
-    unref,
-} from 'vue';
 import type { VNodeClass } from '@vuecs/core';
-import { merge } from 'smob';
 import {
-    createComponentOptionsManager,
-    evaluateFnOrValue,
-    hasNormalizedSlot,
-    hasOwnProperty,
-    isObject,
-    normalizeSlot,
-    setMaybeRefValue,
+    evaluateFnOrValue, hasNormalizedSlot, hasOwnProperty, isObject, normalizeSlot,
 } from '@vuecs/core';
-import { Component, SlotName } from '../constants';
-import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
+import { merge } from 'smob';
+import type { VNodeArrayChildren, VNodeChild } from 'vue';
+import { h, mergeProps } from 'vue';
+import { SlotName } from '../constants';
+import { buildListBaseSlotProps } from '../list-base';
 import type { ListEventFn } from '../type';
-import type {
-    ListItemBuildOptions, ListItemBuildOptionsInput, ListItemChildren, ListItemSlotProps,
-} from './type';
-
-export function buildListItemOptions<T, M = any>(
-    input: ListItemBuildOptionsInput<T, M>,
-) : ListItemBuildOptions<T, M> {
-    const options = buildListBaseOptions(input, Component.ListItem, {
-        class: 'list-item',
-        tag: 'li',
-    });
-
-    const manager = createComponentOptionsManager<ListItemBuildOptions<T>>({
-        name: Component.ListItem,
-    });
-
-    return {
-        ...options,
-
-        data: input.data,
-        content: input.content,
-        index: input.index,
-
-        icon: manager.buildOrFail({
-            key: 'icon',
-            value: input.icon,
-            alt: true,
-        }),
-        iconTag: manager.buildOrFail({
-            key: 'iconTag',
-            value: input.iconTag,
-            alt: 'i',
-        }),
-        iconClass: manager.buildOrFail({
-            key: 'iconClass',
-            value: input.iconClass,
-            alt: [],
-        }),
-        iconProps: input.iconProps || {},
-        iconWrapper: manager.buildOrFail({
-            key: 'iconWrapper',
-            value: input.iconWrapper,
-            alt: true,
-        }),
-        iconWrapperClass: manager.buildOrFail({
-            key: 'iconWrapperClass',
-            value: input.iconWrapperClass,
-            alt: [],
-        }),
-        iconWrapperTag: manager.buildOrFail({
-            key: 'iconWrapperTag',
-            value: input.iconWrapperTag,
-            alt: 'div',
-        }),
-
-        text: manager.buildOrFail({
-            key: 'text',
-            value: input.text,
-            alt: true,
-        }),
-        textContent: input.textContent,
-        textPropName: manager.buildOrFail({
-            key: 'textPropName',
-            value: input.textPropName,
-            alt: 'name',
-        }),
-        textWrapper: manager.buildOrFail({
-            key: 'textWrapper',
-            value: input.textWrapper,
-            alt: true,
-        }),
-        textWrapperClass: manager.buildOrFail({
-            key: 'textWrapperClass',
-            value: input.textWrapperClass,
-            alt: [],
-        }),
-        textWrapperTag: manager.buildOrFail({
-            key: 'textWrapperTag',
-            value: input.textWrapperTag,
-            alt: 'div',
-        }),
-
-        actions: manager.buildOrFail({
-            key: 'actions',
-            value: input.actions,
-            alt: true,
-        }),
-        actionsContent: manager.buildOrFail({
-            key: 'actionsContent',
-            value: input.actionsContent,
-            alt: [],
-        }),
-        actionsWrapper: manager.buildOrFail({
-            key: 'actionsWrapper',
-            value: input.actionsWrapper,
-            alt: true,
-        }),
-        actionsWrapperClass: manager.buildOrFail({
-            key: 'actionsWrapperClass',
-            value: input.actionsWrapperClass,
-            alt: [],
-        }),
-        actionsWrapperTag: manager.buildOrFail({
-            key: 'actionsWrapperTag',
-            value: input.actionsWrapperTag,
-            alt: 'div',
-        }),
-    };
-}
+import { normalizeListItemOptions } from './normalize';
+import type { ListItemBuildOptionsInput, ListItemChildren, ListItemSlotProps } from './type';
 
 function maybeWrapContent(input: VNodeChild, ctx: {wrap: boolean, class: VNodeClass, tag: string}) {
     if (!ctx.wrap) {
@@ -140,31 +22,23 @@ function maybeWrapContent(input: VNodeChild, ctx: {wrap: boolean, class: VNodeCl
 export function buildListItem<T, M = any>(
     input: ListItemBuildOptionsInput<T, M>,
 ) : VNodeChild {
-    const options = buildListItemOptions(input);
-
-    let data = unref(options.data);
+    const options = normalizeListItemOptions(input);
 
     const overrideUpdatedFn = (fn: ListEventFn<T>, item?: T) : ListEventFn<T | undefined> => {
         if (typeof item === 'undefined') {
-            return fn(data);
+            return fn(options.data);
         }
 
         if (
             isObject(item) &&
-            isObject(data)
+            isObject(options.data)
         ) {
-            data = merge(item, data) as T;
+            options.data = merge(item, options.data) as T;
         } else {
-            data = item;
+            options.data = item;
         }
 
-        if (isReactive(options.data)) {
-            options.data = data;
-            return fn(data);
-        }
-
-        setMaybeRefValue(options.data, data);
-        return fn(data);
+        return fn(options.data);
     };
 
     let slotProps : ListItemSlotProps<T>;
@@ -177,7 +51,7 @@ export function buildListItem<T, M = any>(
 
         slotProps = {
             ...original,
-            data,
+            data: options.data,
             index: options.index,
         };
 
@@ -186,7 +60,7 @@ export function buildListItem<T, M = any>(
         }
 
         if (deleted) {
-            slotProps.deleted = (item?: T) => deleted(item || data);
+            slotProps.deleted = (item?: T) => deleted(item || options.data);
         }
     } else {
         const {
@@ -200,7 +74,7 @@ export function buildListItem<T, M = any>(
 
         slotProps = {
             ...original,
-            data,
+            data: options.data,
             index: options.index,
         };
 
@@ -209,7 +83,7 @@ export function buildListItem<T, M = any>(
         }
 
         if (deleted) {
-            slotProps.deleted = (item?: T) => deleted(item || data);
+            slotProps.deleted = (item?: T) => deleted(item || options.data);
         }
     }
 
@@ -239,13 +113,13 @@ export function buildListItem<T, M = any>(
             let text: VNodeChild | undefined;
 
             if (options.textContent) {
-                text = evaluateFnOrValue(options.textContent, data, slotProps);
+                text = evaluateFnOrValue(options.textContent, options.data, slotProps);
             } else if (
                 options.textPropName &&
-                isObject(data) &&
-                hasOwnProperty(data, options.textPropName)
+                isObject(options.data) &&
+                hasOwnProperty(options.data, options.textPropName)
             ) {
-                text = data[options.textPropName] as VNodeChild;
+                text = options.data[options.textPropName] as VNodeChild;
             }
 
             if (text) {
@@ -264,7 +138,7 @@ export function buildListItem<T, M = any>(
                     normalizeSlot(SlotName.ITEM_ACTIONS, slotProps, options.slotItems),
                 ];
             } else if (options.actionsContent) {
-                actions = evaluateFnOrValue(options.actionsContent, data, slotProps);
+                actions = evaluateFnOrValue(options.actionsContent, options.data, slotProps);
             }
 
             if (hasNormalizedSlot(SlotName.ITEM_ACTIONS_EXTRA, options.slotItems)) {
@@ -285,7 +159,7 @@ export function buildListItem<T, M = any>(
     }
 
     if (options.content) {
-        return renderContent(evaluateFnOrValue(options.content, data, slotProps, children));
+        return renderContent(evaluateFnOrValue(options.content, options.data, slotProps, children));
     }
 
     if (children.slot) {

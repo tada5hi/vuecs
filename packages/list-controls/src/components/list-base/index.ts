@@ -1,2 +1,3 @@
-export * from './type';
-export * from './utils';
+export * from './normalize';
+export * from './types';
+export * from './slot-props';

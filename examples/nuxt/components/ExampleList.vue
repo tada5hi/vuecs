@@ -29,15 +29,23 @@ export default defineComponent({
         return () => buildList({
             slotItems: ctx.slots,
             data: data.value,
-            total,
+            total: total.value,
             onCreated(item) {
-                console.log(item);
+                total.value++;
+                data.value.push(item);
             },
             onUpdated: (item) => {
-                console.log(item);
+                const index = data.value.findIndex((el) => el.id === item.id);
+                if (index !== -1) {
+                    data.value[index] = item;
+                }
             },
             onDeleted(item) {
-                console.log(item);
+                const index = data.value.findIndex((el) => el.id === item.id);
+                if (index !== -1) {
+                    data.value.splice(index, 1);
+                    total.value--;
+                }
             },
             footer: true,
         });

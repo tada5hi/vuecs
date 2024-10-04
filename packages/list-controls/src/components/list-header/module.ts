@@ -1,41 +1,16 @@
-import { createComponentOptionsManager, hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
-import { h, mergeProps } from 'vue';
+import { hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
 import type { VNodeArrayChildren, VNodeChild } from 'vue';
-import { Component, SlotName } from '../constants';
-import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
-import type { ListHeaderBuildOptions, ListHeaderBuildOptionsInput, ListHeaderSlotProps } from './type';
-
-export function buildListHeaderOptions<T, M = any>(
-    input: ListHeaderBuildOptionsInput<T, M>,
-) : ListHeaderBuildOptions<T, M> {
-    const options = buildListBaseOptions(
-        input,
-        Component.ListHeader,
-        {
-            class: 'list-header',
-        },
-    );
-
-    const manager = createComponentOptionsManager<ListHeaderBuildOptions<T, M>>({
-        name: Component.ListHeader,
-    });
-
-    return {
-        ...options,
-
-        content: manager.buildOrFail({
-            key: 'content',
-            value: input.content,
-            alt: [],
-        }),
-    };
-}
+import { h, mergeProps } from 'vue';
+import { SlotName } from '../constants';
+import { buildListBaseSlotProps } from '../list-base';
+import { normalizeListHeaderOptions } from './normalize';
+import type { ListHeaderBuildOptionsInput, ListHeaderSlotProps } from './type';
 
 export function buildListHeader<T, M = any>(
     input?: ListHeaderBuildOptionsInput<T, M>,
 ) : VNodeChild {
     input = input || {};
-    const options = buildListHeaderOptions(input);
+    const options = normalizeListHeaderOptions(input);
 
     let slotProps : ListHeaderSlotProps<T, M>;
     if (options.slotPropsBuilt) {

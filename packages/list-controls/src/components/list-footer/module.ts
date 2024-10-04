@@ -1,41 +1,16 @@
-import { createComponentOptionsManager, hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
-import { h, mergeProps } from 'vue';
+import { hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
 import type { VNodeArrayChildren, VNodeChild } from 'vue';
-import { Component, SlotName } from '../constants';
-import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
-import type { ListFooterBuildOptions, ListFooterBuildOptionsInput, ListFooterSlotProps } from './type';
-
-export function buildListFooterOptions<T, M = any>(
-    input: ListFooterBuildOptionsInput<T, M>,
-) : ListFooterBuildOptions<T, M> {
-    const options = buildListBaseOptions(
-        input,
-        Component.ListFooter,
-        {
-            class: 'list-footer',
-        },
-    );
-
-    const manager = createComponentOptionsManager<ListFooterBuildOptions<T, M>>({
-        name: Component.ListFooter,
-    });
-
-    return {
-        ...options,
-
-        content: manager.buildOrFail({
-            key: 'content',
-            value: input.content,
-            alt: [],
-        }),
-    };
-}
+import { h, mergeProps } from 'vue';
+import { SlotName } from '../constants';
+import { buildListBaseSlotProps } from '../list-base';
+import { normalizeListFooterOptions } from './normalize';
+import type { ListFooterBuildOptionsInput, ListFooterSlotProps } from './type';
 
 export function buildListFooter<T, M = any>(
     input?: ListFooterBuildOptionsInput<T, M>,
 ) : VNodeChild {
     input = input || {};
-    const options = buildListFooterOptions(input);
+    const options = normalizeListFooterOptions(input);
 
     let slotProps : ListFooterSlotProps<T, M>;
     if (options.slotPropsBuilt) {

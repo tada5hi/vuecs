@@ -16,20 +16,24 @@ export default defineComponent({
 <template>
     <example-list>
         <template #itemActions="props">
-            {{ props }}
-
-            <button
-                class="btn btn-xs btn-primary"
-                @click.prevent="props.updated({name: 'foo'})"
-            >
-                <i class="fa fa-refresh" />
-            </button>
-            <button
-                class="btn btn-xs btn-dark"
-                @click.prevent="props.deleted()"
-            >
-                <i class="fa fa-trash" />
-            </button>
+            <div class="d-flex flex-row gap-1">
+                <div>
+                    <button
+                        class="btn btn-xs btn-primary"
+                        @click.prevent="props.updated({name: 'foo'})"
+                    >
+                        <i class="fa fa-refresh" />
+                    </button>
+                </div>
+                <div>
+                    <button
+                        class="btn btn-xs btn-dark"
+                        @click.prevent="props.deleted()"
+                    >
+                        <i class="fa fa-trash" />
+                    </button>
+                </div>
+            </div>
         </template>
         <template #footer="props">
             <button

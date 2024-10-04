@@ -1,4 +1,3 @@
-import type { MaybeRef } from 'vue';
 import type {
     ComponentOptionsOverride, PartialPick,
 } from '@vuecs/core';
@@ -6,7 +5,6 @@ import type {
     ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListBaseSlotProps,
 } from '../list-base';
 import type { ListItemBuildOptionsInput } from '../list-item';
-import type { ObjectLiteral } from '../type';
 
 export type ListBodySlotProps<T, M = any> = ListBaseSlotProps<T, M> & {
     data: T[],
@@ -15,7 +13,7 @@ export type ListBodySlotProps<T, M = any> = ListBaseSlotProps<T, M> & {
 
 export type ListBodyBuildOptions<T, M = any> = ListBaseOptions<T, M> & {
     item?: Omit<ListItemBuildOptionsInput<T, M>, 'data' | 'index'>,
-    data: MaybeRef<T[]>,
+    data: T[],
 };
 
 export type ListBodyBuildOptionsInput<T, M = any> = ListBaseOptionsInput<T, M> &

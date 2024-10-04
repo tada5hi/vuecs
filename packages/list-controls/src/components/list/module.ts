@@ -1,47 +1,33 @@
+/*
+ * Copyright (c) 2024.
+ * Author Peter Placzek (tada5hi)
+ * For the full copyright and license information,
+ * view the LICENSE file that was distributed with this source code.
+ */
+
 import { hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
 import type { VNodeArrayChildren, VNodeChild } from 'vue';
-import {
-    h, mergeProps, unref,
-} from 'vue';
+import { h, mergeProps, unref } from 'vue';
 import { boolableToObject } from '../../utils';
-import { Component, SlotName } from '../constants';
-import { buildListFooter } from '../list-footer';
-import { buildListHeader } from '../list-header';
+import { SlotName } from '../constants';
+import type { ListBaseOptionsInput, ListBaseSlotProps } from '../list-base';
+import { buildListBaseSlotProps } from '../list-base';
 import type { ListBodyBuildOptionsInput } from '../list-body';
 import { buildListBody } from '../list-body';
+import { buildListFooter } from '../list-footer';
+import { buildListHeader } from '../list-header';
 import { buildListLoading } from '../list-loading';
 import { buildListNoMore } from '../list-no-more';
-import type { ListBaseOptionsInput, ListBaseSlotProps } from '../list-base';
-import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
-import type { ListBuildOptions, ListBuildOptionsInput, ListSlotProps } from './type';
-
-export function buildListOptions<T, M = any>(
-    input: ListBuildOptionsInput<T, M>,
-) : ListBuildOptions<T, M> {
-    const options = buildListBaseOptions(input, Component.List, {
-        class: 'list',
-    });
-
-    return {
-        ...options,
-
-        data: input.data ?? [],
-
-        header: input.header ?? true,
-        footer: input.footer ?? true,
-        body: input.body ?? true,
-        loading: input.loading ?? true,
-        noMore: input.noMore ?? true,
-    };
-}
+import { normalizeListOptions } from './normalize';
+import type { ListBuildOptionsInput, ListSlotProps } from './types';
 
 export function buildList<T, M = any>(
     input: ListBuildOptionsInput<T, M>,
 ): VNodeChild {
-    const options = buildListOptions(input);
+    const options = normalizeListOptions(input);
 
     if (typeof options.total === 'undefined') {
-        options.total = unref(options.data).length;
+        options.total = options.data.length;
     }
 
     const buildSlotProps = (props: Record<string, any>) : Record<string, any> & ListBaseSlotProps<T> => ({

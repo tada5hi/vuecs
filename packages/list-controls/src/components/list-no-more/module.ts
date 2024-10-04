@@ -1,53 +1,24 @@
-import type { VNodeChild } from 'vue';
-import { h, mergeProps, unref } from 'vue';
 import {
-    createComponentOptionsManager,
-    hasNormalizedSlot, hasOwnProperty,
-    isObject,
-    normalizeSlot,
+    hasNormalizedSlot, hasOwnProperty, isObject, normalizeSlot,
 } from '@vuecs/core';
-import { Component, SlotName } from '../constants';
-import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
-import type { ListNoMoreBuildOptions, ListNoMoreBuildOptionsInput, ListNoMoreSlotProps } from './type';
-
-export function buildListNoMoreOptions<T, M = any>(
-    input: ListNoMoreBuildOptionsInput<T, M>,
-) : ListNoMoreBuildOptions<T, M> {
-    const options = buildListBaseOptions(input, Component.ListNoMore, {
-        class: 'list-no-more',
-    });
-
-    const manager = createComponentOptionsManager<ListNoMoreBuildOptions<T>>({
-        name: Component.ListNoMore,
-    });
-
-    return {
-        ...options,
-
-        content: manager.buildOrFail({
-            key: 'content',
-            value: input.content,
-            alt: 'No more items available...',
-        }),
-    };
-}
+import type { VNodeChild } from 'vue';
+import { h, mergeProps } from 'vue';
+import { SlotName } from '../constants';
+import { buildListBaseSlotProps } from '../list-base';
+import { normalizeListNoMoreOptions } from './normalize';
+import type { ListNoMoreBuildOptionsInput, ListNoMoreSlotProps } from './type';
 
 export function buildListNoMore<T, M = any>(
-    input?: ListNoMoreBuildOptionsInput<T, M>,
+    input: ListNoMoreBuildOptionsInput<T, M> = {},
 ) : VNodeChild {
-    input = input || {};
+    const options = normalizeListNoMoreOptions(input);
 
-    const options = buildListNoMoreOptions(input);
-
-    const busy = unref(options.busy);
-    const total = unref(options.total);
-
-    if (busy) {
+    if (options.busy) {
         return [];
     }
 
-    if (typeof total === 'number') {
-        if (total > 0) {
+    if (typeof options.total === 'number') {
+        if (options.total > 0) {
             return [];
         }
     } else if (

@@ -1,50 +1,28 @@
+import { hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
 import type { VNodeChild } from 'vue';
-import { h, mergeProps, unref } from 'vue';
-import {
-    hasNormalizedSlot,
-    normalizeSlot,
-} from '@vuecs/core';
-import { Component, SlotName } from '../constants';
-import { buildListBaseOptions, buildListBaseSlotProps } from '../list-base';
-import type { ListBodyBuildOptions, ListBodyBuildOptionsInput, ListBodySlotProps } from './type';
+import { h, mergeProps } from 'vue';
+import { SlotName } from '../constants';
+import { buildListBaseSlotProps } from '../list-base';
 import { buildListItem } from '../list-item';
-
-export function buildListBodyOptions<T, M = any>(
-    input: ListBodyBuildOptionsInput<T, M>,
-) : ListBodyBuildOptions<T, M> {
-    const options = buildListBaseOptions(
-        input,
-        Component.ListBody,
-        {
-            class: 'list-body',
-            tag: 'ul',
-        },
-    );
-
-    return {
-        ...options,
-
-        data: input.data || [],
-        item: input.item,
-    };
-}
+import { normalizeListBodyOptions } from './normalize';
+import type { ListBodyBuildOptionsInput, ListBodySlotProps } from './type';
 
 export function buildListBody<T, M = any>(
     input?: ListBodyBuildOptionsInput<T, M>,
 ) : VNodeChild {
     input = input || {};
-    const options = buildListBodyOptions(input);
+    const options = normalizeListBodyOptions(input);
 
     let slotProps : ListBodySlotProps<T, M>;
     if (options.slotPropsBuilt) {
         slotProps = {
-            data: unref(options.data),
+            data: options.data,
             ...options.slotProps,
         };
     } else {
         slotProps = {
             ...buildListBaseSlotProps<T, M>(options),
-            data: unref(options.data),
+            data: options.data,
             ...options.slotProps,
         };
     }
@@ -59,15 +37,14 @@ export function buildListBody<T, M = any>(
 
     // ----------------------------------------------------------------------
 
-    const items = unref(options.data);
-    if (items.length === 0) {
+    if (options.data.length === 0) {
         return [];
     }
 
     return h(
         options.tag,
         mergeProps({ class: options.class }, options.props),
-        items.map((item: T, index) => buildListItem({
+        options.data.map((item: T, index) => buildListItem({
             slotProps,
             slotPropsBuilt: true,
             slotItems: options.slotItems,

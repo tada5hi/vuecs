@@ -1,4 +1,4 @@
-import type { MaybeRef, Slots } from 'vue';
+import type { Slots } from 'vue';
 import type {
     ComponentOptionsInputValue,
     ComponentOptionsOverride, PartialPick,
@@ -34,8 +34,8 @@ export type ListBaseOptions<T, M = any> = {
     props: VNodeProperties,
 
     load?: ListLoadFn<M>,
-    busy?: MaybeRef<boolean>,
-    total?: MaybeRef<number>,
+    busy?: boolean,
+    total?: number,
     meta: M,
 
     itemId?: ListItemId<T>,
