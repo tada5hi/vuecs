@@ -1,5 +1,29 @@
 # Changelog
 
+## [3.0.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v2.3.0...examples-nuxt-v3.0.0) (2024-10-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* refs in list-controls no longer permitted
+
+### Features
+
+* only allow non reactive values for list build fns ([944252e](https://github.com/tada5hi/vuecs/commit/944252e11562c7bf401faf7823446b9231ba802f))
+
+
+### Bug Fixes
+
+* syntax for buildList fn ([079e727](https://github.com/tada5hi/vuecs/commit/079e72733b18568bf4471553e9ff710563f6fa9b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/form-controls bumped from ^2.3.0 to ^2.3.1
+    * @vuecs/list-controls bumped from ^1.1.1 to ^2.0.0
+
 ## [2.3.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v2.2.0...examples-nuxt-v2.3.0) (2024-06-13)
 
 
