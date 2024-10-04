@@ -42,12 +42,14 @@ export default {
     listActionRefresh: {
         class: 'btn btn-xs btn-dark',
     },
+    list: {
+        class: 'd-flex flex-column gap-1',
+    },
     listBody: {
-        class: 'list-unstyled',
+        class: 'list-unstyled m-0',
     },
     listItem: {
-        class: 'd-flex flex-row align-items-center',
-        iconClass: 'pe-1',
+        class: 'd-flex flex-row align-items-center gap-1',
         actionsWrapperClass: 'ms-auto',
     },
     listNoMore: {

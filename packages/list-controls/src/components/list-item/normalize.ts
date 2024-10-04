@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 import { createComponentOptionsManager } from '@vuecs/core';
-import { Component } from '../constants';
+import { CSSClassDefault, Component } from '../constants';
 import { normalizeListBaseOptions } from '../list-base';
 import type { ListItemBuildOptions, ListItemBuildOptionsInput } from './type';
 
@@ -13,7 +13,7 @@ export function normalizeListItemOptions<T, M = any>(
     input: ListItemBuildOptionsInput<T, M>,
 ): ListItemBuildOptions<T, M> {
     const options = normalizeListBaseOptions(input, Component.ListItem, {
-        class: 'list-item',
+        class: CSSClassDefault.LIST_ITEM,
         tag: 'li',
     });
 

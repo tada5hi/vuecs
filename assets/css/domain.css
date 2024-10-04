@@ -5,19 +5,13 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-.list,
-.c-list {
+.vc-list {
     display: flex;
     flex-direction: column;
+    gap: 0.25rem;
 }
 
-.list-header,
-.list-search {
-    margin-bottom: 0.5rem;
-}
-
-.list .list-item,
-.c-list .c-list-item {
+.vc-list .vc-list-item {
     background-color: #ececec;
     border: 1px solid #dedede;
 
@@ -31,23 +25,16 @@
     vertical-align: middle;
 }
 
-.list .list-item.active {
+.vc-list .vc-list-item.active {
     background-color: #d7d3d3;
 }
 
-.list .list-icon,
-.c-list .c-list-icon {
-    font-size: 1rem;
-    padding-right: 0.5rem;
-}
-
-.list-no-more {
+.vc-list-no-more {
     margin-top: 0.5rem;
     color: #856404;
     background-color: #fff3cd;
     padding: 0.4rem 0.7rem;
     position: relative;
-    margin-bottom: 1rem;
     border: 1px solid #ffeeba;
     border-radius: 0.25rem;
 }

@@ -4,7 +4,7 @@
  * For the full copyright and license information,
  * view the LICENSE file that was distributed with this source code.
  */
-import { Component } from '../constants';
+import { CSSClassDefault, Component } from '../constants';
 import { normalizeListBaseOptions } from '../list-base';
 import type { ListBodyBuildOptions, ListBodyBuildOptionsInput } from './type';
 
@@ -15,7 +15,7 @@ export function normalizeListBodyOptions<T, M = any>(
         input,
         Component.ListBody,
         {
-            class: 'list-body',
+            class: CSSClassDefault.LIST_BODY,
             tag: 'ul',
         },
     );

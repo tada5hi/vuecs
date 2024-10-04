@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { createComponentOptionsManager } from '@vuecs/core';
+import { createComponentOptionsManager, mergeOption } from '@vuecs/core';
 import type { Component } from '../constants';
 import type { ListBaseOptions, ListBaseOptionsDefaults, ListBaseOptionsInput } from './types';
 
@@ -18,7 +18,7 @@ export function normalizeListBaseOptions<
 >(
     options: T,
     component: Component,
-    defaults?: ListBaseOptionsDefaults<Entity<T>, M>,
+    defaults: ListBaseOptionsDefaults<Entity<T>, M> = {},
 ): ListBaseOptions<Entity<T>, M> {
     defaults = defaults || {};
 
@@ -40,11 +40,15 @@ export function normalizeListBaseOptions<
             value: options.tag,
             alt: defaults.tag || 'div',
         }),
-        class: manager.buildOrFail({
-            key: 'class',
-            value: options.class,
-            alt: defaults.class || [],
-        }),
+        class: mergeOption(
+            'class',
+            manager.buildOrFail({
+                key: 'class',
+                value: options.class,
+                alt: [],
+            }),
+            defaults.class || [],
+        ),
         props: manager.buildOrFail({
             key: 'props',
             value: options.props,

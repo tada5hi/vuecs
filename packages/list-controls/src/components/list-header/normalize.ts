@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 import { createComponentOptionsManager } from '@vuecs/core';
-import { Component } from '../constants';
+import { CSSClassDefault, Component } from '../constants';
 import { normalizeListBaseOptions } from '../list-base';
 import type { ListHeaderBuildOptions, ListHeaderBuildOptionsInput } from './type';
 
@@ -16,7 +16,7 @@ export function normalizeListHeaderOptions<T, M = any>(
         input,
         Component.ListHeader,
         {
-            class: 'list-header',
+            class: CSSClassDefault.LIST_HEADER,
         },
     );
 

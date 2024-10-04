@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 import { createComponentOptionsManager } from '@vuecs/core';
-import { Component } from '../constants';
+import { CSSClassDefault, Component } from '../constants';
 import { normalizeListBaseOptions } from '../list-base';
 import type { ListFooterBuildOptions, ListFooterBuildOptionsInput } from './type';
 
@@ -16,7 +16,7 @@ export function normalizeListFooterOptions<T, M = any>(
         input,
         Component.ListFooter,
         {
-            class: 'list-footer',
+            class: CSSClassDefault.LIST_FOOTER,
         },
     );
 

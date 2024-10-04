@@ -14,7 +14,7 @@ export default defineComponent({
 });
 </script>
 <template>
-    <example-list>
+    <ExampleList>
         <template #itemActions="props">
             <div class="d-flex flex-row gap-1">
                 <div>
@@ -46,5 +46,5 @@ export default defineComponent({
                 Create <i class="fa fa-plus" />
             </button>
         </template>
-    </example-list>
+    </ExampleList>
 </template>

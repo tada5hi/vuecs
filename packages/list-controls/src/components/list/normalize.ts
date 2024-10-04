@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Component } from '../constants';
+import { CSSClassDefault, Component } from '../constants';
 import { normalizeListBaseOptions } from '../list-base';
 import type { ListBuildOptions, ListBuildOptionsInput } from './types';
 
@@ -13,7 +13,7 @@ export function normalizeListOptions<T, M = any>(
     input: ListBuildOptionsInput<T, M>,
 ): ListBuildOptions<T, M> {
     const options = normalizeListBaseOptions(input, Component.List, {
-        class: 'list',
+        class: CSSClassDefault.LIST,
     });
 
     return {

@@ -19,3 +19,13 @@ export enum SlotName {
     ITEM_ACTIONS = 'itemActions',
     ITEM_ACTIONS_EXTRA = 'itemActionsExtra',
 }
+
+export enum CSSClassDefault {
+    LIST = 'vc-list',
+    LIST_BODY = 'vc-list-body',
+    LIST_FOOTER = 'vc-list-footer',
+    LIST_HEADER = 'vc-list-header',
+    LIST_ITEM = 'vc-list-item',
+    LIST_LOADING = 'vc-list-loading',
+    LIST_NO_MORE = 'vc-list-no-more',
+}
