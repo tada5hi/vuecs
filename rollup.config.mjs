@@ -10,10 +10,10 @@ import vue from '@vitejs/plugin-vue';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import postcss from 'rollup-plugin-postcss';
-import swc from "@rollup/plugin-swc";
+import swc from '@rollup/plugin-swc';
 
 const extensions = [
-    '.js', '.jsx', '.ts', '.tsx', '.vue'
+    '.js', '.jsx', '.ts', '.tsx', '.vue',
 ];
 
 /**
@@ -23,7 +23,7 @@ const extensions = [
  * @param {boolean} defaultExport
  * @returns {import('rollup').Options}
  */
-export function createConfig({pkg, vuePlugin = false, defaultExport = false }) {
+export function createConfig({ pkg, vuePlugin = false, defaultExport = false }) {
     return {
         input: 'src/index.ts',
         external: Object.keys(pkg.dependencies || {})
@@ -36,14 +36,14 @@ export function createConfig({pkg, vuePlugin = false, defaultExport = false }) {
                 file: pkg.main,
                 exports: 'named',
                 // in all other cases we do not have a default import...
-                ...(vuePlugin || defaultExport ? {footer: 'module.exports = Object.assign(exports.default, exports);'} : {}),
-                sourcemap: true
+                ...(vuePlugin || defaultExport ? { footer: 'module.exports = Object.assign(exports.default, exports);' } : {}),
+                sourcemap: true,
             },
             {
                 format: 'esm',
                 file: pkg.module,
-                sourcemap: true
-            }
+                sourcemap: true,
+            },
         ],
         plugins: [
             // Allows node_modules resolution
@@ -61,7 +61,7 @@ export function createConfig({pkg, vuePlugin = false, defaultExport = false }) {
             ...(vuePlugin ? [vue()] : []),
 
             // Compile TypeScript/JavaScript files
-            swc()
+            swc(),
         ],
     };
 }

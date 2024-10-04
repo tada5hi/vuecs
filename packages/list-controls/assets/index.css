@@ -1,0 +1,11 @@
+.vc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.vc-list-no-more {
+    padding: 0.4rem 0.7rem;
+    position: relative;
+    border-radius: 0.25rem;
+}

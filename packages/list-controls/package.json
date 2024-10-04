@@ -13,7 +13,8 @@
             "types": "./core/index.d.ts",
             "import": "./core/index.mjs",
             "require": "./core/index.cjs"
-        }
+        },
+        "./dist/index.css": "./dist/index.css"
     },
     "main": "dist/index.cjs",
     "module": "dist/index.mjs",

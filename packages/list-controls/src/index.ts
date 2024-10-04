@@ -2,6 +2,8 @@ import { applyStoreManagerOptions, installStoreManager } from '@vuecs/core';
 import type { App, Plugin } from 'vue';
 import type { Options } from './type';
 
+import '../assets/index.css';
+
 export * from './components';
 export * from './type';
 

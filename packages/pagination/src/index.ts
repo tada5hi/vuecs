@@ -1,4 +1,3 @@
-import type { StoreManagerOptions } from '@vuecs/core';
 import { applyStoreManagerOptions, installStoreManager } from '@vuecs/core';
 
 import type { App, Plugin } from 'vue';
