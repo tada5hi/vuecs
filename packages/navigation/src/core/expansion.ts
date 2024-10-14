@@ -23,7 +23,7 @@ export function setNavigationExpansion(
         }
 
         if (isMatch) {
-            items[i].active = true;
+            items[i].active = isMatch;
         }
 
         if (isMatch || isChildMatch) {

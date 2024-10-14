@@ -1,5 +1,5 @@
-import { hasInjectionContext, inject } from 'vue';
 import type { App } from 'vue';
+import { inject, provide } from '../utils';
 import { StoreManager } from './module';
 
 function getSymbol(key?: string) {
@@ -14,37 +14,24 @@ export function installStoreManager(
     instance: App,
     key?: string,
 ) : StoreManager {
-    let manager : StoreManager | undefined;
-
     const symbol = getSymbol(key);
-
-    if (
-        instance._context &&
-        instance._context.provides &&
-        instance._context.provides[symbol]
-    ) {
-        return instance._context.provides[symbol];
-    }
-
-    if (hasInjectionContext()) {
-        manager = inject(symbol, undefined);
-        if (manager) {
-            return manager;
-        }
+    let manager = inject<StoreManager>(symbol, instance);
+    if (manager) {
+        return manager;
     }
 
     manager = new StoreManager();
+    provide(symbol, manager, instance);
 
-    instance.provide(symbol, manager);
     return manager;
 }
 
-export function injectStoreManager(key?: string) {
+export function injectStoreManager(key?: string, app?: App) {
     const symbol = getSymbol(key);
-    const manager = inject(symbol);
+    const manager = inject<StoreManager>(symbol, app);
     if (!manager) {
         throw new Error('The store manager has not been setup.');
     }
 
-    return manager as StoreManager;
+    return manager;
 }

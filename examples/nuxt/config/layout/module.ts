@@ -2,7 +2,7 @@ import type {
     NavigationItem,
 } from '@vuecs/navigation';
 import {
-    createNavigationProvider,
+    defineNavigationProvider,
     flattenNestedNavigationItems,
 } from '@vuecs/navigation';
 
@@ -65,7 +65,7 @@ const secondaryAdminItems : NavigationItem[] = [
 
 ];
 
-export const navigationProvider = createNavigationProvider({
+export const navigationProvider = defineNavigationProvider({
     async getItems(tier: number, itemsActive: NavigationItem[]) {
         if (tier > 1) {
             return undefined;
@@ -78,9 +78,10 @@ export const navigationProvider = createNavigationProvider({
                 items = primaryItems;
                 break;
             case 1: {
+                const parentActive = itemsActive.filter((item) => item.tier === 0);
                 let component : NavigationItem;
-                if (itemsActive.length > 0) {
-                    [component] = itemsActive;
+                if (parentActive.length > 0) {
+                    [component] = parentActive;
                 } else {
                     component = { id: 'default' };
                 }

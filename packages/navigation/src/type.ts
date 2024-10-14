@@ -1,4 +1,6 @@
 import type { StoreManagerOptions } from '@vuecs/core';
+import type { App, Ref } from 'vue';
+import type { RouteLocationNormalized } from 'vue-router';
 import type { ElementType } from './constants';
 import type { NavigationProvider } from './provider';
 
@@ -23,14 +25,17 @@ export type NavigationItem = {
     root?: boolean,
     children?: NavigationItem[],
 
-    requireLoggedIn?: boolean,
-    requireLoggedOut?: boolean,
-    requirePermissions?: string | string[] | ((checker: (name: string) => boolean) => boolean)
-
     [key: string]: any
 };
 
 export type Options = {
     provider: NavigationProvider,
     storeManager?: StoreManagerOptions
+};
+
+export type NavigationBuildContext = {
+    items?: NavigationItem[],
+    itemsActive?: NavigationItem[],
+    url?: string
+    route?: RouteLocationNormalized
 };

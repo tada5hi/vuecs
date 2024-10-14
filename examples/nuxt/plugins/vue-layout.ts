@@ -26,7 +26,7 @@ import { navigationProvider } from '~/config/layout';
 export default defineNuxtPlugin((ctx) => {
     const baseOptions : StoreManagerOptions = {
         presets: {
-            bootstrapV5: createComponentsOptionsSubset(bootstrapV5, {
+            bootstrapV5: pickComponentsOptions(bootstrapV5, {
                 exclude: [
                     'listPagination',
                     'pagination',

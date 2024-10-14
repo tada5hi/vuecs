@@ -35,6 +35,7 @@ export function isNavigationItemMatch(
     if (
         one.children &&
         two.children &&
+        one.children.length > 0 &&
         one.children.length === two.children.length
     ) {
         for (let i = 0; i < one.children.length; i++) {

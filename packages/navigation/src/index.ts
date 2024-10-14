@@ -3,9 +3,9 @@ import { applyStoreManagerOptions, installStoreManager } from '@vuecs/core';
 import type { App, Plugin } from 'vue';
 
 import './vue';
+import { NavigationManager } from './module';
 
-import { setNavigationProvider } from './provider';
-import { setupStore } from './store';
+import { providerManager } from './singleton';
 import {
     VCNavItem,
     VCNavItems,
@@ -14,16 +14,17 @@ import type { Options } from './type';
 
 export * from './components';
 export * from './provider';
+export * from './build';
 export * from './module';
 export * from './type';
 export * from './core/flatten';
 
 export function install(instance: App, options: Options) : void {
-    if (options.provider) {
-        setNavigationProvider(options.provider);
-    }
+    const manager = new NavigationManager({
+        provider: options.provider,
+    });
 
-    setupStore(instance);
+    providerManager(manager, instance);
 
     const storeManager = installStoreManager(instance);
     if (options.storeManager) {
@@ -41,4 +42,3 @@ export function install(instance: App, options: Options) : void {
 export default {
     install,
 } satisfies Plugin<Options>;
-export { buildNavigationForTier } from './core';

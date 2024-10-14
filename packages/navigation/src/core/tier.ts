@@ -1,8 +1,6 @@
-import type { MaybeRef } from 'vue';
-import { isRef } from 'vue';
 import type { NavigationItem } from '../type';
 
-export function findNavigationItemsForTier(
+export function findTierItems(
     items: NavigationItem[],
     tier: number,
 ) : NavigationItem[] {
@@ -13,11 +11,11 @@ export function findNavigationItemsForTier(
     return items.filter(filterFn);
 }
 
-export function findNavigationItemForTier(
-    items: NavigationItem[],
+export function findTierItem(
     tier: number,
+    items: NavigationItem[],
 ) : NavigationItem | undefined {
-    const data = findNavigationItemsForTier(items, tier);
+    const data = findTierItems(items, tier);
     if (data.length >= 1) {
         return data[0];
     }
@@ -25,30 +23,9 @@ export function findNavigationItemForTier(
     return undefined;
 }
 
-export function setTierForNavigationItems(
-    items: MaybeRef<NavigationItem[]>,
+export function removeTierItems(
     tier: number,
+    items: NavigationItem[],
 ) {
-    const mapFn = (component: NavigationItem) => {
-        component.tier = tier;
-        return component;
-    };
-
-    if (isRef(items)) {
-        return items.value.map(mapFn);
-    }
-
-    return items.map(mapFn);
-}
-
-export function removeTierFromNavigationItems(
-    items: MaybeRef<NavigationItem[]>,
-    tier: number,
-) {
-    const filterFn = (items: NavigationItem) => typeof items.tier === 'undefined' || items.tier !== tier;
-    if (isRef(items)) {
-        return items.value.filter(filterFn);
-    }
-
-    return items.filter(filterFn);
+    return items.filter((item: NavigationItem) => typeof item.tier === 'undefined' || item.tier !== tier);
 }

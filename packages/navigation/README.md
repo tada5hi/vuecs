@@ -41,7 +41,7 @@ The tier is a numeric value, which can be any positive integer (including 0).
 ```typescript
 import {
     NavigationItem,
-    createNavigationProvider
+    defineNavigationProvider
 } from "@vuecs/navigation";
 
 const primaryItems: NavigationItem[] = [
@@ -57,7 +57,7 @@ const primaryItems: NavigationItem[] = [
     }
 ]
 
-export const provider = createNavigationProvider({
+export const provider = defineNavigationProvider({
     async getItems(tier: number, itemsActive: NavigationItem[]) {
         // Return elements for a specific tier.
         // The context provides the current active elements for

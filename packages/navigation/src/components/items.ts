@@ -1,10 +1,15 @@
 import { hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
-import type { PropType, VNode, VNodeChild } from 'vue';
-import { computed, defineComponent, h } from 'vue';
+import type {
+    PropType, VNodeArrayChildren, VNodeChild,
+} from 'vue';
+import {
+    computed,
+    defineComponent,
+    h, onMounted, onUnmounted, ref,
+} from 'vue';
 import { SlotName } from '../constants';
-import { injectStore } from '../store';
+import { injectManager } from '../singleton';
 import type { NavigationItem } from '../type';
-import { findNavigationItemsForTier } from '../core';
 import { VCNavItem } from './item';
 
 export const VCNavItems = defineComponent({
@@ -19,17 +24,44 @@ export const VCNavItems = defineComponent({
         },
     },
     setup(props, { slots }) {
-        const store = injectStore();
+        const manager = injectManager();
+        const managerItems = ref<NavigationItem[]>([]);
+        if (!props.entities) {
+            managerItems.value = manager.getTierItems(props.tier);
+        }
+
+        const counter = ref(0);
+
+        let removeListener : CallableFunction | undefined;
+
+        onMounted(() => {
+            removeListener = manager.on('tierUpdated', (tier, items) => {
+                if (tier !== props.tier) {
+                    return;
+                }
+
+                managerItems.value = items;
+                counter.value++;
+            });
+        });
+
+        onUnmounted(() => {
+            if (typeof removeListener === 'function') {
+                removeListener();
+
+                removeListener = undefined;
+            }
+        });
 
         const items = computed(() => {
             if (typeof props.entities !== 'undefined') {
                 return props.entities;
             }
 
-            return findNavigationItemsForTier(store.items.value, props.tier);
+            return managerItems.value;
         });
 
-        const buildChild = (context: {
+        const buildVNodeChild = (context: {
             tier?: number,
             component: NavigationItem
         }) : VNodeChild => {
@@ -40,33 +72,31 @@ export const VCNavItems = defineComponent({
             return h(VCNavItem, context);
         };
 
-        const buildChildren = () : VNodeChild => {
-            const entities : VNode[] = [];
+        return () => {
+            const vNodes : VNodeArrayChildren = [];
 
-            if (items.value) {
-                for (let i = 0; i < items.value.length; i++) {
-                    if (items.value[i].display) {
-                        entities.push(h(
-                            'li',
-                            {
-                                key: i,
-                            },
-                            [
-                                buildChild({
-                                    tier: props.tier,
-                                    component: items.value[i],
-                                }),
-                            ],
-                        ));
-                    }
+            for (let i = 0; i < items.value.length; i++) {
+                if (!items.value[i].display && !items.value[i].displayChildren) {
+                    continue;
                 }
+
+                vNodes.push(h(
+                    'li',
+                    {
+                        key: `${i}:${counter.value}`,
+                    },
+                    [
+                        buildVNodeChild({
+                            tier: props.tier,
+                            component: items.value[i],
+                        }),
+                    ],
+                ));
             }
 
-            return entities;
+            return h('ul', {
+                class: 'nav-items',
+            }, vNodes);
         };
-
-        return () => h('ul', {
-            class: 'nav-items',
-        }, [buildChildren()]);
     },
 });

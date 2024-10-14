@@ -8,14 +8,8 @@ import {
     resolveComponent,
     toRef,
 } from 'vue';
-import {
-    injectStore,
-} from '../store';
+import { injectManager } from '../singleton';
 import type { NavigationItem } from '../type';
-import {
-    selectNavigationTierItem,
-    toggleNavigation,
-} from '../core';
 import { isAbsoluteURL } from '../utils';
 import { ElementType, SlotName } from '../constants';
 
@@ -31,152 +25,158 @@ export const VCNavItem = defineComponent({
         },
     },
     setup(props, { slots }) {
-        const store = injectStore();
-        const component = toRef(props, 'component') as Ref<NavigationItem>;
+        const itemsNode = resolveComponent('VCNavItems');
+        const manager = injectManager();
 
-        const selectComponent = async (value: NavigationItem) => {
-            await selectNavigationTierItem(store, props.tier, value);
+        const item = toRef(props, 'component') as Ref<NavigationItem>;
+
+        const select = async (value: NavigationItem) => {
+            await manager.select(props.tier, {
+                ...value,
+                children: [
+                    ...(value.children || []),
+                ],
+            });
         };
 
-        const toggleComponentExpansion = async (
+        const toggle = async (
             value: NavigationItem,
-        ) => toggleNavigation(store, props.tier, value);
+        ) => {
+            await manager.toggle(props.tier, {
+                ...value,
+                children: [
+                    ...(value.children || []),
+                ],
+            });
+        };
 
         return () => {
             const buildItem = () : VNodeChild => {
-                let item : VNodeChild;
-
-                switch (component.value.type) {
-                    case ElementType.SEPARATOR: {
-                        const hasSlot = hasNormalizedSlot(SlotName.SEPARATOR, slots);
-                        if (hasSlot) {
-                            item = normalizeSlot(SlotName.SEPARATOR, {
-                                component: component.value,
-                            }, slots);
-                        } else {
-                            item = h('div', {
-                                class: 'nav-separator',
-                            }, component.value.name);
-                        }
-                        break;
+                if (item.value.type === ElementType.SEPARATOR) {
+                    const hasSlot = hasNormalizedSlot(SlotName.SEPARATOR, slots);
+                    if (hasSlot) {
+                        return normalizeSlot(SlotName.SEPARATOR, {
+                            component: item.value,
+                        }, slots);
                     }
-                    default: {
-                        if (typeof component.value.children === 'undefined') {
-                            const hasSlot = hasNormalizedSlot(SlotName.LINK, slots);
-                            if (hasSlot) {
-                                item = normalizeSlot(SlotName.LINK, {
-                                    component: component.value,
-                                    selectComponent,
-                                    isActive: component.value.active,
-                                }, slots);
-                            } else {
-                                const linkProps : LinkProperties = {
-                                    active: component.value.active,
-                                    disabled: false,
-                                    prefetch: true,
-                                };
-
-                                if (component.value.url) {
-                                    if (
-                                        isAbsoluteURL(component.value.url) ||
-                                        component.value.url.startsWith('#')
-                                    ) {
-                                        linkProps.href = component.value.url;
-                                        if (component.value.urlTarget) {
-                                            linkProps.target = component.value.urlTarget;
-                                        }
-                                    } else {
-                                        linkProps.to = component.value.url;
-                                    }
-                                }
-
-                                item = h(VCLink, {
-                                    class: [
-                                        'nav-link',
-                                        {
-                                            'root-link': component.value.root,
-                                        },
-                                    ],
-                                    ...linkProps,
-                                    onClicked() {
-                                        if (!component.value.url) {
-                                            return selectComponent.call(null, component.value);
-                                        }
-
-                                        return undefined;
-                                    },
-                                    onClick() {
-                                        return selectComponent.call(null, component.value);
-                                    },
-                                }, {
-                                    default: () => [
-                                        ...(component.value.icon ? [h('i', { class: component.value.icon })] : []),
-                                        h('span', { class: 'nav-link-text' }, [component.value.name]),
-                                    ],
-                                });
-                            }
-                        } else if (hasNormalizedSlot(SlotName.SUB, slots)) {
-                            item = normalizeSlot(SlotName.SUB, {
-                                component: component.value,
-                                selectComponent,
-                                toggleComponentExpansion,
-                            }, slots);
-                        } else {
-                            let title : VNodeChild;
-                            if (hasNormalizedSlot(SlotName.SUB_TITLE, slots)) {
-                                title = normalizeSlot(SlotName.SUB_TITLE, {
-                                    component: component.value,
-                                    selectComponent,
-                                    toggleComponentExpansion,
-                                });
-                            } else {
-                                title = h('div', {
-                                    class: 'nav-sub-title',
-                                    onClick($event: any) {
-                                        $event.preventDefault();
-
-                                        return toggleComponentExpansion.call(null, component.value);
-                                    },
-                                }, [[
-                                    ...(component.value.icon ? [h('i', { class: component.value.icon })] : []),
-                                    h('span', { class: 'nav-link-text' }, [component.value.name]),
-                                ]]);
-                            }
-
-                            let items : VNodeChild;
-
-                            if (hasNormalizedSlot(SlotName.SUB_ITEMS, slots)) {
-                                items = normalizeSlot(SlotName.SUB_ITEMS, {
-                                    component: component.value,
-                                    selectComponent,
-                                    toggleComponentExpansion,
-                                });
-                            } else if (component.value.displayChildren) {
-                                const navigationComponents = resolveComponent('VCNavItems');
-                                items = h(navigationComponents, {
-                                    class: 'list-unstyled nav-sub-items',
-                                    tier: props.tier,
-                                    entities: component.value.children,
-                                });
-                            }
-
-                            item = [
-                                title,
-                                items,
-                            ];
-                        }
-                        break;
-                    }
+                    return h('div', {
+                        class: 'nav-separator',
+                    }, item.value.name);
                 }
 
-                return item;
+                let vNode : VNodeChild;
+                if (typeof item.value.children === 'undefined') {
+                    const hasSlot = hasNormalizedSlot(SlotName.LINK, slots);
+                    if (hasSlot) {
+                        vNode = normalizeSlot(SlotName.LINK, {
+                            component: item.value,
+                            select,
+                            isActive: item.value.active,
+                        }, slots);
+                    } else {
+                        const linkProps : LinkProperties = {
+                            active: item.value.active,
+                            disabled: false,
+                            prefetch: true,
+                        };
+
+                        if (item.value.url) {
+                            if (
+                                isAbsoluteURL(item.value.url) ||
+                                        item.value.url.startsWith('#')
+                            ) {
+                                linkProps.href = item.value.url;
+                                if (item.value.urlTarget) {
+                                    linkProps.target = item.value.urlTarget;
+                                }
+                            } else {
+                                linkProps.to = item.value.url;
+                            }
+                        }
+
+                        vNode = h(VCLink, {
+                            class: [
+                                'nav-link',
+                                {
+                                    'root-link': item.value.root,
+                                },
+                            ],
+                            ...linkProps,
+                            onClicked() {
+                                if (!item.value.url) {
+                                    return select.call(null, item.value);
+                                }
+
+                                return undefined;
+                            },
+                            onClick() {
+                                return select.call(null, item.value);
+                            },
+                        }, {
+                            default: () => [
+                                ...(item.value.icon ? [h('i', { class: item.value.icon })] : []),
+                                h('span', { class: 'nav-link-text' }, [item.value.name]),
+                            ],
+                        });
+                    }
+                } else if (hasNormalizedSlot(SlotName.SUB, slots)) {
+                    vNode = normalizeSlot(SlotName.SUB, {
+                        component: item.value,
+                        select,
+                        toggle,
+                    }, slots);
+                } else {
+                    let title : VNodeChild;
+                    if (hasNormalizedSlot(SlotName.SUB_TITLE, slots)) {
+                        title = normalizeSlot(SlotName.SUB_TITLE, {
+                            component: item.value,
+                            select,
+                            toggle,
+                        });
+                    } else {
+                        title = h('div', {
+                            class: 'nav-sub-title',
+                            onClick($event: any) {
+                                $event.preventDefault();
+
+                                return toggle(item.value);
+                            },
+                        }, [[
+                            ...(item.value.icon ? [h('i', { class: item.value.icon })] : []),
+                            h('span', { class: 'nav-link-text' }, [item.value.name]),
+                        ]]);
+                    }
+
+                    let vNodes : VNodeChild;
+
+                    if (hasNormalizedSlot(SlotName.SUB_ITEMS, slots)) {
+                        vNodes = normalizeSlot(SlotName.SUB_ITEMS, {
+                            component: item.value,
+                            select,
+                            toggle,
+                        });
+                    } else if (item.value.displayChildren) {
+                        vNodes = h(itemsNode, {
+                            class: 'list-unstyled nav-sub-items',
+                            tier: props.tier,
+                            entities: item.value.children,
+                        });
+                    }
+
+                    vNode = [
+                        title,
+                        vNodes,
+                    ];
+                }
+
+                return vNode;
             };
 
             return h('div', {
                 class: [
                     'nav-item',
                     {
-                        active: component.value.active || component.value.displayChildren,
+                        active: item.value.active || item.value.displayChildren,
                     },
                 ],
             }, [

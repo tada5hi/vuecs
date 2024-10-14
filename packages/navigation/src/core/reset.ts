@@ -1,20 +1,24 @@
 import type { NavigationItem } from '../type';
 
-export function resetNavigationItem(
-    items: NavigationItem[],
+function resetItemIF(
+    item: NavigationItem,
     root = true,
 ) {
-    for (let i = 0; i < items.length; i++) {
-        items[i].display = root;
-        items[i].displayChildren = false;
-        items[i].active = false;
+    item.display = root;
+    item.displayChildren = false;
+    item.active = false;
 
-        const { children } = items[i];
-
-        if (typeof children !== 'undefined') {
-            items[i].children = resetNavigationItem(children, false);
+    if (item.children && item.children.length > 0) {
+        for (let i = 0; i < item.children.length; i++) {
+            item.children[i] = resetItemIF(item.children[i], false);
         }
     }
 
-    return items;
+    return item;
+}
+
+export function resetItem(
+    item: NavigationItem,
+) {
+    return resetItemIF(item, true);
 }

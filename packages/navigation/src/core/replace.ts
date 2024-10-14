@@ -1,36 +1,34 @@
-import type { MaybeRef } from 'vue';
-import type { NavigationStore } from '../store';
 import type { NavigationItem } from '../type';
-import { removeTierFromNavigationItems, setTierForNavigationItems } from './tier';
+import { removeTierItems } from './tier';
 
-export function replaceNavigationTierItemActive(
-    store: NavigationStore,
+export function replaceTierItem(
     tier: number,
-    item: NavigationItem | undefined,
-) {
-    const items = removeTierFromNavigationItems(store.itemsActive.value, tier);
+    input: NavigationItem[],
+    next: NavigationItem | undefined,
+) : NavigationItem[] {
+    const output = removeTierItems(tier, input);
 
-    if (item) {
-        item.tier = tier;
+    if (next) {
+        next.tier = tier;
 
-        store.itemsActive.value = [
-            ...items,
-            item,
+        return [
+            ...output,
+            next,
         ];
-    } else {
-        store.itemsActive.value = items;
     }
+
+    return output;
 }
 
-export function replaceNavigationTierItems(
-    store: NavigationStore,
+export function replaceTierItems(
     tier: number,
-    items: MaybeRef<NavigationItem[]>,
+    input: NavigationItem[],
+    next: NavigationItem[],
 ) {
-    const componentsExisting = removeTierFromNavigationItems(store.items.value, tier);
+    const componentsExisting = removeTierItems(tier, input);
 
-    store.items.value = [
+    return [
         ...componentsExisting,
-        ...setTierForNavigationItems(items, tier),
+        ...next,
     ];
 }
