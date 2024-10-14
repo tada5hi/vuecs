@@ -64,4 +64,4 @@ export default {
     pagination: {
         class: 'd-flex justify-content-center pagination',
     },
-};
+} as const;

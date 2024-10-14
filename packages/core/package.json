@@ -38,6 +38,9 @@
         "test": "cross-env NODE_ENV=test jest --config ./test/jest.config.js",
         "test:coverage": "cross-env NODE_ENV=test jest --config ./test/jest.config.js --coverage"
     },
+    "dependencies": {
+        "pathtrace": "^1.1.0"
+    },
     "devDependencies": {
         "smob": "^1.4.1",
         "vue": "^3.5.10"

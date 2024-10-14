@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { applyStoreManagerOptions, installStoreManager } from '@vuecs/core';
+import { applyStoreManagerOptions, installStoreManager, pickComponentsOptions } from '@vuecs/core';
 import type { StoreManagerOptions } from '@vuecs/core';
 import bootstrapV5 from '@vuecs/preset-bootstrap-v5';
 import fontAwesome from '@vuecs/preset-font-awesome';
@@ -26,7 +26,12 @@ import { navigationProvider } from '~/config/layout';
 export default defineNuxtPlugin((ctx) => {
     const baseOptions : StoreManagerOptions = {
         presets: {
-            bootstrapV5,
+            bootstrapV5: createComponentsOptionsSubset(bootstrapV5, {
+                exclude: [
+                    'listPagination',
+                    'pagination',
+                ],
+            }),
             fontAwesome,
         },
     };
