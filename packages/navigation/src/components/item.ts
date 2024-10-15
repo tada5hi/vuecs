@@ -65,7 +65,10 @@ export const VCNavItem = defineComponent({
                 }
 
                 let vNode : VNodeChild;
-                if (typeof item.value.children === 'undefined') {
+                if (
+                    !item.value.children ||
+                    item.value.children.length === 0
+                ) {
                     const hasSlot = hasNormalizedSlot(SlotName.LINK, slots);
                     if (hasSlot) {
                         vNode = normalizeSlot(SlotName.LINK, {

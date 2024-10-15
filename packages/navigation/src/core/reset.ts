@@ -1,24 +1,32 @@
-import type { NavigationItem } from '../type';
+import type { NavigationItemNormalized } from '../type';
+import { isTraceEqual, isTracePartOf } from '../utils';
 
-function resetItemIF(
-    item: NavigationItem,
-    root = true,
+function resetItemsByTraceIF(
+    items: NavigationItemNormalized[],
+    trace: string[],
 ) {
-    item.display = root;
-    item.displayChildren = false;
-    item.active = false;
+    for (let i = 0; i < items.length; i++) {
+        const item = items[i];
 
-    if (item.children && item.children.length > 0) {
-        for (let i = 0; i < item.children.length; i++) {
-            item.children[i] = resetItemIF(item.children[i], false);
+        const isEqual = isTraceEqual(items[i].trace, trace);
+        item.active = isEqual;
+        item.display = true;
+
+        if (isEqual) {
+            item.displayChildren = true;
+        } else {
+            item.displayChildren = isTracePartOf(item.trace, trace);
         }
+
+        item.children = resetItemsByTraceIF(item.children, trace);
     }
 
-    return item;
+    return items;
 }
 
-export function resetItem(
-    item: NavigationItem,
+export function resetItemsByTrace(
+    items: NavigationItemNormalized[],
+    trace: string[],
 ) {
-    return resetItemIF(item, true);
+    return resetItemsByTraceIF(items, trace);
 }

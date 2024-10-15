@@ -17,7 +17,6 @@ export * from './provider';
 export * from './build';
 export * from './module';
 export * from './type';
-export * from './core/flatten';
 
 export function install(instance: App, options: Options) : void {
     const manager = new NavigationManager({

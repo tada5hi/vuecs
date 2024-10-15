@@ -1,11 +1,7 @@
 import { injectManager } from './singleton';
 
-import type { NavigationBuildContext } from './type';
-
-export async function buildNavigation(
-    context: NavigationBuildContext = {},
-): Promise<void> {
+export async function buildNavigation(path: string): Promise<void> {
     const manager = injectManager();
 
-    await manager.build(context);
+    await manager.build(path);
 }

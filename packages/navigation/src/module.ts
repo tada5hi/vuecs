@@ -7,16 +7,17 @@
 
 import { EventEmitter } from '@posva/event-emitter';
 import {
+    findBestItemMatches,
     findTierItem,
     findTierItems,
-    isNavigationItemMatch, removeTierItems,
+    removeTierItems,
     replaceTierItem,
     replaceTierItems,
-    resetItem,
-    setNavigationExpansion,
+    resetItemsByTrace,
 } from './core';
 import type { NavigationProvider } from './provider';
-import type { NavigationBuildContext, NavigationItem } from './type';
+import type { NavigationItem, NavigationItemNormalized } from './type';
+import { isTraceEqual, normalizeItems } from './utils';
 
 type NavigationManagerContext = {
     provider: NavigationProvider;
@@ -28,9 +29,9 @@ export class NavigationManager extends EventEmitter<{
 }> {
     protected provider : NavigationProvider;
 
-    protected itemsActive : NavigationItem[];
+    protected itemsActive : NavigationItemNormalized[];
 
-    protected items : NavigationItem[];
+    protected items : NavigationItemNormalized[];
 
     protected initialized : boolean;
 
@@ -46,10 +47,10 @@ export class NavigationManager extends EventEmitter<{
     }
 
     getTierItems(tier: number) {
-        return findTierItems(this.items, tier);
+        return this.items.filter((item) => item.tier === tier);
     }
 
-    async build(ctx: NavigationBuildContext) : Promise<void> {
+    async build(path: string) : Promise<void> {
         if (this.initialized) {
             return;
         }
@@ -57,61 +58,31 @@ export class NavigationManager extends EventEmitter<{
         this.initialized = true;
 
         this.items = [];
-        this.itemsActive = await this.getActiveItems(ctx);
+        this.itemsActive = [];
 
         let tier = 0;
 
-        let url: string | undefined;
-        if (typeof ctx.url === 'string') {
-            url = ctx.url;
-        } else if (typeof ctx.route !== 'undefined') {
-            url = ctx.route.fullPath;
-        }
-
-        // eslint-disable-next-line no-constant-condition
         while (true) {
-            const items = await this.provider
+            const raw = await this.provider
                 .getItems(tier, this.itemsActive);
 
-            if (!items || items.length === 0) {
+            if (!raw || raw.length === 0) {
                 break;
             }
 
-            // todo: deep or via normalization
-            for (let i = 0; i < items.length; i++) {
-                items[i].tier = tier;
+            const items = normalizeItems(raw, { tier });
+
+            const matches = findBestItemMatches(items, {
+                url: path,
+            });
+
+            const [match] = matches;
+
+            if (!match) {
+                break;
             }
 
-            let currentItem = findTierItem(tier, this.itemsActive);
-            if (!currentItem) {
-                if (url) {
-                    const urlMatches = items.filter(
-                        (item) => isNavigationItemMatch(item, { url }),
-                    );
-                    if (urlMatches.length > 0) {
-                        [currentItem] = urlMatches;
-                    }
-                }
-
-                if (!currentItem) {
-                    const defaultItem = items
-                        .filter((item) => item.default);
-                    if (defaultItem.length > 0) {
-                        currentItem = defaultItem;
-                    } else {
-                        [currentItem] = items;
-                    }
-                }
-
-                currentItem.tier = tier;
-                this.itemsActive.push(currentItem);
-            }
-
-            if (!currentItem) {
-                continue;
-            }
-
-            this.itemsActive = replaceTierItem(tier, this.itemsActive, currentItem);
+            this.itemsActive.push(match);
 
             await this.buildTier(tier);
 
@@ -121,25 +92,21 @@ export class NavigationManager extends EventEmitter<{
         this.emit('updated', this.items);
     }
 
-    async select(tier: number, itemNew: NavigationItem) {
+    async select(tier: number, itemNew: NavigationItemNormalized) {
         const itemOld = findTierItem(tier, this.itemsActive);
 
         if (
             itemOld &&
-            isNavigationItemMatch(itemOld, itemNew)
+            isTraceEqual(itemOld.trace, itemNew.trace)
         ) {
             return;
         }
 
         this.itemsActive = this.itemsActive.filter(
-            (el) => typeof el.tier === 'undefined' ||
-                el.tier < tier,
+            (el) => el.tier < tier,
         );
-
-        itemNew.tier = tier;
         this.itemsActive.push(itemNew);
 
-        // eslint-disable-next-line no-constant-condition
         while (true) {
             const built = await this.buildTier(tier);
             if (!built) {
@@ -150,36 +117,43 @@ export class NavigationManager extends EventEmitter<{
         }
     }
 
-    async toggle(tier: number, item: NavigationItem) {
-        const isMatch = item.displayChildren || isNavigationItemMatch(
-            findTierItem(tier, this.itemsActive),
-            item,
-        );
+    async toggle(tier: number, item: NavigationItemNormalized) {
+        let isMatch : boolean;
+        if (item.displayChildren) {
+            isMatch = true;
+        } else {
+            const itemOld = findTierItem(tier, this.itemsActive);
+            isMatch = !!itemOld && isTraceEqual(item.trace, itemOld.trace);
+        }
 
         if (isMatch) {
             this.itemsActive = removeTierItems(tier, this.itemsActive);
         } else {
-            this.itemsActive = replaceTierItem(tier, this.itemsActive, { ...item });
+            this.itemsActive = replaceTierItem(tier, this.itemsActive, item);
         }
 
         await this.buildTier(tier, true);
     }
 
     protected async buildTier(tier: number, cached?: boolean) : Promise<boolean> {
-        let items : NavigationItem[] | undefined;
+        let items : NavigationItemNormalized[] | undefined;
 
         if (cached) {
             items = findTierItems(this.items, tier);
         } else {
-            items = await this.provider.getItems(
+            const raw = await this.provider.getItems(
                 tier,
                 this.itemsActive,
             );
+
+            items = raw && raw.length > 0 ?
+                normalizeItems(raw, { tier }) :
+                [];
         }
 
         if (!items || items.length === 0) {
             this.items = this.items.filter(
-                (item) => typeof item.tier === 'undefined' || item.tier < tier,
+                (item) => item.tier < tier,
             );
 
             this.emit('tierUpdated', tier, []);
@@ -187,50 +161,18 @@ export class NavigationManager extends EventEmitter<{
             return false;
         }
 
-        for (let i = 0; i < items.length; i++) {
-            items[i].tier = tier;
-            resetItem(items[i]);
-        }
-
+        let trace : string[] = [];
         const item = findTierItem(tier, this.itemsActive);
         if (item) {
-            const expansion = setNavigationExpansion(items, item);
-            items = expansion.items;
+            trace = item.trace;
         }
+
+        resetItemsByTrace(items, trace);
 
         this.items = replaceTierItems(tier, this.items, items);
 
         this.emit('tierUpdated', tier, items);
 
         return true;
-    }
-
-    protected async getActiveItems(ctx: NavigationBuildContext) {
-        let output: NavigationItem[] = [];
-
-        if (typeof ctx.itemsActive !== 'undefined') {
-            output = ctx.itemsActive;
-        } else if (ctx.route) {
-            if (typeof this.provider.getItemsActiveByRoute !== 'undefined') {
-                output = await this.provider.getItemsActiveByRoute(ctx.route);
-            } else if (typeof this.provider.getItemsActiveByURL !== 'undefined') {
-                output = await this.provider.getItemsActiveByURL(ctx.route.fullPath);
-            }
-        } else if (
-            ctx.url &&
-            typeof this.provider.getItemsActiveByURL !== 'undefined'
-        ) {
-            output = await this.provider.getItemsActiveByURL(ctx.url);
-        }
-
-        if (output.length > 0) {
-            for (let i = 0; i < output.length; i++) {
-                if (typeof output[i].tier === 'undefined') {
-                    output[i].tier = i;
-                }
-            }
-        }
-
-        return output;
     }
 }

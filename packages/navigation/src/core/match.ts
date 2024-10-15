@@ -1,51 +1,73 @@
-import type { NavigationItem } from '../type';
+import type { NavigationItemNormalized } from '../type';
 
-export function isNavigationItemMatch(
-    one?: NavigationItem,
-    two?: NavigationItem,
-): boolean {
-    if (!one || !two) {
-        return false;
-    }
+type ParentMatch = {
+    score: number
+};
 
-    if (
-        one.id &&
-        two.id &&
-        one.id === two.id
-    ) {
-        return true;
-    }
+type ItemMatchesFindOptions = {
+    url?: string
+};
 
-    if (
-        one.name &&
-        two.name &&
-        one.name === two.name
-    ) {
-        return true;
-    }
+function findItemMatchesByScoreIF(
+    items: NavigationItemNormalized[],
+    options: ItemMatchesFindOptions,
+    parent: ParentMatch,
+) {
+    const output : {
+        data: NavigationItemNormalized,
+        score: number
+    }[] = [];
 
-    if (
-        one.url &&
-        two.url &&
-        one.url === two.url
-    ) {
-        return true;
-    }
+    for (let i = 0; i < items.length; i++) {
+        const item = items[i];
 
-    if (
-        one.children &&
-        two.children &&
-        one.children.length > 0 &&
-        one.children.length === two.children.length
-    ) {
-        for (let i = 0; i < one.children.length; i++) {
-            if (!isNavigationItemMatch(one.children[i], two.children[i])) {
-                return false;
+        let { score } = parent;
+
+        if (options.url) {
+            if (item.activeMatch) {
+                if (item.activeMatch === options.url) {
+                    score += 3;
+                } else if (options.url.startsWith(item.activeMatch)) {
+                    score += 2;
+                }
+            }
+
+            if (item.url && item.url !== '/') {
+                if (item.url === options.url) {
+                    score += 3;
+                } else if (options.url.startsWith(item.url)) {
+                    score += 2;
+                }
             }
         }
 
-        return true;
+        if (item.default) {
+            score += 1;
+        }
+
+        if (item.children) {
+            const childMatches = findItemMatchesByScoreIF(item.children, options, {
+                score,
+            });
+
+            output.push(...childMatches);
+        }
+
+        output.push({ data: item, score });
     }
 
-    return false;
+    return output.sort((a, b) => b.score - a.score);
+}
+
+export function findBestItemMatches(
+    items: NavigationItemNormalized[],
+    options: ItemMatchesFindOptions = {},
+) : NavigationItemNormalized[] {
+    const result = findItemMatchesByScoreIF(items, options, { score: 0 });
+    const [first] = result;
+    if (!first) {
+        return [];
+    }
+
+    return result.filter((match) => match.score === first.score).map((match) => match.data);
 }

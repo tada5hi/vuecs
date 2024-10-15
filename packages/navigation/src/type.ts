@@ -7,7 +7,7 @@ import type { NavigationProvider } from './provider';
 export type NavigationItem = {
     id?: string | number,
     tier?: number,
-    name?: string,
+    name: string,
 
     url?: string,
     urlTarget?: '_self' | '_blank' | '_parent' | '_top' | string,
@@ -18,6 +18,7 @@ export type NavigationItem = {
     icon?: string,
 
     active?: boolean,
+    activeMatch?: string,
 
     display?: boolean,
     displayChildren?: boolean,
@@ -28,14 +29,19 @@ export type NavigationItem = {
     [key: string]: any
 };
 
+export type NavigationItemNormalized = Omit<NavigationItem, 'tier' | 'children' | 'name'> & {
+    name: string,
+    tier: number,
+    children: NavigationItemNormalized[],
+    trace: string[]
+};
+
 export type Options = {
     provider: NavigationProvider,
     storeManager?: StoreManagerOptions
 };
 
 export type NavigationBuildContext = {
-    items?: NavigationItem[],
-    itemsActive?: NavigationItem[],
     url?: string
     route?: RouteLocationNormalized
 };

@@ -3,7 +3,6 @@ import type {
 } from '@vuecs/navigation';
 import {
     defineNavigationProvider,
-    flattenNestedNavigationItems,
 } from '@vuecs/navigation';
 
 const primaryItems : NavigationItem[] = [
@@ -11,7 +10,7 @@ const primaryItems : NavigationItem[] = [
         id: 'default', name: 'Home', icon: 'fa fa-home', default: true,
     },
     {
-        id: 'admin', name: 'Admin', icon: 'fas fa-cog',
+        id: 'admin', name: 'Admin', icon: 'fas fa-cog', activeMatch: '/admin/',
     },
 ];
 
@@ -100,43 +99,5 @@ export const navigationProvider = defineNavigationProvider({
         }
 
         return items;
-    },
-    async getItemsActiveByURL(url: string) {
-        const sortFunc = (a: NavigationItem, b: NavigationItem) => (b.url?.length ?? 0) - (a.url?.length ?? 0);
-        const filterFunc = (item: NavigationItem) => {
-            if (!item.url) return false;
-
-            if (item.root) {
-                return url === item.url;
-            }
-
-            return url === item.url || url.startsWith(item.url);
-        };
-
-        // ------------------------
-
-        let items = flattenNestedNavigationItems([...secondaryDefaultItems])
-            .sort(sortFunc)
-            .filter(filterFunc);
-
-        if (items.length > 0) {
-            return [
-                primaryItems[0],
-                items[0],
-            ];
-        }
-
-        items = flattenNestedNavigationItems([...secondaryAdminItems])
-            .sort(sortFunc)
-            .filter(filterFunc);
-
-        if (items.length > 0) {
-            return [
-                primaryItems[1],
-                items[0],
-            ];
-        }
-
-        return [];
     },
 });
