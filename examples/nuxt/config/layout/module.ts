@@ -71,7 +71,10 @@ const secondaryAdminItems : NavigationItem[] = [
 
 ];
 
-export async function findNavigationItems(tier: number, parent: NavigationItemNormalized) : Promise<NavigationItem[]> {
+export async function findNavigationItems(
+    tier: number,
+    parent?: NavigationItemNormalized,
+) : Promise<NavigationItem[]> {
     if (tier === 0) {
         return primaryItems;
     }
