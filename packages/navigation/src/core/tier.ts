@@ -1,5 +1,3 @@
-import type { NavigationItem } from '../type';
-
 type TierRecord = {
     tier: number,
     [key: string]: any
@@ -28,7 +26,7 @@ export function removeTierItems<T extends TierRecord>(
     tier: number,
     items: T[],
 ) : T[] {
-    return items.filter((item: NavigationItem) => item.tier !== tier);
+    return items.filter((item) => item.tier !== tier);
 }
 
 export function replaceTierItem<T extends TierRecord>(

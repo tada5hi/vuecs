@@ -10,13 +10,13 @@ import {
     VCNavItem,
     VCNavItems,
 } from './components';
-import type { Options } from './type';
+import type { Options } from './types';
 
 export * from './components';
 export * from './provider';
 export * from './build';
 export * from './module';
-export * from './type';
+export * from './types';
 
 export function install(instance: App, options: Options) : void {
     const manager = new NavigationManager({

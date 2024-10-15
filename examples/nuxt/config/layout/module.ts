@@ -7,19 +7,21 @@ import {
 
 const primaryItems : NavigationItem[] = [
     {
-        id: 'default', name: 'Home', icon: 'fa fa-home', default: true,
+        name: 'Home', icon: 'fa fa-home',
     },
     {
-        id: 'admin', name: 'Admin', icon: 'fas fa-cog', activeMatch: '/admin/',
+        name: 'Admin', icon: 'fas fa-cog', activeMatch: '/admin/',
     },
 ];
 
 const secondaryDefaultItems : NavigationItem[] = [
     {
-        name: 'Home', type: 'link', icon: 'fas fa-home', url: '/', root: true,
+        name: 'Home', type: 'link', icon: 'fas fa-home', url: '/',
     },
+
     {
-        name: 'Countdown', type: 'link', icon: 'fa-solid fa-clock', url: '/countdown',
+        name: 'Controls',
+        type: 'separator',
     },
     {
         name: 'Form Controls',
@@ -45,6 +47,13 @@ const secondaryDefaultItems : NavigationItem[] = [
         ],
     },
     {
+        name: 'General',
+        type: 'separator',
+    },
+    {
+        name: 'Countdown', type: 'link', icon: 'fa-solid fa-clock', url: '/countdown',
+    },
+    {
         name: 'Pagination', type: 'link', icon: 'fa-solid fa-road', url: '/pagination',
     },
     {
@@ -65,39 +74,21 @@ const secondaryAdminItems : NavigationItem[] = [
 ];
 
 export const navigationProvider = defineNavigationProvider({
-    async getItems(tier: number, itemsActive: NavigationItem[]) {
-        if (tier > 1) {
-            return undefined;
+    async getItems(tier, parent) {
+        if (tier === 0) {
+            return primaryItems;
         }
 
-        let items : NavigationItem[] = [];
-
-        switch (tier) {
-            case 0:
-                items = primaryItems;
-                break;
-            case 1: {
-                const parentActive = itemsActive.filter((item) => item.tier === 0);
-                let component : NavigationItem;
-                if (parentActive.length > 0) {
-                    [component] = parentActive;
-                } else {
-                    component = { id: 'default' };
+        if (parent) {
+            if (tier === 1) {
+                if (parent.name === 'Admin') {
+                    return secondaryAdminItems;
                 }
 
-                switch (component.id) {
-                    case 'default':
-                        items = secondaryDefaultItems;
-                        break;
-                    case 'admin':
-                        items = secondaryAdminItems;
-                        break;
-                }
-
-                break;
+                return secondaryDefaultItems;
             }
         }
 
-        return items;
+        return [];
     },
 });

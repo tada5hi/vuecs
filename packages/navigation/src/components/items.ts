@@ -9,7 +9,7 @@ import {
 } from 'vue';
 import { SlotName } from '../constants';
 import { injectManager } from '../singleton';
-import type { NavigationItem } from '../type';
+import type { NavigationItemNormalized } from '../types';
 import { VCNavItem } from './item';
 
 export const VCNavItems = defineComponent({
@@ -18,16 +18,16 @@ export const VCNavItems = defineComponent({
             type: Number,
             default: 0,
         },
-        entities: {
-            type: Array as PropType<NavigationItem[]>,
+        data: {
+            type: Array as PropType<NavigationItemNormalized[]>,
             default: undefined,
         },
     },
     setup(props, { slots }) {
         const manager = injectManager();
-        const managerItems = ref<NavigationItem[]>([]);
-        if (!props.entities) {
-            managerItems.value = manager.getTierItems(props.tier);
+        const managerItems = ref<NavigationItemNormalized[]>([]);
+        if (!props.data) {
+            managerItems.value = manager.getItems(props.tier);
         }
 
         const counter = ref(0);
@@ -54,22 +54,19 @@ export const VCNavItems = defineComponent({
         });
 
         const items = computed(() => {
-            if (typeof props.entities !== 'undefined') {
-                return props.entities;
+            if (typeof props.data !== 'undefined') {
+                return props.data;
             }
 
             return managerItems.value;
         });
 
-        const buildVNodeChild = (context: {
-            tier?: number,
-            component: NavigationItem
-        }) : VNodeChild => {
+        const buildVNodeChild = (data: NavigationItemNormalized) : VNodeChild => {
             if (hasNormalizedSlot(SlotName.ITEM, slots)) {
-                return normalizeSlot(SlotName.ITEM, context, slots);
+                return normalizeSlot(SlotName.ITEM, { data }, slots);
             }
 
-            return h(VCNavItem, context);
+            return h(VCNavItem, { data });
         };
 
         return () => {
@@ -86,10 +83,7 @@ export const VCNavItems = defineComponent({
                         key: `${i}:${counter.value}`,
                     },
                     [
-                        buildVNodeChild({
-                            tier: props.tier,
-                            component: items.value[i],
-                        }),
+                        buildVNodeChild(items.value[i]),
                     ],
                 ));
             }

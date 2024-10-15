@@ -8,5 +8,5 @@
 import { buildNavigation } from '@vuecs/navigation';
 
 export default defineNuxtRouteMiddleware(async (route) => {
-    await buildNavigation(route.fullPath);
+    await buildNavigation({ path: route.fullPath });
 });

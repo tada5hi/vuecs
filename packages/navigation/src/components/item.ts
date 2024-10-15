@@ -1,7 +1,7 @@
 import { hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
 import type { LinkProperties } from '@vuecs/link';
 import { VCLink } from '@vuecs/link';
-import type { PropType, Ref, VNodeChild } from 'vue';
+import type { PropType, VNodeChild } from 'vue';
 import {
     defineComponent,
     h,
@@ -9,18 +9,14 @@ import {
     toRef,
 } from 'vue';
 import { injectManager } from '../singleton';
-import type { NavigationItem } from '../type';
+import type { NavigationItemNormalized } from '../types';
 import { isAbsoluteURL } from '../utils';
 import { ElementType, SlotName } from '../constants';
 
 export const VCNavItem = defineComponent({
     props: {
-        tier: {
-            type: Number,
-            default: 0,
-        },
-        component: {
-            type: Object as PropType<NavigationItem>,
+        data: {
+            type: Object as PropType<NavigationItemNormalized>,
             required: true,
         },
     },
@@ -28,158 +24,149 @@ export const VCNavItem = defineComponent({
         const itemsNode = resolveComponent('VCNavItems');
         const manager = injectManager();
 
-        const item = toRef(props, 'component') as Ref<NavigationItem>;
+        const data = toRef(props, 'data');
 
-        const select = async (value: NavigationItem) => {
-            await manager.select(props.tier, {
-                ...value,
-                children: [
-                    ...(value.children || []),
-                ],
-            });
+        const select = async (value: NavigationItemNormalized) => {
+            await manager.select(data.value.tier, value);
         };
 
         const toggle = async (
-            value: NavigationItem,
+            value: NavigationItemNormalized,
         ) => {
-            await manager.toggle(props.tier, {
-                ...value,
-                children: [
-                    ...(value.children || []),
-                ],
-            });
+            await manager.toggle(data.value.tier, value);
         };
 
         return () => {
             const buildItem = () : VNodeChild => {
-                if (item.value.type === ElementType.SEPARATOR) {
+                // type: separator
+                if (data.value.type === ElementType.SEPARATOR) {
                     const hasSlot = hasNormalizedSlot(SlotName.SEPARATOR, slots);
                     if (hasSlot) {
                         return normalizeSlot(SlotName.SEPARATOR, {
-                            component: item.value,
+                            data: data.value,
                         }, slots);
                     }
+
                     return h('div', {
                         class: 'nav-separator',
-                    }, item.value.name);
+                    }, data.value.name);
                 }
 
-                let vNode : VNodeChild;
+                // type: group
                 if (
-                    !item.value.children ||
-                    item.value.children.length === 0
+                    !data.value.children ||
+                    data.value.children.length === 0
                 ) {
                     const hasSlot = hasNormalizedSlot(SlotName.LINK, slots);
                     if (hasSlot) {
-                        vNode = normalizeSlot(SlotName.LINK, {
-                            component: item.value,
+                        return normalizeSlot(SlotName.LINK, {
+                            data: data.value,
                             select,
-                            isActive: item.value.active,
+                            isActive: data.value.active,
                         }, slots);
-                    } else {
-                        const linkProps : LinkProperties = {
-                            active: item.value.active,
-                            disabled: false,
-                            prefetch: true,
-                        };
-
-                        if (item.value.url) {
-                            if (
-                                isAbsoluteURL(item.value.url) ||
-                                        item.value.url.startsWith('#')
-                            ) {
-                                linkProps.href = item.value.url;
-                                if (item.value.urlTarget) {
-                                    linkProps.target = item.value.urlTarget;
-                                }
-                            } else {
-                                linkProps.to = item.value.url;
-                            }
-                        }
-
-                        vNode = h(VCLink, {
-                            class: [
-                                'nav-link',
-                                {
-                                    'root-link': item.value.root,
-                                },
-                            ],
-                            ...linkProps,
-                            onClicked() {
-                                if (!item.value.url) {
-                                    return select.call(null, item.value);
-                                }
-
-                                return undefined;
-                            },
-                            onClick() {
-                                return select.call(null, item.value);
-                            },
-                        }, {
-                            default: () => [
-                                ...(item.value.icon ? [h('i', { class: item.value.icon })] : []),
-                                h('span', { class: 'nav-link-text' }, [item.value.name]),
-                            ],
-                        });
                     }
-                } else if (hasNormalizedSlot(SlotName.SUB, slots)) {
-                    vNode = normalizeSlot(SlotName.SUB, {
-                        component: item.value,
+                    const linkProps : LinkProperties = {
+                        active: data.value.active,
+                        disabled: false,
+                        prefetch: true,
+                    };
+
+                    if (data.value.url) {
+                        if (
+                            isAbsoluteURL(data.value.url) ||
+                                        data.value.url.startsWith('#')
+                        ) {
+                            linkProps.href = data.value.url;
+                            if (data.value.urlTarget) {
+                                linkProps.target = data.value.urlTarget;
+                            }
+                        } else {
+                            linkProps.to = data.value.url;
+                        }
+                    }
+
+                    return h(VCLink, {
+                        class: [
+                            'nav-link',
+                            {
+                                'root-link': data.value.root,
+                            },
+                        ],
+                        ...linkProps,
+                        onClicked() {
+                            if (!data.value.url) {
+                                return select.call(null, data.value);
+                            }
+
+                            return undefined;
+                        },
+                        onClick() {
+                            return select.call(null, data.value);
+                        },
+                    }, {
+                        default: () => [
+                            ...(data.value.icon ? [h('i', { class: data.value.icon })] : []),
+                            h('span', { class: 'nav-link-text' }, [data.value.name]),
+                        ],
+                    });
+                }
+
+                if (hasNormalizedSlot(SlotName.SUB, slots)) {
+                    return normalizeSlot(SlotName.SUB, {
+                        data: data.value,
                         select,
                         toggle,
                     }, slots);
-                } else {
-                    let title : VNodeChild;
-                    if (hasNormalizedSlot(SlotName.SUB_TITLE, slots)) {
-                        title = normalizeSlot(SlotName.SUB_TITLE, {
-                            component: item.value,
-                            select,
-                            toggle,
-                        });
-                    } else {
-                        title = h('div', {
-                            class: 'nav-sub-title',
-                            onClick($event: any) {
-                                $event.preventDefault();
-
-                                return toggle(item.value);
-                            },
-                        }, [[
-                            ...(item.value.icon ? [h('i', { class: item.value.icon })] : []),
-                            h('span', { class: 'nav-link-text' }, [item.value.name]),
-                        ]]);
-                    }
-
-                    let vNodes : VNodeChild;
-
-                    if (hasNormalizedSlot(SlotName.SUB_ITEMS, slots)) {
-                        vNodes = normalizeSlot(SlotName.SUB_ITEMS, {
-                            component: item.value,
-                            select,
-                            toggle,
-                        });
-                    } else if (item.value.displayChildren) {
-                        vNodes = h(itemsNode, {
-                            class: 'list-unstyled nav-sub-items',
-                            tier: props.tier,
-                            entities: item.value.children,
-                        });
-                    }
-
-                    vNode = [
-                        title,
-                        vNodes,
-                    ];
                 }
 
-                return vNode;
+                let title : VNodeChild;
+                if (hasNormalizedSlot(SlotName.SUB_TITLE, slots)) {
+                    title = normalizeSlot(SlotName.SUB_TITLE, {
+                        data: data.value,
+                        select,
+                        toggle,
+                    });
+                } else {
+                    title = h('div', {
+                        class: 'nav-sub-title',
+                        onClick($event: any) {
+                            $event.preventDefault();
+
+                            return toggle(data.value);
+                        },
+                    }, [[
+                        ...(data.value.icon ? [h('i', { class: data.value.icon })] : []),
+                        h('span', { class: 'nav-link-text' }, [data.value.name]),
+                    ]]);
+                }
+
+                let vNodes : VNodeChild;
+
+                if (hasNormalizedSlot(SlotName.SUB_ITEMS, slots)) {
+                    vNodes = normalizeSlot(SlotName.SUB_ITEMS, {
+                        data: data.value,
+                        select,
+                        toggle,
+                    });
+                } else if (data.value.displayChildren) {
+                    vNodes = h(itemsNode, {
+                        class: 'list-unstyled nav-sub-items',
+                        tier: data.value.tier,
+                        data: data.value.children,
+                    });
+                }
+
+                return [
+                    title,
+                    vNodes,
+                ];
             };
 
             return h('div', {
                 class: [
                     'nav-item',
                     {
-                        active: item.value.active || item.value.displayChildren,
+                        active: data.value.active || data.value.displayChildren,
                     },
                 ],
             }, [

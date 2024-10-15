@@ -1,4 +1,4 @@
-import type { NavigationItemNormalized } from '../type';
+import type { NavigationItemNormalized } from '../types';
 
 type ParentMatch = {
     score: number

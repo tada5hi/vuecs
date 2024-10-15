@@ -16,7 +16,9 @@ import {
     resetItemsByTrace,
 } from './core';
 import type { NavigationProvider } from './provider';
-import type { NavigationItem, NavigationItemNormalized } from './type';
+import type {
+    NavigationItemNormalized, NavigationManagerBuildOptions,
+} from './types';
 import { isTraceEqual, normalizeItems } from './utils';
 
 type NavigationManagerContext = {
@@ -24,8 +26,8 @@ type NavigationManagerContext = {
 };
 
 export class NavigationManager extends EventEmitter<{
-    updated: NavigationItem[],
-    tierUpdated: [number, NavigationItem[]]
+    updated: NavigationItemNormalized[],
+    tierUpdated: [number, NavigationItemNormalized[]]
 }> {
     protected provider : NavigationProvider;
 
@@ -46,11 +48,15 @@ export class NavigationManager extends EventEmitter<{
         this.initialized = false;
     }
 
-    getTierItems(tier: number) {
+    getItems(tier?: number) {
+        if (typeof tier === 'undefined') {
+            return this.items;
+        }
+
         return this.items.filter((item) => item.tier === tier);
     }
 
-    async build(path: string) : Promise<void> {
+    async build(options: NavigationManagerBuildOptions) : Promise<void> {
         if (this.initialized) {
             return;
         }
@@ -60,11 +66,11 @@ export class NavigationManager extends EventEmitter<{
         this.items = [];
         this.itemsActive = [];
 
+        let parent : NavigationItemNormalized | undefined;
         let tier = 0;
 
         while (true) {
-            const raw = await this.provider
-                .getItems(tier, this.itemsActive);
+            const raw = await this.provider.getItems(tier, parent);
 
             if (!raw || raw.length === 0) {
                 break;
@@ -73,7 +79,7 @@ export class NavigationManager extends EventEmitter<{
             const items = normalizeItems(raw, { tier });
 
             const matches = findBestItemMatches(items, {
-                url: path,
+                url: options.path,
             });
 
             const [match] = matches;
@@ -85,6 +91,8 @@ export class NavigationManager extends EventEmitter<{
             this.itemsActive.push(match);
 
             await this.buildTier(tier);
+
+            parent = match;
 
             tier++;
         }
@@ -141,9 +149,10 @@ export class NavigationManager extends EventEmitter<{
         if (cached) {
             items = findTierItems(this.items, tier);
         } else {
+            const parent = findTierItem(tier - 1, this.itemsActive);
             const raw = await this.provider.getItems(
                 tier,
-                this.itemsActive,
+                parent,
             );
 
             items = raw && raw.length > 0 ?

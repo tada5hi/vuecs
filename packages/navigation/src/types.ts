@@ -1,8 +1,11 @@
 import type { StoreManagerOptions } from '@vuecs/core';
-import type { App, Ref } from 'vue';
-import type { RouteLocationNormalized } from 'vue-router';
 import type { ElementType } from './constants';
 import type { NavigationProvider } from './provider';
+
+export type Options = {
+    provider: NavigationProvider,
+    storeManager?: StoreManagerOptions
+};
 
 export type NavigationItem = {
     id?: string | number,
@@ -23,7 +26,6 @@ export type NavigationItem = {
     display?: boolean,
     displayChildren?: boolean,
 
-    root?: boolean,
     children?: NavigationItem[],
 
     [key: string]: any
@@ -36,12 +38,6 @@ export type NavigationItemNormalized = Omit<NavigationItem, 'tier' | 'children' 
     trace: string[]
 };
 
-export type Options = {
-    provider: NavigationProvider,
-    storeManager?: StoreManagerOptions
-};
-
-export type NavigationBuildContext = {
-    url?: string
-    route?: RouteLocationNormalized
+export type NavigationManagerBuildOptions = {
+    path: string
 };
