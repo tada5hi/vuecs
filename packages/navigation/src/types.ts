@@ -28,16 +28,13 @@ export type NavigationItem = {
 
     children?: NavigationItem[],
 
-    [key: string]: any
+    meta?: Record<string, any>
 };
 
 export type NavigationItemNormalized = Omit<NavigationItem, 'tier' | 'children' | 'name'> & {
     name: string,
     tier: number,
     children: NavigationItemNormalized[],
-    trace: string[]
-};
 
-export type NavigationManagerBuildOptions = {
-    path: string
+    trace: string[]
 };

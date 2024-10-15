@@ -1,16 +1,26 @@
+/*
+ * Copyright (c) 2024.
+ * Author Peter Placzek (tada5hi)
+ * For the full copyright and license information,
+ * view the LICENSE file that was distributed with this source code.
+ */
+
 import { hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
 import type {
-    PropType, VNodeArrayChildren, VNodeChild,
+    PropType,
+    VNodeArrayChildren,
+    VNodeChild,
 } from 'vue';
 import {
     computed,
     defineComponent,
     h, onMounted, onUnmounted, ref,
 } from 'vue';
-import { SlotName } from '../constants';
-import { injectManager } from '../singleton';
-import type { NavigationItemNormalized } from '../types';
-import { VCNavItem } from './item';
+import { SlotName } from '../../constants';
+import { injectManager } from '../../manager/singleton';
+import type { NavigationItemNormalized } from '../../types';
+import { buildComponentOptions } from '../../helpers';
+import { VCNavItem } from '../item';
 
 export const VCNavItems = defineComponent({
     props: {
@@ -24,6 +34,8 @@ export const VCNavItems = defineComponent({
         },
     },
     setup(props, { slots }) {
+        const options = buildComponentOptions();
+
         const manager = injectManager();
         const managerItems = ref<NavigationItemNormalized[]>([]);
         if (!props.data) {
@@ -61,14 +73,6 @@ export const VCNavItems = defineComponent({
             return managerItems.value;
         });
 
-        const buildVNodeChild = (data: NavigationItemNormalized) : VNodeChild => {
-            if (hasNormalizedSlot(SlotName.ITEM, slots)) {
-                return normalizeSlot(SlotName.ITEM, { data }, slots);
-            }
-
-            return h(VCNavItem, { data });
-        };
-
         return () => {
             const vNodes : VNodeArrayChildren = [];
 
@@ -77,19 +81,26 @@ export const VCNavItems = defineComponent({
                     continue;
                 }
 
-                vNodes.push(h(
-                    'li',
-                    {
-                        key: `${i}:${counter.value}`,
-                    },
-                    [
-                        buildVNodeChild(items.value[i]),
-                    ],
-                ));
+                let vNode : VNodeChild;
+                if (hasNormalizedSlot(SlotName.ITEM, slots)) {
+                    vNode = normalizeSlot(SlotName.ITEM, { data: items.value[i] }, slots);
+                } else {
+                    vNode = h(
+                        VCNavItem,
+                        {
+                            key: `${i}:${counter.value}`,
+                            data: items.value[i],
+                        },
+                    );
+                }
+
+                vNodes.push(vNode);
             }
 
-            return h('ul', {
-                class: 'nav-items',
+            return h(options.groupTag, {
+                class: props.data ?
+                    options.subGroupItemsClass :
+                    options.groupClass,
             }, vNodes);
         };
     },

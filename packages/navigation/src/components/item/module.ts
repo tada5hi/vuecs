@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2024.
+ * Author Peter Placzek (tada5hi)
+ * For the full copyright and license information,
+ * view the LICENSE file that was distributed with this source code.
+ */
+
 import { hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
 import type { LinkProperties } from '@vuecs/link';
 import { VCLink } from '@vuecs/link';
@@ -8,10 +15,10 @@ import {
     resolveComponent,
     toRef,
 } from 'vue';
-import { injectManager } from '../singleton';
-import type { NavigationItemNormalized } from '../types';
-import { isAbsoluteURL } from '../utils';
-import { ElementType, SlotName } from '../constants';
+import { injectManager } from '../../manager/singleton';
+import type { NavigationItemNormalized } from '../../types';
+import { buildComponentOptions, isAbsoluteURL } from '../../helpers';
+import { ElementType, SlotName } from '../../constants';
 
 export const VCNavItem = defineComponent({
     props: {
@@ -22,6 +29,8 @@ export const VCNavItem = defineComponent({
     },
     setup(props, { slots }) {
         const itemsNode = resolveComponent('VCNavItems');
+
+        const options = buildComponentOptions();
         const manager = injectManager();
 
         const data = toRef(props, 'data');
@@ -47,8 +56,8 @@ export const VCNavItem = defineComponent({
                         }, slots);
                     }
 
-                    return h('div', {
-                        class: 'nav-separator',
+                    return h(options.separatorTag, {
+                        class: options.separatorClass,
                     }, data.value.name);
                 }
 
@@ -87,10 +96,12 @@ export const VCNavItem = defineComponent({
 
                     return h(VCLink, {
                         class: [
-                            'nav-link',
-                            {
-                                'root-link': data.value.root,
-                            },
+                            options.linkClass,
+                            (data.value.url &&
+                                    data.value.url === '/' ?
+                                [options.linkRootClass] :
+                                []
+                            ),
                         ],
                         ...linkProps,
                         onClicked() {
@@ -105,8 +116,15 @@ export const VCNavItem = defineComponent({
                         },
                     }, {
                         default: () => [
-                            ...(data.value.icon ? [h('i', { class: data.value.icon })] : []),
-                            h('span', { class: 'nav-link-text' }, [data.value.name]),
+                            ...(data.value.icon ?
+                                [h('i', { class: data.value.icon })] :
+                                []
+                            ),
+                            h(
+                                options.linkTextTag,
+                                { class: options.linkTextClass },
+                                [data.value.name],
+                            ),
                         ],
                     });
                 }
@@ -128,15 +146,22 @@ export const VCNavItem = defineComponent({
                     });
                 } else {
                     title = h('div', {
-                        class: 'nav-sub-title',
+                        class: options.subGroupTitleClass,
                         onClick($event: any) {
                             $event.preventDefault();
 
                             return toggle(data.value);
                         },
                     }, [[
-                        ...(data.value.icon ? [h('i', { class: data.value.icon })] : []),
-                        h('span', { class: 'nav-link-text' }, [data.value.name]),
+                        ...(data.value.icon ?
+                            [h('i', { class: data.value.icon })] :
+                            []
+                        ),
+                        h(options.linkTextTag, {
+                            class: options.linkTextClass,
+                        }, [
+                            data.value.name,
+                        ]),
                     ]]);
                 }
 
@@ -150,7 +175,6 @@ export const VCNavItem = defineComponent({
                     });
                 } else if (data.value.displayChildren) {
                     vNodes = h(itemsNode, {
-                        class: 'list-unstyled nav-sub-items',
                         tier: data.value.tier,
                         data: data.value.children,
                     });
@@ -162,9 +186,9 @@ export const VCNavItem = defineComponent({
                 ];
             };
 
-            return h('div', {
+            return h(options.itemTag, {
                 class: [
-                    'nav-item',
+                    options.itemClass,
                     {
                         active: data.value.active || data.value.displayChildren,
                     },

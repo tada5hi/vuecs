@@ -1,8 +1,8 @@
 import type { NavigationItem, NavigationItemNormalized } from '../types';
 
 export interface NavigationProvider {
-    getItems: (
+    find: (
         tier: number,
         parent?: NavigationItemNormalized
-    ) => Promise<NavigationItem[] | undefined> | NavigationItem[] | undefined
+    ) => Promise<NavigationItem[] | undefined>
 }

@@ -15,7 +15,16 @@ export default defineNuxtComponent({
         VCNavItems,
     },
     setup() {
+        const displayNav = ref(false);
 
+        const toggleNav = () => {
+            displayNav.value = !displayNav.value;
+        };
+
+        return {
+            toggleNav,
+            displayNav,
+        };
     },
 });
 </script>
@@ -27,6 +36,7 @@ export default defineNuxtComponent({
                     <button
                         type="button"
                         class="toggle-trigger"
+                        @click="toggleNav"
                     >
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar" />
@@ -43,6 +53,7 @@ export default defineNuxtComponent({
                 <div
                     id="page-navbar"
                     class="navbar-content navbar-collapse"
+                    :class="{'show': displayNav}"
                 >
                     <VCNavItems
                         class="navbar-nav"

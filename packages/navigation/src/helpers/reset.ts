@@ -1,5 +1,5 @@
 import type { NavigationItemNormalized } from '../types';
-import { isTraceEqual, isTracePartOf } from '../utils';
+import { isTraceEqual, isTracePartOf } from './trace';
 
 function resetItemsByTraceIF(
     items: NavigationItemNormalized[],

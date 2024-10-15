@@ -74,7 +74,7 @@ const secondaryAdminItems : NavigationItem[] = [
 ];
 
 export const navigationProvider = defineNavigationProvider({
-    async getItems(tier, parent) {
+    async find(tier, parent) {
         if (tier === 0) {
             return primaryItems;
         }

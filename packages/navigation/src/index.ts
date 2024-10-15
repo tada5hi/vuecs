@@ -2,10 +2,10 @@ import { applyStoreManagerOptions, installStoreManager } from '@vuecs/core';
 
 import type { App, Plugin } from 'vue';
 
+import '../assets/index.css';
 import './vue';
-import { NavigationManager } from './module';
+import { NavigationManager, providerManager } from './manager';
 
-import { providerManager } from './singleton';
 import {
     VCNavItem,
     VCNavItems,
@@ -14,8 +14,7 @@ import type { Options } from './types';
 
 export * from './components';
 export * from './provider';
-export * from './build';
-export * from './module';
+export * from './manager';
 export * from './types';
 
 export function install(instance: App, options: Options) : void {

@@ -15,6 +15,7 @@ import installFormControl from '@vuecs/form-controls';
 import installGravatar from '@vuecs/gravatar';
 import installLink from '@vuecs/link';
 import installNavigation from '@vuecs/navigation';
+import '@vuecs/navigation/../dist/index.css';
 import '@vuecs/pagination/../dist/index.css';
 import '@vuecs/list-controls/../dist/index.css';
 import installPagination from '@vuecs/pagination';

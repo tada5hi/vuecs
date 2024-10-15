@@ -5,10 +5,10 @@ type ParentMatch = {
 };
 
 type ItemMatchesFindOptions = {
-    url?: string
+    path?: string
 };
 
-function findItemMatchesByScoreIF(
+function findItemMatchesIF(
     items: NavigationItemNormalized[],
     options: ItemMatchesFindOptions,
     parent: ParentMatch,
@@ -23,19 +23,19 @@ function findItemMatchesByScoreIF(
 
         let { score } = parent;
 
-        if (options.url) {
+        if (options.path) {
             if (item.activeMatch) {
-                if (item.activeMatch === options.url) {
+                if (item.activeMatch === options.path) {
                     score += 3;
-                } else if (options.url.startsWith(item.activeMatch)) {
+                } else if (options.path.startsWith(item.activeMatch)) {
                     score += 2;
                 }
             }
 
             if (item.url && item.url !== '/') {
-                if (item.url === options.url) {
+                if (item.url === options.path) {
                     score += 3;
-                } else if (options.url.startsWith(item.url)) {
+                } else if (options.path.startsWith(item.url)) {
                     score += 2;
                 }
             }
@@ -46,7 +46,7 @@ function findItemMatchesByScoreIF(
         }
 
         if (item.children) {
-            const childMatches = findItemMatchesByScoreIF(item.children, options, {
+            const childMatches = findItemMatchesIF(item.children, options, {
                 score,
             });
 
@@ -63,7 +63,7 @@ export function findBestItemMatches(
     items: NavigationItemNormalized[],
     options: ItemMatchesFindOptions = {},
 ) : NavigationItemNormalized[] {
-    const result = findItemMatchesByScoreIF(items, options, { score: 0 });
+    const result = findItemMatchesIF(items, options, { score: 0 });
     const [first] = result;
     if (!first) {
         return [];

@@ -98,4 +98,22 @@ export class ComponentOptionsManager<T extends ComponentOptions> {
 
         return target as T[K];
     }
+
+    get<K extends keyof T &(string | number)>(key: K) : T[K] | undefined {
+        let value : T[K] | undefined;
+
+        const keys = this.storeManager.keys();
+        for (let i = 0; i < keys.length; i++) {
+            const presetStore = this.storeManager.use(keys[i]);
+            if (presetStore.hasOption(this.component, key as string)) {
+                value = mergeOption(
+                    key as string,
+                    value,
+                    presetStore.getOption(this.component, key as string),
+                );
+            }
+        }
+
+        return value;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024.
+ * Copyright (c) 2024-2024.
  * Author Peter Placzek (tada5hi)
  * For the full copyright and license information,
  * view the LICENSE file that was distributed with this source code.
@@ -10,20 +10,16 @@ import {
     findBestItemMatches,
     findTierItem,
     findTierItems,
+    isTraceEqual,
+    normalizeItems,
     removeTierItems,
     replaceTierItem,
     replaceTierItems,
     resetItemsByTrace,
-} from './core';
-import type { NavigationProvider } from './provider';
-import type {
-    NavigationItemNormalized, NavigationManagerBuildOptions,
-} from './types';
-import { isTraceEqual, normalizeItems } from './utils';
-
-type NavigationManagerContext = {
-    provider: NavigationProvider;
-};
+} from '../helpers';
+import type { NavigationProvider } from '../provider';
+import type { NavigationItemNormalized } from '../types';
+import type { NavigationManagerBuildOptions, NavigationManagerContext } from './types';
 
 export class NavigationManager extends EventEmitter<{
     updated: NavigationItemNormalized[],
@@ -70,7 +66,7 @@ export class NavigationManager extends EventEmitter<{
         let tier = 0;
 
         while (true) {
-            const raw = await this.provider.getItems(tier, parent);
+            const raw = await this.provider.find(tier, parent);
 
             if (!raw || raw.length === 0) {
                 break;
@@ -79,7 +75,7 @@ export class NavigationManager extends EventEmitter<{
             const items = normalizeItems(raw, { tier });
 
             const matches = findBestItemMatches(items, {
-                url: options.path,
+                path: options.path,
             });
 
             const [match] = matches;
@@ -150,7 +146,7 @@ export class NavigationManager extends EventEmitter<{
             items = findTierItems(this.items, tier);
         } else {
             const parent = findTierItem(tier - 1, this.itemsActive);
-            const raw = await this.provider.getItems(
+            const raw = await this.provider.find(
                 tier,
                 parent,
             );
