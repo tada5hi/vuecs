@@ -23,7 +23,7 @@ module.exports = {
         '!src/store/**/*.{ts,js}',
     ],
     moduleNameMapper: {
-        '\\.(css|less)$': '<rootDir>/test/__mocks__/styleMock.js',
+        '\\.(css|less)$': '<rootDir>/test/__mocks__/style.js',
     },
     coverageThreshold: {
         global: {

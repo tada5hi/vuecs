@@ -17,7 +17,7 @@ import {
     h, onMounted, onUnmounted, ref,
 } from 'vue';
 import { SlotName } from '../../constants';
-import { injectManager } from '../../manager/singleton';
+import { injectNavigationManager } from '../../manager/singleton';
 import type { NavigationItemNormalized } from '../../types';
 import { buildComponentOptions } from '../../helpers';
 import { VCNavItem } from '../item';
@@ -36,7 +36,7 @@ export const VCNavItems = defineComponent({
     setup(props, { slots }) {
         const options = buildComponentOptions();
 
-        const manager = injectManager();
+        const manager = injectNavigationManager();
         const managerItems = ref<NavigationItemNormalized[]>([]);
         if (!props.data) {
             managerItems.value = manager.getItems(props.tier);

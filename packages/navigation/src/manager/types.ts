@@ -5,12 +5,12 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { NavigationProvider } from '../provider';
+import type { NavigationItem, NavigationItemsFn } from '../types';
 
 export type NavigationManagerBuildOptions = {
     path: string
 };
 
-export type NavigationManagerContext = {
-    provider: NavigationProvider
+export type NavigationManagerOptions = {
+    items: NavigationItemsFn | NavigationItem[]
 };

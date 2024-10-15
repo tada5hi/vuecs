@@ -17,27 +17,38 @@ import {
     replaceTierItems,
     resetItemsByTrace,
 } from '../helpers';
-import type { NavigationProvider } from '../provider';
-import type { NavigationItemNormalized } from '../types';
-import type { NavigationManagerBuildOptions, NavigationManagerContext } from './types';
+import type { NavigationItemNormalized, NavigationItemsFn } from '../types';
+import type { NavigationManagerBuildOptions, NavigationManagerOptions } from './types';
 
 export class NavigationManager extends EventEmitter<{
     updated: NavigationItemNormalized[],
     tierUpdated: [number, NavigationItemNormalized[]]
 }> {
-    protected provider : NavigationProvider;
-
     protected itemsActive : NavigationItemNormalized[];
 
     protected items : NavigationItemNormalized[];
 
+    protected itemsFn : NavigationItemsFn;
+
     protected initialized : boolean;
 
-    constructor(ctx: NavigationManagerContext) {
+    constructor(options: NavigationManagerOptions) {
         super();
 
-        this.provider = ctx.provider;
+        let itemsFn : NavigationItemsFn;
+        if (typeof options.items === 'function') {
+            itemsFn = options.items;
+        } else {
+            itemsFn = async (tier) => {
+                if (tier > 0) {
+                    return [];
+                }
 
+                return options.items as NavigationItemNormalized[];
+            };
+        }
+
+        this.itemsFn = itemsFn;
         this.items = [];
         this.itemsActive = [];
 
@@ -52,9 +63,9 @@ export class NavigationManager extends EventEmitter<{
         return this.items.filter((item) => item.tier === tier);
     }
 
-    async build(options: NavigationManagerBuildOptions) : Promise<void> {
+    async build(options: NavigationManagerBuildOptions) : Promise<NavigationItemNormalized[]> {
         if (this.initialized) {
-            return;
+            return this.items;
         }
 
         this.initialized = true;
@@ -66,7 +77,7 @@ export class NavigationManager extends EventEmitter<{
         let tier = 0;
 
         while (true) {
-            const raw = await this.provider.find(tier, parent);
+            const raw = await this.itemsFn(tier, parent);
 
             if (!raw || raw.length === 0) {
                 break;
@@ -94,6 +105,8 @@ export class NavigationManager extends EventEmitter<{
         }
 
         this.emit('updated', this.items);
+
+        return this.items;
     }
 
     async select(tier: number, itemNew: NavigationItemNormalized) {
@@ -146,7 +159,7 @@ export class NavigationManager extends EventEmitter<{
             items = findTierItems(this.items, tier);
         } else {
             const parent = findTierItem(tier - 1, this.itemsActive);
-            const raw = await this.provider.find(
+            const raw = await this.itemsFn(
                 tier,
                 parent,
             );

@@ -4,7 +4,7 @@ import type { App, Plugin } from 'vue';
 
 import '../assets/index.css';
 import './vue';
-import { NavigationManager, providerManager } from './manager';
+import { NavigationManager, provideNavigationManager } from './manager';
 
 import {
     VCNavItem,
@@ -13,16 +13,15 @@ import {
 import type { Options } from './types';
 
 export * from './components';
-export * from './provider';
 export * from './manager';
 export * from './types';
 
 export function install(instance: App, options: Options) : void {
     const manager = new NavigationManager({
-        provider: options.provider,
+        items: options.items,
     });
 
-    providerManager(manager, instance);
+    provideNavigationManager(manager, instance);
 
     const storeManager = installStoreManager(instance);
     if (options.storeManager) {

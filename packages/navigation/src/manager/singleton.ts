@@ -11,7 +11,7 @@ import type { NavigationManager } from './module';
 
 const sym = Symbol.for('VCNavigationManager');
 
-export function injectManager(app?: App) : NavigationManager {
+export function injectNavigationManager(app?: App) : NavigationManager {
     const instance = inject<NavigationManager>(sym, app);
     if (!instance) {
         throw new Error('A navigation provider has not been provided.');
@@ -20,7 +20,7 @@ export function injectManager(app?: App) : NavigationManager {
     return instance;
 }
 
-export function providerManager(
+export function provideNavigationManager(
     manager: NavigationManager,
     app?: App,
 ) {

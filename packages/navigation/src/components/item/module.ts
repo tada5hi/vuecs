@@ -15,7 +15,7 @@ import {
     resolveComponent,
     toRef,
 } from 'vue';
-import { injectManager } from '../../manager/singleton';
+import { injectNavigationManager } from '../../manager/singleton';
 import type { NavigationItemNormalized } from '../../types';
 import { buildComponentOptions, isAbsoluteURL } from '../../helpers';
 import { ElementType, SlotName } from '../../constants';
@@ -31,7 +31,7 @@ export const VCNavItem = defineComponent({
         const itemsNode = resolveComponent('VCNavItems');
 
         const options = buildComponentOptions();
-        const manager = injectManager();
+        const manager = injectNavigationManager();
 
         const data = toRef(props, 'data');
 

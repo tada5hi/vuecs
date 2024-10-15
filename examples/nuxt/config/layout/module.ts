@@ -1,8 +1,6 @@
 import type {
     NavigationItem,
-} from '@vuecs/navigation';
-import {
-    defineNavigationProvider,
+    NavigationItemNormalized,
 } from '@vuecs/navigation';
 
 const primaryItems : NavigationItem[] = [
@@ -73,22 +71,20 @@ const secondaryAdminItems : NavigationItem[] = [
 
 ];
 
-export const navigationProvider = defineNavigationProvider({
-    async find(tier, parent) {
-        if (tier === 0) {
-            return primaryItems;
-        }
+export async function findNavigationItems(tier: number, parent: NavigationItemNormalized) : Promise<NavigationItem[]> {
+    if (tier === 0) {
+        return primaryItems;
+    }
 
-        if (parent) {
-            if (tier === 1) {
-                if (parent.name === 'Admin') {
-                    return secondaryAdminItems;
-                }
-
-                return secondaryDefaultItems;
+    if (parent) {
+        if (tier === 1) {
+            if (parent.name === 'Admin') {
+                return secondaryAdminItems;
             }
-        }
 
-        return [];
-    },
-});
+            return secondaryDefaultItems;
+        }
+    }
+
+    return [];
+}

@@ -1,11 +1,5 @@
 import type { StoreManagerOptions } from '@vuecs/core';
 import type { ElementType } from './constants';
-import type { NavigationProvider } from './provider';
-
-export type Options = {
-    provider: NavigationProvider,
-    storeManager?: StoreManagerOptions
-};
 
 export type NavigationItem = {
     id?: string | number,
@@ -37,4 +31,14 @@ export type NavigationItemNormalized = Omit<NavigationItem, 'tier' | 'children' 
     children: NavigationItemNormalized[],
 
     trace: string[]
+};
+
+export type NavigationItemsFn = (
+    tier: number,
+    parent?: NavigationItemNormalized
+) => Promise<NavigationItem[] | undefined>;
+
+export type Options = {
+    items: NavigationItemsFn | NavigationItem[]
+    storeManager?: StoreManagerOptions
 };
