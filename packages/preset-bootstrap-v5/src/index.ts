@@ -61,6 +61,12 @@ export default {
     listTitle: {
         textClass: 'mb-0',
     },
+
+    navigation: {
+        groupClass: 'nav-items',
+        linkClass: 'nav-link',
+    },
+
     pagination: {
         class: 'd-flex justify-content-center pagination',
     },

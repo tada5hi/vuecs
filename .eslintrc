@@ -15,6 +15,7 @@
         "dot-notation": "off",
         "no-continue": "off",
         "no-use-before-define": "off",
+        "no-constant-condition": "off",
         "no-underscore-dangle": "off",
         "no-shadow": "off",
         "import/no-relative-packages": "off",

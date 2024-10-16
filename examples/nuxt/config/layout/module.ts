@@ -1,26 +1,25 @@
 import type {
     NavigationItem,
-} from '@vuecs/navigation';
-import {
-    createNavigationProvider,
-    flattenNestedNavigationItems,
+    NavigationItemNormalized,
 } from '@vuecs/navigation';
 
 const primaryItems : NavigationItem[] = [
     {
-        id: 'default', name: 'Home', icon: 'fa fa-home', default: true,
+        name: 'Home', icon: 'fa fa-home',
     },
     {
-        id: 'admin', name: 'Admin', icon: 'fas fa-cog',
+        name: 'Admin', icon: 'fas fa-cog', activeMatch: '/admin/',
     },
 ];
 
 const secondaryDefaultItems : NavigationItem[] = [
     {
-        name: 'Home', type: 'link', icon: 'fas fa-home', url: '/', root: true,
+        name: 'Home', type: 'link', icon: 'fas fa-home', url: '/',
     },
+
     {
-        name: 'Countdown', type: 'link', icon: 'fa-solid fa-clock', url: '/countdown',
+        name: 'Controls',
+        type: 'separator',
     },
     {
         name: 'Form Controls',
@@ -46,6 +45,13 @@ const secondaryDefaultItems : NavigationItem[] = [
         ],
     },
     {
+        name: 'General',
+        type: 'separator',
+    },
+    {
+        name: 'Countdown', type: 'link', icon: 'fa-solid fa-clock', url: '/countdown',
+    },
+    {
         name: 'Pagination', type: 'link', icon: 'fa-solid fa-road', url: '/pagination',
     },
     {
@@ -65,77 +71,23 @@ const secondaryAdminItems : NavigationItem[] = [
 
 ];
 
-export const navigationProvider = createNavigationProvider({
-    async getItems(tier: number, itemsActive: NavigationItem[]) {
-        if (tier > 1) {
-            return undefined;
-        }
+export async function findNavigationItems(
+    level: number,
+    parent?: NavigationItemNormalized,
+) : Promise<NavigationItem[]> {
+    if (level === 0) {
+        return primaryItems;
+    }
 
-        let items : NavigationItem[] = [];
-
-        switch (tier) {
-            case 0:
-                items = primaryItems;
-                break;
-            case 1: {
-                let component : NavigationItem;
-                if (itemsActive.length > 0) {
-                    [component] = itemsActive;
-                } else {
-                    component = { id: 'default' };
-                }
-
-                switch (component.id) {
-                    case 'default':
-                        items = secondaryDefaultItems;
-                        break;
-                    case 'admin':
-                        items = secondaryAdminItems;
-                        break;
-                }
-
-                break;
-            }
-        }
-
-        return items;
-    },
-    async getItemsActiveByURL(url: string) {
-        const sortFunc = (a: NavigationItem, b: NavigationItem) => (b.url?.length ?? 0) - (a.url?.length ?? 0);
-        const filterFunc = (item: NavigationItem) => {
-            if (!item.url) return false;
-
-            if (item.root) {
-                return url === item.url;
+    if (parent) {
+        if (level === 1) {
+            if (parent.name === 'Admin') {
+                return secondaryAdminItems;
             }
 
-            return url === item.url || url.startsWith(item.url);
-        };
-
-        // ------------------------
-
-        let items = flattenNestedNavigationItems([...secondaryDefaultItems])
-            .sort(sortFunc)
-            .filter(filterFunc);
-
-        if (items.length > 0) {
-            return [
-                primaryItems[0],
-                items[0],
-            ];
+            return secondaryDefaultItems;
         }
+    }
 
-        items = flattenNestedNavigationItems([...secondaryAdminItems])
-            .sort(sortFunc)
-            .filter(filterFunc);
-
-        if (items.length > 0) {
-            return [
-                primaryItems[1],
-                items[0],
-            ];
-        }
-
-        return [];
-    },
-});
+    return [];
+}

@@ -7,7 +7,6 @@ export default defineNuxtConfig({
     css: [
         '@fortawesome/fontawesome-free/css/all.css',
         'bootstrap/dist/css/bootstrap.css',
-        '@myAssets/css/basic.css',
         '@myAssets/css/root.css',
         '@myAssets/css/core/header.css',
         '@myAssets/css/core/navbar.css',

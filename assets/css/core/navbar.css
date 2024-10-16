@@ -19,6 +19,14 @@
     display: flex;
 }
 
+.navbar-collapse {
+    display: none;
+}
+
+.navbar-collapse.show {
+    display: block !important;
+}
+
 .page-navbar:before,
 .page-navbar:after {
     clear:both;
@@ -130,11 +138,6 @@
 
     .page-navbar .navbar-content .nav-item {
         width: 100%;
-    }
-
-    .nav-items .nav-link,
-    .nav-items .nav-item .nav-sub-title {
-        text-align: center;
     }
 
     .page-navbar .navbar-content .nav-link {

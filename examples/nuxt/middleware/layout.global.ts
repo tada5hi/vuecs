@@ -5,8 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { buildNavigation } from '@vuecs/navigation';
+import { injectNavigationManager } from '@vuecs/navigation';
 
 export default defineNuxtRouteMiddleware(async (route) => {
-    await buildNavigation({ route });
+    const manager = injectNavigationManager();
+    await manager.build({ path: route.fullPath });
 });

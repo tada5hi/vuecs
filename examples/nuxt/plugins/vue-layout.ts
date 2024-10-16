@@ -14,19 +14,20 @@ import installCountdown from '@vuecs/countdown';
 import installFormControl from '@vuecs/form-controls';
 import installGravatar from '@vuecs/gravatar';
 import installLink from '@vuecs/link';
-import installNavigation from '@vuecs/navigation';
+import { install as installNavigation } from '@vuecs/navigation';
+import '@vuecs/navigation/../dist/index.css';
 import '@vuecs/pagination/../dist/index.css';
 import '@vuecs/list-controls/../dist/index.css';
 import installPagination from '@vuecs/pagination';
 import installTimeago from '@vuecs/timeago';
 import { de } from 'date-fns/locale';
 import { defineNuxtPlugin } from '#app';
-import { navigationProvider } from '~/config/layout';
+import { findNavigationItems } from '~/config/layout';
 
 export default defineNuxtPlugin((ctx) => {
     const baseOptions : StoreManagerOptions = {
         presets: {
-            bootstrapV5: createComponentsOptionsSubset(bootstrapV5, {
+            bootstrapV5: pickComponentsOptions(bootstrapV5, {
                 exclude: [
                     'listPagination',
                     'pagination',
@@ -49,8 +50,8 @@ export default defineNuxtPlugin((ctx) => {
         },
     });
 
-    ctx.vueApp.use(installNavigation, {
-        provider: navigationProvider,
+    installNavigation(ctx.vueApp, {
+        items: ({ level, parent }) => findNavigationItems(level, parent),
     });
 
     ctx.vueApp.use(installPagination);
