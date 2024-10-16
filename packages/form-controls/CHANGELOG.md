@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.3.1](https://github.com/tada5hi/vuecs/compare/form-controls-v2.3.0...form-controls-v2.3.1) (2024-10-16)
+
+
+### Bug Fixes
+
+* **deps:** bump @vueuse/core from 10.11.0 to 11.0.3 ([#1222](https://github.com/tada5hi/vuecs/issues/1222)) ([a839d11](https://github.com/tada5hi/vuecs/commit/a839d11a6bf8b96c7c6a9f3b806965af73b659c7))
+* **deps:** bump @vueuse/core from 11.0.3 to 11.1.0 ([#1241](https://github.com/tada5hi/vuecs/issues/1241)) ([dd21000](https://github.com/tada5hi/vuecs/commit/dd21000d07f5f4a88ea3a236dc84a873befc7c74))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^1.2.0 to ^2.0.0
+  * peerDependencies
+    * @vuecs/core bumped from ^1.2.0 to ^2.0.0
+
 ## [2.3.0](https://github.com/tada5hi/vuecs/compare/form-controls-v2.2.0...form-controls-v2.3.0) (2024-06-13)
 
 

@@ -1,5 +1,31 @@
 # Changelog
 
+## [2.0.0](https://github.com/tada5hi/vuecs/compare/navigation-v1.1.1...navigation-v2.0.0) (2024-10-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* public api changed
+
+### Features
+
+* optimized select fn of navigation manager ([b7a8097](https://github.com/tada5hi/vuecs/commit/b7a809754c8fa769966a10fa5f1a8492f3b75f8a))
+* refactored and optimized navigation package ([#1281](https://github.com/tada5hi/vuecs/issues/1281)) ([271d80e](https://github.com/tada5hi/vuecs/commit/271d80e379fbeb5e587dc827769eeed6ddee4242))
+
+
+### Bug Fixes
+
+* renamed few style classes ([88b1c50](https://github.com/tada5hi/vuecs/commit/88b1c50375efa1c7578c99f5f6c5eb1f3b356658))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^1.2.0 to ^2.0.0
+  * peerDependencies
+    * @vuecs/core bumped from ^1.2.0 to ^2.0.0
+
 ## [1.1.1](https://github.com/tada5hi/vuecs/compare/navigation-v1.1.0...navigation-v1.1.1) (2023-12-22)
 
 

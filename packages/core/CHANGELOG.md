@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.0.0](https://github.com/tada5hi/vuecs/compare/core-v1.2.0...core-v2.0.0) (2024-10-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* public api changed
+
+### Features
+
+* provide pick-components-options helper ([e4d40b0](https://github.com/tada5hi/vuecs/commit/e4d40b0d32cd57cfda12da44fe30e11f6952f0c8))
+* refactored and optimized navigation package ([#1281](https://github.com/tada5hi/vuecs/issues/1281)) ([271d80e](https://github.com/tada5hi/vuecs/commit/271d80e379fbeb5e587dc827769eeed6ddee4242))
+
 ## [1.2.0](https://github.com/tada5hi/vuecs/compare/core-v1.1.0...core-v1.2.0) (2023-12-22)
 
 

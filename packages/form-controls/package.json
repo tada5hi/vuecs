@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/form-controls",
-    "version": "2.3.0",
+    "version": "2.3.1",
     "description": "A package containing form controls.",
     "exports": {
         "./package.json": "./package.json",
@@ -55,12 +55,12 @@
         "@vueuse/core": "^11.1.0"
     },
     "devDependencies": {
-        "@vuecs/core": "^1.2.0",
+        "@vuecs/core": "^2.0.0",
         "cross-env": "^7.0.3",
         "vue": "^3.5.12"
     },
     "peerDependencies": {
-        "@vuecs/core": "^1.2.0",
+        "@vuecs/core": "^2.0.0",
         "vue": "^3.x"
     },
     "engines": {
