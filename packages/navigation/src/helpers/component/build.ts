@@ -21,8 +21,8 @@ export function buildComponentOptions() : ComponentOptions {
         itemClass: mergeOption('class', manager.get('itemClass'), 'vc-nav-item') as VNodeClass,
         itemTag: manager.get('itemTag') || 'li',
 
-        subGroupTitleClass: mergeOption('class', manager.get('subGroupTitleClass'), 'vc-nav-sub-group-title') as VNodeClass,
-        subGroupItemsClass: mergeOption('class', manager.get('subGroupTitleClass'), 'vc-nav-sub-group-items') as VNodeClass,
+        subGroupTitleClass: mergeOption('class', manager.get('subGroupTitleClass'), 'vc-nav-sub-level-title') as VNodeClass,
+        subGroupItemsClass: mergeOption('class', manager.get('subGroupTitleClass'), 'vc-nav-sub-level-items') as VNodeClass,
 
         separatorTag: manager.get('separatorTag') || 'div',
         separatorClass: mergeOption('class', manager.get('iconClass'), 'vc-nav-separator') as VNodeClass,

@@ -1,16 +1,16 @@
 .vc-nav-items,
-.vc-nav-sub-group-items {
+.vc-nav-sub-level-items {
     padding-left: 0;
     list-style: none;
 }
 
 .vc-nav-items .vc-nav-link i,
-.vc-nav-items .vc-nav-sub-group-title i {
+.vc-nav-items .vc-nav-sub-level-title i {
     padding-right: 4px;
 }
 
 .vc-nav-items .vc-nav-link,
-.vc-nav-items .vc-nav-item .vc-nav-sub-group-title {
+.vc-nav-items .vc-nav-item .vc-nav-sub-level-title {
     cursor: pointer;
     color: #aeb2b7;
     padding: 18px 15px 18px 15px;
@@ -22,13 +22,13 @@
 
 /* for now */
 .vc-nav-items .vc-nav-item:hover .vc-nav-title,
-.vc-nav-items .vc-nav-item:hover .vc-nav-sub-group-title,
+.vc-nav-items .vc-nav-item:hover .vc-nav-sub-level-title,
 
 .vc-nav-items .vc-nav-item:active .vc-nav-title,
-.vc-nav-items .vc-nav-item:active .vc-nav-sub-group-title,
+.vc-nav-items .vc-nav-item:active .vc-nav-sub-level-title,
 
 .vc-nav-items .vc-nav-item.active .vc-nav-title,
-.vc-nav-items .vc-nav-item.active .vc-nav-sub-group-title {
+.vc-nav-items .vc-nav-item.active .vc-nav-sub-level-title {
     background: #c8b98d;
     color: #fff;
 }
@@ -80,7 +80,7 @@
     margin-left: 0.4rem;
 }
 
-.vc-nav-items .vc-nav-sub-group-items .vc-nav-link {
+.vc-nav-items .vc-nav-sub-level-items .vc-nav-link {
     border-left-width: 6px;
     border-left-style: solid;
     border-left-color: rgb(64,67,78);
