@@ -41,28 +41,42 @@ import {
 } from "@vuecs/navigation";
 
 const topNav: NavigationItem[] = [
-    {
-        name: 'Home',
-        url: '/',
-        icon: 'fa fa-home'
-    },
-    {
-        name: 'About',
-        url: '/about',
-        icon: 'fa fa-info'
-    }
-]
+    { name: 'Home', url: '/', icon: 'fa fa-home' },
+    { name: 'Admin', url: '/admin/', activeMatch: '/admin/', icon: 'fas fa-cog' }
+];
+
+const sideDefaultNav : NavigationItem[] = [
+    { name: 'Home', url: '/', icon: 'fa fa-home' },
+    { name: 'About', url: '/info', icon: 'fa fa-info' }
+];
+
+const sideAdminNav : NavigatioNitem[] = [
+    { name: 'Home', url: '/admin/', icon: 'fa fa-home' },
+    { name: 'Users', url: '/admin/users', icon: 'fa fa-user' },
+    
+];
 
 export function getNavigationItems(
     level: number,
-    parent: NavigationItem
+    parent?: NavigationItem
 ) {
-    // return elements for a specific level and parent element.
-    if (level > 0) {
-        return [];
+    if (level === 0) {
+        return topNav;
+    }
+    
+    if(parent) {
+        if(level === 1) {
+            if(parent.name === 'Home') {
+                return sideDefaultNav;
+            } 
+            
+            if(parent.name === 'Admin') {
+                return sideAdminNav;
+            }
+        }
     }
 
-    return topNav;
+    return [];
 }
 ```
 
@@ -72,12 +86,11 @@ The next step is to create the vue entrypoint.
 
 ```typescript
 import {
-    buildNavigation,
+    injectNavigationManager,
     install
 } from '@vuecs/navigation';
-import {injectNavigationManager} from "@vuecs/navigation/src";
-import {createApp} from 'vue';
-import {createRouter, createWebHistory} from 'vue-router';
+import { createApp } from 'vue';
+import { createRouter, createWebHistory } from 'vue-router';
 import { getNavigationItems } from './module';
 
 const app = createApp();
