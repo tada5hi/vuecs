@@ -2,7 +2,6 @@ import type { StoreManagerOptions } from '@vuecs/core';
 import type { ElementType } from './constants';
 
 export type NavigationItem = {
-    id?: string | number,
     level?: number,
     name: string,
 

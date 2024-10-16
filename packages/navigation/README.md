@@ -30,21 +30,17 @@ $ npm i --save @vuecs/navigation
 
 ## Usage
 
-To use the navigation component, a constant must be defined, 
-which satisfy the [NavigationProvider](#navigationprovider) type.
-
-The implementation will provide different navigation elements for each tier.
-The tier is a numeric value, which can be any positive integer (including 0).
+To use the navigation component, a function must be defined, 
+to retrieve a set of elements for a specific level and parent element.
 
 `module.ts`
 
 ```typescript
 import {
-    NavigationItem,
-    defineNavigationProvider
+    NavigationItem
 } from "@vuecs/navigation";
 
-const primaryItems: NavigationItem[] = [
+const topNav: NavigationItem[] = [
     {
         name: 'Home',
         url: '/',
@@ -57,36 +53,17 @@ const primaryItems: NavigationItem[] = [
     }
 ]
 
-export const provider = defineNavigationProvider({
-    async getItems(tier: number, itemsActive: NavigationItem[]) {
-        // Return elements for a specific tier.
-        // The context provides the current active elements for
-        // the parent tiers.
-        
-        if(tier === 0) {
-            return primaryItems;
-        }
-        
-        // tier does not exist
-        return undefined;
-    },
-    async getItemsActiveByURL(url: string) {
-        // build element context for url
-        if (url === '/') {
-            return [
-                primaryItems[0]
-            ]
-        }
-
-        if (url === '/about') {
-            return [
-                primaryItems[1]
-            ]
-        }
-
-        return undefined;
+export function getNavigationItems(
+    level: number,
+    parent: NavigationItem
+) {
+    // return elements for a specific level and parent element.
+    if (level > 0) {
+        return [];
     }
-});
+
+    return topNav;
+}
 ```
 
 The next step is to create the vue entrypoint. 
@@ -98,27 +75,32 @@ import {
     buildNavigation,
     install
 } from '@vuecs/navigation';
-import { createApp } from 'vue';
-import { createRouter, createWebHistory } from 'vue-router';
-import { provider } from './module';
+import {injectNavigationManager} from "@vuecs/navigation/src";
+import {createApp} from 'vue';
+import {createRouter, createWebHistory} from 'vue-router';
+import { getNavigationItems } from './module';
 
 const app = createApp();
 
 app.use(install({
-    provider
+    items: ({ level, parent }) => {
+        return getNavigationItems(level, parent);
+    }
 }));
 
 const router = createRouter({
     history: createWebHistory(),
     routes: [
-        /* ... */     
+        /* ... */
     ],
 });
 app.use(router);
 
 (async () => {
-    const url = router?.currentRoute?.value?.fullPath;
-    await buildNavigation({ url });
+    const path = router?.currentRoute?.value?.fullPath;
+    
+    const navigationManager = injectNavigationManager();
+    await navigationManager.build({ path });
 
     app.mount('#app');
 })();
@@ -132,78 +114,14 @@ if registered globally.
 ```vue
 <template>
     <div>
-        <VCNavItems :tier="0" />
+        <VCNavItems :level="0" />
         
-        <VCNavItems :tier="1" />
+        <VCNavItems :level="1" />
     </div>
 </template>
 ```
 
-## Functions
-
-### buildNavigation
-
-
-▸ `function` **buildNavigation**(`context?: NavigationBuildContext`): `Promise`<`void`>
-
-Build all navigation tiers, by `url` or active `items`. 
-
-#### Example
-**`URL`**
-```typescript
-import { buildNavigation } from '@vuecs/navigation';
-
-await buildNavigation({
-    url: '/'
-});
-```
-
-This will call the `getItemsActive` method of the `NavigationProvider` implementation,
-to calculate the active items.
-
-**`items`**
-```typescript
-import { buildNavigation } from '@vuecs/navigation';
-
-await buildNavigation({
-    items: [
-        {id: 'default', tier: 0, name: 'Home'}
-    ]
-})
-```
-
-The `items` property will be passed as second argument to the `getItems` method of
-the `NavigationProvider` implementation, to build a specific tier navigation.
-
-**`route`**
-```typescript
-import { RouteLocation } from 'vue-router';
-import { buildNavigationWithRoute } from '@vuecs/navigation';
-
-const route : RouteLocation = {
-    fullPath: '/',
-    ...
-};
-
-await buildNavigation({
-    route
-})
-```
-
 ## Types
-
-### NavigationBuildContext
-
-```typescript
-import { NavigationItem } from '@vuecs/navigation';
-import { RouteLocationNormalized } from 'vue-router';
-
-declare type NavigationBuildContext = {
-    items?: NavigationItem[],
-    route?: RouteLocationNormalized,
-    url?: string
-};
-```
 
 ### NavigationItem
 
@@ -211,8 +129,7 @@ declare type NavigationBuildContext = {
 import { ElementType } from '@vuecs/navigation';
 
 declare type NavigationItem = {
-    id?: string | number,
-    tier?: number,
+    level?: number,
     name?: string,
 
     url?: string,
@@ -225,6 +142,7 @@ declare type NavigationItem = {
     icon?: string,
 
     active?: boolean,
+    activeMatch?: string,
 
     display?: boolean,
     displayChildren?: boolean,
@@ -232,33 +150,14 @@ declare type NavigationItem = {
     root?: boolean,
     children?: NavigationItem[],
 
-    requireLoggedIn?: boolean,
-    requireLoggedOut?: boolean,
-    requirePermissions?: string | string[] | ((checker: (name: string) => boolean) => boolean)
-
-    [key: string]: any
-};
-```
-
-### NavigationProvider
-
-```typescript
-import { NavigationItem } from '@vuecs/navigation';
-
-declare type NavigationProvider = {
-    getItems: (
-        tier: number, items: NavigationItem[]
-    ) => Promise<NavigationItem[] | undefined> | undefined | NavigationItem[],
-    getItemsActive: (
-        url: string
-    ) => Promise<NavigationItem[]> | NavigationItem[]
+    meta?: Record<string, any>
 };
 ```
 
 ## Example
 
 For an implementation example, on how to use this library, check out the example
-[package](https://github.com/tada5hi/vuecs/tree/master/examples/basic).
+[package](https://github.com/tada5hi/vuecs/tree/master/examples/nuxt).
 
 ## License
 
