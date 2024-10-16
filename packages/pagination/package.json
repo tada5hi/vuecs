@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/pagination",
-    "version": "1.1.1",
+    "version": "1.2.0",
     "description": "A package containing a vue pagination component.",
     "exports": {
         "./package.json": "./package.json",
@@ -45,11 +45,11 @@
         "build": "cross-env NODE_ENV=production rimraf dist && npm run build:js && npm run build:types"
     },
     "devDependencies": {
-        "@vuecs/core": "^1.2.0",
+        "@vuecs/core": "^2.0.0",
         "vue": "^3.5.12"
     },
     "peerDependencies": {
-        "@vuecs/core": "^1.2.0",
+        "@vuecs/core": "^2.0.0",
         "vue": "^3.x"
     },
     "engines": {

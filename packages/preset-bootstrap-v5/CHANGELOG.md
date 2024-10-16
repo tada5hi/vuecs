@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.0.0](https://github.com/tada5hi/vuecs/compare/preset-bootstrap-v5-v1.1.0...preset-bootstrap-v5-v2.0.0) (2024-10-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* public api changed
+
+### Features
+
+* custom prefix for list-control css classes ([e0b3817](https://github.com/tada5hi/vuecs/commit/e0b38173afb9b5f1f67241d897b9216c8ab2d3fc))
+* provide pick-components-options helper ([e4d40b0](https://github.com/tada5hi/vuecs/commit/e4d40b0d32cd57cfda12da44fe30e11f6952f0c8))
+* refactored and optimized navigation package ([#1281](https://github.com/tada5hi/vuecs/issues/1281)) ([271d80e](https://github.com/tada5hi/vuecs/commit/271d80e379fbeb5e587dc827769eeed6ddee4242))
+
 ## [1.1.0](https://github.com/tada5hi/vuecs/compare/preset-bootstrap-v5-v1.0.0...preset-bootstrap-v5-v1.1.0) (2024-04-22)
 
 

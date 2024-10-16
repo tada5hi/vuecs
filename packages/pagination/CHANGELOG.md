@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.2.0](https://github.com/tada5hi/vuecs/compare/pagination-v1.1.1...pagination-v1.2.0) (2024-10-16)
+
+
+### Features
+
+* css preset for list-controls ([3e7e698](https://github.com/tada5hi/vuecs/commit/3e7e698d515f0c37f811964c72222c8c14e1183c))
+* custom css classes for pagination package ([32f13d2](https://github.com/tada5hi/vuecs/commit/32f13d2a9e39ae09f6d16f29cbd143f1f3118cd0))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^1.2.0 to ^2.0.0
+  * peerDependencies
+    * @vuecs/core bumped from ^1.2.0 to ^2.0.0
+
 ## [1.1.1](https://github.com/tada5hi/vuecs/compare/pagination-v1.1.0...pagination-v1.1.1) (2023-12-22)
 
 
