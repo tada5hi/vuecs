@@ -30,7 +30,7 @@ export class NavigationManager extends EventEmitter<{
 
     protected itemsFn : NavigationItemsFn;
 
-    protected initialized : boolean;
+    protected built : boolean;
 
     constructor(options: NavigationManagerOptions) {
         super();
@@ -52,7 +52,7 @@ export class NavigationManager extends EventEmitter<{
         this.items = [];
         this.itemsActive = [];
 
-        this.initialized = false;
+        this.built = false;
     }
 
     getItems(tier?: number) {
@@ -64,11 +64,11 @@ export class NavigationManager extends EventEmitter<{
     }
 
     async build(options: NavigationManagerBuildOptions) : Promise<NavigationItemNormalized[]> {
-        if (this.initialized) {
+        if (this.built) {
             return this.items;
         }
 
-        this.initialized = true;
+        this.built = true;
 
         this.items = [];
         this.itemsActive = [];
@@ -78,7 +78,6 @@ export class NavigationManager extends EventEmitter<{
 
         while (true) {
             const raw = await this.itemsFn({ level, parent });
-
             if (!raw || raw.length === 0) {
                 break;
             }
@@ -124,8 +123,12 @@ export class NavigationManager extends EventEmitter<{
         );
         this.itemsActive.push(itemNew);
 
+        const startLevel = level;
         while (true) {
-            const built = await this.buildLevel(level);
+            const built = await this.buildLevel(
+                level,
+                startLevel === level,
+            );
             if (!built) {
                 break;
             }
