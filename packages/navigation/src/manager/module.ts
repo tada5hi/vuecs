@@ -8,13 +8,13 @@
 import { EventEmitter } from '@posva/event-emitter';
 import {
     findBestItemMatches,
-    findTierItem,
-    findTierItems,
+    findItemWithLevel,
+    findItemsWithLevel,
     isTraceEqual,
     normalizeItems,
-    removeTierItems,
-    replaceTierItem,
-    replaceTierItems,
+    removeItemsWithLevel,
+    replaceLevelItem,
+    replaceLevelItems,
     resetItemsByTrace,
 } from '../helpers';
 import type { NavigationItemNormalized, NavigationItemsFn } from '../types';
@@ -39,8 +39,8 @@ export class NavigationManager extends EventEmitter<{
         if (typeof options.items === 'function') {
             itemsFn = options.items;
         } else {
-            itemsFn = async (tier) => {
-                if (tier > 0) {
+            itemsFn = async ({ level }) => {
+                if (level > 0) {
                     return [];
                 }
 
@@ -60,7 +60,7 @@ export class NavigationManager extends EventEmitter<{
             return this.items;
         }
 
-        return this.items.filter((item) => item.tier === tier);
+        return this.items.filter((item) => item.level === tier);
     }
 
     async build(options: NavigationManagerBuildOptions) : Promise<NavigationItemNormalized[]> {
@@ -74,16 +74,16 @@ export class NavigationManager extends EventEmitter<{
         this.itemsActive = [];
 
         let parent : NavigationItemNormalized | undefined;
-        let tier = 0;
+        let level = 0;
 
         while (true) {
-            const raw = await this.itemsFn(tier, parent);
+            const raw = await this.itemsFn({ level, parent });
 
             if (!raw || raw.length === 0) {
                 break;
             }
 
-            const items = normalizeItems(raw, { tier });
+            const items = normalizeItems(raw, { level });
 
             const matches = findBestItemMatches(items, {
                 path: options.path,
@@ -97,11 +97,11 @@ export class NavigationManager extends EventEmitter<{
 
             this.itemsActive.push(match);
 
-            await this.buildTier(tier);
+            await this.buildLevel(level);
 
             parent = match;
 
-            tier++;
+            level++;
         }
 
         this.emit('updated', this.items);
@@ -109,8 +109,8 @@ export class NavigationManager extends EventEmitter<{
         return this.items;
     }
 
-    async select(tier: number, itemNew: NavigationItemNormalized) {
-        const itemOld = findTierItem(tier, this.itemsActive);
+    async select(level: number, itemNew: NavigationItemNormalized) {
+        const itemOld = findItemWithLevel(level, this.itemsActive);
 
         if (
             itemOld &&
@@ -120,76 +120,76 @@ export class NavigationManager extends EventEmitter<{
         }
 
         this.itemsActive = this.itemsActive.filter(
-            (el) => el.tier < tier,
+            (el) => el.level < level,
         );
         this.itemsActive.push(itemNew);
 
         while (true) {
-            const built = await this.buildTier(tier);
+            const built = await this.buildLevel(level);
             if (!built) {
                 break;
             }
 
-            tier++;
+            level++;
         }
     }
 
-    async toggle(tier: number, item: NavigationItemNormalized) {
+    async toggle(level: number, item: NavigationItemNormalized) {
         let isMatch : boolean;
         if (item.displayChildren) {
             isMatch = true;
         } else {
-            const itemOld = findTierItem(tier, this.itemsActive);
+            const itemOld = findItemWithLevel(level, this.itemsActive);
             isMatch = !!itemOld && isTraceEqual(item.trace, itemOld.trace);
         }
 
         if (isMatch) {
-            this.itemsActive = removeTierItems(tier, this.itemsActive);
+            this.itemsActive = removeItemsWithLevel(level, this.itemsActive);
         } else {
-            this.itemsActive = replaceTierItem(tier, this.itemsActive, item);
+            this.itemsActive = replaceLevelItem(level, this.itemsActive, item);
         }
 
-        await this.buildTier(tier, true);
+        await this.buildLevel(level, true);
     }
 
-    protected async buildTier(tier: number, cached?: boolean) : Promise<boolean> {
+    protected async buildLevel(level: number, cached?: boolean) : Promise<boolean> {
         let items : NavigationItemNormalized[] | undefined;
 
         if (cached) {
-            items = findTierItems(this.items, tier);
+            items = findItemsWithLevel(this.items, level);
         } else {
-            const parent = findTierItem(tier - 1, this.itemsActive);
-            const raw = await this.itemsFn(
-                tier,
+            const parent = findItemWithLevel(level - 1, this.itemsActive);
+            const raw = await this.itemsFn({
+                level,
                 parent,
-            );
+            });
 
             items = raw && raw.length > 0 ?
-                normalizeItems(raw, { tier }) :
+                normalizeItems(raw, { level }) :
                 [];
         }
 
         if (!items || items.length === 0) {
             this.items = this.items.filter(
-                (item) => item.tier < tier,
+                (item) => item.level < level,
             );
 
-            this.emit('tierUpdated', tier, []);
+            this.emit('tierUpdated', level, []);
 
             return false;
         }
 
         let trace : string[] = [];
-        const item = findTierItem(tier, this.itemsActive);
+        const item = findItemWithLevel(level, this.itemsActive);
         if (item) {
             trace = item.trace;
         }
 
         resetItemsByTrace(items, trace);
 
-        this.items = replaceTierItems(tier, this.items, items);
+        this.items = replaceLevelItems(level, this.items, items);
 
-        this.emit('tierUpdated', tier, items);
+        this.emit('tierUpdated', level, items);
 
         return true;
     }

@@ -15,7 +15,7 @@ import {
     resolveComponent,
     toRef,
 } from 'vue';
-import { injectNavigationManager } from '../../manager/singleton';
+import { injectNavigationManager } from '../../manager';
 import type { NavigationItemNormalized } from '../../types';
 import { buildComponentOptions, isAbsoluteURL } from '../../helpers';
 import { ElementType, SlotName } from '../../constants';
@@ -35,14 +35,16 @@ export const VCNavItem = defineComponent({
 
         const data = toRef(props, 'data');
 
-        const select = async (value: NavigationItemNormalized) => {
-            await manager.select(data.value.tier, value);
+        const select = async (
+            value: NavigationItemNormalized,
+        ) => {
+            await manager.select(data.value.level, value);
         };
 
         const toggle = async (
             value: NavigationItemNormalized,
         ) => {
-            await manager.toggle(data.value.tier, value);
+            await manager.toggle(data.value.level, value);
         };
 
         return () => {
@@ -165,6 +167,10 @@ export const VCNavItem = defineComponent({
                     ]]);
                 }
 
+                if (!data.value.displayChildren) {
+                    return title;
+                }
+
                 let vNodes : VNodeChild;
 
                 if (hasNormalizedSlot(SlotName.SUB_ITEMS, slots)) {
@@ -173,9 +179,9 @@ export const VCNavItem = defineComponent({
                         select,
                         toggle,
                     });
-                } else if (data.value.displayChildren) {
+                } else {
                     vNodes = h(itemsNode, {
-                        tier: data.value.tier,
+                        level: data.value.level,
                         data: data.value.children,
                     });
                 }

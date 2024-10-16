@@ -8,7 +8,7 @@
 import type { NavigationItem, NavigationItemNormalized } from '../types';
 
 type NormalizeItemOptions = {
-    tier: number
+    level: number
 };
 
 function normalizeItemIF(
@@ -18,7 +18,7 @@ function normalizeItemIF(
 ) : NavigationItemNormalized {
     const output : NavigationItemNormalized = {
         ...item,
-        tier: defaults.tier,
+        level: defaults.level,
         children: [],
         trace: [
             ...trace,

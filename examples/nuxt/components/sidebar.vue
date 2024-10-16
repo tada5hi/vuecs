@@ -16,7 +16,7 @@ export default defineNuxtComponent({
     <div class="page-sidebar">
         <VCNavItems
             class="sidebar-menu navbar-nav"
-            :tier="1"
+            :level="1"
         />
     </div>
 </template>

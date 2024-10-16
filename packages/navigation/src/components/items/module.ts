@@ -17,14 +17,14 @@ import {
     h, onMounted, onUnmounted, ref,
 } from 'vue';
 import { SlotName } from '../../constants';
-import { injectNavigationManager } from '../../manager/singleton';
+import { injectNavigationManager } from '../../manager';
 import type { NavigationItemNormalized } from '../../types';
 import { buildComponentOptions } from '../../helpers';
 import { VCNavItem } from '../item';
 
 export const VCNavItems = defineComponent({
     props: {
-        tier: {
+        level: {
             type: Number,
             default: 0,
         },
@@ -39,7 +39,7 @@ export const VCNavItems = defineComponent({
         const manager = injectNavigationManager();
         const managerItems = ref<NavigationItemNormalized[]>([]);
         if (!props.data) {
-            managerItems.value = manager.getItems(props.tier);
+            managerItems.value = manager.getItems(props.level);
         }
 
         const counter = ref(0);
@@ -48,7 +48,7 @@ export const VCNavItems = defineComponent({
 
         onMounted(() => {
             removeListener = manager.on('tierUpdated', (tier, items) => {
-                if (tier !== props.tier) {
+                if (tier !== props.level) {
                     return;
                 }
 

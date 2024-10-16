@@ -3,7 +3,7 @@ import type { ElementType } from './constants';
 
 export type NavigationItem = {
     id?: string | number,
-    tier?: number,
+    level?: number,
     name: string,
 
     url?: string,
@@ -25,17 +25,21 @@ export type NavigationItem = {
     meta?: Record<string, any>
 };
 
-export type NavigationItemNormalized = Omit<NavigationItem, 'tier' | 'children' | 'name'> & {
+export type NavigationItemNormalized = Omit<NavigationItem, 'level' | 'children' | 'name'> & {
     name: string,
-    tier: number,
+    level: number,
     children: NavigationItemNormalized[],
 
     trace: string[]
 };
 
-export type NavigationItemsFn = (
-    tier: number,
+export type NavigationItemsFnContext = {
+    level: number,
     parent?: NavigationItemNormalized
+};
+
+export type NavigationItemsFn = (
+    ctx: NavigationItemsFnContext
 ) => Promise<NavigationItem[] | undefined>;
 
 export type Options = {

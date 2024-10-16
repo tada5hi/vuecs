@@ -69,5 +69,7 @@ export function findBestItemMatches(
         return [];
     }
 
-    return result.filter((match) => match.score === first.score).map((match) => match.data);
+    return result
+        .filter((match) => match.score === first.score)
+        .map((match) => match.data);
 }

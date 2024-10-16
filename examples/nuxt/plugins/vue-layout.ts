@@ -51,7 +51,7 @@ export default defineNuxtPlugin((ctx) => {
     });
 
     installNavigation(ctx.vueApp, {
-        items: (tier, parent) => findNavigationItems(tier, parent),
+        items: ({ level, parent }) => findNavigationItems(level, parent),
     });
 
     ctx.vueApp.use(installPagination);

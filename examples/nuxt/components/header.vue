@@ -57,7 +57,7 @@ export default defineNuxtComponent({
                 >
                     <VCNavItems
                         class="navbar-nav"
-                        :tier="0"
+                        :level="0"
                     />
 
                     <ul class="navbar-nav navbar-gadgets nav-items">
