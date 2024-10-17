@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.1.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v3.0.0...examples-nuxt-v3.1.0) (2024-10-17)
+
+
+### Features
+
+* introduce buildOnce method for navigation manager ([b3e195b](https://github.com/tada5hi/vuecs/commit/b3e195b875ee97988972e90196620f723af1e9cc))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/navigation bumped from ^2.0.0 to ^2.1.0
+
 ## [3.0.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v2.3.0...examples-nuxt-v3.0.0) (2024-10-16)
 
 
