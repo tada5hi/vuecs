@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/tada5hi/vuecs/compare/navigation-v2.0.0...navigation-v2.1.0) (2024-10-17)
+
+
+### Features
+
+* introduce buildOnce method for navigation manager ([b3e195b](https://github.com/tada5hi/vuecs/commit/b3e195b875ee97988972e90196620f723af1e9cc))
+
 ## [2.0.0](https://github.com/tada5hi/vuecs/compare/navigation-v1.1.1...navigation-v2.0.0) (2024-10-16)
 
 
