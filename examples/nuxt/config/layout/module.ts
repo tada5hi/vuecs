@@ -73,7 +73,7 @@ const secondaryAdminItems : NavigationItem[] = [
 
 export async function findNavigationItems(
     level: number,
-    parent?: NavigationItemNormalized,
+    parent?: NavigationItemNormalized<{foo: string}>,
 ) : Promise<NavigationItem[]> {
     if (level === 0) {
         return primaryItems;

@@ -1,7 +1,9 @@
 import type { StoreManagerOptions } from '@vuecs/core';
 import type { ElementType } from './constants';
 
-export type NavigationItem = {
+export type NavigationItem<
+    META = any,
+> = {
     level?: number,
     name: string,
 
@@ -21,25 +23,37 @@ export type NavigationItem = {
 
     children?: NavigationItem[],
 
-    meta?: Record<string, any>
+    meta?: META
 };
 
-export type NavigationItemNormalized = Omit<NavigationItem, 'level' | 'children' | 'name'> & {
+export type NavigationItemNormalized<
+    META = any,
+> = Omit<NavigationItem<META>,
+'name' |
+'level' |
+'children' |
+'meta'
+> & {
     name: string,
     level: number,
-    children: NavigationItemNormalized[],
+    children: NavigationItemNormalized<META>[],
 
-    trace: string[]
+    trace: string[],
+    meta: META
 };
 
-export type NavigationItemsFnContext = {
+export type NavigationItemsFnContext<
+    META = any,
+> = {
     level: number,
-    parent?: NavigationItemNormalized
+    parent?: NavigationItemNormalized<META>
 };
 
-export type NavigationItemsFn = (
-    ctx: NavigationItemsFnContext
-) => Promise<NavigationItem[] | undefined>;
+export type NavigationItemsFn<
+    META = any,
+> = (
+    ctx: NavigationItemsFnContext<META>
+) => Promise<NavigationItem<META>[] | undefined>;
 
 export type Options = {
     items: NavigationItemsFn | NavigationItem[]

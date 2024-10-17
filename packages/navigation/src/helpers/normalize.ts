@@ -24,6 +24,7 @@ function normalizeItemIF(
             ...trace,
             item.name,
         ],
+        meta: item.meta || {},
     };
 
     if (!item.children) {
