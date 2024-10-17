@@ -11,16 +11,15 @@ export type ComponentOptions = {
     groupClass: VNodeClass,
     groupTag: VNodeClass,
 
-    subGroupTitleClass: VNodeClass,
-    subGroupItemsClass: VNodeClass,
-
     itemClass: VNodeClass,
+    itemNestedClass: VNodeClass,
     itemTag: string,
 
     separatorTag: string,
     separatorClass: VNodeClass,
 
-    iconClass: VNodeClass
+    linkIconTag: string,
+    linkIconClass: VNodeClass
 
     linkClass: VNodeClass,
     linkRootClass?: VNodeClass,

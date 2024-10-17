@@ -10,6 +10,7 @@ import type { LinkProperties } from '@vuecs/link';
 import { VCLink } from '@vuecs/link';
 import type { PropType, VNodeChild } from 'vue';
 import {
+    computed,
     defineComponent,
     h,
     resolveComponent,
@@ -34,6 +35,8 @@ export const VCNavItem = defineComponent({
         const manager = injectNavigationManager();
 
         const data = toRef(props, 'data');
+        const hasChildren = computed(() => data.value.children &&
+                data.value.children.length > 0);
 
         const select = async (
             value: NavigationItemNormalized,
@@ -119,14 +122,22 @@ export const VCNavItem = defineComponent({
                     }, {
                         default: () => [
                             ...(data.value.icon ?
-                                [h('i', { class: data.value.icon })] :
+                                [h(
+                                    options.linkIconTag,
+                                    {
+                                        class: options.linkIconClass,
+                                    },
+                                    [
+                                        h('i', { class: data.value.icon }),
+                                    ],
+                                )] :
                                 []
                             ),
-                            h(
-                                options.linkTextTag,
-                                { class: options.linkTextClass },
-                                [data.value.name],
-                            ),
+                            h(options.linkTextTag, {
+                                class: options.linkTextClass,
+                            }, [
+                                data.value.name,
+                            ]),
                         ],
                     });
                 }
@@ -148,15 +159,23 @@ export const VCNavItem = defineComponent({
                     });
                 } else {
                     title = h('div', {
-                        class: options.subGroupTitleClass,
+                        class: options.linkClass,
                         onClick($event: any) {
                             $event.preventDefault();
 
                             return toggle(data.value);
                         },
-                    }, [[
+                    }, [
                         ...(data.value.icon ?
-                            [h('i', { class: data.value.icon })] :
+                            [h(
+                                options.linkIconTag,
+                                {
+                                    class: options.linkIconClass,
+                                },
+                                [
+                                    h('i', { class: data.value.icon }),
+                                ],
+                            )] :
                             []
                         ),
                         h(options.linkTextTag, {
@@ -164,10 +183,10 @@ export const VCNavItem = defineComponent({
                         }, [
                             data.value.name,
                         ]),
-                    ]]);
+                    ]);
                 }
 
-                if (!data.value.displayChildren) {
+                if (!hasChildren.value) {
                     return title;
                 }
 
@@ -195,6 +214,7 @@ export const VCNavItem = defineComponent({
             return h(options.itemTag, {
                 class: [
                     options.itemClass,
+                    ...(hasChildren.value ? [options.itemNestedClass] : []),
                     {
                         active: data.value.active || data.value.displayChildren,
                     },

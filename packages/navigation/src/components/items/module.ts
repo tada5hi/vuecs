@@ -98,9 +98,7 @@ export const VCNavItems = defineComponent({
             }
 
             return h(options.groupTag, {
-                class: props.data ?
-                    options.subGroupItemsClass :
-                    options.groupClass,
+                class: options.groupClass,
             }, vNodes);
         };
     },

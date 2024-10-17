@@ -19,19 +19,18 @@ export function buildComponentOptions() : ComponentOptions {
         groupTag: manager.get('groupTag') || 'ul',
 
         itemClass: mergeOption('class', manager.get('itemClass'), 'vc-nav-item') as VNodeClass,
+        itemNestedClass: mergeOption('class', manager.get('itemNestedClass'), 'vc-nav-item-nested') as VNodeClass,
         itemTag: manager.get('itemTag') || 'li',
 
-        subGroupTitleClass: mergeOption('class', manager.get('subGroupTitleClass'), 'vc-nav-sub-level-title') as VNodeClass,
-        subGroupItemsClass: mergeOption('class', manager.get('subGroupTitleClass'), 'vc-nav-sub-level-items') as VNodeClass,
-
         separatorTag: manager.get('separatorTag') || 'div',
-        separatorClass: mergeOption('class', manager.get('iconClass'), 'vc-nav-separator') as VNodeClass,
+        separatorClass: mergeOption('class', manager.get('linkIconClass'), 'vc-nav-separator') as VNodeClass,
 
-        iconClass: mergeOption('class', manager.get('iconClass'), 'vc-nav-icon') as VNodeClass,
+        linkIconTag: manager.get('linkIconTag') || 'div',
+        linkIconClass: mergeOption('class', manager.get('linkIconClass'), 'vc-nav-link-icon') as VNodeClass,
 
         linkClass: mergeOption('class', manager.get('linkClass'), 'vc-nav-link') as VNodeClass,
         linkRootClass: mergeOption('class', manager.get('linkRootClass'), 'vc-nav-link-root') as VNodeClass,
-        linkTextTag: manager.get('linkTextTag') || 'span',
+        linkTextTag: manager.get('linkTextTag') || 'div',
         linkTextClass: mergeOption('class', manager.get('linkTextClass'), 'vc-nav-link-text') as VNodeClass,
     };
 }
