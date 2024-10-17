@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/tada5hi/vuecs/compare/navigation-v2.1.0...navigation-v2.2.0) (2024-10-17)
+
+
+### Features
+
+* enhance preset css and reorder navigation link elements ([6705bed](https://github.com/tada5hi/vuecs/commit/6705bed34cf2e028e190869534ebb01d43559513))
+
 ## [2.1.0](https://github.com/tada5hi/vuecs/compare/navigation-v2.0.0...navigation-v2.1.0) (2024-10-17)
 
 

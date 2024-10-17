@@ -5,11 +5,11 @@
     "packages/gravatar": "1.0.1",
     "packages/link": "1.0.0",
     "packages/list-controls": "2.0.0",
-    "packages/navigation": "2.1.0",
+    "packages/navigation": "2.2.0",
     "packages/pagination": "1.2.0",
     "packages/preset-bootstrap-v4": "1.0.0",
     "packages/preset-bootstrap-v5": "2.0.0",
     "packages/preset-font-awesome": "1.0.0",
     "packages/timeago": "1.1.0",
-    "examples/nuxt": "3.1.0"
+    "examples/nuxt": "3.2.0"
 }

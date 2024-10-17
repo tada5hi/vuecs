@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.2.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v3.1.0...examples-nuxt-v3.2.0) (2024-10-17)
+
+
+### Features
+
+* enhance preset css and reorder navigation link elements ([6705bed](https://github.com/tada5hi/vuecs/commit/6705bed34cf2e028e190869534ebb01d43559513))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/navigation bumped from ^2.1.0 to ^2.2.0
+
 ## [3.1.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v3.0.0...examples-nuxt-v3.1.0) (2024-10-17)
 
 
