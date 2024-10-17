@@ -63,11 +63,15 @@ export class NavigationManager extends EventEmitter<{
         return this.items.filter((item) => item.level === tier);
     }
 
-    async build(options: NavigationManagerBuildOptions) : Promise<NavigationItemNormalized[]> {
-        if (this.built) {
+    async buildOnce(options: NavigationManagerBuildOptions) : Promise<NavigationItemNormalized[]> {
+        if (this.built && !options.reset) {
             return this.items;
         }
 
+        return this.build(options);
+    }
+
+    async build(options: NavigationManagerBuildOptions) : Promise<NavigationItemNormalized[]> {
         this.built = true;
 
         this.items = [];

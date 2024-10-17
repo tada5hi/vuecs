@@ -9,5 +9,5 @@ import { injectNavigationManager } from '@vuecs/navigation';
 
 export default defineNuxtRouteMiddleware(async (route) => {
     const manager = injectNavigationManager();
-    await manager.build({ path: route.fullPath });
+    await manager.buildOnce({ path: route.fullPath });
 });
