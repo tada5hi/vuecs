@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.0](https://github.com/tada5hi/vuecs/compare/navigation-v2.2.0...navigation-v2.3.0) (2024-10-23)
+
+
+### Features
+
+* extend navigation-item type with generic argument ([3c1c081](https://github.com/tada5hi/vuecs/commit/3c1c0816f75a21762dfc8a03f50f962ad4f97616))
+
 ## [2.2.0](https://github.com/tada5hi/vuecs/compare/navigation-v2.1.0...navigation-v2.2.0) (2024-10-17)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/tada5hi/vuecs/compare/pagination-v1.2.0...pagination-v1.3.0) (2024-10-23)
+
+
+### Features
+
+* **pagination:** jump button for first & last page ([528a7be](https://github.com/tada5hi/vuecs/commit/528a7be78d3a8e9fa6e26814184d62d32a994a6f))
+
 ## [1.2.0](https://github.com/tada5hi/vuecs/compare/pagination-v1.1.1...pagination-v1.2.0) (2024-10-16)
 
 

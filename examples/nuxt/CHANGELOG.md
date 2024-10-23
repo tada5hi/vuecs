@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.3.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v3.2.0...examples-nuxt-v3.3.0) (2024-10-23)
+
+
+### Features
+
+* extend navigation-item type with generic argument ([3c1c081](https://github.com/tada5hi/vuecs/commit/3c1c0816f75a21762dfc8a03f50f962ad4f97616))
+* **pagination:** jump button for first & last page ([528a7be](https://github.com/tada5hi/vuecs/commit/528a7be78d3a8e9fa6e26814184d62d32a994a6f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/navigation bumped from ^2.2.0 to ^2.3.0
+    * @vuecs/pagination bumped from ^1.2.0 to ^1.3.0
+    * @vuecs/preset-font-awesome bumped from ^1.0.0 to ^1.1.0
+
 ## [3.2.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v3.1.0...examples-nuxt-v3.2.0) (2024-10-17)
 
 
