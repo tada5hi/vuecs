@@ -1,7 +1,7 @@
 import type {
     ComponentOptionsOverride, PartialPick, StoreManagerOptions, VNodeClass,
 } from '@vuecs/core';
-import type { MaybeRef, VNodeArrayChildren } from 'vue';
+import type { MaybeRef, VNodeArrayChildren, VNodeChild } from 'vue';
 
 export type PaginationMeta = {
     busy?: boolean,
@@ -33,13 +33,17 @@ export type PaginationOptions = {
     linkClass: VNodeClass,
     linkActiveClass: VNodeClass,
 
-    prevTag: string,
-    prevClass?: VNodeClass,
-    prevContent?: VNodeArrayChildren,
+    firstIconTag: string,
+    firstIconClass?: VNodeClass,
 
-    nextTag: string,
-    nextClass?: VNodeClass,
-    nextContent?: VNodeArrayChildren
+    lastIconTag: string,
+    lastIconClass?: VNodeClass,
+
+    prevIconTag: string,
+    prevIconClass?: VNodeClass,
+
+    nextIconTag: string,
+    nextIconClass?: VNodeClass,
 };
 
 export type PaginationOptionsInput = ComponentOptionsOverride<
@@ -51,8 +55,10 @@ PartialPick<PaginationOptions,
 'itemClass' |
 'linkClass' |
 'linkActiveClass' |
-'prevTag' |
-'nextTag'
+'firstIconTag' |
+'prevIconTag' |
+'nextIconTag' |
+'lastIconTag'
 >
 >;
 

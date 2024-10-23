@@ -17,7 +17,7 @@ export default {
         iconClass: 'fa fa-bars',
     },
     pagination: {
-        prevClass: 'fa-solid fa-chevron-left',
-        nextClass: 'fa-solid fa-chevron-right',
+        prevIconClass: 'fa-solid fa-chevron-left',
+        nextIconClass: 'fa-solid fa-chevron-right',
     },
 };

@@ -16,7 +16,7 @@ import installGravatar from '@vuecs/gravatar';
 import installLink from '@vuecs/link';
 import { install as installNavigation } from '@vuecs/navigation';
 // import '@vuecs/navigation/../dist/index.css';
-import '@vuecs/pagination/../dist/index.css';
+// import '@vuecs/pagination/../dist/index.css';
 import '@vuecs/list-controls/../dist/index.css';
 import installPagination from '@vuecs/pagination';
 import installTimeago from '@vuecs/timeago';

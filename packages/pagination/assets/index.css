@@ -11,8 +11,8 @@
 .vc-pagination .vc-pagination-item .vc-pagination-link {
     padding: 0.25rem 0.75rem;
     background-color: #eee;
-    border: 1px solid #eee;
     cursor: pointer;
+    border: none;
     font-size: 0.75rem;
 }
 
@@ -24,10 +24,13 @@
     border-radius: 0 6px 6px 0;
 }
 
+.vc-pagination .vc-pagination-item:last-child:first-child .vc-pagination-link {
+    border-radius: 6px;
+}
+
 .vc-pagination .vc-pagination-item .vc-pagination-link {
     color: #333;
     background-color: #eee;
-    border: 1px solid #eee;
     cursor:pointer;
     padding: 5px 8px;
     font-size: 0.75rem;
@@ -41,5 +44,4 @@
 .vc-pagination > .vc-pagination-item > .vc-pagination-link.active {
     background-color: #30373e;
     color: #FFF;
-    border: 1px solid #30373e;
 }

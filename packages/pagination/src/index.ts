@@ -13,6 +13,7 @@ import type { Options } from './type';
 
 export * from './component';
 export * from './module';
+export * from './normalize';
 export * from './type';
 export * from './utils';
 
