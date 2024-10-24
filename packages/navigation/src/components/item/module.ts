@@ -67,10 +67,7 @@ export const VCNavItem = defineComponent({
                 }
 
                 // type: group
-                if (
-                    !data.value.children ||
-                    data.value.children.length === 0
-                ) {
+                if (!hasChildren.value) {
                     const hasSlot = hasNormalizedSlot(SlotName.LINK, slots);
                     if (hasSlot) {
                         return normalizeSlot(SlotName.LINK, {
@@ -102,11 +99,6 @@ export const VCNavItem = defineComponent({
                     return h(VCLink, {
                         class: [
                             options.linkClass,
-                            (data.value.url &&
-                                    data.value.url === '/' ?
-                                [options.linkRootClass] :
-                                []
-                            ),
                         ],
                         ...linkProps,
                         onClicked() {

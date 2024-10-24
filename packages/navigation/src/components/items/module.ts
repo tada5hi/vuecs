@@ -47,14 +47,17 @@ export const VCNavItems = defineComponent({
         let removeListener : CallableFunction | undefined;
 
         onMounted(() => {
-            removeListener = manager.on('tierUpdated', (tier, items) => {
-                if (tier !== props.level) {
-                    return;
-                }
+            removeListener = manager.on(
+                'levelUpdated',
+                (level, items) => {
+                    if (level !== props.level) {
+                        return;
+                    }
 
-                managerItems.value = items;
-                counter.value++;
-            });
+                    managerItems.value = items;
+                    counter.value++;
+                },
+            );
         });
 
         onUnmounted(() => {

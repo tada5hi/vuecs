@@ -22,7 +22,7 @@ import type { NavigationManagerBuildOptions, NavigationManagerOptions } from './
 
 export class NavigationManager extends EventEmitter<{
     updated: NavigationItemNormalized[],
-    tierUpdated: [number, NavigationItemNormalized[]]
+    levelUpdated: [number, NavigationItemNormalized[]]
 }> {
     protected itemsActive : NavigationItemNormalized[];
 
@@ -181,7 +181,7 @@ export class NavigationManager extends EventEmitter<{
                 (item) => item.level < level,
             );
 
-            this.emit('tierUpdated', level, []);
+            this.emit('levelUpdated', level, []);
 
             return false;
         }
@@ -196,7 +196,7 @@ export class NavigationManager extends EventEmitter<{
 
         this.items = replaceLevelItems(level, this.items, items);
 
-        this.emit('tierUpdated', level, items);
+        this.emit('levelUpdated', level, items);
 
         return true;
     }

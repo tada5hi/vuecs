@@ -5,7 +5,7 @@ import type {
 
 const primaryItems : NavigationItem[] = [
     {
-        name: 'Home', icon: 'fa fa-home',
+        name: 'Home', icon: 'fa fa-home', url: '/',
     },
     {
         name: 'Admin', icon: 'fas fa-cog', activeMatch: '/admin/',
@@ -14,7 +14,10 @@ const primaryItems : NavigationItem[] = [
 
 const secondaryDefaultItems : NavigationItem[] = [
     {
-        name: 'Home', type: 'link', icon: 'fas fa-home', url: '/',
+        name: 'Home',
+        type: 'link',
+        icon: 'fas fa-home',
+        url: '/',
     },
 
     {

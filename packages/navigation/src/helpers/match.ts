@@ -30,11 +30,13 @@ function findItemMatchesIF(
                 } else if (options.path.startsWith(item.activeMatch)) {
                     score += 2;
                 }
-            }
-
-            if (item.url && item.url !== '/') {
+            } else if (item.url) {
                 if (item.url === options.path) {
-                    score += 3;
+                    if (item.url === '/') {
+                        score += 1;
+                    } else {
+                        score += 3;
+                    }
                 } else if (options.path.startsWith(item.url)) {
                     score += 2;
                 }

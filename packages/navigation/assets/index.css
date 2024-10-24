@@ -31,13 +31,12 @@
     border-left-color: #c8b98d !important;
 }
 
-.vc-nav-items .vc-nav-link.active:not(.vc-nav-link-root),
-
+.vc-nav-items .vc-nav-link.active,
 .vc-nav-items .vc-nav-link:active,
 .vc-nav-items .vc-nav-link:hover,
 
-.vc-nav-items .vc-nav-link.router-link-active:not(.vc-nav-link-root),
-.vc-nav-items .vc-nav-link.nuxt-link-active:not(.vc-nav-link-root),
+.vc-nav-items .vc-nav-link.router-link-active,
+.vc-nav-items .vc-nav-link.nuxt-link-active,
 
 .vc-nav-items .vc-nav-link.router-link-exact-active,
 .vc-nav-items .vc-nav-link.nuxt-link-exact-active {
