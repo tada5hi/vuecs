@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.3.1](https://github.com/tada5hi/vuecs/compare/navigation-v2.3.0...navigation-v2.3.1) (2024-10-24)
+
+
+### Bug Fixes
+
+* optimize item score calculation ([4b7ba1a](https://github.com/tada5hi/vuecs/commit/4b7ba1a82163978213e21505ba7375687a20f2d0))
+* remove root link identification ([2568ea2](https://github.com/tada5hi/vuecs/commit/2568ea2d6234a5080f75432439c29df1494aa327))
+
 ## [2.3.0](https://github.com/tada5hi/vuecs/compare/navigation-v2.2.0...navigation-v2.3.0) (2024-10-23)
 
 
