@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.3.1](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v3.3.0...examples-nuxt-v3.3.1) (2024-10-24)
+
+
+### Bug Fixes
+
+* remove root link identification ([2568ea2](https://github.com/tada5hi/vuecs/commit/2568ea2d6234a5080f75432439c29df1494aa327))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/navigation bumped from ^2.3.0 to ^2.3.1
+
 ## [3.3.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v3.2.0...examples-nuxt-v3.3.0) (2024-10-23)
 
 
