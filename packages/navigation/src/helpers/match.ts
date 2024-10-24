@@ -8,6 +8,33 @@ type ItemMatchesFindOptions = {
     path?: string
 };
 
+function calculateItemScoreForPath(
+    item: NavigationItemNormalized,
+    currentPath: string,
+) {
+    if (item.url === '/') {
+        return 1;
+    }
+
+    if (item.activeMatch) {
+        if (item.activeMatch === currentPath) {
+            return 6;
+        } if (currentPath.startsWith(item.activeMatch)) {
+            return 4;
+        }
+    }
+
+    if (item.url) {
+        if (item.url === currentPath) {
+            return 3;
+        } if (currentPath.startsWith(item.url)) {
+            return 2;
+        }
+    }
+
+    return 0;
+}
+
 function findItemMatchesIF(
     items: NavigationItemNormalized[],
     options: ItemMatchesFindOptions,
@@ -24,23 +51,7 @@ function findItemMatchesIF(
         let { score } = parent;
 
         if (options.path) {
-            if (item.activeMatch) {
-                if (item.activeMatch === options.path) {
-                    score += 3;
-                } else if (options.path.startsWith(item.activeMatch)) {
-                    score += 2;
-                }
-            } else if (item.url) {
-                if (item.url === options.path) {
-                    if (item.url === '/') {
-                        score += 1;
-                    } else {
-                        score += 3;
-                    }
-                } else if (options.path.startsWith(item.url)) {
-                    score += 2;
-                }
-            }
+            score += calculateItemScoreForPath(item, options.path);
         }
 
         if (item.default) {
