@@ -60,7 +60,7 @@
         "@vuecs/core": "^2.0.0",
         "@vuecs/link": "^1.0.0",
         "vue": "^3.5.12",
-        "vue-router": "^4.4.3"
+        "vue-router": "^4.5.0"
     },
     "peerDependencies": {
         "@vuecs/core": "^2.0.0",
