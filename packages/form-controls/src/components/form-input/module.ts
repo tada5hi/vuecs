@@ -86,20 +86,17 @@ export function buildFormInputFromOptions(
 ): VNodeChild {
     const children : VNodeChild = [];
 
-    if (hasNormalizedSlot(SlotName.GROUP_PREPEND)) {
+    if (hasNormalizedSlot(SlotName.GROUP_PREPEND, options.slotItems)) {
         children.push(
-            h(
-                'span',
-                { class: options.groupPrependClass },
-                [
-                    normalizeSlot(SlotName.GROUP_PREPEND, {}, options.slotItems),
-                ],
-            ),
+            normalizeSlot(SlotName.GROUP_PREPEND, {
+                class: options.groupPrependClass,
+                tag: 'div',
+            }, options.slotItems),
         );
     } else if (options.groupPrepend) {
         children.push(
             h(
-                'span',
+                'div',
                 { class: options.groupPrependClass },
                 [
                     options.groupPrependContent,
@@ -129,20 +126,17 @@ export function buildFormInputFromOptions(
         ),
     ));
 
-    if (hasNormalizedSlot(SlotName.GROUP_APPEND)) {
+    if (hasNormalizedSlot(SlotName.GROUP_APPEND, options.slotItems)) {
         children.push(
-            h(
-                'span',
-                { class: options.groupAppendClass },
-                [
-                    normalizeSlot(SlotName.GROUP_APPEND, {}, options.slotItems),
-                ],
-            ),
+            normalizeSlot(SlotName.GROUP_APPEND, {
+                class: options.groupAppendClass,
+                tag: 'div',
+            }, options.slotItems),
         );
     } else if (options.groupAppend) {
         children.push(
             h(
-                'span',
+                'div',
                 {
                     class: options.groupAppendClass,
                 },

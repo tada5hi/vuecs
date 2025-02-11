@@ -48,7 +48,16 @@ export default defineComponent({
                 </template>
                 <VCFormInput
                     v-model="v$.text.$model"
-                />
+                >
+                    <template #groupPrepend>
+                        <button
+                            type="button"
+                            class="btn btn-xs btn-dark"
+                        >
+                            <i class="fa fa-plus" />
+                        </button>
+                    </template>
+                </VCFormInput>
             </VCFormGroup>
         </template>
     </IVuelidate>

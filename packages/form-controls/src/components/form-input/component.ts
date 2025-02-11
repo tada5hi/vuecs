@@ -14,11 +14,18 @@ export const VCFormInput = defineComponent({
             type: String,
             default: 'text',
         },
+
+        groupAppendClass: {
+            type: String,
+        },
+        groupPrependClass: {
+            type: String,
+        },
     },
     emits: ['update:modelValue'],
     slots: Object as SlotsType<{
-        [SlotName.GROUP_APPEND]: undefined,
-        [SlotName.GROUP_PREPEND]: undefined
+        [SlotName.GROUP_APPEND]: { class: string, tag: string },
+        [SlotName.GROUP_PREPEND]: { class: string, tag: string }
     }>,
     setup(
         props,
@@ -38,6 +45,9 @@ export const VCFormInput = defineComponent({
             },
 
             slotItems: slots,
+
+            groupAppendClass: props.groupAppendClass,
+            groupPrependClass: props.groupPrependClass,
 
             props: attrs,
         });
