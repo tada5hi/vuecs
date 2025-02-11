@@ -4,10 +4,12 @@ import type {
     PartialPick,
     VNodeClass,
 } from '@vuecs/core';
-import type { VNodeChild } from 'vue';
+import type { Slots, VNodeChild } from 'vue';
 import type { ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput } from '../form-base';
 
 export type FormInputBuildOptions = FormBaseOptions & {
+    slotItems: Slots,
+
     type: string,
     group: boolean,
     groupClass: VNodeClass,
@@ -34,6 +36,7 @@ export type FormInputBuildOptionsInput =
     'groupPrependContent' |
     'groupAppend' |
     'groupAppendClass' |
-    'groupAppendContent'
+    'groupAppendContent' |
+    'slotItems'
     >>
     >;

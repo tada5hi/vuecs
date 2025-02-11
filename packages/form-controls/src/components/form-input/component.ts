@@ -1,5 +1,7 @@
+import type { SlotsType } from 'vue';
 import { defineComponent } from 'vue';
 import { buildFormInput } from './module';
+import type { SlotName } from '../constants';
 
 export const VCFormInput = defineComponent({
     props: {
@@ -14,7 +16,18 @@ export const VCFormInput = defineComponent({
         },
     },
     emits: ['update:modelValue'],
-    setup(props, { attrs, emit }) {
+    slots: Object as SlotsType<{
+        [SlotName.GROUP_APPEND]: undefined,
+        [SlotName.GROUP_PREPEND]: undefined
+    }>,
+    setup(
+        props,
+        {
+            attrs,
+            emit,
+            slots,
+        },
+    ) {
         return () => buildFormInput({
             type: props.type,
 
@@ -23,6 +36,8 @@ export const VCFormInput = defineComponent({
             onChange(input) {
                 emit('update:modelValue', input);
             },
+
+            slotItems: slots,
 
             props: attrs,
         });

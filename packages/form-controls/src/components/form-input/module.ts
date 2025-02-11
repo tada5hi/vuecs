@@ -1,7 +1,7 @@
 import type { VNodeChild } from 'vue';
 import { h, mergeProps, unref } from 'vue';
-import { createComponentOptionsManager } from '@vuecs/core';
-import { Component } from '../constants';
+import { createComponentOptionsManager, hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
+import { Component, SlotName } from '../constants';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
 import type { FormInputBuildOptions, FormInputBuildOptionsInput } from './type';
 
@@ -84,9 +84,25 @@ export function buildFormInputFromOptions(
 ): VNodeChild {
     const children : VNodeChild = [];
 
-    if (options.groupPrepend) {
+    if (hasNormalizedSlot(SlotName.GROUP_PREPEND)) {
         children.push(
-            h('span', { class: options.groupPrependClass }, [options.groupPrependContent]),
+            h(
+                'span',
+                { class: options.groupPrependClass },
+                [
+                    normalizeSlot(SlotName.GROUP_PREPEND, {}, options.slotItems),
+                ],
+            ),
+        );
+    } else if (options.groupPrepend) {
+        children.push(
+            h(
+                'span',
+                { class: options.groupPrependClass },
+                [
+                    options.groupPrependContent,
+                ],
+            ),
         );
     }
 
@@ -111,9 +127,27 @@ export function buildFormInputFromOptions(
         ),
     ));
 
-    if (options.groupAppend) {
+    if (hasNormalizedSlot(SlotName.GROUP_APPEND)) {
         children.push(
-            h('span', { class: options.groupAppendClass }, [options.groupAppendContent]),
+            h(
+                'span',
+                { class: options.groupAppendClass },
+                [
+                    normalizeSlot(SlotName.GROUP_APPEND, {}, options.slotItems),
+                ],
+            ),
+        );
+    } else if (options.groupAppend) {
+        children.push(
+            h(
+                'span',
+                {
+                    class: options.groupAppendClass,
+                },
+                [
+                    options.groupAppendContent,
+                ],
+            ),
         );
     }
 
