@@ -19,6 +19,8 @@ export function buildFormInputOptions(
     return {
         ...options,
 
+        slotItems: input.slotItems || {},
+
         type: manager.buildOrFail({
             key: 'type',
             value: options.type,
