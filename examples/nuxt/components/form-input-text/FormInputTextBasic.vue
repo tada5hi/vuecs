@@ -49,10 +49,15 @@ export default defineComponent({
                 <VCFormInput
                     v-model="v$.text.$model"
                 >
+                    <template #groupAppend="props">
+                        <span :class="props.class">
+                            foo
+                        </span>
+                    </template>
                     <template #groupPrepend>
                         <button
                             type="button"
-                            class="btn btn-xs btn-dark"
+                            class="btn btn-xs"
                         >
                             <i class="fa fa-plus" />
                         </button>
