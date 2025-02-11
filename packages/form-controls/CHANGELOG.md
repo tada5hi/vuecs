@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.1](https://github.com/tada5hi/vuecs/compare/form-controls-v2.4.0...form-controls-v2.4.1) (2025-02-11)
+
+
+### Bug Fixes
+
+* add missing slotItems option to build output ([ab21b08](https://github.com/tada5hi/vuecs/commit/ab21b08449d29a613ffd9d3c52baf2ccc437ff60))
+
 ## [2.4.0](https://github.com/tada5hi/vuecs/compare/form-controls-v2.3.1...form-controls-v2.4.0) (2025-02-11)
 
 
