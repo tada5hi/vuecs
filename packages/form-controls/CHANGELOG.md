@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.4.0](https://github.com/tada5hi/vuecs/compare/form-controls-v2.3.1...form-controls-v2.4.0) (2025-02-11)
+
+
+### Features
+
+* support groupAppend & groupAppend slots for form-input component ([036ce79](https://github.com/tada5hi/vuecs/commit/036ce793c6ff835deccb221b42cd70c254104abf))
+
+
+### Bug Fixes
+
+* **deps:** bump @vueuse/core in the majorprod group ([#1392](https://github.com/tada5hi/vuecs/issues/1392)) ([344bf24](https://github.com/tada5hi/vuecs/commit/344bf24f522c8177e48d68a4da06bd56460a30fa))
+
 ## [2.3.1](https://github.com/tada5hi/vuecs/compare/form-controls-v2.3.0...form-controls-v2.3.1) (2024-10-16)
 
 
