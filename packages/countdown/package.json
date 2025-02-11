@@ -39,7 +39,7 @@
         "build": "cross-env NODE_ENV=production rimraf dist && npm run build:js && npm run build:types"
     },
     "devDependencies": {
-        "vue": "^3.5.12"
+        "vue": "^3.5.13"
     },
     "peerDependencies": {
         "vue": "^3.x"
