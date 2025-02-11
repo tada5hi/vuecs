@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.2](https://github.com/tada5hi/vuecs/compare/form-controls-v2.4.1...form-controls-v2.4.2) (2025-02-11)
+
+
+### Bug Fixes
+
+* pass class/tag to group append/prepend slot ([c930c49](https://github.com/tada5hi/vuecs/commit/c930c49f6ca451678f958f5504b51e3de3f8ae6f))
+
 ## [2.4.1](https://github.com/tada5hi/vuecs/compare/form-controls-v2.4.0...form-controls-v2.4.1) (2025-02-11)
 
 
