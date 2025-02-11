@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.3.4](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v3.3.3...examples-nuxt-v3.3.4) (2025-02-11)
+
+
+### Bug Fixes
+
+* pass class/tag to group append/prepend slot ([c930c49](https://github.com/tada5hi/vuecs/commit/c930c49f6ca451678f958f5504b51e3de3f8ae6f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/form-controls bumped from ^2.4.1 to ^2.4.2
+
 ## [3.3.3](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v3.3.2...examples-nuxt-v3.3.3) (2025-02-11)
 
 
