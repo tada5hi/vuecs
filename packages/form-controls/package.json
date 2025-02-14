@@ -52,7 +52,7 @@
         "lint:fix": "npm run lint -- --fix"
     },
     "dependencies": {
-        "@vueuse/core": "^12.5.0"
+        "@vueuse/core": "^12.6.1"
     },
     "devDependencies": {
         "@vuecs/core": "^2.0.0",
