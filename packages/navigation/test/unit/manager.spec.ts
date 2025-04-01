@@ -5,6 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import type { NavigationItem } from '../../src';
 import { NavigationManager } from '../../src';
 
 describe('navigation-manager', () => {
@@ -16,7 +17,13 @@ describe('navigation-manager', () => {
             ],
         });
 
-        const items = await manager.build({ path: '/foo' });
+        let items : NavigationItem[] = [];
+        manager.on('updated', (data) => {
+            items = data;
+        });
+
+        await manager.build({ path: '/foo' });
+
         expect(items).toHaveLength(2);
 
         const [home, foo] = items;
