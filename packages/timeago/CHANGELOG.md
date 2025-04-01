@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/tada5hi/vuecs/compare/timeago-v1.1.0...timeago-v1.1.1) (2025-04-01)
+
+
+### Bug Fixes
+
+* permit date-fns v3.x or v4.x ([5d7238f](https://github.com/tada5hi/vuecs/commit/5d7238fc7776252a6f4d4325c01160b33794a963))
+
 ## [1.1.0](https://github.com/tada5hi/vuecs/compare/timeago-v1.0.4...timeago-v1.1.0) (2024-04-21)
 
 

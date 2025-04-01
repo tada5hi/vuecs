@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.0](https://github.com/tada5hi/vuecs/compare/navigation-v2.3.1...navigation-v2.4.0) (2025-04-01)
+
+
+### Features
+
+* dedicated reset method to reset cached items (+active) ([5f8a0c5](https://github.com/tada5hi/vuecs/commit/5f8a0c518eeca1b28d3c2cc88ab3b0a43340fbbe))
+
 ## [2.3.1](https://github.com/tada5hi/vuecs/compare/navigation-v2.3.0...navigation-v2.3.1) (2024-10-24)
 
 

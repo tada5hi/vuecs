@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.3](https://github.com/tada5hi/vuecs/compare/form-controls-v2.4.2...form-controls-v2.4.3) (2025-04-01)
+
+
+### Bug Fixes
+
+* **deps:** bump @vueuse/core in the majorprod group ([#1408](https://github.com/tada5hi/vuecs/issues/1408)) ([442707f](https://github.com/tada5hi/vuecs/commit/442707f76baf4b967ae8c2816d6a9ae529255c1e))
+
 ## [2.4.2](https://github.com/tada5hi/vuecs/compare/form-controls-v2.4.1...form-controls-v2.4.2) (2025-02-11)
 
 

@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.4.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v3.3.4...examples-nuxt-v3.4.0) (2025-04-01)
+
+
+### Features
+
+* dedicated reset method to reset cached items (+active) ([5f8a0c5](https://github.com/tada5hi/vuecs/commit/5f8a0c518eeca1b28d3c2cc88ab3b0a43340fbbe))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/form-controls bumped from ^2.4.2 to ^2.4.3
+    * @vuecs/navigation bumped from ^2.3.1 to ^2.4.0
+    * @vuecs/timeago bumped from ^1.1.0 to ^1.1.1
+
 ## [3.3.4](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v3.3.3...examples-nuxt-v3.3.4) (2025-02-11)
 
 
