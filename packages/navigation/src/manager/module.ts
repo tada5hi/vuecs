@@ -21,6 +21,8 @@ import type { NavigationItemNormalized, NavigationItemsFn } from '../types';
 import type { NavigationManagerBuildOptions, NavigationManagerOptions } from './types';
 
 export class NavigationManager extends EventEmitter<{
+    building: [],
+    built: [],
     updated: NavigationItemNormalized[],
     levelUpdated: [number, NavigationItemNormalized[]]
 }> {
@@ -31,6 +33,8 @@ export class NavigationManager extends EventEmitter<{
     protected itemsFn : NavigationItemsFn;
 
     protected built : boolean;
+
+    protected building : boolean;
 
     constructor(options: NavigationManagerOptions) {
         super();
@@ -53,6 +57,7 @@ export class NavigationManager extends EventEmitter<{
         this.itemsActive = [];
 
         this.built = false;
+        this.building = false;
     }
 
     getItems(tier?: number) {
@@ -63,19 +68,21 @@ export class NavigationManager extends EventEmitter<{
         return this.items.filter((item) => item.level === tier);
     }
 
-    async buildOnce(options: NavigationManagerBuildOptions) : Promise<NavigationItemNormalized[]> {
-        if (this.built && !options.reset) {
-            return this.items;
-        }
-
-        return this.build(options);
-    }
-
-    async build(options: NavigationManagerBuildOptions) : Promise<NavigationItemNormalized[]> {
-        this.built = true;
+    reset() {
+        this.built = false;
 
         this.items = [];
         this.itemsActive = [];
+    }
+
+    async build(options: NavigationManagerBuildOptions) : Promise<void> {
+        if (this.built || this.building) {
+            return;
+        }
+
+        this.building = true;
+
+        this.emit('building');
 
         let parent : NavigationItemNormalized | undefined;
         let level = 0;
@@ -107,9 +114,11 @@ export class NavigationManager extends EventEmitter<{
             level++;
         }
 
-        this.emit('updated', this.items);
+        this.building = false;
+        this.built = true;
 
-        return this.items;
+        this.emit('built');
+        this.emit('updated', this.items);
     }
 
     async select(level: number, itemNew: NavigationItemNormalized) {
@@ -159,10 +168,10 @@ export class NavigationManager extends EventEmitter<{
         await this.buildLevel(level, true);
     }
 
-    protected async buildLevel(level: number, cached?: boolean) : Promise<boolean> {
+    protected async buildLevel(level: number, useCache?: boolean) : Promise<boolean> {
         let items : NavigationItemNormalized[] | undefined;
 
-        if (cached) {
+        if (useCache) {
             items = findItemsWithLevel(this.items, level);
         } else {
             const parent = findItemWithLevel(level - 1, this.itemsActive);

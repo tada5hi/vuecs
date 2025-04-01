@@ -8,8 +8,7 @@
 import type { NavigationItem, NavigationItemsFn } from '../types';
 
 export type NavigationManagerBuildOptions = {
-    path: string,
-    reset?: boolean
+    path: string
 };
 
 export type NavigationManagerOptions = {
