@@ -8,20 +8,6 @@ const MILLISECONDS_DAY = 24 * MILLISECONDS_HOUR;
 const EVENT_VISIBILITY_CHANGE = 'visibilitychange';
 
 export const VCCountdown = defineComponent({
-    slots: Object as SlotsType<{
-        default: {
-            days: number,
-            hours: number,
-            minutes: number,
-            seconds: number,
-            milliseconds: number,
-            totalDays: number,
-            totalHours: number,
-            totalMinutes: number,
-            totalSeconds: number,
-            totalMilliseconds: number,
-        }
-    }>,
 
     props: {
         /**
@@ -74,6 +60,20 @@ export const VCCountdown = defineComponent({
             validator: (value: number) => value >= 0,
         },
     },
+    slots: Object as SlotsType<{
+        default: {
+            days: number,
+            hours: number,
+            minutes: number,
+            seconds: number,
+            milliseconds: number,
+            totalDays: number,
+            totalHours: number,
+            totalMinutes: number,
+            totalSeconds: number,
+            totalMilliseconds: number,
+        }
+    }>,
 
     data() : {
         counting: boolean,
@@ -209,7 +209,7 @@ export const VCCountdown = defineComponent({
         document.addEventListener(EVENT_VISIBILITY_CHANGE, this.handleVisibilityChange);
     },
 
-    beforeDestroy() {
+    beforeUnmount() {
         if (typeof document === 'undefined') return;
         document.removeEventListener(EVENT_VISIBILITY_CHANGE, this.handleVisibilityChange);
         this.pause();

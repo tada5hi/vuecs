@@ -5,11 +5,6 @@ import type { ValidationMessages } from '../type';
 import { buildFormGroup } from './module';
 
 export const VCFormGroup = defineComponent({
-    slots: Object as SlotsType<{
-        [SlotName.DEFAULT]: undefined,
-        [SlotName.LABEL]: undefined,
-        [SlotName.HINT]: undefined
-    }>,
     props: {
         label: {
             type: Boolean,
@@ -46,6 +41,11 @@ export const VCFormGroup = defineComponent({
             default: undefined,
         },
     },
+    slots: Object as SlotsType<{
+        [SlotName.DEFAULT]: undefined,
+        [SlotName.LABEL]: undefined,
+        [SlotName.HINT]: undefined
+    }>,
     setup(props, { attrs, slots }) {
         return () => buildFormGroup({
             label: props.label,
