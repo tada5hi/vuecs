@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.4](https://github.com/tada5hi/vuecs/compare/form-controls-v2.4.3...form-controls-v2.4.4) (2025-04-09)
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 16 updates ([#1414](https://github.com/tada5hi/vuecs/issues/1414)) ([79dd29f](https://github.com/tada5hi/vuecs/commit/79dd29f072f1e6022bd7e911596f7253ef402517))
+
 ## [2.4.3](https://github.com/tada5hi/vuecs/compare/form-controls-v2.4.2...form-controls-v2.4.3) (2025-04-01)
 
 
