@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.4.1](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v3.4.0...examples-nuxt-v3.4.1) (2025-04-09)
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 16 updates ([#1414](https://github.com/tada5hi/vuecs/issues/1414)) ([79dd29f](https://github.com/tada5hi/vuecs/commit/79dd29f072f1e6022bd7e911596f7253ef402517))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/form-controls bumped from ^2.4.3 to ^2.4.4
+
 ## [3.4.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v3.3.4...examples-nuxt-v3.4.0) (2025-04-01)
 
 
