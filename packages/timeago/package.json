@@ -39,7 +39,7 @@
     },
     "devDependencies": {
         "date-fns": "^4.1.0",
-        "vue": "^3.5.13"
+        "vue": "^3.5.18"
     },
     "peerDependencies": {
         "date-fns": "^3.x || ^4.x",
