@@ -42,12 +42,12 @@
         "pathtrace": "^1.1.0"
     },
     "devDependencies": {
-        "smob": "^1.4.1",
-        "vue": "^3.5.13"
+        "smob": "^1.6.1",
+        "vue": "^3.5.28"
     },
     "peerDependencies": {
-        "smob": "^1.4.1",
-        "vue": "^3.5.13"
+        "smob": "^1.6.1",
+        "vue": "^3.5.28"
     },
     "engines": {
         "node": ">=18"

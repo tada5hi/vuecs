@@ -53,13 +53,13 @@
     },
     "devDependencies": {
         "@vuecs/core": "^2.0.0",
-        "smob": "^1.4.1",
-        "vue": "^3.5.13"
+        "smob": "^1.6.1",
+        "vue": "^3.5.28"
     },
     "peerDependencies": {
         "@vuecs/core": "^2.0.0",
-        "smob": "^1.4.1",
-        "vue": "^3.5.13"
+        "smob": "^1.6.1",
+        "vue": "^3.5.28"
     },
     "engines": {
         "node": ">=16"
