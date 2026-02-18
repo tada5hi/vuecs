@@ -59,14 +59,14 @@
     "devDependencies": {
         "@vuecs/core": "^2.0.0",
         "@vuecs/link": "^1.0.0",
-        "vue": "^3.5.13",
-        "vue-router": "^5.0.0"
+        "vue": "^3.5.28",
+        "vue-router": "^5.0.2"
     },
     "peerDependencies": {
         "@vuecs/core": "^2.0.0",
         "@vuecs/link": "^1.0.0",
         "vue": "^3.x",
-        "vue-router": "^4.x"
+        "vue-router": "^4.x || ^5.x"
     },
     "engines": {
         "node": ">=16"

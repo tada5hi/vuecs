@@ -34,7 +34,7 @@
         "build": "cross-env NODE_ENV=production rimraf dist && npm run build:js && npm run build:types"
     },
     "engines": {
-        "node": ">=16"
+        "node": ">=20"
     },
     "publishConfig": {
         "access": "public"

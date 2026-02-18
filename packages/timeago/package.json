@@ -39,14 +39,14 @@
     },
     "devDependencies": {
         "date-fns": "^4.1.0",
-        "vue": "^3.5.13"
+        "vue": "^3.5.28"
     },
     "peerDependencies": {
         "date-fns": "^3.x || ^4.x",
         "vue": "^3.x"
     },
     "engines": {
-        "node": ">=16"
+        "node": ">=20"
     },
     "publishConfig": {
         "access": "public"

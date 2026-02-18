@@ -27,8 +27,8 @@
     "homepage": "https://github.com/Tada5hi/vuecs#readme",
     "devDependencies": {
         "@ilingo/vuelidate": "^6.0.0",
-        "@fortawesome/fontawesome-free": "^7.1.0",
-        "@pinia/nuxt": "^0.10.1",
+        "@fortawesome/fontawesome-free": "^7.2.0",
+        "@pinia/nuxt": "^0.11.3",
         "@vuecs/countdown": "^1.0.0",
         "@vuecs/form-controls": "^2.4.3",
         "@vuecs/gravatar": "^1.0.1",
@@ -40,11 +40,11 @@
         "@vuecs/timeago": "^1.1.1",
         "@vuelidate/core": "^2.0.3",
         "@vuelidate/validators": "^2.0.4",
-        "bootstrap": "^5.3.5",
-        "nuxt": "4.3.0",
-        "pinia": "^3.0.1",
-        "vue": "^3.5.13",
-        "vue-router": "^5.0.0"
+        "bootstrap": "^5.3.8",
+        "nuxt": "4.3.1",
+        "pinia": "^3.0.4",
+        "vue": "^3.5.28",
+        "vue-router": "^5.0.2"
     },
     "version": "3.4.0"
 }
