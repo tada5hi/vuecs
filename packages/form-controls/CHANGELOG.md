@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.5.0](https://github.com/tada5hi/vuecs/compare/form-controls-v2.4.3...form-controls-v2.5.0) (2026-02-18)
+
+
+### Features
+
+* enable disabled form select option(s) ([342bda5](https://github.com/tada5hi/vuecs/commit/342bda5ef17f13ad10f985343ab93bf29b2e8a2e))
+
+
+### Bug Fixes
+
+* **deps:** bump (dev-)dependencies ([31acd65](https://github.com/tada5hi/vuecs/commit/31acd654d3c14eeba8edae6d889c5c3c48b85f63))
+* **deps:** bump the minorandpatch group across 1 directory with 16 updates ([#1414](https://github.com/tada5hi/vuecs/issues/1414)) ([79dd29f](https://github.com/tada5hi/vuecs/commit/79dd29f072f1e6022bd7e911596f7253ef402517))
+
 ## [2.4.3](https://github.com/tada5hi/vuecs/compare/form-controls-v2.4.2...form-controls-v2.4.3) (2025-04-01)
 
 

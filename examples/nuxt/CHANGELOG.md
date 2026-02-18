@@ -1,5 +1,33 @@
 # Changelog
 
+## [3.5.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v3.4.0...examples-nuxt-v3.5.0) (2026-02-18)
+
+
+### Features
+
+* enable disabled form select option(s) ([342bda5](https://github.com/tada5hi/vuecs/commit/342bda5ef17f13ad10f985343ab93bf29b2e8a2e))
+
+
+### Bug Fixes
+
+* **deps:** bump (dev-)dependencies ([31acd65](https://github.com/tada5hi/vuecs/commit/31acd654d3c14eeba8edae6d889c5c3c48b85f63))
+* **deps:** bump the minorandpatch group across 1 directory with 16 updates ([#1414](https://github.com/tada5hi/vuecs/issues/1414)) ([79dd29f](https://github.com/tada5hi/vuecs/commit/79dd29f072f1e6022bd7e911596f7253ef402517))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/countdown bumped from ^1.0.0 to ^1.0.1
+    * @vuecs/form-controls bumped from ^2.4.3 to ^2.5.0
+    * @vuecs/gravatar bumped from ^1.0.1 to ^1.0.2
+    * @vuecs/list-controls bumped from ^2.0.0 to ^2.0.1
+    * @vuecs/navigation bumped from ^2.4.0 to ^2.4.1
+    * @vuecs/pagination bumped from ^1.3.0 to ^1.3.1
+    * @vuecs/preset-bootstrap-v5 bumped from ^2.0.0 to ^2.0.1
+    * @vuecs/preset-font-awesome bumped from ^1.1.0 to ^1.1.1
+    * @vuecs/timeago bumped from ^1.1.1 to ^1.1.2
+
 ## [3.4.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v3.3.4...examples-nuxt-v3.4.0) (2025-04-01)
 
 

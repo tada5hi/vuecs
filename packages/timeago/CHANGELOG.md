@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/tada5hi/vuecs/compare/timeago-v1.1.1...timeago-v1.1.2) (2026-02-18)
+
+
+### Bug Fixes
+
+* **deps:** bump (dev-)dependencies ([31acd65](https://github.com/tada5hi/vuecs/commit/31acd654d3c14eeba8edae6d889c5c3c48b85f63))
+
 ## [1.1.1](https://github.com/tada5hi/vuecs/compare/timeago-v1.1.0...timeago-v1.1.1) (2025-04-01)
 
 

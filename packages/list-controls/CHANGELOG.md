@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/tada5hi/vuecs/compare/list-controls-v2.0.0...list-controls-v2.0.1) (2026-02-18)
+
+
+### Bug Fixes
+
+* **deps:** bump (dev-)dependencies ([31acd65](https://github.com/tada5hi/vuecs/commit/31acd654d3c14eeba8edae6d889c5c3c48b85f63))
+
 ## [2.0.0](https://github.com/tada5hi/vuecs/compare/list-controls-v1.1.1...list-controls-v2.0.0) (2024-10-16)
 
 
