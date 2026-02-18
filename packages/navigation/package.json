@@ -54,7 +54,7 @@
         "test:coverage": "cross-env NODE_ENV=test jest --config ./test/jest.config.js --coverage"
     },
     "dependencies": {
-        "@posva/event-emitter": "^1.0.2"
+        "@posva/event-emitter": "^1.0.3"
     },
     "devDependencies": {
         "@vuecs/core": "^2.0.0",
