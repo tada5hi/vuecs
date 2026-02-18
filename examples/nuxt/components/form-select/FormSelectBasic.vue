@@ -12,6 +12,7 @@ import useVuelidate from '@vuelidate/core';
 import {
     defineComponent, h, reactive, ref,
 } from 'vue';
+import type {FormSelectOption} from "@vuecs/form-controls";
 
 export default defineComponent({
     setup() {
@@ -27,9 +28,10 @@ export default defineComponent({
 
         const validationMessages = useTranslationsForBaseValidation($v.value.text);
 
-        const options = [
+        const options : FormSelectOption[] = [
             { id: 1, value: 'Option 1' },
             { id: 2, value: 'Option 2' },
+            { id: 3, value: 'Option 3', disabled: true },
         ];
 
         return {

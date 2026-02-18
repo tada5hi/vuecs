@@ -57,7 +57,11 @@ export function buildFormSelect(
             key: options.options[i].id,
             value: options.options[i].id,
             selected: options.options[i].id === rawValue,
-        }, options.options[i].value));
+            disabled: options.options[i].disabled,
+        }, [
+            `${options.options[i].value}`
+        ])
+        );
     }
 
     return h(

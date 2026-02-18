@@ -5,8 +5,10 @@ import type { ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsInput } fro
 
 export type FormSelectOption = {
     id: string | number,
-    value: any
+    value: unknown,
+    disabled?: boolean,
 };
+
 export type FormSelectBuildOptions = FormBaseOptions & {
     options: FormSelectOption[],
     optionDefault: boolean,
