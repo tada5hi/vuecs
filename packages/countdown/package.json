@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/countdown",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "A package containing a countdown component.",
     "exports": {
         "./package.json": "./package.json",

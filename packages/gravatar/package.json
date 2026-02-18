@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/gravatar",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "A package containing a gravatar component.",
     "exports": {
         "./package.json": "./package.json",

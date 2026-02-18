@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.4.1](https://github.com/tada5hi/vuecs/compare/navigation-v2.4.0...navigation-v2.4.1) (2026-02-18)
+
+
+### Bug Fixes
+
+* **deps:** bump (dev-)dependencies ([31acd65](https://github.com/tada5hi/vuecs/commit/31acd654d3c14eeba8edae6d889c5c3c48b85f63))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/link bumped from ^1.0.0 to ^1.0.1
+  * peerDependencies
+    * @vuecs/link bumped from ^1.0.0 to ^1.0.1
+
 ## [2.4.0](https://github.com/tada5hi/vuecs/compare/navigation-v2.3.1...navigation-v2.4.0) (2025-04-01)
 
 
