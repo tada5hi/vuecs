@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.5.1](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v3.5.0...examples-nuxt-v3.5.1) (2026-02-18)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/form-controls bumped from ^2.5.0 to ^2.5.1
+    * @vuecs/list-controls bumped from ^2.0.1 to ^2.0.2
+    * @vuecs/navigation bumped from ^2.4.1 to ^2.4.2
+    * @vuecs/pagination bumped from ^1.3.1 to ^1.3.2
+
 ## [3.5.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v3.4.0...examples-nuxt-v3.5.0) (2026-02-18)
 
 
