@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.2](https://github.com/tada5hi/vuecs/compare/list-controls-v2.0.1...list-controls-v2.0.2) (2026-02-18)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^2.0.0 to ^2.0.1
+  * peerDependencies
+    * @vuecs/core bumped from ^2.0.0 to ^2.0.1
+
 ## [2.0.1](https://github.com/tada5hi/vuecs/compare/list-controls-v2.0.0...list-controls-v2.0.1) (2026-02-18)
 
 

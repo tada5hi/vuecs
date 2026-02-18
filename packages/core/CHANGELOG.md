@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/tada5hi/vuecs/compare/core-v2.0.0...core-v2.0.1) (2026-02-18)
+
+
+### Bug Fixes
+
+* **deps:** bump pathtrace from 1.1.0 to 2.1.2 in the majorprod group ([#1466](https://github.com/tada5hi/vuecs/issues/1466)) ([2443282](https://github.com/tada5hi/vuecs/commit/2443282aa7a33b327b273ec2acfa6b6e411b1ca8))
+
 ## [2.0.0](https://github.com/tada5hi/vuecs/compare/core-v1.2.0...core-v2.0.0) (2024-10-16)
 
 
