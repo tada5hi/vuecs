@@ -39,15 +39,15 @@
         "test:coverage": "cross-env NODE_ENV=test jest --config ./test/jest.config.js --coverage"
     },
     "dependencies": {
-        "pathtrace": "^2.1.2"
+        "pathtrace": "^2.2.0"
     },
     "devDependencies": {
         "smob": "^1.4.1",
-        "vue": "^3.5.13"
+        "vue": "^3.5.31"
     },
     "peerDependencies": {
         "smob": "^1.4.1",
-        "vue": "^3.5.13"
+        "vue": "^3.5.31"
     },
     "engines": {
         "node": ">=18"
