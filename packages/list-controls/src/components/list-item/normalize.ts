@@ -112,5 +112,21 @@ export function normalizeListItemOptions<T, M = any>(
             value: input.actionsWrapperTag,
             alt: 'div',
         }),
+
+        actionsExtraWrapper: manager.buildOrFail({
+            key: 'actionsExtraWrapper',
+            value: input.actionsExtraWrapper,
+            alt: true,
+        }),
+        actionsExtraWrapperClass: manager.buildOrFail({
+            key: 'actionsExtraWrapperClass',
+            value: input.actionsExtraWrapperClass,
+            alt: [],
+        }),
+        actionsExtraWrapperTag: manager.buildOrFail({
+            key: 'actionsExtraWrapperTag',
+            value: input.actionsExtraWrapperTag,
+            alt: 'div',
+        }),
     };
 }

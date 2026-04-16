@@ -42,6 +42,7 @@ jobs:
                 uses: ./.github/actions/install
                 with:
                     node-version: ${{ env.NODE_VERSION }}
+                    registry-url: 'https://registry.npmjs.org'
 
             -   name: Build
                 if: steps.release.outputs.releases_created == 'true'
@@ -49,6 +50,6 @@ jobs:
 
             -   name: Publish
                 if: steps.release.outputs.releases_created == 'true'
-                run: npx workspaces-publish
-                env:
-                    NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+                uses: tada5hi/monoship@v2
+                with:
+                    token: ${{ secrets.NPM_TOKEN }}

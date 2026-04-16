@@ -1,6 +1,10 @@
 import type { VNodeClass } from '@vuecs/core';
 import {
-    evaluateFnOrValue, hasNormalizedSlot, hasOwnProperty, isObject, normalizeSlot,
+    evaluateFnOrValue,
+    hasNormalizedSlot,
+    hasOwnProperty,
+    isObject,
+    normalizeSlot,
 } from '@vuecs/core';
 import { merge } from 'smob';
 import type { VNodeArrayChildren, VNodeChild } from 'vue';
@@ -11,7 +15,11 @@ import type { ListEventFn } from '../type';
 import { normalizeListItemOptions } from './normalize';
 import type { ListItemBuildOptionsInput, ListItemChildren, ListItemSlotProps } from './type';
 
-function maybeWrapContent(input: VNodeChild, ctx: {wrap: boolean, class: VNodeClass, tag: string}) {
+function maybeWrapContent(input: VNodeChild, ctx: {
+    wrap: boolean,
+    class: VNodeClass,
+    tag: string
+}) {
     if (!ctx.wrap) {
         return input;
     }
@@ -23,6 +31,18 @@ export function buildListItem<T, M = any>(
     input: ListItemBuildOptionsInput<T, M>,
 ) : VNodeChild {
     const options = normalizeListItemOptions(input);
+
+    if (process.env.NODE_ENV !== 'production') {
+        if (!options.actions && input.actionsContent) {
+            console.warn('[vuecs/list-controls] actionsContent is provided but actions is disabled. Set actions: true or remove actionsContent.');
+        }
+        if (!options.icon && input.iconClass && (Array.isArray(input.iconClass) ? input.iconClass.length > 0 : input.iconClass)) {
+            console.warn('[vuecs/list-controls] iconClass is provided but icon is disabled. Set icon: true or remove iconClass.');
+        }
+        if (!options.text && input.textContent) {
+            console.warn('[vuecs/list-controls] textContent is provided but text is disabled. Set text: true or remove textContent.');
+        }
+    }
 
     const overrideUpdatedFn = (fn: ListEventFn<T>, item?: T) : ListEventFn<T | undefined> => {
         if (typeof item === 'undefined') {
@@ -95,7 +115,9 @@ export function buildListItem<T, M = any>(
 
     const children : ListItemChildren = {};
 
-    if (hasNormalizedSlot(SlotName.ITEM, options.slotItems)) {
+    if (hasNormalizedSlot(SlotName.ITEM_DEFAULT, options.slotItems)) {
+        children.slot = normalizeSlot(SlotName.ITEM_DEFAULT, slotProps, options.slotItems);
+    } else if (hasNormalizedSlot(SlotName.ITEM, options.slotItems)) {
         children.slot = normalizeSlot(SlotName.ITEM, slotProps, options.slotItems);
     } else {
         if (options.icon) {
@@ -131,30 +153,31 @@ export function buildListItem<T, M = any>(
             }
         }
 
-        let actions : VNodeChild | undefined;
         if (options.actions) {
+            let actions : VNodeChild | undefined;
+
             if (hasNormalizedSlot(SlotName.ITEM_ACTIONS, options.slotItems)) {
-                actions = [
-                    normalizeSlot(SlotName.ITEM_ACTIONS, slotProps, options.slotItems),
-                ];
+                actions = normalizeSlot(SlotName.ITEM_ACTIONS, slotProps, options.slotItems);
             } else if (options.actionsContent) {
                 actions = evaluateFnOrValue(options.actionsContent, options.data, slotProps);
             }
 
-            if (hasNormalizedSlot(SlotName.ITEM_ACTIONS_EXTRA, options.slotItems)) {
-                actions = [
-                    actions,
-                    normalizeSlot(SlotName.ITEM_ACTIONS_EXTRA, slotProps, options.slotItems),
-                ];
+            if (actions) {
+                children.actions = maybeWrapContent(actions, {
+                    wrap: options.actionsWrapper,
+                    tag: options.actionsWrapperTag,
+                    class: options.actionsWrapperClass,
+                });
             }
-        }
 
-        if (actions) {
-            children.actions = maybeWrapContent(actions, {
-                wrap: options.actionsWrapper,
-                tag: options.actionsWrapperTag,
-                class: options.actionsWrapperClass,
-            });
+            if (hasNormalizedSlot(SlotName.ITEM_ACTIONS_EXTRA, options.slotItems)) {
+                const actionsExtra = normalizeSlot(SlotName.ITEM_ACTIONS_EXTRA, slotProps, options.slotItems);
+                children.actionsExtra = maybeWrapContent(actionsExtra, {
+                    wrap: options.actionsExtraWrapper,
+                    tag: options.actionsExtraWrapperTag,
+                    class: options.actionsExtraWrapperClass,
+                });
+            }
         }
     }
 
@@ -170,6 +193,7 @@ export function buildListItem<T, M = any>(
         ...(children.icon ? [children.icon] : []) as VNodeArrayChildren,
         ...(children.text ? [children.text] : []) as VNodeArrayChildren,
         ...(children.actions ? [children.actions] : []) as VNodeArrayChildren,
+        ...(children.actionsExtra ? [children.actionsExtra] : []) as VNodeArrayChildren,
     ];
 
     return renderContent(content);

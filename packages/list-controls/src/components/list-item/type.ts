@@ -21,10 +21,21 @@ ListBaseSlotProps<T>,
     [key: string]: any
 };
 
+/**
+ * Resolved VNode children for a list item, passed to the `content` callback.
+ * Each field is only populated when its corresponding option is enabled
+ * (e.g. `icon` is set when `icon: true`).
+ */
 export type ListItemChildren = {
+    /** Rendered icon element (when icon: true). */
     icon?: VNodeChild,
+    /** Rendered text element (when text: true). */
     text?: VNodeChild,
+    /** Primary actions from ITEM_ACTIONS slot or actionsContent (when actions: true). */
     actions?: VNodeChild,
+    /** Extra actions from ITEM_ACTIONS_EXTRA slot, rendered in a separate wrapper. */
+    actionsExtra?: VNodeChild,
+    /** Custom item content from the ITEM / ITEM_DEFAULT slot. Bypasses icon/text/actions. */
     slot?: VNodeChild
 };
 
@@ -53,10 +64,14 @@ export type ListItemBuildOptions<T, M = any> = ListBaseOptions<T, M> & {
     textWrapperTag: string,
 
     actions: boolean,
-    actionsContent: VNodeChild | ((item: T, props: ListItemSlotProps<T>) => VNodeChild),
+    actionsContent?: VNodeChild | ((item: T, props: ListItemSlotProps<T>) => VNodeChild),
     actionsWrapper: boolean,
     actionsWrapperClass: VNodeClass,
     actionsWrapperTag: string,
+
+    actionsExtraWrapper: boolean,
+    actionsExtraWrapperClass: VNodeClass,
+    actionsExtraWrapperTag: string,
 };
 
 export type ListItemBuildOptionsInput<T, M = any> = ListBaseOptionsInput<T, M> &
@@ -82,5 +97,8 @@ ComponentOptionsInputValue<PartialPick<ListItemBuildOptions<T, M>,
 'actionsWrapper' |
 'actionsWrapperClass' |
 'actionsWrapperTag' |
+'actionsExtraWrapper' |
+'actionsExtraWrapperClass' |
+'actionsExtraWrapperTag' |
 'textPropName'>>
 >;

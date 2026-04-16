@@ -14,12 +14,19 @@ import type {
 } from '../type';
 
 export type ListBaseSlotProps<T, M = any> = {
+    /** Whether the list is currently loading data. */
     busy?: boolean,
+    /** Convenience total count. Equivalent to meta.total when using paginated responses. */
     total?: number,
+    /** Trigger a (re)load. Accepts optional meta (e.g. pagination params). */
     load?: ListLoadFn<M>,
+    /** Callback invoked when an existing item is updated. Provided via onUpdated option. */
     updated?: ListEventFn<T>,
+    /** Callback invoked when an item is deleted. Provided via onDeleted option. */
     deleted?: ListEventFn<T>,
+    /** Callback invoked when a new item is created. Provided via onCreated option. */
     created?: ListEventFn<T>,
+    /** Arbitrary metadata (e.g. pagination info). */
     meta?: M,
     [key: string]: any
 };

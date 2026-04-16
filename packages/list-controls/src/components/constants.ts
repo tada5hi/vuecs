@@ -16,6 +16,8 @@ export enum SlotName {
     LOADING = 'loading',
     NO_MORE = 'noMore',
     ITEM = 'item',
+    /** Alias for ITEM — provides naming consistency with DEFAULT at the list level. */
+    ITEM_DEFAULT = 'itemDefault',
     ITEM_ACTIONS = 'itemActions',
     ITEM_ACTIONS_EXTRA = 'itemActionsExtra',
 }
