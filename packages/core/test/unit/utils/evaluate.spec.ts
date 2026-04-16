@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { evaluateFnOrValue } from '../../../src';
 
 describe('src/utils/evaluate', () => {

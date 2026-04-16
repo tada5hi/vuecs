@@ -1,20 +1,17 @@
 {
     "name": "@vuecs/preset-bootstrap-v5",
     "version": "2.0.1",
+    "type": "module",
     "description": "",
     "exports": {
         "./package.json": "./package.json",
         ".": {
             "types": "./dist/index.d.ts",
-            "import": "./dist/index.mjs",
-            "require": "./dist/index.cjs"
+            "import": "./dist/index.mjs"
         }
     },
-    "main": "dist/index.cjs",
-    "module": "dist/index.mjs",
-    "types": "dist/index.d.ts",
     "files": [
-        "dist/*"
+        "dist"
     ],
     "keywords": [],
     "author": {
@@ -28,13 +25,12 @@
         "directory": "packages/preset-bootstrap-v5"
     },
     "scripts": {
-        "prebuild": "rimraf ./dist",
+        "build:js": "tsdown",
         "build:types": "tsc --emitDeclarationOnly -p tsconfig.build.json",
-        "build:js": "rollup -c",
-        "build": "cross-env NODE_ENV=production rimraf dist && npm run build:js && npm run build:types"
+        "build": "rimraf dist && npm run build:js && npm run build:types"
     },
     "engines": {
-        "node": ">=20"
+        "node": ">=22.0.0"
     },
     "publishConfig": {
         "access": "public"

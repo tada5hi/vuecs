@@ -1,20 +1,17 @@
 {
     "name": "@vuecs/timeago",
     "version": "1.1.2",
+    "type": "module",
     "description": "A package containing a timeago component.",
     "exports": {
         "./package.json": "./package.json",
         ".": {
             "types": "./dist/index.d.ts",
-            "import": "./dist/index.mjs",
-            "require": "./dist/index.cjs"
+            "import": "./dist/index.mjs"
         }
     },
-    "main": "dist/index.cjs",
-    "module": "dist/index.mjs",
-    "types": "dist/index.d.ts",
     "files": [
-        "dist/*"
+        "dist"
     ],
     "keywords": [
         "timeago",
@@ -33,9 +30,9 @@
         "directory": "packages/timeago"
     },
     "scripts": {
+        "build:js": "tsdown",
         "build:types": "vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json",
-        "build:js": "rollup -c",
-        "build": "cross-env NODE_ENV=production rimraf dist && npm run build:js && npm run build:types"
+        "build": "rimraf dist && npm run build:js && npm run build:types"
     },
     "devDependencies": {
         "date-fns": "^4.1.0",
@@ -46,7 +43,7 @@
         "vue": "^3.x"
     },
     "engines": {
-        "node": ">=20"
+        "node": ">=22.0.0"
     },
     "publishConfig": {
         "access": "public"

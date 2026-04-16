@@ -1,20 +1,17 @@
 {
     "name": "@vuecs/countdown",
     "version": "1.0.1",
+    "type": "module",
     "description": "A package containing a countdown component.",
     "exports": {
         "./package.json": "./package.json",
         ".": {
             "types": "./dist/index.d.ts",
-            "import": "./dist/index.mjs",
-            "require": "./dist/index.cjs"
+            "import": "./dist/index.mjs"
         }
     },
-    "main": "dist/index.cjs",
-    "module": "dist/index.mjs",
-    "types": "dist/index.d.ts",
     "files": [
-        "dist/*"
+        "dist"
     ],
     "keywords": [
         "vue",
@@ -31,12 +28,12 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/tada5hi/vuecs.git",
-        "directory": "packages/gravatar"
+        "directory": "packages/countdown"
     },
     "scripts": {
+        "build:js": "tsdown",
         "build:types": "vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json",
-        "build:js": "rollup -c",
-        "build": "cross-env NODE_ENV=production rimraf dist && npm run build:js && npm run build:types"
+        "build": "rimraf dist && npm run build:js && npm run build:types"
     },
     "devDependencies": {
         "vue": "^3.5.28"
@@ -45,7 +42,7 @@
         "vue": "^3.x"
     },
     "engines": {
-        "node": ">=20"
+        "node": ">=22.0.0"
     },
     "publishConfig": {
         "access": "public"

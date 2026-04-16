@@ -1,6 +1,7 @@
 {
     "name": "vuecs",
     "private": true,
+    "type": "module",
     "author": {
         "name": "Peter Placzek",
         "email": "contact@tada5hi.net",
@@ -33,41 +34,30 @@
     },
     "homepage": "https://github.com/Tada5hi/vuecs#readme",
     "engines": {
-        "node": ">=14.0.0"
+        "node": ">=22.0.0"
     },
     "devDependencies": {
-        "@rollup/plugin-alias": "^6.0.0",
-        "@rollup/plugin-node-resolve": "^16.0.3",
-        "@rollup/plugin-replace": "^6.0.3",
-        "@rollup/plugin-swc": "^0.4.0",
-        "@rollup/plugin-terser": "^0.4.4",
-        "@swc/core": "^1.15.8",
-        "@tada5hi/commitlint-config": "^1.2.7",
-        "@tada5hi/eslint-config-vue-typescript": "^1.3.18",
-        "@types/jest": "^30.0.0",
-        "@types/node": "^25.2.3",
+        "@tada5hi/commitlint-config": "^1.3.1",
+        "@tada5hi/eslint-config": "^2.3.0",
+        "@tada5hi/tsconfig": "^0.7.2",
+        "@tsdown/css": "^0.21.8",
         "@vitejs/plugin-vue": "^6.0.4",
-        "cross-env": "^10.1.0",
-        "dotenv": "^17.3.1",
-        "eslint": "^8.57.1",
-        "eslint-plugin-vue": "10.6.2",
+        "eslint": "^10.2.0",
+        "eslint-plugin-vue": "^10.8.0",
         "husky": "^9.1.7",
-        "jest": "^30.2.0",
         "nx": "^22.5.1",
         "rimraf": "^6.1.3",
-        "rollup": "^4.57.1",
-        "rollup-plugin-postcss": "^4.0.2",
-        "ts-jest": "^29.4.6",
-        "typescript": "5.9.3",
-        "vue-tsc": "^3.2.4",
-        "workspaces-publish": "^1.7.0"
+        "tsdown": "^0.21.7",
+        "typescript": "^5.9.3",
+        "typescript-eslint": "^8.58.0",
+        "vitest": "^4.1.2",
+        "vue-tsc": "^3.2.4"
     },
     "scripts": {
-        "commit": "npx git-cz",
         "build": "npx nx run-many -t build",
         "test": "npx nx run-many -t test",
-        "lint": "eslint --ext .ts ./packages/",
+        "lint": "eslint",
         "lint:fix": "npm run lint -- --fix",
-        "prepare": "husky install"
+        "prepare": "husky"
     }
 }

@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { Store } from '../../src';
 
 describe('src/store', () => {

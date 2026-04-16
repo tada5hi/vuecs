@@ -1,24 +1,20 @@
 {
     "name": "@vuecs/navigation",
     "version": "2.4.1",
+    "type": "module",
     "description": "A package for multi level navigations.",
     "exports": {
         "./package.json": "./package.json",
         ".": {
             "types": "./dist/index.d.ts",
-            "import": "./dist/index.mjs",
-            "require": "./dist/index.cjs"
+            "import": "./dist/index.mjs"
         },
         "./core": {
             "types": "./core/index.d.ts",
-            "import": "./core/index.mjs",
-            "require": "./core/index.cjs"
+            "import": "./core/index.mjs"
         },
-        "./dist/index.css": "./dist/index.css"
+        "./dist/style.css": "./dist/style.css"
     },
-    "main": "dist/index.cjs",
-    "module": "dist/index.mjs",
-    "types": "dist/index.d.ts",
     "files": [
         "core",
         "dist"
@@ -47,11 +43,11 @@
         "directory": "packages/navigation"
     },
     "scripts": {
+        "build:js": "tsdown",
         "build:types": "vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json",
-        "build:js": "rollup -c",
-        "build": "cross-env NODE_ENV=production rimraf dist && npm run build:js && npm run build:types",
-        "test": "cross-env NODE_ENV=test jest --config ./test/jest.config.js",
-        "test:coverage": "cross-env NODE_ENV=test jest --config ./test/jest.config.js --coverage"
+        "build": "rimraf dist && npm run build:js && npm run build:types",
+        "test": "vitest --config test/vitest.config.ts --run",
+        "test:coverage": "vitest --config test/vitest.config.ts --run --coverage"
     },
     "dependencies": {
         "@posva/event-emitter": "^1.0.2"
@@ -69,10 +65,9 @@
         "vue-router": "^4.x || ^5.x"
     },
     "engines": {
-        "node": ">=16"
+        "node": ">=22.0.0"
     },
     "publishConfig": {
         "access": "public"
-    },
-    "gitHead": "08baf626ef03e8db4a732502d795b7a21b3fd1ab"
+    }
 }

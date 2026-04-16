@@ -1,25 +1,12 @@
 {
     "extends": "../../tsconfig.build.json",
-
     "compilerOptions": {
-        "outDir": "./dist",
-        "importHelpers": true,
-        "allowSyntheticDefaultImports": true,
-        "sourceMap": false,
-        "jsx": "preserve",
         "lib": ["ESNext", "DOM"],
-
-        "declaration": true,
+        "outDir": "./dist",
         "declarationDir": "./dist",
-        "skipLibCheck": true,
-        "isolatedModules": true
+        "jsx": "preserve",
+        "skipLibCheck": true
     },
-    "exclude": [
-        "node_modules",
-        "dist"
-    ],
-    "include": [
-        "types/**/*.d.ts",
-        "src/**/*.ts"
-    ]
+    "exclude": ["node_modules", "dist"],
+    "include": ["src/**/*.ts", "src/**/*.vue"]
 }
