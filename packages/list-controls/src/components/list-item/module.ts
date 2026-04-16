@@ -32,16 +32,14 @@ export function buildListItem<T, M = any>(
 ) : VNodeChild {
     const options = normalizeListItemOptions(input);
 
-    if (process.env.NODE_ENV !== 'production') {
-        if (!options.actions && input.actionsContent) {
-            console.warn('[vuecs/list-controls] actionsContent is provided but actions is disabled. Set actions: true or remove actionsContent.');
-        }
-        if (!options.icon && input.iconClass && (Array.isArray(input.iconClass) ? input.iconClass.length > 0 : input.iconClass)) {
-            console.warn('[vuecs/list-controls] iconClass is provided but icon is disabled. Set icon: true or remove iconClass.');
-        }
-        if (!options.text && input.textContent) {
-            console.warn('[vuecs/list-controls] textContent is provided but text is disabled. Set text: true or remove textContent.');
-        }
+    if (!options.actions && input.actionsContent) {
+        console.warn('[vuecs/list-controls] actionsContent is provided but actions is disabled. Set actions: true or remove actionsContent.');
+    }
+    if (!options.icon && input.iconClass && (Array.isArray(input.iconClass) ? input.iconClass.length > 0 : input.iconClass)) {
+        console.warn('[vuecs/list-controls] iconClass is provided but icon is disabled. Set icon: true or remove iconClass.');
+    }
+    if (!options.text && input.textContent) {
+        console.warn('[vuecs/list-controls] textContent is provided but text is disabled. Set text: true or remove textContent.');
     }
 
     const overrideUpdatedFn = (fn: ListEventFn<T>, item?: T) : ListEventFn<T | undefined> => {
