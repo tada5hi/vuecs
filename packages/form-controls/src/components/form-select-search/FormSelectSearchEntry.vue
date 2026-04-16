@@ -9,9 +9,7 @@ export default defineComponent({
             type: Object as PropType<FormSelectOption>,
             required: true,
         },
-        selected: {
-            type: Array as PropType<FormSelectOption[]>,
-        },
+        selected: { type: Array as PropType<FormSelectOption[]> },
     },
     setup(props) {
         const active = computed(
@@ -19,9 +17,7 @@ export default defineComponent({
                 props.selected.findIndex((el) => el.id === props.entry.id) !== -1,
         );
 
-        return {
-            active,
-        };
+        return { active };
     },
 });
 </script>

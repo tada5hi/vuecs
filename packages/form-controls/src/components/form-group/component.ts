@@ -10,23 +10,15 @@ export const VCFormGroup = defineComponent({
             type: Boolean,
             default: undefined,
         },
-        labelClass: {
-            type: String,
-        },
-        labelContent: {
-            type: String,
-        },
+        labelClass: { type: String },
+        labelContent: { type: String },
 
         hint: {
             type: Boolean,
             default: undefined,
         },
-        hintClass: {
-            type: String,
-        },
-        hintContent: {
-            type: String,
-        },
+        hintClass: { type: String },
+        hintContent: { type: String },
 
         validation: {
             type: Boolean,

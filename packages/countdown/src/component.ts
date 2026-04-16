@@ -80,7 +80,8 @@ export const VCCountdown = defineComponent({
         totalMilliseconds: number,
         requestId?: number,
         endTime: number,
-        timeoutId?: ReturnType<typeof setTimeout> } {
+        timeoutId?: ReturnType<typeof setTimeout> 
+    } {
         return {
             /**
              * It is counting down.

@@ -12,9 +12,7 @@ export function buildFormInputOptions(
     component = component || Component.FormInput;
     const options = buildFormBaseOptions(input, component);
 
-    const manager = createComponentOptionsManager<FormInputBuildOptions>({
-        name: component,
-    });
+    const manager = createComponentOptionsManager<FormInputBuildOptions>({ name: component });
 
     return {
         ...options,
@@ -137,9 +135,7 @@ export function buildFormInputFromOptions(
         children.push(
             h(
                 'div',
-                {
-                    class: options.groupAppendClass,
-                },
+                { class: options.groupAppendClass },
                 [
                     options.groupAppendContent,
                 ],
@@ -153,9 +149,7 @@ export function buildFormInputFromOptions(
     ) {
         return h(
             'div',
-            {
-                class: options.groupClass,
-            },
+            { class: options.groupClass },
             children,
         );
     }

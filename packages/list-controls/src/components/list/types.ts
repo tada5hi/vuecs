@@ -7,7 +7,10 @@
 
 import type { ComponentOptionsOverride, PartialPick } from '@vuecs/core';
 import type {
-    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListBaseSlotProps,
+    ExpectListBaseOptions, 
+    ListBaseOptions, 
+    ListBaseOptionsInput, 
+    ListBaseSlotProps,
 } from '../list-base';
 import type { ListFooterBuildOptionsInput } from '../list-footer';
 import type { ListHeaderBuildOptionsInput } from '../list-header';
@@ -27,8 +30,8 @@ export type ListBuildOptions<T, M = any> = ListBaseOptions<T, M> & {
 
 export type ListBuildOptionsInput<T, M = any> = ListBaseOptionsInput<T, M> &
 ComponentOptionsOverride<
-ExpectListBaseOptions<ListBuildOptions<T, M>>,
-PartialPick<ListBuildOptions<T, M>, 'busy' | 'data' | 'header' | 'footer' | 'body' | 'loading' | 'noMore'>
+    ExpectListBaseOptions<ListBuildOptions<T, M>>,
+    PartialPick<ListBuildOptions<T, M>, 'busy' | 'data' | 'header' | 'footer' | 'body' | 'loading' | 'noMore'>
 >;
 
 export type ListSlotProps<T, M = any> = ListBaseSlotProps<T, M> & {

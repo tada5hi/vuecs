@@ -30,6 +30,4 @@ export function install(app: App, options: Options = {}) : void {
     app.component('VCTimeago', VCTimeago);
 }
 
-export default {
-    install,
-} satisfies Plugin<Options | undefined>;
+export default { install } satisfies Plugin<Options | undefined>;

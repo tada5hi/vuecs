@@ -11,9 +11,7 @@ import type { PaginationOptions, PaginationOptionsInput } from './type';
 export function buildPaginationOptions(
     options: PaginationOptionsInput,
 ): PaginationOptions {
-    const manager = createComponentOptionsManager<PaginationOptions>({
-        name: 'pagination',
-    });
+    const manager = createComponentOptionsManager<PaginationOptions>({ name: 'pagination' });
 
     return {
         ...options,

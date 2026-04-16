@@ -10,9 +10,7 @@ import { createComponentOptionsManager, mergeOption } from '@vuecs/core';
 import type { ComponentOptions } from './types';
 
 export function buildComponentOptions() : ComponentOptions {
-    const manager = createComponentOptionsManager<ComponentOptions>({
-        name: 'navigation',
-    });
+    const manager = createComponentOptionsManager<ComponentOptions>({ name: 'navigation' });
 
     return {
         groupClass: mergeOption('class', manager.get('groupClass'), 'vc-nav-items') as VNodeClass,

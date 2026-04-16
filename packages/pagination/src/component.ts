@@ -13,9 +13,7 @@ export const VCPagination = defineComponent({
             type: Number,
             default: 0,
         },
-        offset: {
-            type: Number,
-        },
+        offset: { type: Number },
         busy: {
             type: Boolean,
             default: false,

@@ -15,12 +15,8 @@ export const VCFormInput = defineComponent({
             default: 'text',
         },
 
-        groupAppendClass: {
-            type: String,
-        },
-        groupPrependClass: {
-            type: String,
-        },
+        groupAppendClass: { type: String },
+        groupPrependClass: { type: String },
     },
     emits: ['update:modelValue'],
     slots: Object as SlotsType<{

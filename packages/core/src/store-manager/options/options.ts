@@ -8,9 +8,9 @@ export function applyStoreManagerOptions(
 ) {
     if (options.presets) {
         const presetKeys = Object.keys(options.presets);
-        for (let i = 0; i < presetKeys.length; i++) {
-            const store = manager.use(presetKeys[i]);
-            store.setAll(options.presets[presetKeys[i]]);
+        for (const presetKey of presetKeys) {
+            const store = manager.use(presetKey);
+            store.setAll(options.presets[presetKey]);
         }
     }
 

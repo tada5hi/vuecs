@@ -11,10 +11,9 @@ import type { Options } from './types';
 export * from './component';
 export * from './types';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function install(instance: App, options?: Options) : void {
     instance.component('VCLink', VCLink);
 }
 
-export default {
-    install,
-} satisfies Plugin<Options | undefined>;
+export default { install } satisfies Plugin<Options | undefined>;

@@ -1,11 +1,15 @@
 <script lang="ts">
 import {
-    onClickOutside, useInfiniteScroll,
+    onClickOutside, 
+    useInfiniteScroll,
 } from '@vueuse/core';
 import type { PropType } from 'vue';
 import {
     computed,
-    defineComponent, ref, toRef, watch,
+    defineComponent, 
+    ref, 
+    toRef, 
+    watch,
 } from 'vue';
 import type { FormSelectOption } from '../form-select';
 import FormSelectSearchEntry from './FormSelectSearchEntry.vue';
@@ -19,7 +23,6 @@ export default defineComponent({
         },
         options: {
             type: Array as PropType<FormSelectOption[]>,
-            required: true,
             default: () => [],
         },
         placeholder: {
@@ -45,8 +48,8 @@ export default defineComponent({
     },
     emits: ['update:modelValue', 'change'],
     async setup(props, { emit }) {
-        const listElement = ref<HTMLElement | null>(null);
-        const inputElement = ref<HTMLElement | null>(null);
+        const listElement = ref<globalThis.HTMLElement | null>(null);
+        const inputElement = ref<globalThis.HTMLElement | null>(null);
 
         const q = ref('');
         const currentIndex = ref(-1);
@@ -222,7 +225,7 @@ export default defineComponent({
             display();
         };
 
-        const onKeyUp = (ev: any) => {
+        const onKeyUp = (ev: globalThis.KeyboardEvent) => {
             if (ev.key === 'ArrowUp' || ev.key === 'ArrowDown') {
                 display();
 
@@ -244,7 +247,7 @@ export default defineComponent({
             }
         };
 
-        const onKeyDown = (ev: any) => {
+        const onKeyDown = (ev: globalThis.KeyboardEvent) => {
             if (ev.key === 'Enter') {
                 if (!isDisplayed.value) {
                     return;

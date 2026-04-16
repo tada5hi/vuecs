@@ -6,7 +6,10 @@
  */
 
 import {
-    expandPath, getPathInfo, removePath, setPathValue,
+    expandPath, 
+    getPathInfo, 
+    removePath, 
+    setPathValue,
 } from 'pathtrace';
 import type { ComponentsOptions } from './type';
 
@@ -24,8 +27,8 @@ export function pickComponentsOptions<T extends ComponentsOptions>(
     if (options.include) {
         for (let i = 0; i < options.include.length; i++) {
             const pathsExpanded = expandPath(input, options.include[i] as string);
-            for (let j = 0; j < pathsExpanded.length; j++) {
-                const pathInfo = getPathInfo(input, pathsExpanded[j]);
+            for (const element of pathsExpanded) {
+                const pathInfo = getPathInfo(input, element);
                 if (pathInfo.exists) {
                     setPathValue(output, options.include[i] as string, pathInfo.value);
                 }
@@ -40,8 +43,8 @@ export function pickComponentsOptions<T extends ComponentsOptions>(
 
         for (let i = 0; i < options.exclude.length; i++) {
             const pathsExpanded = expandPath(output, options.exclude[i] as string);
-            for (let j = 0; j < pathsExpanded.length; j++) {
-                removePath(output, pathsExpanded[j]);
+            for (const element of pathsExpanded) {
+                removePath(output, element);
             }
         }
     }

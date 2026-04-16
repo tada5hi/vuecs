@@ -1,6 +1,7 @@
 import type {
     ComponentOptionsInputValue,
-    ComponentOptionsOverride, PartialPick,
+    ComponentOptionsOverride, 
+    PartialPick,
     VNodeClass,
     VNodeProperties,
 } from '@vuecs/core';
@@ -29,14 +30,11 @@ export type FormSubmitOptions = {
 };
 
 export type FormSubmitOptionsInput = ComponentOptionsOverride<
-FormSubmitOptions,
-PartialPick<FormSubmitOptions,
-'busy' |
+    FormSubmitOptions,
+PartialPick<FormSubmitOptions, 'busy' |
 'invalid' |
-'isEditing'
-> &
-ComponentOptionsInputValue<PartialPick<FormSubmitOptions,
-'type' |
+'isEditing'> &
+ComponentOptionsInputValue<PartialPick<FormSubmitOptions, 'type' |
 'props' |
 'class' |
 'icon' |
@@ -45,6 +43,5 @@ ComponentOptionsInputValue<PartialPick<FormSubmitOptions,
 'updateIconClass' |
 'createText' |
 'createButtonClass' |
-'createIconClass'
->>
+'createIconClass'>>
 >;

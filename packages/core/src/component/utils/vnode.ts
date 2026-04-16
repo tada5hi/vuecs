@@ -2,11 +2,11 @@ import type { VNodeProps } from 'vue';
 import { mergeProps } from 'vue';
 
 export function isVNodeClassOption(name: string) {
-    return name.toLowerCase().indexOf('class') !== -1;
+    return name.toLowerCase().includes('class');
 }
 
 export function isVNodeStyleOption(name: string) {
-    return name.toLowerCase().indexOf('style') !== -1;
+    return name.toLowerCase().includes('style');
 }
 
 export function isVNodeListenerOption(name: string) {
@@ -14,7 +14,7 @@ export function isVNodeListenerOption(name: string) {
 }
 
 export function isVNodePropsOption(name: string) {
-    return name.toLowerCase().indexOf('props') !== -1;
+    return name.toLowerCase().includes('props');
 }
 
 export function isVNodeOption(name: string) {

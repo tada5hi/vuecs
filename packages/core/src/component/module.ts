@@ -6,7 +6,8 @@ import type { ComponentOptionBuildContext, ComponentOptions, ComponentOptionsMan
 import {
     isComponentOptionInputConfig,
     isComponentOptionInputConfigWithDefaults,
-    isComponentOptionInputConfigWithPresets, mergeOption,
+    isComponentOptionInputConfigWithPresets, 
+    mergeOption,
 } from './utils';
 
 export class ComponentOptionsManager<T extends ComponentOptions> {
@@ -32,8 +33,8 @@ export class ComponentOptionsManager<T extends ComponentOptions> {
 
         if (isComponentOptionInputConfigWithPresets(context.value)) {
             const keys = Object.keys(context.value.presets);
-            for (let i = 0; i < keys.length; i++) {
-                presetConfig[keys[i]] = context.value.presets[keys[i]];
+            for (const key of keys) {
+                presetConfig[key] = context.value.presets[key];
             }
 
             if (typeof context.value.value !== 'undefined') {
@@ -55,19 +56,19 @@ export class ComponentOptionsManager<T extends ComponentOptions> {
         }
 
         const keys = this.storeManager.keys();
-        for (let i = 0; i < keys.length; i++) {
-            if (keys[i] === StoreName.DEFAULT) {
+        for (const key of keys) {
+            if (key === StoreName.DEFAULT) {
                 continue;
             }
 
             if (
-                hasOwnProperty(presetConfig, keys[i]) &&
-                !presetConfig[keys[i]]
+                hasOwnProperty(presetConfig, key) &&
+                !presetConfig[key]
             ) {
                 continue;
             }
 
-            const presetStore = this.storeManager.use(keys[i]);
+            const presetStore = this.storeManager.use(key);
             if (presetStore.hasOption(this.component, context.key as string)) {
                 value = mergeOption(
                     context.key as string,
@@ -103,8 +104,8 @@ export class ComponentOptionsManager<T extends ComponentOptions> {
         let value : T[K] | undefined;
 
         const keys = this.storeManager.keys();
-        for (let i = 0; i < keys.length; i++) {
-            const presetStore = this.storeManager.use(keys[i]);
+        for (const key_ of keys) {
+            const presetStore = this.storeManager.use(key_);
             if (presetStore.hasOption(this.component, key as string)) {
                 value = mergeOption(
                     key as string,

@@ -14,8 +14,8 @@ export class Store {
      */
     setAll(items: Record<string, Record<string, any>>) {
         const keys = Object.keys(items);
-        for (let i = 0; i < keys.length; i++) {
-            this.setOptions(keys[i], items[keys[i]]);
+        for (const key of keys) {
+            this.setOptions(key, items[key]);
         }
     }
 

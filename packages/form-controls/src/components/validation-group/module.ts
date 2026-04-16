@@ -10,9 +10,7 @@ import type { ValidationMessagesArrayStyle } from '../type';
 import type { ValidationGroupOptions, ValidationGroupOptionsInput } from './type';
 
 export function buildValidationGroupOptions(options: ValidationGroupOptionsInput) : ValidationGroupOptions {
-    const manager = createComponentOptionsManager<ValidationGroupOptions>({
-        name: Component.VALIDATION_GROUP,
-    });
+    const manager = createComponentOptionsManager<ValidationGroupOptions>({ name: Component.VALIDATION_GROUP });
 
     return {
         ...options,
@@ -45,10 +43,10 @@ export function buildValidationGroup(input: ValidationGroupOptionsInput) : VNode
     } else {
         errors = [];
         const keys = Object.keys(options.messages);
-        for (let i = 0; i < keys.length; i++) {
+        for (const key of keys) {
             errors.push({
-                key: keys[i],
-                value: options.messages[keys[i]],
+                key,
+                value: options.messages[key],
             });
         }
     }
@@ -64,19 +62,17 @@ export function buildValidationGroup(input: ValidationGroupOptionsInput) : VNode
 
     const children : VNodeArrayChildren = [];
 
-    for (let i = 0; i < errors.length; i++) {
+    for (const error of errors) {
         if (hasNormalizedSlot(SlotName.VALIDATION_ITEM, options.slotItems)) {
             children.push(normalizeSlot(SlotName.VALIDATION_ITEM, {
-                key: errors[i].key,
-                value: errors[i].value,
+                key: error.key,
+                value: error.value,
                 class: options.itemClass,
                 tag: options.itemTag,
                 severity: options.severity,
             }, options.slotItems));
         } else {
-            children.push(h(options.itemTag, {
-                class: options.itemClass,
-            }, [errors[i].value]));
+            children.push(h(options.itemTag, { class: options.itemClass }, [error.value]));
         }
     }
 

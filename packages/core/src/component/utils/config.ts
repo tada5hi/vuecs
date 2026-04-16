@@ -20,10 +20,10 @@ export function isComponentOptionInputConfigWithPresets(
     }
 
     const keys = Object.keys(presets);
-    for (let i = 0; i < keys.length; i++) {
+    for (const key of keys) {
         if (
-            !hasOwnProperty(presets, keys[i]) ||
-            typeof presets[keys[i]] !== 'boolean'
+            !hasOwnProperty(presets, key) ||
+            typeof presets[key] !== 'boolean'
         ) {
             return false;
         }

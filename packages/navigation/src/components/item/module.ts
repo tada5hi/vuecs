@@ -56,14 +56,10 @@ export const VCNavItem = defineComponent({
                 if (data.value.type === ElementType.SEPARATOR) {
                     const hasSlot = hasNormalizedSlot(SlotName.SEPARATOR, slots);
                     if (hasSlot) {
-                        return normalizeSlot(SlotName.SEPARATOR, {
-                            data: data.value,
-                        }, slots);
+                        return normalizeSlot(SlotName.SEPARATOR, { data: data.value }, slots);
                     }
 
-                    return h(options.separatorTag, {
-                        class: options.separatorClass,
-                    }, data.value.name);
+                    return h(options.separatorTag, { class: options.separatorClass }, data.value.name);
                 }
 
                 // type: group
@@ -116,18 +112,14 @@ export const VCNavItem = defineComponent({
                             ...(data.value.icon ?
                                 [h(
                                     options.linkIconTag,
-                                    {
-                                        class: options.linkIconClass,
-                                    },
+                                    { class: options.linkIconClass },
                                     [
                                         h('i', { class: data.value.icon }),
                                     ],
                                 )] :
                                 []
                             ),
-                            h(options.linkTextTag, {
-                                class: options.linkTextClass,
-                            }, [
+                            h(options.linkTextTag, { class: options.linkTextClass }, [
                                 data.value.name,
                             ]),
                         ],
@@ -161,18 +153,14 @@ export const VCNavItem = defineComponent({
                         ...(data.value.icon ?
                             [h(
                                 options.linkIconTag,
-                                {
-                                    class: options.linkIconClass,
-                                },
+                                { class: options.linkIconClass },
                                 [
                                     h('i', { class: data.value.icon }),
                                 ],
                             )] :
                             []
                         ),
-                        h(options.linkTextTag, {
-                            class: options.linkTextClass,
-                        }, [
+                        h(options.linkTextTag, { class: options.linkTextClass }, [
                             data.value.name,
                         ]),
                     ]);
@@ -207,9 +195,7 @@ export const VCNavItem = defineComponent({
                 class: [
                     options.itemClass,
                     ...(hasChildren.value ? [options.itemNestedClass] : []),
-                    {
-                        active: data.value.active || data.value.displayChildren,
-                    },
+                    { active: data.value.active || data.value.displayChildren },
                 ],
             }, [
                 buildItem(),

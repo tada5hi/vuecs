@@ -13,8 +13,8 @@ export function isTraceEqual(
         return false;
     }
 
-    for (let i = 0; i < a.length; i++) {
-        if (a[i] !== b[i]) {
+    for (const [i, element] of a.entries()) {
+        if (element !== b[i]) {
             return false;
         }
     }
@@ -23,8 +23,8 @@ export function isTraceEqual(
 }
 
 export function isTracePartOf(item: string[], parent: string[]) {
-    for (let i = 0; i < item.length; i++) {
-        if (parent[i] !== item[i]) {
+    for (const [i, element] of item.entries()) {
+        if (parent[i] !== element) {
             return false;
         }
     }

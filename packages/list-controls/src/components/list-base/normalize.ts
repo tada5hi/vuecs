@@ -22,9 +22,7 @@ export function normalizeListBaseOptions<
 ): ListBaseOptions<Entity<T>, M> {
     defaults = defaults || {};
 
-    const manager = createComponentOptionsManager<ListBaseOptions<Entity<T>, M>>({
-        name: component,
-    });
+    const manager = createComponentOptionsManager<ListBaseOptions<Entity<T>, M>>({ name: component });
 
     return {
         slotItems: options.slotItems || {},

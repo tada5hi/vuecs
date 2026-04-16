@@ -1,7 +1,8 @@
 import type { App, Ref } from 'vue';
 import { isRef, ref } from 'vue';
 import {
-    inject, provide,
+    inject, 
+    provide,
 } from './utils';
 
 const LocaleSymbol = Symbol.for('TLocale');

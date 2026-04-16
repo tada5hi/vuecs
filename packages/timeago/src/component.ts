@@ -20,22 +20,14 @@ export const VCTimeago = defineComponent({
             type: [Object, Number, String] as PropType<Date | number | string>,
             required: true,
         },
-        title: {
-            type: [String, Boolean],
-        },
-        locale: {
-            type: String,
-        },
+        title: { type: [String, Boolean] },
+        locale: { type: String },
         autoUpdate: {
             type: [Number, Boolean],
             default: true,
         },
-        converter: {
-            type: Function as PropType<Converter>,
-        },
-        converterOptions: {
-            type: Object as PropType<ConverterOptions>,
-        },
+        converter: { type: Function as PropType<Converter> },
+        converterOptions: { type: Object as PropType<ConverterOptions> },
     },
     setup(props) {
         const dateTimeProp = toRef(props, 'datetime');

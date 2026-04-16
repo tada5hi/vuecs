@@ -10,13 +10,9 @@ import { VCCountdown } from '@vuecs/countdown';
 import { defineNuxtComponent } from '#app';
 
 export default defineNuxtComponent({
-    components: {
-        VCCountdown,
-    },
+    components: { VCCountdown },
     setup() {
-        return {
-            time: 3600 * 1000,
-        };
+        return { time: 3600 * 1000 };
     },
 });
 </script>

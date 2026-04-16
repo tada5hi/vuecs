@@ -1,6 +1,11 @@
 <script lang="ts">
 import {
-    defineComponent, onMounted, onUnmounted, ref, toRef, watch,
+    defineComponent, 
+    onMounted, 
+    onUnmounted, 
+    ref, 
+    toRef, 
+    watch,
 } from 'vue';
 import { FormRangeSlider } from './module';
 
@@ -17,7 +22,7 @@ export default defineComponent({
     },
     emits: ['change'],
     setup(props, { emit }) {
-        const el = ref<HTMLElement | null>(null);
+        const el = ref<globalThis.HTMLElement | null>(null);
         let instance : FormRangeSlider | undefined;
 
         const min = toRef(props, 'min');
@@ -37,7 +42,7 @@ export default defineComponent({
 
         onMounted(() => {
             instance = new FormRangeSlider({
-                el: el.value as HTMLElement,
+                el: el.value as globalThis.HTMLElement,
                 min: props.min,
                 max: props.max,
             });

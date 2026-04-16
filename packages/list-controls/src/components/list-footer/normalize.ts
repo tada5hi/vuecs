@@ -15,14 +15,10 @@ export function normalizeListFooterOptions<T, M = any>(
     const options = normalizeListBaseOptions(
         input,
         Component.ListFooter,
-        {
-            class: CSSClassDefault.LIST_FOOTER,
-        },
+        { class: CSSClassDefault.LIST_FOOTER },
     );
 
-    const manager = createComponentOptionsManager<ListFooterBuildOptions<T, M>>({
-        name: Component.ListFooter,
-    });
+    const manager = createComponentOptionsManager<ListFooterBuildOptions<T, M>>({ name: Component.ListFooter });
 
     return {
         ...options,

@@ -45,9 +45,7 @@ function findItemMatchesIF(
         score: number
     }[] = [];
 
-    for (let i = 0; i < items.length; i++) {
-        const item = items[i];
-
+    for (const item of items) {
         let { score } = parent;
 
         if (options.path) {
@@ -59,9 +57,7 @@ function findItemMatchesIF(
         }
 
         if (item.children) {
-            const childMatches = findItemMatchesIF(item.children, options, {
-                score,
-            });
+            const childMatches = findItemMatchesIF(item.children, options, { score });
 
             output.push(...childMatches);
         }

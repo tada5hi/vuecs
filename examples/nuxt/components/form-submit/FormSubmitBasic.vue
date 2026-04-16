@@ -7,7 +7,8 @@
 
 <script lang="ts">
 import {
-    defineComponent, h, reactive, ref,
+    defineComponent,
+    ref,
 } from 'vue';
 
 export default defineComponent({
@@ -17,7 +18,7 @@ export default defineComponent({
         const submit = async () => {
             console.log('Submitted form');
 
-            return new Promise<void>((resolve, reject) => {
+            return new Promise<void>((resolve) => {
                 setTimeout(() => {
                     console.log('Resolved');
                     resolve();

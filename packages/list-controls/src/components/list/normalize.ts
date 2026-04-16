@@ -12,9 +12,7 @@ import type { ListBuildOptions, ListBuildOptionsInput } from './types';
 export function normalizeListOptions<T, M = any>(
     input: ListBuildOptionsInput<T, M>,
 ): ListBuildOptions<T, M> {
-    const options = normalizeListBaseOptions(input, Component.List, {
-        class: CSSClassDefault.LIST,
-    });
+    const options = normalizeListBaseOptions(input, Component.List, { class: CSSClassDefault.LIST });
 
     return {
         ...options,

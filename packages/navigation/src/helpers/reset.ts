@@ -5,10 +5,8 @@ function resetItemsByTraceIF(
     items: NavigationItemNormalized[],
     trace: string[],
 ) {
-    for (let i = 0; i < items.length; i++) {
-        const item = items[i];
-
-        const isEqual = isTraceEqual(items[i].trace, trace);
+    for (const item of items) {
+        const isEqual = isTraceEqual(item.trace, trace);
         item.active = isEqual;
         item.display = true;
 

@@ -14,7 +14,10 @@ import type {
 import {
     computed,
     defineComponent,
-    h, onMounted, onUnmounted, ref,
+    h, 
+    onMounted, 
+    onUnmounted, 
+    ref,
 } from 'vue';
 import { SlotName } from '../../constants';
 import { injectNavigationManager } from '../../manager';
@@ -100,9 +103,7 @@ export const VCNavItems = defineComponent({
                 vNodes.push(vNode);
             }
 
-            return h(options.groupTag, {
-                class: options.groupClass,
-            }, vNodes);
+            return h(options.groupTag, { class: options.groupClass }, vNodes);
         };
     },
 });

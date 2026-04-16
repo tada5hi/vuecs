@@ -11,9 +11,7 @@ import type { FormSubmitOptions, FormSubmitOptionsInput } from './type';
 export function buildFormSubmitOptions(
     options: FormSubmitOptionsInput,
 ) : FormSubmitOptions {
-    const manager = createComponentOptionsManager<FormSubmitOptions>({
-        name: Component.FormSubmit,
-    });
+    const manager = createComponentOptionsManager<FormSubmitOptions>({ name: Component.FormSubmit });
 
     return {
         ...options,

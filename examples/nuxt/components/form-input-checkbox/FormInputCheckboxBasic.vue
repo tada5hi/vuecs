@@ -10,22 +10,18 @@ import { useTranslationsForBaseValidation } from '@ilingo/vuelidate';
 import { required } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {
-    defineComponent, reactive, ref,
+    defineComponent, 
+    reactive, 
+    ref,
 } from 'vue';
 
 export default defineComponent({
     setup() {
-        const form = reactive({
-            text: null,
-        });
+        const form = reactive({ text: null });
 
         const valueMultiple = ref([]);
 
-        const $v = useVuelidate({
-            text: {
-                required,
-            },
-        }, form);
+        const $v = useVuelidate({ text: { required } }, form);
 
         const validationMessages = useTranslationsForBaseValidation($v.value.text);
 

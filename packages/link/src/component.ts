@@ -1,5 +1,8 @@
 import type {
-    DefineComponent, PropType, VNodeProps, VNodeTypes,
+    DefineComponent, 
+    PropType, 
+    VNodeProps, 
+    VNodeTypes,
 } from 'vue';
 import {
     computed,
@@ -37,9 +40,7 @@ export const VCLink = defineComponent({
             type: [String, Object] as PropType<string | Record<string, any>>,
             default: undefined,
         },
-        query: {
-            type: Object as PropType<LinkQuery>,
-        },
+        query: { type: Object as PropType<LinkQuery> },
     },
     emits: ['click', 'clicked'],
     setup(props, { emit, slots }) {
@@ -71,8 +72,8 @@ export const VCLink = defineComponent({
             let searchParams : URLSearchParams;
             if (link.includes('?')) {
                 const url = new URL(link, 'http://localhost:3000');
-                for (let i = 0; i < keys.length; i++) {
-                    url.searchParams.set(keys[i], query[keys[i]]);
+                for (const key of keys) {
+                    url.searchParams.set(key, query[key]);
                 }
 
                 searchParams = url.searchParams;
@@ -140,9 +141,7 @@ export const VCLink = defineComponent({
 
         const computedAttrs = computed(() => ({
             ...(props.href ? { href: props.href } : {}),
-            ...(isRouterLink.value ? {} : {
-                target: props.target,
-            }),
+            ...(isRouterLink.value ? {} : { target: props.target }),
         }));
 
         const buildVNodeProps = () => {
@@ -213,9 +212,7 @@ export const VCLink = defineComponent({
         return () => h(
             component as DefineComponent,
             buildVNodeProps(),
-            {
-                default: () => (typeof slots.default === 'function' ? slots.default() : []),
-            },
+            { default: () => (typeof slots.default === 'function' ? slots.default() : []) },
         );
     },
 });

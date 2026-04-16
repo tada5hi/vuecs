@@ -6,32 +6,24 @@ import type { FormInputCheckboxLabelSlotProps } from './type';
 
 export const VCFormInputCheckbox = defineComponent({
     props: {
-        modelValue: {
-            type: [Object, Boolean, String, Number, Array] as PropType<unknown | unknown[]>,
-        },
+        modelValue: { type: [Object, Boolean, String, Number, Array] as PropType<unknown | unknown[]> },
 
-        group: {
-            type: Boolean,
-        },
-        groupClass: {
-            type: String,
-        },
+        group: { type: Boolean },
+        groupClass: { type: String },
 
-        label: {
-            type: Boolean,
-        },
-        labelClass: {
-            type: String,
-        },
-        labelContent: {
-            type: String,
-        },
+        label: { type: Boolean },
+        labelClass: { type: String },
+        labelContent: { type: String },
     },
     emits: ['update:modelValue'],
     slots: Object as SlotsType<{
         [SlotName.LABEL]: FormInputCheckboxLabelSlotProps
     }>,
-    setup(props, { attrs, emit, slots }) {
+    setup(props, {
+        attrs, 
+        emit, 
+        slots, 
+    }) {
         return () => buildFormInputCheckbox({
             group: props.group,
             groupClass: props.groupClass,

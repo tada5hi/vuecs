@@ -2,7 +2,6 @@ import type { ComponentOptionInputConfig } from '@vuecs/core';
 import type { PropType } from 'vue';
 import { defineComponent } from 'vue';
 import { buildFormSubmit } from './module';
-import type { ValidationMessages, ValidationResult } from '../type';
 
 export const VCFormSubmit = defineComponent({
     props: {
@@ -49,9 +48,7 @@ export const VCFormSubmit = defineComponent({
             default: undefined,
         },
 
-        submit: {
-            type: Function as PropType<() => Promise<any> | any>,
-        },
+        submit: { type: Function as PropType<() => Promise<any> | any> },
 
         invalid: {
             type: Boolean,

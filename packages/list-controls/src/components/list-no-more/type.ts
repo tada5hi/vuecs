@@ -1,11 +1,13 @@
 import type {
     ComponentOptionsInputValue,
     ComponentOptionsOverride,
-    PartialPick,
 } from '@vuecs/core';
 import type { VNodeChild } from 'vue';
 import type {
-    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListBaseSlotProps,
+    ExpectListBaseOptions, 
+    ListBaseOptions, 
+    ListBaseOptionsInput, 
+    ListBaseSlotProps,
 } from '../list-base';
 
 export type ListNoMoreSlotProps<T, M = any> = ListBaseSlotProps<T, M>;
@@ -18,6 +20,6 @@ export type ListNoMoreBuildOptions<T, M = any> = ListBaseOptions<T, M> & {
 
 export type ListNoMoreBuildOptionsInput<T, M = any> = ListBaseOptionsInput<T, M> &
 ComponentOptionsOverride<
-ExpectListBaseOptions<ListNoMoreBuildOptions<T, M>>,
-ComponentOptionsInputValue<Pick<ListNoMoreBuildOptions<T, M>, 'content'>
->>;
+    ExpectListBaseOptions<ListNoMoreBuildOptions<T, M>>,
+    ComponentOptionsInputValue<Pick<ListNoMoreBuildOptions<T, M>, 'content'>>
+>;

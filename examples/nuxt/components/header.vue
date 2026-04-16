@@ -7,6 +7,7 @@
 <script lang="ts">
 import { VCGravatar } from '@vuecs/gravatar';
 import { VCNavItems } from '@vuecs/navigation';
+import { ref } from 'vue';
 import { defineNuxtComponent } from '#app';
 
 export default defineNuxtComponent({

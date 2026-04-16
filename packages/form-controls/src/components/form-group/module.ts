@@ -5,15 +5,14 @@ import { h } from 'vue';
 import { Component, SlotName, ValidationSeverity } from '../constants';
 import { buildValidationGroup } from '../validation-group';
 import type {
-    FormGroupOptions, FormGroupOptionsInput,
+    FormGroupOptions, 
+    FormGroupOptionsInput,
 } from './type';
 
 export function buildFormGroupOptions(
     input: FormGroupOptionsInput,
 ) : FormGroupOptions {
-    const manager = createComponentOptionsManager<FormGroupOptions>({
-        name: Component.FormGroup,
-    });
+    const manager = createComponentOptionsManager<FormGroupOptions>({ name: Component.FormGroup });
 
     return {
         ...input,
@@ -156,9 +155,7 @@ export function buildFormGroup(
                 ],
             ));
         } else if (options.hintContent) {
-            children.push(h(options.hintTag, {
-                class: options.hintClass,
-            }, [
+            children.push(h(options.hintTag, { class: options.hintClass }, [
                 options.hintContent,
             ]));
         }

@@ -11,14 +11,13 @@ import { buildFormGroup, buildFormInputText } from '@vuecs/form-controls';
 import { maxLength, minLength } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {
-    defineComponent, reactive,
+    defineComponent, 
+    reactive,
 } from 'vue';
 
 export default defineComponent({
     setup() {
-        const form = reactive({
-            text: 'foo',
-        });
+        const form = reactive({ text: 'foo' });
 
         const $v = useVuelidate({
             text: {

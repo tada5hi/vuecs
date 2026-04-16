@@ -1,10 +1,13 @@
 import type { App } from 'vue';
 import { formatDistanceToNow } from 'date-fns';
 import type {
-    Converter, ConverterOptions, Locale,
+    Converter, 
+    ConverterOptions, 
+    Locale,
 } from './type';
 import {
-    inject, provide,
+    inject, 
+    provide,
 } from './utils';
 
 const ConverterSymbol = Symbol.for('TConverter');

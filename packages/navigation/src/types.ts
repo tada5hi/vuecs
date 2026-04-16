@@ -28,12 +28,10 @@ export type NavigationItem<
 
 export type NavigationItemNormalized<
     META = any,
-> = Omit<NavigationItem<META>,
-'name' |
+> = Omit<NavigationItem<META>, 'name' |
 'level' |
 'children' |
-'meta'
-> & {
+'meta'> & {
     name: string,
     level: number,
     children: NavigationItemNormalized<META>[],
@@ -52,7 +50,7 @@ export type NavigationItemsFnContext<
 export type NavigationItemsFn<
     META = any,
 > = (
-    ctx: NavigationItemsFnContext<META>
+    ctx: NavigationItemsFnContext<META>,
 ) => Promise<NavigationItem<META>[] | undefined>;
 
 export type Options = {

@@ -5,10 +5,14 @@ import type {
 
 const primaryItems : NavigationItem[] = [
     {
-        name: 'Home', icon: 'fa fa-home', url: '/',
+        name: 'Home', 
+        icon: 'fa fa-home', 
+        url: '/',
     },
     {
-        name: 'Admin', icon: 'fas fa-cog', activeMatch: '/admin/',
+        name: 'Admin', 
+        icon: 'fas fa-cog', 
+        activeMatch: '/admin/',
     },
 ];
 
@@ -52,13 +56,22 @@ const secondaryDefaultItems : NavigationItem[] = [
         type: 'separator',
     },
     {
-        name: 'Countdown', type: 'link', icon: 'fa-solid fa-clock', url: '/countdown',
+        name: 'Countdown', 
+        type: 'link', 
+        icon: 'fa-solid fa-clock', 
+        url: '/countdown',
     },
     {
-        name: 'Pagination', type: 'link', icon: 'fa-solid fa-road', url: '/pagination',
+        name: 'Pagination', 
+        type: 'link', 
+        icon: 'fa-solid fa-road', 
+        url: '/pagination',
     },
     {
-        name: 'Timeago', type: 'link', icon: 'fa-solid fa-clock', url: '/timeago',
+        name: 'Timeago', 
+        type: 'link', 
+        icon: 'fa-solid fa-clock', 
+        url: '/timeago',
     },
 ];
 
@@ -67,7 +80,10 @@ const secondaryAdminItems : NavigationItem[] = [
         name: 'Auth',
         children: [
             {
-                name: 'Realms', type: 'link', url: '/admin/realms', icon: 'fas fa-university',
+                name: 'Realms', 
+                type: 'link', 
+                url: '/admin/realms', 
+                icon: 'fas fa-university',
             },
         ],
     },
@@ -76,7 +92,7 @@ const secondaryAdminItems : NavigationItem[] = [
 
 export async function findNavigationItems(
     level: number,
-    parent?: NavigationItemNormalized<{foo: string}>,
+    parent?: NavigationItemNormalized<{ foo: string }>,
 ) : Promise<NavigationItem[]> {
     if (level === 0) {
         return primaryItems;

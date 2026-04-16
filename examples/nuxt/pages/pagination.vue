@@ -11,16 +11,12 @@ import { ref } from '#imports';
 import { defineNuxtComponent } from '#app';
 
 export default defineNuxtComponent({
-    components: {
-        VCPagination,
-    },
+    components: { VCPagination },
     setup() {
         const items = [];
 
         for (let i = 0; i < 100; i++) {
-            items.push({
-                name: `Item #${i}`,
-            });
+            items.push({ name: `Item #${i}` });
         }
 
         const meta = ref<PaginationMetaInput>({
@@ -31,7 +27,7 @@ export default defineNuxtComponent({
 
         const data = ref(items.slice(0, 10));
 
-        const load = (temp: Record<string, any>) => {
+        const load = (temp: Record<string, number>) => {
             meta.value.offset = temp.offset;
             data.value = items.slice(meta.value.offset, meta.value.offset + 10);
         };

@@ -1,6 +1,7 @@
 import type {
     ComponentOptionsInputValue,
-    ComponentOptionsOverride, PartialPick,
+    ComponentOptionsOverride, 
+    PartialPick,
     VNodeClass,
 } from '@vuecs/core';
 import type { VNodeChild } from 'vue/dist/vue';
@@ -15,9 +16,9 @@ export type FormInputCheckboxBuildOptions = FormBaseOptions & {
     labelContent: VNodeChild,
 };
 
-export type FormInputCheckboxBuildOptionsInput = FormBaseOptionsInput
-& ComponentOptionsOverride<
-ExpectFormBaseOptions<FormInputCheckboxBuildOptions>,
+export type FormInputCheckboxBuildOptionsInput = FormBaseOptionsInput &
+ComponentOptionsOverride<
+    ExpectFormBaseOptions<FormInputCheckboxBuildOptions>,
 ComponentOptionsInputValue<PartialPick<FormInputCheckboxBuildOptions, 'groupClass' | 'label' | 'labelClass' | 'labelContent'>> &
 PartialPick<FormInputCheckboxBuildOptions, 'group'>
 >;

@@ -1,10 +1,11 @@
 import type { VNodeChild } from 'vue';
 import {
-    h, mergeProps, unref,
+    h, 
+    mergeProps, 
+    unref,
 } from 'vue';
 import { createComponentOptionsManager, hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
 import { Component, SlotName } from '../constants';
-import type { FormBaseOptions } from '../form-base';
 import { buildFormBaseOptions, handleFormValueChanged } from '../form-base';
 import type { FormInputCheckboxBuildOptions, FormInputCheckboxBuildOptionsInput, FormInputCheckboxLabelSlotProps } from './type';
 
@@ -13,9 +14,7 @@ export function buildFormInputCheckboxOptions(
 ) : FormInputCheckboxBuildOptions {
     const options = buildFormBaseOptions(input, Component.FormInputCheckbox);
 
-    const manager = createComponentOptionsManager<FormInputCheckboxBuildOptions>({
-        name: Component.FormInputCheckbox,
-    });
+    const manager = createComponentOptionsManager<FormInputCheckboxBuildOptions>({ name: Component.FormInputCheckbox });
 
     return {
         ...options,
@@ -129,9 +128,7 @@ export function buildFormInputCheckbox(
 
         return h(
             'div',
-            {
-                class: options.groupClass,
-            },
+            { class: options.groupClass },
             children,
         );
     }

@@ -39,35 +39,21 @@ export default {
         disabledClass: 'btn btn-xs btn-dark',
         enabledClass: 'btn btn-xs btn-warning',
     },
-    listActionRefresh: {
-        class: 'btn btn-xs btn-dark',
-    },
-    list: {
-        class: 'd-flex flex-column gap-1',
-    },
-    listBody: {
-        class: 'list-unstyled m-0',
-    },
+    listActionRefresh: { class: 'btn btn-xs btn-dark' },
+    list: { class: 'd-flex flex-column gap-1' },
+    listBody: { class: 'list-unstyled m-0' },
     listItem: {
         class: 'd-flex flex-row align-items-center gap-1',
         actionsWrapperClass: 'ms-auto',
     },
-    listNoMore: {
-        class: 'alert alert-warning alert-sm',
-    },
-    listPagination: {
-        class: 'd-flex justify-content-center',
-    },
-    listTitle: {
-        textClass: 'mb-0',
-    },
+    listNoMore: { class: 'alert alert-warning alert-sm' },
+    listPagination: { class: 'd-flex justify-content-center' },
+    listTitle: { textClass: 'mb-0' },
 
     navigation: {
         groupClass: 'nav-items',
         linkClass: 'nav-link',
     },
 
-    pagination: {
-        class: 'd-flex justify-content-center pagination',
-    },
+    pagination: { class: 'd-flex justify-content-center pagination' },
 } as const;

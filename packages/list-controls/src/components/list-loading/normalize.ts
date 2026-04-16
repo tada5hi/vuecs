@@ -11,11 +11,7 @@ import type { ListLoadingBuildOptions, ListLoadingBuildOptionsInput } from './ty
 export function normalizeListLoadingOptions<T, M = any>(
     input: ListLoadingBuildOptionsInput<T, M>,
 ): ListLoadingBuildOptions<T, M> {
-    const options = normalizeListBaseOptions(input, Component.ListLoading, {
-        class: CSSClassDefault.LIST_LOADING,
-    });
+    const options = normalizeListBaseOptions(input, Component.ListLoading, { class: CSSClassDefault.LIST_LOADING });
 
-    return {
-        ...options,
-    };
+    return { ...options };
 }

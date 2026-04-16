@@ -17,9 +17,7 @@ export * from './manager';
 export * from './types';
 
 export function install(instance: App, options: Options) : void {
-    const manager = new NavigationManager({
-        items: options.items,
-    });
+    const manager = new NavigationManager({ items: options.items });
 
     provideNavigationManager(manager, instance);
 
@@ -36,6 +34,4 @@ export function install(instance: App, options: Options) : void {
     });
 }
 
-export default {
-    install,
-} satisfies Plugin<Options>;
+export default { install } satisfies Plugin<Options>;

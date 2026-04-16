@@ -11,10 +11,9 @@ import {
 export * from './component';
 export * from './type';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function install(instance: App, options: Options = {}) : void {
     instance.component('VCCountdown', VCCountdown);
 }
 
-export default {
-    install,
-} satisfies Plugin<Options | undefined>;
+export default { install } satisfies Plugin<Options | undefined>;

@@ -44,11 +44,7 @@ export default defineNuxtPlugin((ctx) => {
     ctx.vueApp.use(installFormControl);
     ctx.vueApp.use(installGravatar);
     ctx.vueApp.use(installLink);
-    ctx.vueApp.use(installTimeago, {
-        locales: {
-            de,
-        },
-    });
+    ctx.vueApp.use(installTimeago, { locales: { de } });
 
     installNavigation(ctx.vueApp, {
         items: ({

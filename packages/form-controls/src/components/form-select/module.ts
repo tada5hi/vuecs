@@ -10,9 +10,7 @@ export function buildFormSelectOptions(
 ) : FormSelectBuildOptions {
     const options = buildFormBaseOptions(input, Component.FormSelect);
 
-    const manager = createComponentOptionsManager<FormSelectBuildOptions>({
-        name: Component.FormSelect,
-    });
+    const manager = createComponentOptionsManager<FormSelectBuildOptions>({ name: Component.FormSelect });
 
     return {
         ...options,
@@ -45,9 +43,7 @@ export function buildFormSelect(
 
     const children : VNodeChild = [];
     if (options.optionDefault) {
-        children.push(h('option', {
-            value: options.optionDefaultId,
-        }, [
+        children.push(h('option', { value: options.optionDefaultId }, [
             options.optionDefaultValue,
         ]));
     }

@@ -12,13 +12,9 @@ import type { ListNoMoreBuildOptions, ListNoMoreBuildOptionsInput } from './type
 export function normalizeListNoMoreOptions<T, M = any>(
     input: ListNoMoreBuildOptionsInput<T, M>,
 ): ListNoMoreBuildOptions<T, M> {
-    const options = normalizeListBaseOptions(input, Component.ListNoMore, {
-        class: CSSClassDefault.LIST_NO_MORE,
-    });
+    const options = normalizeListBaseOptions(input, Component.ListNoMore, { class: CSSClassDefault.LIST_NO_MORE });
 
-    const manager = createComponentOptionsManager<ListNoMoreBuildOptions<T>>({
-        name: Component.ListNoMore,
-    });
+    const manager = createComponentOptionsManager<ListNoMoreBuildOptions<T>>({ name: Component.ListNoMore });
 
     return {
         ...options,

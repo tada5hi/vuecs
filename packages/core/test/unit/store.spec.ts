@@ -5,12 +5,8 @@ describe('src/store', () => {
     it('should set multiple group options', () => {
         const store = new Store();
         store.setAll({
-            foo: {
-                bar: 1,
-            },
-            baz: {
-                boz: 2,
-            },
+            foo: { bar: 1 },
+            baz: { boz: 2 },
         });
 
         expect(store.hasOptions('foo')).toBeTruthy();
@@ -20,27 +16,21 @@ describe('src/store', () => {
 
     it('should set single group options', () => {
         const store = new Store();
-        store.setOptions('foo', {
-            bar: 1,
-        });
+        store.setOptions('foo', { bar: 1 });
 
         expect(store.hasOptions('foo')).toBeTruthy();
     });
 
     it('should get single option of a group', () => {
         const store = new Store();
-        store.setOptions('foo', {
-            bar: 1,
-        });
+        store.setOptions('foo', { bar: 1 });
 
         expect(store.getOption('foo', 'bar')).toEqual(1);
     });
 
     it('should get multiple options of a group', () => {
         const store = new Store();
-        store.setOptions('foo', {
-            bar: 1,
-        });
+        store.setOptions('foo', { bar: 1 });
 
         expect(store.getOptions('foo')).toEqual({ bar: 1 });
     });

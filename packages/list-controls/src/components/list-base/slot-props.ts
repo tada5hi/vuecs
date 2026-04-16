@@ -5,7 +5,7 @@ import type { ListItemId, ListItemKey } from '../type';
 import type { ListBaseOptions, ListBaseSlotProps } from './types';
 
 type ListBaseSlotPropsBuildContext<T, M> = Pick<
-ListBaseOptions<T, M>,
+    ListBaseOptions<T, M>,
 'meta' |
 'total' |
 'busy' |

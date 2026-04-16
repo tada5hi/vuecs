@@ -1,7 +1,10 @@
 import { isPromise } from '@vuecs/core';
 import type { VNodeArrayChildren, VNodeChild } from 'vue';
 import {
-    h, isRef, mergeProps, unref,
+    h, 
+    isRef, 
+    mergeProps, 
+    unref,
 } from 'vue';
 import { buildPaginationOptions } from './normalize';
 import type { PaginationMeta, PaginationOptionsInput } from './type';
@@ -89,9 +92,7 @@ export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
 
     const renderPage = (page: number, content: VNodeChild) => h(
         options.itemTag,
-        {
-            class: options.itemClass,
-        },
+        { class: options.itemClass },
         [
             h(
                 'button',
@@ -99,14 +100,10 @@ export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
                     ...mergeProps({
                         ...(
                             page === pageCurrent ?
-                                {
-                                    class: options.linkActiveClass,
-                                } :
+                                { class: options.linkActiveClass } :
                                 {}
                         ),
-                    }, {
-                        class: options.linkClass,
-                    }),
+                    }, { class: options.linkClass }),
                     disabled: options.busy,
                     onClick($event: any) {
                         $event.preventDefault();
@@ -136,7 +133,8 @@ export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
                 h(
                     options.prevIconTag,
                     { class: options.prevIconClass },
-                ), h(
+                ), 
+                h(
                     options.prevIconTag,
                     { class: options.prevIconClass },
                 ),
@@ -164,8 +162,8 @@ export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
     const renderBetweenPages = () => {
         const children : VNodeArrayChildren = [];
 
-        for (let i = 0; i < pagesBetween.length; i++) {
-            children.push(renderPage(pagesBetween[i], pagesBetween[i]));
+        for (const element of pagesBetween) {
+            children.push(renderPage(element, element));
         }
 
         return children;
@@ -203,7 +201,8 @@ export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
                 h(
                     options.nextIconTag,
                     { class: options.nextIconClass },
-                ), h(
+                ), 
+                h(
                     options.nextIconTag,
                     { class: options.nextIconClass },
                 ),
@@ -215,9 +214,7 @@ export function buildPagination(input: PaginationOptionsInput) : VNodeChild {
 
     return h(
         options.tag,
-        {
-            class: options.class,
-        },
+        { class: options.class },
         [
             renderFirstPage(),
             renderPreviousPage(),

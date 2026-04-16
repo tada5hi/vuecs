@@ -9,9 +9,7 @@
 import { defineComponent } from 'vue';
 import ExampleList from '../../components/ExampleList.vue';
 
-export default defineComponent({
-    components: { ExampleList },
-});
+export default defineComponent({ components: { ExampleList } });
 </script>
 <template>
     <ExampleList>

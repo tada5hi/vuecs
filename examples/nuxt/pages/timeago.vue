@@ -10,9 +10,7 @@ import { VCTimeago, injectLocale } from '@vuecs/timeago';
 import { defineNuxtComponent } from '#app';
 
 export default defineNuxtComponent({
-    components: {
-        VCTimeago,
-    },
+    components: { VCTimeago },
     setup() {
         const locale = injectLocale();
 
@@ -20,9 +18,7 @@ export default defineNuxtComponent({
             locale.value = 'de';
         }, 3600);
 
-        return {
-            dateTime: Date.now() - (1000 * 10),
-        };
+        return { dateTime: Date.now() - (1000 * 10) };
     },
 });
 </script>

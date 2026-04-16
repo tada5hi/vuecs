@@ -1,5 +1,7 @@
 import type {
-    ComponentOptionsOverride, PartialPick, VNodeClass,
+    ComponentOptionsOverride, 
+    PartialPick, 
+    VNodeClass,
 } from '@vuecs/core';
 import type { Slots } from 'vue';
 import type { ValidationSeverity } from '../constants';
@@ -14,12 +16,10 @@ export type ValidationGroupOptions = {
 };
 
 export type ValidationGroupOptionsInput = ComponentOptionsOverride<
-ValidationGroupOptions,
-PartialPick<ValidationGroupOptions,
-'slotItems' |
+    ValidationGroupOptions,
+    PartialPick<ValidationGroupOptions, 'slotItems' |
 'severity' |
 'itemClass' |
 'itemTag' |
-'messages'
->
+'messages'>
 >;

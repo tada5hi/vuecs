@@ -5,7 +5,10 @@ import {
 import { isReactive } from 'vue';
 import type { Component } from '../constants';
 import type {
-    ExpectFormBaseOptions, FormBaseOptions, FormBaseOptionsDefaults, FormBaseOptionsInput,
+    ExpectFormBaseOptions, 
+    FormBaseOptions, 
+    FormBaseOptionsDefaults, 
+    FormBaseOptionsInput,
 } from './type';
 
 export function buildFormBaseOptions<T extends FormBaseOptionsInput>(
@@ -15,9 +18,7 @@ export function buildFormBaseOptions<T extends FormBaseOptionsInput>(
 ): ExpectFormBaseOptions<T> & FormBaseOptions {
     defaults = defaults || {};
 
-    const manager = createComponentOptionsManager<FormBaseOptions>({
-        name: component,
-    });
+    const manager = createComponentOptionsManager<FormBaseOptions>({ name: component });
 
     return {
         ...options,

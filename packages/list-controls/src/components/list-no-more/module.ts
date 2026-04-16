@@ -1,5 +1,8 @@
 import {
-    hasNormalizedSlot, hasOwnProperty, isObject, normalizeSlot,
+    hasNormalizedSlot, 
+    hasOwnProperty, 
+    isObject, 
+    normalizeSlot,
 } from '@vuecs/core';
 import type { VNodeChild } from 'vue';
 import { h, mergeProps } from 'vue';

@@ -26,6 +26,4 @@ export function install(instance: App, options: Options = {}) : void {
     instance.component('VCPagination', VCPagination);
 }
 
-export default {
-    install,
-} satisfies Plugin<Options | undefined>;
+export default { install } satisfies Plugin<Options | undefined>;

@@ -9,9 +9,7 @@ export function buildFormTextareaOptions(
 ) : FormTextareaBuildOptions {
     const options = buildFormBaseOptions(input, Component.FormTextarea);
 
-    return {
-        ...options,
-    };
+    return { ...options };
 }
 
 export function buildFormTextarea(

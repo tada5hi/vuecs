@@ -21,41 +21,25 @@ export default {
         labelClass: 'form-check-label',
         groupClass: 'form-check',
     },
-    formSelect: {
-        class: 'form-control',
-    },
+    formSelect: { class: 'form-control' },
     formSubmit: {
         createButtonClass: 'btn btn-xs btn-success',
         updateButtonClass: 'btn btn-xs btn-primary',
     },
-    formTextarea: {
-        class: 'form-control',
-    },
+    formTextarea: { class: 'form-control' },
     itemActionToggle: {
         disabledClass: 'btn btn-xs btn-dark',
         enabledClass: 'btn btn-xs btn-warning',
     },
-    listActionRefresh: {
-        class: 'btn btn-xs btn-dark',
-    },
-    listBody: {
-        class: 'list-unstyled',
-    },
+    listActionRefresh: { class: 'btn btn-xs btn-dark' },
+    listBody: { class: 'list-unstyled' },
     listItem: {
         class: 'd-flex flex-row align-items-center',
         iconClass: 'pr-1',
         actionsWrapperClass: 'ml-auto',
     },
-    listNoMore: {
-        class: 'alert alert-warning alert-sm',
-    },
-    listPagination: {
-        class: 'd-flex justify-content-center',
-    },
-    listTitle: {
-        textClass: 'mb-0',
-    },
-    pagination: {
-        class: 'd-flex justify-content-center',
-    },
+    listNoMore: { class: 'alert alert-warning alert-sm' },
+    listPagination: { class: 'd-flex justify-content-center' },
+    listTitle: { textClass: 'mb-0' },
+    pagination: { class: 'd-flex justify-content-center' },
 };

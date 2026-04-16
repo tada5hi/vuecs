@@ -1,5 +1,8 @@
 import type {
-    ComponentOptionsInputValue, PartialPick, VNodeClass, VNodeProperties,
+    ComponentOptionsInputValue, 
+    PartialPick, 
+    VNodeClass, 
+    VNodeProperties,
 } from '@vuecs/core';
 import type { Slots, VNodeChild } from 'vue';
 import type { ValidationSeverity } from '../constants';
@@ -31,8 +34,7 @@ export type FormGroupOptions = {
 };
 
 export type FormGroupOptionsInput = ComponentOptionsInputValue<
-PartialPick<FormGroupOptions,
-'label' |
+    PartialPick<FormGroupOptions, 'label' |
 'labelClass' |
 'labelContent' |
 'labelTag' |
@@ -46,9 +48,7 @@ PartialPick<FormGroupOptions,
 'validationErrorClass' |
 'validationWarningClass'>
 > &
-PartialPick<FormGroupOptions,
-'content' |
+PartialPick<FormGroupOptions, 'content' |
 'slotItems' |
 'validationSeverity' |
-'validationMessages'
->;
+'validationMessages'>;

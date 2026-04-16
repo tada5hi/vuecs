@@ -11,20 +11,15 @@ import type { FormSelectOption } from '@vuecs/form-controls';
 import { required } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {
-    defineComponent, h, reactive, ref,
+    defineComponent,
+    reactive,
 } from 'vue';
 
 export default defineComponent({
     setup() {
-        const form = reactive({
-            value: [],
-        });
+        const form = reactive({ value: [] });
 
-        const $v = useVuelidate({
-            value: {
-                required,
-            },
-        }, form);
+        const $v = useVuelidate({ value: { required } }, form);
 
         const validationMessages = useTranslationsForBaseValidation($v.value.value);
 

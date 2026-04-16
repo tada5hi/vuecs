@@ -7,14 +7,15 @@
 
 <script lang="ts">
 import {
-    defineComponent, h, reactive, ref,
+    defineComponent,
+    ref,
 } from 'vue';
 
 export default defineComponent({
     setup() {
-        const value = ref<{min: number, max: number }>(false);
+        const value = ref<{ min: number, max: number }>(false);
 
-        const submit = async (range: any) => {
+        const submit = async (range: { min: number, max: number }) => {
             value.value = range;
         };
 

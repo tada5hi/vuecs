@@ -19,12 +19,8 @@ export const VCFormSelect = defineComponent({
             type: Boolean,
             default: true,
         },
-        optionDefaultId: {
-            type: [String, Number],
-        },
-        optionDefaultValue: {
-            type: String,
-        },
+        optionDefaultId: { type: [String, Number] },
+        optionDefaultValue: { type: String },
     },
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {

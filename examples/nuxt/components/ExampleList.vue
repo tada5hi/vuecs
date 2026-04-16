@@ -13,7 +13,7 @@ import { defineComponent, ref, watch } from 'vue';
 
 export default defineComponent({
     slots: Object as SlotsType<{
-        [SlotName.ITEM_ACTIONS]: ListItemSlotProps<any>
+        [SlotName.ITEM_ACTIONS]: ListItemSlotProps<Record<string, unknown>>
     }>,
     setup(props, ctx) {
         const data = ref([

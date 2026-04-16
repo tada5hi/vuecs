@@ -15,14 +15,10 @@ export function normalizeListHeaderOptions<T, M = any>(
     const options = normalizeListBaseOptions(
         input,
         Component.ListHeader,
-        {
-            class: CSSClassDefault.LIST_HEADER,
-        },
+        { class: CSSClassDefault.LIST_HEADER },
     );
 
-    const manager = createComponentOptionsManager<ListHeaderBuildOptions<T, M>>({
-        name: Component.ListHeader,
-    });
+    const manager = createComponentOptionsManager<ListHeaderBuildOptions<T, M>>({ name: Component.ListHeader });
 
     return {
         ...options,

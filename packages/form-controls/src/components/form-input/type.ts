@@ -23,12 +23,10 @@ export type FormInputBuildOptions = FormBaseOptions & {
     groupAppendContent?: VNodeChild
 };
 
-export type FormInputBuildOptionsInput =
-    FormBaseOptionsInput
-    & ComponentOptionsOverride<
-    ExpectFormBaseOptions<FormInputBuildOptions>,
-    ComponentOptionsInputValue<PartialPick<FormInputBuildOptions,
-    'type' |
+export type FormInputBuildOptionsInput =    FormBaseOptionsInput &
+    ComponentOptionsOverride<
+        ExpectFormBaseOptions<FormInputBuildOptions>,
+        ComponentOptionsInputValue<PartialPick<FormInputBuildOptions, 'type' |
     'group' |
     'groupClass' |
     'groupPrepend' |
@@ -37,6 +35,5 @@ export type FormInputBuildOptionsInput =
     'groupAppend' |
     'groupAppendClass' |
     'groupAppendContent' |
-    'slotItems'
-    >>
+    'slotItems'>>
     >;

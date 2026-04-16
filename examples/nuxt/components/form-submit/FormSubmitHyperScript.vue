@@ -8,7 +8,9 @@
 <script lang="ts">
 import { useTranslation } from '@ilingo/vuelidate/vue';
 import {
-    computed, defineComponent, h, ref,
+    defineComponent,
+    h,
+    ref,
 } from 'vue';
 import { buildFormSubmit } from '@vuecs/form-controls';
 
@@ -26,7 +28,7 @@ export default defineComponent({
                 buildFormSubmit({
                     busy,
                     createText: translation.value || 'abc',
-                    submit: () => new Promise<void>((resolve, reject) => {
+                    submit: () => new Promise<void>((resolve) => {
                         console.log('Submitted form');
 
                         setTimeout(() => {

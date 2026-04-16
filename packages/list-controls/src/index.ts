@@ -14,6 +14,4 @@ export function install(instance: App, options: Options = {}) : void {
     }
 }
 
-export default {
-    install,
-} satisfies Plugin<Options | undefined>;
+export default { install } satisfies Plugin<Options | undefined>;

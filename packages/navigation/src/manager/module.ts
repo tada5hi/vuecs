@@ -95,9 +95,7 @@ export class NavigationManager extends EventEmitter<{
 
             const items = normalizeItems(raw, { level });
 
-            const matches = findBestItemMatches(items, {
-                path: options.path,
-            });
+            const matches = findBestItemMatches(items, { path: options.path });
 
             const [match] = matches;
 
