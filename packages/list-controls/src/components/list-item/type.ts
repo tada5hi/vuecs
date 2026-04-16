@@ -1,17 +1,21 @@
 import type { VNodeChild } from 'vue';
 import type {
     ComponentOptionsInputValue,
-    ComponentOptionsOverride, PartialPick,
+    ComponentOptionsOverride, 
+    PartialPick,
     VNodeClass,
     VNodeProperties,
 } from '@vuecs/core';
 import type {
-    ExpectListBaseOptions, ListBaseOptions, ListBaseOptionsInput, ListBaseSlotProps,
+    ExpectListBaseOptions, 
+    ListBaseOptions, 
+    ListBaseOptionsInput, 
+    ListBaseSlotProps,
 } from '../list-base';
 import type { ListEventFn } from '../type';
 
 export type ListItemSlotProps<T> = Omit<
-ListBaseSlotProps<T>,
+    ListBaseSlotProps<T>,
 'updated' | 'created'
 > & {
     data: T,
@@ -44,7 +48,7 @@ export type ListItemBuildOptions<T, M = any> = ListBaseOptions<T, M> & {
     content?: VNodeChild | ((
         item: T,
         props: ListItemSlotProps<T>,
-        children: ListItemChildren
+        children: ListItemChildren,
     ) => VNodeChild),
     index?: number,
 
@@ -76,12 +80,9 @@ export type ListItemBuildOptions<T, M = any> = ListBaseOptions<T, M> & {
 
 export type ListItemBuildOptionsInput<T, M = any> = ListBaseOptionsInput<T, M> &
 ComponentOptionsOverride<
-ExpectListBaseOptions<ListItemBuildOptions<T, M>>,
-PartialPick<ListItemBuildOptions<T, M>,
-'busy'
-> &
-ComponentOptionsInputValue<PartialPick<ListItemBuildOptions<T, M>,
-'icon' |
+    ExpectListBaseOptions<ListItemBuildOptions<T, M>>,
+PartialPick<ListItemBuildOptions<T, M>, 'busy'> &
+ComponentOptionsInputValue<PartialPick<ListItemBuildOptions<T, M>, 'icon' |
 'iconTag' |
 'iconClass' |
 'iconProps' |

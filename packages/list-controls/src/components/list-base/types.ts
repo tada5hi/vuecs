@@ -1,7 +1,8 @@
 import type { Slots } from 'vue';
 import type {
     ComponentOptionsInputValue,
-    ComponentOptionsOverride, PartialPick,
+    ComponentOptionsOverride, 
+    PartialPick,
     VNodeClass,
     VNodeProperties,
 } from '@vuecs/core';
@@ -53,7 +54,7 @@ export type ListBaseOptions<T, M = any> = {
     onUpdated?: ListEventFn<T>
 };
 export type ListBaseOptionsInput<T, M = any> = ComponentOptionsOverride<
-ListBaseOptions<T, M>,
+    ListBaseOptions<T, M>,
 PartialPick<ListBaseOptions<T, M>, 'meta' | 'slotItems' | 'slotProps'> &
 PartialPick<ComponentOptionsInputValue<ListBaseOptions<T, M>>, 'tag' | 'class' | 'props'>
 >;

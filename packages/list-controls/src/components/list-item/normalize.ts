@@ -17,9 +17,7 @@ export function normalizeListItemOptions<T, M = any>(
         tag: 'li',
     });
 
-    const manager = createComponentOptionsManager<ListItemBuildOptions<T>>({
-        name: Component.ListItem,
-    });
+    const manager = createComponentOptionsManager<ListItemBuildOptions<T>>({ name: Component.ListItem });
 
     return {
         ...options,
