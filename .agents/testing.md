@@ -2,8 +2,8 @@
 
 ## Framework
 
-- **Jest** (v30) with **ts-jest** for TypeScript support
-- Each tested package has its own `test/jest.config.js`
+- **Vitest** with v8 coverage provider
+- Each tested package has its own `test/vitest.config.ts`
 
 ## Test Locations
 
@@ -25,11 +25,6 @@ npm run test --workspace=packages/core --if-present
 npm run test --workspace=packages/navigation --if-present
 ```
 
-Individual package test scripts use:
-```bash
-cross-env NODE_ENV=test jest --config ./test/jest.config.js
-```
-
 ## Test File Naming
 
 Tests use the `.spec.ts` suffix and live under `test/unit/`:
@@ -37,6 +32,24 @@ Tests use the `.spec.ts` suffix and live under `test/unit/`:
 packages/core/test/unit/store.spec.ts
 packages/core/test/unit/utils/evaluate.spec.ts
 packages/navigation/test/unit/manager.spec.ts
+```
+
+## Vitest Config
+
+Each tested package has a `test/vitest.config.ts`:
+```typescript
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+    test: {
+        include: ['test/unit/**/*.{test,spec}.{js,ts}'],
+        coverage: {
+            provider: 'v8',
+            include: ['src/**/*.{ts,tsx,js,jsx}'],
+            thresholds: { branches: 80, functions: 80, lines: 80, statements: 80 },
+        },
+    },
+});
 ```
 
 ## CI

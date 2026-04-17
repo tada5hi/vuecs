@@ -15,14 +15,15 @@ chore(deps): bump rollup to v4.58
 
 ## Linting
 
-- **ESLint** with `@tada5hi/eslint-config-vue-typescript`
-- Runs on `./packages/` directory (`.ts` files)
+- **ESLint** (flat config) with `@tada5hi/eslint-config`
+- Lints `packages/` and `examples/` directories (`.ts` and `.vue` files)
 - Vue-specific rules enabled via `eslint-plugin-vue`
-- Notable disabled rules: `class-methods-use-this`, `no-shadow`, `no-underscore-dangle`
+- **`npm run lint` must always pass with zero errors.** Warnings (e.g. `no-console`) are acceptable for intentional dev diagnostics but errors are not.
+- Generated/build output directories (`**/dist/**`, `.nx/cache/**`, `examples/nuxt/.nuxt/**`, `examples/nuxt/.output/**`) are ignored via `eslint.config.js`
 
 ```bash
-npm run lint          # Check
-npm run lint:fix      # Auto-fix
+npm run lint          # Check — must exit with 0 errors
+npm run lint:fix      # Auto-fix style issues
 ```
 
 ## TypeScript
@@ -35,9 +36,8 @@ npm run lint:fix      # Auto-fix
 
 ## Build
 
-- **Rollup** with SWC for transpilation (not tsc)
-- Each package has its own `rollup.config.mjs` extending the root `createConfig()`
-- The `vuePlugin` parameter controls whether `@vitejs/plugin-vue` is included
+- **tsdown** for ESM-only bundling
+- Each package has its own `tsdown.config.ts`
 - Nx orchestrates builds with `^build` dependency ordering (dependencies build first)
 - Build outputs are cached by Nx
 
