@@ -19,7 +19,7 @@ describe('ThemeManager', () => {
         });
         const defaults = { root: 'vc-btn', icon: 'vc-btn-icon' };
         const result = manager.resolve('button', defaults);
-        expect(result.root).toBe('btn btn-primary');
+        expect(result.root).toBe('vc-btn btn btn-primary');
         expect(result.icon).toBe('vc-btn-icon fa fa-check');
     });
 
@@ -51,6 +51,6 @@ describe('ThemeManager', () => {
         const manager = new ThemeManager({ themes: [theme] });
         const defaults = { root: 'default' };
         const result = manager.resolve('button', defaults, { root: extend('extra') });
-        expect(result.root).toBe('base|extra');
+        expect(result.root).toBe('default|base|extra');
     });
 });

@@ -15,10 +15,10 @@ describe('resolveComponentTheme', () => {
         expect(result).toEqual(defaults);
     });
 
-    it('should replace slot value from preset', () => {
+    it('should merge theme value with defaults', () => {
         const preset: Theme = { elements: { listItem: { root: 'flex items-center' } } };
         const result = resolveComponentTheme('listItem', defaults, [preset], undefined, undefined);
-        expect(result.root).toBe('flex items-center');
+        expect(result.root).toBe('vc-list-item flex items-center');
         expect(result.icon).toBe('vc-list-item-icon');
     });
 
@@ -28,35 +28,35 @@ describe('resolveComponentTheme', () => {
         expect(result.root).toBe('vc-list-item extra-class');
     });
 
-    it('should apply presets in array order', () => {
+    it('should apply presets in array order, later replaces earlier but keeps defaults', () => {
         const preset1: Theme = { elements: { listItem: { root: 'from-preset-1' } } };
         const preset2: Theme = { elements: { listItem: { root: 'from-preset-2' } } };
         const result = resolveComponentTheme('listItem', defaults, [preset1, preset2], undefined, undefined);
-        expect(result.root).toBe('from-preset-2');
+        expect(result.root).toBe('vc-list-item from-preset-2');
     });
 
-    it('should extend across multiple presets', () => {
+    it('should extend across multiple presets, keeping defaults', () => {
         const preset1: Theme = { elements: { listItem: { root: 'base-class' } } };
         const preset2: Theme = { elements: { listItem: { root: extend('added-class') } } };
         const result = resolveComponentTheme('listItem', defaults, [preset1, preset2], undefined, undefined);
-        expect(result.root).toBe('base-class added-class');
+        expect(result.root).toBe('vc-list-item base-class added-class');
     });
 
-    it('should apply user theme over presets', () => {
+    it('should apply user override replacing everything including defaults', () => {
         const preset: Theme = { elements: { listItem: { root: 'preset-class' } } };
         const userTheme: ThemeElements = { listItem: { root: 'user-class' } };
         const result = resolveComponentTheme('listItem', defaults, [preset], userTheme, undefined);
         expect(result.root).toBe('user-class');
     });
 
-    it('should extend user theme over presets', () => {
+    it('should extend user theme over preset+defaults', () => {
         const preset: Theme = { elements: { listItem: { root: 'preset-class' } } };
         const userTheme: ThemeElements = { listItem: { root: extend('user-extra') } };
         const result = resolveComponentTheme('listItem', defaults, [preset], userTheme, undefined);
-        expect(result.root).toBe('preset-class user-extra');
+        expect(result.root).toBe('vc-list-item preset-class user-extra');
     });
 
-    it('should apply instance theme as highest priority', () => {
+    it('should apply instance theme as highest priority, replacing everything', () => {
         const preset: Theme = { elements: { listItem: { root: 'preset-class' } } };
         const userTheme: ThemeElements = { listItem: { root: 'user-class' } };
         const instanceTheme = { root: 'instance-class' };
@@ -71,9 +71,9 @@ describe('resolveComponentTheme', () => {
         expect(result.root).toBe('user-class instance-extra');
     });
 
-    it('should use custom mergeFn', () => {
+    it('should use custom mergeFn for theme layer', () => {
         const customMerge = (a: string, b: string) => `${a}|${b}`;
-        const preset: Theme = { elements: { listItem: { root: extend('extra') } } };
+        const preset: Theme = { elements: { listItem: { root: 'extra' } } };
         const result = resolveComponentTheme('listItem', defaults, [preset], undefined, undefined, customMerge);
         expect(result.root).toBe('vc-list-item|extra');
     });
@@ -100,7 +100,7 @@ describe('resolveComponentTheme', () => {
             },
         };
         const result = resolveComponentTheme('listItem', defaults, [preset], undefined, undefined);
-        expect(result.root).toBe('preset-root');
+        expect(result.root).toBe('vc-list-item preset-root');
         expect((result as Record<string, string>).variants).toBeUndefined();
     });
 
@@ -115,7 +115,7 @@ describe('resolveComponentTheme', () => {
         expect(result.root).toBe('added');
     });
 
-    it('should handle extend with empty extend value', () => {
+    it('should handle theme with empty extend value', () => {
         const result = resolveComponentTheme(
             'comp',
             { root: 'base' },
@@ -126,7 +126,7 @@ describe('resolveComponentTheme', () => {
         expect(result.root).toBe('base');
     });
 
-    it('should not call mergeFn for replace (non-extend) values', () => {
+    it('should not call mergeFn for replace in override layer', () => {
         let mergeCalled = false;
         const mergeFn = (a: string, b: string) => {
             mergeCalled = true;
@@ -135,8 +135,8 @@ describe('resolveComponentTheme', () => {
         resolveComponentTheme(
             'comp',
             { root: 'default' },
-            [{ elements: { comp: { root: 'replaced' } } }],
-            undefined,
+            [],
+            { comp: { root: 'replaced' } },
             undefined,
             mergeFn,
         );
@@ -145,13 +145,14 @@ describe('resolveComponentTheme', () => {
 
     it('should not mutate the defaults object', () => {
         const myDefaults = { root: 'original' };
-        resolveComponentTheme(
+        const result = resolveComponentTheme(
             'comp',
             myDefaults,
-            [{ elements: { comp: { root: 'replaced' } } }],
+            [{ elements: { comp: { root: 'added' } } }],
             undefined,
             undefined,
         );
         expect(myDefaults.root).toBe('original');
+        expect(result.root).toBe('original added');
     });
 });

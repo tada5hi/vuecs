@@ -63,7 +63,7 @@ describe('useComponentTheme', () => {
             return () => h('div');
         });
 
-        expect(resolved!.root).toBe('btn btn-primary');
+        expect(resolved!.root).toBe('vc-btn btn btn-primary');
         expect(resolved!.icon).toBe('vc-btn-icon');
     });
 

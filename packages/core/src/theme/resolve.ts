@@ -42,6 +42,29 @@ function applyOverrides(
     }
 }
 
+function applyThemeOverrides(
+    result: Record<string, string>,
+    defaults: Record<string, string>,
+    overrides: ThemeClassesOverride,
+    mergeFn: ClassesMergeFn,
+) {
+    const keys = Object.keys(overrides);
+    for (const key of keys) {
+        const value = overrides[key];
+        if (typeof value === 'undefined') continue;
+        if (RESERVED_KEYS.has(key)) continue;
+
+        if (isExtendValue(value)) {
+            // extend: merge with current accumulated result
+            result[key] = mergeFn(result[key] || '', value.value);
+        } else {
+            // replace: merge with defaults (preserving defaults), reset theme contributions
+            const defaultValue = defaults[key];
+            result[key] = defaultValue ? mergeFn(defaultValue, value) : value;
+        }
+    }
+}
+
 export function resolveComponentTheme<T extends ThemeClasses>(
     componentName: string,
     defaults: T,
@@ -53,12 +76,12 @@ export function resolveComponentTheme<T extends ThemeClasses>(
     const merge = classesMergeFn || defaultClassesMergeFn;
     const result: Record<string, string> = { ...defaults };
 
-    // Layer 2: Themes (in array order)
+    // Layer 2: Themes (in array order) — always preserve defaults
     for (const theme of themes) {
         const componentClasses = theme.elements[componentName];
         if (!componentClasses) continue;
 
-        applyOverrides(result, componentClasses, merge);
+        applyThemeOverrides(result, defaults as Record<string, string>, componentClasses, merge);
     }
 
     // Layer 3: User overrides
