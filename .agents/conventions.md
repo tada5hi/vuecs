@@ -64,6 +64,16 @@ Two workflows in `.github/workflows/`:
 | `main.yml` | All branches + PRs | install, build, lint, tests |
 | `release.yml` | Push to `master` | release-please, build, test, publish to npm |
 
+## Documentation Updates
+
+After any code changes that affect architecture, APIs, or behavior:
+
+1. **`.agents/` docs** — Update `architecture.md`, `structure.md`, `testing.md`, or `conventions.md` if the change alters documented patterns, APIs, or resolution behavior
+2. **Package `README.md`** — Update the relevant package's README if public API, usage examples, or behavior changed
+3. **`AGENTS.md`** — Update if the change affects package descriptions, dependency layers, or quick-reference commands
+
+Do this as part of the same commit — documentation should never lag behind the code.
+
 ## Adding a New Package
 
 1. Create `packages/<name>/` with `src/index.ts`, `package.json`, `tsdown.config.ts`

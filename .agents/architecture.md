@@ -36,7 +36,7 @@ CSS classes for named **elements** (logical parts of a component like `root`, `i
 4. Instance `themeClass` prop (per-component override)
 ```
 
-By default, each layer **replaces** the element value from the layer below. To **extend** instead of replace, wrap the value with `extend()`.
+**Themes** (layer 2) always **merge** with component defaults — the `vc-*` structural classes are always preserved. Between themes, a later plain value replaces the earlier theme's contribution but still keeps defaults. **Overrides** (layer 3) and **instance props** (layer 4) **replace** by default. To merge instead, wrap the value with `extend()`.
 
 ### Key APIs
 
@@ -44,7 +44,7 @@ By default, each layer **replaces** the element value from the layer below. To *
 - **`installThemeManager(app, options)`** — Vue plugin that provides ThemeManager via `app.provide()`
 - **`injectThemeManager()`** — Retrieves ThemeManager from Vue inject
 - **`useComponentTheme(name, instanceThemeClassRef, defaults)`** — Vue composable, returns `ComputedRef<T>`. Throws if ThemeManager is not installed.
-- **`extend(value)`** — Marker function: merge with lower layer instead of replacing
+- **`extend(value)`** — Marker function: merge with lower layer instead of replacing (only needed in overrides and instance props; themes always merge with defaults)
 - **`resolveComponentTheme()`** — Pure function (no Vue dependency): resolves 4 layers into final class strings
 
 ### Architecture
@@ -97,7 +97,7 @@ setup(props) {
 
 ## Theme Architecture
 
-Theme packages (`preset-bootstrap-v4`, `preset-bootstrap-v5`, `preset-font-awesome`) are functions returning `Theme` objects with an `elements` map. They configure component appearance via CSS class mappings. Multiple themes are merged in array order. The `extend()` helper allows layering (e.g., font-awesome extends icon classes on top of bootstrap structural classes).
+Theme packages (`preset-bootstrap-v4`, `preset-bootstrap-v5`, `preset-font-awesome`) are functions returning `Theme` objects with an `elements` map. They configure component appearance via CSS class mappings. Multiple themes are merged in array order. Theme values are always merged with component defaults (no `extend()` needed in presets). The `extend()` helper is used in overrides/instance props to merge instead of replace, and between themes to accumulate values from multiple presets (e.g., font-awesome extends icon classes on top of bootstrap structural classes).
 
 ```typescript
 // Theme type structure

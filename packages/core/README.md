@@ -47,7 +47,7 @@ CSS classes for named **elements** (logical parts of a component like `root`, `i
 4. Instance themeClass prop — per-component override
 ```
 
-Each layer **replaces** the element value from the layer below by default.
+**Themes** (layer 2) always merge with component defaults — `vc-*` structural classes are always preserved. **Overrides** and **instance props** replace by default.
 
 ### Themes
 
@@ -84,7 +84,7 @@ Override per component instance via the `themeClass` prop:
 
 ### extend()
 
-By default each layer replaces the element value from below. Use `extend()` to merge instead:
+Overrides and instance props replace by default. Use `extend()` to merge instead:
 
 ```typescript
 import { extend } from '@vuecs/core';
@@ -93,13 +93,13 @@ app.use(vuecs, {
     overrides: {
         elements: {
             listItem: { root: extend('border-bottom') },
-            // result: "vc-list-item border-bottom" (merged with default)
+            // result: "vc-list-item border-bottom" (merged with resolved value)
         },
     },
 });
 ```
 
-`extend()` works at all layers: themes, overrides, and instance props.
+In the **theme** layer, `extend()` accumulates values across multiple themes (e.g., font-awesome extending bootstrap icon classes). Plain theme values already merge with defaults automatically.
 
 ### Custom Merge Function
 
