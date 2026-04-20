@@ -1,5 +1,5 @@
 import type { ShallowRef } from 'vue';
-import { shallowRef } from 'vue';
+import { shallowRef, triggerRef } from 'vue';
 import type {
     Theme,
     ThemeClasses,
@@ -27,11 +27,19 @@ export class ThemeManager {
     }
 
     setThemes(themes: Theme[]): void {
+        const isSameRef = this.themesRef.value === themes;
         this.themesRef.value = themes;
+        if (isSameRef) {
+            triggerRef(this.themesRef);
+        }
     }
 
     setOverrides(overrides: Theme | undefined): void {
+        const isSameRef = this.overridesRef.value === overrides;
         this.overridesRef.value = overrides;
+        if (isSameRef) {
+            triggerRef(this.overridesRef);
+        }
     }
 
     resolve<T extends ThemeClasses>(

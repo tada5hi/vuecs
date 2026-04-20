@@ -150,7 +150,7 @@ describe('useComponentTheme', () => {
         let themeRef: any;
         let manager: ReturnType<typeof installThemeManager>;
 
-        mount(defineComponent({
+        const wrapper = mount(defineComponent({
             setup() {
                 themeRef = useComponentTheme('button', undefined, { root: 'vc-btn' });
                 return () => h('div', { class: themeRef.value.root });
@@ -163,13 +163,14 @@ describe('useComponentTheme', () => {
         await nextTick();
 
         expect(themeRef.value.root).toBe('vc-btn btn-dark');
+        expect(wrapper.classes()).toEqual(expect.arrayContaining(['vc-btn', 'btn-dark']));
     });
 
     it('should recompute when manager overrides change via setOverrides', async () => {
         let themeRef: any;
         let manager: ReturnType<typeof installThemeManager>;
 
-        mount(defineComponent({
+        const wrapper = mount(defineComponent({
             setup() {
                 themeRef = useComponentTheme('button', undefined, { root: 'vc-btn' });
                 return () => h('div', { class: themeRef.value.root });
@@ -182,5 +183,36 @@ describe('useComponentTheme', () => {
         await nextTick();
 
         expect(themeRef.value.root).toBe('override-class');
+        expect(wrapper.classes()).toContain('override-class');
+    });
+
+    it('should recompute when same reference is mutated and re-set via setThemes', async () => {
+        let themeRef: any;
+        let manager: ReturnType<typeof installThemeManager>;
+
+        const wrapper = mount(defineComponent({
+            setup() {
+                themeRef = useComponentTheme('button', undefined, { root: 'vc-btn' });
+                return () => h('div', { class: themeRef.value.root });
+            },
+        }), {
+            global: {
+                plugins: [[{
+                    install: (app: any) => {
+                        manager = installThemeManager(app, { themes: [{ elements: { button: { root: 'btn-light' } } }] });
+                    },
+                }]],
+            },
+        });
+
+        expect(themeRef.value.root).toBe('vc-btn btn-light');
+
+        const { themes } = (manager!);
+        themes[0] = { elements: { button: { root: 'btn-dark' } } };
+        manager!.setThemes(themes);
+        await nextTick();
+
+        expect(themeRef.value.root).toBe('vc-btn btn-dark');
+        expect(wrapper.classes()).toEqual(expect.arrayContaining(['vc-btn', 'btn-dark']));
     });
 });
