@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/tada5hi/vuecs/compare/link-v1.0.1...link-v2.0.0) (2026-04-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* change architecture
+
+### Features
+
+* replace store system with theme resolution engine ([#1492](https://github.com/tada5hi/vuecs/issues/1492)) ([7d586b3](https://github.com/tada5hi/vuecs/commit/7d586b3707d5210970ce0138985e3cc8210264cf))
+
 ## [1.0.1](https://github.com/tada5hi/vuecs/compare/link-v1.0.0...link-v1.0.1) (2026-02-18)
 
 

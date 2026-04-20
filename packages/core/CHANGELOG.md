@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.0.0](https://github.com/tada5hi/vuecs/compare/core-v2.0.0...core-v3.0.0) (2026-04-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* change architecture
+
+### Features
+
+* replace store system with theme resolution engine ([#1492](https://github.com/tada5hi/vuecs/issues/1492)) ([7d586b3](https://github.com/tada5hi/vuecs/commit/7d586b3707d5210970ce0138985e3cc8210264cf))
+
+
+### Bug Fixes
+
+* **deps:** bump pathtrace from 1.1.0 to 2.1.2 in the majorprod group ([#1466](https://github.com/tada5hi/vuecs/issues/1466)) ([2443282](https://github.com/tada5hi/vuecs/commit/2443282aa7a33b327b273ec2acfa6b6e411b1ca8))
+
 ## [2.0.0](https://github.com/tada5hi/vuecs/compare/core-v1.2.0...core-v2.0.0) (2024-10-16)
 
 

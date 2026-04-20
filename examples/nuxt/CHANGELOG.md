@@ -1,5 +1,31 @@
 # Changelog
 
+## [4.0.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v3.5.0...examples-nuxt-v4.0.0) (2026-04-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* change architecture
+
+### Features
+
+* replace store system with theme resolution engine ([#1492](https://github.com/tada5hi/vuecs/issues/1492)) ([7d586b3](https://github.com/tada5hi/vuecs/commit/7d586b3707d5210970ce0138985e3cc8210264cf))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/countdown bumped from ^1.0.1 to ^2.0.0
+    * @vuecs/form-controls bumped from ^2.5.0 to ^3.0.0
+    * @vuecs/gravatar bumped from ^1.0.2 to ^2.0.0
+    * @vuecs/list-controls bumped from ^2.0.1 to ^3.0.0
+    * @vuecs/navigation bumped from ^2.4.1 to ^3.0.0
+    * @vuecs/pagination bumped from ^1.3.1 to ^2.0.0
+    * @vuecs/preset-bootstrap-v5 bumped from ^2.0.1 to ^3.0.0
+    * @vuecs/preset-font-awesome bumped from ^1.1.1 to ^2.0.0
+    * @vuecs/timeago bumped from ^1.1.2 to ^2.0.0
+
 ## [3.5.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v3.4.0...examples-nuxt-v3.5.0) (2026-02-18)
 
 
