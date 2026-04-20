@@ -12,11 +12,11 @@ import {
     h,
     ref,
 } from 'vue';
-import { buildFormSubmit } from '@vuecs/form-controls';
+import { VCFormSubmit } from '@vuecs/form-controls';
 
 export default defineComponent({
     setup() {
-        const busy = ref<boolean>();
+        const busy = ref(false);
 
         const translation = useTranslation({
             group: 'form',
@@ -25,8 +25,9 @@ export default defineComponent({
 
         return () => h('div', [
             h('div', { class: 'form-group' }, [
-                buildFormSubmit({
-                    busy,
+                h(VCFormSubmit, {
+                    modelValue: busy.value,
+                    'onUpdate:modelValue': (val: boolean) => { busy.value = val; },
                     createText: translation.value || 'abc',
                     submit: () => new Promise<void>((resolve) => {
                         console.log('Submitted form');

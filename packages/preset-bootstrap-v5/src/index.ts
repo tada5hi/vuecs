@@ -1,59 +1,43 @@
-export default {
-    formGroup: {
-        class: 'form-group',
-        validationErrorClass: 'form-group-error',
-        validationWarningClass: 'form-group-warning',
-    },
-    formInput: {
-        class: 'form-control',
-        labelClass: 'form-label',
-        groupClass: 'input-group',
-        groupAppendClass: 'input-group-text',
-        groupPrependClass: 'input-group-text',
-    },
-    formInputText: {
-        class: 'form-control',
-        labelClass: 'form-label',
-        groupClass: 'input-group',
-        groupAppendClass: 'input-group-text',
-        groupPrependClass: 'input-group-text',
-    },
-    formInputCheckbox: {
-        class: 'form-check-input',
-        labelClass: 'form-check-label',
-        groupClass: 'form-check',
-    },
-    formSelect: {
-        class: 'form-select',
-        labelClass: 'form-label',
-    },
-    formSubmit: {
-        createButtonClass: 'btn btn-xs btn-success',
-        updateButtonClass: 'btn btn-xs btn-primary',
-    },
-    formTextarea: {
-        class: 'form-control',
-        labelClass: 'form-label',
-    },
-    itemActionToggle: {
-        disabledClass: 'btn btn-xs btn-dark',
-        enabledClass: 'btn btn-xs btn-warning',
-    },
-    listActionRefresh: { class: 'btn btn-xs btn-dark' },
-    list: { class: 'd-flex flex-column gap-1' },
-    listBody: { class: 'list-unstyled m-0' },
-    listItem: {
-        class: 'd-flex flex-row align-items-center gap-1',
-        actionsWrapperClass: 'ms-auto',
-    },
-    listNoMore: { class: 'alert alert-warning alert-sm' },
-    listPagination: { class: 'd-flex justify-content-center' },
-    listTitle: { textClass: 'mb-0' },
+import type { Theme } from '@vuecs/core';
 
-    navigation: {
-        groupClass: 'nav-items',
-        linkClass: 'nav-link',
-    },
-
-    pagination: { class: 'd-flex justify-content-center pagination' },
-} as const;
+export default function bootstrapV5Preset(): Theme {
+    return {
+        elements: {
+            formGroup: {
+                root: 'form-group',
+                label: 'form-label',
+                validationError: 'form-group-error',
+                validationWarning: 'form-group-warning',
+            },
+            formInput: {
+                root: 'form-control',
+                group: 'input-group',
+                groupAppend: 'input-group-text',
+                groupPrepend: 'input-group-text',
+            },
+            formInputCheckbox: {
+                root: 'form-check-input',
+                label: 'form-check-label',
+                group: 'form-check',
+            },
+            formSelect: { root: 'form-select' },
+            formSubmit: {
+                createButton: 'btn btn-xs btn-success',
+                updateButton: 'btn btn-xs btn-primary',
+            },
+            formTextarea: { root: 'form-control' },
+            list: { root: 'd-flex flex-column gap-1' },
+            listBody: { root: 'list-unstyled m-0' },
+            listItem: {
+                root: 'd-flex flex-row align-items-center gap-1',
+                actionsWrapper: 'ms-auto',
+            },
+            listNoMore: { root: 'alert alert-warning alert-sm' },
+            navigation: {
+                group: 'nav-items',
+                link: 'nav-link',
+            },
+            pagination: { root: 'd-flex justify-content-center pagination' },
+        },
+    };
+}

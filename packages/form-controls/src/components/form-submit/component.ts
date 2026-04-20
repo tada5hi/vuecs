@@ -1,91 +1,94 @@
-import type { ComponentOptionInputConfig } from '@vuecs/core';
-import type { PropType } from 'vue';
-import { defineComponent } from 'vue';
-import { buildFormSubmit } from './module';
+import { useComponentTheme } from '@vuecs/core';
+import type { ThemeClassesOverride } from '@vuecs/core';
+import type { PropType, VNodeArrayChildren } from 'vue';
+import { 
+    defineComponent, 
+    h, 
+    mergeProps, 
+    toRef, 
+} from 'vue';
+
+export type FormSubmitThemeClasses = {
+    root: string;
+    createButton: string;
+    updateButton: string;
+    createIcon: string;
+    updateIcon: string;
+};
+
+const themeDefaults: FormSubmitThemeClasses = {
+    root: '',
+    createButton: '',
+    updateButton: '',
+    createIcon: '',
+    updateIcon: '',
+};
 
 export const VCFormSubmit = defineComponent({
+    name: 'VCFormSubmit',
     props: {
-        modelValue: {
-            type: Boolean,
-            default: false,
-        },
-        icon: {
-            type: Boolean,
-            default: true,
-        },
-        isEditing: {
-            type: Boolean,
-            default: false,
-        },
-        busy: {
-            type: Boolean,
-            default: false,
-        },
-
-        createText: {
-            type: [String, Object] as PropType<string | ComponentOptionInputConfig<string>>,
-            default: undefined,
-        },
-        createIconClass: {
-            type: [String, Object] as PropType<string | ComponentOptionInputConfig<string>>,
-            default: undefined,
-        },
-        createButtonClass: {
-            type: [String, Object] as PropType<string | ComponentOptionInputConfig<string>>,
-            default: undefined,
-        },
-
-        updateText: {
-            type: [String, Object] as PropType<string | ComponentOptionInputConfig<string>>,
-            default: undefined,
-        },
-        updateIconClass: {
-            type: [String, Object] as PropType<string | ComponentOptionInputConfig<string>>,
-            default: undefined,
-        },
-        updateButtonClass: {
-            type: [String, Object] as PropType<string | ComponentOptionInputConfig<string>>,
-            default: undefined,
-        },
-
+        modelValue: { type: Boolean, default: false },
+        icon: { type: Boolean, default: true },
+        isEditing: { type: Boolean, default: false },
+        busy: { type: Boolean, default: false },
+        type: { type: String, default: 'button' },
+        createText: { type: String, default: 'Create' },
+        updateText: { type: String, default: 'Update' },
         submit: { type: Function as PropType<() => Promise<any> | any> },
-
-        invalid: {
-            type: Boolean,
-            default: true,
-        },
+        invalid: { type: Boolean, default: true },
+        themeClass: { type: Object as PropType<ThemeClassesOverride<FormSubmitThemeClasses>>, default: undefined },
     },
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {
-        return () => buildFormSubmit({
-            icon: props.icon,
-            busy: props.modelValue || props.busy,
-            isEditing: props.isEditing,
-            invalid: props.invalid,
+        const theme = useComponentTheme('formSubmit', toRef(props, 'themeClass'), themeDefaults);
 
-            createText: props.createText,
-            createIconClass: props.createIconClass,
-            createButtonClass: props.createButtonClass,
+        return () => {
+            const resolved = theme.value;
+            const isBusy = props.modelValue || props.busy;
 
-            updateText: props.updateText,
-            updateIconClass: props.updateIconClass,
-            updateButtonClass: props.updateButtonClass,
+            let icon: VNodeArrayChildren = [];
+            if (props.icon) {
+                icon = [
+                    h('i', {
+                        class: props.isEditing ?
+                            (resolved.updateIcon || undefined) :
+                            (resolved.createIcon || undefined),
+                    }),
+                ];
+            }
 
-            submit() {
-                if (!props.submit) {
-                    return;
-                }
+            return h(
+                props.type,
+                mergeProps({
+                    ...(props.type === 'button' ? { type: 'submit' } : {}),
+                    class: props.isEditing ?
+                        (resolved.updateButton || undefined) :
+                        (resolved.createButton || undefined),
+                    disabled: props.invalid || isBusy,
+                    onClick($event: any) {
+                        $event.preventDefault();
 
-                emit('update:modelValue', true);
+                        if (!props.submit) return;
 
-                Promise.resolve()
-                    .then(props.submit)
-                    .then(() => {
-                        emit('update:modelValue', false);
-                    });
-            },
+                        emit('update:modelValue', true);
 
-            props: attrs,
-        });
+                        const result = props.submit();
+
+                        if (result && typeof result.then === 'function') {
+                            result.finally(() => {
+                                emit('update:modelValue', false);
+                            });
+                        } else {
+                            emit('update:modelValue', false);
+                        }
+                    },
+                }, attrs),
+                [
+                    ...icon,
+                    ' ',
+                    props.isEditing ? props.updateText : props.createText,
+                ],
+            );
+        };
     },
 });

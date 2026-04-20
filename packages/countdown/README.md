@@ -1,60 +1,65 @@
 # @vuecs/countdown ⏰
 
-[![npm version](https://badge.fury.io/js/@vuecs%2Fbasic.svg)](https://badge.fury.io/js/@vuecs%2Fbasic)
-[![CI](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
+[![npm version](https://badge.fury.io/js/@vuecs%2Fcountdown.svg)](https://badge.fury.io/js/@vuecs%2Fcountdown)
+[![main](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
 
-This package provides a customizable countdown timer for Vue3 web applications.
-It offers a range of options for customization, including start and end times, step length, and more.
-Ideal for time-based events such as auctions, sales, or promotions.
+Countdown timer component for Vue 3 with auto-start, visibility handling, and scoped slot for custom display.
 
 **Table of Contents**
 
 - [Installation](#installation)
-- [Usage](#usage)
+- [Quick Start](#quick-start)
+- [Props](#props)
+- [Exposed Methods](#exposed-methods)
 - [License](#license)
 
 ## Installation
 
-```
-$ npm i --save @vuecs/countdown
+```bash
+npm install @vuecs/countdown @vuecs/core
 ```
 
-## Usage
-
-Register the plugin.
+## Quick Start
 
 ```typescript
-import install from '@vuecs/countdown';
-import { createApp } from 'vue'
+import countdown from '@vuecs/countdown';
 
-const app = createApp({})
-
-app.use(install, {
-  /* optional options */
-})
+app.use(countdown);
 ```
-
-After the component is registered, it can be used as follows.
 
 ```vue
 <template>
-    <VCCountdown
-        :auto-start="true"
-        :emit-events="true"
-        :interval="1000"
-        :time="3600 * 1000"
-    >
-        <template #default="props">
-            The countdown is still running for
-            <span>
-                {{ props.hours }} hour(s),
-                {{ props.minutes }} minute(s),
-                {{ props.seconds }} second(s)
-            </span>.
+    <VCCountdown :time="60000" @end="onFinished">
+        <template #default="{ minutes, seconds }">
+            {{ minutes }}:{{ seconds }}
         </template>
     </VCCountdown>
 </template>
 ```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `time` | `number` | `0` | Time in milliseconds to count down from |
+| `autoStart` | `boolean` | `true` | Start countdown on mount |
+| `interval` | `number` | `1000` | Progress interval in milliseconds |
+| `tag` | `string` | `'span'` | Root element tag |
+| `emitEvents` | `boolean` | `true` | Emit start/progress/abort/end events |
+
+## Exposed Methods
+
+Access via template ref:
+
+```vue
+<VCCountdown ref="timer" :time="10000" :auto-start="false" />
+```
+
+| Method | Description |
+|--------|-------------|
+| `start()` | Start the countdown |
+| `abort()` | Abort the countdown |
+| `end()` | End the countdown immediately |
 
 ## License
 

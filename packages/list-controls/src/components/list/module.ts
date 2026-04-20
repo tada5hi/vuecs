@@ -1,122 +1,186 @@
-/*
- * Copyright (c) 2024.
- * Author Peter Placzek (tada5hi)
- * For the full copyright and license information,
- * view the LICENSE file that was distributed with this source code.
- */
-
-import { hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
-import type { VNodeArrayChildren, VNodeChild } from 'vue';
-import { h, mergeProps, unref } from 'vue';
-import { boolableToObject } from '../../utils';
-import { SlotName } from '../constants';
-import type { ListBaseOptionsInput, ListBaseSlotProps } from '../list-base';
+import { useComponentTheme } from '@vuecs/core';
+import type { ThemeClassesOverride } from '@vuecs/core';
+import type { PropType, SlotsType, VNodeArrayChildren } from 'vue';
+import { defineComponent, h, toRef } from 'vue';
+import type {
+    ListEventFn,
+    ListItemId,
+    ListItemKey,
+    ListLoadFn,
+} from '../../type';
 import { buildListBaseSlotProps } from '../list-base';
-import type { ListBodyBuildOptionsInput } from '../list-body';
-import { buildListBody } from '../list-body';
-import { buildListFooter } from '../list-footer';
-import { buildListHeader } from '../list-header';
-import { buildListLoading } from '../list-loading';
-import { buildListNoMore } from '../list-no-more';
-import { normalizeListOptions } from './normalize';
-import type { ListBuildOptionsInput, ListSlotProps } from './types';
+import type {
+    ListBodyThemeClasses,
+    ListFooterThemeClasses,
+    ListHeaderThemeClasses,
+    ListItemThemeClasses,
+    ListLoadingThemeClasses,
+    ListNoMoreThemeClasses,
+    ListSlotProps,
+    ListThemeClasses,
+} from '../type';
+import { VCListBody } from '../list-body/module';
+import { VCListFooter } from '../list-footer/module';
+import { VCListHeader } from '../list-header/module';
+import { VCListLoading } from '../list-loading/module';
+import { VCListNoMore } from '../list-no-more/module';
 
-export function buildList<T, M = any>(
-    input: ListBuildOptionsInput<T, M>,
-): VNodeChild {
-    const options = normalizeListOptions(input);
+const themeDefaults: ListThemeClasses = { root: 'vc-list' };
 
-    if (typeof options.total === 'undefined') {
-        options.total = options.data.length;
-    }
+export const VCList = defineComponent({
+    name: 'VCList',
+    props: {
+        data: { type: Array as PropType<any[]>, default: () => [] },
+        tag: { type: String, default: 'div' },
+        themeClass: { type: Object as PropType<ThemeClassesOverride<ListThemeClasses>>, default: undefined },
 
-    const buildSlotProps = (props: Record<string, any>) : Record<string, any> & ListBaseSlotProps<T> => ({
-        ...props,
-        ...buildListBaseSlotProps(options),
-    });
+        // Sub-component themes
+        headerThemeClass: { type: Object as PropType<ThemeClassesOverride<ListHeaderThemeClasses>>, default: undefined },
+        footerThemeClass: { type: Object as PropType<ThemeClassesOverride<ListFooterThemeClasses>>, default: undefined },
+        bodyThemeClass: { type: Object as PropType<ThemeClassesOverride<ListBodyThemeClasses>>, default: undefined },
+        itemThemeClass: { type: Object as PropType<ThemeClassesOverride<ListItemThemeClasses>>, default: undefined },
+        loadingThemeClass: { type: Object as PropType<ThemeClassesOverride<ListLoadingThemeClasses>>, default: undefined },
+        noMoreThemeClass: { type: Object as PropType<ThemeClassesOverride<ListNoMoreThemeClasses>>, default: undefined },
 
-    const extendChildOptions = <F extends ListBaseOptionsInput<T, M>>(input: F) => {
-        input.slotItems = options.slotItems;
-        input.slotProps = buildSlotProps(options.slotProps);
-        input.slotPropsBuilt = true;
+        // Section visibility
+        header: { type: Boolean, default: true },
+        footer: { type: Boolean, default: true },
+        body: { type: Boolean, default: true },
+        loading: { type: Boolean, default: true },
+        noMore: { type: Boolean, default: true },
 
-        input.busy = options.busy;
-        input.meta = options.meta;
-        input.total = options.total;
+        // List state
+        busy: { type: Boolean, default: false },
+        total: { type: Number, default: undefined },
+        load: { type: Function as PropType<ListLoadFn>, default: undefined },
+        meta: { type: Object, default: undefined },
 
-        return input;
-    };
+        // Item matching
+        itemId: { type: Function as PropType<ListItemId<any>>, default: undefined },
+        itemKey: { type: [String, Function] as PropType<ListItemKey<any>>, default: undefined },
 
-    if (hasNormalizedSlot(SlotName.DEFAULT, options.slotItems)) {
-        const slotProps : ListSlotProps<T, M> = {
-            ...buildSlotProps(options.slotProps),
-            data: unref(options.data),
+        // Item display options
+        itemTag: { type: String, default: 'li' },
+        itemIcon: { type: Boolean, default: true },
+        itemText: { type: Boolean, default: true },
+        itemTextPropName: { type: String, default: 'name' },
+        itemActions: { type: Boolean, default: true },
+
+        // No more content
+        noMoreContent: { type: String, default: 'No more items available...' },
+
+        // Events
+        onCreated: { type: Function as PropType<ListEventFn<any>>, default: undefined },
+        onDeleted: { type: Function as PropType<ListEventFn<any>>, default: undefined },
+        onUpdated: { type: Function as PropType<ListEventFn<any>>, default: undefined },
+    },
+    slots: Object as SlotsType<{
+        default?: ListSlotProps<any>;
+        header?: any;
+        footer?: any;
+        body?: any;
+        loading?: any;
+        noMore?: any;
+        item?: any;
+        itemActions?: any;
+        itemActionsExtra?: any;
+    }>,
+    setup(props, { slots }) {
+        const theme = useComponentTheme('list', toRef(props, 'themeClass'), themeDefaults);
+
+        return () => {
+            const total = props.total ?? props.data.length;
+
+            const slotPropsBase = buildListBaseSlotProps({
+                busy: props.busy,
+                total,
+                load: props.load,
+                meta: props.meta,
+                data: props.data,
+                itemId: props.itemId,
+                itemKey: props.itemKey,
+                onCreated: props.onCreated,
+                onDeleted: props.onDeleted,
+                onUpdated: props.onUpdated,
+            });
+
+            // Default slot bypasses all structure
+            if (slots.default) {
+                const listSlotProps: ListSlotProps<any> = {
+                    ...slotPropsBase,
+                    data: props.data,
+                };
+                return slots.default(listSlotProps);
+            }
+
+            const children: VNodeArrayChildren = [];
+
+            if (props.header) {
+                children.push(h(VCListHeader, {
+                    theme: props.headerThemeClass,
+                    slotProps: slotPropsBase,
+                }, slots.header ? { default: slots.header } : {}));
+            }
+
+            if (props.body) {
+                children.push(h(VCListBody, {
+                    data: props.data,
+                    busy: props.busy,
+                    total,
+                    load: props.load,
+                    meta: props.meta,
+                    itemId: props.itemId,
+                    itemKey: props.itemKey,
+                    onCreated: props.onCreated,
+                    onDeleted: props.onDeleted,
+                    onUpdated: props.onUpdated,
+                    theme: props.bodyThemeClass,
+                    itemThemeClass: props.itemThemeClass,
+                    itemTag: props.itemTag,
+                    itemIcon: props.itemIcon,
+                    itemText: props.itemText,
+                    itemTextPropName: props.itemTextPropName,
+                    itemActions: props.itemActions,
+                    slotProps: slotPropsBase,
+                }, {
+                    ...(slots.body ? { default: slots.body } : {}),
+                    ...(slots.item ? { item: slots.item } : {}),
+                    ...(slots.itemActions ? { itemActions: slots.itemActions } : {}),
+                    ...(slots.itemActionsExtra ? { itemActionsExtra: slots.itemActionsExtra } : {}),
+                }));
+            }
+
+            if (props.loading) {
+                children.push(h(VCListLoading, {
+                    busy: props.busy,
+                    theme: props.loadingThemeClass,
+                    slotProps: slotPropsBase,
+                }, slots.loading ? { default: slots.loading } : {}));
+            }
+
+            if (props.noMore) {
+                children.push(h(VCListNoMore, {
+                    busy: props.busy,
+                    total,
+                    meta: props.meta,
+                    content: props.noMoreContent,
+                    theme: props.noMoreThemeClass,
+                    slotProps: slotPropsBase,
+                }, slots.noMore ? { default: slots.noMore } : {}));
+            }
+
+            if (props.footer) {
+                children.push(h(VCListFooter, {
+                    theme: props.footerThemeClass,
+                    slotProps: slotPropsBase,
+                }, slots.footer ? { default: slots.footer } : {}));
+            }
+
+            return h(
+                props.tag,
+                { class: theme.value.root },
+                children,
+            );
         };
-
-        return normalizeSlot(SlotName.DEFAULT, slotProps, options.slotItems);
-    }
-
-    const children : VNodeArrayChildren = [];
-
-    if (options.header) {
-        children.push(
-            buildListHeader(
-                extendChildOptions(
-                    boolableToObject(options.header),
-                ),
-            ),
-        );
-    }
-
-    if (options.body) {
-        let childOptions : ListBodyBuildOptionsInput<T, M>;
-        if (typeof options.body === 'boolean') {
-            childOptions = {
-                data: options.data,
-                busy: options.busy,
-            };
-        } else {
-            childOptions = options.body;
-            childOptions.data = options.data;
-            childOptions.busy = options.busy;
-        }
-
-        children.push(buildListBody(extendChildOptions(childOptions)));
-    }
-
-    if (options.loading) {
-        children.push(
-            buildListLoading(
-                extendChildOptions(
-                    boolableToObject(options.loading),
-                ),
-            ),
-        );
-    }
-
-    if (options.noMore) {
-        children.push(
-            buildListNoMore(
-                extendChildOptions(
-                    boolableToObject(options.noMore),
-                ),
-            ),
-        );
-    }
-
-    if (options.footer) {
-        children.push(
-            buildListFooter(
-                extendChildOptions(
-                    boolableToObject(options.footer),
-                ),
-            ),
-        );
-    }
-
-    return h(
-        options.tag,
-        mergeProps({ class: options.class }, options.props),
-        children,
-    );
-}
+    },
+});

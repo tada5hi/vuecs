@@ -1,38 +1,71 @@
 # @vuecs/form-controls 📜
 
 [![npm version](https://badge.fury.io/js/@vuecs%2Fform-controls.svg)](https://badge.fury.io/js/@vuecs%2Fform-controls)
-[![CI](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
+[![main](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
 
-This package provides helpers for building **forms** elements on the fly using hyperscript.
-Those can be used directly in the vue render function 🔥.
-
-> **Note**
-> The package is still in development and the API is still subject to change.
-> Besides, the documentation still needs to be expanded
+Form input components for Vue 3 with validation support, v-model binding, and themeable CSS classes.
 
 **Table of Contents**
 
 - [Installation](#installation)
-- [Usage](#usage)
-- [Example](#example)
+- [Quick Start](#quick-start)
+- [Components](#components)
+- [Theme Slots](#theme-slots)
 - [License](#license)
 
 ## Installation
 
+```bash
+npm install @vuecs/form-controls @vuecs/core
 ```
-$ npm i --save @vuecs/form-controls
+
+## Quick Start
+
+```typescript
+import formControls from '@vuecs/form-controls';
+
+app.use(formControls);
 ```
 
-## Usage
+```vue
+<template>
+    <VCFormGroup label-content="Email" :validation-messages="errors">
+        <VCFormInput v-model="form.email" type="email" />
+    </VCFormGroup>
 
-The following helpers are provided:
+    <VCFormGroup label-content="Role">
+        <VCFormSelect v-model="form.role" :options="roles" />
+    </VCFormGroup>
 
-- `buildFormInput`
-- `buildFormInputCheckbox`
-- `buildFormInputText`
-- `buildFormSelect`
-- `buildFormSubmit`
-- `buildFormTextarea`
+    <VCFormSubmit :submit="onSubmit" :is-editing="!!form.id" />
+</template>
+```
+
+## Components
+
+| Component | Description |
+|-----------|-------------|
+| `VCFormGroup` | Wrapper with label, hint, and validation message rendering |
+| `VCFormInput` | Text input with optional prepend/append group wrappers |
+| `VCFormInputCheckbox` | Checkbox supporting single boolean and array multi-select |
+| `VCFormTextarea` | Textarea input |
+| `VCFormSelect` | Dropdown select with configurable default option |
+| `VCFormSubmit` | Submit button with create/update modes, icon, and busy state |
+| `VCFormSelectSearch` | Searchable multi-select with keyboard navigation |
+| `VCFormRangeMultiSlider` | Dual-range slider |
+| `VCValidationGroup` | Renders validation messages (used internally by VCFormGroup) |
+
+## Theme Slots
+
+| Component | Slot Keys |
+|-----------|-----------|
+| `formGroup` | `root`, `label`, `hint`, `validationError`, `validationWarning` |
+| `formInput` | `root`, `group`, `groupAppend`, `groupPrepend` |
+| `formInputCheckbox` | `root`, `label`, `group` |
+| `formSelect` | `root` |
+| `formTextarea` | `root` |
+| `formSubmit` | `root`, `createButton`, `updateButton`, `createIcon`, `updateIcon` |
+| `validationGroup` | `item` |
 
 ## License
 

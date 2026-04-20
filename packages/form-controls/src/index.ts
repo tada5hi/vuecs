@@ -1,4 +1,4 @@
-import { applyStoreManagerOptions, installStoreManager } from '@vuecs/core';
+import { installThemeManager } from '@vuecs/core';
 import type { App, Plugin } from 'vue';
 
 import '../assets/form-select-search.css';
@@ -20,11 +20,8 @@ import type { Options } from './type';
 export * from './components';
 export * from './type';
 
-export function install(instance: App, options: Options = {}) : void {
-    const storeManager = installStoreManager(instance);
-    if (options.storeManager) {
-        applyStoreManagerOptions(storeManager, options.storeManager);
-    }
+export function install(instance: App, options: Options = {}): void {
+    installThemeManager(instance, options);
 
     Object.entries({
         VCFormGroup,
@@ -40,4 +37,4 @@ export function install(instance: App, options: Options = {}) : void {
     });
 }
 
-export default { install } satisfies Plugin<Options | undefined>;
+export default { install } satisfies Plugin<[Options?]>;

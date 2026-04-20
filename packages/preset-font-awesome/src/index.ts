@@ -1,17 +1,18 @@
-export default {
-    formSubmit: {
-        createIconClass: 'fa fa-plus',
-        updateIconClass: 'fa fa-save',
-    },
-    itemActionToggle: {
-        childDisabledClass: 'fa fa-plus',
-        childEnabledClass: 'fa fa-minus',
-    },
-    listActionRefresh: { iconClass: 'fa fa-refresh' },
-    listItem: { iconClass: 'fa fa-bars' },
-    listTitle: { iconClass: 'fa fa-bars' },
-    pagination: {
-        prevIconClass: 'fa-solid fa-chevron-left',
-        nextIconClass: 'fa-solid fa-chevron-right',
-    },
-};
+import { extend } from '@vuecs/core';
+import type { Theme } from '@vuecs/core';
+
+export default function fontAwesomePreset(): Theme {
+    return {
+        elements: {
+            formSubmit: {
+                createIcon: extend('fa fa-plus'),
+                updateIcon: extend('fa fa-save'),
+            },
+            listItem: { icon: extend('fa fa-bars') },
+            pagination: {
+                prevIcon: extend('fa-solid fa-chevron-left'),
+                nextIcon: extend('fa-solid fa-chevron-right'),
+            },
+        },
+    };
+}

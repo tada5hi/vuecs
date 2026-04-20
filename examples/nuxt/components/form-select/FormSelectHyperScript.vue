@@ -7,17 +7,18 @@
 
 <script lang="ts">
 import { useTranslationsForBaseValidation } from '@ilingo/vuelidate';
-import { buildFormGroup, buildFormSelect } from '@vuecs/form-controls';
+import { VCFormGroup, VCFormSelect } from '@vuecs/form-controls';
 import { required } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {
     defineComponent,
+    h,
     reactive,
 } from 'vue';
 
 export default defineComponent({
     setup() {
-        const form = reactive({ text: null });
+        const form = reactive({ text: '' });
 
         const $v = useVuelidate({ text: { required } }, form);
 
@@ -28,15 +29,14 @@ export default defineComponent({
             { id: 2, value: 'Option 2' },
         ];
 
-        return () => buildFormGroup({
+        return () => h(VCFormGroup, {
             label: true,
             labelContent: 'Label',
             validationMessages: validationMessages.value,
-            content: buildFormSelect({
-                value: form.text,
-                onChange(input) {
-                    form.text = input;
-                },
+        }, {
+            default: () => h(VCFormSelect, {
+                modelValue: form.text,
+                'onUpdate:modelValue': (input: string) => { form.text = input; },
                 options,
             }),
         });

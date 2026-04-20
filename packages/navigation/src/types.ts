@@ -1,50 +1,50 @@
-import type { StoreManagerOptions } from '@vuecs/core';
+import type { ThemeManagerOptions } from '@vuecs/core';
 import type { ElementType } from './constants';
 
 export type NavigationItem<
     META = any,
 > = {
-    level?: number,
-    name: string,
+    level?: number;
+    name: string;
 
-    url?: string,
-    urlTarget?: '_self' | '_blank' | '_parent' | '_top' | string,
+    url?: string;
+    urlTarget?: '_self' | '_blank' | '_parent' | '_top' | string;
 
-    default?: boolean,
-    type?: `${ElementType}`,
+    default?: boolean;
+    type?: `${ElementType}`;
 
-    icon?: string,
+    icon?: string;
 
-    active?: boolean,
-    activeMatch?: string,
+    active?: boolean;
+    activeMatch?: string;
 
-    display?: boolean,
-    displayChildren?: boolean,
+    display?: boolean;
+    displayChildren?: boolean;
 
-    children?: NavigationItem[],
+    children?: NavigationItem[];
 
-    meta?: META
+    meta?: META;
 };
 
 export type NavigationItemNormalized<
     META = any,
 > = Omit<NavigationItem<META>, 'name' |
-'level' |
-'children' |
-'meta'> & {
-    name: string,
-    level: number,
-    children: NavigationItemNormalized<META>[],
+    'level' |
+    'children' |
+    'meta'> & {
+        name: string;
+        level: number;
+        children: NavigationItemNormalized<META>[];
 
-    trace: string[],
-    meta: META
-};
+        trace: string[];
+        meta: META;
+    };
 
 export type NavigationItemsFnContext<
     META = any,
 > = {
-    level: number,
-    parent?: NavigationItemNormalized<META>
+    level: number;
+    parent?: NavigationItemNormalized<META>;
 };
 
 export type NavigationItemsFn<
@@ -53,7 +53,6 @@ export type NavigationItemsFn<
     ctx: NavigationItemsFnContext<META>,
 ) => Promise<NavigationItem<META>[] | undefined>;
 
-export type Options = {
-    items: NavigationItemsFn | NavigationItem[]
-    storeManager?: StoreManagerOptions
+export type Options = ThemeManagerOptions & {
+    items: NavigationItemsFn | NavigationItem[];
 };

@@ -1,23 +1,37 @@
-import { defineComponent } from 'vue';
-import { buildFormTextarea } from './module';
+import { useComponentTheme } from '@vuecs/core';
+import type { ThemeClassesOverride } from '@vuecs/core';
+import type { PropType } from 'vue';
+import { 
+    defineComponent, 
+    h, 
+    mergeProps, 
+    toRef, 
+} from 'vue';
+
+export type FormTextareaThemeClasses = {
+    root: string;
+};
+
+const themeDefaults: FormTextareaThemeClasses = { root: '' };
 
 export const VCFormTextarea = defineComponent({
+    name: 'VCFormTextarea',
     props: {
-        modelValue: {
-            type: String,
-            default: '',
-        },
+        modelValue: { type: String, default: '' },
+        themeClass: { type: Object as PropType<ThemeClassesOverride<FormTextareaThemeClasses>>, default: undefined },
     },
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {
-        return () => buildFormTextarea({
-            value: props.modelValue,
+        const theme = useComponentTheme('formTextarea', toRef(props, 'themeClass'), themeDefaults);
 
-            onChange(input) {
-                emit('update:modelValue', input);
+        return () => h('textarea', mergeProps({
+            placeholder: '...',
+            class: theme.value.root || undefined,
+            onInput($event: any) {
+                if ($event.target.composing) return;
+                emit('update:modelValue', $event.target.value);
             },
-
-            props: attrs,
-        });
+            ...(typeof props.modelValue !== 'undefined' ? { value: props.modelValue } : {}),
+        }, attrs));
     },
 });

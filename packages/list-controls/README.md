@@ -1,42 +1,96 @@
 # @vuecs/list-controls 📋
 
 [![npm version](https://badge.fury.io/js/@vuecs%2Flist-controls.svg)](https://badge.fury.io/js/@vuecs%2Flist-controls)
-[![CI](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
+[![main](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
 
-This package provides helpers for building **list** elements on the fly, using hyperscript.
-Those can be used directly in the vue render function 🔥.
-
-> **Note**
-> The package is still in development and the API is still subject to change.
-> Besides, the documentation still needs to be expanded
+List display components for Vue 3 with header, footer, body, loading state, empty state, and item-level event handling (created/updated/deleted).
 
 **Table of Contents**
 
 - [Installation](#installation)
-- [Usage](#usage)
-- [Example](#example)
+- [Quick Start](#quick-start)
+- [Components](#components)
+- [Slots](#slots)
+- [Theme Slots](#theme-slots)
 - [License](#license)
 
 ## Installation
 
+```bash
+npm install @vuecs/list-controls @vuecs/core
 ```
-$ npm i --save @vuecs/list-controls
+
+## Quick Start
+
+```typescript
+import listControls from '@vuecs/list-controls';
+
+app.use(listControls);
 ```
 
-## Usage
+```vue
+<template>
+    <VCList
+        :data="items"
+        :busy="loading"
+        :total="total"
+        @created="onCreated"
+        @deleted="onDeleted"
+    >
+        <template #item="{ data, deleted }">
+            <span>{{ data.name }}</span>
+            <button @click="deleted()">Remove</button>
+        </template>
+    </VCList>
+</template>
+```
 
-The following helpers are provided:
+Or with render functions:
 
-- `buildList`
-- `buildListActionRefresh`
-- `buildListFooter`
-- `buildListHeader`
-- `buildListItem`
-- `buildListItems`
-- `buildListNoMore`
-- `buildListPagination`
-- `buildListSearch`
-- `buildListTitle`
+```typescript
+import { VCList } from '@vuecs/list-controls';
+
+h(VCList, { data: items, total: items.length }, {
+    item: ({ data }) => h('span', data.name),
+});
+```
+
+## Components
+
+| Component | Description |
+|-----------|-------------|
+| `VCList` | Container — orchestrates header, body, loading, noMore, footer |
+| `VCListBody` | Renders data items via `VCListItem` |
+| `VCListItem` | Single item with icon, text, and actions sections |
+| `VCListHeader` | Header section (renders only when slot has content) |
+| `VCListFooter` | Footer section (renders only when slot has content) |
+| `VCListLoading` | Loading indicator (visible when `busy` is true) |
+| `VCListNoMore` | Empty state (visible when not busy and total is 0) |
+
+## Slots
+
+| Slot | Scope | Description |
+|------|-------|-------------|
+| `default` | `{ data, busy, total, load, created, updated, deleted }` | Replaces all structure |
+| `header` | `{ busy, total, load }` | Header content |
+| `footer` | `{ busy, total, load }` | Footer content |
+| `body` | `{ data, busy, total }` | Body content (replaces item rendering) |
+| `item` | `{ data, index, updated, deleted }` | Per-item content |
+| `itemActions` | `{ data, index, updated, deleted }` | Per-item actions |
+| `loading` | `{ busy }` | Loading indicator content |
+| `noMore` | `{}` | Empty state content |
+
+## Theme Slots
+
+| Component | Slot Keys |
+|-----------|-----------|
+| `list` | `root` |
+| `listBody` | `root` |
+| `listItem` | `root`, `icon`, `iconWrapper`, `textWrapper`, `actionsWrapper`, `actionsExtraWrapper` |
+| `listHeader` | `root` |
+| `listFooter` | `root` |
+| `listLoading` | `root` |
+| `listNoMore` | `root` |
 
 ## License
 

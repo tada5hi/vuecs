@@ -1,11 +1,9 @@
+import { installThemeManager } from '@vuecs/core';
 import type { App, Plugin } from 'vue';
 
 import './vue';
 
-// Import vue components
-import {
-    VCTimeago,
-} from './component';
+import { VCTimeago } from './component';
 import { provideConverter } from './converter';
 import { provideLocale } from './locale';
 import { provideLocales } from './locales';
@@ -15,7 +13,9 @@ export * from './component';
 export * from './locale';
 export * from './type';
 
-export function install(app: App, options: Options = {}) : void {
+export function install(app: App, options: Options = {}): void {
+    installThemeManager(app, options);
+
     if (options.converter) {
         provideConverter(options.converter, app);
     }
@@ -30,4 +30,4 @@ export function install(app: App, options: Options = {}) : void {
     app.component('VCTimeago', VCTimeago);
 }
 
-export default { install } satisfies Plugin<Options | undefined>;
+export default { install } satisfies Plugin<[Options?]>;

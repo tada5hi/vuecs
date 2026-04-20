@@ -29,6 +29,12 @@
         "build:types": "tsc --emitDeclarationOnly -p tsconfig.build.json",
         "build": "rimraf dist && npm run build:js && npm run build:types"
     },
+    "devDependencies": {
+        "@vuecs/core": "^2.0.0"
+    },
+    "peerDependencies": {
+        "@vuecs/core": "^2.0.0"
+    },
     "engines": {
         "node": ">=22.0.0"
     },

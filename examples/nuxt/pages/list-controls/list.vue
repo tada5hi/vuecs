@@ -6,10 +6,8 @@
   -->
 
 <script lang="ts">
-import {
-    buildList,
-} from '@vuecs/list-controls';
-import { defineComponent, ref } from 'vue';
+import { VCList } from '@vuecs/list-controls';
+import { defineComponent, h, ref } from 'vue';
 
 export default defineComponent({
     setup() {
@@ -18,7 +16,7 @@ export default defineComponent({
             { name: 'DEF' },
         ]);
 
-        return () => buildList({
+        return () => h(VCList, {
             data: items.value,
             total: items.value.length,
         });

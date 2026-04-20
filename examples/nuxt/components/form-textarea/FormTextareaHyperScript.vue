@@ -7,11 +7,12 @@
 
 <script lang="ts">
 import { useTranslationsForBaseValidation } from '@ilingo/vuelidate';
-import { buildFormGroup, buildFormTextarea } from '@vuecs/form-controls';
+import { VCFormGroup, VCFormTextarea } from '@vuecs/form-controls';
 import { maxLength, minLength } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {
-    defineComponent, 
+    defineComponent,
+    h,
     reactive,
 } from 'vue';
 
@@ -28,15 +29,14 @@ export default defineComponent({
 
         const validationMessages = useTranslationsForBaseValidation($v.value.text);
 
-        return () => buildFormGroup({
+        return () => h(VCFormGroup, {
             label: true,
             labelContent: 'Label',
             validationMessages: validationMessages.value,
-            content: buildFormTextarea({
-                value: form.text,
-                onChange(input) {
-                    form.text = input;
-                },
+        }, {
+            default: () => h(VCFormTextarea, {
+                modelValue: form.text,
+                'onUpdate:modelValue': (input: string) => { form.text = input; },
             }),
         });
     },
