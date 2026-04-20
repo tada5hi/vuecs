@@ -1,3 +1,5 @@
+import type { ShallowRef } from 'vue';
+import { shallowRef } from 'vue';
 import type {
     Theme,
     ThemeClasses,
@@ -7,13 +9,29 @@ import type {
 import { resolveComponentTheme } from './resolve';
 
 export class ThemeManager {
-    readonly themes: Theme[];
+    private readonly themesRef: ShallowRef<Theme[]>;
 
-    readonly overrides: Theme | undefined;
+    private readonly overridesRef: ShallowRef<Theme | undefined>;
 
     constructor(options: ThemeManagerOptions = {}) {
-        this.themes = options.themes || [];
-        this.overrides = options.overrides;
+        this.themesRef = shallowRef(options.themes || []);
+        this.overridesRef = shallowRef(options.overrides);
+    }
+
+    get themes(): Theme[] {
+        return this.themesRef.value;
+    }
+
+    get overrides(): Theme | undefined {
+        return this.overridesRef.value;
+    }
+
+    setThemes(themes: Theme[]): void {
+        this.themesRef.value = themes;
+    }
+
+    setOverrides(overrides: Theme | undefined): void {
+        this.overridesRef.value = overrides;
     }
 
     resolve<T extends ThemeClasses>(
@@ -21,15 +39,18 @@ export class ThemeManager {
         defaults: T,
         instanceThemeClass?: ThemeClassesOverride<T>,
     ): T {
+        const { themes } = this;
+        const { overrides } = this;
+
         // classesMergeFn: overrides wins, then last theme with one defined
-        const classesMergeFn = this.overrides?.classesMergeFn ||
-            this.themes.findLast((t) => t.classesMergeFn)?.classesMergeFn;
+        const classesMergeFn = overrides?.classesMergeFn ||
+            themes.findLast((t) => t.classesMergeFn)?.classesMergeFn;
 
         return resolveComponentTheme(
             componentName,
             defaults,
-            this.themes,
-            this.overrides?.elements,
+            themes,
+            overrides?.elements,
             instanceThemeClass,
             classesMergeFn,
         );
