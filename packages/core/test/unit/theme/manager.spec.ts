@@ -53,4 +53,43 @@ describe('ThemeManager', () => {
         const result = manager.resolve('button', defaults, { root: extend('extra') });
         expect(result.root).toBe('default|base|extra');
     });
+
+    it('should update themes via setThemes()', () => {
+        const manager = new ThemeManager();
+        const defaults = { root: 'vc-btn' };
+
+        expect(manager.resolve('button', defaults).root).toBe('vc-btn');
+
+        manager.setThemes([{ elements: { button: { root: 'btn-primary' } } }]);
+        expect(manager.resolve('button', defaults).root).toBe('vc-btn btn-primary');
+    });
+
+    it('should update overrides via setOverrides()', () => {
+        const manager = new ThemeManager();
+        const defaults = { root: 'vc-btn' };
+
+        expect(manager.resolve('button', defaults).root).toBe('vc-btn');
+
+        manager.setOverrides({ elements: { button: { root: 'custom' } } });
+        expect(manager.resolve('button', defaults).root).toBe('custom');
+    });
+
+    it('should clear overrides when set to undefined', () => {
+        const manager = new ThemeManager({ overrides: { elements: { button: { root: 'override' } } } });
+        const defaults = { root: 'vc-btn' };
+
+        expect(manager.resolve('button', defaults).root).toBe('override');
+
+        manager.setOverrides(undefined);
+        expect(manager.resolve('button', defaults).root).toBe('vc-btn');
+    });
+
+    it('should expose themes and overrides via getters', () => {
+        const theme: Theme = { elements: { button: { root: 'btn' } } };
+        const overrides: Theme = { elements: { button: { root: 'custom' } } };
+        const manager = new ThemeManager({ themes: [theme], overrides });
+
+        expect(manager.themes).toEqual([theme]);
+        expect(manager.overrides).toBe(overrides);
+    });
 });

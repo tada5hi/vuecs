@@ -1,11 +1,11 @@
-import type { ComputedRef, Ref } from 'vue';
+import type { ComputedRef, MaybeRef } from 'vue';
 import { computed, unref } from 'vue';
 import type { ThemeClasses, ThemeClassesOverride } from './types';
 import { injectThemeManager } from './install';
 
 export function useComponentTheme<T extends ThemeClasses>(
     componentName: string,
-    instanceThemeClass: Ref<ThemeClassesOverride<T> | undefined> | undefined,
+    instanceThemeClass: MaybeRef<ThemeClassesOverride<T> | undefined>,
     defaults: T,
 ): ComputedRef<T> {
     const manager = injectThemeManager();
@@ -16,7 +16,7 @@ export function useComponentTheme<T extends ThemeClasses>(
     }
 
     return computed(() => {
-        const themeClass = instanceThemeClass ? unref(instanceThemeClass) : undefined;
+        const themeClass = unref(instanceThemeClass);
         return manager.resolve<T>(componentName, defaults, themeClass);
     });
 }
