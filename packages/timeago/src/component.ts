@@ -1,3 +1,5 @@
+import { useComponentTheme } from '@vuecs/core';
+import type { ThemeClassesOverride } from '@vuecs/core';
 import type { PropType } from 'vue';
 import {
     computed,
@@ -14,8 +16,16 @@ import { injectLocales } from './locales';
 import type { Converter, ConverterOptions } from './type';
 import { convert, injectConverter } from './converter';
 
+export type TimeagoThemeClasses = {
+    root: string;
+};
+
+const themeDefaults: TimeagoThemeClasses = { root: '' };
+
 export const VCTimeago = defineComponent({
+    name: 'VCTimeago',
     props: {
+        themeClass: { type: Object as PropType<ThemeClassesOverride<TimeagoThemeClasses>>, default: undefined },
         datetime: {
             type: [Object, Number, String] as PropType<Date | number | string>,
             required: true,
@@ -30,6 +40,8 @@ export const VCTimeago = defineComponent({
         converterOptions: { type: Object as PropType<ConverterOptions> },
     },
     setup(props) {
+        const theme = useComponentTheme('timeago', toRef(props, 'themeClass'), themeDefaults);
+
         const dateTimeProp = toRef(props, 'datetime');
         const localeProp = toRef(props, 'locale');
         const titleProp = toRef(props, 'title');
@@ -120,6 +132,7 @@ export const VCTimeago = defineComponent({
         return () => h(
             'time',
             {
+                class: theme.value.root || undefined,
                 attrs: {
                     datetime: new Date(dateTimeProp.value).toISOString(),
                     title: typeof titleProp.value === 'string' ?

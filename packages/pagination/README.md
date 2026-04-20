@@ -1,64 +1,75 @@
 # @vuecs/pagination 📖
 
 [![npm version](https://badge.fury.io/js/@vuecs%2Fpagination.svg)](https://badge.fury.io/js/@vuecs%2Fpagination)
-[![CI](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
+[![main](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
 
-This library provides an easy way to paginate large datasets by providing a range
-of customization options, including the number of items per page,
-the number of visible page links,
-and the layout of the pagination controls. .
+Pagination component for Vue 3 with page calculation utilities and icon support via presets.
 
 **Table of Contents**
 
 - [Installation](#installation)
-- [Usage](#usage)
+- [Quick Start](#quick-start)
+- [Props](#props)
+- [Theme Slots](#theme-slots)
 - [License](#license)
 
 ## Installation
 
-```
-$ npm i --save @vuecs/pagination
+```bash
+npm install @vuecs/pagination @vuecs/core
 ```
 
-## Usage
-
-Register the plugin.
+## Quick Start
 
 ```typescript
-import install from '@vuecs/pagination';
-import { createApp } from 'vue'
+import pagination from '@vuecs/pagination';
 
-const app = createApp({})
-
-app.use(install, {
-  /* optional options */
-})
+app.use(pagination);
 ```
 
-After the component is registered, it can be used as follows.
-
 ```vue
-<script setup>
-const busy = ref(false);
-
-const load = async ({page, limit, offset}) => {
-    busy.value = true;
-    
-    // run load operation
-    
-    busy.value = false
-}
-</script>
 <template>
     <VCPagination
-        :busy="busy"
         :total="100"
         :limit="10"
-        :offset="0"
-        @load="load"
+        :offset="currentOffset"
+        @load="onPageChange"
     />
 </template>
 ```
+
+Or with a unified meta object:
+
+```vue
+<VCPagination :meta="{ total: 100, limit: 10, offset: 0 }" @load="onPageChange" />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `total` | `number` | `0` | Total number of items |
+| `limit` | `number` | `0` | Items per page |
+| `offset` | `number` | `undefined` | Current offset |
+| `busy` | `boolean` | `false` | Disables page buttons when true |
+| `meta` | `PaginationMetaInput` | `undefined` | Unified object (overrides individual props) |
+| `tag` | `string` | `'ul'` | Root element tag |
+| `itemTag` | `string` | `'li'` | Page item element tag |
+| `iconTag` | `string` | `'i'` | Icon element tag |
+| `theme` | `ThemeOverride` | `undefined` | Per-instance theme override |
+
+## Theme Slots
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `root` | `vc-pagination` | Root container |
+| `item` | `vc-pagination-item` | Page item wrapper |
+| `link` | `vc-pagination-link` | Page button |
+| `linkActive` | `active` | Active page button |
+| `prevIcon` | `''` | Previous page icon class |
+| `nextIcon` | `''` | Next page icon class |
+| `firstIcon` | `''` | First page icon class |
+| `lastIcon` | `''` | Last page icon class |
 
 ## License
 

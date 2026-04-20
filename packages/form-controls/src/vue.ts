@@ -16,7 +16,7 @@ declare module '@vue/runtime-core' {
         VCFormInputCheckbox: typeof VCFormInputCheckbox,
         VCFormRangeMultiSlider: typeof VCFormRangeMultiSlider,
         VCFormSelect: typeof VCFormSelect,
-        VCFromSelectSearch: typeof VCFormSelectSearch,
+        VCFormSelectSearch: typeof VCFormSelectSearch,
         VCFormSubmit: typeof VCFormSubmit,
         VCFormTextarea: typeof VCFormTextarea,
     }

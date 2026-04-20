@@ -1,5 +1,4 @@
 export * from './list';
-export * from './list-base';
 export * from './list-header';
 export * from './list-footer';
 export * from './list-item';

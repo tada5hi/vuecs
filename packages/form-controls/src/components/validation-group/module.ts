@@ -1,80 +1,76 @@
-import type { VNodeArrayChildren, VNodeChild } from 'vue';
-import { h } from 'vue';
-import {
-    createComponentOptionsManager,
-    hasNormalizedSlot,
-    normalizeSlot,
-} from '@vuecs/core';
-import { Component, SlotName, ValidationSeverity } from '../constants';
-import type { ValidationMessagesArrayStyle } from '../type';
-import type { ValidationGroupOptions, ValidationGroupOptionsInput } from './type';
+import { useComponentTheme } from '@vuecs/core';
+import type { ThemeClassesOverride } from '@vuecs/core';
+import type { 
+    PropType, 
+    SlotsType, 
+    VNodeArrayChildren, 
+    VNodeChild, 
+} from 'vue';
+import { defineComponent, h, toRef } from 'vue';
+import { ValidationSeverity } from '../constants';
+import type { ValidationMessages, ValidationMessagesArrayStyle } from '../type';
 
-export function buildValidationGroupOptions(options: ValidationGroupOptionsInput) : ValidationGroupOptions {
-    const manager = createComponentOptionsManager<ValidationGroupOptions>({ name: Component.VALIDATION_GROUP });
+export type ValidationGroupThemeClasses = {
+    item: string;
+};
 
-    return {
-        ...options,
+const themeDefaults: ValidationGroupThemeClasses = { item: 'form-group-hint group-required' };
 
-        slotItems: options.slotItems || {},
+export const VCValidationGroup = defineComponent({
+    name: 'VCValidationGroup',
+    props: {
+        severity: { type: String as PropType<`${ValidationSeverity}`>, default: ValidationSeverity.ERROR },
+        messages: { type: [Object, Array] as PropType<ValidationMessages>, default: () => ({}) },
+        itemTag: { type: String, default: 'div' },
+        themeClass: { type: Object as PropType<ThemeClassesOverride<ValidationGroupThemeClasses>>, default: undefined },
+    },
+    slots: Object as SlotsType<{
+        default: any;
+        item: any;
+    }>,
+    setup(props, { slots }) {
+        const theme = useComponentTheme('validationGroup', toRef(props, 'themeClass'), themeDefaults);
 
-        itemClass: manager.buildOrFail({
-            key: 'itemClass',
-            value: options.itemClass,
-            alt: 'form-group-hint group-required',
-        }),
-        itemTag: manager.buildOrFail({
-            key: 'itemTag',
-            value: options.itemTag,
-            alt: 'div',
-        }),
+        return () => {
+            const resolved = theme.value;
 
-        severity: options.severity || ValidationSeverity.ERROR,
-        messages: options.messages || {},
-    };
-}
+            let errors: ValidationMessagesArrayStyle;
+            if (Array.isArray(props.messages)) {
+                errors = props.messages;
+            } else {
+                errors = [];
+                const keys = Object.keys(props.messages);
+                for (const key of keys) {
+                    errors.push({ key, value: props.messages[key] });
+                }
+            }
 
-export function buildValidationGroup(input: ValidationGroupOptionsInput) : VNodeChild {
-    const options = buildValidationGroupOptions(input);
+            if (slots.default) {
+                return slots.default({
+                    data: errors,
+                    severity: props.severity,
+                    itemClass: resolved.item,
+                    itemTag: props.itemTag,
+                });
+            }
 
-    let errors : ValidationMessagesArrayStyle;
+            const children: VNodeArrayChildren = [];
 
-    if (Array.isArray(options.messages)) {
-        errors = options.messages;
-    } else {
-        errors = [];
-        const keys = Object.keys(options.messages);
-        for (const key of keys) {
-            errors.push({
-                key,
-                value: options.messages[key],
-            });
-        }
-    }
+            for (const error of errors) {
+                if (slots.item) {
+                    children.push(slots.item({
+                        key: error.key,
+                        value: error.value,
+                        class: resolved.item,
+                        tag: props.itemTag,
+                        severity: props.severity,
+                    }));
+                } else {
+                    children.push(h(props.itemTag, { class: resolved.item || undefined }, [error.value]));
+                }
+            }
 
-    if (hasNormalizedSlot(SlotName.VALIDATION_GROUP, options.slotItems)) {
-        return normalizeSlot(SlotName.VALIDATION_GROUP, {
-            data: errors,
-            severity: options.severity,
-            itemClass: options.itemClass,
-            itemTag: options.itemTag,
-        }, options.slotItems);
-    }
-
-    const children : VNodeArrayChildren = [];
-
-    for (const error of errors) {
-        if (hasNormalizedSlot(SlotName.VALIDATION_ITEM, options.slotItems)) {
-            children.push(normalizeSlot(SlotName.VALIDATION_ITEM, {
-                key: error.key,
-                value: error.value,
-                class: options.itemClass,
-                tag: options.itemTag,
-                severity: options.severity,
-            }, options.slotItems));
-        } else {
-            children.push(h(options.itemTag, { class: options.itemClass }, [error.value]));
-        }
-    }
-
-    return children;
-}
+            return children as VNodeChild;
+        };
+    },
+});

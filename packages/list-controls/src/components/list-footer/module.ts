@@ -1,50 +1,40 @@
-import { hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
-import type { VNodeArrayChildren, VNodeChild } from 'vue';
-import { h, mergeProps } from 'vue';
-import { SlotName } from '../constants';
-import { buildListBaseSlotProps } from '../list-base';
-import { normalizeListFooterOptions } from './normalize';
-import type { ListFooterBuildOptionsInput, ListFooterSlotProps } from './type';
+import { useComponentTheme } from '@vuecs/core';
+import type { PropType, SlotsType, VNodeChild } from 'vue';
+import { defineComponent, h, toRef } from 'vue';
+import type { ThemeClassesOverride } from '@vuecs/core';
+import type { ListBaseSlotProps, ListFooterThemeClasses } from '../type';
 
-export function buildListFooter<T, M = any>(
-    input?: ListFooterBuildOptionsInput<T, M>,
-) : VNodeChild {
-    input = input || {};
-    const options = normalizeListFooterOptions(input);
+const themeDefaults: ListFooterThemeClasses = { root: 'vc-list-footer' };
 
-    let slotProps : ListFooterSlotProps<T, M>;
-    if (options.slotPropsBuilt) {
-        slotProps = options.slotProps;
-    } else {
-        slotProps = {
-            ...buildListBaseSlotProps<T, M>(options),
-            ...options.slotProps,
+export const VCListFooter = defineComponent({
+    name: 'VCListFooter',
+    props: {
+        tag: { type: String, default: 'div' },
+        themeClass: { type: Object as PropType<ThemeClassesOverride<ListFooterThemeClasses>>, default: undefined },
+        slotProps: { type: Object as PropType<ListBaseSlotProps<any>>, default: () => ({}) },
+    },
+    slots: Object as SlotsType<{
+        default?: ListBaseSlotProps<any>;
+    }>,
+    setup(props, { slots }) {
+        const theme = useComponentTheme('listFooter', toRef(props, 'themeClass'), themeDefaults);
+
+        return () => {
+            const content: VNodeChild[] = [];
+
+            if (slots.default) {
+                content.push(...slots.default(props.slotProps));
+            }
+
+            if (content.length === 0) {
+                return [];
+            }
+
+            return h(
+                props.tag,
+                { class: theme.value.root },
+                content,
+            );
         };
-    }
-
-    let children : VNodeArrayChildren = [];
-
-    if (hasNormalizedSlot(SlotName.FOOTER, options.slotItems)) {
-        children = [
-            normalizeSlot(SlotName.FOOTER, slotProps, options.slotItems),
-        ];
-    } else if (options.content) {
-        if (typeof options.content === 'function') {
-            children = [options.content(slotProps)];
-        } else {
-            children = [options.content];
-        }
-    }
-
-    if (children.length > 0) {
-        return h(
-            options.tag,
-            mergeProps({ class: options.class }, options.props),
-            [
-                children,
-            ],
-        );
-    }
-
-    return [];
-}
+    },
+});

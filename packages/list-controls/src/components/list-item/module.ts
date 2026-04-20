@@ -1,198 +1,234 @@
-import type { VNodeClass } from '@vuecs/core';
 import {
     evaluateFnOrValue,
-    hasNormalizedSlot,
     hasOwnProperty,
     isObject,
-    normalizeSlot,
+    useComponentTheme,
 } from '@vuecs/core';
+import type { ThemeClassesOverride } from '@vuecs/core';
 import { merge } from 'smob';
-import type { VNodeArrayChildren, VNodeChild } from 'vue';
-import { h, mergeProps } from 'vue';
-import { SlotName } from '../constants';
-import { buildListBaseSlotProps } from '../list-base';
-import type { ListEventFn } from '../type';
-import { normalizeListItemOptions } from './normalize';
-import type { ListItemBuildOptionsInput, ListItemChildren, ListItemSlotProps } from './type';
+import type { PropType, SlotsType, VNodeChild } from 'vue';
+import {
+    defineComponent,
+    h,
+    toRef,
+} from 'vue';
+import type {
+    ListEventFn,
+    ListItemId,
+    ListItemKey,
+    ListLoadFn,
+} from '../../type';
+import type { 
+    ListBaseSlotProps, 
+    ListItemChildren, 
+    ListItemSlotProps, 
+    ListItemThemeClasses, 
+} from '../type';
 
-function maybeWrapContent(input: VNodeChild, ctx: {
-    wrap: boolean,
-    class: VNodeClass,
-    tag: string
-}) {
-    if (!ctx.wrap) {
+const themeDefaults: ListItemThemeClasses = {
+    root: 'vc-list-item',
+    icon: '',
+    iconWrapper: '',
+    textWrapper: '',
+    actionsWrapper: '',
+    actionsExtraWrapper: '',
+};
+
+function maybeWrapContent(input: VNodeChild, wrap: boolean, tag: string, className: string) {
+    if (!wrap) {
         return input;
     }
-
-    return h(ctx.tag, { class: ctx.class }, [input]);
+    return h(tag, { class: className || undefined }, [input]);
 }
 
-export function buildListItem<T, M = any>(
-    input: ListItemBuildOptionsInput<T, M>,
-) : VNodeChild {
-    const options = normalizeListItemOptions(input);
+export const VCListItem = defineComponent({
+    name: 'VCListItem',
+    props: {
+        data: { type: null as unknown as PropType<any>, required: true },
+        index: { type: Number, default: undefined },
+        tag: { type: String, default: 'li' },
+        themeClass: { type: Object as PropType<ThemeClassesOverride<ListItemThemeClasses>>, default: undefined },
 
-    if (!options.actions && input.actionsContent) {
-        console.warn('[vuecs/list-controls] actionsContent is provided but actions is disabled. Set actions: true or remove actionsContent.');
-    }
-    if (!options.icon && input.iconClass && (Array.isArray(input.iconClass) ? input.iconClass.length > 0 : input.iconClass)) {
-        console.warn('[vuecs/list-controls] iconClass is provided but icon is disabled. Set icon: true or remove iconClass.');
-    }
-    if (!options.text && input.textContent) {
-        console.warn('[vuecs/list-controls] textContent is provided but text is disabled. Set text: true or remove textContent.');
-    }
+        // Icon options
+        icon: { type: Boolean, default: true },
+        iconTag: { type: String, default: 'i' },
+        iconWrapper: { type: Boolean, default: true },
+        iconWrapperTag: { type: String, default: 'div' },
 
-    const overrideUpdatedFn = (fn: ListEventFn<T>, item?: T) : ListEventFn<T | undefined> => {
-        if (typeof item === 'undefined') {
-            return fn(options.data);
-        }
+        // Text options
+        text: { type: Boolean, default: true },
+        textContent: {
+            type: [String, Function] as PropType<VNodeChild | ((item: any, props: ListItemSlotProps<any>) => VNodeChild)>,
+            default: undefined,
+        },
+        textPropName: { type: String, default: 'name' },
+        textWrapper: { type: Boolean, default: true },
+        textWrapperTag: { type: String, default: 'div' },
 
-        if (
-            isObject(item) &&
-            isObject(options.data)
-        ) {
-            options.data = merge(item, options.data) as T;
-        } else {
-            options.data = item;
-        }
+        // Actions options
+        actions: { type: Boolean, default: true },
+        actionsWrapper: { type: Boolean, default: true },
+        actionsWrapperTag: { type: String, default: 'div' },
 
-        return fn(options.data);
-    };
+        // Extra actions options
+        actionsExtraWrapper: { type: Boolean, default: true },
+        actionsExtraWrapperTag: { type: String, default: 'div' },
 
-    let slotProps : ListItemSlotProps<T>;
-    if (options.slotPropsBuilt) {
-        const {
-            updated,
-            deleted,
-            ...original
-        } = options.slotProps;
+        // Passed from parent list
+        busy: { type: Boolean, default: false },
+        total: { type: Number, default: undefined },
+        load: { type: Function as PropType<ListLoadFn>, default: undefined },
+        meta: { type: Object, default: undefined },
+        itemId: { type: Function as PropType<ListItemId<any>>, default: undefined },
+        itemKey: { type: [String, Function] as PropType<ListItemKey<any>>, default: undefined },
+        onCreated: { type: Function as PropType<ListEventFn<any>>, default: undefined },
+        onDeleted: { type: Function as PropType<ListEventFn<any>>, default: undefined },
+        onUpdated: { type: Function as PropType<ListEventFn<any>>, default: undefined },
 
-        slotProps = {
-            ...original,
-            data: options.data,
-            index: options.index,
-        };
+        // Pre-built slot props from parent (internal)
+        slotProps: { type: Object as PropType<ListBaseSlotProps<any>>, default: undefined },
+    },
+    slots: Object as SlotsType<{
+        default?: ListItemSlotProps<any>;
+        actions?: ListItemSlotProps<any>;
+        actionsExtra?: ListItemSlotProps<any>;
+    }>,
+    setup(props, { slots }) {
+        const theme = useComponentTheme('listItem', toRef(props, 'themeClass'), themeDefaults);
 
-        if (updated) {
-            slotProps.updated = (item?: T) => overrideUpdatedFn(updated, item);
-        }
+        return () => {
+            let itemData = props.data;
 
-        if (deleted) {
-            slotProps.deleted = (item?: T) => deleted(item || options.data);
-        }
-    } else {
-        const {
-            updated,
-            deleted,
-            ...original
-        } = buildListBaseSlotProps<T, M>({
-            ...options,
-            data: options.data,
-        });
+            const overrideUpdatedFn = (fn: ListEventFn<any>, item?: any): any => {
+                if (typeof item === 'undefined') {
+                    return fn(itemData);
+                }
 
-        slotProps = {
-            ...original,
-            data: options.data,
-            index: options.index,
-        };
+                if (isObject(item) && isObject(itemData)) {
+                    itemData = merge(item, itemData);
+                } else {
+                    itemData = item;
+                }
 
-        if (updated) {
-            slotProps.updated = (item?: T) => overrideUpdatedFn(updated, item);
-        }
+                return fn(itemData);
+            };
 
-        if (deleted) {
-            slotProps.deleted = (item?: T) => deleted(item || options.data);
-        }
-    }
+            // Build slot props
+            let slotPropsResolved: ListItemSlotProps<any>;
+            if (props.slotProps) {
+                const {
+                    updated, 
+                    deleted, 
+                    ...original 
+                } = props.slotProps;
+                slotPropsResolved = {
+                    ...original,
+                    data: itemData,
+                    index: props.index,
+                };
+                if (updated) {
+                    slotPropsResolved.updated = (item?: any) => overrideUpdatedFn(updated, item);
+                }
+                if (deleted) {
+                    slotPropsResolved.deleted = (item?: any) => deleted(item || itemData);
+                }
+            } else {
+                slotPropsResolved = {
+                    data: itemData,
+                    index: props.index,
+                    ...(props.busy ? { busy: props.busy } : {}),
+                    ...(props.meta ? { meta: props.meta } : {}),
+                    ...(props.total ? { total: props.total } : {}),
+                    ...(props.load ? { load: props.load } : {}),
+                };
+                if (props.onUpdated) {
+                    const fn = props.onUpdated;
+                    slotPropsResolved.updated = (item?: any) => overrideUpdatedFn(fn, item);
+                }
+                if (props.onDeleted) {
+                    const fn = props.onDeleted;
+                    slotPropsResolved.deleted = (item?: any) => fn(item || itemData);
+                }
+            }
 
-    const renderContent = (content?: VNodeChild) : VNodeChild => h(
-        options.tag,
-        mergeProps({ key: options.index }, { class: options.class }, options.props),
-        [content || []],
-    );
+            const children: ListItemChildren = {};
+            const resolved = theme.value;
 
-    const children : ListItemChildren = {};
+            if (slots.default) {
+                children.slot = slots.default(slotPropsResolved);
+            } else {
+                if (props.icon) {
+                    children.icon = maybeWrapContent(
+                        h(props.iconTag, { class: resolved.icon || undefined }),
+                        props.iconWrapper,
+                        props.iconWrapperTag,
+                        resolved.iconWrapper,
+                    );
+                }
 
-    if (hasNormalizedSlot(SlotName.ITEM_DEFAULT, options.slotItems)) {
-        children.slot = normalizeSlot(SlotName.ITEM_DEFAULT, slotProps, options.slotItems);
-    } else if (hasNormalizedSlot(SlotName.ITEM, options.slotItems)) {
-        children.slot = normalizeSlot(SlotName.ITEM, slotProps, options.slotItems);
-    } else {
-        if (options.icon) {
-            children.icon = maybeWrapContent(
-                h(options.iconTag, mergeProps({ class: options.iconClass }, options.iconProps)),
-                {
-                    wrap: options.iconWrapper,
-                    tag: options.iconWrapperTag,
-                    class: options.iconWrapperClass,
-                },
+                if (props.text) {
+                    let textNode: VNodeChild | undefined;
+
+                    if (props.textContent) {
+                        textNode = evaluateFnOrValue(props.textContent, itemData, slotPropsResolved);
+                    } else if (
+                        props.textPropName &&
+                        isObject(itemData) &&
+                        hasOwnProperty(itemData, props.textPropName)
+                    ) {
+                        textNode = itemData[props.textPropName] as VNodeChild;
+                    }
+
+                    if (textNode) {
+                        children.text = maybeWrapContent(
+                            textNode,
+                            props.textWrapper,
+                            props.textWrapperTag,
+                            resolved.textWrapper,
+                        );
+                    }
+                }
+
+                if (props.actions) {
+                    let actionsNode: VNodeChild | undefined;
+
+                    if (slots.actions) {
+                        actionsNode = slots.actions(slotPropsResolved);
+                    }
+
+                    if (actionsNode) {
+                        children.actions = maybeWrapContent(
+                            actionsNode,
+                            props.actionsWrapper,
+                            props.actionsWrapperTag,
+                            resolved.actionsWrapper,
+                        );
+                    }
+
+                    if (slots.actionsExtra) {
+                        const actionsExtra = slots.actionsExtra(slotPropsResolved);
+                        children.actionsExtra = maybeWrapContent(
+                            actionsExtra,
+                            props.actionsExtraWrapper,
+                            props.actionsExtraWrapperTag,
+                            resolved.actionsExtraWrapper,
+                        );
+                    }
+                }
+            }
+
+            const content: VNodeChild = children.slot || [
+                ...(children.icon ? [children.icon] : []),
+                ...(children.text ? [children.text] : []),
+                ...(children.actions ? [children.actions] : []),
+                ...(children.actionsExtra ? [children.actionsExtra] : []),
+            ];
+
+            return h(
+                props.tag,
+                { class: resolved.root },
+                [content],
             );
-        }
-
-        if (options.text) {
-            let text: VNodeChild | undefined;
-
-            if (options.textContent) {
-                text = evaluateFnOrValue(options.textContent, options.data, slotProps);
-            } else if (
-                options.textPropName &&
-                isObject(options.data) &&
-                hasOwnProperty(options.data, options.textPropName)
-            ) {
-                text = options.data[options.textPropName] as VNodeChild;
-            }
-
-            if (text) {
-                children.text = maybeWrapContent(text, {
-                    wrap: options.textWrapper,
-                    tag: options.textWrapperTag,
-                    class: options.textWrapperClass,
-                });
-            }
-        }
-
-        if (options.actions) {
-            let actions : VNodeChild | undefined;
-
-            if (hasNormalizedSlot(SlotName.ITEM_ACTIONS, options.slotItems)) {
-                actions = normalizeSlot(SlotName.ITEM_ACTIONS, slotProps, options.slotItems);
-            } else if (options.actionsContent) {
-                actions = evaluateFnOrValue(options.actionsContent, options.data, slotProps);
-            }
-
-            if (actions) {
-                children.actions = maybeWrapContent(actions, {
-                    wrap: options.actionsWrapper,
-                    tag: options.actionsWrapperTag,
-                    class: options.actionsWrapperClass,
-                });
-            }
-
-            if (hasNormalizedSlot(SlotName.ITEM_ACTIONS_EXTRA, options.slotItems)) {
-                const actionsExtra = normalizeSlot(SlotName.ITEM_ACTIONS_EXTRA, slotProps, options.slotItems);
-                children.actionsExtra = maybeWrapContent(actionsExtra, {
-                    wrap: options.actionsExtraWrapper,
-                    tag: options.actionsExtraWrapperTag,
-                    class: options.actionsExtraWrapperClass,
-                });
-            }
-        }
-    }
-
-    if (options.content) {
-        return renderContent(evaluateFnOrValue(options.content, options.data, slotProps, children));
-    }
-
-    if (children.slot) {
-        return renderContent(children.slot);
-    }
-
-    const content : VNodeChild = [
-        ...(children.icon ? [children.icon] : []) as VNodeArrayChildren,
-        ...(children.text ? [children.text] : []) as VNodeArrayChildren,
-        ...(children.actions ? [children.actions] : []) as VNodeArrayChildren,
-        ...(children.actionsExtra ? [children.actionsExtra] : []) as VNodeArrayChildren,
-    ];
-
-    return renderContent(content);
-}
+        };
+    },
+});

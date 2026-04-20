@@ -1,11 +1,5 @@
-/*
- * Copyright (c) 2024.
- * Author Peter Placzek (tada5hi)
- * For the full copyright and license information,
- * view the LICENSE file that was distributed with this source code.
- */
-
-import { hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
+import { hasNormalizedSlot, normalizeSlot, useComponentTheme } from '@vuecs/core';
+import type { ThemeClassesOverride } from '@vuecs/core';
 import type { LinkProperties } from '@vuecs/link';
 import { VCLink } from '@vuecs/link';
 import type { PropType, VNodeChild } from 'vue';
@@ -18,25 +12,42 @@ import {
 } from 'vue';
 import { injectNavigationManager } from '../../manager';
 import type { NavigationItemNormalized } from '../../types';
-import { buildComponentOptions, isAbsoluteURL } from '../../helpers';
+import type { NavigationThemeClasses } from '../../helpers/component/types';
+import { isAbsoluteURL } from '../../helpers';
 import { ElementType, SlotName } from '../../constants';
 
+const themeDefaults: NavigationThemeClasses = {
+    group: 'vc-nav-items',
+    item: 'vc-nav-item',
+    itemNested: 'vc-nav-item-nested',
+    separator: 'vc-nav-separator',
+    link: 'vc-nav-link',
+    linkRoot: 'vc-nav-link-root',
+    linkIcon: 'vc-nav-link-icon',
+    linkText: 'vc-nav-link-text',
+};
+
 export const VCNavItem = defineComponent({
+    name: 'VCNavItem',
     props: {
         data: {
             type: Object as PropType<NavigationItemNormalized>,
             required: true,
         },
+        themeClass: {
+            type: Object as PropType<ThemeClassesOverride<NavigationThemeClasses>>,
+            default: undefined,
+        },
     },
     setup(props, { slots }) {
         const itemsNode = resolveComponent('VCNavItems');
 
-        const options = buildComponentOptions();
+        const theme = useComponentTheme('navigation', toRef(props, 'themeClass'), themeDefaults);
         const manager = injectNavigationManager();
 
         const data = toRef(props, 'data');
         const hasChildren = computed(() => data.value.children &&
-                data.value.children.length > 0);
+            data.value.children.length > 0);
 
         const select = async (
             value: NavigationItemNormalized,
@@ -51,7 +62,9 @@ export const VCNavItem = defineComponent({
         };
 
         return () => {
-            const buildItem = () : VNodeChild => {
+            const resolved = theme.value;
+
+            const buildItem = (): VNodeChild => {
                 // type: separator
                 if (data.value.type === ElementType.SEPARATOR) {
                     const hasSlot = hasNormalizedSlot(SlotName.SEPARATOR, slots);
@@ -59,10 +72,10 @@ export const VCNavItem = defineComponent({
                         return normalizeSlot(SlotName.SEPARATOR, { data: data.value }, slots);
                     }
 
-                    return h(options.separatorTag, { class: options.separatorClass }, data.value.name);
+                    return h('div', { class: resolved.separator || undefined }, data.value.name);
                 }
 
-                // type: group
+                // type: link (no children)
                 if (!hasChildren.value) {
                     const hasSlot = hasNormalizedSlot(SlotName.LINK, slots);
                     if (hasSlot) {
@@ -72,7 +85,8 @@ export const VCNavItem = defineComponent({
                             isActive: data.value.active,
                         }, slots);
                     }
-                    const linkProps : LinkProperties = {
+
+                    const linkProps: LinkProperties = {
                         active: data.value.active,
                         disabled: false,
                         prefetch: true,
@@ -81,7 +95,7 @@ export const VCNavItem = defineComponent({
                     if (data.value.url) {
                         if (
                             isAbsoluteURL(data.value.url) ||
-                                        data.value.url.startsWith('#')
+                            data.value.url.startsWith('#')
                         ) {
                             linkProps.href = data.value.url;
                             if (data.value.urlTarget) {
@@ -93,15 +107,12 @@ export const VCNavItem = defineComponent({
                     }
 
                     return h(VCLink, {
-                        class: [
-                            options.linkClass,
-                        ],
+                        class: [resolved.link],
                         ...linkProps,
                         onClicked() {
                             if (!data.value.url) {
                                 return select.call(null, data.value);
                             }
-
                             return undefined;
                         },
                         onClick() {
@@ -110,22 +121,18 @@ export const VCNavItem = defineComponent({
                     }, {
                         default: () => [
                             ...(data.value.icon ?
-                                [h(
-                                    options.linkIconTag,
-                                    { class: options.linkIconClass },
-                                    [
-                                        h('i', { class: data.value.icon }),
-                                    ],
-                                )] :
-                                []
-                            ),
-                            h(options.linkTextTag, { class: options.linkTextClass }, [
+                                [h('div', { class: resolved.linkIcon || undefined }, [
+                                    h('i', { class: data.value.icon }),
+                                ])] :
+                                []),
+                            h('div', { class: resolved.linkText || undefined }, [
                                 data.value.name,
                             ]),
                         ],
                     });
                 }
 
+                // type: group with children
                 if (hasNormalizedSlot(SlotName.SUB, slots)) {
                     return normalizeSlot(SlotName.SUB, {
                         data: data.value,
@@ -134,7 +141,7 @@ export const VCNavItem = defineComponent({
                     }, slots);
                 }
 
-                let title : VNodeChild;
+                let title: VNodeChild;
                 if (hasNormalizedSlot(SlotName.SUB_TITLE, slots)) {
                     title = normalizeSlot(SlotName.SUB_TITLE, {
                         data: data.value,
@@ -143,24 +150,18 @@ export const VCNavItem = defineComponent({
                     });
                 } else {
                     title = h('div', {
-                        class: options.linkClass,
+                        class: resolved.link,
                         onClick($event: any) {
                             $event.preventDefault();
-
                             return toggle(data.value);
                         },
                     }, [
                         ...(data.value.icon ?
-                            [h(
-                                options.linkIconTag,
-                                { class: options.linkIconClass },
-                                [
-                                    h('i', { class: data.value.icon }),
-                                ],
-                            )] :
-                            []
-                        ),
-                        h(options.linkTextTag, { class: options.linkTextClass }, [
+                            [h('div', { class: resolved.linkIcon || undefined }, [
+                                h('i', { class: data.value.icon }),
+                            ])] :
+                            []),
+                        h('div', { class: resolved.linkText || undefined }, [
                             data.value.name,
                         ]),
                     ]);
@@ -170,8 +171,7 @@ export const VCNavItem = defineComponent({
                     return title;
                 }
 
-                let vNodes : VNodeChild;
-
+                let vNodes: VNodeChild;
                 if (hasNormalizedSlot(SlotName.SUB_ITEMS, slots)) {
                     vNodes = normalizeSlot(SlotName.SUB_ITEMS, {
                         data: data.value,
@@ -185,21 +185,16 @@ export const VCNavItem = defineComponent({
                     });
                 }
 
-                return [
-                    title,
-                    vNodes,
-                ];
+                return [title, vNodes];
             };
 
-            return h(options.itemTag, {
+            return h('li', {
                 class: [
-                    options.itemClass,
-                    ...(hasChildren.value ? [options.itemNestedClass] : []),
+                    resolved.item,
+                    ...(hasChildren.value ? [resolved.itemNested] : []),
                     { active: data.value.active || data.value.displayChildren },
                 ],
-            }, [
-                buildItem(),
-            ]);
+            }, [buildItem()]);
         };
     },
 });

@@ -5,8 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { applyStoreManagerOptions, installStoreManager, pickComponentsOptions } from '@vuecs/core';
-import type { StoreManagerOptions } from '@vuecs/core';
+import vuecs from '@vuecs/core';
 import bootstrapV5 from '@vuecs/preset-bootstrap-v5';
 import fontAwesome from '@vuecs/preset-font-awesome';
 
@@ -15,8 +14,6 @@ import installFormControl from '@vuecs/form-controls';
 import installGravatar from '@vuecs/gravatar';
 import installLink from '@vuecs/link';
 import { install as installNavigation } from '@vuecs/navigation';
-// import '@vuecs/navigation/../dist/style.css';
-// import '@vuecs/pagination/../dist/style.css';
 import '@vuecs/list-controls/../dist/style.css';
 import installPagination from '@vuecs/pagination';
 import installTimeago from '@vuecs/timeago';
@@ -25,20 +22,7 @@ import { defineNuxtPlugin } from '#app';
 import { findNavigationItems } from '~/config/layout';
 
 export default defineNuxtPlugin((ctx) => {
-    const baseOptions : StoreManagerOptions = {
-        presets: {
-            bootstrapV5: pickComponentsOptions(bootstrapV5, {
-                exclude: [
-                    'listPagination',
-                    'pagination',
-                ],
-            }),
-            fontAwesome,
-        },
-    };
-
-    const storeManager = installStoreManager(ctx.vueApp);
-    applyStoreManagerOptions(storeManager, baseOptions);
+    ctx.vueApp.use(vuecs, { themes: [bootstrapV5(), fontAwesome()] });
 
     ctx.vueApp.use(installCountdown);
     ctx.vueApp.use(installFormControl);

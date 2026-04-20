@@ -4,107 +4,164 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/Tada5hi/vuecs/badge.svg)](https://snyk.io/test/github/Tada5hi/vuecs)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
 
-## What is it?
-**Vuecs** is a collection of packages containing minimal components.
-
+A Vue 3 component library providing reusable UI components with TypeScript support, CSS extraction, and composable theming via presets.
 
 **Table of Contents**
 
 - [Packages](#packages)
-  - [Core](#core-)
-  - [Countdown](#countdown-)
-  - [Form Controls](#form-controls-)
-  - [Gravatar](#gravatar-)
-  - [Link](#link-)
-  - [List Controls](#list-controls-)
-  - [Navigation](#navigation-)
-  - [Pagination](#pagination-)
-  - [Timeago](#timeago-)
+- [Contributing](#contributing)
 - [License](#license)
 
 ## Packages
-The repository contains the following packages:
 
-### Core 🌱
+### `@vuecs/core`
 
-**`@vuecs/core`**
+[![npm version](https://badge.fury.io/js/@vuecs%2Fcore.svg)](https://badge.fury.io/js/@vuecs%2Fcore)
 
-This package provides basic functionalities like building component options depending on the configuration.
-In addition, presets and defaults for these options can be stored in a global store.
+Theme resolution system, utilities, and component infrastructure. Provides `installThemeManager`, `useComponentTheme`, `extend()`, and preset composition.
 
-[Documentation](packages/core/README.md)
+```bash
+npm install @vuecs/core
+```
 
-### Countdown ⏰
+```typescript
+import vuecs, { extend } from '@vuecs/core';
+import bootstrapV5 from '@vuecs/preset-bootstrap-v5';
+import fontAwesome from '@vuecs/preset-font-awesome';
 
-**`@vuecs/countdown`**
+app.use(vuecs, {
+    themes: [bootstrapV5(), fontAwesome()],
+    overrides: {
+        elements: { listItem: { root: extend('border-bottom') } },
+    },
+});
+```
 
-This package provides a customizable countdown timer for Vue3 web applications. 
-It offers a range of options for customization, including start and end times, step length, and more.
-Ideal for time-based events such as auctions, sales, or promotions.
+[Full documentation](./packages/core/README.md)
 
-[Documentation](packages/countdown/README.md)
+### `@vuecs/list-controls`
 
-### Form Controls 📜
+[![npm version](https://badge.fury.io/js/@vuecs%2Flist-controls.svg)](https://badge.fury.io/js/@vuecs%2Flist-controls)
 
-**`@vuecs/form-controls`**
+List display components with loading, empty state, and item event handling (created/updated/deleted).
 
-This package provides a set of customizable form controls, including input-text, input-checkbox, textarea,
-and more, that can be used in vanilla or hyperscript syntax.
+```bash
+npm install @vuecs/list-controls
+```
 
-[Documentation](packages/form-controls/README.md)
+```vue
+<VCList :data="items" :busy="loading" :total="total">
+    <template #item="{ data, deleted }">
+        <span>{{ data.name }}</span>
+        <button @click="deleted(data)">Remove</button>
+    </template>
+</VCList>
+```
 
-### Gravatar 📷
+[Full documentation](./packages/list-controls/README.md)
 
-**`@vuecs/gravatar`**
+### `@vuecs/form-controls`
 
-This package provides an easy way to integrate Gravatar avatars in a Vue3 web applications.
-This component can be added to user profiles, comments, or other parts of a web applications 
-with minimal effort.
+[![npm version](https://badge.fury.io/js/@vuecs%2Fform-controls.svg)](https://badge.fury.io/js/@vuecs%2Fform-controls)
 
-[Documentation](packages/gravatar/README.md)
+Form input components with validation support: input, checkbox, select, textarea, submit, searchable select, and range slider.
 
-### Link 🔗
+```bash
+npm install @vuecs/form-controls
+```
 
-**`@vuecs/link`**
+```vue
+<VCFormGroup label-content="Email" :validation-messages="errors">
+    <VCFormInput v-model="form.email" type="email" />
+</VCFormGroup>
+```
 
-This package provides an easy way to use nuxt or vue-router links in a Vue3 web applications.
+[Full documentation](./packages/form-controls/README.md)
 
-[Documentation](packages/link/README.md)
+### `@vuecs/pagination`
 
-### List Controls 📋
+[![npm version](https://badge.fury.io/js/@vuecs%2Fpagination.svg)](https://badge.fury.io/js/@vuecs%2Fpagination)
 
-**`@vuecs/list-controls`**
+Pagination component with page calculation utilities and icon support via presets.
 
-This package provides a set of customizable list controls, that can be used in vanilla or hyperscript syntax.
+```bash
+npm install @vuecs/pagination
+```
 
-[Documentation](packages/list-controls/README.md)
+```vue
+<VCPagination :total="100" :limit="10" :offset="0" @load="onPageChange" />
+```
 
-### Navigation 🧭
+[Full documentation](./packages/pagination/README.md)
 
-**`@vuecs/navgiation`**
+### `@vuecs/navigation`
 
-A package containing basic components, to build multi level navigation menus.
+[![npm version](https://badge.fury.io/js/@vuecs%2Fnavigation.svg)](https://badge.fury.io/js/@vuecs%2Fnavigation)
 
-[Documentation](packages/navigation/README.md)
+Multi-level navigation with `NavigationManager`, path-based matching, and vue-router integration.
 
-### Pagination 📖
+```bash
+npm install @vuecs/navigation
+```
 
-**`@vuecs/pagination`**
+[Full documentation](./packages/navigation/README.md)
 
-This library provides an easy way to paginate large datasets by providing a range
-of customization options, including the number of items per page, 
-the number of visible page links, 
-and the layout of the pagination controls.
+### `@vuecs/countdown`
 
-[Documentation](packages/pagination/README.md)
+[![npm version](https://badge.fury.io/js/@vuecs%2Fcountdown.svg)](https://badge.fury.io/js/@vuecs%2Fcountdown)
 
-### Timeago ⏰
+Countdown timer component with auto-start, visibility handling, and scoped slot for custom display.
 
-**`@vuecs/timeago`**
+```bash
+npm install @vuecs/countdown
+```
 
-A package containing a timeago component.
+[Full documentation](./packages/countdown/README.md)
 
-[Documentation](packages/timeago/README.md)
+### `@vuecs/gravatar`
+
+[![npm version](https://badge.fury.io/js/@vuecs%2Fgravatar.svg)](https://badge.fury.io/js/@vuecs%2Fgravatar)
+
+Gravatar avatar component.
+
+```bash
+npm install @vuecs/gravatar
+```
+
+[Full documentation](./packages/gravatar/README.md)
+
+### `@vuecs/link`
+
+[![npm version](https://badge.fury.io/js/@vuecs%2Flink.svg)](https://badge.fury.io/js/@vuecs%2Flink)
+
+Router-aware link component with automatic detection of vue-router or Nuxt.
+
+```bash
+npm install @vuecs/link
+```
+
+[Full documentation](./packages/link/README.md)
+
+### `@vuecs/timeago`
+
+[![npm version](https://badge.fury.io/js/@vuecs%2Ftimeago.svg)](https://badge.fury.io/js/@vuecs%2Ftimeago)
+
+Relative time display component with locale support and auto-update.
+
+```bash
+npm install @vuecs/timeago
+```
+
+[Full documentation](./packages/timeago/README.md)
+
+## Contributing
+
+```bash
+npm ci
+npm run build
+npm run test
+npm run lint
+```
 
 ## License
 

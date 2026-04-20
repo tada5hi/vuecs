@@ -1,5 +1,3 @@
-type Options = {};
+import type { ThemeManagerOptions } from '@vuecs/core';
 
-export type {
-    Options,
-};
+export type Options = ThemeManagerOptions;

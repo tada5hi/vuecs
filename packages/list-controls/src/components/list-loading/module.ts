@@ -1,53 +1,37 @@
-import { hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
-import type { VNodeChild } from 'vue';
-import { h, mergeProps } from 'vue';
-import { SlotName } from '../constants';
-import { buildListBaseSlotProps } from '../list-base';
-import { normalizeListLoadingOptions } from './normalize';
-import type { ListLoadingBuildOptionsInput, ListLoadingSlotProps } from './type';
+import { useComponentTheme } from '@vuecs/core';
+import type { PropType, SlotsType } from 'vue';
+import { defineComponent, h, toRef } from 'vue';
+import type { ThemeClassesOverride } from '@vuecs/core';
+import type { ListBaseSlotProps, ListLoadingThemeClasses } from '../type';
 
-export function buildListLoading<T, M = any>(
-    input?: ListLoadingBuildOptionsInput<T, M>,
-) : VNodeChild {
-    input = input || {};
+const themeDefaults: ListLoadingThemeClasses = { root: 'vc-list-loading' };
 
-    const options = normalizeListLoadingOptions(input);
+export const VCListLoading = defineComponent({
+    name: 'VCListLoading',
+    props: {
+        tag: { type: String, default: 'div' },
+        busy: { type: Boolean, default: false },
+        themeClass: { type: Object as PropType<ThemeClassesOverride<ListLoadingThemeClasses>>, default: undefined },
+        slotProps: { type: Object as PropType<ListBaseSlotProps<any>>, default: () => ({}) },
+    },
+    slots: Object as SlotsType<{
+        default?: ListBaseSlotProps<any>;
+    }>,
+    setup(props, { slots }) {
+        const theme = useComponentTheme('listLoading', toRef(props, 'themeClass'), themeDefaults);
 
-    let slotProps : ListLoadingSlotProps<T, M>;
-    if (options.slotPropsBuilt) {
-        slotProps = options.slotProps;
-    } else {
-        slotProps = {
-            ...buildListBaseSlotProps<T, M>(options),
-            ...options.slotProps,
-        };
-    }
+        return () => {
+            if (!props.busy) {
+                return [];
+            }
 
-    if (!options.busy) {
-        return [];
-    }
+            const content = slots.default ? slots.default(props.slotProps) : [];
 
-    let content : VNodeChild | undefined;
-
-    if (hasNormalizedSlot(SlotName.LOADING, options.slotItems)) {
-        content = normalizeSlot(SlotName.LOADING, slotProps, options.slotItems);
-    } if (options.content) {
-        if (typeof options.content === 'function') {
-            content = [options.content(slotProps)];
-        } else {
-            content = [options.content];
-        }
-    }
-
-    if (content) {
-        return h(
-            options.tag,
-            mergeProps({ class: options.class }, options.props),
-            [
+            return h(
+                props.tag,
+                { class: theme.value.root },
                 content,
-            ],
-        );
-    }
-
-    return [];
-}
+            );
+        };
+    },
+});

@@ -9,14 +9,9 @@
             "types": "./dist/index.d.ts",
             "import": "./dist/index.mjs"
         },
-        "./core": {
-            "types": "./core/index.d.ts",
-            "import": "./core/index.mjs"
-        },
         "./dist/style.css": "./dist/style.css"
     },
     "files": [
-        "core",
         "dist"
     ],
     "keywords": [

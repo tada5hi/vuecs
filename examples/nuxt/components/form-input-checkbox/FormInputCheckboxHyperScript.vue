@@ -7,31 +7,31 @@
 
 <script lang="ts">
 import { useTranslationsForBaseValidation } from '@ilingo/vuelidate';
-import { buildFormGroup, buildFormInputCheckbox } from '@vuecs/form-controls';
+import { VCFormGroup, VCFormInputCheckbox } from '@vuecs/form-controls';
 import { required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 import {
     defineComponent,
+    h,
     reactive,
 } from 'vue';
 
 export default defineComponent({
     setup() {
-        const form = reactive({ text: null });
+        const form = reactive({ text: null as boolean | null });
 
         const $v = useVuelidate({ text: { required } }, form);
 
         const validationMessages = useTranslationsForBaseValidation($v.value.text);
 
-        return () => buildFormGroup({
+        return () => h(VCFormGroup, {
             label: true,
             labelContent: 'Label',
             validationMessages: validationMessages.value,
-            content: buildFormInputCheckbox({
-                value: form.text,
-                onChange(input) {
-                    form.text = input;
-                },
+        }, {
+            default: () => h(VCFormInputCheckbox, {
+                modelValue: form.text,
+                'onUpdate:modelValue': (input: boolean) => { form.text = input; },
             }),
         });
     },

@@ -1,9 +1,25 @@
+import { useComponentTheme } from '@vuecs/core';
+import type { ThemeClassesOverride } from '@vuecs/core';
 import md5 from 'md5';
-import { computed, defineComponent, h } from 'vue';
+import type { PropType } from 'vue';
+import { 
+    computed, 
+    defineComponent, 
+    h, 
+    toRef, 
+} from 'vue';
+
+export type GravatarThemeClasses = {
+    root: string;
+};
+
+const themeDefaults: GravatarThemeClasses = { root: '' };
 
 export const VCGravatar = defineComponent({
+    name: 'VCGravatar',
     inheritAttrs: false,
     props: {
+        themeClass: { type: Object as PropType<ThemeClassesOverride<GravatarThemeClasses>>, default: undefined },
         email: {
             type: String,
             default: '',
@@ -38,6 +54,8 @@ export const VCGravatar = defineComponent({
         },
     },
     setup(props, ctx) {
+        const theme = useComponentTheme('gravatar', toRef(props, 'themeClass'), themeDefaults);
+
         const url = computed(() => {
             const protocol = props.protocol.slice(-1) === ':' ?
                 props.protocol :
@@ -55,6 +73,7 @@ export const VCGravatar = defineComponent({
         return () => h('img', {
             src: url.value,
             alt: props.alt,
+            class: theme.value.root || undefined,
             ...ctx.attrs,
         });
     },

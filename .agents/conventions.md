@@ -34,6 +34,12 @@ npm run lint:fix      # Auto-fix style issues
 - Strict mode is not enabled at root level
 - Type declarations generated via `vue-tsc`
 
+## Code Organization
+
+- **`types.ts` files** contain only `type` and `interface` declarations — no `const`, `enum`, or runtime values
+- **`constants.ts` files** contain `const`, `enum`, and other runtime value exports
+- **Object type checks**: Always use the `isObject()` helper from `@vuecs/core/src/utils/object.ts`. Never use inline `typeof x === 'object' && x !== null` checks
+
 ## Build
 
 - **tsdown** for ESM-only bundling
@@ -60,7 +66,7 @@ Two workflows in `.github/workflows/`:
 
 ## Adding a New Package
 
-1. Create `packages/<name>/` with `src/index.ts`, `package.json`, `rollup.config.mjs`
-2. Follow the Vue plugin export pattern (see [architecture.md](architecture.md))
+1. Create `packages/<name>/` with `src/index.ts`, `package.json`, `tsdown.config.ts`
+2. Follow the Vue plugin export pattern — install function calls `installThemeManager()` and registers components (see [architecture.md](architecture.md))
 3. Add entry to `release-please-config.json` and `.release-please-manifest.json`
-4. If it depends on `@vuecs/core`, consider adding a `core/` re-export subdirectory
+4. Add `@vuecs/core` as both `devDependencies` and `peerDependencies` if the package uses the theme system

@@ -1,50 +1,44 @@
-import { hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
-import type { VNodeArrayChildren, VNodeChild } from 'vue';
-import { h, mergeProps } from 'vue';
-import { SlotName } from '../constants';
-import { buildListBaseSlotProps } from '../list-base';
-import { normalizeListHeaderOptions } from './normalize';
-import type { ListHeaderBuildOptionsInput, ListHeaderSlotProps } from './type';
+import { useComponentTheme } from '@vuecs/core';
+import type { PropType, SlotsType, VNodeChild } from 'vue';
+import {
+    defineComponent,
+    h,
+    toRef,
+} from 'vue';
+import type { ThemeClassesOverride } from '@vuecs/core';
+import type { ListBaseSlotProps, ListHeaderThemeClasses } from '../type';
 
-export function buildListHeader<T, M = any>(
-    input?: ListHeaderBuildOptionsInput<T, M>,
-) : VNodeChild {
-    input = input || {};
-    const options = normalizeListHeaderOptions(input);
+const themeDefaults: ListHeaderThemeClasses = { root: 'vc-list-header' };
 
-    let slotProps : ListHeaderSlotProps<T, M>;
-    if (options.slotPropsBuilt) {
-        slotProps = options.slotProps;
-    } else {
-        slotProps = {
-            ...buildListBaseSlotProps<T, M>(options),
-            ...options.slotProps,
-        };
-    }
+export const VCListHeader = defineComponent({
+    name: 'VCListHeader',
+    props: {
+        tag: { type: String, default: 'div' },
+        themeClass: { type: Object as PropType<ThemeClassesOverride<ListHeaderThemeClasses>>, default: undefined },
+        slotProps: { type: Object as PropType<ListBaseSlotProps<any>>, default: () => ({}) },
+    },
+    slots: Object as SlotsType<{
+        default?: ListBaseSlotProps<any>;
+    }>,
+    setup(props, { slots }) {
+        const theme = useComponentTheme('listHeader', toRef(props, 'themeClass'), themeDefaults);
 
-    let content : VNodeArrayChildren = [];
+        return () => {
+            const content: VNodeChild[] = [];
 
-    if (hasNormalizedSlot(SlotName.HEADER, options.slotItems)) {
-        content = [
-            normalizeSlot(SlotName.HEADER, slotProps, options.slotItems),
-        ];
-    } else if (options.content) {
-        if (typeof options.content === 'function') {
-            content = [options.content(slotProps)];
-        } else {
-            content = [options.content];
-        }
-    }
+            if (slots.default) {
+                content.push(...slots.default(props.slotProps));
+            }
 
-    if (content.length > 0) {
-        return h(
-            options.tag,
-            mergeProps({ class: options.class }, options.props),
-            [
+            if (content.length === 0) {
+                return [];
+            }
+
+            return h(
+                props.tag,
+                { class: theme.value.root },
                 content,
-            ],
-        );
-    }
-
-    return [];
-}
+            );
+        };
+    },
+});

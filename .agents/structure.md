@@ -5,14 +5,14 @@
 ```
 vuecs/
   packages/           # Published npm packages (npm workspaces)
-    core/             # @vuecs/core — shared store, utilities, types
+    core/             # @vuecs/core — theme system, utilities, types
     countdown/        # @vuecs/countdown
-    form-controls/    # @vuecs/form-controls (has core/ re-export subpath)
+    form-controls/    # @vuecs/form-controls
     gravatar/         # @vuecs/gravatar
     link/             # @vuecs/link
-    list-controls/    # @vuecs/list-controls (has core/ re-export subpath)
-    navigation/       # @vuecs/navigation (has core/ re-export subpath)
-    pagination/       # @vuecs/pagination (has core/ re-export subpath)
+    list-controls/    # @vuecs/list-controls
+    navigation/       # @vuecs/navigation
+    pagination/       # @vuecs/pagination
     preset-bootstrap-v4/
     preset-bootstrap-v5/
     preset-font-awesome/
@@ -33,31 +33,41 @@ packages/<name>/
   src/
     index.ts          # Entry point — exports components, types, and Vue plugin
     components/       # Vue components (.ts render functions or .vue SFCs)
-    type.ts / types.ts
-  core/               # (some packages) Re-exports @vuecs/core for subpath import
-    index.cjs
-    index.mjs
-    index.d.ts
-    package.json
+    type.ts / types.ts  # Only type/interface declarations
+    constants.ts      # const/enum runtime values (if needed)
   dist/               # Build output (gitignored)
     index.mjs         # ESM bundle
     index.d.ts        # Type declarations
-    index.css         # Extracted CSS (if applicable)
+    style.css         # Extracted CSS (if applicable)
   tsdown.config.ts    # Package-specific build config
   package.json
   CHANGELOG.md
 ```
 
-## Nested `core/` Re-exports
+## Core Package Structure
 
-Four packages (`form-controls`, `list-controls`, `navigation`, `pagination`) contain a `core/` subdirectory that re-exports everything from `@vuecs/core`. This allows consumers to import core utilities via `@vuecs/form-controls/core` without adding `@vuecs/core` as a direct dependency. These are pre-built static files (not part of the build pipeline).
+```
+packages/core/src/
+  index.ts            # Default plugin export + re-exports
+  theme/              # Theme resolution system
+    constants.ts      # EXTEND_SYMBOL
+    types.ts          # ThemeSlots, Preset, ThemeManagerOptions, etc.
+    extend.ts         # extend() marker, isExtendValue() guard
+    resolve.ts        # Pure resolution function (no Vue dependency)
+    manager.ts        # ThemeManager class
+    composable.ts     # useComponentTheme() Vue composable
+    install.ts        # installThemeManager() / injectThemeManager()
+    index.ts          # Barrel exports
+  utils/              # Shared utilities (inject, provide, normalizeSlot, etc.)
+  types.ts            # VNodeClass, VNodeProperties, PartialPick
+```
 
 ## Build Outputs
 
 Each package produces ESM-only bundles via tsdown:
 - `dist/index.mjs` — ES Modules
 - `dist/index.d.ts` — TypeScript declarations
-- `dist/index.css` — Extracted CSS (packages with styles only)
+- `dist/style.css` — Extracted CSS (packages with styles only)
 
 Each package has its own `tsdown.config.ts`.
 

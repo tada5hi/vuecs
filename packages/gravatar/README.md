@@ -1,49 +1,38 @@
 # @vuecs/gravatar 📷
 
 [![npm version](https://badge.fury.io/js/@vuecs%2Fgravatar.svg)](https://badge.fury.io/js/@vuecs%2Fgravatar)
-[![CI](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
+[![main](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
 
-A package containing a gravatar component.
-
-**Table of Contents**
-
-- [Installation](#installation)
-- [Usage](#usage)
-- [License](#license)
+Gravatar avatar component for Vue 3.
 
 ## Installation
 
-```
-$ npm i --save @vuecs/gravatar
+```bash
+npm install @vuecs/gravatar @vuecs/core
 ```
 
-## Usage
-
-Register the plugin.
+## Quick Start
 
 ```typescript
-import install from '@vuecs/gravatar';
-import { createApp } from 'vue'
+import gravatar from '@vuecs/gravatar';
 
-const app = createApp({})
-
-app.use(install, {
-  /* optional options */
-})
+app.use(gravatar);
 ```
-
-After the component is registered, it can be used as follows.
 
 ```vue
-<template>
-    <VCGravatar
-        :email="'max.mustermann@example.com'"
-        :default-img="'retro'"
-        :size="80"
-        :rating="'g'"
-    />
-</template>
+<VCGravatar email="user@example.com" :size="120" />
 ```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `email` | `string` | `''` | Email address for Gravatar lookup |
+| `hash` | `string` | `''` | Pre-computed MD5 hash (alternative to email) |
+| `size` | `number` | `80` | Image size in pixels |
+| `defaultImg` | `string` | `'retro'` | Default image style |
+| `rating` | `string` | `'g'` | Content rating |
+| `alt` | `string` | `'Avatar'` | Alt text |
 
 ## License
 

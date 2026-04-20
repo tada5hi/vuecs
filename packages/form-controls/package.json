@@ -9,14 +9,9 @@
             "types": "./dist/index.d.ts",
             "import": "./dist/index.mjs"
         },
-        "./core": {
-            "types": "./core/index.d.ts",
-            "import": "./core/index.mjs"
-        },
         "./dist/style.css": "./dist/style.css"
     },
     "files": [
-        "core",
         "dist"
     ],
     "keywords": [
@@ -42,13 +37,16 @@
     "scripts": {
         "build:js": "tsdown",
         "build:types": "vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json || true",
-        "build": "rimraf dist && npm run build:js && npm run build:types"
+        "build": "rimraf dist && npm run build:js && npm run build:types",
+        "test": "vitest --config test/vitest.config.ts --run"
     },
     "dependencies": {
         "@vueuse/core": "^14.2.1"
     },
     "devDependencies": {
+        "@vue/test-utils": "^2.4.6",
         "@vuecs/core": "^2.0.0",
+        "jsdom": "^29.0.2",
         "vue": "^3.5.28"
     },
     "peerDependencies": {

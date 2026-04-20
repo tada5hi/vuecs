@@ -1,9 +1,3 @@
-import type { StoreManagerOptions } from '@vuecs/core';
+import type { ThemeManagerOptions } from '@vuecs/core';
 
-type Options = {
-    storeManager?: StoreManagerOptions
-};
-
-export type {
-    Options,
-};
+export type Options = ThemeManagerOptions;

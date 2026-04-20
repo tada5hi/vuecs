@@ -6,15 +6,10 @@
   -->
 
 <script lang="ts">
-import type { ListItemSlotProps, SlotName } from '@vuecs/list-controls';
-import { buildList } from '@vuecs/list-controls';
-import type { SlotsType } from 'vue';
-import { defineComponent, ref, watch } from 'vue';
+import { VCList } from '@vuecs/list-controls';
+import { defineComponent, h, ref } from 'vue';
 
 export default defineComponent({
-    slots: Object as SlotsType<{
-        [SlotName.ITEM_ACTIONS]: ListItemSlotProps<Record<string, unknown>>
-    }>,
     setup(props, ctx) {
         const data = ref([
             { id: 1, name: 'Peter' },
@@ -22,33 +17,28 @@ export default defineComponent({
         ]);
         const total = ref(2);
 
-        watch(total, () => {
-            console.log(total.value);
-        });
-
-        return () => buildList({
-            slotItems: ctx.slots,
+        return () => h(VCList, {
             data: data.value,
             total: total.value,
-            onCreated(item) {
+            footer: true,
+            onCreated(item: { id: number; name: string }) {
                 total.value++;
                 data.value.push(item);
             },
-            onUpdated: (item) => {
+            onUpdated(item: { id: number; name: string }) {
                 const index = data.value.findIndex((el) => el.id === item.id);
                 if (index !== -1) {
                     data.value[index] = item;
                 }
             },
-            onDeleted(item) {
+            onDeleted(item: { id: number; name: string }) {
                 const index = data.value.findIndex((el) => el.id === item.id);
                 if (index !== -1) {
                     data.value.splice(index, 1);
                     total.value--;
                 }
             },
-            footer: true,
-        });
+        }, ctx.slots);
     },
 });
 </script>

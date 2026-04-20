@@ -1,72 +1,43 @@
 # @vuecs/timeago ⏰
 
 [![npm version](https://badge.fury.io/js/@vuecs%2Ftimeago.svg)](https://badge.fury.io/js/@vuecs%2Ftimeago)
-[![CI](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
+[![main](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
 
-A package containing a timeago component.
-
-**Table of Contents**
-
-- [Installation](#installation)
-- [Usage](#usage)
-  - [Locales](#locales)
-- [License](#license)
+Relative time display component for Vue 3 with locale support and auto-update.
 
 ## Installation
 
-```
-$ npm i --save @vuecs/timeago
+```bash
+npm install @vuecs/timeago @vuecs/core date-fns
 ```
 
-## Usage
-
-Register the plugin.
+## Quick Start
 
 ```typescript
-import install from '@vuecs/timeago';
-import { createApp } from 'vue'
+import timeago from '@vuecs/timeago';
+import { de } from 'date-fns/locale';
 
-const app = createApp({})
-
-app.use(install, {
-    /* set the default locale */
-    locale: 'en',
+app.use(timeago, {
+    locale: 'de',
+    locales: { de },
 });
 ```
-
-After the component is registered, it can be used as follows.
 
 ```vue
-<template>
-    <VCTimeago
-        :date-time="1684746631769"
-        :locale="'en'"
-        :auto-update="true"
-    />
-</template>
+<VCTimeago :datetime="new Date('2024-01-01')" />
+<!-- renders: "3 months ago" (auto-updates) -->
 ```
 
-### Locales
+## Props
 
-To support other locales, the corresponding locale 
-object must be imported from the [date-fns](https://www.npmjs.com/package/date-fns) library.
-In the following, this will be shown for the german language.
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `datetime` | `Date \| number \| string` | required | The date to display relative to now |
+| `locale` | `string` | `undefined` | Override the global locale |
+| `autoUpdate` | `number \| boolean` | `true` | Auto-update interval in seconds (`true` = 60s) |
+| `converter` | `Function` | `undefined` | Custom converter function |
+| `converterOptions` | `object` | `undefined` | Options passed to converter |
 
-```typescript
-import install from '@vuecs/timeago';
-import { createApp } from 'vue'
-
-import de from 'date-fns/locale/de';
-
-const app = createApp({})
-
-app.use(install, {
-    locale: 'de',
-    locales: {
-        de,
-    },
-});
-```
 ## License
 
 Made with 💚

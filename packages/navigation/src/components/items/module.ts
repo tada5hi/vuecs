@@ -1,11 +1,5 @@
-/*
- * Copyright (c) 2024.
- * Author Peter Placzek (tada5hi)
- * For the full copyright and license information,
- * view the LICENSE file that was distributed with this source code.
- */
-
-import { hasNormalizedSlot, normalizeSlot } from '@vuecs/core';
+import { hasNormalizedSlot, normalizeSlot, useComponentTheme } from '@vuecs/core';
+import type { ThemeClassesOverride } from '@vuecs/core';
 import type {
     PropType,
     VNodeArrayChildren,
@@ -14,30 +8,38 @@ import type {
 import {
     computed,
     defineComponent,
-    h, 
-    onMounted, 
-    onUnmounted, 
+    h,
+    onMounted,
+    onUnmounted,
     ref,
+    toRef,
 } from 'vue';
 import { SlotName } from '../../constants';
 import { injectNavigationManager } from '../../manager';
 import type { NavigationItemNormalized } from '../../types';
-import { buildComponentOptions } from '../../helpers';
+import type { NavigationThemeClasses } from '../../helpers/component/types';
 import { VCNavItem } from '../item';
 
+const themeDefaults: NavigationThemeClasses = {
+    group: 'vc-nav-items',
+    item: 'vc-nav-item',
+    itemNested: 'vc-nav-item-nested',
+    separator: 'vc-nav-separator',
+    link: 'vc-nav-link',
+    linkRoot: 'vc-nav-link-root',
+    linkIcon: 'vc-nav-link-icon',
+    linkText: 'vc-nav-link-text',
+};
+
 export const VCNavItems = defineComponent({
+    name: 'VCNavItems',
     props: {
-        level: {
-            type: Number,
-            default: 0,
-        },
-        data: {
-            type: Array as PropType<NavigationItemNormalized[]>,
-            default: undefined,
-        },
+        level: { type: Number, default: 0 },
+        data: { type: Array as PropType<NavigationItemNormalized[]>, default: undefined },
+        themeClass: { type: Object as PropType<ThemeClassesOverride<NavigationThemeClasses>>, default: undefined },
     },
     setup(props, { slots }) {
-        const options = buildComponentOptions();
+        const theme = useComponentTheme('navigation', toRef(props, 'themeClass'), themeDefaults);
 
         const manager = injectNavigationManager();
         const managerItems = ref<NavigationItemNormalized[]>([]);
@@ -47,7 +49,7 @@ export const VCNavItems = defineComponent({
 
         const counter = ref(0);
 
-        let removeListener : CallableFunction | undefined;
+        let removeListener: CallableFunction | undefined;
 
         onMounted(() => {
             removeListener = manager.on(
@@ -66,7 +68,6 @@ export const VCNavItems = defineComponent({
         onUnmounted(() => {
             if (typeof removeListener === 'function') {
                 removeListener();
-
                 removeListener = undefined;
             }
         });
@@ -75,19 +76,19 @@ export const VCNavItems = defineComponent({
             if (typeof props.data !== 'undefined') {
                 return props.data;
             }
-
             return managerItems.value;
         });
 
         return () => {
-            const vNodes : VNodeArrayChildren = [];
+            const resolved = theme.value;
+            const vNodes: VNodeArrayChildren = [];
 
             for (let i = 0; i < items.value.length; i++) {
                 if (!items.value[i].display && !items.value[i].displayChildren) {
                     continue;
                 }
 
-                let vNode : VNodeChild;
+                let vNode: VNodeChild;
                 if (hasNormalizedSlot(SlotName.ITEM, slots)) {
                     vNode = normalizeSlot(SlotName.ITEM, { data: items.value[i] }, slots);
                 } else {
@@ -103,7 +104,7 @@ export const VCNavItems = defineComponent({
                 vNodes.push(vNode);
             }
 
-            return h(options.groupTag, { class: options.groupClass }, vNodes);
+            return h('ul', { class: resolved.group || undefined }, vNodes);
         };
     },
 });

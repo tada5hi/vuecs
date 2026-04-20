@@ -1,23 +1,26 @@
 import { hasOwnProperty, isObject } from '@vuecs/core';
 import { merge } from 'smob';
 import type { MaybeRef } from 'vue';
-import type { ListItemId, ListItemKey } from '../type';
-import type { ListBaseOptions, ListBaseSlotProps } from './types';
+import type { 
+    ListEventFn, 
+    ListItemId, 
+    ListItemKey, 
+    ListLoadFn, 
+} from '../../type';
+import type { ListBaseSlotProps } from '../type';
 
-type ListBaseSlotPropsBuildContext<T, M> = Pick<
-    ListBaseOptions<T, M>,
-'meta' |
-'total' |
-'busy' |
-'load' |
-'onUpdated' |
-'onCreated' |
-'onDeleted' |
-'itemKey' |
-'itemId'
-> & {
-    data?: MaybeRef<T | T[]>,
-    [key: string]: any
+type ListBaseSlotPropsBuildContext<T, M> = {
+    meta?: M;
+    total?: number;
+    busy?: boolean;
+    load?: ListLoadFn<M>;
+    onUpdated?: ListEventFn<T>;
+    onCreated?: ListEventFn<T>;
+    onDeleted?: ListEventFn<T>;
+    itemKey?: ListItemKey<T>;
+    itemId?: ListItemId<T>;
+    data?: MaybeRef<T | T[]>;
+    [key: string]: any;
 };
 
 type FilterFn<T> = (item: T, index?: number) => boolean;
@@ -25,8 +28,8 @@ const buildFilterFn = <T>(
     item: T,
     itemId?: ListItemId<T>,
     itemKey?: ListItemKey<T>,
-) : FilterFn<T> | undefined => {
-    let filterFn : FilterFn<T> | undefined;
+): FilterFn<T> | undefined => {
+    let filterFn: FilterFn<T> | undefined;
     if (itemId) {
         filterFn = (el) => itemId(el) === itemId(item);
     }
@@ -65,8 +68,8 @@ function mergeUnknown(primary: unknown, secondary: unknown) {
 
 export function buildListBaseSlotProps<T, M = any>(
     ctx: ListBaseSlotPropsBuildContext<T, M>,
-) : ListBaseSlotProps<T, M> {
-    const props : ListBaseSlotProps<T, M> = {
+): ListBaseSlotProps<T, M> {
+    const props: ListBaseSlotProps<T, M> = {
         ...(ctx.busy ? { busy: ctx.busy } : {}),
         ...(ctx.meta ? { meta: ctx.meta } : {}),
         ...(ctx.total ? { total: ctx.total } : {}),
