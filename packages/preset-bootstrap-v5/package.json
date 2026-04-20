@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/preset-bootstrap-v5",
-    "version": "2.0.1",
+    "version": "3.0.0",
     "type": "module",
     "description": "",
     "exports": {
@@ -30,10 +30,10 @@
         "build": "rimraf dist && npm run build:js && npm run build:types"
     },
     "devDependencies": {
-        "@vuecs/core": "^2.0.0"
+        "@vuecs/core": "^3.0.0"
     },
     "peerDependencies": {
-        "@vuecs/core": "^2.0.0"
+        "@vuecs/core": "^3.0.0"
     },
     "engines": {
         "node": ">=22.0.0"

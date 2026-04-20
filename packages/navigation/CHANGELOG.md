@@ -1,5 +1,27 @@
 # Changelog
 
+## [3.0.0](https://github.com/tada5hi/vuecs/compare/navigation-v2.4.1...navigation-v3.0.0) (2026-04-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* change architecture
+
+### Features
+
+* replace store system with theme resolution engine ([#1492](https://github.com/tada5hi/vuecs/issues/1492)) ([7d586b3](https://github.com/tada5hi/vuecs/commit/7d586b3707d5210970ce0138985e3cc8210264cf))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^2.0.0 to ^3.0.0
+    * @vuecs/link bumped from ^1.0.1 to ^2.0.0
+  * peerDependencies
+    * @vuecs/core bumped from ^2.0.0 to ^3.0.0
+    * @vuecs/link bumped from ^1.0.1 to ^2.0.0
+
 ## [2.4.1](https://github.com/tada5hi/vuecs/compare/navigation-v2.4.0...navigation-v2.4.1) (2026-02-18)
 
 

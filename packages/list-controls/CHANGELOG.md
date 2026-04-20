@@ -1,5 +1,30 @@
 # Changelog
 
+## [3.0.0](https://github.com/tada5hi/vuecs/compare/list-controls-v2.0.1...list-controls-v3.0.0) (2026-04-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* change architecture
+
+### Features
+
+* replace store system with theme resolution engine ([#1492](https://github.com/tada5hi/vuecs/issues/1492)) ([7d586b3](https://github.com/tada5hi/vuecs/commit/7d586b3707d5210970ce0138985e3cc8210264cf))
+
+
+### Bug Fixes
+
+* remove process.env usage in vuecs-list ([7a951eb](https://github.com/tada5hi/vuecs/commit/7a951eb848e289ca353e2dbbefedf6815a74f202))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^2.0.0 to ^3.0.0
+  * peerDependencies
+    * @vuecs/core bumped from ^2.0.0 to ^3.0.0
+
 ## [2.0.1](https://github.com/tada5hi/vuecs/compare/list-controls-v2.0.0...list-controls-v2.0.1) (2026-02-18)
 
 
