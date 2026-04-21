@@ -40,10 +40,10 @@ CSS classes for named **elements** (logical parts of a component like `root`, `i
 
 ### Key APIs
 
-- **`ThemeManager`** — Holds config state (themes, overrides), delegates to `resolveComponentTheme()`
+- **`ThemeManager`** — Holds config state (themes, overrides) as `shallowRef`s, delegates to `resolveComponentTheme()`. Supports runtime updates via `setThemes()` and `setOverrides()`.
 - **`installThemeManager(app, options)`** — Vue plugin that provides ThemeManager via `app.provide()`
 - **`injectThemeManager()`** — Retrieves ThemeManager from Vue inject
-- **`useComponentTheme(name, instanceThemeClassRef, defaults)`** — Vue composable, returns `ComputedRef<T>`. Throws if ThemeManager is not installed.
+- **`useComponentTheme(name, instanceThemeClass, defaults)`** — Vue composable accepting `MaybeRef` for instance theme, returns `ComputedRef<T>`. Automatically recomputes when instance theme prop or ThemeManager state changes. Throws if ThemeManager is not installed.
 - **`extend(value)`** — Marker function: merge with lower layer instead of replacing (only needed in overrides and instance props; themes always merge with defaults)
 - **`resolveComponentTheme()`** — Pure function (no Vue dependency): resolves 4 layers into final class strings
 
@@ -52,15 +52,15 @@ CSS classes for named **elements** (logical parts of a component like `root`, `i
 ```
 @vuecs/core/src/theme/
   constants.ts   <- EXTEND_SYMBOL
-  types.ts       <- Type definitions (ThemeClasses, Theme, ThemeManagerOptions, etc.)
+  types.ts       <- Type definitions (ThemeClasses, ThemeElements, Theme, ThemeManagerOptions, etc.)
   extend.ts      <- extend() marker, isExtendValue() guard
   resolve.ts     <- Pure function: resolves defaults + themes + overrides + instance -> classes
-  manager.ts     <- ThemeManager class (holds config, delegates to resolve)
+  manager.ts     <- ThemeManager class (shallowRef state, delegates to resolve)
   composable.ts  <- useComponentTheme() - Vue composable wrapping resolve()
   install.ts     <- installThemeManager() / injectThemeManager() - Vue provide/inject
 ```
 
-The resolution logic has zero Vue imports — testable with plain unit tests, no `createApp()` needed.
+The resolution logic (`resolve.ts`) has zero Vue imports — testable with plain unit tests, no `createApp()` needed. The `ThemeManager` uses Vue's `shallowRef` for reactive state, enabling `computed()` in composables to automatically track theme changes.
 
 ### Setup API
 
@@ -82,7 +82,7 @@ app.use(vuecs, {
 
 ### Component Internals
 
-Each component calls `useComponentTheme()` in setup with its name and co-located defaults:
+Each component calls `useComponentTheme()` in setup with its name and co-located defaults. The composable accepts `MaybeRef` for the instance theme parameter, so both `ref()` and plain objects work:
 
 ```typescript
 setup(props) {
@@ -91,6 +91,7 @@ setup(props) {
         actions: 'vc-list-item-actions',
     });
     // theme.value.root -> reactive resolved class string
+    // Recomputes when props.themeClass or ThemeManager state changes
     return () => h('div', { class: theme.value.root }, [...]);
 }
 ```
@@ -102,7 +103,7 @@ Theme packages (`preset-bootstrap-v4`, `preset-bootstrap-v5`, `preset-font-aweso
 ```typescript
 // Theme type structure
 type Theme = {
-    elements: ThemeComponentElements;    // component name -> element -> class string
+    elements: ThemeElements;             // component name -> element -> class string
     classesMergeFn?: ClassesMergeFn;     // optional merge function for extend()
 };
 
@@ -111,6 +112,32 @@ type ThemeManagerOptions = {
     overrides?: Theme;      // user-level overrides (same shape)
 };
 ```
+
+### Type-Safe Theme Slots (ThemeElements)
+
+`ThemeElements` is an empty augmentable interface with no index signature. Each component package extends it via TypeScript declaration merging to register its component name and typed slot keys. `Theme.elements` uses `Partial<ThemeElements>` so each theme only needs to provide a subset of known components. Internal runtime code casts to `Record<string, ThemeClassesOverride>` for dynamic dispatch by component name.
+
+```typescript
+// In @vuecs/core — empty interface for declaration merging
+export interface ThemeElements {}
+
+export type Theme = {
+    elements: Partial<ThemeElements>;
+    classesMergeFn?: ClassesMergeFn;
+};
+
+// In a component package (e.g., @vuecs/pagination/src/component.ts)
+declare module '@vuecs/core' {
+    interface ThemeElements {
+        pagination?: ThemeClassesOverride<PaginationThemeClasses>;
+    }
+}
+```
+
+When consumers install component packages, the augmented `ThemeElements` provides:
+- Autocomplete for component names in `app.use(vuecs, { overrides: { elements: { /* autocomplete here */ } } })`
+- Type checking for slot keys within each component's theme override
+- Typo detection for both component names and slot keys in preset definitions
 
 ## NavigationManager (@vuecs/navigation)
 

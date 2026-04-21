@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { extend } from '../../../src/theme/extend';
 import { resolveComponentTheme } from '../../../src/theme/resolve';
-import type { Theme, ThemeElements } from '../../../src/theme/types';
+import type { Theme, ThemeClassesOverride } from '../../../src/theme/types';
 
 describe('resolveComponentTheme', () => {
     const defaults = {
@@ -44,28 +44,28 @@ describe('resolveComponentTheme', () => {
 
     it('should apply user override replacing everything including defaults', () => {
         const preset: Theme = { elements: { listItem: { root: 'preset-class' } } };
-        const userTheme: ThemeElements = { listItem: { root: 'user-class' } };
+        const userTheme: Record<string, ThemeClassesOverride> = { listItem: { root: 'user-class' } };
         const result = resolveComponentTheme('listItem', defaults, [preset], userTheme, undefined);
         expect(result.root).toBe('user-class');
     });
 
     it('should extend user theme over preset+defaults', () => {
         const preset: Theme = { elements: { listItem: { root: 'preset-class' } } };
-        const userTheme: ThemeElements = { listItem: { root: extend('user-extra') } };
+        const userTheme: Record<string, ThemeClassesOverride> = { listItem: { root: extend('user-extra') } };
         const result = resolveComponentTheme('listItem', defaults, [preset], userTheme, undefined);
         expect(result.root).toBe('vc-list-item preset-class user-extra');
     });
 
     it('should apply instance theme as highest priority, replacing everything', () => {
         const preset: Theme = { elements: { listItem: { root: 'preset-class' } } };
-        const userTheme: ThemeElements = { listItem: { root: 'user-class' } };
+        const userTheme: Record<string, ThemeClassesOverride> = { listItem: { root: 'user-class' } };
         const instanceTheme = { root: 'instance-class' };
         const result = resolveComponentTheme('listItem', defaults, [preset], userTheme, instanceTheme);
         expect(result.root).toBe('instance-class');
     });
 
     it('should extend instance theme over user theme', () => {
-        const userTheme: ThemeElements = { listItem: { root: 'user-class' } };
+        const userTheme: Record<string, ThemeClassesOverride> = { listItem: { root: 'user-class' } };
         const instanceTheme = { root: extend('instance-extra') };
         const result = resolveComponentTheme('listItem', defaults, [], userTheme, instanceTheme);
         expect(result.root).toBe('user-class instance-extra');
