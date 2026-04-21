@@ -68,7 +68,7 @@ app.use(vuecs, {
     themes: [bootstrapV5()],
     overrides: {
         elements: {
-            formSubmit: { createButton: 'btn btn-lg btn-success' },
+            formSubmit: { classes: { createButton: 'btn btn-lg btn-success' } },
         },
     },
 });
@@ -92,7 +92,7 @@ import { extend } from '@vuecs/core';
 app.use(vuecs, {
     overrides: {
         elements: {
-            listItem: { root: extend('border-bottom') },
+            listItem: { classes: { root: extend('border-bottom') } },
             // result: "vc-list-item border-bottom" (merged with resolved value)
         },
     },
@@ -125,7 +125,7 @@ The `classesMergeFn` can also be provided per theme.
 |--------|-------------|
 | `installThemeManager(app, options?)` | Vue plugin — provides ThemeManager via `app.provide()` |
 | `injectThemeManager(app?)` | Retrieve ThemeManager from Vue inject |
-| `useComponentTheme(name, ref, defaults)` | Vue composable — returns `ComputedRef<T>` with resolved classes |
+| `useComponentTheme(name, ref, defaults, variantValues?)` | Vue composable — returns `ComputedRef<T>` with resolved classes |
 | `extend(value)` | Marker function — merge with lower layer instead of replacing |
 | `resolveComponentTheme(...)` | Pure function — no Vue dependency, fully testable |
 | `ThemeManager` | Holds config (themes, overrides) |
