@@ -55,6 +55,29 @@ app.use(formControls);
 | `VCFormRangeMultiSlider` | Dual-range slider |
 | `VCValidationGroup` | Renders validation messages (used internally by VCFormGroup) |
 
+## Debounced Input
+
+`VCFormInput` and `VCFormTextarea` accept an optional `debounce` prop (milliseconds). When set, `update:modelValue` is delayed until the user stops typing. The displayed input value still updates immediately, so typing remains responsive. This is useful for search fields and other queries that trigger network requests.
+
+Filter semantics (field names, operators, pagination behavior) are intentionally **not** handled by the component — consumers own that logic in their change handler:
+
+```vue
+<script setup lang="ts">
+const query = ref('');
+
+watch(query, (value) => {
+    loadItems({
+        filters: { name: value.length > 0 ? `~${value}` : value },
+        pagination: { offset: 0 },
+    });
+});
+</script>
+
+<template>
+    <VCFormInput v-model="query" :debounce="200" placeholder="Search..." />
+</template>
+```
+
 ## Theme Slots
 
 | Component | Slot Keys |

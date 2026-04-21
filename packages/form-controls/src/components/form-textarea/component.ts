@@ -1,11 +1,14 @@
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
+import { useDebounceFn } from '@vueuse/core';
 import type { PropType } from 'vue';
-import { 
-    defineComponent, 
-    h, 
-    mergeProps, 
-    toRef, 
+import {
+    defineComponent,
+    h,
+    mergeProps,
+    ref,
+    toRef,
+    watch,
 } from 'vue';
 
 export type FormTextareaThemeClasses = {
@@ -24,6 +27,7 @@ export const VCFormTextarea = defineComponent({
     name: 'VCFormTextarea',
     props: {
         modelValue: { type: String, default: '' },
+        debounce: { type: Number, default: 0 },
         themeClass: { type: Object as PropType<ThemeClassesOverride<FormTextareaThemeClasses>>, default: undefined },
         themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
     },
@@ -31,14 +35,30 @@ export const VCFormTextarea = defineComponent({
     setup(props, { attrs, emit }) {
         const theme = useComponentTheme('formTextarea', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
 
+        const localValue = ref(props.modelValue);
+        watch(() => props.modelValue, (value) => {
+            localValue.value = value;
+        });
+
+        const emitUpdate = (value: string) => emit('update:modelValue', value);
+        const emitUpdateDebounced = useDebounceFn(emitUpdate, () => props.debounce);
+
+        const onInput = ($event: any) => {
+            if ($event.target.composing) return;
+            const { value } = $event.target;
+            localValue.value = value;
+            if (props.debounce > 0) {
+                emitUpdateDebounced(value);
+            } else {
+                emitUpdate(value);
+            }
+        };
+
         return () => h('textarea', mergeProps({
             placeholder: '...',
             class: theme.value.root || undefined,
-            onInput($event: any) {
-                if ($event.target.composing) return;
-                emit('update:modelValue', $event.target.value);
-            },
-            ...(typeof props.modelValue !== 'undefined' ? { value: props.modelValue } : {}),
+            onInput,
+            value: localValue.value,
         }, attrs));
     },
 });

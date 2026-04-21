@@ -1,11 +1,14 @@
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
+import { useDebounceFn } from '@vueuse/core';
 import type { PropType, SlotsType, VNodeChild } from 'vue';
-import { 
-    defineComponent, 
-    h, 
-    mergeProps, 
-    toRef, 
+import {
+    defineComponent,
+    h,
+    mergeProps,
+    ref,
+    toRef,
+    watch,
 } from 'vue';
 
 export type FormInputThemeClasses = {
@@ -40,6 +43,7 @@ export const VCFormInput = defineComponent({
         groupPrependContent: { type: String, default: undefined },
         groupAppend: { type: Boolean, default: false },
         groupAppendContent: { type: String, default: undefined },
+        debounce: { type: Number, default: 0 },
         themeClass: { type: Object as PropType<ThemeClassesOverride<FormInputThemeClasses>>, default: undefined },
         themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
     },
@@ -49,11 +53,30 @@ export const VCFormInput = defineComponent({
         groupPrepend: { class: string; tag: string };
     }>,
     setup(props, {
-        attrs, 
-        emit, 
-        slots, 
+        attrs,
+        emit,
+        slots,
     }) {
         const theme = useComponentTheme('formInput', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
+
+        const localValue = ref(props.modelValue);
+        watch(() => props.modelValue, (value) => {
+            localValue.value = value;
+        });
+
+        const emitUpdate = (value: string) => emit('update:modelValue', value);
+        const emitUpdateDebounced = useDebounceFn(emitUpdate, () => props.debounce);
+
+        const onInput = ($event: any) => {
+            if ($event.target.composing) return;
+            const { value } = $event.target;
+            localValue.value = value;
+            if (props.debounce > 0) {
+                emitUpdateDebounced(value);
+            } else {
+                emitUpdate(value);
+            }
+        };
 
         return () => {
             const resolved = theme.value;
@@ -70,11 +93,8 @@ export const VCFormInput = defineComponent({
             children.push(h('input', mergeProps({
                 type: props.type,
                 class: resolved.root || undefined,
-                onInput($event: any) {
-                    if ($event.target.composing) return;
-                    emit('update:modelValue', $event.target.value);
-                },
-                ...(typeof props.modelValue !== 'undefined' ? { value: props.modelValue } : {}),
+                onInput,
+                value: localValue.value,
             }, attrs)));
 
             // Group append

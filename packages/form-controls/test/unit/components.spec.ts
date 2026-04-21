@@ -185,6 +185,46 @@ describe('VCFormInput', () => {
         expect(wrapper.element.tagName).toBe('DIV');
         expect(wrapper.find('input').exists()).toBe(true);
     });
+
+    it('should debounce update:modelValue when debounce prop is set', async () => {
+        vi.useFakeTimers();
+        try {
+            const wrapper = mount(VCFormInput, {
+                props: { modelValue: '', debounce: 200 },
+                global: { plugins: [themePlugin] },
+            });
+
+            await wrapper.find('input').setValue('h');
+            await wrapper.find('input').setValue('he');
+            await wrapper.find('input').setValue('hey');
+
+            expect(wrapper.emitted('update:modelValue')).toBeFalsy();
+
+            await vi.advanceTimersByTimeAsync(200);
+
+            const emitted = wrapper.emitted('update:modelValue')!;
+            expect(emitted.length).toBe(1);
+            expect(emitted[0]).toEqual(['hey']);
+        } finally {
+            vi.useRealTimers();
+        }
+    });
+
+    it('should keep input value responsive while debounced', async () => {
+        vi.useFakeTimers();
+        try {
+            const wrapper = mount(VCFormInput, {
+                props: { modelValue: '', debounce: 200 },
+                global: { plugins: [themePlugin] },
+            });
+
+            await wrapper.find('input').setValue('typed');
+            // The displayed input value updates immediately regardless of debounce
+            expect((wrapper.find('input').element as HTMLInputElement).value).toBe('typed');
+        } finally {
+            vi.useRealTimers();
+        }
+    });
 });
 
 describe('VCFormInputCheckbox', () => {
