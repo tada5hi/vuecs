@@ -16,6 +16,12 @@ export type FormSubmitThemeClasses = {
     updateIcon: string;
 };
 
+declare module '@vuecs/core' {
+    interface ThemeElements {
+        formSubmit?: ThemeClassesOverride<FormSubmitThemeClasses>;
+    }
+}
+
 const themeDefaults: FormSubmitThemeClasses = {
     root: '',
     createButton: '',

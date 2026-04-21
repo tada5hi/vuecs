@@ -14,6 +14,12 @@ export type FormInputCheckboxThemeClasses = {
     group: string;
 };
 
+declare module '@vuecs/core' {
+    interface ThemeElements {
+        formInputCheckbox?: ThemeClassesOverride<FormInputCheckboxThemeClasses>;
+    }
+}
+
 const themeDefaults: FormInputCheckboxThemeClasses = {
     root: '',
     label: '',

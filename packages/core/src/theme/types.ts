@@ -15,10 +15,10 @@ export type ThemeClassesOverride<T extends ThemeClasses = ThemeClasses> = {
     [K in keyof T]?: ThemeClassesOverrideValue;
 };
 
-export type ThemeElements = Record<string, ThemeClassesOverride>;
+export interface ThemeElements {}
 
 export type Theme = {
-    elements: ThemeElements;
+    elements: Partial<ThemeElements>;
     classesMergeFn?: ClassesMergeFn;
 };
 

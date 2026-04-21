@@ -14,6 +14,12 @@ export type ValidationGroupThemeClasses = {
     item: string;
 };
 
+declare module '@vuecs/core' {
+    interface ThemeElements {
+        validationGroup?: ThemeClassesOverride<ValidationGroupThemeClasses>;
+    }
+}
+
 const themeDefaults: ValidationGroupThemeClasses = { item: 'form-group-hint group-required' };
 
 export const VCValidationGroup = defineComponent({

@@ -22,6 +22,12 @@ export type CountdownThemeClasses = {
     root: string;
 };
 
+declare module '@vuecs/core' {
+    interface ThemeElements {
+        countdown?: ThemeClassesOverride<CountdownThemeClasses>;
+    }
+}
+
 const themeDefaults: CountdownThemeClasses = { root: '' };
 
 export type CountdownSlotProps = {

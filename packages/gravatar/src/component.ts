@@ -13,6 +13,12 @@ export type GravatarThemeClasses = {
     root: string;
 };
 
+declare module '@vuecs/core' {
+    interface ThemeElements {
+        gravatar?: ThemeClassesOverride<GravatarThemeClasses>;
+    }
+}
+
 const themeDefaults: GravatarThemeClasses = { root: '' };
 
 export const VCGravatar = defineComponent({

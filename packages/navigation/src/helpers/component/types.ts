@@ -1,3 +1,5 @@
+import type { ThemeClassesOverride } from '@vuecs/core';
+
 export type NavigationThemeClasses = {
     group: string;
     item: string;
@@ -8,3 +10,9 @@ export type NavigationThemeClasses = {
     linkIcon: string;
     linkText: string;
 };
+
+declare module '@vuecs/core' {
+    interface ThemeElements {
+        navigation?: ThemeClassesOverride<NavigationThemeClasses>;
+    }
+}

@@ -12,6 +12,12 @@ export type FormTextareaThemeClasses = {
     root: string;
 };
 
+declare module '@vuecs/core' {
+    interface ThemeElements {
+        formTextarea?: ThemeClassesOverride<FormTextareaThemeClasses>;
+    }
+}
+
 const themeDefaults: FormTextareaThemeClasses = { root: '' };
 
 export const VCFormTextarea = defineComponent({

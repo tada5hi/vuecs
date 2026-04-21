@@ -5,7 +5,6 @@ import type {
     ThemeClasses,
     ThemeClassesOverride,
     ThemeClassesOverrideValue,
-    ThemeElements,
 } from './types';
 
 const RESERVED_KEYS = new Set(['variants', 'defaultVariants', 'compoundVariants']);
@@ -69,7 +68,7 @@ export function resolveComponentTheme<T extends ThemeClasses>(
     componentName: string,
     defaults: T,
     themes: Theme[],
-    overrideClasses: ThemeElements | undefined,
+    overrideClasses: Record<string, ThemeClassesOverride> | undefined,
     instanceThemeClass: ThemeClassesOverride<T> | undefined,
     classesMergeFn?: ClassesMergeFn,
 ): T {
@@ -78,7 +77,8 @@ export function resolveComponentTheme<T extends ThemeClasses>(
 
     // Layer 2: Themes (in array order) — always preserve defaults
     for (const theme of themes) {
-        const componentClasses = theme.elements[componentName];
+        const elements = theme.elements as Record<string, ThemeClassesOverride>;
+        const componentClasses = elements[componentName];
         if (!componentClasses) continue;
 
         applyThemeOverrides(result, defaults as Record<string, string>, componentClasses, merge);

@@ -58,7 +58,7 @@ export class ThemeManager {
             componentName,
             defaults,
             themes,
-            overrides?.elements,
+            overrides?.elements as Record<string, ThemeClassesOverride> | undefined,
             instanceThemeClass,
             classesMergeFn,
         );
