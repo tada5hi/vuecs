@@ -9,7 +9,7 @@ import type {
     ThemeElementDefinition,
 } from './types';
 
-function defaultClassesMergeFn(base: string, override: string): string {
+export function defaultClassesMergeFn(base: string, override: string): string {
     if (!base) return override;
     if (!override) return base;
     return `${base} ${override}`;

@@ -51,9 +51,10 @@ packages/core/src/
   index.ts            # Default plugin export + re-exports
   theme/              # Theme resolution system
     constants.ts      # EXTEND_SYMBOL
-    types.ts          # ThemeSlots, Preset, ThemeManagerOptions, etc.
+    types.ts          # ThemeClasses, ThemeElements, ComponentThemeDefinition, variant types, etc.
     extend.ts         # extend() marker, isExtendValue() guard
     resolve.ts        # Pure resolution function (no Vue dependency)
+    variant.ts        # Pure variant resolution: extractVariantConfig(), resolveVariantClasses()
     manager.ts        # ThemeManager class
     composable.ts     # useComponentTheme() Vue composable
     install.ts        # installThemeManager() / injectThemeManager()
