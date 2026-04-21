@@ -110,6 +110,24 @@ describe('ThemeManager', () => {
         expect(result.root).toBe('vc-btn btn-lg');
     });
 
+    it('should apply defaultVariants when no explicit variant value is provided', () => {
+        const manager = new ThemeManager();
+        const defaults = {
+            classes: { root: 'vc-btn' },
+            variants: {
+                size: {
+                    sm: { root: 'btn-sm' },
+                    lg: { root: 'btn-lg' },
+                },
+            },
+            defaultVariants: { size: 'sm' } as Record<string, string | boolean>,
+        };
+
+        expect(manager.resolve('button', defaults).root).toBe('vc-btn btn-sm');
+        expect(manager.resolve('button', defaults, undefined).root).toBe('vc-btn btn-sm');
+        expect(manager.resolve('button', defaults, undefined, {}).root).toBe('vc-btn btn-sm');
+    });
+
     it('should merge theme variant definitions with defaults', () => {
         const theme: Theme = {
             elements: {

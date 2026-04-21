@@ -79,7 +79,7 @@ export const VCListBody = defineComponent({
                     data: item,
                     index,
                     tag: props.itemTag,
-                    theme: props.itemThemeClass,
+                    themeClass: props.itemThemeClass,
                     icon: props.itemIcon,
                     text: props.itemText,
                     textPropName: props.itemTextPropName,

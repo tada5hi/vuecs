@@ -118,7 +118,8 @@ export const VCList = defineComponent({
 
             if (props.header) {
                 children.push(h(VCListHeader, {
-                    theme: props.headerThemeClass,
+                    themeClass: props.headerThemeClass,
+                    themeVariant: props.themeVariant,
                     slotProps: slotPropsBase,
                 }, slots.header ? { default: slots.header } : {}));
             }
@@ -135,7 +136,8 @@ export const VCList = defineComponent({
                     onCreated: props.onCreated,
                     onDeleted: props.onDeleted,
                     onUpdated: props.onUpdated,
-                    theme: props.bodyThemeClass,
+                    themeClass: props.bodyThemeClass,
+                    themeVariant: props.themeVariant,
                     itemThemeClass: props.itemThemeClass,
                     itemTag: props.itemTag,
                     itemIcon: props.itemIcon,
@@ -154,7 +156,8 @@ export const VCList = defineComponent({
             if (props.loading) {
                 children.push(h(VCListLoading, {
                     busy: props.busy,
-                    theme: props.loadingThemeClass,
+                    themeClass: props.loadingThemeClass,
+                    themeVariant: props.themeVariant,
                     slotProps: slotPropsBase,
                 }, slots.loading ? { default: slots.loading } : {}));
             }
@@ -165,14 +168,16 @@ export const VCList = defineComponent({
                     total,
                     meta: props.meta,
                     content: props.noMoreContent,
-                    theme: props.noMoreThemeClass,
+                    themeClass: props.noMoreThemeClass,
+                    themeVariant: props.themeVariant,
                     slotProps: slotPropsBase,
                 }, slots.noMore ? { default: slots.noMore } : {}));
             }
 
             if (props.footer) {
                 children.push(h(VCListFooter, {
-                    theme: props.footerThemeClass,
+                    themeClass: props.footerThemeClass,
+                    themeVariant: props.themeVariant,
                     slotProps: slotPropsBase,
                 }, slots.footer ? { default: slots.footer } : {}));
             }

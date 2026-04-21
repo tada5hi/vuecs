@@ -58,8 +58,16 @@ export class ThemeManager {
         const overrideElements = overrides?.elements as Record<string, ThemeElementDefinition> | undefined;
 
         // classesMergeFn: overrides wins, then last theme with one defined
-        const classesMergeFn = overrides?.classesMergeFn ||
-            themes.findLast((t) => t.classesMergeFn)?.classesMergeFn;
+        let classesMergeFn = overrides?.classesMergeFn;
+        if (!classesMergeFn) {
+            for (let i = themes.length - 1; i >= 0; i -= 1) {
+                const themeClassesMergeFn = themes[i]?.classesMergeFn;
+                if (themeClassesMergeFn) {
+                    classesMergeFn = themeClassesMergeFn;
+                    break;
+                }
+            }
+        }
 
         const result = resolveComponentTheme(
             componentName,
@@ -70,30 +78,28 @@ export class ThemeManager {
             classesMergeFn,
         );
 
-        // Variant resolution
-        if (variantValues) {
-            const variantConfig = extractVariantConfig(
-                componentName,
-                defaults,
-                themes,
-                overrideElements,
-            );
+        // Variant resolution (always run so defaultVariants apply even without explicit values)
+        const variantConfig = extractVariantConfig(
+            componentName,
+            defaults,
+            themes,
+            overrideElements,
+        );
 
-            const variantClasses = resolveVariantClasses(
-                variantConfig,
-                variantValues,
-                classesMergeFn,
-            );
+        const variantClasses = resolveVariantClasses(
+            variantConfig,
+            variantValues ?? {},
+            classesMergeFn,
+        );
 
-            const mergeFn = classesMergeFn || defaultClassesMergeFn;
-            const mutableResult = result as Record<string, string>;
+        const mergeFn = classesMergeFn || defaultClassesMergeFn;
+        const mutableResult = result as Record<string, string>;
 
-            const slots = Object.keys(variantClasses);
-            for (const slot of slots) {
-                const cls = variantClasses[slot];
-                if (!cls) continue;
-                mutableResult[slot] = mergeFn(mutableResult[slot] || '', cls);
-            }
+        const slots = Object.keys(variantClasses);
+        for (const slot of slots) {
+            const cls = variantClasses[slot];
+            if (!cls) continue;
+            mutableResult[slot] = mergeFn(mutableResult[slot] || '', cls);
         }
 
         return result;
