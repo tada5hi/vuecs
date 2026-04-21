@@ -7,7 +7,7 @@ import {
     mergeProps,
     toRef,
 } from 'vue';
-import type { PaginationMeta, PaginationMetaInput } from './type';
+import type { PaginationMeta } from './type';
 import { calculateOffset, calculatePage, calculatePagesTotal } from './utils';
 
 export type PaginationThemeClasses = {
@@ -45,9 +45,8 @@ export const VCPagination = defineComponent({
     props: {
         total: { type: Number, default: 0 },
         limit: { type: Number, default: 0 },
-        offset: { type: Number, default: undefined },
+        offset: { type: Number, default: 0 },
         busy: { type: Boolean, default: false },
-        meta: { type: Object as PropType<PaginationMetaInput>, default: undefined },
         tag: { type: String, default: 'ul' },
         itemTag: { type: String, default: 'li' },
         iconTag: { type: String, default: 'i' },
@@ -61,17 +60,12 @@ export const VCPagination = defineComponent({
         return () => {
             const resolved = theme.value;
 
-            const total = props.meta?.total ?? props.total;
-            const limit = props.meta?.limit ?? props.limit;
-            const isBusy = props.meta?.busy ?? props.busy;
-            const inputOffset = props.meta?.offset ?? props.offset;
-
-            let offset: number;
-            if (typeof inputOffset === 'undefined') {
-                offset = 0;
-            } else {
-                offset = inputOffset;
-            }
+            const {
+                total, 
+                limit, 
+                offset, 
+                busy: isBusy,
+            } = props;
 
             let pagesTotal = 1;
             let pageCurrent = 1;

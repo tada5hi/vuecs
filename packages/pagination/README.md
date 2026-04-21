@@ -38,11 +38,13 @@ app.use(pagination);
 </template>
 ```
 
-Or with a unified meta object:
+Or with a unified state object via `v-bind`:
 
 ```vue
-<VCPagination :meta="{ total: 100, limit: 10, offset: 0 }" @load="onPageChange" />
+<VCPagination v-bind="meta" @load="onPageChange" />
 ```
+
+Where `meta` is any object whose keys match the props below (`total`, `limit`, `offset`, `busy`). Later bindings win, so `<VCPagination v-bind="meta" :offset="override" />` lets you override a single field.
 
 ## Props
 
@@ -50,9 +52,8 @@ Or with a unified meta object:
 |------|------|---------|-------------|
 | `total` | `number` | `0` | Total number of items |
 | `limit` | `number` | `0` | Items per page |
-| `offset` | `number` | `undefined` | Current offset |
+| `offset` | `number` | `0` | Current offset |
 | `busy` | `boolean` | `false` | Disables page buttons when true |
-| `meta` | `PaginationMetaInput` | `undefined` | Unified object (overrides individual props) |
 | `tag` | `string` | `'ul'` | Root element tag |
 | `itemTag` | `string` | `'li'` | Page item element tag |
 | `iconTag` | `string` | `'i'` | Icon element tag |

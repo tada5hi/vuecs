@@ -6,7 +6,7 @@
   -->
 
 <script lang="ts">
-import { type PaginationMetaInput, VCPagination } from '@vuecs/pagination';
+import { VCPagination } from '@vuecs/pagination';
 import { ref } from '#imports';
 import { defineNuxtComponent } from '#app';
 
@@ -19,7 +19,7 @@ export default defineNuxtComponent({
             items.push({ name: `Item #${i}` });
         }
 
-        const meta = ref<PaginationMetaInput>({
+        const meta = ref({
             total: items.length,
             offset: 0,
             limit: 10,
@@ -54,7 +54,7 @@ export default defineNuxtComponent({
         </ul>
         <div class="mt-3 text-center">
             <VCPagination
-                :meta="meta"
+                v-bind="meta"
                 @load="load"
             />
         </div>

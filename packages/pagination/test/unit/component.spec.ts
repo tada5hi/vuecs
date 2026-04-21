@@ -95,20 +95,19 @@ describe('VCPagination', () => {
         expect(activeButtons).toHaveLength(1);
     });
 
-    it('should use meta prop for values', () => {
+    it('should accept a spread state object via v-bind', () => {
         const wrapper = mount(VCPagination, {
             props: {
-                meta: {
-                    total: 30, 
-                    limit: 10, 
-                    offset: 10, 
-                }, 
+                total: 30,
+                limit: 10,
+                offset: 10,
             },
             global: { plugins: [themePlugin] },
         });
         const activeButtons = wrapper.findAll('.active');
         expect(activeButtons).toHaveLength(1);
         // Page 2 should be active (offset 10 / limit 10 + 1 = 2)
+        expect(activeButtons[0].text()).toBe('2');
     });
 
     it('should render single page without navigation arrows', () => {

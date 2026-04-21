@@ -8,7 +8,4 @@ export type PaginationMeta = {
     page: number;
 };
 
-export type PaginationMetaInput = Omit<PaginationMeta, 'page' | 'offset'> &
-    Partial<Pick<PaginationMeta, 'page' | 'offset'>>;
-
 export type Options = ThemeManagerOptions;
