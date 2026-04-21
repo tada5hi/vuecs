@@ -1,5 +1,5 @@
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride } from '@vuecs/core';
+import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
 import md5 from 'md5';
 import type { PropType } from 'vue';
 import { 
@@ -15,17 +15,18 @@ export type GravatarThemeClasses = {
 
 declare module '@vuecs/core' {
     interface ThemeElements {
-        gravatar?: ThemeClassesOverride<GravatarThemeClasses>;
+        gravatar?: ThemeElementDefinition<GravatarThemeClasses>;
     }
 }
 
-const themeDefaults: GravatarThemeClasses = { root: '' };
+const themeDefaults = { classes: { root: '' } };
 
 export const VCGravatar = defineComponent({
     name: 'VCGravatar',
     inheritAttrs: false,
     props: {
         themeClass: { type: Object as PropType<ThemeClassesOverride<GravatarThemeClasses>>, default: undefined },
+        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
         email: {
             type: String,
             default: '',
@@ -60,7 +61,7 @@ export const VCGravatar = defineComponent({
         },
     },
     setup(props, ctx) {
-        const theme = useComponentTheme('gravatar', toRef(props, 'themeClass'), themeDefaults);
+        const theme = useComponentTheme('gravatar', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
 
         const url = computed(() => {
             const protocol = props.protocol.slice(-1) === ':' ?

@@ -32,7 +32,7 @@ import fontAwesome from '@vuecs/preset-font-awesome';
 app.use(vuecs, {
     themes: [bootstrapV5(), fontAwesome()],
     overrides: {
-        elements: { listItem: { root: extend('border-bottom') } },
+        elements: { listItem: { classes: { root: extend('border-bottom') } } },
     },
 });
 ```

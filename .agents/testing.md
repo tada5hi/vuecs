@@ -31,6 +31,7 @@ Tests use the `.spec.ts` suffix and live under `test/unit/`:
 ```
 packages/core/test/unit/theme/extend.spec.ts
 packages/core/test/unit/theme/resolve.spec.ts
+packages/core/test/unit/theme/variant.spec.ts
 packages/core/test/unit/theme/manager.spec.ts
 packages/core/test/unit/utils/evaluate.spec.ts
 packages/navigation/test/unit/manager.spec.ts

@@ -1,15 +1,15 @@
 import { isExtendValue } from './extend';
 import type {
     ClassesMergeFn,
+    ComponentThemeDefinition,
     Theme,
     ThemeClasses,
     ThemeClassesOverride,
     ThemeClassesOverrideValue,
+    ThemeElementDefinition,
 } from './types';
 
-const RESERVED_KEYS = new Set(['variants', 'defaultVariants', 'compoundVariants']);
-
-function defaultClassesMergeFn(base: string, override: string): string {
+export function defaultClassesMergeFn(base: string, override: string): string {
     if (!base) return override;
     if (!override) return base;
     return `${base} ${override}`;
@@ -35,7 +35,6 @@ function applyOverrides(
     for (const key of keys) {
         const value = overrides[key];
         if (typeof value === 'undefined') continue;
-        if (RESERVED_KEYS.has(key)) continue;
 
         result[key] = resolveElementValue(result[key], value, mergeFn);
     }
@@ -51,7 +50,6 @@ function applyThemeOverrides(
     for (const key of keys) {
         const value = overrides[key];
         if (typeof value === 'undefined') continue;
-        if (RESERVED_KEYS.has(key)) continue;
 
         if (isExtendValue(value)) {
             // extend: merge with current accumulated result
@@ -66,29 +64,29 @@ function applyThemeOverrides(
 
 export function resolveComponentTheme<T extends ThemeClasses>(
     componentName: string,
-    defaults: T,
+    defaults: ComponentThemeDefinition<T>,
     themes: Theme[],
-    overrideClasses: Record<string, ThemeClassesOverride> | undefined,
+    overrideElements: Record<string, ThemeElementDefinition> | undefined,
     instanceThemeClass: ThemeClassesOverride<T> | undefined,
     classesMergeFn?: ClassesMergeFn,
 ): T {
     const merge = classesMergeFn || defaultClassesMergeFn;
-    const result: Record<string, string> = { ...defaults };
+    const result: Record<string, string> = { ...defaults.classes };
 
     // Layer 2: Themes (in array order) — always preserve defaults
     for (const theme of themes) {
-        const elements = theme.elements as Record<string, ThemeClassesOverride>;
-        const componentClasses = elements[componentName];
-        if (!componentClasses) continue;
+        const elements = theme.elements as Record<string, ThemeElementDefinition>;
+        const entry = elements[componentName];
+        if (!entry?.classes) continue;
 
-        applyThemeOverrides(result, defaults as Record<string, string>, componentClasses, merge);
+        applyThemeOverrides(result, defaults.classes as Record<string, string>, entry.classes, merge);
     }
 
     // Layer 3: User overrides
-    if (overrideClasses) {
-        const componentClasses = overrideClasses[componentName];
-        if (componentClasses) {
-            applyOverrides(result, componentClasses, merge);
+    if (overrideElements) {
+        const entry = overrideElements[componentName];
+        if (entry?.classes) {
+            applyOverrides(result, entry.classes, merge);
         }
     }
 

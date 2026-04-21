@@ -1,5 +1,5 @@
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride } from '@vuecs/core';
+import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import type { PropType, SlotsType } from 'vue';
 import { defineComponent, h, toRef } from 'vue';
 import type { 
@@ -16,7 +16,7 @@ import type {
 } from '../../type';
 import { VCListItem } from '../list-item/module';
 
-const themeDefaults: ListBodyThemeClasses = { root: 'vc-list-body' };
+const themeDefaults = { classes: { root: 'vc-list-body' } };
 
 export const VCListBody = defineComponent({
     name: 'VCListBody',
@@ -25,6 +25,7 @@ export const VCListBody = defineComponent({
         tag: { type: String, default: 'ul' },
         busy: { type: Boolean, default: false },
         themeClass: { type: Object as PropType<ThemeClassesOverride<ListBodyThemeClasses>>, default: undefined },
+        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
         itemThemeClass: { type: Object as PropType<ThemeClassesOverride<ListItemThemeClasses>>, default: undefined },
         slotProps: { type: Object as PropType<ListBaseSlotProps<any>>, default: undefined },
         // Item props passthrough
@@ -50,7 +51,7 @@ export const VCListBody = defineComponent({
         itemActionsExtra?: any;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('listBody', toRef(props, 'themeClass'), themeDefaults);
+        const theme = useComponentTheme('listBody', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
 
         return () => {
             const bodySlotProps: ListBodySlotProps<any> = {
@@ -78,7 +79,7 @@ export const VCListBody = defineComponent({
                     data: item,
                     index,
                     tag: props.itemTag,
-                    theme: props.itemThemeClass,
+                    themeClass: props.itemThemeClass,
                     icon: props.itemIcon,
                     text: props.itemText,
                     textPropName: props.itemTextPropName,

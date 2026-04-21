@@ -1,5 +1,5 @@
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride } from '@vuecs/core';
+import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
 import type { PropType, VNodeChild } from 'vue';
 import { 
     defineComponent, 
@@ -20,11 +20,11 @@ export type FormSelectThemeClasses = {
 
 declare module '@vuecs/core' {
     interface ThemeElements {
-        formSelect?: ThemeClassesOverride<FormSelectThemeClasses>;
+        formSelect?: ThemeElementDefinition<FormSelectThemeClasses>;
     }
 }
 
-const themeDefaults: FormSelectThemeClasses = { root: '' };
+const themeDefaults = { classes: { root: '' } };
 
 export const VCFormSelect = defineComponent({
     name: 'VCFormSelect',
@@ -35,10 +35,11 @@ export const VCFormSelect = defineComponent({
         optionDefaultId: { type: [String, Number], default: '' },
         optionDefaultValue: { type: String, default: '-- Select --' },
         themeClass: { type: Object as PropType<ThemeClassesOverride<FormSelectThemeClasses>>, default: undefined },
+        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
     },
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {
-        const theme = useComponentTheme('formSelect', toRef(props, 'themeClass'), themeDefaults);
+        const theme = useComponentTheme('formSelect', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
 
         return () => {
             const resolved = theme.value;

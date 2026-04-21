@@ -1,5 +1,5 @@
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride } from '@vuecs/core';
+import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
 import type { PropType, SlotsType, VNodeChild } from 'vue';
 import { 
     defineComponent, 
@@ -17,15 +17,17 @@ export type FormInputThemeClasses = {
 
 declare module '@vuecs/core' {
     interface ThemeElements {
-        formInput?: ThemeClassesOverride<FormInputThemeClasses>;
+        formInput?: ThemeElementDefinition<FormInputThemeClasses>;
     }
 }
 
-const themeDefaults: FormInputThemeClasses = {
-    root: '',
-    group: '',
-    groupAppend: '',
-    groupPrepend: '',
+const themeDefaults = {
+    classes: {
+        root: '',
+        group: '',
+        groupAppend: '',
+        groupPrepend: '',
+    },
 };
 
 export const VCFormInput = defineComponent({
@@ -39,6 +41,7 @@ export const VCFormInput = defineComponent({
         groupAppend: { type: Boolean, default: false },
         groupAppendContent: { type: String, default: undefined },
         themeClass: { type: Object as PropType<ThemeClassesOverride<FormInputThemeClasses>>, default: undefined },
+        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
     },
     emits: ['update:modelValue'],
     slots: Object as SlotsType<{
@@ -50,7 +53,7 @@ export const VCFormInput = defineComponent({
         emit, 
         slots, 
     }) {
-        const theme = useComponentTheme('formInput', toRef(props, 'themeClass'), themeDefaults);
+        const theme = useComponentTheme('formInput', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
 
         return () => {
             const resolved = theme.value;

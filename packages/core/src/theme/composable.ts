@@ -1,12 +1,18 @@
 import type { ComputedRef, MaybeRef } from 'vue';
 import { computed, unref } from 'vue';
-import type { ThemeClasses, ThemeClassesOverride } from './types';
+import type { 
+    ComponentThemeDefinition, 
+    ThemeClasses, 
+    ThemeClassesOverride, 
+    VariantValues, 
+} from './types';
 import { injectThemeManager } from './install';
 
 export function useComponentTheme<T extends ThemeClasses>(
     componentName: string,
     instanceThemeClass: MaybeRef<ThemeClassesOverride<T> | undefined>,
-    defaults: T,
+    defaults: ComponentThemeDefinition<T>,
+    variantValues?: MaybeRef<VariantValues | undefined>,
 ): ComputedRef<T> {
     const manager = injectThemeManager();
     if (!manager) {
@@ -17,6 +23,7 @@ export function useComponentTheme<T extends ThemeClasses>(
 
     return computed(() => {
         const themeClass = unref(instanceThemeClass);
-        return manager.resolve<T>(componentName, defaults, themeClass);
+        const variants = unref(variantValues);
+        return manager.resolve<T>(componentName, defaults, themeClass, variants);
     });
 }

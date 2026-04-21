@@ -1,5 +1,5 @@
 import { hasNormalizedSlot, normalizeSlot, useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride } from '@vuecs/core';
+import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import type { LinkProperties } from '@vuecs/link';
 import { VCLink } from '@vuecs/link';
 import type { PropType, VNodeChild } from 'vue';
@@ -16,15 +16,17 @@ import type { NavigationThemeClasses } from '../../helpers/component/types';
 import { isAbsoluteURL } from '../../helpers';
 import { ElementType, SlotName } from '../../constants';
 
-const themeDefaults: NavigationThemeClasses = {
-    group: 'vc-nav-items',
-    item: 'vc-nav-item',
-    itemNested: 'vc-nav-item-nested',
-    separator: 'vc-nav-separator',
-    link: 'vc-nav-link',
-    linkRoot: 'vc-nav-link-root',
-    linkIcon: 'vc-nav-link-icon',
-    linkText: 'vc-nav-link-text',
+const themeDefaults = {
+    classes: {
+        group: 'vc-nav-items',
+        item: 'vc-nav-item',
+        itemNested: 'vc-nav-item-nested',
+        separator: 'vc-nav-separator',
+        link: 'vc-nav-link',
+        linkRoot: 'vc-nav-link-root',
+        linkIcon: 'vc-nav-link-icon',
+        linkText: 'vc-nav-link-text',
+    },
 };
 
 export const VCNavItem = defineComponent({
@@ -38,11 +40,15 @@ export const VCNavItem = defineComponent({
             type: Object as PropType<ThemeClassesOverride<NavigationThemeClasses>>,
             default: undefined,
         },
+        themeVariant: {
+            type: Object as PropType<VariantValues>,
+            default: undefined,
+        },
     },
     setup(props, { slots }) {
         const itemsNode = resolveComponent('VCNavItems');
 
-        const theme = useComponentTheme('navigation', toRef(props, 'themeClass'), themeDefaults);
+        const theme = useComponentTheme('navigation', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
         const manager = injectNavigationManager();
 
         const data = toRef(props, 'data');

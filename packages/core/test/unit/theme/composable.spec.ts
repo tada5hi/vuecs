@@ -1,10 +1,10 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
-import { 
-    defineComponent, 
-    h, 
-    nextTick, 
-    ref, 
+import {
+    defineComponent,
+    h,
+    nextTick,
+    ref,
 } from 'vue';
 import { mount } from '@vue/test-utils';
 import { useComponentTheme } from '../../../src/theme/composable';
@@ -28,7 +28,7 @@ describe('useComponentTheme', () => {
         expect(() => {
             mount(defineComponent({
                 setup() {
-                    useComponentTheme('test', undefined, { root: '' });
+                    useComponentTheme('test', undefined, { classes: { root: '' } });
                     return () => h('div');
                 },
             }));
@@ -39,10 +39,7 @@ describe('useComponentTheme', () => {
         let resolved: Record<string, string> | undefined;
 
         mountWithTheme({}, () => {
-            const theme = useComponentTheme('button', undefined, {
-                root: 'vc-btn',
-                icon: 'vc-btn-icon',
-            });
+            const theme = useComponentTheme('button', undefined, { classes: { root: 'vc-btn', icon: 'vc-btn-icon' } });
             resolved = theme.value;
             return () => h('div');
         });
@@ -51,14 +48,11 @@ describe('useComponentTheme', () => {
     });
 
     it('should apply presets from manager', () => {
-        const preset: Theme = { elements: { button: { root: 'btn btn-primary' } } };
+        const preset: Theme = { elements: { button: { classes: { root: 'btn btn-primary' } } } };
         let resolved: Record<string, string> | undefined;
 
         mountWithTheme({ themes: [preset] }, () => {
-            const theme = useComponentTheme('button', undefined, {
-                root: 'vc-btn',
-                icon: 'vc-btn-icon',
-            });
+            const theme = useComponentTheme('button', undefined, { classes: { root: 'vc-btn', icon: 'vc-btn-icon' } });
             resolved = theme.value;
             return () => h('div');
         });
@@ -70,8 +64,8 @@ describe('useComponentTheme', () => {
     it('should apply user theme from manager', () => {
         let resolved: Record<string, string> | undefined;
 
-        mountWithTheme({ overrides: { elements: { button: { root: 'user-class' } } } }, () => {
-            const theme = useComponentTheme('button', undefined, { root: 'vc-btn' });
+        mountWithTheme({ overrides: { elements: { button: { classes: { root: 'user-class' } } } } }, () => {
+            const theme = useComponentTheme('button', undefined, { classes: { root: 'vc-btn' } });
             resolved = theme.value;
             return () => h('div');
         });
@@ -84,7 +78,7 @@ describe('useComponentTheme', () => {
         const instanceTheme = ref({ root: 'instance-class' });
 
         mountWithTheme({}, () => {
-            const theme = useComponentTheme('button', instanceTheme, { root: 'vc-btn' });
+            const theme = useComponentTheme('button', instanceTheme, { classes: { root: 'vc-btn' } });
             resolved = theme.value;
             return () => h('div');
         });
@@ -97,7 +91,7 @@ describe('useComponentTheme', () => {
         const instanceTheme = ref({ root: extend('extra') });
 
         mountWithTheme({}, () => {
-            const theme = useComponentTheme('button', instanceTheme, { root: 'vc-btn' });
+            const theme = useComponentTheme('button', instanceTheme, { classes: { root: 'vc-btn' } });
             resolved = theme.value;
             return () => h('div');
         });
@@ -110,7 +104,7 @@ describe('useComponentTheme', () => {
         let themeRef: any;
 
         mountWithTheme({}, () => {
-            themeRef = useComponentTheme('button', instanceTheme as any, { root: 'vc-btn' });
+            themeRef = useComponentTheme('button', instanceTheme as any, { classes: { root: 'vc-btn' } });
             return () => h('div', { class: themeRef.value.root });
         });
 
@@ -126,7 +120,7 @@ describe('useComponentTheme', () => {
         let resolved: Record<string, string> | undefined;
 
         mountWithTheme({}, () => {
-            const theme = useComponentTheme('button', undefined, { root: 'vc-btn' });
+            const theme = useComponentTheme('button', undefined, { classes: { root: 'vc-btn' } });
             resolved = theme.value;
             return () => h('div');
         });
@@ -138,7 +132,7 @@ describe('useComponentTheme', () => {
         let resolved: Record<string, string> | undefined;
 
         mountWithTheme({}, () => {
-            const theme = useComponentTheme('button', { root: 'plain-class' }, { root: 'vc-btn' });
+            const theme = useComponentTheme('button', { root: 'plain-class' }, { classes: { root: 'vc-btn' } });
             resolved = theme.value;
             return () => h('div');
         });
@@ -152,14 +146,14 @@ describe('useComponentTheme', () => {
 
         const wrapper = mount(defineComponent({
             setup() {
-                themeRef = useComponentTheme('button', undefined, { root: 'vc-btn' });
+                themeRef = useComponentTheme('button', undefined, { classes: { root: 'vc-btn' } });
                 return () => h('div', { class: themeRef.value.root });
             },
         }), { global: { plugins: [[{ install: (app: any) => { manager = installThemeManager(app); } }]] } });
 
         expect(themeRef.value.root).toBe('vc-btn');
 
-        manager!.setThemes([{ elements: { button: { root: 'btn-dark' } } }]);
+        manager!.setThemes([{ elements: { button: { classes: { root: 'btn-dark' } } } }]);
         await nextTick();
 
         expect(themeRef.value.root).toBe('vc-btn btn-dark');
@@ -172,14 +166,14 @@ describe('useComponentTheme', () => {
 
         const wrapper = mount(defineComponent({
             setup() {
-                themeRef = useComponentTheme('button', undefined, { root: 'vc-btn' });
+                themeRef = useComponentTheme('button', undefined, { classes: { root: 'vc-btn' } });
                 return () => h('div', { class: themeRef.value.root });
             },
         }), { global: { plugins: [[{ install: (app: any) => { manager = installThemeManager(app); } }]] } });
 
         expect(themeRef.value.root).toBe('vc-btn');
 
-        manager!.setOverrides({ elements: { button: { root: 'override-class' } } });
+        manager!.setOverrides({ elements: { button: { classes: { root: 'override-class' } } } });
         await nextTick();
 
         expect(themeRef.value.root).toBe('override-class');
@@ -192,14 +186,14 @@ describe('useComponentTheme', () => {
 
         const wrapper = mount(defineComponent({
             setup() {
-                themeRef = useComponentTheme('button', undefined, { root: 'vc-btn' });
+                themeRef = useComponentTheme('button', undefined, { classes: { root: 'vc-btn' } });
                 return () => h('div', { class: themeRef.value.root });
             },
         }), {
             global: {
                 plugins: [[{
                     install: (app: any) => {
-                        manager = installThemeManager(app, { themes: [{ elements: { button: { root: 'btn-light' } } }] });
+                        manager = installThemeManager(app, { themes: [{ elements: { button: { classes: { root: 'btn-light' } } } }] });
                     },
                 }]],
             },
@@ -208,7 +202,7 @@ describe('useComponentTheme', () => {
         expect(themeRef.value.root).toBe('vc-btn btn-light');
 
         const { themes } = (manager!);
-        themes[0] = { elements: { button: { root: 'btn-dark' } } };
+        themes[0] = { elements: { button: { classes: { root: 'btn-dark' } } } };
         manager!.setThemes(themes);
         await nextTick();
 

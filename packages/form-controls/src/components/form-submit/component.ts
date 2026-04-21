@@ -1,5 +1,5 @@
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride } from '@vuecs/core';
+import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
 import type { PropType, VNodeArrayChildren } from 'vue';
 import { 
     defineComponent, 
@@ -18,16 +18,18 @@ export type FormSubmitThemeClasses = {
 
 declare module '@vuecs/core' {
     interface ThemeElements {
-        formSubmit?: ThemeClassesOverride<FormSubmitThemeClasses>;
+        formSubmit?: ThemeElementDefinition<FormSubmitThemeClasses>;
     }
 }
 
-const themeDefaults: FormSubmitThemeClasses = {
-    root: '',
-    createButton: '',
-    updateButton: '',
-    createIcon: '',
-    updateIcon: '',
+const themeDefaults = {
+    classes: {
+        root: '',
+        createButton: '',
+        updateButton: '',
+        createIcon: '',
+        updateIcon: '',
+    },
 };
 
 export const VCFormSubmit = defineComponent({
@@ -43,10 +45,11 @@ export const VCFormSubmit = defineComponent({
         submit: { type: Function as PropType<() => Promise<any> | any> },
         invalid: { type: Boolean, default: true },
         themeClass: { type: Object as PropType<ThemeClassesOverride<FormSubmitThemeClasses>>, default: undefined },
+        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
     },
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {
-        const theme = useComponentTheme('formSubmit', toRef(props, 'themeClass'), themeDefaults);
+        const theme = useComponentTheme('formSubmit', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
 
         return () => {
             const resolved = theme.value;

@@ -1,5 +1,5 @@
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride } from '@vuecs/core';
+import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
 import type { PropType, SlotsType } from 'vue';
 import {
     computed,
@@ -24,11 +24,11 @@ export type CountdownThemeClasses = {
 
 declare module '@vuecs/core' {
     interface ThemeElements {
-        countdown?: ThemeClassesOverride<CountdownThemeClasses>;
+        countdown?: ThemeElementDefinition<CountdownThemeClasses>;
     }
 }
 
-const themeDefaults: CountdownThemeClasses = { root: '' };
+const themeDefaults = { classes: { root: '' } };
 
 export type CountdownSlotProps = {
     days: number;
@@ -61,6 +61,7 @@ export const VCCountdown = defineComponent({
             validator: (value: number) => value >= 0, 
         },
         themeClass: { type: Object as PropType<ThemeClassesOverride<CountdownThemeClasses>>, default: undefined },
+        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
     },
     emits: ['start', 'progress', 'abort', 'end'],
     slots: Object as SlotsType<{
@@ -71,7 +72,7 @@ export const VCCountdown = defineComponent({
         expose, 
         slots, 
     }) {
-        const theme = useComponentTheme('countdown', toRef(props, 'themeClass'), themeDefaults);
+        const theme = useComponentTheme('countdown', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
 
         const counting = ref(false);
         const totalMilliseconds = ref(0);

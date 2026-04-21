@@ -348,8 +348,8 @@ describe('VCList', () => {
     it('should apply preset theme classes', () => {
         const theme: Theme = {
             elements: {
-                list: { root: 'custom-list' },
-                listBody: { root: 'custom-body' },
+                list: { classes: { root: 'custom-list' } },
+                listBody: { classes: { root: 'custom-body' } },
             },
         };
         const wrapper = mount(VCList, {
