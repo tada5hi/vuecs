@@ -1,5 +1,5 @@
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride } from '@vuecs/core';
+import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
 import type { PropType, SlotsType, VNodeChild } from 'vue';
 import { 
     defineComponent, 
@@ -16,14 +16,16 @@ export type FormInputCheckboxThemeClasses = {
 
 declare module '@vuecs/core' {
     interface ThemeElements {
-        formInputCheckbox?: ThemeClassesOverride<FormInputCheckboxThemeClasses>;
+        formInputCheckbox?: ThemeElementDefinition<FormInputCheckboxThemeClasses>;
     }
 }
 
-const themeDefaults: FormInputCheckboxThemeClasses = {
-    root: '',
-    label: '',
-    group: '',
+const themeDefaults = {
+    classes: {
+        root: '',
+        label: '',
+        group: '',
+    },
 };
 
 export type FormInputCheckboxLabelSlotProps = {
@@ -39,6 +41,7 @@ export const VCFormInputCheckbox = defineComponent({
         label: { type: Boolean, default: true },
         labelContent: { type: String, default: 'Input' },
         themeClass: { type: Object as PropType<ThemeClassesOverride<FormInputCheckboxThemeClasses>>, default: undefined },
+        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
     },
     emits: ['update:modelValue'],
     slots: Object as SlotsType<{
@@ -49,7 +52,7 @@ export const VCFormInputCheckbox = defineComponent({
         emit, 
         slots, 
     }) {
-        const theme = useComponentTheme('formInputCheckbox', toRef(props, 'themeClass'), themeDefaults);
+        const theme = useComponentTheme('formInputCheckbox', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
         const id = (Math.random() + 1).toString(36).substring(7);
 
         return () => {

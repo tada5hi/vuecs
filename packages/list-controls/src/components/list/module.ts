@@ -1,5 +1,5 @@
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride } from '@vuecs/core';
+import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import type { PropType, SlotsType, VNodeArrayChildren } from 'vue';
 import { defineComponent, h, toRef } from 'vue';
 import type {
@@ -25,7 +25,7 @@ import { VCListHeader } from '../list-header/module';
 import { VCListLoading } from '../list-loading/module';
 import { VCListNoMore } from '../list-no-more/module';
 
-const themeDefaults: ListThemeClasses = { root: 'vc-list' };
+const themeDefaults = { classes: { root: 'vc-list' } };
 
 export const VCList = defineComponent({
     name: 'VCList',
@@ -33,6 +33,7 @@ export const VCList = defineComponent({
         data: { type: Array as PropType<any[]>, default: () => [] },
         tag: { type: String, default: 'div' },
         themeClass: { type: Object as PropType<ThemeClassesOverride<ListThemeClasses>>, default: undefined },
+        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 
         // Sub-component themes
         headerThemeClass: { type: Object as PropType<ThemeClassesOverride<ListHeaderThemeClasses>>, default: undefined },
@@ -86,7 +87,7 @@ export const VCList = defineComponent({
         itemActionsExtra?: any;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('list', toRef(props, 'themeClass'), themeDefaults);
+        const theme = useComponentTheme('list', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
 
         return () => {
             const total = props.total ?? props.data.length;

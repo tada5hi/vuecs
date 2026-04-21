@@ -1,5 +1,5 @@
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride } from '@vuecs/core';
+import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
 import type { PropType, VNodeArrayChildren, VNodeChild } from 'vue';
 import {
     defineComponent,
@@ -23,19 +23,21 @@ export type PaginationThemeClasses = {
 
 declare module '@vuecs/core' {
     interface ThemeElements {
-        pagination?: ThemeClassesOverride<PaginationThemeClasses>;
+        pagination?: ThemeElementDefinition<PaginationThemeClasses>;
     }
 }
 
-const themeDefaults: PaginationThemeClasses = {
-    root: 'vc-pagination',
-    item: 'vc-pagination-item',
-    link: 'vc-pagination-link',
-    linkActive: 'active',
-    prevIcon: '',
-    nextIcon: '',
-    firstIcon: '',
-    lastIcon: '',
+const themeDefaults = {
+    classes: {
+        root: 'vc-pagination',
+        item: 'vc-pagination-item',
+        link: 'vc-pagination-link',
+        linkActive: 'active',
+        prevIcon: '',
+        nextIcon: '',
+        firstIcon: '',
+        lastIcon: '',
+    },
 };
 
 export const VCPagination = defineComponent({
@@ -50,10 +52,11 @@ export const VCPagination = defineComponent({
         itemTag: { type: String, default: 'li' },
         iconTag: { type: String, default: 'i' },
         themeClass: { type: Object as PropType<ThemeClassesOverride<PaginationThemeClasses>>, default: undefined },
+        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
     },
     emits: ['load'],
     setup(props, { emit }) {
-        const theme = useComponentTheme('pagination', toRef(props, 'themeClass'), themeDefaults);
+        const theme = useComponentTheme('pagination', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
 
         return () => {
             const resolved = theme.value;

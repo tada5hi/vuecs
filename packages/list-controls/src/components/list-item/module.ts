@@ -4,7 +4,7 @@ import {
     isObject,
     useComponentTheme,
 } from '@vuecs/core';
-import type { ThemeClassesOverride } from '@vuecs/core';
+import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { merge } from 'smob';
 import type { PropType, SlotsType, VNodeChild } from 'vue';
 import {
@@ -25,13 +25,15 @@ import type {
     ListItemThemeClasses, 
 } from '../type';
 
-const themeDefaults: ListItemThemeClasses = {
-    root: 'vc-list-item',
-    icon: '',
-    iconWrapper: '',
-    textWrapper: '',
-    actionsWrapper: '',
-    actionsExtraWrapper: '',
+const themeDefaults = {
+    classes: {
+        root: 'vc-list-item',
+        icon: '',
+        iconWrapper: '',
+        textWrapper: '',
+        actionsWrapper: '',
+        actionsExtraWrapper: '',
+    },
 };
 
 function maybeWrapContent(input: VNodeChild, wrap: boolean, tag: string, className: string) {
@@ -48,6 +50,7 @@ export const VCListItem = defineComponent({
         index: { type: Number, default: undefined },
         tag: { type: String, default: 'li' },
         themeClass: { type: Object as PropType<ThemeClassesOverride<ListItemThemeClasses>>, default: undefined },
+        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 
         // Icon options
         icon: { type: Boolean, default: true },
@@ -94,7 +97,7 @@ export const VCListItem = defineComponent({
         actionsExtra?: ListItemSlotProps<any>;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('listItem', toRef(props, 'themeClass'), themeDefaults);
+        const theme = useComponentTheme('listItem', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
 
         return () => {
             let itemData = props.data;

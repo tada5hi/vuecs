@@ -1,4 +1,4 @@
-import type { ThemeClassesOverride } from '@vuecs/core';
+import type { ThemeElementDefinition } from '@vuecs/core';
 import type { VNodeChild } from 'vue';
 import type { ListEventFn, ListLoadFn } from '../type';
 
@@ -41,13 +41,13 @@ export type ListNoMoreThemeClasses = {
 
 declare module '@vuecs/core' {
     interface ThemeElements {
-        list?: ThemeClassesOverride<ListThemeClasses>;
-        listHeader?: ThemeClassesOverride<ListHeaderThemeClasses>;
-        listFooter?: ThemeClassesOverride<ListFooterThemeClasses>;
-        listBody?: ThemeClassesOverride<ListBodyThemeClasses>;
-        listItem?: ThemeClassesOverride<ListItemThemeClasses>;
-        listLoading?: ThemeClassesOverride<ListLoadingThemeClasses>;
-        listNoMore?: ThemeClassesOverride<ListNoMoreThemeClasses>;
+        list?: ThemeElementDefinition<ListThemeClasses>;
+        listHeader?: ThemeElementDefinition<ListHeaderThemeClasses>;
+        listFooter?: ThemeElementDefinition<ListFooterThemeClasses>;
+        listBody?: ThemeElementDefinition<ListBodyThemeClasses>;
+        listItem?: ThemeElementDefinition<ListItemThemeClasses>;
+        listLoading?: ThemeElementDefinition<ListLoadingThemeClasses>;
+        listNoMore?: ThemeElementDefinition<ListNoMoreThemeClasses>;
     }
 }
 

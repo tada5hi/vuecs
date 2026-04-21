@@ -80,8 +80,10 @@ describe('VCFormGroup', () => {
         const preset = {
             elements: {
                 formGroup: {
-                    root: 'form-group',
-                    validationError: 'has-error',
+                    classes: {
+                        root: 'form-group',
+                        validationError: 'has-error',
+                    },
                 },
             },
         };
@@ -99,9 +101,11 @@ describe('VCFormGroup', () => {
         const preset = {
             elements: {
                 formGroup: {
-                    root: 'form-group',
-                    validationWarning: 'has-warning',
-                    validationError: 'has-error',
+                    classes: {
+                        root: 'form-group',
+                        validationWarning: 'has-warning',
+                        validationError: 'has-error',
+                    },
                 },
             },
         };

@@ -1,10 +1,10 @@
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride } from '@vuecs/core';
-import type { 
-    PropType, 
-    SlotsType, 
-    VNodeArrayChildren, 
-    VNodeChild, 
+import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
+import type {
+    PropType,
+    SlotsType,
+    VNodeArrayChildren,
+    VNodeChild,
 } from 'vue';
 import { defineComponent, h, toRef } from 'vue';
 import { ValidationSeverity } from '../constants';
@@ -16,11 +16,11 @@ export type ValidationGroupThemeClasses = {
 
 declare module '@vuecs/core' {
     interface ThemeElements {
-        validationGroup?: ThemeClassesOverride<ValidationGroupThemeClasses>;
+        validationGroup?: ThemeElementDefinition<ValidationGroupThemeClasses>;
     }
 }
 
-const themeDefaults: ValidationGroupThemeClasses = { item: 'form-group-hint group-required' };
+const themeDefaults = { classes: { item: 'form-group-hint group-required' } };
 
 export const VCValidationGroup = defineComponent({
     name: 'VCValidationGroup',
@@ -29,13 +29,14 @@ export const VCValidationGroup = defineComponent({
         messages: { type: [Object, Array] as PropType<ValidationMessages>, default: () => ({}) },
         itemTag: { type: String, default: 'div' },
         themeClass: { type: Object as PropType<ThemeClassesOverride<ValidationGroupThemeClasses>>, default: undefined },
+        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
     },
     slots: Object as SlotsType<{
         default: any;
         item: any;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('validationGroup', toRef(props, 'themeClass'), themeDefaults);
+        const theme = useComponentTheme('validationGroup', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
 
         return () => {
             const resolved = theme.value;

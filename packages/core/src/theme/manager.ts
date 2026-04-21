@@ -1,12 +1,16 @@
 import type { ShallowRef } from 'vue';
 import { shallowRef, triggerRef } from 'vue';
 import type {
+    ComponentThemeDefinition,
     Theme,
     ThemeClasses,
     ThemeClassesOverride,
+    ThemeElementDefinition,
     ThemeManagerOptions,
+    VariantValues,
 } from './types';
 import { resolveComponentTheme } from './resolve';
+import { extractVariantConfig, resolveVariantClasses } from './variant';
 
 export class ThemeManager {
     private readonly themesRef: ShallowRef<Theme[]>;
@@ -44,23 +48,60 @@ export class ThemeManager {
 
     resolve<T extends ThemeClasses>(
         componentName: string,
-        defaults: T,
+        defaults: ComponentThemeDefinition<T>,
         instanceThemeClass?: ThemeClassesOverride<T>,
+        variantValues?: VariantValues,
     ): T {
         const { themes } = this;
         const { overrides } = this;
+
+        const overrideElements = overrides?.elements as Record<string, ThemeElementDefinition> | undefined;
 
         // classesMergeFn: overrides wins, then last theme with one defined
         const classesMergeFn = overrides?.classesMergeFn ||
             themes.findLast((t) => t.classesMergeFn)?.classesMergeFn;
 
-        return resolveComponentTheme(
+        const result = resolveComponentTheme(
             componentName,
             defaults,
             themes,
-            overrides?.elements as Record<string, ThemeClassesOverride> | undefined,
+            overrideElements,
             instanceThemeClass,
             classesMergeFn,
         );
+
+        // Variant resolution
+        if (variantValues) {
+            const variantConfig = extractVariantConfig(
+                componentName,
+                defaults,
+                themes,
+                overrideElements,
+            );
+
+            const variantClasses = resolveVariantClasses(
+                variantConfig,
+                variantValues,
+                classesMergeFn,
+            );
+
+            const mergeFn = classesMergeFn || ((a: string, b: string) => {
+                if (!a) return b;
+                if (!b) return a;
+                return `${a} ${b}`;
+            });
+
+            const slots = Object.keys(variantClasses);
+            for (const slot of slots) {
+                const cls = variantClasses[slot];
+                if (!cls) continue;
+                (result as Record<string, string>)[slot] = mergeFn(
+                    (result as Record<string, string>)[slot] || '',
+                    cls,
+                );
+            }
+        }
+
+        return result;
     }
 }

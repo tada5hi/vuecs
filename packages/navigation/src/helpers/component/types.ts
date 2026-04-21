@@ -1,4 +1,4 @@
-import type { ThemeClassesOverride } from '@vuecs/core';
+import type { ThemeElementDefinition } from '@vuecs/core';
 
 export type NavigationThemeClasses = {
     group: string;
@@ -13,6 +13,6 @@ export type NavigationThemeClasses = {
 
 declare module '@vuecs/core' {
     interface ThemeElements {
-        navigation?: ThemeClassesOverride<NavigationThemeClasses>;
+        navigation?: ThemeElementDefinition<NavigationThemeClasses>;
     }
 }
