@@ -1,3 +1,4 @@
+import type { ThemeClassesOverride } from '@vuecs/core';
 import type { VNodeChild } from 'vue';
 import type { ListEventFn, ListLoadFn } from '../type';
 
@@ -37,6 +38,18 @@ export type ListLoadingThemeClasses = {
 export type ListNoMoreThemeClasses = {
     root: string;
 };
+
+declare module '@vuecs/core' {
+    interface ThemeElements {
+        list?: ThemeClassesOverride<ListThemeClasses>;
+        listHeader?: ThemeClassesOverride<ListHeaderThemeClasses>;
+        listFooter?: ThemeClassesOverride<ListFooterThemeClasses>;
+        listBody?: ThemeClassesOverride<ListBodyThemeClasses>;
+        listItem?: ThemeClassesOverride<ListItemThemeClasses>;
+        listLoading?: ThemeClassesOverride<ListLoadingThemeClasses>;
+        listNoMore?: ThemeClassesOverride<ListNoMoreThemeClasses>;
+    }
+}
 
 // ---------------------------------------------------------------
 // Slot props types (#1488)

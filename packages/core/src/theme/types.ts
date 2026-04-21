@@ -15,7 +15,9 @@ export type ThemeClassesOverride<T extends ThemeClasses = ThemeClasses> = {
     [K in keyof T]?: ThemeClassesOverrideValue;
 };
 
-export type ThemeElements = Record<string, ThemeClassesOverride>;
+export interface ThemeElements {
+    [key: string]: ThemeClassesOverride;
+}
 
 export type Theme = {
     elements: ThemeElements;

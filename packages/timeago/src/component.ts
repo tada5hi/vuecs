@@ -20,6 +20,12 @@ export type TimeagoThemeClasses = {
     root: string;
 };
 
+declare module '@vuecs/core' {
+    interface ThemeElements {
+        timeago?: ThemeClassesOverride<TimeagoThemeClasses>;
+    }
+}
+
 const themeDefaults: TimeagoThemeClasses = { root: '' };
 
 export const VCTimeago = defineComponent({

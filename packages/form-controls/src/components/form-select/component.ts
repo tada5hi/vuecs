@@ -18,6 +18,12 @@ export type FormSelectThemeClasses = {
     root: string;
 };
 
+declare module '@vuecs/core' {
+    interface ThemeElements {
+        formSelect?: ThemeClassesOverride<FormSelectThemeClasses>;
+    }
+}
+
 const themeDefaults: FormSelectThemeClasses = { root: '' };
 
 export const VCFormSelect = defineComponent({

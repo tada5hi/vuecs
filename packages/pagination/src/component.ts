@@ -21,6 +21,12 @@ export type PaginationThemeClasses = {
     lastIcon: string;
 };
 
+declare module '@vuecs/core' {
+    interface ThemeElements {
+        pagination?: ThemeClassesOverride<PaginationThemeClasses>;
+    }
+}
+
 const themeDefaults: PaginationThemeClasses = {
     root: 'vc-pagination',
     item: 'vc-pagination-item',

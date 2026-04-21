@@ -15,6 +15,12 @@ export type FormInputThemeClasses = {
     groupPrepend: string;
 };
 
+declare module '@vuecs/core' {
+    interface ThemeElements {
+        formInput?: ThemeClassesOverride<FormInputThemeClasses>;
+    }
+}
+
 const themeDefaults: FormInputThemeClasses = {
     root: '',
     group: '',

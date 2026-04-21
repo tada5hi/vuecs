@@ -14,6 +14,12 @@ export type FormGroupThemeClasses = {
     validationWarning: string;
 };
 
+declare module '@vuecs/core' {
+    interface ThemeElements {
+        formGroup?: ThemeClassesOverride<FormGroupThemeClasses>;
+    }
+}
+
 const themeDefaults: FormGroupThemeClasses = {
     root: '',
     label: '',
