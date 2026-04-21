@@ -9,7 +9,7 @@ import type {
     ThemeManagerOptions,
     VariantValues,
 } from './types';
-import { resolveComponentTheme } from './resolve';
+import { defaultClassesMergeFn, resolveComponentTheme } from './resolve';
 import { extractVariantConfig, resolveVariantClasses } from './variant';
 
 export class ThemeManager {
@@ -85,20 +85,14 @@ export class ThemeManager {
                 classesMergeFn,
             );
 
-            const mergeFn = classesMergeFn || ((a: string, b: string) => {
-                if (!a) return b;
-                if (!b) return a;
-                return `${a} ${b}`;
-            });
+            const mergeFn = classesMergeFn || defaultClassesMergeFn;
+            const mutableResult = result as Record<string, string>;
 
             const slots = Object.keys(variantClasses);
             for (const slot of slots) {
                 const cls = variantClasses[slot];
                 if (!cls) continue;
-                (result as Record<string, string>)[slot] = mergeFn(
-                    (result as Record<string, string>)[slot] || '',
-                    cls,
-                );
+                mutableResult[slot] = mergeFn(mutableResult[slot] || '', cls);
             }
         }
 

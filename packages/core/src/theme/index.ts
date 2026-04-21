@@ -1,5 +1,5 @@
 export { extend, isExtendValue } from './extend';
-export { resolveComponentTheme } from './resolve';
+export { defaultClassesMergeFn, resolveComponentTheme } from './resolve';
 export { ThemeManager } from './manager';
 export { installThemeManager, injectThemeManager } from './install';
 export { useComponentTheme } from './composable';

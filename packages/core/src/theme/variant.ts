@@ -9,12 +9,7 @@ import type {
     VariantDefinitions,
     VariantValues,
 } from './types';
-
-function defaultClassesMergeFn(base: string, override: string): string {
-    if (!base) return override;
-    if (!override) return base;
-    return `${base} ${override}`;
-}
+import { defaultClassesMergeFn } from './resolve';
 
 export function extractVariantConfig(
     componentName: string,
