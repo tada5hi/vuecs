@@ -36,7 +36,7 @@ npm run lint:fix       # Auto-fix lint issues
 | `@vuecs/theme-bootstrap-v4` | Bootstrap v4 theme | 1.0.1 |
 | `@vuecs/theme-bootstrap-v5` | Bootstrap v5 theme | 2.0.1 |
 | `@vuecs/theme-font-awesome` | Font Awesome icon theme | 1.1.1 |
-| `@vuecs/theme-tailwind` | Tailwind CSS theme (re-exports `twMerge`) | 0.0.0 |
+| `@vuecs/theme-tailwind` | Tailwind CSS theme (exports `merge: ClassesMergeFn`) | 0.0.0 |
 | `@vuecs/timeago` | Relative time display component | 1.1.2 |
 
 ### Dependency Layers
@@ -44,7 +44,7 @@ npm run lint:fix       # Auto-fix lint issues
 ```
 Layer 0 (no internal deps):  core, countdown, gravatar, link, timeago
 Layer 1 (depends on core):   form-controls, list-controls, navigation, pagination
-Layer 2 (depends on Layer 1): (themes depend on component packages at runtime)
+Layer 2 (depends on Layer 0): themes (@vuecs/core peer dep only — pure data that targets component packages at runtime)
 ```
 
 `navigation` also depends on `@vuecs/link`.

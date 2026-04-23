@@ -1,11 +1,11 @@
-import type { Theme } from '@vuecs/core';
+import type { ClassesMergeFn, Theme } from '@vuecs/core';
 import { twMerge } from 'tailwind-merge';
 
-export { twMerge } from 'tailwind-merge';
+export const merge: ClassesMergeFn = (base, override) => twMerge(base, override);
 
 export default function tailwindTheme(): Theme {
     return {
-        classesMergeFn: twMerge,
+        classesMergeFn: merge,
         elements: {
             formGroup: {
                 classes: {
