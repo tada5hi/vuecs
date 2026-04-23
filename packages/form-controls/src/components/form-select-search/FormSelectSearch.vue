@@ -1,14 +1,14 @@
 <script lang="ts">
 import {
-    onClickOutside, 
+    onClickOutside,
     useInfiniteScroll,
 } from '@vueuse/core';
 import type { PropType } from 'vue';
 import {
     computed,
-    defineComponent, 
-    ref, 
-    toRef, 
+    defineComponent,
+    ref,
+    toRef,
     watch,
 } from 'vue';
 import type { FormSelectOption } from '../form-select';

@@ -11,6 +11,7 @@ Multi-level navigation components for Vue 3 with `NavigationManager`, path-based
 - [Quick Start](#quick-start)
 - [Components](#components)
 - [NavigationManager](#navigationmanager)
+- [Typed Slot Props](#typed-slot-props)
 - [Theme Slots](#theme-slots)
 - [License](#license)
 
@@ -76,6 +77,31 @@ installNavigation(app, {
     },
 });
 ```
+
+## Typed Slot Props
+
+Slot prop interfaces are exported for render-function consumers:
+
+```typescript
+import {
+    VCNavItem,
+    type NavItemLinkSlotProps,
+} from '@vuecs/navigation';
+
+h(VCNavItem, { data }, {
+    link: (props: NavItemLinkSlotProps) =>
+        h('a', { onClick: () => props.select(props.data) }, props.data.name),
+});
+```
+
+| Export | Used by |
+|--------|---------|
+| `NavItemSeparatorSlotProps<META>` | `VCNavItem` `separator` |
+| `NavItemLinkSlotProps<META>` | `VCNavItem` `link` |
+| `NavItemSubSlotProps<META>` | `VCNavItem` `sub` |
+| `NavItemSubTitleSlotProps<META>` | `VCNavItem` `sub-title` |
+| `NavItemSubItemsSlotProps<META>` | `VCNavItem` `sub-items` |
+| `NavItemsItemSlotProps<META>` | `VCNavItems` `item` |
 
 ## Theme Slots
 

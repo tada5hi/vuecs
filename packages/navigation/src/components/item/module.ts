@@ -2,7 +2,7 @@ import { hasNormalizedSlot, normalizeSlot, useComponentTheme } from '@vuecs/core
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import type { LinkProperties } from '@vuecs/link';
 import { VCLink } from '@vuecs/link';
-import type { PropType, VNodeChild } from 'vue';
+import type { PropType, SlotsType, VNodeChild } from 'vue';
 import {
     computed,
     defineComponent,
@@ -15,6 +15,13 @@ import type { NavigationItemNormalized } from '../../types';
 import type { NavigationThemeClasses } from '../../helpers/component/types';
 import { isAbsoluteURL } from '../../helpers';
 import { ElementType, SlotName } from '../../constants';
+import type {
+    NavItemLinkSlotProps,
+    NavItemSeparatorSlotProps,
+    NavItemSubItemsSlotProps,
+    NavItemSubSlotProps,
+    NavItemSubTitleSlotProps,
+} from '../type';
 
 const themeDefaults = {
     classes: {
@@ -45,6 +52,13 @@ export const VCNavItem = defineComponent({
             default: undefined,
         },
     },
+    slots: Object as SlotsType<{
+        separator: NavItemSeparatorSlotProps;
+        link: NavItemLinkSlotProps;
+        sub: NavItemSubSlotProps;
+        'sub-title': NavItemSubTitleSlotProps;
+        'sub-items': NavItemSubItemsSlotProps;
+    }>,
     setup(props, { slots }) {
         const itemsNode = resolveComponent('VCNavItems');
 

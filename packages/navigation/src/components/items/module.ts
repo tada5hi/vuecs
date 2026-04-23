@@ -2,6 +2,7 @@ import { hasNormalizedSlot, normalizeSlot, useComponentTheme } from '@vuecs/core
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import type {
     PropType,
+    SlotsType,
     VNodeArrayChildren,
     VNodeChild,
 } from 'vue';
@@ -19,6 +20,7 @@ import { injectNavigationManager } from '../../manager';
 import type { NavigationItemNormalized } from '../../types';
 import type { NavigationThemeClasses } from '../../helpers/component/types';
 import { VCNavItem } from '../item';
+import type { NavItemsItemSlotProps } from '../type';
 
 const themeDefaults = {
     classes: {
@@ -41,6 +43,9 @@ export const VCNavItems = defineComponent({
         themeClass: { type: Object as PropType<ThemeClassesOverride<NavigationThemeClasses>>, default: undefined },
         themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
     },
+    slots: Object as SlotsType<{
+        item: NavItemsItemSlotProps;
+    }>,
     setup(props, { slots }) {
         const theme = useComponentTheme('navigation', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
 
