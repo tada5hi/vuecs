@@ -156,7 +156,7 @@ Components expose two theme-related props:
 
 ## Theme Architecture
 
-Theme packages (`theme-bootstrap-v4`, `theme-bootstrap-v5`, `theme-font-awesome`, `theme-tailwind`) are functions returning `Theme` objects with an `elements` map. They configure component appearance via CSS class mappings and optional variant definitions. Multiple themes are merged in array order. `@vuecs/theme-tailwind` ships `twMerge` pre-wired as its `classesMergeFn` and re-exports `twMerge` for convenience.
+Theme packages (`theme-bootstrap-v4`, `theme-bootstrap-v5`, `theme-font-awesome`, `theme-tailwind`) are functions returning `Theme` objects with an `elements` map. They configure component appearance via CSS class mappings and optional variant definitions. Multiple themes are merged in array order. `@vuecs/theme-tailwind` ships a `twMerge`-backed `merge` function pre-wired as its `classesMergeFn` and exports it as `merge: ClassesMergeFn` for reuse in overrides.
 
 ```typescript
 // Theme type structure
