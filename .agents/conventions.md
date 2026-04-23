@@ -39,6 +39,7 @@ npm run lint:fix      # Auto-fix style issues
 - **`types.ts` files** contain only `type` and `interface` declarations — no `const`, `enum`, or runtime values
 - **`constants.ts` files** contain `const`, `enum`, and other runtime value exports
 - **Object type checks**: Always use the `isObject()` helper from `@vuecs/core/src/utils/object.ts`. Never use inline `typeof x === 'object' && x !== null` checks
+- **Typed slot props**: Every component slot must have an exported slot-prop type (e.g. `ListItemSlotProps`, `NavItemLinkSlotProps`, `CountdownSlotProps`) wired into the component's `SlotsType<...>`. Render-function consumers rely on these exports for type safety (#1488). Use generics (`<T>`, `<META>`) for entity-typed props.
 
 ## Build
 
