@@ -33,6 +33,11 @@ const themeDefaults = {
     },
 };
 
+export type FormInputGroupSlotProps = {
+    class: string;
+    tag: string;
+};
+
 export const VCFormInput = defineComponent({
     name: 'VCFormInput',
     props: {
@@ -49,8 +54,8 @@ export const VCFormInput = defineComponent({
     },
     emits: ['update:modelValue'],
     slots: Object as SlotsType<{
-        groupAppend: { class: string; tag: string };
-        groupPrepend: { class: string; tag: string };
+        groupAppend: FormInputGroupSlotProps;
+        groupPrepend: FormInputGroupSlotProps;
     }>,
     setup(props, {
         attrs,

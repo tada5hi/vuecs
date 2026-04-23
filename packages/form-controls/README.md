@@ -10,6 +10,8 @@ Form input components for Vue 3 with validation support, v-model binding, and th
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [Components](#components)
+- [Debounced Input](#debounced-input)
+- [Typed Slot Props](#typed-slot-props)
 - [Theme Slots](#theme-slots)
 - [License](#license)
 
@@ -77,6 +79,30 @@ watch(query, (value) => {
     <VCFormInput v-model="query" :debounce="200" placeholder="Search..." />
 </template>
 ```
+
+## Typed Slot Props
+
+Slot prop interfaces are exported for render-function consumers:
+
+```typescript
+import {
+    VCFormInput,
+    type FormInputGroupSlotProps,
+} from '@vuecs/form-controls';
+
+h(VCFormInput, { modelValue: '', group: true }, {
+    groupPrepend: (props: FormInputGroupSlotProps) =>
+        h(props.tag, { class: props.class }, '@'),
+});
+```
+
+| Export | Used by |
+|--------|---------|
+| `FormInputGroupSlotProps` | `VCFormInput` `groupPrepend`/`groupAppend` |
+| `FormInputCheckboxLabelSlotProps` | `VCFormInputCheckbox` `label` |
+| `ValidationGroupDefaultSlotProps` | `VCValidationGroup` default |
+| `ValidationGroupItemSlotProps` | `VCValidationGroup` `item` |
+| `FormSelectSearchSelectedSlotProps` | `VCFormSelectSearch` `selected` |
 
 ## Theme Slots
 

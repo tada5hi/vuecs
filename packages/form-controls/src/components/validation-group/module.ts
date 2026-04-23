@@ -22,6 +22,21 @@ declare module '@vuecs/core' {
 
 const themeDefaults = { classes: { item: 'form-group-hint group-required' } };
 
+export type ValidationGroupDefaultSlotProps = {
+    data: ValidationMessagesArrayStyle;
+    severity: `${ValidationSeverity}`;
+    itemClass: string;
+    itemTag: string;
+};
+
+export type ValidationGroupItemSlotProps = {
+    key: string;
+    value: string;
+    class: string;
+    tag: string;
+    severity: `${ValidationSeverity}`;
+};
+
 export const VCValidationGroup = defineComponent({
     name: 'VCValidationGroup',
     props: {
@@ -32,8 +47,8 @@ export const VCValidationGroup = defineComponent({
         themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
     },
     slots: Object as SlotsType<{
-        default: any;
-        item: any;
+        default: ValidationGroupDefaultSlotProps;
+        item: ValidationGroupItemSlotProps;
     }>,
     setup(props, { slots }) {
         const theme = useComponentTheme('validationGroup', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));

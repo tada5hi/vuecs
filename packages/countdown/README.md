@@ -10,6 +10,7 @@ Countdown timer component for Vue 3 with auto-start, visibility handling, and sc
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [Props](#props)
+- [Typed Slot Props](#typed-slot-props)
 - [Exposed Methods](#exposed-methods)
 - [License](#license)
 
@@ -46,6 +47,20 @@ app.use(countdown);
 | `interval` | `number` | `1000` | Progress interval in milliseconds |
 | `tag` | `string` | `'span'` | Root element tag |
 | `emitEvents` | `boolean` | `true` | Emit start/progress/abort/end events |
+
+## Typed Slot Props
+
+The `default` slot scope is typed via the exported `CountdownSlotProps` interface:
+
+```typescript
+import { VCCountdown, type CountdownSlotProps } from '@vuecs/countdown';
+
+h(VCCountdown, { time: 60_000 }, {
+    default: (props: CountdownSlotProps) => `${props.minutes}:${props.seconds}`,
+});
+```
+
+Fields: `days`, `hours`, `minutes`, `seconds`, `milliseconds`, `totalDays`, `totalHours`, `totalMinutes`, `totalSeconds`, `totalMilliseconds`.
 
 ## Exposed Methods
 

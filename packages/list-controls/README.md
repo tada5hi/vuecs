@@ -11,6 +11,7 @@ List display components for Vue 3 with header, footer, body, loading state, empt
 - [Quick Start](#quick-start)
 - [Components](#components)
 - [Slots](#slots)
+- [Typed Slot Props](#typed-slot-props)
 - [Theme Slots](#theme-slots)
 - [License](#license)
 
@@ -79,6 +80,31 @@ h(VCList, { data: items, total: items.length }, {
 | `itemActions` | `{ data, index, updated, deleted }` | Per-item actions |
 | `loading` | `{ busy }` | Loading indicator content |
 | `noMore` | `{}` | Empty state content |
+
+## Typed Slot Props
+
+Slot prop interfaces are exported for render-function consumers:
+
+```typescript
+import {
+    VCList,
+    type ListItemSlotProps,
+    type ListSlotProps,
+} from '@vuecs/list-controls';
+
+interface Realm { id: string; name: string }
+
+h(VCList<Realm>, { data: realms }, {
+    item: (props: ListItemSlotProps<Realm>) => h('span', props.data.name),
+});
+```
+
+| Export | Used by |
+|--------|---------|
+| `ListSlotProps<T, M>` | `VCList` default slot |
+| `ListBaseSlotProps<T, M>` | `VCListHeader`, `VCListFooter`, `VCListLoading`, `VCListNoMore` default slot |
+| `ListBodySlotProps<T, M>` | `VCListBody` default slot |
+| `ListItemSlotProps<T>` | `VCListItem` default/actions/actionsExtra slots, `VCList` `item`/`itemActions`/`itemActionsExtra` slots |
 
 ## Theme Slots
 
