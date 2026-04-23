@@ -36,11 +36,11 @@
         "@vue/test-utils": "^2.4.6",
         "jsdom": "^29.0.2",
         "smob": "^1.4.1",
-        "vue": "^3.5.13"
+        "vue": "^3.5.33"
     },
     "peerDependencies": {
         "smob": "^1.4.1",
-        "vue": "^3.5.13"
+        "vue": "^3.5.33"
     },
     "engines": {
         "node": ">=22.0.0"

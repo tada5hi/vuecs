@@ -40,7 +40,7 @@
         "@vue/test-utils": "^2.4.6",
         "@vuecs/core": "^2.0.0",
         "jsdom": "^29.0.2",
-        "vue": "^3.5.28"
+        "vue": "^3.5.33"
     },
     "peerDependencies": {
         "@vuecs/core": "^2.0.0",
