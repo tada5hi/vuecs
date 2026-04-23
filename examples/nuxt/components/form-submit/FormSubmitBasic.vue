@@ -40,12 +40,6 @@ export default defineComponent({
                 v-model="busy"
                 :submit="submit"
                 :icon="true"
-                :create-button-class="{
-                    presets: {
-                        bootstrapV5: false
-                    }
-                }"
-                class="foo"
             />
         </div>
         <div class="alert alert-info">

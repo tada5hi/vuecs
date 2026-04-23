@@ -6,8 +6,8 @@
  */
 
 import vuecs from '@vuecs/core';
-import bootstrapV5 from '@vuecs/preset-bootstrap-v5';
-import fontAwesome from '@vuecs/preset-font-awesome';
+import bootstrapV5 from '@vuecs/theme-bootstrap-v5';
+import fontAwesome from '@vuecs/theme-font-awesome';
 
 import installCountdown from '@vuecs/countdown';
 import installFormControl from '@vuecs/form-controls';

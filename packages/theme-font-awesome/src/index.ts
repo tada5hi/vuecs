@@ -1,7 +1,7 @@
 import { extend } from '@vuecs/core';
 import type { Theme } from '@vuecs/core';
 
-export default function fontAwesomePreset(): Theme {
+export default function fontAwesomeTheme(): Theme {
     return {
         elements: {
             formSubmit: {

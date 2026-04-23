@@ -4,7 +4,7 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/Tada5hi/vuecs/badge.svg)](https://snyk.io/test/github/Tada5hi/vuecs)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
 
-A Vue 3 component library providing reusable UI components with TypeScript support, CSS extraction, and composable theming via presets.
+A Vue 3 component library providing reusable UI components with TypeScript support, CSS extraction, and composable theming via themes.
 
 **Table of Contents**
 
@@ -18,7 +18,7 @@ A Vue 3 component library providing reusable UI components with TypeScript suppo
 
 [![npm version](https://badge.fury.io/js/@vuecs%2Fcore.svg)](https://badge.fury.io/js/@vuecs%2Fcore)
 
-Theme resolution system, utilities, and component infrastructure. Provides `installThemeManager`, `useComponentTheme`, `extend()`, and preset composition.
+Theme resolution system, utilities, and component infrastructure. Provides `installThemeManager`, `useComponentTheme`, `extend()`, and theme composition.
 
 ```bash
 npm install @vuecs/core
@@ -26,8 +26,8 @@ npm install @vuecs/core
 
 ```typescript
 import vuecs, { extend } from '@vuecs/core';
-import bootstrapV5 from '@vuecs/preset-bootstrap-v5';
-import fontAwesome from '@vuecs/preset-font-awesome';
+import bootstrapV5 from '@vuecs/theme-bootstrap-v5';
+import fontAwesome from '@vuecs/theme-font-awesome';
 
 app.use(vuecs, {
     themes: [bootstrapV5(), fontAwesome()],
@@ -82,7 +82,7 @@ npm install @vuecs/form-controls
 
 [![npm version](https://badge.fury.io/js/@vuecs%2Fpagination.svg)](https://badge.fury.io/js/@vuecs%2Fpagination)
 
-Pagination component with page calculation utilities and icon support via presets.
+Pagination component with page calculation utilities and icon support via themes.
 
 ```bash
 npm install @vuecs/pagination

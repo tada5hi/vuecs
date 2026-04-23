@@ -106,8 +106,8 @@ The resolution logic (`resolve.ts`, `variant.ts`) has zero Vue imports — testa
 
 ```typescript
 import vuecs, { extend } from '@vuecs/core';
-import bootstrapV5 from '@vuecs/preset-bootstrap-v5';
-import fontAwesome from '@vuecs/preset-font-awesome';
+import bootstrapV5 from '@vuecs/theme-bootstrap-v5';
+import fontAwesome from '@vuecs/theme-font-awesome';
 
 app.use(vuecs, {
     themes: [bootstrapV5(), fontAwesome()],
@@ -156,7 +156,7 @@ Components expose two theme-related props:
 
 ## Theme Architecture
 
-Theme packages (`preset-bootstrap-v4`, `preset-bootstrap-v5`, `preset-font-awesome`) are functions returning `Theme` objects with an `elements` map. They configure component appearance via CSS class mappings and optional variant definitions. Multiple themes are merged in array order.
+Theme packages (`theme-bootstrap-v4`, `theme-bootstrap-v5`, `theme-font-awesome`, `theme-tailwind`) are functions returning `Theme` objects with an `elements` map. They configure component appearance via CSS class mappings and optional variant definitions. Multiple themes are merged in array order. `@vuecs/theme-tailwind` ships `twMerge` pre-wired as its `classesMergeFn` and re-exports `twMerge` for convenience.
 
 ```typescript
 // Theme type structure
@@ -220,7 +220,7 @@ declare module '@vuecs/core' {
 When consumers install component packages, the augmented `ThemeElements` provides:
 - Autocomplete for component names in `app.use(vuecs, { overrides: { elements: { /* autocomplete here */ } } })`
 - Type checking for slot keys within each component's theme override
-- Typo detection for both component names and slot keys in preset definitions
+- Typo detection for both component names and slot keys in theme definitions
 
 ## NavigationManager (@vuecs/navigation)
 

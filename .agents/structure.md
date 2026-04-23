@@ -13,9 +13,10 @@ vuecs/
     list-controls/    # @vuecs/list-controls
     navigation/       # @vuecs/navigation
     pagination/       # @vuecs/pagination
-    preset-bootstrap-v4/
-    preset-bootstrap-v5/
-    preset-font-awesome/
+    theme-bootstrap-v4/
+    theme-bootstrap-v5/
+    theme-font-awesome/
+    theme-tailwind/
     timeago/          # @vuecs/timeago
   examples/
     nuxt/             # Nuxt demo app showcasing all components

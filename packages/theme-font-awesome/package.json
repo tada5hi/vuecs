@@ -1,5 +1,5 @@
 {
-    "name": "@vuecs/preset-font-awesome",
+    "name": "@vuecs/theme-font-awesome",
     "version": "1.1.1",
     "type": "module",
     "description": "",
@@ -22,7 +22,7 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/tada5hi/vuecs.git",
-        "directory": "packages/preset-font-awesome"
+        "directory": "packages/theme-font-awesome"
     },
     "sideEffects": false,
     "scripts": {

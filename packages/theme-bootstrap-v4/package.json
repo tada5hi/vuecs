@@ -1,6 +1,6 @@
 {
-    "name": "@vuecs/preset-bootstrap-v5",
-    "version": "2.0.1",
+    "name": "@vuecs/theme-bootstrap-v4",
+    "version": "1.0.1",
     "type": "module",
     "description": "",
     "exports": {
@@ -22,8 +22,9 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/tada5hi/vuecs.git",
-        "directory": "packages/preset-bootstrap-v5"
+        "directory": "packages/theme-bootstrap-v4"
     },
+    "sideEffects": false,
     "scripts": {
         "build:js": "tsdown",
         "build:types": "tsc --emitDeclarationOnly -p tsconfig.build.json",
