@@ -58,10 +58,11 @@ export default function tailwindTheme(): Theme {
             listNoMore: { classes: { root: 'rounded-md border border-yellow-200 bg-yellow-50 p-2 text-sm text-yellow-800' } },
             navigation: {
                 classes: {
-                    group: 'flex flex-col gap-0.5',
-                    itemNested: 'pl-4',
-                    separator: 'my-2 border-t border-gray-200',
-                    link: 'flex items-center gap-2 rounded px-3 py-2 text-sm text-gray-700 hover:bg-gray-100',
+                    group: 'm-0 flex list-none flex-col p-0',
+                    item: 'list-none',
+                    itemNested: '',
+                    separator: 'my-2 text-xs font-semibold uppercase tracking-wide text-gray-400',
+                    link: 'flex cursor-pointer items-center gap-2 px-3 py-2 text-sm text-gray-700 no-underline hover:bg-gray-100',
                     linkRoot: 'font-medium text-gray-900',
                     linkIcon: 'h-4 w-4 shrink-0',
                     linkText: 'flex-1 truncate',

@@ -23,22 +23,20 @@ export default defineComponent({
             key: 'createText',
         });
 
-        return () => h('div', [
-            h('div', { class: 'form-group' }, [
-                h(VCFormSubmit, {
-                    modelValue: busy.value,
-                    'onUpdate:modelValue': (val: boolean) => { busy.value = val; },
-                    createText: translation.value || 'abc',
-                    submit: () => new Promise<void>((resolve) => {
-                        console.log('Submitted form');
+        return () => h('div', { class: 'space-y-3' }, [
+            h(VCFormSubmit, {
+                modelValue: busy.value,
+                'onUpdate:modelValue': (val: boolean) => { busy.value = val; },
+                createText: translation.value || 'abc',
+                submit: () => new Promise<void>((resolve) => {
+                    console.log('Submitted form');
 
-                        setTimeout(() => {
-                            resolve();
-                        }, 5000);
-                    }),
+                    setTimeout(() => {
+                        resolve();
+                    }, 5000);
                 }),
-            ]),
-            h('div', { class: 'alert alert-info' }, [
+            }),
+            h('div', { class: 'rounded-md border border-blue-200 bg-blue-50 p-2 text-sm text-blue-800' }, [
                 'Current Value:',
                 ' ',
                 busy.value ? 'Busy' : 'Not busy',

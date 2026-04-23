@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Navigation overrides live in @layer utilities so they share the same
+   cascade layer as the theme's utility classes (`rounded`, `text-gray-700`,
+   etc.) on the same elements; CSS specificity then decides the winner. In
+   @layer components these rules are drowned out no matter how specific. */
+@layer utilities {
+    /* Active-state styling for navigation links. The component stamps `active`
+       and vue-router adds `router-link-active`/`router-link-exact-active`; the
+       theme has no linkActive slot yet, so apply it globally here. */
+    .vc-nav-link.active,
+    .vc-nav-link.router-link-active,
+    .vc-nav-link.router-link-exact-active {
+        @apply bg-blue-50 text-blue-700;
+    }
+    .vc-nav-link.active:hover,
+    .vc-nav-link.router-link-active:hover {
+        @apply bg-blue-100;
+    }
+
+    /* Indent nested groups under a parent item rather than the parent <li>
+       itself, so the parent link stays flush with its level. */
+    .vc-nav-item-nested > .vc-nav-items {
+        @apply pl-4;
+    }
+
+}

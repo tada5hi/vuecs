@@ -1,10 +1,3 @@
-<!--
-  - Copyright (c) 2022.
-  - Author Peter Placzek (tada5hi)
-  - For the full copyright and license information,
-  - view the LICENSE file that was distributed with this source code.
-  -->
-
 <script lang="ts">
 import { VCTimeago, injectLocale } from '@vuecs/timeago';
 import { defineNuxtComponent } from '#app';
@@ -22,11 +15,12 @@ export default defineNuxtComponent({
     },
 });
 </script>
+
 <template>
-    <div class="container">
-        <div>
-            <h3><i class="fa fa-solid fa-clock" /> Timeago</h3>
-            <VCTimeago :datetime="dateTime" />
-        </div>
+    <div class="mx-auto max-w-5xl space-y-4">
+        <h3 class="flex items-center gap-2 text-2xl font-semibold">
+            <i class="fa fa-solid fa-clock text-blue-500" /> Timeago
+        </h3>
+        <VCTimeago :datetime="dateTime" />
     </div>
 </template>

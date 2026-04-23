@@ -6,7 +6,7 @@
  */
 
 import vuecs from '@vuecs/core';
-import bootstrapV5 from '@vuecs/theme-bootstrap-v5';
+import tailwind from '@vuecs/theme-tailwind';
 import fontAwesome from '@vuecs/theme-font-awesome';
 
 import installCountdown from '@vuecs/countdown';
@@ -14,9 +14,6 @@ import installFormControl from '@vuecs/form-controls';
 import installGravatar from '@vuecs/gravatar';
 import installLink from '@vuecs/link';
 import { install as installNavigation } from '@vuecs/navigation';
-import '@vuecs/list-controls/../dist/style.css';
-import '@vuecs/navigation/../dist/style.css';
-import '@vuecs/pagination/../dist/style.css';
 import installPagination from '@vuecs/pagination';
 import installTimeago from '@vuecs/timeago';
 import { de } from 'date-fns/locale';
@@ -24,7 +21,7 @@ import { defineNuxtPlugin } from '#app';
 import { findNavigationItems } from '~/config/layout';
 
 export default defineNuxtPlugin((ctx) => {
-    ctx.vueApp.use(vuecs, { themes: [bootstrapV5(), fontAwesome()] });
+    ctx.vueApp.use(vuecs, { themes: [tailwind(), fontAwesome()] });
 
     ctx.vueApp.use(installCountdown);
     ctx.vueApp.use(installFormControl);

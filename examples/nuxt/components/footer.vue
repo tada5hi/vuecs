@@ -1,11 +1,4 @@
-<!--
-  - Copyright (c) 2021-2022.
-  - Author Peter Placzek (tada5hi)
-  - For the full copyright and license information,
-  - view the LICENSE file that was distributed with this source code.
-  -->
 <script>
-
 export default {
     computed: {
         year() {
@@ -14,10 +7,9 @@ export default {
     },
 };
 </script>
+
 <template>
-    <div class="page-footer">
-        <div class="copyright">
-            &copy; VueLayout {{ year }}
-        </div>
-    </div>
+    <footer class="border-t border-gray-200 bg-white py-3 text-center text-sm text-gray-500">
+        &copy; vuecs {{ year }}
+    </footer>
 </template>
