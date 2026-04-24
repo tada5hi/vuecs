@@ -20,10 +20,76 @@
         @apply bg-blue-100;
     }
 
-    /* Indent nested groups under a parent item rather than the parent <li>
-       itself, so the parent link stays flush with its level. */
+    /* Nested groups get a soft vertical tree-line so children visually read
+       as belonging to their parent. The ul is indented, then draws its own
+       left border, then pads before the child links. */
     .vc-nav-item-nested > .vc-nav-items {
-        @apply pl-4;
+        @apply ml-3 border-l border-gray-200 pl-3;
+    }
+    .dark .vc-nav-item-nested > .vc-nav-items {
+        @apply border-gray-700;
     }
 
+    /* ---- Dark mode overrides for vuecs components ---- */
+    .dark .vc-nav-link {
+        @apply text-gray-200 hover:bg-gray-800;
+    }
+    .dark .vc-nav-link.active,
+    .dark .vc-nav-link.router-link-active,
+    .dark .vc-nav-link.router-link-exact-active {
+        @apply bg-blue-500/15 text-blue-300;
+    }
+    .dark .vc-nav-link.active:hover,
+    .dark .vc-nav-link.router-link-active:hover {
+        @apply bg-blue-500/25;
+    }
+    .dark .vc-nav-separator {
+        @apply text-gray-500;
+    }
+
+    .dark .vc-form-input,
+    .dark .vc-form-select-search .vc-form-select-search-input,
+    .dark input[type="text"].vc-form-input,
+    .dark textarea {
+        background-color: #1f2937;
+        border-color: #374151;
+        color: #f3f4f6;
+    }
+    .dark .vc-form-input-group-append,
+    .dark .vc-form-input-group-prepend {
+        background-color: #111827;
+        border-color: #374151;
+        color: #d1d5db;
+    }
+    .dark .vc-form-input-group > .vc-form-input:focus,
+    .dark .vc-form-input-group > .vc-form-input:focus-visible {
+        border-color: #4b5563;
+    }
+
+    .dark .vc-form-select-search .vc-form-select-search-content {
+        background-color: #1f2937;
+        border-color: #374151;
+    }
+    .dark .vc-form-select-search .vc-form-select-search-item {
+        color: #e5e7eb;
+    }
+    .dark .vc-form-select-search .vc-form-select-search-item:hover,
+    .dark .vc-form-select-search .vc-form-select-search-item.current {
+        background-color: #374151;
+    }
+
+    .dark .vc-form-input-checkbox {
+        background-color: #1f2937;
+        border-color: #4b5563;
+    }
+    .dark .vc-form-input-checkbox--switch:not(:checked) {
+        background-color: #374151;
+    }
+
+    .dark .vc-pagination-link {
+        @apply border-gray-700 bg-gray-900 text-gray-200 hover:bg-gray-800;
+    }
+    .dark .vc-pagination-link:disabled {
+        @apply opacity-50;
+    }
 }

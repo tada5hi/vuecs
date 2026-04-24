@@ -1,15 +1,15 @@
 /*
- * Structural + fallback styling for VCFormSelectSearch. Written in concrete
- * (theme-agnostic but Tailwind-gray-flavoured) values so the component is
- * visually complete out of the box — matching the default form-select look —
- * even when no external framework CSS is loaded. Themes can still override.
+ * Structural + fallback styling for VCFormSelectSearch. Concrete
+ * Tailwind-gray palette so the component is visually complete out of the box
+ * — matching the default form-select look — even when no framework CSS is
+ * loaded. Themes can still override via higher specificity.
  */
-.form-select-search {
+.vc-form-select-search {
     position: relative;
     display: block;
 }
 
-.form-select-search .form-select-search-input {
+.vc-form-select-search .vc-form-select-search-input {
     display: block;
     width: 100%;
     padding: 0.5rem 0.75rem;
@@ -25,19 +25,19 @@
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-.form-select-search .form-select-search-input:focus {
+.vc-form-select-search .vc-form-select-search-input:focus {
     outline: 0;
     border-color: #3b82f6;
     box-shadow: 0 0 0 1px #3b82f6;
 }
 
-.form-select-search .form-select-search-input:disabled {
+.vc-form-select-search .vc-form-select-search-input:disabled {
     cursor: not-allowed;
     background-color: #f9fafb;
     opacity: 1;
 }
 
-.form-select-search .form-select-search-content {
+.vc-form-select-search .vc-form-select-search-content {
     position: absolute;
     inset-inline: 0;
     top: calc(100% + 0.25rem);
@@ -53,11 +53,11 @@
     -ms-overflow-style: none;
 }
 
-.form-select-search .form-select-search-content::-webkit-scrollbar {
+.vc-form-select-search .vc-form-select-search-content::-webkit-scrollbar {
     display: none;
 }
 
-.form-select-search .form-select-search-item {
+.vc-form-select-search .vc-form-select-search-item {
     display: block;
     padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
@@ -66,17 +66,17 @@
     cursor: pointer;
 }
 
-.form-select-search .form-select-search-item:hover,
-.form-select-search .form-select-search-item.current {
+.vc-form-select-search .vc-form-select-search-item:hover,
+.vc-form-select-search .vc-form-select-search-item.current {
     background-color: #f3f4f6;
 }
 
-.form-select-search .form-select-search-item.active {
+.vc-form-select-search .vc-form-select-search-item.active {
     background-color: #dbeafe;
     color: #1e40af;
 }
 
-.form-select-search .form-select-search-selected {
+.vc-form-select-search .vc-form-select-search-selected {
     margin-top: 0.5rem;
     display: flex;
     flex-wrap: wrap;

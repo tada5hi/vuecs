@@ -15,6 +15,8 @@ export default function fontAwesomeTheme(): Theme {
                 classes: {
                     prevIcon: extend('fa-solid fa-chevron-left'),
                     nextIcon: extend('fa-solid fa-chevron-right'),
+                    firstIcon: extend('fa-solid fa-angles-left'),
+                    lastIcon: extend('fa-solid fa-angles-right'),
                 },
             },
         },

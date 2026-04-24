@@ -1,82 +1,42 @@
+/*
+ * Structural defaults for VCNavItems / VCNavItem. Colors are the theme's
+ * responsibility; this file only resets browser defaults, provides a sensible
+ * hit-target for links, draws the decorative lines around separator labels,
+ * and hides the nested group of a collapsed parent item.
+ */
 .vc-nav-items,
 .vc-nav-sub-level-items {
-    padding-left: 0;
+    margin: 0;
+    padding: 0;
     list-style: none;
 }
 
-.vc-nav-items .vc-nav-link {
+.vc-nav-link {
     cursor: pointer;
-    color: #aeb2b7;
-    padding: 1rem;
-    font-size: 0.8rem;
-    text-align: left;
     text-decoration: none;
     display: flex;
-    flex-direction: row;
-    gap: 0.4rem;
-}
-
-/* for now */
-.vc-nav-items .vc-nav-item.vc-nav-item-nested:hover > .vc-nav-link,
-.vc-nav-items .vc-nav-item.vc-nav-item-nested:active > .vc-nav-link,
-.vc-nav-items .vc-nav-item.vc-nav-item-nested.active > .vc-nav-link {
-    background: #c8b98d;
-    color: #fff;
-}
-
-/* for now */
-.vc-nav-items .vc-nav-item .vc-nav-link,
-.vc-nav-items .vc-nav-item:hover .vc-nav-link,
-.vc-nav-items .vc-nav-item.active .vc-nav-link {
-    border-left-color: #c8b98d !important;
-}
-
-.vc-nav-items .vc-nav-link.active,
-.vc-nav-items .vc-nav-link:active,
-.vc-nav-items .vc-nav-link:hover,
-
-.vc-nav-items .vc-nav-link.router-link-active,
-.vc-nav-items .vc-nav-link.nuxt-link-active,
-
-.vc-nav-items .vc-nav-link.router-link-exact-active,
-.vc-nav-items .vc-nav-link.nuxt-link-exact-active {
-    cursor: pointer;
-    background-color: #baa875;
-    color: #fff;
-}
-
-.vc-nav-items .vc-nav-separator {
-    display: flex;
-    text-align: center;
     align-items: center;
-    font-size:14px;
-    font-weight: bold;
-    padding: 0.4rem 0;
-    background: rgba(151, 151, 153, 0.1);
+    gap: 0.5rem;
 }
 
-.vc-nav-items .vc-nav-separator:before,
-.vc-nav-items .vc-nav-separator:after {
+/* Decorative flex-line on either side of the separator label. Uses
+   currentColor so the lines inherit the theme's separator text color and
+   adapt automatically to light/dark modes. */
+.vc-nav-separator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.vc-nav-separator::before,
+.vc-nav-separator::after {
     content: '';
-    flex: 1;
-    height:3px;
-    background: #baa875;
+    flex: 1 1 auto;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.3;
 }
 
-.vc-nav-items .vc-nav-separator:before {
-    margin-right: 0.4rem;
-}
-
-.vc-nav-items .vc-nav-separator:after {
-    margin-left: 0.4rem;
-}
-
-.vc-nav-item-nested:not(.active) .vc-nav-items {
+.vc-nav-item-nested:not(.active) > .vc-nav-items {
     display: none;
-}
-
-.vc-nav-item-nested .vc-nav-items .vc-nav-link {
-    border-left-width: 6px;
-    border-left-style: solid;
-    border-left-color: rgb(64,67,78);
 }
