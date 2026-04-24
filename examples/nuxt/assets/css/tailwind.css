@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Nested navigation tree-line. Kept outside @layer so it sits unlayered —
+   beats Tailwind utilities on the same property via cascade order without
+   needing extra specificity. The theme's `m-0 flex list-none flex-col p-0`
+   on .vc-nav-items zeroes padding-left; we re-introduce it here together
+   with the left border so nested children read as children of their parent. */
+.vc-nav-item-nested > .vc-nav-items {
+    margin-left: 0.75rem;
+    padding-left: 0.75rem;
+    border-left: 1px solid rgb(229 231 235);
+}
+.dark .vc-nav-item-nested > .vc-nav-items {
+    border-left-color: rgb(55 65 81);
+}
+
 /* Navigation overrides live in @layer utilities so they share the same
    cascade layer as the theme's utility classes (`rounded`, `text-gray-700`,
    etc.) on the same elements; CSS specificity then decides the winner. In
@@ -20,15 +34,6 @@
         @apply bg-blue-100;
     }
 
-    /* Nested groups get a soft vertical tree-line so children visually read
-       as belonging to their parent. The ul is indented, then draws its own
-       left border, then pads before the child links. */
-    .vc-nav-item-nested > .vc-nav-items {
-        @apply ml-3 border-l border-gray-200 pl-3;
-    }
-    .dark .vc-nav-item-nested > .vc-nav-items {
-        @apply border-gray-700;
-    }
 
     /* ---- Dark mode overrides for vuecs components ---- */
     .dark .vc-nav-link {
