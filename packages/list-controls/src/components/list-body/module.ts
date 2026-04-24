@@ -1,7 +1,7 @@
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import type { PropType, SlotsType } from 'vue';
-import { defineComponent, h, toRef } from 'vue';
+import { defineComponent, h } from 'vue';
 import type { 
     ListBaseSlotProps, 
     ListBodySlotProps, 
@@ -32,7 +32,7 @@ export const VCListBody = defineComponent({
         itemTag: { type: String, default: 'li' },
         itemIcon: { type: Boolean, default: true },
         itemText: { type: Boolean, default: true },
-        itemTextPropName: { type: String, default: 'name' },
+        itemTextPropName: { type: String, default: undefined },
         itemActions: { type: Boolean, default: true },
         // List base props
         total: { type: Number, default: undefined },
@@ -51,7 +51,7 @@ export const VCListBody = defineComponent({
         itemActionsExtra?: any;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('listBody', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
+        const theme = useComponentTheme('listBody', props, themeDefaults);
 
         return () => {
             const bodySlotProps: ListBodySlotProps<any> = {

@@ -62,7 +62,7 @@ export const VCNavItem = defineComponent({
     setup(props, { slots }) {
         const itemsNode = resolveComponent('VCNavItems');
 
-        const theme = useComponentTheme('navigation', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
+        const theme = useComponentTheme('navigation', props, themeDefaults);
         const manager = injectNavigationManager();
 
         const data = toRef(props, 'data');

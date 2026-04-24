@@ -1,11 +1,15 @@
-import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
+import { useComponentDefaults, useComponentTheme } from '@vuecs/core';
+import type {
+    ComponentDefaultValues,
+    ThemeClassesOverride,
+    ThemeElementDefinition,
+    VariantValues,
+} from '@vuecs/core';
 import type { PropType, SlotsType, VNodeChild } from 'vue';
 import { 
     defineComponent, 
     h, 
     mergeProps, 
-    toRef, 
 } from 'vue';
 
 export type FormInputCheckboxThemeClasses = {
@@ -14,9 +18,16 @@ export type FormInputCheckboxThemeClasses = {
     group: string;
 };
 
+export type FormInputCheckboxDefaults = {
+    labelContent: string;
+};
+
 declare module '@vuecs/core' {
     interface ThemeElements {
         formInputCheckbox?: ThemeElementDefinition<FormInputCheckboxThemeClasses>;
+    }
+    interface ComponentDefaults {
+        formInputCheckbox?: ComponentDefaultValues<FormInputCheckboxDefaults>;
     }
 }
 
@@ -27,6 +38,8 @@ const themeDefaults = {
         group: 'vc-form-input-checkbox-group',
     },
 };
+
+const behavioralDefaults: FormInputCheckboxDefaults = { labelContent: 'Input' };
 
 export type FormInputCheckboxLabelSlotProps = {
     class: string;
@@ -39,7 +52,7 @@ export const VCFormInputCheckbox = defineComponent({
         modelValue: { type: [Object, Boolean, String, Number, Array] as PropType<unknown | unknown[]> },
         group: { type: Boolean, default: false },
         label: { type: Boolean, default: true },
-        labelContent: { type: String, default: 'Input' },
+        labelContent: { type: String, default: undefined },
         themeClass: { type: Object as PropType<ThemeClassesOverride<FormInputCheckboxThemeClasses>>, default: undefined },
         themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
     },
@@ -52,11 +65,13 @@ export const VCFormInputCheckbox = defineComponent({
         emit, 
         slots, 
     }) {
-        const theme = useComponentTheme('formInputCheckbox', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
+        const theme = useComponentTheme('formInputCheckbox', props, themeDefaults);
+        const defaults = useComponentDefaults('formInputCheckbox', props, behavioralDefaults);
         const id = (Math.random() + 1).toString(36).substring(7);
 
         return () => {
             const resolved = theme.value;
+            const resolvedDefaults = defaults.value;
             const rawValue = props.modelValue;
 
             let isChecked: boolean | undefined;
@@ -104,7 +119,7 @@ export const VCFormInputCheckbox = defineComponent({
                     if (slots.label) {
                         children.push(slots.label({ class: resolved.label, id }));
                     } else {
-                        children.push(h('label', { class: resolved.label || undefined, for: id }, [props.labelContent]));
+                        children.push(h('label', { class: resolved.label || undefined, for: id }, [resolvedDefaults.labelContent]));
                     }
                 }
 

@@ -6,13 +6,14 @@ All component packages follow the standard Vue 3 plugin pattern. Each exports an
 
 ```typescript
 // Typical package entry (src/index.ts)
-import { installThemeManager } from '@vuecs/core';
+import { installDefaultsManager, installThemeManager } from '@vuecs/core';
 
 export * from './components';
 export * from './type';
 
 export function install(instance: App, options: Options = {}): void {
     installThemeManager(instance, options);
+    installDefaultsManager(instance, options);
     // Register components globally
 }
 
@@ -80,7 +81,7 @@ After slot class resolution, **variant resolution** applies:
 - **`ThemeManager`** — Holds config state (themes, overrides) as `shallowRef`s, delegates to `resolveComponentTheme()` and `resolveVariantClasses()`. Supports runtime updates via `setThemes()` and `setOverrides()`.
 - **`installThemeManager(app, options)`** — Vue plugin that provides ThemeManager via `app.provide()`
 - **`injectThemeManager()`** — Retrieves ThemeManager from Vue inject
-- **`useComponentTheme(name, instanceThemeClass, defaults, variantValues?)`** — Vue composable accepting `MaybeRef` for instance theme and variant values, returns `ComputedRef<T>`. Automatically recomputes when instance theme prop, variant values, or ThemeManager state changes. Throws if ThemeManager is not installed.
+- **`useComponentTheme(name, props, defaults)`** — Vue composable. `props` is the component's reactive props object; the composable reads `props.themeClass` and `props.themeVariant` internally. Returns `ComputedRef<T>` that recomputes when `props.themeClass`, `props.themeVariant`, or ThemeManager state changes. Throws if ThemeManager is not installed.
 - **`extend(value)`** — Marker function: merge with lower layer instead of replacing (only needed in overrides and instance props; themes always merge with defaults)
 - **`resolveComponentTheme()`** — Pure function (no Vue dependency): resolves 4 layers into final class strings
 - **`extractVariantConfig()`** — Pure function: merges variant definitions from all layers
@@ -122,37 +123,34 @@ app.use(vuecs, {
 
 ### Component Internals
 
-Each component calls `useComponentTheme()` in setup with its name, co-located defaults, and optional variant values. The composable accepts `MaybeRef` for the instance theme and variant values parameters:
+Each component calls `useComponentTheme(name, props, defaults)` in setup. The composable reads `props.themeClass` and `props.themeVariant` directly — Vue's reactive props proxy makes the returned `ComputedRef` reactive without `toRef` wrapping:
 
 ```typescript
 setup(props) {
-    const theme = useComponentTheme(
-        'listItem',
-        toRef(props, 'themeClass'),
-        {
-            classes: {
-                root: 'vc-list-item',
-                actions: 'vc-list-item-actions',
-            },
-            variants: {
-                size: {
-                    sm: { root: 'py-1' },
-                    lg: { root: 'py-3' },
-                },
-            },
-            defaultVariants: { size: 'md' },
+    const theme = useComponentTheme('listItem', props, {
+        classes: {
+            root: 'vc-list-item',
+            actions: 'vc-list-item-actions',
         },
-        toRef(props, 'themeVariant'),
-    );
+        variants: {
+            size: {
+                sm: { root: 'py-1' },
+                lg: { root: 'py-3' },
+            },
+        },
+        defaultVariants: { size: 'md' },
+    });
     // theme.value.root -> reactive resolved class string
     // Recomputes when props.themeClass, props.themeVariant, or ThemeManager state changes
     return () => h('div', { class: theme.value.root }, [...]);
 }
 ```
 
-Components expose two theme-related props:
+Components expose two theme-related props (on every component that uses the theme system):
 - **`themeClass`** — Slot class overrides (flat: `{ root: 'my-class' }`)
 - **`themeVariant`** — Variant values (flat: `{ size: 'sm', busy: true }`)
+
+The composable signature `(name, props, defaults)` matches `useComponentDefaults(name, props, hardcoded)` — both read convention-named keys off the component's reactive `props` object.
 
 ## Theme Architecture
 
@@ -222,6 +220,126 @@ When consumers install component packages, the augmented `ThemeElements` provide
 - Type checking for slot keys within each component's theme override
 - Typo detection for both component names and slot keys in theme definitions
 
+## Global Behavioral Defaults (#1491)
+
+Alongside the theme system, `@vuecs/core` exposes a parallel `DefaultsManager` for
+non-class behavioral props (button text, placeholder strings, visibility toggles,
+content strings). This is the mechanism for i18n and project-wide customization
+without per-instance overrides.
+
+### Resolution order
+
+For each resolved key, the composable walks three layers:
+
+```
+1. Instance prop (non-undefined)            ← highest priority
+2. Global defaults (from app.use() config)  ← may be MaybeRef (ref / computed)
+3. Hardcoded fallback (passed to composable) ← lowest priority
+```
+
+Global default values are wrapped via `MaybeRef`, so reactive sources
+(`computed(() => t('actions.create'))`) unwrap transparently and the returned
+`ComputedRef` recomputes on locale changes.
+
+### Setup API
+
+```typescript
+import vuecs from '@vuecs/core';
+
+app.use(vuecs, {
+    themes: [bootstrapV5(), fontAwesome()],
+    defaults: {
+        formSubmit: {
+            createText: computed(() => t('actions.create')),
+            updateText: 'Aktualisieren',
+        },
+        listNoMore: {
+            content: 'Keine weiteren Einträge verfügbar...',
+        },
+        formSelect: {
+            optionDefaultValue: '-- Auswählen --',
+        },
+    },
+});
+```
+
+### Component consumption
+
+Components drop Vue-level prop defaults (so `undefined` means "fall through") and
+resolve via the composable:
+
+```typescript
+const behavioralDefaults = { createText: 'Create', updateText: 'Update', icon: true };
+
+setup(props) {
+    const defaults = useComponentDefaults('formSubmit', props, behavioralDefaults);
+    // defaults.value.createText → reactive resolved value
+    return () => h('button', [defaults.value.createText]);
+}
+```
+
+### Key APIs
+
+- **`DefaultsManager`** — Holds the `Partial<ComponentDefaults>` map in a `shallowRef`. Supports runtime updates via `setDefaults()`.
+- **`installDefaultsManager(app, options)`** — Vue plugin that provides DefaultsManager via `app.provide()`. Called from the top-level `install()` in `@vuecs/core` and from every component package's `install()`.
+- **`injectDefaultsManager()`** — Retrieves the DefaultsManager from Vue inject.
+- **`useComponentDefaults(name, props, hardcoded)`** — Vue composable. Returns `ComputedRef<T>` that recomputes when props or DefaultsManager state change. Throws if the DefaultsManager is not installed.
+
+### Type-Safe Component Defaults (ComponentDefaults)
+
+`ComponentDefaults` is an empty augmentable interface with no index signature.
+Each component package extends it via TypeScript declaration merging to register
+its component name and typed default shape. Values are wrapped with
+`ComponentDefaultValues<T>`, which maps each field to `MaybeRef<T[K] | undefined>`
+so reactive and plain values are both accepted.
+
+```typescript
+// In @vuecs/core
+export interface ComponentDefaults {}
+export type ComponentDefaultValues<T> = {
+    [K in keyof T]?: MaybeRef<T[K] | undefined>;
+};
+
+// In a component package
+declare module '@vuecs/core' {
+    interface ComponentDefaults {
+        formSubmit?: ComponentDefaultValues<FormSubmitDefaults>;
+    }
+}
+```
+
+### Architecture
+
+```
+@vuecs/core/src/defaults/
+  types.ts       <- ComponentDefaults (augmentable), ComponentDefaultValues<T>, DefaultsManagerOptions
+  manager.ts     <- DefaultsManager class (shallowRef state, get() by component name)
+  install.ts     <- installDefaultsManager() / injectDefaultsManager() — Vue provide/inject
+  composable.ts  <- useComponentDefaults() — Vue composable; unref's MaybeRef values per key
+```
+
+The theme and defaults systems are intentionally decoupled: themes handle CSS
+classes, defaults handle everything else. The top-level `VuecsOptions` type and
+`install()` function tie them together so consumers configure both in one call.
+
+### Migrated components
+
+The following components resolve the listed behavioral props via
+`useComponentDefaults`:
+
+| Component | Keys |
+|-----------|------|
+| `VCFormSubmit` | `type`, `icon`, `createText`, `updateText` |
+| `VCFormSelect` | `optionDefault`, `optionDefaultId`, `optionDefaultValue` |
+| `VCFormGroup` | `validation` |
+| `VCFormInputCheckbox` | `labelContent` |
+| `VCListItem` | `textPropName` |
+| `VCListNoMore` | `content` |
+
+For these props the Vue `prop.default` is `undefined`; the effective default now
+lives in the component's `behavioralDefaults` constant, which is passed to the
+composable as the lowest-priority layer.
+
 ## NavigationManager (@vuecs/navigation)
 
 The navigation package has its own manager pattern using `@posva/event-emitter`:
@@ -242,9 +360,10 @@ Components emit minimal structural CSS via co-located `vc-*` default classes. Vi
 ## Dependency Flow
 
 ```
-Themes ──configure──> ThemeManager (in @vuecs/core)
+Themes   ──configure──> ThemeManager    (in @vuecs/core)
+Defaults ──configure──> DefaultsManager (in @vuecs/core)
                           |
-Components ──read─────────┘ (via useComponentTheme)
+Components ──read─────────┘ (via useComponentTheme / useComponentDefaults)
      |
      └──> @vuecs/link (navigation uses link for route-aware anchors)
 ```

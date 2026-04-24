@@ -1,4 +1,4 @@
-import type { ThemeManagerOptions } from '@vuecs/core';
+import type { VuecsOptions } from '@vuecs/core';
 import type { Locale } from 'date-fns';
 
 export {
@@ -19,7 +19,7 @@ export type InjectionContext = {
     converter?: Converter
 };
 
-type Options = ThemeManagerOptions & {
+type Options = VuecsOptions & {
     /**
      * default: en
      */

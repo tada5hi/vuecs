@@ -47,7 +47,7 @@ export const VCTimeago = defineComponent({
         converterOptions: { type: Object as PropType<ConverterOptions> },
     },
     setup(props) {
-        const theme = useComponentTheme('timeago', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
+        const theme = useComponentTheme('timeago', props, themeDefaults);
 
         const dateTimeProp = toRef(props, 'datetime');
         const localeProp = toRef(props, 'locale');

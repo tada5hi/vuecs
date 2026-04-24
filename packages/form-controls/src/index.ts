@@ -1,4 +1,4 @@
-import { installThemeManager } from '@vuecs/core';
+import { installDefaultsManager, installThemeManager } from '@vuecs/core';
 import type { App, Plugin } from 'vue';
 
 import '../assets/form-input.css';
@@ -24,6 +24,7 @@ export * from './type';
 
 export function install(instance: App, options: Options = {}): void {
     installThemeManager(instance, options);
+    installDefaultsManager(instance, options);
 
     Object.entries({
         VCFormGroup,

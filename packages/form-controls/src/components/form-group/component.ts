@@ -1,7 +1,12 @@
-import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
+import { useComponentDefaults, useComponentTheme } from '@vuecs/core';
+import type {
+    ComponentDefaultValues,
+    ThemeClassesOverride,
+    ThemeElementDefinition,
+    VariantValues,
+} from '@vuecs/core';
 import type { PropType, SlotsType, VNodeChild } from 'vue';
-import { defineComponent, h, toRef } from 'vue';
+import { defineComponent, h } from 'vue';
 import { ValidationSeverity } from '../constants';
 import type { ValidationMessages } from '../type';
 import { VCValidationGroup } from '../validation-group/module';
@@ -14,9 +19,16 @@ export type FormGroupThemeClasses = {
     validationWarning: string;
 };
 
+export type FormGroupDefaults = {
+    validation: boolean;
+};
+
 declare module '@vuecs/core' {
     interface ThemeElements {
         formGroup?: ThemeElementDefinition<FormGroupThemeClasses>;
+    }
+    interface ComponentDefaults {
+        formGroup?: ComponentDefaultValues<FormGroupDefaults>;
     }
 }
 
@@ -30,6 +42,8 @@ const themeDefaults = {
     },
 };
 
+const behavioralDefaults: FormGroupDefaults = { validation: true };
+
 export const VCFormGroup = defineComponent({
     name: 'VCFormGroup',
     props: {
@@ -41,7 +55,7 @@ export const VCFormGroup = defineComponent({
         hintTag: { type: String, default: 'div' },
         hintContent: { type: String, default: undefined },
 
-        validation: { type: Boolean, default: true },
+        validation: { type: Boolean, default: undefined },
         validationSeverity: { type: String as PropType<`${ValidationSeverity}` | undefined>, default: undefined },
         validationMessages: { type: [Object, Array] as PropType<ValidationMessages>, default: undefined },
 
@@ -56,10 +70,12 @@ export const VCFormGroup = defineComponent({
         validationItem: any;
     }>,
     setup(props, { attrs, slots }) {
-        const theme = useComponentTheme('formGroup', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
+        const theme = useComponentTheme('formGroup', props, themeDefaults);
+        const defaults = useComponentDefaults('formGroup', props, behavioralDefaults);
 
         return () => {
             const resolved = theme.value;
+            const resolvedDefaults = defaults.value;
             const children: VNodeChild[] = [];
 
             // Label
@@ -81,7 +97,7 @@ export const VCFormGroup = defineComponent({
             }
 
             // Validation
-            if (props.validation) {
+            if (resolvedDefaults.validation) {
                 children.push(h(VCValidationGroup, {
                     severity: props.validationSeverity,
                     messages: props.validationMessages || {},
@@ -106,7 +122,7 @@ export const VCFormGroup = defineComponent({
 
             // Determine validation class
             let validationClass: string | undefined;
-            if (props.validation && props.validationMessages) {
+            if (resolvedDefaults.validation && props.validationMessages) {
                 const hasMessages = Array.isArray(props.validationMessages) ?
                     props.validationMessages.length > 0 :
                     Object.keys(props.validationMessages).length > 0;

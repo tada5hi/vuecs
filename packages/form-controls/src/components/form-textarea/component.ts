@@ -7,7 +7,6 @@ import {
     h,
     mergeProps,
     ref,
-    toRef,
     watch,
 } from 'vue';
 
@@ -33,7 +32,7 @@ export const VCFormTextarea = defineComponent({
     },
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {
-        const theme = useComponentTheme('formTextarea', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
+        const theme = useComponentTheme('formTextarea', props, themeDefaults);
 
         const localValue = ref(props.modelValue);
         watch(() => props.modelValue, (value) => {

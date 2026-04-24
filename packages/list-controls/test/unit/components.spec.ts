@@ -6,7 +6,7 @@ import {
 } from 'vitest';
 import { h } from 'vue';
 import { mount } from '@vue/test-utils';
-import { installThemeManager } from '@vuecs/core';
+import { installDefaultsManager, installThemeManager } from '@vuecs/core';
 import type { Theme } from '@vuecs/core';
 import { VCList } from '../../src/components/list/module';
 import { VCListNoMore } from '../../src/components/list-no-more/module';
@@ -16,7 +16,12 @@ import { VCListItem } from '../../src/components/list-item/module';
 import { VCListHeader } from '../../src/components/list-header/module';
 import { VCListFooter } from '../../src/components/list-footer/module';
 
-const themePlugin = { install: (app: any) => installThemeManager(app) };
+const themePlugin = {
+    install: (app: any) => {
+        installThemeManager(app);
+        installDefaultsManager(app);
+    },
+};
 
 describe('VCListNoMore', () => {
     it('should render default text when not busy and total is 0', () => {
@@ -354,7 +359,14 @@ describe('VCList', () => {
         };
         const wrapper = mount(VCList, {
             props: { data: [{ name: 'A' }] },
-            global: { plugins: [{ install: (app: any) => installThemeManager(app, { themes: [theme] }) }] },
+            global: {
+                plugins: [{
+                    install: (app: any) => {
+                        installThemeManager(app, { themes: [theme] });
+                        installDefaultsManager(app);
+                    },
+                }],
+            },
         });
         expect(wrapper.find('.custom-list').exists()).toBe(true);
         expect(wrapper.find('.custom-body').exists()).toBe(true);

@@ -8,7 +8,6 @@ import {
     onBeforeUnmount,
     onMounted,
     ref,
-    toRef,
     watch,
 } from 'vue';
 
@@ -72,7 +71,7 @@ export const VCCountdown = defineComponent({
         expose, 
         slots, 
     }) {
-        const theme = useComponentTheme('countdown', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
+        const theme = useComponentTheme('countdown', props, themeDefaults);
 
         const counting = ref(false);
         const totalMilliseconds = ref(0);

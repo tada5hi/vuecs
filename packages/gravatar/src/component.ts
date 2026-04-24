@@ -6,7 +6,6 @@ import {
     computed, 
     defineComponent, 
     h, 
-    toRef, 
 } from 'vue';
 
 export type GravatarThemeClasses = {
@@ -61,7 +60,7 @@ export const VCGravatar = defineComponent({
         },
     },
     setup(props, ctx) {
-        const theme = useComponentTheme('gravatar', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
+        const theme = useComponentTheme('gravatar', props, themeDefaults);
 
         const url = computed(() => {
             const protocol = props.protocol.slice(-1) === ':' ?

@@ -1,10 +1,17 @@
-import { hasOwnProperty, isObject, useComponentTheme } from '@vuecs/core';
+import { 
+    hasOwnProperty, 
+    isObject, 
+    useComponentDefaults, 
+    useComponentTheme, 
+} from '@vuecs/core';
 import type { PropType, SlotsType } from 'vue';
-import { defineComponent, h, toRef } from 'vue';
+import { defineComponent, h } from 'vue';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
-import type { ListBaseSlotProps, ListNoMoreThemeClasses } from '../type';
+import type { ListBaseSlotProps, ListNoMoreDefaults, ListNoMoreThemeClasses } from '../type';
 
 const themeDefaults = { classes: { root: 'vc-list-no-more' } };
+
+const behavioralDefaults: ListNoMoreDefaults = { content: 'No more items available...' };
 
 export const VCListNoMore = defineComponent({
     name: 'VCListNoMore',
@@ -13,7 +20,7 @@ export const VCListNoMore = defineComponent({
         busy: { type: Boolean, default: false },
         total: { type: Number, default: undefined },
         meta: { type: Object, default: undefined },
-        content: { type: String, default: 'No more items available...' },
+        content: { type: String, default: undefined },
         themeClass: { type: Object as PropType<ThemeClassesOverride<ListNoMoreThemeClasses>>, default: undefined },
         themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
         slotProps: { type: Object as PropType<ListBaseSlotProps<any>>, default: () => ({}) },
@@ -22,7 +29,8 @@ export const VCListNoMore = defineComponent({
         default?: ListBaseSlotProps<any>;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('listNoMore', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
+        const theme = useComponentTheme('listNoMore', props, themeDefaults);
+        const defaults = useComponentDefaults('listNoMore', props, behavioralDefaults);
 
         return () => {
             if (props.busy) {
@@ -44,7 +52,7 @@ export const VCListNoMore = defineComponent({
 
             const content = slots.default ?
                 slots.default(props.slotProps) :
-                [props.content];
+                [defaults.value.content];
 
             return h(
                 props.tag,

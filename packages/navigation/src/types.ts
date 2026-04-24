@@ -1,4 +1,4 @@
-import type { ThemeManagerOptions } from '@vuecs/core';
+import type { VuecsOptions } from '@vuecs/core';
 import type { ElementType } from './constants';
 
 export type NavigationItem<
@@ -53,6 +53,6 @@ export type NavigationItemsFn<
     ctx: NavigationItemsFnContext<META>,
 ) => Promise<NavigationItem<META>[] | undefined>;
 
-export type Options = ThemeManagerOptions & {
+export type Options = VuecsOptions & {
     items: NavigationItemsFn | NavigationItem[];
 };

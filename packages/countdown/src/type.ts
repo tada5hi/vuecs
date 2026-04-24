@@ -1,3 +1,3 @@
-import type { ThemeManagerOptions } from '@vuecs/core';
+import type { VuecsOptions } from '@vuecs/core';
 
-export type Options = ThemeManagerOptions;
+export type Options = VuecsOptions;

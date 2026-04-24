@@ -11,6 +11,7 @@ Form input components for Vue 3 with validation support, v-model binding, and th
 - [Quick Start](#quick-start)
 - [Components](#components)
 - [Debounced Input](#debounced-input)
+- [Global Behavioral Defaults (i18n)](#global-behavioral-defaults-i18n)
 - [Typed Slot Props](#typed-slot-props)
 - [Theme Slots](#theme-slots)
 - [License](#license)
@@ -79,6 +80,48 @@ watch(query, (value) => {
     <VCFormInput v-model="query" :debounce="200" placeholder="Search..." />
 </template>
 ```
+
+## Global Behavioral Defaults (i18n)
+
+Text content and visibility toggles that are hardcoded per-component can be overridden globally via the `defaults` option on the core plugin. Values may be plain strings, `ref`, or `computed` (reactive sources unwrap automatically — ideal for i18n). See [@vuecs/core — Global Behavioral Defaults](../core/README.md#global-behavioral-defaults) for the full resolution chain.
+
+```typescript
+import { computed } from 'vue';
+import vuecs from '@vuecs/core';
+import formControls from '@vuecs/form-controls';
+
+app.use(vuecs, {
+    defaults: {
+        formSubmit: {
+            createText: computed(() => t('actions.create')),
+            updateText: computed(() => t('actions.update')),
+        },
+        formSelect: {
+            optionDefaultValue: '-- Auswählen --',
+        },
+        formInputCheckbox: {
+            labelContent: 'Eingabe',
+        },
+    },
+});
+app.use(formControls);
+```
+
+Per-instance props always win over global defaults.
+
+### Configurable keys per component
+
+| Component | Keys | Hardcoded fallback |
+|-----------|------|--------------------|
+| `VCFormSubmit` | `type` | `'button'` |
+|  | `icon` | `true` |
+|  | `createText` | `'Create'` |
+|  | `updateText` | `'Update'` |
+| `VCFormSelect` | `optionDefault` | `true` |
+|  | `optionDefaultId` | `''` |
+|  | `optionDefaultValue` | `'-- Select --'` |
+| `VCFormGroup` | `validation` | `true` |
+| `VCFormInputCheckbox` | `labelContent` | `'Input'` |
 
 ## Typed Slot Props
 
