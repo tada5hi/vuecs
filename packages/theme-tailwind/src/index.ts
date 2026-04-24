@@ -30,11 +30,7 @@ export default function tailwindTheme(): Theme {
                     label: 'text-sm text-gray-700',
                     group: 'inline-flex items-center gap-2',
                 },
-                variants: {
-                    variant: {
-                        switch: { root: 'vc-form-input-checkbox--switch' },
-                    },
-                },
+                variants: { variant: { switch: { root: 'vc-form-input-checkbox--switch' } } },
                 defaultVariants: { variant: 'checkbox' },
             },
             formSelect: { classes: { root: 'block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-50' } },
