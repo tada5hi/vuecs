@@ -36,17 +36,29 @@ export default defineComponent({
 </script>
 <template>
     <div class="grid gap-6 md:grid-cols-2">
-        <div>
+        <div class="space-y-2">
             <VCFormGroup
                 :label="true"
-                :label-content="'Label'"
+                :label-content="'Checkbox'"
                 :validation-messages="validationMessages"
             >
                 <VCFormInputCheckbox
                     v-model="form.text"
                     :label="true"
-                    :label-content="'switch'"
+                    :label-content="'Enable notifications'"
                     :group="true"
+                />
+            </VCFormGroup>
+            <VCFormGroup
+                :label="true"
+                :label-content="'Switch'"
+            >
+                <VCFormInputCheckbox
+                    v-model="form.text"
+                    :label="true"
+                    :label-content="'Enable notifications'"
+                    :group="true"
+                    :theme-variant="{ variant: 'switch' }"
                 />
             </VCFormGroup>
         </div>

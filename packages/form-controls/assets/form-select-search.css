@@ -1,61 +1,84 @@
+/*
+ * Structural + fallback styling for VCFormSelectSearch. Written in concrete
+ * (theme-agnostic but Tailwind-gray-flavoured) values so the component is
+ * visually complete out of the box — matching the default form-select look —
+ * even when no external framework CSS is loaded. Themes can still override.
+ */
 .form-select-search {
     position: relative;
     display: block;
 }
 
 .form-select-search .form-select-search-input {
-    cursor: pointer;
-    border: 1px solid #e7ecf5;
     display: block;
-    padding: 0.375rem 0.75rem;
     width: 100%;
-    color: var(--bs-body-color);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #111827;
+    background-color: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    cursor: pointer;
     appearance: none;
-    background-color: var(--bs-body-bg);
-    background-clip: padding-box;
-    border: var(--bs-border-width) solid var(--bs-border-color);
-    border-radius: var(--bs-border-radius);
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
+.form-select-search .form-select-search-input:focus {
+    outline: 0;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 1px #3b82f6;
+}
+
 .form-select-search .form-select-search-input:disabled {
-    background-color: var(--bs-secondary-bg);
+    cursor: not-allowed;
+    background-color: #f9fafb;
     opacity: 1;
 }
 
 .form-select-search .form-select-search-content {
-    display: block;
     position: absolute;
+    inset-inline: 0;
+    top: calc(100% + 0.25rem);
+    z-index: 50;
+    display: block;
+    max-height: 15rem;
+    overflow-y: auto;
     background-color: #fff;
-    width:100%;
-    border: var(--bs-border-width) solid var(--bs-border-color);
-    overflow-y: scroll;
-    z-index: 999;
-    max-height: 150px;
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 .form-select-search .form-select-search-content::-webkit-scrollbar {
     display: none;
 }
 
-.form-select-search .form-select-search-content .form-select-search-item {
-    color: black;
-    cursor: pointer;
+.form-select-search .form-select-search-item {
     display: block;
-    padding: 0.35rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #111827;
+    cursor: pointer;
 }
 
-.form-select-search .form-select-search-content .form-select-search-item:hover,
-.form-select-search .form-select-search-content .form-select-search-item.current {
-    background-color: #e7ecf5;
+.form-select-search .form-select-search-item:hover,
+.form-select-search .form-select-search-item.current {
+    background-color: #f3f4f6;
 }
 
-.form-select-search .form-select-search-content .form-select-search-item.active {
-    background-color: #a2b1f1 !important;
+.form-select-search .form-select-search-item.active {
+    background-color: #dbeafe;
+    color: #1e40af;
 }
 
 .form-select-search .form-select-search-selected {
-    margin-top: 0.25rem;
+    margin-top: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
 }

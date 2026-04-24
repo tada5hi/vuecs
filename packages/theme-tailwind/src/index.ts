@@ -26,10 +26,16 @@ export default function tailwindTheme(): Theme {
             },
             formInputCheckbox: {
                 classes: {
-                    root: 'h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-1 focus:ring-blue-500',
-                    label: 'ml-2 text-sm text-gray-700',
-                    group: 'flex items-center',
+                    root: '',
+                    label: 'text-sm text-gray-700',
+                    group: 'inline-flex items-center gap-2',
                 },
+                variants: {
+                    variant: {
+                        switch: { root: 'vc-form-input-checkbox--switch' },
+                    },
+                },
+                defaultVariants: { variant: 'checkbox' },
             },
             formSelect: { classes: { root: 'block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-50' } },
             formSubmit: {
@@ -70,10 +76,10 @@ export default function tailwindTheme(): Theme {
             },
             pagination: {
                 classes: {
-                    root: 'inline-flex items-center gap-1',
+                    root: 'inline-flex items-center',
                     item: 'inline-flex',
-                    link: 'inline-flex min-w-8 items-center justify-center rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500',
-                    linkActive: 'border-blue-600 bg-blue-600 text-white hover:bg-blue-700',
+                    link: 'inline-flex h-8 min-w-8 items-center justify-center rounded-md border border-gray-300 bg-white px-3 text-sm leading-none text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500',
+                    linkActive: '!border-blue-600 !bg-blue-600 !text-white hover:!bg-blue-700',
                 },
             },
             gravatar: { classes: { root: 'inline-block overflow-hidden rounded-full' } },

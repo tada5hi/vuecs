@@ -1,0 +1,36 @@
+/*
+ * The inner input drops only the side(s) that actually meet an addon — so the
+ * free edge keeps the theme's border and radius. Position-based selectors
+ * (:first-child / :last-child) mean the rule fires regardless of whether a
+ * user-supplied slot applies the group-prepend/append class.
+ */
+.vc-form-input-group > .vc-form-input {
+    box-shadow: none;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.vc-form-input-group > .vc-form-input:not(:first-child) {
+    border-left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.vc-form-input-group > .vc-form-input:not(:last-child) {
+    border-right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+/*
+ * Inside a group, focus should not recolor the preserved top/bottom borders
+ * or stamp a ring around the input — otherwise the focused input "pokes out"
+ * of the shared frame drawn by the addons. Behaves like Bootstrap's input
+ * group where the input focus is neutral and framing stays stable.
+ */
+.vc-form-input-group > .vc-form-input:focus,
+.vc-form-input-group > .vc-form-input:focus-visible {
+    border-color: #d1d5db;
+    box-shadow: none;
+    outline: 0;
+}

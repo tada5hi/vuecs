@@ -1,47 +1,44 @@
+/*
+ * Structural defaults for VCPagination. Colors and typography live in the
+ * theme; this file only handles the geometry (list reset, button grouping,
+ * shared borders, shared corner radii).
+ */
 .vc-pagination {
     display: flex;
     flex-direction: row;
-    list-style: none !important;
+    list-style: none;
+    gap: 0;
+    margin: 0;
+    padding: 0;
 }
 
-.vc-pagination .vc-pagination-item {
-    margin-top: 0;
+.vc-pagination > .vc-pagination-item {
+    display: flex;
 }
 
-.vc-pagination .vc-pagination-item .vc-pagination-link {
-    padding: 0.25rem 0.75rem;
-    background-color: #eee;
-    cursor: pointer;
-    border: none;
-    font-size: 0.75rem;
+/* Adjacent buttons overlap their shared border so it reads as one line
+   instead of doubling up. */
+.vc-pagination > .vc-pagination-item:not(:first-child) > .vc-pagination-link {
+    margin-left: -1px;
 }
 
-.vc-pagination .vc-pagination-item:first-child:not(:last-child) .vc-pagination-link {
-    border-radius: 6px 0 0 6px;
+/* Only the outer edges keep the theme's radius. Middle items are flat so
+   they tile cleanly against their neighbours. */
+.vc-pagination > .vc-pagination-item:not(:first-child) > .vc-pagination-link {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 }
 
-.vc-pagination .vc-pagination-item:last-child:not(:first-child) .vc-pagination-link {
-    border-radius: 0 6px 6px 0;
+.vc-pagination > .vc-pagination-item:not(:last-child) > .vc-pagination-link {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
-.vc-pagination .vc-pagination-item:last-child:first-child .vc-pagination-link {
-    border-radius: 6px;
-}
-
-.vc-pagination .vc-pagination-item .vc-pagination-link {
-    color: #333;
-    background-color: #eee;
-    cursor:pointer;
-    padding: 5px 8px;
-    font-size: 0.75rem;
-}
-
-.vc-pagination > .vc-pagination-item.active > .vc-pagination-link,
-.vc-pagination > .vc-pagination-item.active > .vc-pagination-link:focus,
-.vc-pagination > .vc-pagination-item.active > .vc-pagination-link:hover,
+/* Active/focused/hovered link sits above its siblings so its own border is
+   drawn in full rather than being cut by the overlapping neighbour. */
+.vc-pagination > .vc-pagination-item > .vc-pagination-link.active,
 .vc-pagination > .vc-pagination-item > .vc-pagination-link:focus,
-.vc-pagination > .vc-pagination-item > .vc-pagination-link:hover,
-.vc-pagination > .vc-pagination-item > .vc-pagination-link.active {
-    background-color: #30373e;
-    color: #FFF;
+.vc-pagination > .vc-pagination-item > .vc-pagination-link:hover {
+    position: relative;
+    z-index: 1;
 }

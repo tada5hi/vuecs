@@ -1,16 +1,10 @@
 <template>
-    <div class="mx-auto grid max-w-5xl gap-6 md:grid-cols-2">
+    <div class="mx-auto max-w-5xl space-y-4">
         <section class="space-y-2">
             <h4 class="text-lg font-semibold">
-                Basic
+                Input Checkbox
             </h4>
             <FormInputCheckboxBasic />
-        </section>
-        <section class="space-y-2">
-            <h4 class="text-lg font-semibold">
-                HyperScript
-            </h4>
-            <FormInputCheckboxHyperScript />
         </section>
     </div>
 </template>

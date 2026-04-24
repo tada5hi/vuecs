@@ -23,7 +23,5 @@ export default defineNuxtConfig({
         '@nuxtjs/tailwindcss',
         '@pinia/nuxt',
     ],
-    tailwindcss: {
-        cssPath: path.join(__dirname, 'assets', 'css', 'tailwind.css'),
-    },
+    tailwindcss: { cssPath: path.join(__dirname, 'assets', 'css', 'tailwind.css') },
 });
