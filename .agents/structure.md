@@ -13,9 +13,10 @@ vuecs/
     list-controls/    # @vuecs/list-controls
     navigation/       # @vuecs/navigation
     pagination/       # @vuecs/pagination
-    preset-bootstrap-v4/
-    preset-bootstrap-v5/
-    preset-font-awesome/
+    theme-bootstrap-v4/ # @vuecs/theme-bootstrap-v4 — Bootstrap v4 theme
+    theme-bootstrap-v5/ # @vuecs/theme-bootstrap-v5 — Bootstrap v5 theme
+    theme-font-awesome/ # @vuecs/theme-font-awesome — Font Awesome icon theme
+    theme-tailwind/     # @vuecs/theme-tailwind — Tailwind CSS theme
     timeago/          # @vuecs/timeago
   examples/
     nuxt/             # Nuxt demo app showcasing all components

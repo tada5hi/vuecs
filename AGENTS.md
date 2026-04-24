@@ -2,7 +2,7 @@
 
 # vuecs — Agent Guide
 
-A Vue 3 component library monorepo providing reusable UI components (navigation, form controls, pagination, list controls, etc.) with TypeScript support, CSS extraction, and theming presets for Bootstrap and Font Awesome. Published as scoped `@vuecs/*` packages on npm.
+A Vue 3 component library monorepo providing reusable UI components (navigation, form controls, pagination, list controls, etc.) with TypeScript support, CSS extraction, and themes for Bootstrap, Tailwind, and Font Awesome. Published as scoped `@vuecs/*` packages on npm.
 
 ## Quick Reference
 
@@ -33,9 +33,10 @@ npm run lint:fix       # Auto-fix lint issues
 | `@vuecs/list-controls` | List display controls | 2.0.1 |
 | `@vuecs/navigation` | Multi-level navigation with NavigationManager | 2.4.1 |
 | `@vuecs/pagination` | Pagination component | 1.3.1 |
-| `@vuecs/preset-bootstrap-v4` | Bootstrap v4 theme preset | 1.0.1 |
-| `@vuecs/preset-bootstrap-v5` | Bootstrap v5 theme preset | 2.0.1 |
-| `@vuecs/preset-font-awesome` | Font Awesome icon preset | 1.1.1 |
+| `@vuecs/theme-bootstrap-v4` | Bootstrap v4 theme | 1.0.1 |
+| `@vuecs/theme-bootstrap-v5` | Bootstrap v5 theme | 2.0.1 |
+| `@vuecs/theme-font-awesome` | Font Awesome icon theme | 1.1.1 |
+| `@vuecs/theme-tailwind` | Tailwind CSS theme (exports `merge: ClassesMergeFn`) | 0.0.0 |
 | `@vuecs/timeago` | Relative time display component | 1.1.2 |
 
 ### Dependency Layers
@@ -43,7 +44,7 @@ npm run lint:fix       # Auto-fix lint issues
 ```
 Layer 0 (no internal deps):  core, countdown, gravatar, link, timeago
 Layer 1 (depends on core):   form-controls, list-controls, navigation, pagination
-Layer 2 (depends on Layer 1): (presets depend on component packages at runtime)
+Layer 2 (depends on Layer 0): themes (@vuecs/core peer dep only — pure data that targets component packages at runtime)
 ```
 
 `navigation` also depends on `@vuecs/link`.
@@ -51,6 +52,6 @@ Layer 2 (depends on Layer 1): (presets depend on component packages at runtime)
 ## Detailed Guides
 
 - **[Project Structure](.agents/structure.md)** — Monorepo layout, package organization, nested core re-exports, and build outputs
-- **[Architecture](.agents/architecture.md)** — Vue plugin pattern, store system, NavigationManager, and preset architecture
+- **[Architecture](.agents/architecture.md)** — Vue plugin pattern, theme system, NavigationManager, and theme architecture
 - **[Testing](.agents/testing.md)** — Jest setup, test locations, and coverage
 - **[Conventions](.agents/conventions.md)** — Commit messages, linting, release-please, CI/CD pipelines

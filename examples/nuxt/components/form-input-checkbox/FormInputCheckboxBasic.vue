@@ -35,23 +35,34 @@ export default defineComponent({
 });
 </script>
 <template>
-    <div class="row">
-        <div class="col">
+    <div class="grid gap-6 md:grid-cols-2">
+        <div class="space-y-2">
             <VCFormGroup
                 :label="true"
-                :label-content="'Label'"
+                :label-content="'Checkbox'"
                 :validation-messages="validationMessages"
             >
                 <VCFormInputCheckbox
                     v-model="form.text"
                     :label="true"
-                    :label-content="'switch'"
+                    :label-content="'Enable notifications'"
                     :group="true"
-                    :group-class="'form-switch'"
+                />
+            </VCFormGroup>
+            <VCFormGroup
+                :label="true"
+                :label-content="'Switch'"
+            >
+                <VCFormInputCheckbox
+                    v-model="form.text"
+                    :label="true"
+                    :label-content="'Enable notifications'"
+                    :group="true"
+                    :theme-variant="{ variant: 'switch' }"
                 />
             </VCFormGroup>
         </div>
-        <div class="col">
+        <div class="space-y-2">
             <VCFormGroup
                 :label="true"
             >
@@ -63,7 +74,6 @@ export default defineComponent({
                     :value="0"
                     :label="true"
                     :group="true"
-                    :group-class="'form-switch'"
                 >
                     <template #label="{id}">
                         <label :for="id">zero</label>
@@ -80,10 +90,9 @@ export default defineComponent({
                     :label="true"
                     :label-content="'one'"
                     :group="true"
-                    :group-class="'form-switch'"
                 />
             </VCFormGroup>
-            {{ valueMultiple }}
+            <pre class="text-xs text-gray-500">{{ valueMultiple }}</pre>
         </div>
     </div>
 </template>

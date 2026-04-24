@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Nested navigation tree-line. Kept outside @layer so it sits unlayered —
+   beats Tailwind utilities on the same property via cascade order without
+   needing extra specificity. The theme's `m-0 flex list-none flex-col p-0`
+   on .vc-nav-items zeroes padding-left; we re-introduce it here together
+   with the left border so nested children read as children of their parent. */
+.vc-nav-item-nested > .vc-nav-items {
+    margin-left: 0.75rem;
+    padding-left: 0.75rem;
+    border-left: 1px solid rgb(229 231 235);
+}
+.dark .vc-nav-item-nested > .vc-nav-items {
+    border-left-color: rgb(55 65 81);
+}
+
+/* Navigation overrides live in @layer utilities so they share the same
+   cascade layer as the theme's utility classes (`rounded`, `text-gray-700`,
+   etc.) on the same elements; CSS specificity then decides the winner. In
+   @layer components these rules are drowned out no matter how specific. */
+@layer utilities {
+    /* Active-state styling for navigation links. The component stamps `active`
+       and vue-router adds `router-link-active`/`router-link-exact-active`; the
+       theme has no linkActive slot yet, so apply it globally here. */
+    .vc-nav-link.active,
+    .vc-nav-link.router-link-active,
+    .vc-nav-link.router-link-exact-active {
+        @apply bg-blue-50 text-blue-700;
+    }
+    .vc-nav-link.active:hover,
+    .vc-nav-link.router-link-active:hover {
+        @apply bg-blue-100;
+    }
+
+
+    /* ---- Dark mode overrides for vuecs components ---- */
+    .dark .vc-nav-link {
+        @apply text-gray-200 hover:bg-gray-800;
+    }
+    .dark .vc-nav-link.active,
+    .dark .vc-nav-link.router-link-active,
+    .dark .vc-nav-link.router-link-exact-active {
+        @apply bg-blue-500/15 text-blue-300;
+    }
+    .dark .vc-nav-link.active:hover,
+    .dark .vc-nav-link.router-link-active:hover {
+        @apply bg-blue-500/25;
+    }
+    .dark .vc-nav-separator {
+        @apply text-gray-500;
+    }
+
+    .dark .vc-form-input,
+    .dark .vc-form-select-search .vc-form-select-search-input,
+    .dark input[type="text"].vc-form-input,
+    .dark textarea {
+        background-color: #1f2937;
+        border-color: #374151;
+        color: #f3f4f6;
+    }
+    .dark .vc-form-input-group-append,
+    .dark .vc-form-input-group-prepend {
+        background-color: #111827;
+        border-color: #374151;
+        color: #d1d5db;
+    }
+    .dark .vc-form-input-group > .vc-form-input:focus,
+    .dark .vc-form-input-group > .vc-form-input:focus-visible {
+        border-color: #4b5563;
+    }
+
+    .dark .vc-form-select-search .vc-form-select-search-content {
+        background-color: #1f2937;
+        border-color: #374151;
+    }
+    .dark .vc-form-select-search .vc-form-select-search-item {
+        color: #e5e7eb;
+    }
+    .dark .vc-form-select-search .vc-form-select-search-item:hover,
+    .dark .vc-form-select-search .vc-form-select-search-item.current {
+        background-color: #374151;
+    }
+
+    .dark .vc-form-input-checkbox {
+        background-color: #1f2937;
+        border-color: #4b5563;
+    }
+    .dark .vc-form-input-checkbox--switch:not(:checked) {
+        background-color: #374151;
+    }
+
+    .dark .vc-pagination-link {
+        @apply border-gray-700 bg-gray-900 text-gray-200 hover:bg-gray-800;
+    }
+    .dark .vc-pagination-link:disabled {
+        @apply opacity-50;
+    }
+}

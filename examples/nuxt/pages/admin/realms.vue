@@ -6,7 +6,12 @@
   -->
 
 <template>
-    <div>
-        Realms
+    <div class="mx-auto max-w-5xl space-y-4">
+        <h3 class="flex items-center gap-2 text-2xl font-semibold">
+            <i class="fas fa-university text-blue-500" /> Realms
+        </h3>
+        <p class="text-gray-700">
+            Admin realms placeholder page.
+        </p>
     </div>
 </template>

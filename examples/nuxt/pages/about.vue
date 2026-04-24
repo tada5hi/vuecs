@@ -1,12 +1,7 @@
-<!--
-  - Copyright (c) 2021-2022.
-  - Author Peter Placzek (tada5hi)
-  - For the full copyright and license information,
-  - view the LICENSE file that was distributed with this source code.
-  -->
-
 <template>
-    <div class="container">
-        <h3><i class="fa fa-info" /> About</h3>
+    <div class="mx-auto max-w-5xl">
+        <h3 class="flex items-center gap-2 text-2xl font-semibold">
+            <i class="fa fa-info text-blue-500" /> About
+        </h3>
     </div>
 </template>

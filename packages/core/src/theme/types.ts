@@ -9,10 +9,16 @@ export type ClassesMergeFn = (base: string, override: string) => string;
 
 export type ThemeClassesOverrideValue = string | ExtendValue;
 
-export type ThemeClasses = Record<string, string>;
+export type ReservedThemeKeys = 'variants' | 'defaultVariants' | 'compoundVariants';
+
+export type ThemeClasses = Record<string, string> & {
+    [K in ReservedThemeKeys]?: never;
+};
 
 export type ThemeClassesOverride<T extends ThemeClasses = ThemeClasses> = {
     [K in keyof T]?: ThemeClassesOverrideValue;
+} & {
+    [K in ReservedThemeKeys]?: never;
 };
 
 // ---------------------------------------------------------------------------

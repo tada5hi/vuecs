@@ -22,9 +22,9 @@ declare module '@vuecs/core' {
 
 const themeDefaults = {
     classes: {
-        root: '',
-        label: '',
-        group: '',
+        root: 'vc-form-input-checkbox',
+        label: 'vc-form-input-checkbox-label',
+        group: 'vc-form-input-checkbox-group',
     },
 };
 
@@ -98,7 +98,7 @@ export const VCFormInputCheckbox = defineComponent({
             }, attrs));
 
             if (props.label || props.group) {
-                const children: VNodeChild[] = [];
+                const children: VNodeChild[] = [element];
 
                 if (props.label) {
                     if (slots.label) {
@@ -107,8 +107,6 @@ export const VCFormInputCheckbox = defineComponent({
                         children.push(h('label', { class: resolved.label || undefined, for: id }, [props.labelContent]));
                     }
                 }
-
-                children.push(element);
 
                 return h('div', { class: resolved.group || undefined }, children);
             }

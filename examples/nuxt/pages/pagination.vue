@@ -1,10 +1,3 @@
-<!--
-  - Copyright (c) 2022.
-  - Author Peter Placzek (tada5hi)
-  - For the full copyright and license information,
-  - view the LICENSE file that was distributed with this source code.
-  -->
-
 <script lang="ts">
 import { VCPagination } from '@vuecs/pagination';
 import { ref } from '#imports';
@@ -40,11 +33,13 @@ export default defineNuxtComponent({
     },
 });
 </script>
-<template>
-    <div class="container">
-        <h3><i class="fa fa-solid fa-road" /> Pagination</h3>
 
-        <ul class="mt-2 mb-2">
+<template>
+    <div class="mx-auto max-w-5xl space-y-4">
+        <h3 class="flex items-center gap-2 text-2xl font-semibold">
+            <i class="fa fa-solid fa-road text-blue-500" /> Pagination
+        </h3>
+        <ul class="list-disc space-y-1 pl-6">
             <li
                 v-for="(item, key) in data"
                 :key="key"
@@ -52,7 +47,7 @@ export default defineNuxtComponent({
                 {{ item.name }}
             </li>
         </ul>
-        <div class="mt-3 text-center">
+        <div class="flex justify-center pt-4">
             <VCPagination
                 v-bind="meta"
                 @load="load"

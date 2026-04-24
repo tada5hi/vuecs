@@ -306,11 +306,11 @@ export default defineComponent({
 });
 </script>
 <template>
-    <div class="form-select-search">
+    <div class="vc-form-select-search">
         <input
             ref="inputElement"
             v-model="q"
-            class="form-select-search-input"
+            class="vc-form-select-search-input"
             :disabled="disabled"
             :placeholder="placeholder"
             @focus="onFocus"
@@ -321,7 +321,7 @@ export default defineComponent({
         <div
             v-show="isDisplayed"
             ref="listElement"
-            class="form-select-search-content"
+            class="vc-form-select-search-content"
         >
             <template
                 v-for="(option, index) in items"
@@ -333,7 +333,7 @@ export default defineComponent({
                 >
                     <template #default="{ entry, active }">
                         <div
-                            class="form-select-search-item"
+                            class="vc-form-select-search-item"
                             :class="{
                                 'active': active,
                                 'current': index === currentIndex || (index === 0 && currentIndex === -1)
@@ -349,7 +349,7 @@ export default defineComponent({
 
         <div
             v-if="isMulti"
-            class="form-select-search-selected"
+            class="vc-form-select-search-selected"
         >
             <slot
                 name="selected"

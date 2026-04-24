@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import bootstrapV5Theme from '../../../../preset-bootstrap-v5/src/index';
-import bootstrapV4Theme from '../../../../preset-bootstrap-v4/src/index';
-import fontAwesomeTheme from '../../../../preset-font-awesome/src/index';
+import bootstrapV5Theme from '../../../../theme-bootstrap-v5/src/index';
+import bootstrapV4Theme from '../../../../theme-bootstrap-v4/src/index';
+import fontAwesomeTheme from '../../../../theme-font-awesome/src/index';
 import { isExtendValue } from '../../../src/theme/extend';
 import { resolveComponentTheme } from '../../../src/theme/resolve';
 import type { ThemeElementDefinition } from '../../../src/theme/types';

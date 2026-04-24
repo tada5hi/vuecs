@@ -3,7 +3,7 @@
 [![npm version](https://badge.fury.io/js/@vuecs%2Fpagination.svg)](https://badge.fury.io/js/@vuecs%2Fpagination)
 [![main](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
 
-Pagination component for Vue 3 with page calculation utilities and icon support via presets.
+Pagination component for Vue 3 with page calculation utilities and icon support via themes.
 
 **Table of Contents**
 

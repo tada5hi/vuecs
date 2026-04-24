@@ -26,10 +26,10 @@ declare module '@vuecs/core' {
 
 const themeDefaults = {
     classes: {
-        root: '',
-        group: '',
-        groupAppend: '',
-        groupPrepend: '',
+        root: 'vc-form-input',
+        group: 'vc-form-input-group',
+        groupAppend: 'vc-form-input-group-append',
+        groupPrepend: 'vc-form-input-group-prepend',
     },
 };
 

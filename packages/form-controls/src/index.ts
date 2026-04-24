@@ -1,6 +1,8 @@
 import { installThemeManager } from '@vuecs/core';
 import type { App, Plugin } from 'vue';
 
+import '../assets/form-input.css';
+import '../assets/form-input-checkbox.css';
 import '../assets/form-select-search.css';
 import '../assets/form-range-multi-slider.css';
 import './vue';

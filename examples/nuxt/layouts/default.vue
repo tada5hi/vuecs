@@ -1,13 +1,7 @@
-<!--
-  - Copyright (c) 2021-2022.
-  - Author Peter Placzek (tada5hi)
-  - For the full copyright and license information,
-  - view the LICENSE file that was distributed with this source code.
-  -->
-<script>
-import pageHeader from '../components/header';
-import pageSidebar from '../components/sidebar';
-import pageFooter from '../components/footer';
+<script lang="ts">
+import pageFooter from '../components/footer.vue';
+import pageHeader from '../components/header.vue';
+import pageSidebar from '../components/sidebar.vue';
 
 export default {
     components: {
@@ -19,21 +13,14 @@ export default {
 </script>
 
 <template>
-    <div id="app">
+    <div class="flex min-h-screen flex-col bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100">
         <page-header />
-        <div class="page-wrapper">
+        <div class="flex flex-1 pt-14">
             <page-sidebar />
-            <div class="page-content">
+            <main class="flex-1 p-6 overflow-auto">
                 <slot />
-            </div>
+            </main>
         </div>
         <page-footer />
     </div>
 </template>
-<style>
-#__nuxt,
-#__layout,
-#app {
-    height: 100%;
-}
-</style>

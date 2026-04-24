@@ -54,7 +54,11 @@ export default defineComponent({
                     <template #groupPrepend>
                         <button
                             type="button"
-                            class="btn btn-xs"
+                            :class="[
+                                'inline-flex items-center rounded-l-md px-3 text-sm',
+                                'border border-r-0 border-gray-300 bg-gray-50 text-gray-600',
+                                'hover:bg-gray-100',
+                            ]"
                         >
                             <i class="fa fa-plus" />
                         </button>

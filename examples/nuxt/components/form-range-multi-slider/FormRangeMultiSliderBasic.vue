@@ -27,15 +27,13 @@ export default defineComponent({
 });
 </script>
 <template>
-    <div>
-        <div class="form-group">
-            <VCFormRangeMultiSlider
-                :min="0"
-                :max="100"
-                @change="submit"
-            />
-        </div>
-        <div class="alert alert-info">
+    <div class="space-y-3">
+        <VCFormRangeMultiSlider
+            :min="0"
+            :max="100"
+            @change="submit"
+        />
+        <div class="rounded-md border border-blue-200 bg-blue-50 p-2 text-sm text-blue-800">
             Current Value: {{ value }}
         </div>
     </div>

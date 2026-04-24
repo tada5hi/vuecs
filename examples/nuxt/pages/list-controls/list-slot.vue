@@ -14,28 +14,27 @@ export default defineComponent({ components: { ExampleList } });
 <template>
     <ExampleList>
         <template #itemActions="props">
-            <div class="d-flex flex-row gap-1">
-                <div>
-                    <button
-                        class="btn btn-xs btn-primary"
-                        @click.prevent="props.updated({name: 'foo'})"
-                    >
-                        <i class="fa fa-refresh" />
-                    </button>
-                </div>
-                <div>
-                    <button
-                        class="btn btn-xs btn-dark"
-                        @click.prevent="props.deleted()"
-                    >
-                        <i class="fa fa-trash" />
-                    </button>
-                </div>
+            <div class="flex flex-row gap-1">
+                <button
+                    type="button"
+                    class="inline-flex items-center justify-center rounded-md bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-700"
+                    @click.prevent="props.updated({name: 'foo'})"
+                >
+                    <i class="fa fa-refresh" />
+                </button>
+                <button
+                    type="button"
+                    class="inline-flex items-center justify-center rounded-md bg-gray-800 px-2 py-1 text-xs text-white hover:bg-gray-700"
+                    @click.prevent="props.deleted()"
+                >
+                    <i class="fa fa-trash" />
+                </button>
             </div>
         </template>
         <template #footer="props">
             <button
-                class="btn btn-xs btn-dark"
+                type="button"
+                class="inline-flex items-center gap-1.5 rounded-md bg-gray-800 px-2.5 py-1 text-xs text-white hover:bg-gray-700"
                 @click.prevent="props.created({
                     id: Math.ceil(Math.random() * 100),
                     name: 'Max'

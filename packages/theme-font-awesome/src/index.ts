@@ -1,7 +1,7 @@
 import { extend } from '@vuecs/core';
 import type { Theme } from '@vuecs/core';
 
-export default function fontAwesomePreset(): Theme {
+export default function fontAwesomeTheme(): Theme {
     return {
         elements: {
             formSubmit: {
@@ -15,6 +15,8 @@ export default function fontAwesomePreset(): Theme {
                 classes: {
                     prevIcon: extend('fa-solid fa-chevron-left'),
                     nextIcon: extend('fa-solid fa-chevron-right'),
+                    firstIcon: extend('fa-solid fa-angles-left'),
+                    lastIcon: extend('fa-solid fa-angles-right'),
                 },
             },
         },
