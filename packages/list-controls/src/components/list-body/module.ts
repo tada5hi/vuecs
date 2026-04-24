@@ -32,7 +32,7 @@ export const VCListBody = defineComponent({
         itemTag: { type: String, default: 'li' },
         itemIcon: { type: Boolean, default: true },
         itemText: { type: Boolean, default: true },
-        itemTextPropName: { type: String, default: 'name' },
+        itemTextPropName: { type: String, default: undefined },
         itemActions: { type: Boolean, default: true },
         // List base props
         total: { type: Number, default: undefined },

@@ -151,6 +151,14 @@ describe('VCFormGroup', () => {
         expect(wrapper.text()).not.toContain('Required');
     });
 
+    it('should default validation to true when prop is omitted (3-layer fallthrough)', () => {
+        const wrapper = mount(VCFormGroup, {
+            props: { validationMessages: { required: 'Required' } },
+            global: { plugins: [themePlugin] },
+        });
+        expect(wrapper.text()).toContain('Required');
+    });
+
     it('should render in order: label, content, validation, hint', () => {
         const wrapper = mount(VCFormGroup, {
             props: {

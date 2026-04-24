@@ -10,7 +10,22 @@ import {
 import { mount } from '@vue/test-utils';
 import { useComponentDefaults } from '../../../src/defaults/composable';
 import { installDefaultsManager } from '../../../src/defaults/install';
-import type { DefaultsManagerOptions } from '../../../src/defaults/types';
+import type { ComponentDefaultValues, DefaultsManagerOptions } from '../../../src/defaults/types';
+
+// Test-local augmentation so we can exercise the `keyof ComponentDefaults`
+// generic constraint without casting. Component packages (form-controls,
+// list-controls) register their own entries via the same pattern.
+type TestSubmitDefaults = {
+    createText: string;
+    updateText: string;
+    icon: boolean;
+};
+
+declare module '../../../src/defaults/types' {
+    interface ComponentDefaults {
+        __testSubmit?: ComponentDefaultValues<TestSubmitDefaults>;
+    }
+}
 
 function mountWithDefaults(
     options: DefaultsManagerOptions,
@@ -28,7 +43,7 @@ describe('useComponentDefaults', () => {
         expect(() => {
             mount(defineComponent({
                 setup() {
-                    useComponentDefaults('formSubmit' as any, {}, { createText: 'Create' });
+                    useComponentDefaults('__testSubmit', {}, { createText: 'Create' });
                     return () => h('div');
                 },
             }));
@@ -40,7 +55,7 @@ describe('useComponentDefaults', () => {
 
         mountWithDefaults({}, () => {
             const defaults = useComponentDefaults(
-                'formSubmit' as any,
+                '__testSubmit',
                 { createText: undefined, updateText: undefined },
                 { createText: 'Create', updateText: 'Update' },
             );
@@ -55,10 +70,10 @@ describe('useComponentDefaults', () => {
         let resolved: Record<string, any> | undefined;
 
         mountWithDefaults(
-            { defaults: { formSubmit: { createText: 'Global' } } as any },
+            { defaults: { __testSubmit: { createText: 'Global' } } },
             () => {
                 const defaults = useComponentDefaults(
-                    'formSubmit' as any,
+                    '__testSubmit',
                     { createText: 'Instance' },
                     { createText: 'Hardcoded' },
                 );
@@ -74,10 +89,10 @@ describe('useComponentDefaults', () => {
         let resolved: Record<string, any> | undefined;
 
         mountWithDefaults(
-            { defaults: { formSubmit: { createText: 'Erstellen' } } as any },
+            { defaults: { __testSubmit: { createText: 'Erstellen' } } },
             () => {
                 const defaults = useComponentDefaults(
-                    'formSubmit' as any,
+                    '__testSubmit',
                     { createText: undefined },
                     { createText: 'Create' },
                 );
@@ -94,10 +109,10 @@ describe('useComponentDefaults', () => {
         const createText = ref('Anlegen');
 
         mountWithDefaults(
-            { defaults: { formSubmit: { createText } } as any },
+            { defaults: { __testSubmit: { createText } } },
             () => {
                 const defaults = useComponentDefaults(
-                    'formSubmit' as any,
+                    '__testSubmit',
                     { createText: undefined },
                     { createText: 'Create' },
                 );
@@ -117,10 +132,10 @@ describe('useComponentDefaults', () => {
         let resolved: Record<string, any> | undefined;
 
         mountWithDefaults(
-            { defaults: { formSubmit: { createText } } as any },
+            { defaults: { __testSubmit: { createText } } },
             () => {
                 const defaults = useComponentDefaults(
-                    'formSubmit' as any,
+                    '__testSubmit',
                     { createText: undefined },
                     { createText: 'Create' },
                 );
@@ -142,10 +157,10 @@ describe('useComponentDefaults', () => {
         let resolved: Record<string, any> | undefined;
 
         mountWithDefaults(
-            { defaults: { formSubmit: { createText: ref(undefined) } } as any },
+            { defaults: { __testSubmit: { createText: ref(undefined) } } },
             () => {
                 const defaults = useComponentDefaults(
-                    'formSubmit' as any,
+                    '__testSubmit',
                     { createText: undefined },
                     { createText: 'Create' },
                 );
@@ -163,15 +178,15 @@ describe('useComponentDefaults', () => {
         mountWithDefaults(
             {
                 defaults: {
-                    formSubmit: {
+                    __testSubmit: {
                         createText: 'Global-Create',
                         updateText: 'Global-Update',
                     },
-                } as any,
+                },
             },
             () => {
                 const defaults = useComponentDefaults(
-                    'formSubmit' as any,
+                    '__testSubmit',
                     {
                         createText: 'Instance-Create', 
                         updateText: undefined, 

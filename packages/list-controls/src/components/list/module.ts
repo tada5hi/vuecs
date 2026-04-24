@@ -64,11 +64,11 @@ export const VCList = defineComponent({
         itemTag: { type: String, default: 'li' },
         itemIcon: { type: Boolean, default: true },
         itemText: { type: Boolean, default: true },
-        itemTextPropName: { type: String, default: 'name' },
+        itemTextPropName: { type: String, default: undefined },
         itemActions: { type: Boolean, default: true },
 
         // No more content
-        noMoreContent: { type: String, default: 'No more items available...' },
+        noMoreContent: { type: String, default: undefined },
 
         // Events
         onCreated: { type: Function as PropType<ListEventFn<any>>, default: undefined },
