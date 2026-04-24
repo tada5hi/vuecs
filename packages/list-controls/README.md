@@ -11,6 +11,7 @@ List display components for Vue 3 with header, footer, body, loading state, empt
 - [Quick Start](#quick-start)
 - [Components](#components)
 - [Slots](#slots)
+- [Global Behavioral Defaults (i18n)](#global-behavioral-defaults-i18n)
 - [Typed Slot Props](#typed-slot-props)
 - [Theme Slots](#theme-slots)
 - [License](#license)
@@ -80,6 +81,37 @@ h(VCList, { data: items, total: items.length }, {
 | `itemActions` | `{ data, index, updated, deleted }` | Per-item actions |
 | `loading` | `{ busy }` | Loading indicator content |
 | `noMore` | `{}` | Empty state content |
+
+## Global Behavioral Defaults (i18n)
+
+Text content and behavioral flags that are hardcoded per-component can be overridden globally via the `defaults` option on the core plugin. Values may be plain strings, `ref`, or `computed` (reactive sources unwrap automatically — ideal for i18n). See [@vuecs/core — Global Behavioral Defaults](../core/README.md#global-behavioral-defaults) for the full resolution chain.
+
+```typescript
+import { computed } from 'vue';
+import vuecs from '@vuecs/core';
+import listControls from '@vuecs/list-controls';
+
+app.use(vuecs, {
+    defaults: {
+        listNoMore: {
+            content: computed(() => t('list.no_more')),
+        },
+        listItem: {
+            textPropName: 'label', // or e.g. 'title' for CMS entities
+        },
+    },
+});
+app.use(listControls);
+```
+
+Per-instance props always win over global defaults.
+
+### Configurable keys per component
+
+| Component | Keys | Hardcoded fallback |
+|-----------|------|--------------------|
+| `VCListItem` | `textPropName` | `'name'` |
+| `VCListNoMore` | `content` | `'No more items available...'` |
 
 ## Typed Slot Props
 

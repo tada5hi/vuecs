@@ -1,6 +1,6 @@
 import { useComponentTheme } from '@vuecs/core';
 import type { PropType, SlotsType } from 'vue';
-import { defineComponent, h, toRef } from 'vue';
+import { defineComponent, h } from 'vue';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import type { ListBaseSlotProps, ListLoadingThemeClasses } from '../type';
 
@@ -19,7 +19,7 @@ export const VCListLoading = defineComponent({
         default?: ListBaseSlotProps<any>;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('listLoading', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
+        const theme = useComponentTheme('listLoading', props, themeDefaults);
 
         return () => {
             if (!props.busy) {

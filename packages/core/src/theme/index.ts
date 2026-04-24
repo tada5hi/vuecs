@@ -3,6 +3,7 @@ export { defaultClassesMergeFn, resolveComponentTheme } from './resolve';
 export { ThemeManager } from './manager';
 export { installThemeManager, injectThemeManager } from './install';
 export { useComponentTheme } from './composable';
+export type { UseComponentThemeProps } from './composable';
 export { extractVariantConfig, resolveVariantClasses } from './variant';
 export type {
     ExtendValue,

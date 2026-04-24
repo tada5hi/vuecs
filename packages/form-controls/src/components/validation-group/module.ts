@@ -6,7 +6,7 @@ import type {
     VNodeArrayChildren,
     VNodeChild,
 } from 'vue';
-import { defineComponent, h, toRef } from 'vue';
+import { defineComponent, h } from 'vue';
 import { ValidationSeverity } from '../constants';
 import type { ValidationMessages, ValidationMessagesArrayStyle } from '../type';
 
@@ -51,7 +51,7 @@ export const VCValidationGroup = defineComponent({
         item: ValidationGroupItemSlotProps;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('validationGroup', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
+        const theme = useComponentTheme('validationGroup', props, themeDefaults);
 
         return () => {
             const resolved = theme.value;

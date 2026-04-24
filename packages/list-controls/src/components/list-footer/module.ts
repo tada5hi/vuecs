@@ -1,6 +1,6 @@
 import { useComponentTheme } from '@vuecs/core';
 import type { PropType, SlotsType, VNodeChild } from 'vue';
-import { defineComponent, h, toRef } from 'vue';
+import { defineComponent, h } from 'vue';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import type { ListBaseSlotProps, ListFooterThemeClasses } from '../type';
 
@@ -18,7 +18,7 @@ export const VCListFooter = defineComponent({
         default?: ListBaseSlotProps<any>;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('listFooter', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
+        const theme = useComponentTheme('listFooter', props, themeDefaults);
 
         return () => {
             const content: VNodeChild[] = [];

@@ -1,4 +1,4 @@
-import { installThemeManager } from '@vuecs/core';
+import { installDefaultsManager, installThemeManager } from '@vuecs/core';
 import type { App, Plugin } from 'vue';
 
 import './vue';
@@ -15,6 +15,7 @@ export * from './type';
 
 export function install(app: App, options: Options = {}): void {
     installThemeManager(app, options);
+    installDefaultsManager(app, options);
 
     if (options.converter) {
         provideConverter(options.converter, app);

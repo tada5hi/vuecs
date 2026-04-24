@@ -7,7 +7,7 @@ import {
 } from 'vitest';
 import { h } from 'vue';
 import { mount } from '@vue/test-utils';
-import { installThemeManager } from '@vuecs/core';
+import { installDefaultsManager, installThemeManager } from '@vuecs/core';
 import { VCFormGroup } from '../../src/components/form-group/component';
 import { VCFormInput } from '../../src/components/form-input/component';
 import { VCFormInputCheckbox } from '../../src/components/form-input-checkbox/component';
@@ -16,7 +16,12 @@ import { VCFormSubmit } from '../../src/components/form-submit/component';
 import { VCFormTextarea } from '../../src/components/form-textarea/component';
 import { VCValidationGroup } from '../../src/components/validation-group/module';
 
-const themePlugin = { install: (app: any) => installThemeManager(app) };
+const themePlugin = {
+    install: (app: any) => {
+        installThemeManager(app);
+        installDefaultsManager(app);
+    },
+};
 
 describe('VCFormGroup', () => {
     it('should render a div wrapper', () => {
@@ -92,7 +97,14 @@ describe('VCFormGroup', () => {
                 validation: true,
                 validationMessages: { required: 'Required' },
             },
-            global: { plugins: [{ install: (app: any) => installThemeManager(app, { themes: [preset] }) }] },
+            global: {
+                plugins: [{
+                    install: (app: any) => {
+                        installThemeManager(app, { themes: [preset] });
+                        installDefaultsManager(app);
+                    },
+                }],
+            },
         });
         expect(wrapper.classes()).toContain('has-error');
     });
@@ -115,7 +127,14 @@ describe('VCFormGroup', () => {
                 validationMessages: { hint: 'Check this' },
                 validationSeverity: 'warning',
             },
-            global: { plugins: [{ install: (app: any) => installThemeManager(app, { themes: [preset] }) }] },
+            global: {
+                plugins: [{
+                    install: (app: any) => {
+                        installThemeManager(app, { themes: [preset] });
+                        installDefaultsManager(app);
+                    },
+                }],
+            },
         });
         expect(wrapper.classes()).toContain('has-warning');
         expect(wrapper.classes()).not.toContain('has-error');

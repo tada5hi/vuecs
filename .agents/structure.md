@@ -60,6 +60,12 @@ packages/core/src/
     composable.ts     # useComponentTheme() Vue composable
     install.ts        # installThemeManager() / injectThemeManager()
     index.ts          # Barrel exports
+  defaults/           # Global behavioral defaults (i18n-friendly)
+    types.ts          # ComponentDefaults (augmentable), ComponentDefaultValues, DefaultsManagerOptions
+    manager.ts        # DefaultsManager class
+    composable.ts     # useComponentDefaults() Vue composable
+    install.ts        # installDefaultsManager() / injectDefaultsManager()
+    index.ts          # Barrel exports
   utils/              # Shared utilities (inject, provide, normalizeSlot, etc.)
   types.ts            # VNodeClass, VNodeProperties, PartialPick
 ```

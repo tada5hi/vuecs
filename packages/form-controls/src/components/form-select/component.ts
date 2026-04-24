@@ -1,11 +1,15 @@
-import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
+import { useComponentDefaults, useComponentTheme } from '@vuecs/core';
+import type {
+    ComponentDefaultValues,
+    ThemeClassesOverride,
+    ThemeElementDefinition,
+    VariantValues,
+} from '@vuecs/core';
 import type { PropType, VNodeChild } from 'vue';
-import { 
-    defineComponent, 
-    h, 
-    mergeProps, 
-    toRef, 
+import {
+    defineComponent,
+    h,
+    mergeProps,
 } from 'vue';
 
 export type FormSelectOption = {
@@ -18,35 +22,52 @@ export type FormSelectThemeClasses = {
     root: string;
 };
 
+export type FormSelectDefaults = {
+    optionDefault: boolean;
+    optionDefaultId: string | number;
+    optionDefaultValue: string;
+};
+
 declare module '@vuecs/core' {
     interface ThemeElements {
         formSelect?: ThemeElementDefinition<FormSelectThemeClasses>;
     }
+    interface ComponentDefaults {
+        formSelect?: ComponentDefaultValues<FormSelectDefaults>;
+    }
 }
 
 const themeDefaults = { classes: { root: '' } };
+
+const behavioralDefaults: FormSelectDefaults = {
+    optionDefault: true,
+    optionDefaultId: '',
+    optionDefaultValue: '-- Select --',
+};
 
 export const VCFormSelect = defineComponent({
     name: 'VCFormSelect',
     props: {
         modelValue: { type: String, default: '' },
         options: { type: Object as PropType<FormSelectOption[]>, required: true },
-        optionDefault: { type: Boolean, default: true },
-        optionDefaultId: { type: [String, Number], default: '' },
-        optionDefaultValue: { type: String, default: '-- Select --' },
+        optionDefault: { type: Boolean, default: undefined },
+        optionDefaultId: { type: [String, Number], default: undefined },
+        optionDefaultValue: { type: String, default: undefined },
         themeClass: { type: Object as PropType<ThemeClassesOverride<FormSelectThemeClasses>>, default: undefined },
         themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
     },
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {
-        const theme = useComponentTheme('formSelect', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
+        const theme = useComponentTheme('formSelect', props, themeDefaults);
+        const defaults = useComponentDefaults('formSelect', props, behavioralDefaults);
 
         return () => {
             const resolved = theme.value;
+            const resolvedDefaults = defaults.value;
             const children: VNodeChild[] = [];
 
-            if (props.optionDefault) {
-                children.push(h('option', { value: props.optionDefaultId }, [props.optionDefaultValue]));
+            if (resolvedDefaults.optionDefault) {
+                children.push(h('option', { value: resolvedDefaults.optionDefaultId }, [resolvedDefaults.optionDefaultValue]));
             }
 
             for (let i = 0; i < props.options.length; i++) {

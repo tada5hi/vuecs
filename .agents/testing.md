@@ -11,7 +11,7 @@ Only two packages currently have tests:
 
 | Package | Test directory | What's tested |
 |---------|---------------|---------------|
-| `@vuecs/core` | `packages/core/test/unit/` | Theme resolution (extend, resolve, manager), utility functions (evaluate) |
+| `@vuecs/core` | `packages/core/test/unit/` | Theme resolution (extend, resolve, variant, manager, composable, install), global defaults (manager, composable), utility functions (evaluate) |
 | `@vuecs/navigation` | `packages/navigation/test/unit/` | NavigationManager |
 
 ## Running Tests
@@ -33,6 +33,8 @@ packages/core/test/unit/theme/extend.spec.ts
 packages/core/test/unit/theme/resolve.spec.ts
 packages/core/test/unit/theme/variant.spec.ts
 packages/core/test/unit/theme/manager.spec.ts
+packages/core/test/unit/defaults/manager.spec.ts
+packages/core/test/unit/defaults/composable.spec.ts
 packages/core/test/unit/utils/evaluate.spec.ts
 packages/navigation/test/unit/manager.spec.ts
 ```

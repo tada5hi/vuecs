@@ -1,4 +1,4 @@
-import type { ThemeElementDefinition } from '@vuecs/core';
+import type { ComponentDefaultValues, ThemeElementDefinition } from '@vuecs/core';
 import type { VNodeChild } from 'vue';
 import type { ListEventFn, ListLoadFn } from '../type';
 
@@ -39,6 +39,18 @@ export type ListNoMoreThemeClasses = {
     root: string;
 };
 
+// ---------------------------------------------------------------
+// Behavioral defaults types (#1491)
+// ---------------------------------------------------------------
+
+export type ListItemDefaults = {
+    textPropName: string;
+};
+
+export type ListNoMoreDefaults = {
+    content: string;
+};
+
 declare module '@vuecs/core' {
     interface ThemeElements {
         list?: ThemeElementDefinition<ListThemeClasses>;
@@ -48,6 +60,10 @@ declare module '@vuecs/core' {
         listItem?: ThemeElementDefinition<ListItemThemeClasses>;
         listLoading?: ThemeElementDefinition<ListLoadingThemeClasses>;
         listNoMore?: ThemeElementDefinition<ListNoMoreThemeClasses>;
+    }
+    interface ComponentDefaults {
+        listItem?: ComponentDefaultValues<ListItemDefaults>;
+        listNoMore?: ComponentDefaultValues<ListNoMoreDefaults>;
     }
 }
 

@@ -2,6 +2,7 @@ import {
     evaluateFnOrValue,
     hasOwnProperty,
     isObject,
+    useComponentDefaults,
     useComponentTheme,
 } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
@@ -10,7 +11,6 @@ import type { PropType, SlotsType, VNodeChild } from 'vue';
 import {
     defineComponent,
     h,
-    toRef,
 } from 'vue';
 import type {
     ListEventFn,
@@ -18,11 +18,12 @@ import type {
     ListItemKey,
     ListLoadFn,
 } from '../../type';
-import type { 
-    ListBaseSlotProps, 
-    ListItemChildren, 
-    ListItemSlotProps, 
-    ListItemThemeClasses, 
+import type {
+    ListBaseSlotProps,
+    ListItemChildren,
+    ListItemDefaults,
+    ListItemSlotProps,
+    ListItemThemeClasses,
 } from '../type';
 
 const themeDefaults = {
@@ -35,6 +36,8 @@ const themeDefaults = {
         actionsExtraWrapper: '',
     },
 };
+
+const behavioralDefaults: ListItemDefaults = { textPropName: 'name' };
 
 function maybeWrapContent(input: VNodeChild, wrap: boolean, tag: string, className: string) {
     if (!wrap) {
@@ -64,7 +67,7 @@ export const VCListItem = defineComponent({
             type: [String, Function] as PropType<VNodeChild | ((item: any, props: ListItemSlotProps<any>) => VNodeChild)>,
             default: undefined,
         },
-        textPropName: { type: String, default: 'name' },
+        textPropName: { type: String, default: undefined },
         textWrapper: { type: Boolean, default: true },
         textWrapperTag: { type: String, default: 'div' },
 
@@ -97,7 +100,8 @@ export const VCListItem = defineComponent({
         actionsExtra?: ListItemSlotProps<any>;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('listItem', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
+        const theme = useComponentTheme('listItem', props, themeDefaults);
+        const defaults = useComponentDefaults('listItem', props, behavioralDefaults);
 
         return () => {
             let itemData = props.data;
@@ -172,14 +176,16 @@ export const VCListItem = defineComponent({
                 if (props.text) {
                     let textNode: VNodeChild | undefined;
 
+                    const { textPropName } = defaults.value;
+
                     if (props.textContent) {
                         textNode = evaluateFnOrValue(props.textContent, itemData, slotPropsResolved);
                     } else if (
-                        props.textPropName &&
+                        textPropName &&
                         isObject(itemData) &&
-                        hasOwnProperty(itemData, props.textPropName)
+                        hasOwnProperty(itemData, textPropName)
                     ) {
-                        textNode = itemData[props.textPropName] as VNodeChild;
+                        textNode = itemData[textPropName] as VNodeChild;
                     }
 
                     if (textNode) {

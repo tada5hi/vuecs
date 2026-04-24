@@ -13,7 +13,6 @@ import {
     onMounted,
     onUnmounted,
     ref,
-    toRef,
 } from 'vue';
 import { SlotName } from '../../constants';
 import { injectNavigationManager } from '../../manager';
@@ -47,7 +46,7 @@ export const VCNavItems = defineComponent({
         item: NavItemsItemSlotProps;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('navigation', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
+        const theme = useComponentTheme('navigation', props, themeDefaults);
 
         const manager = injectNavigationManager();
         const managerItems = ref<NavigationItemNormalized[]>([]);

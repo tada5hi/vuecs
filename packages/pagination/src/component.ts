@@ -5,7 +5,6 @@ import {
     defineComponent,
     h,
     mergeProps,
-    toRef,
 } from 'vue';
 import type { PaginationMeta } from './type';
 import { calculateOffset, calculatePage, calculatePagesTotal } from './utils';
@@ -55,7 +54,7 @@ export const VCPagination = defineComponent({
     },
     emits: ['load'],
     setup(props, { emit }) {
-        const theme = useComponentTheme('pagination', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
+        const theme = useComponentTheme('pagination', props, themeDefaults);
 
         return () => {
             const resolved = theme.value;

@@ -1,11 +1,15 @@
-import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
+import { useComponentDefaults, useComponentTheme } from '@vuecs/core';
+import type {
+    ComponentDefaultValues,
+    ThemeClassesOverride,
+    ThemeElementDefinition,
+    VariantValues,
+} from '@vuecs/core';
 import type { PropType, VNodeArrayChildren } from 'vue';
-import { 
-    defineComponent, 
-    h, 
-    mergeProps, 
-    toRef, 
+import {
+    defineComponent,
+    h,
+    mergeProps,
 } from 'vue';
 
 export type FormSubmitThemeClasses = {
@@ -16,9 +20,19 @@ export type FormSubmitThemeClasses = {
     updateIcon: string;
 };
 
+export type FormSubmitDefaults = {
+    type: string;
+    icon: boolean;
+    createText: string;
+    updateText: string;
+};
+
 declare module '@vuecs/core' {
     interface ThemeElements {
         formSubmit?: ThemeElementDefinition<FormSubmitThemeClasses>;
+    }
+    interface ComponentDefaults {
+        formSubmit?: ComponentDefaultValues<FormSubmitDefaults>;
     }
 }
 
@@ -32,16 +46,23 @@ const themeDefaults = {
     },
 };
 
+const behavioralDefaults: FormSubmitDefaults = {
+    type: 'button',
+    icon: true,
+    createText: 'Create',
+    updateText: 'Update',
+};
+
 export const VCFormSubmit = defineComponent({
     name: 'VCFormSubmit',
     props: {
         modelValue: { type: Boolean, default: false },
-        icon: { type: Boolean, default: true },
+        icon: { type: Boolean, default: undefined },
         isEditing: { type: Boolean, default: false },
         busy: { type: Boolean, default: false },
-        type: { type: String, default: 'button' },
-        createText: { type: String, default: 'Create' },
-        updateText: { type: String, default: 'Update' },
+        type: { type: String, default: undefined },
+        createText: { type: String, default: undefined },
+        updateText: { type: String, default: undefined },
         submit: { type: Function as PropType<() => Promise<any> | any> },
         invalid: { type: Boolean, default: true },
         themeClass: { type: Object as PropType<ThemeClassesOverride<FormSubmitThemeClasses>>, default: undefined },
@@ -49,14 +70,16 @@ export const VCFormSubmit = defineComponent({
     },
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {
-        const theme = useComponentTheme('formSubmit', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
+        const theme = useComponentTheme('formSubmit', props, themeDefaults);
+        const defaults = useComponentDefaults('formSubmit', props, behavioralDefaults);
 
         return () => {
             const resolved = theme.value;
+            const resolvedDefaults = defaults.value;
             const isBusy = props.modelValue || props.busy;
 
             let icon: VNodeArrayChildren = [];
-            if (props.icon) {
+            if (resolvedDefaults.icon) {
                 icon = [
                     h('i', {
                         class: props.isEditing ?
@@ -67,9 +90,9 @@ export const VCFormSubmit = defineComponent({
             }
 
             return h(
-                props.type,
+                resolvedDefaults.type,
                 mergeProps({
-                    ...(props.type === 'button' ? { type: 'submit' } : {}),
+                    ...(resolvedDefaults.type === 'button' ? { type: 'submit' } : {}),
                     class: props.isEditing ?
                         (resolved.updateButton || undefined) :
                         (resolved.createButton || undefined),
@@ -95,7 +118,7 @@ export const VCFormSubmit = defineComponent({
                 [
                     ...icon,
                     ' ',
-                    props.isEditing ? props.updateText : props.createText,
+                    props.isEditing ? resolvedDefaults.updateText : resolvedDefaults.createText,
                 ],
             );
         };

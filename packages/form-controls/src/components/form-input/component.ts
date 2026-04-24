@@ -7,7 +7,6 @@ import {
     h,
     mergeProps,
     ref,
-    toRef,
     watch,
 } from 'vue';
 
@@ -62,7 +61,7 @@ export const VCFormInput = defineComponent({
         emit,
         slots,
     }) {
-        const theme = useComponentTheme('formInput', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
+        const theme = useComponentTheme('formInput', props, themeDefaults);
 
         const localValue = ref(props.modelValue);
         watch(() => props.modelValue, (value) => {

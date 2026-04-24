@@ -1,7 +1,7 @@
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import type { PropType, SlotsType, VNodeArrayChildren } from 'vue';
-import { defineComponent, h, toRef } from 'vue';
+import { defineComponent, h } from 'vue';
 import type {
     ListEventFn,
     ListItemId,
@@ -87,7 +87,7 @@ export const VCList = defineComponent({
         itemActionsExtra?: any;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('list', toRef(props, 'themeClass'), themeDefaults, toRef(props, 'themeVariant'));
+        const theme = useComponentTheme('list', props, themeDefaults);
 
         return () => {
             const total = props.total ?? props.data.length;
