@@ -1,0 +1,64 @@
+{
+    "name": "@vuecs/design",
+    "version": "0.0.0",
+    "type": "module",
+    "description": "Design tokens (CSS variables) and runtime palette switcher for vuecs components.",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./dist/index.d.ts",
+            "style": "./assets/index.css",
+            "import": "./dist/index.mjs"
+        },
+        "./index.css": "./assets/index.css",
+        "./assets/index.css": "./assets/index.css"
+    },
+    "style": "./assets/index.css",
+    "files": [
+        "dist",
+        "assets"
+    ],
+    "keywords": [
+        "vuecs",
+        "design",
+        "design-system",
+        "design-tokens",
+        "css-variables",
+        "theme",
+        "tailwind",
+        "palette"
+    ],
+    "author": {
+        "name": "Peter Placzek",
+        "email": "contact@tada5hi.net",
+        "url": "https://tada5hi.net"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tada5hi/vuecs.git",
+        "directory": "packages/design"
+    },
+    "sideEffects": [
+        "./assets/*.css",
+        "./dist/*.css"
+    ],
+    "scripts": {
+        "build:js": "tsdown",
+        "build:types": "tsc --emitDeclarationOnly -p tsconfig.build.json",
+        "build": "rimraf dist && npm run build:js && npm run build:types",
+        "test": "vitest --config test/vitest.config.ts --run"
+    },
+    "devDependencies": {
+        "jsdom": "^29.0.2",
+        "vue": "^3.5.28"
+    },
+    "peerDependencies": {
+        "vue": "^3.x"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

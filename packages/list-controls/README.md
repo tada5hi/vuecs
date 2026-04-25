@@ -113,6 +113,8 @@ Per-instance props always win over global defaults.
 | `VCListItem` | `textPropName` | `'name'` |
 | `VCListNoMore` | `content` | `'No more items available...'` |
 
+Global defaults apply both when using `VCListItem` / `VCListNoMore` directly and when rendering them through the `VCList` composite — `VCList` forwards the corresponding props (`itemTextPropName`, `noMoreContent`) as `undefined` by default so the child's defaults resolution runs unchanged.
+
 ## Typed Slot Props
 
 Slot prop interfaces are exported for render-function consumers:

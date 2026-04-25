@@ -9,11 +9,11 @@ export * from './defaults';
 export * from './utils';
 export * from './types';
 
-export type VuecsOptions = ThemeManagerOptions & DefaultsManagerOptions;
+export type CoreOptions = ThemeManagerOptions & DefaultsManagerOptions;
 
-export function install(app: App, options: VuecsOptions = {}): void {
+export function install(app: App, options: CoreOptions = {}): void {
     installThemeManager(app, options);
     installDefaultsManager(app, options);
 }
 
-export default { install } satisfies Plugin<[VuecsOptions?]>;
+export default { install } satisfies Plugin<[CoreOptions?]>;

@@ -10,7 +10,7 @@
         <h3 class="flex items-center gap-2 text-2xl font-semibold">
             <i class="fas fa-university text-blue-500" /> Realms
         </h3>
-        <p class="text-gray-700">
+        <p class="text-fg">
             Admin realms placeholder page.
         </p>
     </div>

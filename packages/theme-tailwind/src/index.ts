@@ -3,6 +3,22 @@ import { twMerge } from 'tailwind-merge';
 
 export const merge: ClassesMergeFn = (base, override) => twMerge(base, override);
 
+/**
+ * Tailwind theme for vuecs components.
+ *
+ * Class strings reference **semantic Tailwind colors** that are provided by
+ * `@vuecs/design/index.css` — e.g. `bg-primary-600`, `text-fg`,
+ * `border-border`. The `@vuecs/design` package wires these names to
+ * `--vc-color-*` CSS variables via a Tailwind v4 `@theme` block.
+ *
+ * Consumers must:
+ *   1. Use Tailwind CSS v4 (v3 is not supported).
+ *   2. Import `@vuecs/design/index.css` alongside their Tailwind
+ *      stylesheet.
+ *
+ * Reskinning is done by redefining `--vc-color-*` variables (manually or
+ * via `setPalette()` from `@vuecs/design`). No theme override needed.
+ */
 export default function tailwindTheme(): Theme {
     return {
         classesMergeFn: merge,
@@ -10,39 +26,39 @@ export default function tailwindTheme(): Theme {
             formGroup: {
                 classes: {
                     root: 'flex flex-col gap-1',
-                    label: 'text-sm font-medium text-gray-700',
-                    hint: 'text-xs text-gray-500',
-                    validationError: 'text-xs text-red-600',
-                    validationWarning: 'text-xs text-yellow-600',
+                    label: 'text-sm font-medium text-fg',
+                    hint: 'text-xs text-fg-muted',
+                    validationError: 'text-xs text-error-600',
+                    validationWarning: 'text-xs text-warning-600',
                 },
             },
             formInput: {
                 classes: {
-                    root: 'block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-50',
+                    root: 'block w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-fg shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:bg-bg-muted',
                     group: 'flex items-stretch',
-                    groupAppend: 'inline-flex items-center rounded-r-md border border-l-0 border-gray-300 bg-gray-50 px-3 text-sm text-gray-600',
-                    groupPrepend: 'inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-sm text-gray-600',
+                    groupAppend: 'inline-flex items-center rounded-r-md border border-l-0 border-border bg-bg-muted px-3 text-sm text-fg-muted',
+                    groupPrepend: 'inline-flex items-center rounded-l-md border border-r-0 border-border bg-bg-muted px-3 text-sm text-fg-muted',
                 },
             },
             formInputCheckbox: {
                 classes: {
                     root: '',
-                    label: 'text-sm text-gray-700',
+                    label: 'text-sm text-fg',
                     group: 'inline-flex items-center gap-2',
                 },
                 variants: { variant: { switch: { root: 'vc-form-input-checkbox--switch' } } },
                 defaultVariants: { variant: 'checkbox' },
             },
-            formSelect: { classes: { root: 'block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-50' } },
+            formSelect: { classes: { root: 'block w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-fg shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:bg-bg-muted' } },
             formSubmit: {
                 classes: {
                     root: 'inline-flex items-center gap-2',
-                    createButton: 'inline-flex items-center gap-1.5 rounded-md bg-green-600 px-3 py-1.5 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60',
-                    updateButton: 'inline-flex items-center gap-1.5 rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60',
+                    createButton: 'inline-flex items-center gap-1.5 rounded-md bg-success-600 px-3 py-1.5 text-sm font-medium text-on-success shadow-sm hover:bg-success-700 focus:outline-none focus:ring-2 focus:ring-success-500 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60',
+                    updateButton: 'inline-flex items-center gap-1.5 rounded-md bg-primary-600 px-3 py-1.5 text-sm font-medium text-on-primary shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60',
                 },
             },
-            formTextarea: { classes: { root: 'block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-50' } },
-            validationGroup: { classes: { item: 'text-xs text-red-600' } },
+            formTextarea: { classes: { root: 'block w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-fg shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:bg-bg-muted' } },
+            validationGroup: { classes: { item: 'text-xs text-error-600' } },
             list: { classes: { root: 'flex flex-col gap-1' } },
             listHeader: { classes: { root: 'flex items-center' } },
             listFooter: { classes: { root: 'flex items-center' } },
@@ -50,22 +66,22 @@ export default function tailwindTheme(): Theme {
             listItem: {
                 classes: {
                     root: 'flex flex-row items-center gap-2 py-1',
-                    iconWrapper: 'inline-flex shrink-0 text-gray-500',
+                    iconWrapper: 'inline-flex shrink-0 text-fg-muted',
                     textWrapper: 'inline-flex min-w-0 flex-col',
                     actionsWrapper: 'ml-auto inline-flex items-center gap-1',
                     actionsExtraWrapper: 'inline-flex items-center gap-1',
                 },
             },
-            listLoading: { classes: { root: 'py-2 text-center text-sm text-gray-500' } },
-            listNoMore: { classes: { root: 'rounded-md border border-yellow-200 bg-yellow-50 p-2 text-sm text-yellow-800' } },
+            listLoading: { classes: { root: 'py-2 text-center text-sm text-fg-muted' } },
+            listNoMore: { classes: { root: 'rounded-md border border-warning-200 bg-warning-50 p-2 text-sm text-warning-800' } },
             navigation: {
                 classes: {
                     group: 'm-0 flex list-none flex-col p-0',
                     item: 'list-none',
                     itemNested: '',
-                    separator: 'my-2 text-xs font-semibold uppercase tracking-wide text-gray-400',
-                    link: 'flex cursor-pointer items-center gap-2 px-3 py-2 text-sm text-gray-700 no-underline hover:bg-gray-100',
-                    linkRoot: 'font-medium text-gray-900',
+                    separator: 'my-2 text-xs font-semibold uppercase tracking-wide text-fg-muted',
+                    link: 'flex cursor-pointer items-center gap-2 px-3 py-2 text-sm text-fg no-underline hover:bg-bg-muted',
+                    linkRoot: 'font-medium text-fg',
                     linkIcon: 'h-4 w-4 shrink-0',
                     linkText: 'flex-1 truncate',
                 },
@@ -74,8 +90,8 @@ export default function tailwindTheme(): Theme {
                 classes: {
                     root: 'inline-flex items-center',
                     item: 'inline-flex',
-                    link: 'inline-flex h-8 min-w-8 items-center justify-center rounded-md border border-gray-300 bg-white px-3 text-sm leading-none text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500',
-                    linkActive: '!border-blue-600 !bg-blue-600 !text-white hover:!bg-blue-700',
+                    link: 'inline-flex h-8 min-w-8 items-center justify-center rounded-md border border-border bg-bg px-3 text-sm leading-none text-fg hover:bg-bg-muted focus:outline-none focus:ring-1 focus:ring-ring',
+                    linkActive: '!border-primary-600 !bg-primary-600 !text-on-primary hover:!bg-primary-700',
                 },
             },
             gravatar: { classes: { root: 'inline-block overflow-hidden rounded-full' } },

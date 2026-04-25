@@ -1,0 +1,54 @@
+/*!
+ * @vuecs/theme-bootstrap-v5 — Design-token bridge
+ *
+ * Optional stylesheet that wires Bootstrap 5's theme-color CSS variables
+ * (`--bs-primary`, `--bs-success`, ...) onto vuecs design-system tokens
+ * (`--vc-color-*`). Importing this file alongside Bootstrap and
+ * `@vuecs/design/index.css` makes Bootstrap's buttons, alerts,
+ * badges, etc. respond to `setPalette()` / `.dark` just like the
+ * Tailwind theme.
+ *
+ * Import order:
+ *   1. Bootstrap CSS (provides the default --bs-* values).
+ *   2. @vuecs/design/index.css (provides --vc-color-*).
+ *   3. This bridge (overrides --bs-* to reference --vc-color-*).
+ *
+ * Limitations:
+ *   - `--bs-<color>-rgb` triplets are NOT remapped (CSS has no
+ *     hex→rgb() conversion). Bootstrap features that rely on
+ *     `rgba(var(--bs-primary-rgb), α)` (e.g. focus-ring translucency)
+ *     keep Bootstrap's defaults. Override manually if needed.
+ *   - Bootstrap's built-in `[data-bs-theme="dark"]` palette is not
+ *     touched; this bridge uses the `.dark` class (same toggle as the
+ *     rest of the vuecs design-system). Set both attributes for full
+ *     coverage or pick one source of truth.
+ */
+
+:root {
+    --bs-primary: var(--vc-color-primary-500);
+    --bs-secondary: var(--vc-color-neutral-500);
+    --bs-success: var(--vc-color-success-500);
+    --bs-info: var(--vc-color-info-500);
+    --bs-warning: var(--vc-color-warning-500);
+    --bs-danger: var(--vc-color-error-500);
+
+    --bs-body-bg: var(--vc-color-bg);
+    --bs-body-color: var(--vc-color-fg);
+    --bs-border-color: var(--vc-color-border);
+}
+
+.dark {
+    /* Bootstrap expects a slightly brighter primary on dark bg — use the
+       400 shade, matching the design-system's own `--vc-color-ring`
+       dark-mode flip. */
+    --bs-primary: var(--vc-color-primary-400);
+    --bs-secondary: var(--vc-color-neutral-400);
+    --bs-success: var(--vc-color-success-400);
+    --bs-info: var(--vc-color-info-400);
+    --bs-warning: var(--vc-color-warning-400);
+    --bs-danger: var(--vc-color-error-400);
+
+    --bs-body-bg: var(--vc-color-bg);
+    --bs-body-color: var(--vc-color-fg);
+    --bs-border-color: var(--vc-color-border);
+}

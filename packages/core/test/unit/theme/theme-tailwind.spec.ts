@@ -31,8 +31,60 @@ describe('tailwindTheme', () => {
 
     it('should define pagination with active state using Tailwind `!` modifier to beat base link classes', () => {
         const entry = theme.elements.pagination as ThemeElementDefinition;
-        expect(entry.classes!.linkActive).toContain('!bg-blue-600');
-        expect(entry.classes!.linkActive).toContain('!text-white');
+        expect(entry.classes!.linkActive).toContain('!bg-primary-600');
+        expect(entry.classes!.linkActive).toContain('!text-on-primary');
+    });
+
+    it('should reference only semantic color tokens (no raw Tailwind palette names)', () => {
+        // The design-token layer requires every color class to go through a
+        // semantic Tailwind color (primary, neutral, success, warning, error,
+        // info, bg, fg, border, ring, on-*) so runtime palette switches
+        // propagate. Any literal `bg-blue-600` / `text-gray-500` etc. in the
+        // resolved class strings would bypass `--vc-color-*` and must be
+        // flagged by this guard.
+        const RAW_PALETTES = [
+            'slate', 
+            'gray', 
+            'zinc', 
+            'stone',
+            'red', 
+            'orange', 
+            'amber', 
+            'yellow', 
+            'lime',
+            'green', 
+            'emerald', 
+            'teal', 
+            'cyan', 
+            'sky',
+            'blue', 
+            'indigo', 
+            'violet', 
+            'purple', 
+            'fuchsia',
+            'pink', 
+            'rose',
+            // Note: 'neutral' is both a raw Tailwind palette AND a vuecs semantic
+            // scale; the matcher below checks for `-{shade}` to distinguish
+            // `bg-neutral-500` (semantic) from prefixes like `text-neutral-foo`.
+        ];
+        // Match only palette + shade (50..950) — avoids false positives on
+        // utility classes like `border-l-0` or `text-sm`.
+        const pattern = new RegExp(
+            `\\b(?:[a-z-]+:)*(?:bg|text|border|ring|outline|fill|stroke|from|to|via|decoration|placeholder|accent|caret|divide|shadow)-(?:${RAW_PALETTES.join('|')})-(?:50|100|200|300|400|500|600|700|800|900|950)\\b`,
+        );
+
+        for (const [name, entry] of Object.entries(theme.elements)) {
+            const element = entry as ThemeElementDefinition;
+            for (const [slot, value] of Object.entries(element.classes || {})) {
+                const match = pattern.exec(typeof value === 'string' ? value : '');
+                if (match) {
+                    throw new Error(
+                        `theme.elements.${name}.classes.${slot} contains raw palette class "${match[0]}" — use semantic tokens (primary-/neutral-/success-/etc.)`,
+                    );
+                }
+            }
+        }
     });
 
     it('should define navigation slots without rounded corners (flat by default)', () => {

@@ -159,6 +159,11 @@ Still just a regular Vue prop — instance props always win:
 <VCFormSubmit create-text="Save" />
 ```
 
+### Resolution notes
+
+- **Only `undefined` triggers fallthrough.** Passing `null` on a prop is treated as an intentional override and wins over global defaults — use this to "unset" a value deliberately. Avoid using `null` to toggle a boolean off; pass `false` instead.
+- **`hardcoded` drives the resolved shape.** For component authors: the composable iterates `Object.keys(hardcoded)`, so a global-default key that isn't listed in the component's hardcoded fallback object will be silently ignored.
+
 ### Components that support global defaults
 
 | Component | Configurable keys |

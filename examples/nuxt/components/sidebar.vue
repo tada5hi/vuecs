@@ -6,7 +6,7 @@ export default defineNuxtComponent({ components: { VCNavItems } });
 </script>
 
 <template>
-    <aside class="hidden md:flex w-64 shrink-0 flex-col border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+    <aside class="hidden md:flex w-64 shrink-0 flex-col border-r border-border bg-bg">
         <VCNavItems
             class="py-3 pl-3 pr-0"
             :level="1"

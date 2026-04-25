@@ -7,11 +7,16 @@
         "./package.json": "./package.json",
         ".": {
             "types": "./dist/index.d.ts",
+            "style": "./assets/index.css",
             "import": "./dist/index.mjs"
-        }
+        },
+        "./index.css": "./assets/index.css",
+        "./assets/index.css": "./assets/index.css"
     },
+    "style": "./assets/index.css",
     "files": [
-        "dist"
+        "dist",
+        "assets"
     ],
     "keywords": [],
     "author": {
@@ -24,7 +29,9 @@
         "url": "https://github.com/tada5hi/vuecs.git",
         "directory": "packages/theme-bootstrap-v4"
     },
-    "sideEffects": false,
+    "sideEffects": [
+        "./assets/*.css"
+    ],
     "scripts": {
         "build:js": "tsdown",
         "build:types": "tsc --emitDeclarationOnly -p tsconfig.build.json",

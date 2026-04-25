@@ -1,15 +1,19 @@
-// https://v3.nuxtjs.org/api/configuration/nuxt.config
+// https://nuxt.com/docs/api/nuxt-config
 
 import { defineNuxtConfig } from 'nuxt/config';
+import tailwindcss from '@tailwindcss/vite';
 import path from 'node:path';
 
 export default defineNuxtConfig({
     css: [
+        path.join(__dirname, 'assets', 'css', 'tailwind.css'),
         '@fortawesome/fontawesome-free/css/all.css',
     ],
     alias: {
         '@vuecs/countdown': path.join(__dirname, '..', '..', 'packages', 'countdown', 'src'),
         '@vuecs/core': path.join(__dirname, '..', '..', 'packages', 'core', 'src'),
+        // design-system is resolved via the workspace symlink so that
+        // subpath exports (`@vuecs/design/index.css`) work.
         '@vuecs/form-controls': path.join(__dirname, '..', '..', 'packages', 'form-controls', 'src'),
         '@vuecs/list-controls': path.join(__dirname, '..', '..', 'packages', 'list-controls', 'src'),
         '@vuecs/link': path.join(__dirname, '..', '..', 'packages', 'link', 'src'),
@@ -20,8 +24,13 @@ export default defineNuxtConfig({
         '@vuecs/timeago': path.join(__dirname, '..', '..', 'packages', 'timeago', 'src'),
     },
     modules: [
-        '@nuxtjs/tailwindcss',
+        path.join(__dirname, '..', '..', 'packages', 'nuxt', 'src', 'module'),
         '@pinia/nuxt',
     ],
-    tailwindcss: { cssPath: path.join(__dirname, 'assets', 'css', 'tailwind.css') },
+    vite: { plugins: [tailwindcss()] },
+    vuecs: {
+        // Tokens are auto-injected by @vuecs/nuxt; we already include tokens.css
+        // manually inside assets/css/tailwind.css so @theme sees it in-order.
+        injectTokens: false,
+    },
 });

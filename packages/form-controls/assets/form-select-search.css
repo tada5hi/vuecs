@@ -1,8 +1,9 @@
 /*
- * Structural + fallback styling for VCFormSelectSearch. Concrete
- * Tailwind-gray palette so the component is visually complete out of the box
- * — matching the default form-select look — even when no framework CSS is
- * loaded. Themes can still override via higher specificity.
+ * Structural + fallback styling for VCFormSelectSearch. Colors reference
+ * @vuecs/design tokens (`--vc-color-*`) so the component follows
+ * the active palette and flips automatically under `.dark`. When tokens
+ * aren't loaded (e.g. a theme-bootstrap-v5-only consumer), these vars
+ * remain undefined and the browser falls back to the framework defaults.
  */
 .vc-form-select-search {
     position: relative;
@@ -15,10 +16,10 @@
     padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
     line-height: 1.25rem;
-    color: #111827;
-    background-color: #fff;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
+    color: var(--vc-color-fg);
+    background-color: var(--vc-color-bg);
+    border: 1px solid var(--vc-color-border);
+    border-radius: var(--vc-radius-md, 0.375rem);
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     cursor: pointer;
     appearance: none;
@@ -27,13 +28,13 @@
 
 .vc-form-select-search .vc-form-select-search-input:focus {
     outline: 0;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 1px #3b82f6;
+    border-color: var(--vc-color-primary-500);
+    box-shadow: 0 0 0 1px var(--vc-color-primary-500);
 }
 
 .vc-form-select-search .vc-form-select-search-input:disabled {
     cursor: not-allowed;
-    background-color: #f9fafb;
+    background-color: var(--vc-color-bg-muted);
     opacity: 1;
 }
 
@@ -45,9 +46,9 @@
     display: block;
     max-height: 15rem;
     overflow-y: auto;
-    background-color: #fff;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
+    background-color: var(--vc-color-bg);
+    border: 1px solid var(--vc-color-border);
+    border-radius: var(--vc-radius-md, 0.375rem);
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -62,18 +63,18 @@
     padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
     line-height: 1.25rem;
-    color: #111827;
+    color: var(--vc-color-fg);
     cursor: pointer;
 }
 
 .vc-form-select-search .vc-form-select-search-item:hover,
 .vc-form-select-search .vc-form-select-search-item.current {
-    background-color: #f3f4f6;
+    background-color: var(--vc-color-bg-elevated);
 }
 
 .vc-form-select-search .vc-form-select-search-item.active {
-    background-color: #dbeafe;
-    color: #1e40af;
+    background-color: var(--vc-color-primary-100);
+    color: var(--vc-color-primary-800);
 }
 
 .vc-form-select-search .vc-form-select-search-selected {
