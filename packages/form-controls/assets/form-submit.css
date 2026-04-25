@@ -7,14 +7,20 @@
  * (Tailwind, Bootstrap, etc.), but a busy/disabled affordance needs to
  * look obvious in all of them. Doing it here means consumers don't have
  * to re-declare the busy variant per theme.
+ *
+ * Activation is blocked by the `disabled` attribute the component sets
+ * — `pointer-events: none` would also block tooltip/focus listeners
+ * consumers attach (and would defeat `cursor: wait`, since cursor only
+ * applies when an element actually receives pointer events). Anchors
+ * (`type="a"`) ignore `disabled`; the form-submit page documents that
+ * consumers must guard navigation themselves for that case.
  */
 .vc-form-submit--busy {
-    cursor: wait !important;
+    cursor: wait;
     opacity: 0.65;
     /* Pulse the background to signal in-flight work. Animation is subtle
        so it doesn't distract from surrounding form fields. */
     animation: vc-form-submit-busy-pulse 1.6s ease-in-out infinite;
-    pointer-events: none;
 }
 
 @keyframes vc-form-submit-busy-pulse {

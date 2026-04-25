@@ -24,9 +24,9 @@ export default defineNuxtConfig({
                     the client on first paint, no flash, no hydration mismatch.
                 </p>
                 <ul class="vc-nuxt-list">
-                    <li><strong>usePalette()</strong> — switch palettes at runtime, persisted via cookie</li>
+                    <li><strong>usePalette()</strong> — switch palettes at runtime</li>
                     <li><strong>useColorMode()</strong> — VueUse-backed dark/light/system, cookie-driven</li>
-                    <li><strong>Auto-imports</strong> — composables and components, zero boilerplate</li>
+                    <li><strong>Auto-imports</strong> — composables, zero boilerplate</li>
                     <li><strong>SSR plugins</strong> — palette and color-mode injected into &lt;head&gt; before paint</li>
                 </ul>
                 <a

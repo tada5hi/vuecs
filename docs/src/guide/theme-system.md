@@ -59,6 +59,7 @@ setup(props) {
         variants: {
             size: {
                 sm: { root: 'py-1' },
+                md: { root: 'py-2' },
                 lg: { root: 'py-3' },
             },
         },

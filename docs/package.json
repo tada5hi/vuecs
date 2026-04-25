@@ -16,9 +16,9 @@
         "directory": "docs"
     },
     "scripts": {
-        "dev": "vitepress dev src --temp .temp",
-        "build": "vitepress build src --temp .temp",
-        "preview": "vitepress preview src --temp .temp"
+        "dev": "vitepress dev src",
+        "build": "vitepress build src",
+        "preview": "vitepress preview src"
     },
     "engines": {
         "node": ">=22.0.0"

@@ -412,6 +412,18 @@ via a `<style id="vc-palette">` block, leaving layers 1-2 and 4-5 untouched.
 - **Tailwind CSS v4+.** `assets/index.css` uses `@theme { … }` and references Tailwind's default `--color-<name>-<shade>` vars. Tailwind v3 is not supported.
 - **Dark mode toggle via `.dark` class.** Consumers wire this however they prefer (Nuxt's `@nuxtjs/color-mode`, a Pinia store, vanilla JS). No `prefers-color-scheme` media query layer ships today.
 
+### Runtime palette safelist
+
+`@vuecs/design`'s `assets/index.css` ends with:
+
+```css
+@source inline("bg-{red,orange,...,neutral}-{50,100,...,950}");
+```
+
+This force-includes all 22 Tailwind palettes × 11 shades in the JIT output. Without it, Tailwind v4 only emits `--color-<palette>-*` tokens for palettes referenced by used utility classes — so `setPalette({ primary: 'emerald' })` would silently fail because `--color-emerald-*` was tree-shaken.
+
+The directive depends on Tailwind v4's documented behavior of emitting `--color-<palette>-<shade>` as a side effect of safelisting `bg-<palette>-<shade>`. If a future Tailwind major changes how palette emission works, this directive needs to update too. See the inline comment in `assets/index.css` for the full rationale.
+
 ### Nuxt integration (@vuecs/nuxt)
 
 ```

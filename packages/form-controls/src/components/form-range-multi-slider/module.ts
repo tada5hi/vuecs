@@ -125,8 +125,10 @@ export class FormRangeSlider {
         // Maintain at least 1% gap between thumbs. Identify which thumb
         // moved (its raw percent diverged from the stored snapped value)
         // and clamp ONLY that thumb to the boundary — reverting the other
-        // produces a jarring snap-back of an untouched thumb.
-        if (newMax - newMin <= 1) {
+        // produces a jarring snap-back of an untouched thumb. The strict
+        // `< 1` predicate (vs `<= 1`) lets a clean gap of exactly 1
+        // through unchanged — that's a legitimate minimum, not a collision.
+        if (newMax - newMin < 1) {
             const minMoved = newMin !== this._min;
             const maxMoved = newMax !== this._max;
             if (maxMoved && !minMoved) {
@@ -142,8 +144,9 @@ export class FormRangeSlider {
         }
 
         // No-op guard: only fire `change` when the snapped values actually
-        // differ from the stored state. Otherwise the 500 Hz drag tick
-        // produces hundreds of redundant identical-payload emits per second.
+        // differ from the stored state. Otherwise the rAF-driven drag tick
+        // produces redundant identical-payload emits whenever the float
+        // position resolves to the same integer percent twice in a row.
         if (newMin === this._min && newMax === this._max) {
             // Still align the thumb visual to the snapped value in case a
             // float drift left it off by a fraction of a percent.

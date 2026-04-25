@@ -10,7 +10,7 @@ The theme system handles CSS classes. But things like `<VCFormSubmit>`'s "Create
 
 For each resolved key, three layers in priority order:
 
-```
+```text
 1. Instance prop (non-undefined)            ← highest priority
 2. Global defaults (from app.use() config)  ← may be MaybeRef (ref / computed)
 3. Hardcoded fallback (passed to composable) ← lowest priority

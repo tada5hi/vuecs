@@ -10,22 +10,36 @@ defineProps<Props>();
 const showCode = ref(true);
 const copied = ref(false);
 const codeRoot = useTemplateRef<globalThis.HTMLElement>('codeRoot');
+let copyTimer: ReturnType<typeof setTimeout> | null = null;
 
 const copy = async () => {
     if (!codeRoot.value) return;
     // When the slot contains a VitePress code-group (::: code-group), the
-    // active tab carries the `.active` class. Prefer it so the copy button
-    // tracks which tab the reader is actually looking at; fall back to any
-    // <pre> for the single-code-block case.
-    const pre = codeRoot.value.querySelector(
-        '.vp-code-group .blocks > .active pre, pre',
-    );
+    // active tab carries the `.active` class. Run two queries in priority
+    // order — `querySelector('a, b')` returns the FIRST DOM-order match
+    // across both selectors (not the first selector that matches), which
+    // would always pick the inactive first tab's <pre>. The two-step
+    // lookup actually tracks the active tab; falls back to any <pre> for
+    // the single-code-block case.
+    const pre = codeRoot.value.querySelector('.vp-code-group .blocks > .active pre') ??
+        codeRoot.value.querySelector('pre');
     if (!pre) return;
     const text = pre.textContent ?? '';
     if (!navigator?.clipboard) return;
-    await navigator.clipboard.writeText(text);
+    try {
+        await navigator.clipboard.writeText(text);
+    } catch {
+        // Clipboard API can reject in insecure contexts or permission
+        // denial — swallow and leave `copied` false so the button
+        // doesn't claim success.
+        return;
+    }
     copied.value = true;
-    setTimeout(() => { copied.value = false; }, 1500);
+    // Clear any pending timer so rapid successive clicks restart the
+    // 1.5s "Copied" window from the latest click instead of letting an
+    // older timer flip back early.
+    if (copyTimer) clearTimeout(copyTimer);
+    copyTimer = setTimeout(() => { copied.value = false; }, 1500);
 };
 </script>
 

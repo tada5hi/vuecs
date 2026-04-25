@@ -47,12 +47,24 @@ ${'</'}script>
 
 const active = ref(0);
 const copied = ref(false);
+let copyTimer: ReturnType<typeof setTimeout> | null = null;
 
 const copy = async (code: string) => {
     if (!navigator?.clipboard) return;
-    await navigator.clipboard.writeText(code);
+    try {
+        await navigator.clipboard.writeText(code);
+    } catch {
+        // Clipboard API can reject in insecure contexts or permission
+        // denial — swallow and leave `copied` false so the button
+        // doesn't claim success.
+        return;
+    }
     copied.value = true;
-    setTimeout(() => { copied.value = false; }, 1500);
+    // Clear any pending timer so rapid successive clicks restart the
+    // 1.5s "Copied" window from the latest click instead of letting an
+    // older timer flip back early.
+    if (copyTimer) clearTimeout(copyTimer);
+    copyTimer = setTimeout(() => { copied.value = false; }, 1500);
 };
 </script>
 

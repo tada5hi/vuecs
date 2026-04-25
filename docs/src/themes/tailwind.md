@@ -27,7 +27,20 @@ app.use(vuecs, { themes: [tailwindTheme()] });
 @custom-variant dark (&:where(.dark, .dark *));
 ```
 
-The `@source` directive ensures Tailwind v4's JIT picks up the class names baked into the theme's published `dist` files.
+The `@source` directive ensures Tailwind v4's JIT picks up the class names baked into the theme's published `dist` files. Tailwind v4 doesn't support bare-package specifiers in `@source` — the path must be a glob relative to the CSS file itself.
+
+::: tip Adjust the path to your project layout
+The example above assumes a flat layout — `styles.css` in the project root. The `@source` path is **always relative to the CSS file**, so adjust it for your structure:
+
+| Layout | `@source` value |
+|--------|-----------------|
+| Flat (`styles.css` in root) | `"../node_modules/@vuecs/theme-tailwind/dist"` |
+| Conventional (`src/styles.css`) | `"../../node_modules/@vuecs/theme-tailwind/dist"` |
+| Monorepo with hoisted deps | walk up to the hoisted `node_modules` (e.g. `"../../../node_modules/@vuecs/theme-tailwind/dist"`) |
+| Monorepo workspace (linked package) | point at the source: `"../../../packages/theme-tailwind/src"` |
+
+If the build emits classes you don't expect (or strips ones you do), the path is almost always the cause — Tailwind silently no-ops on a non-existent `@source` glob.
+:::
 
 ## Requirements
 

@@ -14,7 +14,7 @@ The guide section covers the concepts behind vuecs in depth. Read these once, an
 
 vuecs has three orthogonal systems that you configure independently in `app.use(vuecs, ...)`:
 
-```
+```text
 ┌─ themes/overrides ─────────────────────┐  → CSS class strings
 │  layered resolution → class name(s)     │
 └────────────────────────────────────────┘

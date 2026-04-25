@@ -25,11 +25,19 @@ app.use(vuecs, {
 
 ## What it does
 
-The theme contributes class strings like `fa fa-solid fa-plus` to icon-related slots — slot keys ending in `Icon`, `iconLeft`, `iconRight`, etc. across all components.
+The theme contributes class strings like `fa fa-plus` to the icon slots that real components actually expose. The slot names per component:
+
+| Component | Slot keys |
+|-----------|-----------|
+| `formSubmit` | `createIcon`, `updateIcon` |
+| `listItem` | `icon` |
+| `pagination` | `prevIcon`, `nextIcon`, `firstIcon`, `lastIcon` |
+
+If you add icons for a component the theme doesn't ship defaults for, add them yourself via `overrides`.
 
 ## Customizing icons per component
 
-Override individual icon classes via the `overrides` layer:
+Override individual icon classes via the `overrides` layer. The slot key must match the component's actual icon slot — e.g. `createIcon` / `updateIcon` for `formSubmit`:
 
 ```ts
 import vuecs, { extend } from '@vuecs/core';
@@ -39,14 +47,17 @@ app.use(vuecs, {
     overrides: {
         elements: {
             formSubmit: {
-                classes: { iconLeft: extend('fa-rocket') },
+                classes: {
+                    createIcon: extend('fa-rocket'),
+                    updateIcon: extend('fa-pen'),
+                },
             },
         },
     },
 });
 ```
 
-(`extend()` keeps the `fa fa-solid` portion from the theme and appends `fa-rocket`.)
+(`extend()` keeps the `fa` base from the theme and appends the extra glyph class.)
 
 ## Alternative: drop the icons
 
