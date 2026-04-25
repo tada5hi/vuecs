@@ -4,7 +4,7 @@
 
 .form-range-multi-slider>.track {
     width: 100%;
-    background: #f0f0f0;
+    background: var(--vc-color-bg-muted, #f0f0f0);
     height: 8px;
     border-radius: 1rem;
 }
@@ -14,7 +14,7 @@
     height: 16px;
     width: 16px;
 
-    background: #6d7fcc;
+    background: var(--vc-color-primary-500, #3b82f6);
 
     border-radius: 100%;
 
@@ -36,5 +36,5 @@
     position: relative;
     left: 0;
     bottom: 32px;
-    background: lightgray;
+    background: var(--vc-color-border, lightgray);
 }

@@ -1,3 +1,3 @@
-import type { VuecsOptions } from '@vuecs/core';
+import type { CoreOptions } from '@vuecs/core';
 
-export type Options = VuecsOptions;
+export type Options = CoreOptions;

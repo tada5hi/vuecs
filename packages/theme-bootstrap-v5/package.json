@@ -7,11 +7,19 @@
         "./package.json": "./package.json",
         ".": {
             "types": "./dist/index.d.ts",
+            "style": "./assets/index.css",
             "import": "./dist/index.mjs"
-        }
+        },
+        "./index.css": "./assets/index.css",
+        "./assets/index.css": "./assets/index.css"
     },
+    "style": "./assets/index.css",
     "files": [
-        "dist"
+        "dist",
+        "assets"
+    ],
+    "sideEffects": [
+        "./assets/*.css"
     ],
     "keywords": [],
     "author": {

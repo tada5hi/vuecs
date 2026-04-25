@@ -56,8 +56,8 @@ export default defineComponent({
                             type="button"
                             :class="[
                                 'inline-flex items-center rounded-l-md px-3 text-sm',
-                                'border border-r-0 border-gray-300 bg-gray-50 text-gray-600',
-                                'hover:bg-gray-100',
+                                'border border-r-0 border-border bg-bg-muted text-fg-muted',
+                                'hover:bg-bg-elevated',
                             ]"
                         >
                             <i class="fa fa-plus" />

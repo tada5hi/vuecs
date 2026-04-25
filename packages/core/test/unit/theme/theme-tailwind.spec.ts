@@ -31,8 +31,88 @@ describe('tailwindTheme', () => {
 
     it('should define pagination with active state using Tailwind `!` modifier to beat base link classes', () => {
         const entry = theme.elements.pagination as ThemeElementDefinition;
-        expect(entry.classes!.linkActive).toContain('!bg-blue-600');
-        expect(entry.classes!.linkActive).toContain('!text-white');
+        expect(entry.classes!.linkActive).toContain('!bg-primary-600');
+        expect(entry.classes!.linkActive).toContain('!text-on-primary');
+    });
+
+    it('should reference only semantic color tokens (no raw Tailwind palette names)', () => {
+        // The design-token layer requires every color class to go through a
+        // semantic Tailwind color (primary, neutral, success, warning, error,
+        // info, bg, fg, border, ring, on-*) so runtime palette switches
+        // propagate. Any literal `bg-blue-600` / `text-gray-500` etc. in the
+        // resolved class strings would bypass `--vc-color-*` and must be
+        // flagged by this guard.
+        const RAW_PALETTES = [
+            'slate', 
+            'gray', 
+            'zinc', 
+            'stone',
+            'red', 
+            'orange', 
+            'amber', 
+            'yellow', 
+            'lime',
+            'green', 
+            'emerald', 
+            'teal', 
+            'cyan', 
+            'sky',
+            'blue', 
+            'indigo', 
+            'violet', 
+            'purple', 
+            'fuchsia',
+            'pink',
+            'rose',
+            // 'neutral' is intentionally omitted: it doubles as a vuecs
+            // semantic scale, so `bg-neutral-500` etc. is the correct
+            // semantic-token form and must not be flagged.
+        ];
+        // Match only palette + shade (50..950) — avoids false positives on
+        // utility classes like `border-l-0` or `text-sm`.
+        const pattern = new RegExp(
+            `\\b(?:[a-z-]+:)*(?:bg|text|border|ring|outline|fill|stroke|from|to|via|decoration|placeholder|accent|caret|divide|shadow)-(?:${RAW_PALETTES.join('|')})-(?:50|100|200|300|400|500|600|700|800|900|950)\\b`,
+        );
+
+        const check = (where: string, value: unknown): void => {
+            if (typeof value !== 'string') return;
+            const match = pattern.exec(value);
+            if (match) {
+                throw new Error(
+                    `${where} contains raw palette class "${match[0]}" — use semantic tokens (primary-/neutral-/success-/etc.)`,
+                );
+            }
+        };
+
+        for (const [name, entry] of Object.entries(theme.elements)) {
+            const element = entry as ThemeElementDefinition;
+
+            // 1. classes
+            for (const [slot, value] of Object.entries(element.classes || {})) {
+                check(`theme.elements.${name}.classes.${slot}`, value);
+            }
+
+            // 2. variants — { variantName: { variantValue: { slot: 'classes' } } }
+            for (const [variantName, variantValues] of Object.entries(element.variants || {})) {
+                for (const [variantValue, slots] of Object.entries(variantValues || {})) {
+                    for (const [slot, value] of Object.entries(slots || {})) {
+                        check(
+                            `theme.elements.${name}.variants.${variantName}.${variantValue}.${slot}`,
+                            value,
+                        );
+                    }
+                }
+            }
+
+            // 3. compoundVariants — [{ variants, class: { slot: 'classes' } }, ...]
+            const compounds = element.compoundVariants || [];
+            for (const [i, compound] of compounds.entries()) {
+                const compoundClasses = compound?.class || {};
+                for (const [slot, value] of Object.entries(compoundClasses)) {
+                    check(`theme.elements.${name}.compoundVariants[${i}].class.${slot}`, value);
+                }
+            }
+        }
     });
 
     it('should define navigation slots without rounded corners (flat by default)', () => {

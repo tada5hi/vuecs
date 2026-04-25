@@ -241,6 +241,30 @@ Global default values are wrapped via `MaybeRef`, so reactive sources
 (`computed(() => t('actions.create'))`) unwrap transparently and the returned
 `ComputedRef` recomputes on locale changes.
 
+### Resolution contract (important for component authors)
+
+Two rules govern what ends up on `defaults.value`:
+
+- **`hardcoded` drives the shape.** The composable iterates `Object.keys(hardcoded)`;
+  any global-default key that isn't listed in `hardcoded` is silently dropped.
+  Treat the `hardcoded` object as the source of truth when adding new
+  configurable keys — if you register a new key on `ComponentDefaults` via
+  declaration merging, add it to `hardcoded` too.
+- **Only `undefined` triggers fallthrough.** `null` on the instance prop wins
+  over both global and hardcoded layers. This lets consumers deliberately
+  "unset" a value, but means `null` cannot be used to toggle a boolean off
+  (pass `false` instead).
+
+### Composite components must forward `undefined`
+
+When a composite component (e.g. `VCList`) forwards behavioral props to a
+child component whose prop is resolved via `useComponentDefaults`, the
+composite's own Vue `prop.default` must be `undefined`. A composite with
+`prop: { default: 'something' }` that forwards `something` to the child will
+always win layer 1 on the child and shadow the child's global defaults.
+See `VCList.noMoreContent` / `VCList.itemTextPropName` (both `default: undefined`)
+for the pattern.
+
 ### Setup API
 
 ```typescript
@@ -319,7 +343,7 @@ declare module '@vuecs/core' {
 ```
 
 The theme and defaults systems are intentionally decoupled: themes handle CSS
-classes, defaults handle everything else. The top-level `VuecsOptions` type and
+classes, defaults handle everything else. The top-level `CoreOptions` type and
 `install()` function tie them together so consumers configure both in one call.
 
 ### Migrated components
@@ -339,6 +363,133 @@ The following components resolve the listed behavioral props via
 For these props the Vue `prop.default` is `undefined`; the effective default now
 lives in the component's `behavioralDefaults` constant, which is passed to the
 composable as the lowest-priority layer.
+
+## Design System (@vuecs/design, #1506)
+
+Sits beside — not inside — the theme system. Themes resolve **CSS class
+strings**; the design-system layer defines the **actual colors, radii and
+other design primitives** those classes reference via CSS variables. This
+lets a single set of tokens drive every theme package and enables runtime
+palette switching without re-resolving theme classes.
+
+### Layers, top-down
+
+```
+1. bg-primary-600          ← Tailwind v4 utility class emitted by theme-tailwind
+2. --color-primary-600     ← @theme mapping in assets/index.css
+3. --vc-color-primary-600  ← semantic-scale var (overridden by setPalette)
+4. --color-blue-600        ← Tailwind's built-in palette (default binding)
+5. concrete hex
+```
+
+`.dark` flips the semantic aliases (`--vc-color-bg`, `--vc-color-fg`,
+`--vc-color-border`, `--vc-color-ring`) only — scales stay the same.
+`setPalette({ primary: 'green' })` rewrites layer 3 to `var(--color-green-600)`
+via a `<style id="vc-palette">` block, leaving layers 1-2 and 4-5 untouched.
+
+### Package layout
+
+```
+@vuecs/design/
+  assets/index.css    <- :root + .dark + @theme (pure CSS, no build step)
+  src/
+    types.ts           <- PaletteConfig, SemanticScaleName, TailwindPaletteName
+    constants.ts       <- SEMANTIC_SCALES, TAILWIND_PALETTES, PALETTE_SHADES, PALETTE_STYLE_ELEMENT_ID
+    palette.ts         <- renderPaletteStyles() (pure), setPalette() (DOM)
+    index.ts           <- barrel
+```
+
+### Key exports
+
+- **`renderPaletteStyles(palette): string`** — pure function. Returns a `:root { … }` block that remaps `--vc-color-<scale>-*` onto `var(--color-<palette>-*)` for every scale set in `palette`. Safe on server and client; used by `@vuecs/nuxt` for SSR pre-hydration.
+- **`setPalette(palette, doc?)`** — client-only. Idempotently inserts or updates a `<style id="vc-palette">` element in `<head>`.
+- **`PaletteConfig`** — `Partial<Record<SemanticScaleName, TailwindPaletteName>>`.
+- **`SemanticScaleName`** — `'primary' | 'neutral' | 'success' | 'warning' | 'error' | 'info'`.
+- **`TailwindPaletteName`** — union of all 22 Tailwind v4 palettes.
+
+### Requirements
+
+- **Tailwind CSS v4+.** `assets/index.css` uses `@theme { … }` and references Tailwind's default `--color-<name>-<shade>` vars. Tailwind v3 is not supported.
+- **Dark mode toggle via `.dark` class.** Consumers wire this however they prefer (Nuxt's `@nuxtjs/color-mode`, a Pinia store, vanilla JS). No `prefers-color-scheme` media query layer ships today.
+
+### Nuxt integration (@vuecs/nuxt)
+
+```
+@vuecs/nuxt/
+  src/
+    module.ts                                  <- defineNuxtModule; auto-imports assets/index.css, registers composables + SSR plugins
+    runtime/
+      plugins/palette.server.ts                <- emits <style id="vc-palette"> into head via useHead (palette override)
+      plugins/colorMode.server.ts              <- emits class="dark"|"light" on <html> via useHead (cookie-driven)
+      composables/usePalette.ts                <- { current, setPalette } — palette runtime switcher
+      composables/useColorMode.ts              <- { mode, resolved, isDark, toggle } — SSR-safe dark mode (VueUse + cookie)
+```
+
+Consumer usage:
+
+```ts
+// nuxt.config.ts
+export default defineNuxtConfig({
+    modules: ['@vuecs/nuxt'],
+    vuecs: {
+        palette: { primary: 'green', neutral: 'zinc' },
+        // colorMode: true (default) ships the in-house useColorMode().
+        // Set to false to disable and wire @nuxtjs/color-mode yourself.
+    },
+});
+```
+
+```vue
+<!-- in a component -->
+<script setup>
+const { current, setPalette } = usePalette();
+const { resolved, toggle } = useColorMode();
+</script>
+```
+
+On the server, both plugins render their state into the head before first
+paint (palette `<style>` block + `html.dark`/`html.light` class). The client
+hydrates against the same DOM and continues to manage them reactively —
+effectively zero-cost palette switching and zero-FOUC dark mode (except
+first visits with `preference: 'system'` and no cookie, where the OS
+preference can't be read on the server).
+
+The dark-mode integration is built on `@vueuse/core`'s `usePreferredDark`
+plus a Nuxt cookie (`vc-color-mode` by default). It's NOT
+`@nuxtjs/color-mode` under the hood — that module remains an alternative
+for consumers who prefer it (set `vuecs: { colorMode: false }` to opt out).
+
+### Bootstrap bridges (theme-bootstrap-v{4,5})
+
+Both Bootstrap theme packages ship an optional `bridge.css` that wires
+Bootstrap's `:root` theme-color variables onto `--vc-color-*`. Each
+package's `package.json` exposes a `style` conditional export, so bare
+`@import "@vuecs/theme-bootstrap-v5"` (and `-v4`) in a CSS file
+resolves to the bridge. Explicit subpath imports
+(`@vuecs/theme-bootstrap-v5/index.css`) also work.
+
+| Package | Scope | Affects Bootstrap components? |
+|---------|-------|-------------------------------|
+| `theme-bootstrap-v5` | Remaps `--bs-primary`, `--bs-success`, ... | ✅ Yes — Bootstrap 5 components read `--bs-*` at runtime |
+| `theme-bootstrap-v4` | Remaps `--primary`, `--success`, ... | ⚠️ No — Bootstrap 4 component CSS is Sass-compiled to literal hex; the bridge only affects consumer-authored rules that reference `var(--primary)` |
+
+The v4 bridge is intentionally shipped for API parity and for custom-CSS
+use cases, but its practical surface is limited; full Bootstrap 4
+repaletting requires rebuilding Bootstrap from Sass.
+
+### Short-form CSS imports
+
+All three style-carrying packages use the `style` conditional export so
+consumers can write bare imports:
+
+```css
+@import "@vuecs/design";              /* → assets/index.css */
+@import "@vuecs/theme-bootstrap-v5";  /* → assets/index.css */
+@import "@vuecs/theme-bootstrap-v4";  /* → assets/index.css */
+```
+
+Explicit subpath forms (`@vuecs/design/index.css`, `.../bridge.css`)
+remain supported for clarity when mixing multiple CSS entry points.
 
 ## NavigationManager (@vuecs/navigation)
 
@@ -360,10 +511,12 @@ Components emit minimal structural CSS via co-located `vc-*` default classes. Vi
 ## Dependency Flow
 
 ```
-Themes   ──configure──> ThemeManager    (in @vuecs/core)
-Defaults ──configure──> DefaultsManager (in @vuecs/core)
+Themes        ──configure──> ThemeManager    (in @vuecs/core)
+Defaults      ──configure──> DefaultsManager (in @vuecs/core)
+Design tokens ──configure──> CSS custom properties (--vc-color-*, --vc-radius-*) from @vuecs/design
                           |
-Components ──read─────────┘ (via useComponentTheme / useComponentDefaults)
+Components ──read─────────┘ (via useComponentTheme / useComponentDefaults;
+                             CSS resolves token vars at browser time)
      |
      └──> @vuecs/link (navigation uses link for route-aware anchors)
 ```

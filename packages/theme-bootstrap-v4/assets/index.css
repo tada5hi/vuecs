@@ -1,0 +1,49 @@
+/*!
+ * @vuecs/theme-bootstrap-v4 — Design-token bridge
+ *
+ * Optional stylesheet that remaps Bootstrap 4's `:root` theme-color
+ * CSS variables (`--primary`, `--secondary`, `--success`, `--info`,
+ * `--warning`, `--danger`) onto `@vuecs/design` tokens (`--vc-color-*`).
+ *
+ * Import order:
+ *   1. Bootstrap 4 CSS (emits the default --primary/--success/... vars).
+ *   2. @vuecs/design (provides --vc-color-*).
+ *   3. This bridge (overrides Bootstrap's vars to reference vc tokens).
+ *
+ * ⚠️ IMPORTANT LIMITATION (Bootstrap 4 specific)
+ *
+ * Bootstrap 4's component stylesheets do NOT consume these CSS
+ * variables — button/alert/badge colors are compiled from Sass at
+ * build time into literal hex values (`.btn-primary { background:
+ * #007bff }`). Overriding `--primary` here therefore does **not**
+ * change Bootstrap's built-in component visuals.
+ *
+ * What this bridge is actually useful for:
+ *   - Custom rules you author that reference `var(--primary)` etc. —
+ *     those pick up the design-system palette.
+ *   - Consistency: the same `.dark` toggle flips your own v4-surface
+ *     styles alongside everything else.
+ *
+ * For full Bootstrap 4 repalettization you must rebuild Bootstrap from
+ * Sass with `$theme-colors` overrides — which this bridge cannot do.
+ * If that matters, prefer Bootstrap 5 (and @vuecs/theme-bootstrap-v5),
+ * whose components DO consume the `--bs-*` CSS variables.
+ */
+
+:root {
+    --primary:   var(--vc-color-primary-500);
+    --secondary: var(--vc-color-neutral-500);
+    --success:   var(--vc-color-success-500);
+    --info:      var(--vc-color-info-500);
+    --warning:   var(--vc-color-warning-500);
+    --danger:    var(--vc-color-error-500);
+}
+
+.dark {
+    --primary:   var(--vc-color-primary-400);
+    --secondary: var(--vc-color-neutral-400);
+    --success:   var(--vc-color-success-400);
+    --info:      var(--vc-color-info-400);
+    --warning:   var(--vc-color-warning-400);
+    --danger:    var(--vc-color-error-400);
+}

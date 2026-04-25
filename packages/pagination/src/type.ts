@@ -1,4 +1,4 @@
-import type { VuecsOptions } from '@vuecs/core';
+import type { CoreOptions } from '@vuecs/core';
 
 export type PaginationMeta = {
     busy?: boolean;
@@ -8,4 +8,4 @@ export type PaginationMeta = {
     page: number;
 };
 
-export type Options = VuecsOptions;
+export type Options = CoreOptions;

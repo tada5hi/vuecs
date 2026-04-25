@@ -24,7 +24,7 @@ export default defineComponent({ components: { ExampleList } });
                 </button>
                 <button
                     type="button"
-                    class="inline-flex items-center justify-center rounded-md bg-gray-800 px-2 py-1 text-xs text-white hover:bg-gray-700"
+                    class="inline-flex items-center justify-center rounded-md bg-neutral-800 px-2 py-1 text-xs text-white hover:bg-neutral-700"
                     @click.prevent="props.deleted()"
                 >
                     <i class="fa fa-trash" />
@@ -34,7 +34,7 @@ export default defineComponent({ components: { ExampleList } });
         <template #footer="props">
             <button
                 type="button"
-                class="inline-flex items-center gap-1.5 rounded-md bg-gray-800 px-2.5 py-1 text-xs text-white hover:bg-gray-700"
+                class="inline-flex items-center gap-1.5 rounded-md bg-neutral-800 px-2.5 py-1 text-xs text-white hover:bg-neutral-700"
                 @click.prevent="props.created({
                     id: Math.ceil(Math.random() * 100),
                     name: 'Max'

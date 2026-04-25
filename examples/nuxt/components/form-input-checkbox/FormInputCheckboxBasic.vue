@@ -92,7 +92,7 @@ export default defineComponent({
                     :group="true"
                 />
             </VCFormGroup>
-            <pre class="text-xs text-gray-500">{{ valueMultiple }}</pre>
+            <pre class="text-xs text-fg-muted">{{ valueMultiple }}</pre>
         </div>
     </div>
 </template>

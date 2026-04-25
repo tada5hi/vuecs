@@ -1,0 +1,268 @@
+/*!
+ * @vuecs/design — Design tokens
+ *
+ * Semantic color scales, aliases, and sizing tokens for the vuecs
+ * component library. Requires Tailwind CSS v4+ (consumers must
+ * `@import "tailwindcss"` in their own stylesheet — this file only
+ * defines the vuecs token layer on top of Tailwind's default palette).
+ *
+ * Resolution:
+ *   Component class string (e.g. `bg-primary-600`)
+ *       → Tailwind v4 utility
+ *       → var(--color-primary-600)
+ *       → var(--vc-color-primary-600)
+ *       → var(--color-blue-600)   <-- current primary palette
+ *       → concrete hex
+ *
+ * Runtime palette switching (via setPalette() in @vuecs/design)
+ * rewrites the `--vc-color-<scale>-*` vars to reference a different
+ * Tailwind palette (e.g. `var(--color-green-600)`); no other layer changes.
+ */
+
+:root {
+    /* -------------------------------------------------------------
+       Semantic scales (default palette bindings)
+       Override at runtime with setPalette({ primary: 'green', ... })
+       or in CSS with `:root { --vc-color-primary-500: ...; }`.
+       ------------------------------------------------------------- */
+
+    /* primary → blue */
+    --vc-color-primary-50:  var(--color-blue-50);
+    --vc-color-primary-100: var(--color-blue-100);
+    --vc-color-primary-200: var(--color-blue-200);
+    --vc-color-primary-300: var(--color-blue-300);
+    --vc-color-primary-400: var(--color-blue-400);
+    --vc-color-primary-500: var(--color-blue-500);
+    --vc-color-primary-600: var(--color-blue-600);
+    --vc-color-primary-700: var(--color-blue-700);
+    --vc-color-primary-800: var(--color-blue-800);
+    --vc-color-primary-900: var(--color-blue-900);
+    --vc-color-primary-950: var(--color-blue-950);
+
+    /* neutral → neutral (pure grayscale, no cool/warm tint).
+       Swap via setPalette({ neutral: 'slate' | 'zinc' | 'stone' | ... })
+       if you want a cool or warm tone. */
+    --vc-color-neutral-50:  var(--color-neutral-50);
+    --vc-color-neutral-100: var(--color-neutral-100);
+    --vc-color-neutral-200: var(--color-neutral-200);
+    --vc-color-neutral-300: var(--color-neutral-300);
+    --vc-color-neutral-400: var(--color-neutral-400);
+    --vc-color-neutral-500: var(--color-neutral-500);
+    --vc-color-neutral-600: var(--color-neutral-600);
+    --vc-color-neutral-700: var(--color-neutral-700);
+    --vc-color-neutral-800: var(--color-neutral-800);
+    --vc-color-neutral-900: var(--color-neutral-900);
+    --vc-color-neutral-950: var(--color-neutral-950);
+
+    /* success → green */
+    --vc-color-success-50:  var(--color-green-50);
+    --vc-color-success-100: var(--color-green-100);
+    --vc-color-success-200: var(--color-green-200);
+    --vc-color-success-300: var(--color-green-300);
+    --vc-color-success-400: var(--color-green-400);
+    --vc-color-success-500: var(--color-green-500);
+    --vc-color-success-600: var(--color-green-600);
+    --vc-color-success-700: var(--color-green-700);
+    --vc-color-success-800: var(--color-green-800);
+    --vc-color-success-900: var(--color-green-900);
+    --vc-color-success-950: var(--color-green-950);
+
+    /* warning → amber */
+    --vc-color-warning-50:  var(--color-amber-50);
+    --vc-color-warning-100: var(--color-amber-100);
+    --vc-color-warning-200: var(--color-amber-200);
+    --vc-color-warning-300: var(--color-amber-300);
+    --vc-color-warning-400: var(--color-amber-400);
+    --vc-color-warning-500: var(--color-amber-500);
+    --vc-color-warning-600: var(--color-amber-600);
+    --vc-color-warning-700: var(--color-amber-700);
+    --vc-color-warning-800: var(--color-amber-800);
+    --vc-color-warning-900: var(--color-amber-900);
+    --vc-color-warning-950: var(--color-amber-950);
+
+    /* error → red */
+    --vc-color-error-50:  var(--color-red-50);
+    --vc-color-error-100: var(--color-red-100);
+    --vc-color-error-200: var(--color-red-200);
+    --vc-color-error-300: var(--color-red-300);
+    --vc-color-error-400: var(--color-red-400);
+    --vc-color-error-500: var(--color-red-500);
+    --vc-color-error-600: var(--color-red-600);
+    --vc-color-error-700: var(--color-red-700);
+    --vc-color-error-800: var(--color-red-800);
+    --vc-color-error-900: var(--color-red-900);
+    --vc-color-error-950: var(--color-red-950);
+
+    /* info → sky */
+    --vc-color-info-50:  var(--color-sky-50);
+    --vc-color-info-100: var(--color-sky-100);
+    --vc-color-info-200: var(--color-sky-200);
+    --vc-color-info-300: var(--color-sky-300);
+    --vc-color-info-400: var(--color-sky-400);
+    --vc-color-info-500: var(--color-sky-500);
+    --vc-color-info-600: var(--color-sky-600);
+    --vc-color-info-700: var(--color-sky-700);
+    --vc-color-info-800: var(--color-sky-800);
+    --vc-color-info-900: var(--color-sky-900);
+    --vc-color-info-950: var(--color-sky-950);
+
+    /* -------------------------------------------------------------
+       Semantic aliases — light mode
+       These flip in .dark to swap the whole UI.
+       ------------------------------------------------------------- */
+
+    --vc-color-bg:           var(--color-white);
+    --vc-color-bg-muted:     var(--vc-color-neutral-50);
+    --vc-color-bg-elevated:  var(--vc-color-neutral-100);
+    --vc-color-fg:           var(--vc-color-neutral-900);
+    --vc-color-fg-muted:     var(--vc-color-neutral-500);
+    --vc-color-border:       var(--vc-color-neutral-200);
+    --vc-color-border-muted: var(--vc-color-neutral-100);
+    --vc-color-ring:         var(--vc-color-primary-500);
+
+    /* "on-*" tokens = foreground color when placed on a filled semantic bg */
+    --vc-color-on-primary: var(--color-white);
+    --vc-color-on-success: var(--color-white);
+    --vc-color-on-warning: var(--vc-color-neutral-900);
+    --vc-color-on-error:   var(--color-white);
+    --vc-color-on-info:    var(--color-white);
+    --vc-color-on-neutral: var(--color-white);
+
+    /* -------------------------------------------------------------
+       Radius
+       ------------------------------------------------------------- */
+
+    --vc-radius-sm:   0.125rem; /* 2px  */
+    --vc-radius-md:   0.375rem; /* 6px  */
+    --vc-radius-lg:   0.5rem;   /* 8px  */
+    --vc-radius-xl:   0.75rem;  /* 12px */
+    --vc-radius-full: 9999px;
+}
+
+/* -----------------------------------------------------------------
+   Dark mode — only semantic aliases flip; scales stay the same.
+   Apply by toggling `class="dark"` on <html> or an ancestor.
+   ----------------------------------------------------------------- */
+
+.dark {
+    /* Shade choices mirror Nuxt UI: bg=900 (softer than 950),
+       fg=200 (softer than pure 100), muted bg=800. Reduces the
+       harsh white-on-black contrast while staying clearly dark. */
+    --vc-color-bg:           var(--vc-color-neutral-900);
+    --vc-color-bg-muted:     var(--vc-color-neutral-800);
+    --vc-color-bg-elevated:  var(--vc-color-neutral-800);
+    --vc-color-fg:           var(--vc-color-neutral-200);
+    --vc-color-fg-muted:     var(--vc-color-neutral-500);
+    --vc-color-border:       var(--vc-color-neutral-800);
+    --vc-color-border-muted: var(--vc-color-neutral-900);
+    --vc-color-ring:         var(--vc-color-primary-400);
+
+    --vc-color-on-warning: var(--vc-color-neutral-950);
+}
+
+/* -----------------------------------------------------------------
+   Tailwind v4 @theme block — expose vuecs tokens as Tailwind
+   color/radius names so components can write e.g. `bg-primary-600`,
+   `text-fg`, `rounded-md` and have them resolve to the vc token
+   chain. Non-inline so browser-time swaps (.dark, setPalette) work.
+   ----------------------------------------------------------------- */
+
+@theme {
+    --color-primary-50:  var(--vc-color-primary-50);
+    --color-primary-100: var(--vc-color-primary-100);
+    --color-primary-200: var(--vc-color-primary-200);
+    --color-primary-300: var(--vc-color-primary-300);
+    --color-primary-400: var(--vc-color-primary-400);
+    --color-primary-500: var(--vc-color-primary-500);
+    --color-primary-600: var(--vc-color-primary-600);
+    --color-primary-700: var(--vc-color-primary-700);
+    --color-primary-800: var(--vc-color-primary-800);
+    --color-primary-900: var(--vc-color-primary-900);
+    --color-primary-950: var(--vc-color-primary-950);
+
+    --color-success-50:  var(--vc-color-success-50);
+    --color-success-100: var(--vc-color-success-100);
+    --color-success-200: var(--vc-color-success-200);
+    --color-success-300: var(--vc-color-success-300);
+    --color-success-400: var(--vc-color-success-400);
+    --color-success-500: var(--vc-color-success-500);
+    --color-success-600: var(--vc-color-success-600);
+    --color-success-700: var(--vc-color-success-700);
+    --color-success-800: var(--vc-color-success-800);
+    --color-success-900: var(--vc-color-success-900);
+    --color-success-950: var(--vc-color-success-950);
+
+    --color-warning-50:  var(--vc-color-warning-50);
+    --color-warning-100: var(--vc-color-warning-100);
+    --color-warning-200: var(--vc-color-warning-200);
+    --color-warning-300: var(--vc-color-warning-300);
+    --color-warning-400: var(--vc-color-warning-400);
+    --color-warning-500: var(--vc-color-warning-500);
+    --color-warning-600: var(--vc-color-warning-600);
+    --color-warning-700: var(--vc-color-warning-700);
+    --color-warning-800: var(--vc-color-warning-800);
+    --color-warning-900: var(--vc-color-warning-900);
+    --color-warning-950: var(--vc-color-warning-950);
+
+    --color-error-50:  var(--vc-color-error-50);
+    --color-error-100: var(--vc-color-error-100);
+    --color-error-200: var(--vc-color-error-200);
+    --color-error-300: var(--vc-color-error-300);
+    --color-error-400: var(--vc-color-error-400);
+    --color-error-500: var(--vc-color-error-500);
+    --color-error-600: var(--vc-color-error-600);
+    --color-error-700: var(--vc-color-error-700);
+    --color-error-800: var(--vc-color-error-800);
+    --color-error-900: var(--vc-color-error-900);
+    --color-error-950: var(--vc-color-error-950);
+
+    --color-info-50:  var(--vc-color-info-50);
+    --color-info-100: var(--vc-color-info-100);
+    --color-info-200: var(--vc-color-info-200);
+    --color-info-300: var(--vc-color-info-300);
+    --color-info-400: var(--vc-color-info-400);
+    --color-info-500: var(--vc-color-info-500);
+    --color-info-600: var(--vc-color-info-600);
+    --color-info-700: var(--vc-color-info-700);
+    --color-info-800: var(--vc-color-info-800);
+    --color-info-900: var(--vc-color-info-900);
+    --color-info-950: var(--vc-color-info-950);
+
+    /* NOTE: we deliberately do NOT override Tailwind's `--color-neutral-*`
+       here. Doing so would create a circular reference because the
+       `:root` block above binds `--vc-color-neutral-*: var(--color-neutral-*)`
+       (so the semantic scale follows Tailwind's `neutral` palette by
+       default). Cycle would resolve invalid for every neutral-based
+       token, including the semantic aliases below — breaking the dark
+       mode flip entirely.
+
+       Trade-off: utility classes like `bg-neutral-500` use Tailwind's
+       default neutral palette and DO NOT follow `setPalette({ neutral })`
+       at runtime. The semantic aliases (`bg-bg`, `text-fg`, etc., below)
+       DO follow palette swaps because they reference `--vc-color-neutral-*`
+       directly, which is overridden by the runtime setPalette() output. */
+
+    /* Semantic aliases (light/dark flip via .dark) */
+    --color-bg:           var(--vc-color-bg);
+    --color-bg-muted:     var(--vc-color-bg-muted);
+    --color-bg-elevated:  var(--vc-color-bg-elevated);
+    --color-fg:           var(--vc-color-fg);
+    --color-fg-muted:     var(--vc-color-fg-muted);
+    --color-border:       var(--vc-color-border);
+    --color-border-muted: var(--vc-color-border-muted);
+    --color-ring:         var(--vc-color-ring);
+
+    --color-on-primary: var(--vc-color-on-primary);
+    --color-on-success: var(--vc-color-on-success);
+    --color-on-warning: var(--vc-color-on-warning);
+    --color-on-error:   var(--vc-color-on-error);
+    --color-on-info:    var(--vc-color-on-info);
+    --color-on-neutral: var(--vc-color-on-neutral);
+
+    /* Radius */
+    --radius-sm:   var(--vc-radius-sm);
+    --radius-md:   var(--vc-radius-md);
+    --radius-lg:   var(--vc-radius-lg);
+    --radius-xl:   var(--vc-radius-xl);
+    --radius-full: var(--vc-radius-full);
+}

@@ -7,11 +7,13 @@
     "packages": {
         "packages/core": {"component": "core" },
         "packages/countdown": {"component": "countdown" },
+        "packages/design": {"component": "design" },
         "packages/form-controls": {"component": "form-controls" },
         "packages/gravatar": {"component": "gravatar" },
         "packages/link": {"component": "link" },
         "packages/list-controls": {"component": "list-controls" },
         "packages/navigation": {"component": "navigation" },
+        "packages/nuxt": {"component": "nuxt" },
         "packages/pagination": {"component": "pagination" },
         "packages/theme-bootstrap-v4": {"component": "theme-bootstrap-v4" },
         "packages/theme-bootstrap-v5": {"component": "theme-bootstrap-v5" },

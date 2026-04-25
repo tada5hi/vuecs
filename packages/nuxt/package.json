@@ -1,0 +1,59 @@
+{
+    "name": "@vuecs/nuxt",
+    "version": "0.0.0",
+    "type": "module",
+    "description": "Nuxt module for vuecs — wires @vuecs/design with SSR-safe palette and color-mode support.",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./dist/module.d.mts",
+            "import": "./dist/module.mjs"
+        }
+    },
+    "main": "./dist/module.mjs",
+    "files": [
+        "dist"
+    ],
+    "keywords": [
+        "vuecs",
+        "nuxt",
+        "nuxt-module",
+        "design-system",
+        "palette",
+        "dark-mode"
+    ],
+    "author": {
+        "name": "Peter Placzek",
+        "email": "contact@tada5hi.net",
+        "url": "https://tada5hi.net"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tada5hi/vuecs.git",
+        "directory": "packages/nuxt"
+    },
+    "scripts": {
+        "build": "rimraf dist && nuxt-module-build build --fail-on-warn=false",
+        "prepack": "npm run build"
+    },
+    "dependencies": {
+        "@nuxt/kit": "^4.0.0",
+        "@vueuse/core": "^14.2.1",
+        "@vuecs/design": "^0.0.0"
+    },
+    "devDependencies": {
+        "@nuxt/module-builder": "^1.0.1",
+        "@nuxt/schema": "^4.0.0",
+        "nuxt": "^4.0.0",
+        "vue": "^3.5.28"
+    },
+    "peerDependencies": {
+        "vue": "^3.x"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}
