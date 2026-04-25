@@ -1,6 +1,6 @@
 /**
  * Semantic color scales exposed by @vuecs/design.
- * Each maps to a Tailwind palette via the `tokens.css` bindings.
+ * Each maps to a Tailwind palette via the `assets/index.css` bindings.
  */
 export type SemanticScaleName = 'primary' | 'neutral' | 'success' | 'warning' | 'error' | 'info';
 
@@ -16,7 +16,7 @@ export type TailwindPaletteName =    'slate' | 'gray' | 'zinc' | 'neutral' | 'st
 
 /**
  * Runtime palette override. Partial — keys not set keep their defaults
- * from `tokens.css` (primary=blue, neutral=neutral, success=green,
+ * from `assets/index.css` (primary=blue, neutral=neutral, success=green,
  * warning=amber, error=red, info=sky).
  */
 export type PaletteConfig = Partial<Record<SemanticScaleName, TailwindPaletteName>>;

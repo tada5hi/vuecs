@@ -5,18 +5,20 @@
 ```
 vuecs/
   packages/           # Published npm packages (npm workspaces)
-    core/             # @vuecs/core — theme system, utilities, types
+    core/             # @vuecs/core — theme system, defaults manager, utilities
     countdown/        # @vuecs/countdown
+    design/           # @vuecs/design — CSS design tokens + runtime palette switcher
     form-controls/    # @vuecs/form-controls
     gravatar/         # @vuecs/gravatar
     link/             # @vuecs/link
     list-controls/    # @vuecs/list-controls
     navigation/       # @vuecs/navigation
+    nuxt/             # @vuecs/nuxt — Nuxt module: SSR palette + useColorMode()
     pagination/       # @vuecs/pagination
-    theme-bootstrap-v4/ # @vuecs/theme-bootstrap-v4 — Bootstrap v4 theme
-    theme-bootstrap-v5/ # @vuecs/theme-bootstrap-v5 — Bootstrap v5 theme
+    theme-bootstrap-v4/ # @vuecs/theme-bootstrap-v4 — Bootstrap v4 theme + bridge.css
+    theme-bootstrap-v5/ # @vuecs/theme-bootstrap-v5 — Bootstrap v5 theme + bridge.css
     theme-font-awesome/ # @vuecs/theme-font-awesome — Font Awesome icon theme
-    theme-tailwind/     # @vuecs/theme-tailwind — Tailwind CSS theme
+    theme-tailwind/     # @vuecs/theme-tailwind — Tailwind v4 theme (semantic tokens)
     timeago/          # @vuecs/timeago
   examples/
     nuxt/             # Nuxt demo app showcasing all components

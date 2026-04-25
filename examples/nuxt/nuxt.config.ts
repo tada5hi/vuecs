@@ -29,7 +29,7 @@ export default defineNuxtConfig({
     ],
     vite: { plugins: [tailwindcss()] },
     vuecs: {
-        // Tokens are auto-injected by @vuecs/nuxt; we already include tokens.css
+        // Tokens are auto-injected by @vuecs/nuxt; we already import @vuecs/design
         // manually inside assets/css/tailwind.css so @theme sees it in-order.
         injectTokens: false,
     },

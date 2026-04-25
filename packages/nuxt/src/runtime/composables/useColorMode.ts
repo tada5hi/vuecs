@@ -2,7 +2,6 @@ import { computed, watch } from 'vue';
 import type { ComputedRef, WritableComputedRef } from 'vue';
 import { usePreferredDark } from '@vueuse/core';
 // @ts-expect-error resolved by Nuxt at build time
- 
 import { useCookie, useRuntimeConfig } from '#imports';
 
 export type ColorMode = 'light' | 'dark' | 'system';

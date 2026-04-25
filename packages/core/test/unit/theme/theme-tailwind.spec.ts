@@ -62,11 +62,11 @@ describe('tailwindTheme', () => {
             'violet', 
             'purple', 
             'fuchsia',
-            'pink', 
+            'pink',
             'rose',
-            // Note: 'neutral' is both a raw Tailwind palette AND a vuecs semantic
-            // scale; the matcher below checks for `-{shade}` to distinguish
-            // `bg-neutral-500` (semantic) from prefixes like `text-neutral-foo`.
+            // 'neutral' is intentionally omitted: it doubles as a vuecs
+            // semantic scale, so `bg-neutral-500` etc. is the correct
+            // semantic-token form and must not be flagged.
         ];
         // Match only palette + shade (50..950) — avoids false positives on
         // utility classes like `border-l-0` or `text-sm`.

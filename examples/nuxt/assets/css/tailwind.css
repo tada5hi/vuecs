@@ -9,9 +9,10 @@
 @source "../../../../packages/theme-tailwind/src";
 
 /*
- * Enable class-based dark mode so the `.dark` class toggle set by
- * `@nuxtjs/color-mode` (or manually on <html>) flips the design-system
- * tokens in `@vuecs/design`.
+ * Enable class-based dark mode so the `.dark` class set by
+ * `useColorMode()` (auto-imported from @vuecs/nuxt) flips the
+ * design-system tokens in `@vuecs/design`. `@nuxtjs/color-mode` works
+ * here too if you opt out via `vuecs: { colorMode: false }`.
  */
 @custom-variant dark (&:where(.dark, .dark *));
 

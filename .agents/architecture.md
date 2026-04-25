@@ -376,7 +376,7 @@ palette switching without re-resolving theme classes.
 
 ```
 1. bg-primary-600          ← Tailwind v4 utility class emitted by theme-tailwind
-2. --color-primary-600     ← @theme mapping in tokens.css
+2. --color-primary-600     ← @theme mapping in assets/index.css
 3. --vc-color-primary-600  ← semantic-scale var (overridden by setPalette)
 4. --color-blue-600        ← Tailwind's built-in palette (default binding)
 5. concrete hex
@@ -409,7 +409,7 @@ via a `<style id="vc-palette">` block, leaving layers 1-2 and 4-5 untouched.
 
 ### Requirements
 
-- **Tailwind CSS v4+.** `tokens.css` uses `@theme { … }` and references Tailwind's default `--color-<name>-<shade>` vars. Tailwind v3 is not supported.
+- **Tailwind CSS v4+.** `assets/index.css` uses `@theme { … }` and references Tailwind's default `--color-<name>-<shade>` vars. Tailwind v3 is not supported.
 - **Dark mode toggle via `.dark` class.** Consumers wire this however they prefer (Nuxt's `@nuxtjs/color-mode`, a Pinia store, vanilla JS). No `prefers-color-scheme` media query layer ships today.
 
 ### Nuxt integration (@vuecs/nuxt)
@@ -417,10 +417,12 @@ via a `<style id="vc-palette">` block, leaving layers 1-2 and 4-5 untouched.
 ```
 @vuecs/nuxt/
   src/
-    module.ts                            <- defineNuxtModule; auto-imports tokens.css + composable, registers SSR plugin
+    module.ts                                  <- defineNuxtModule; auto-imports assets/index.css, registers composables + SSR plugins
     runtime/
-      plugins/palette.server.ts          <- emits <style id="vc-palette"> into head via useHead
-      composables/usePalette.ts     <- { current, setPalette } — SSR-aware, hydrates from runtimeConfig
+      plugins/palette.server.ts                <- emits <style id="vc-palette"> into head via useHead (palette override)
+      plugins/colorMode.server.ts              <- emits class="dark"|"light" on <html> via useHead (cookie-driven)
+      composables/usePalette.ts                <- { current, setPalette } — palette runtime switcher
+      composables/useColorMode.ts              <- { mode, resolved, isDark, toggle } — SSR-safe dark mode (VueUse + cookie)
 ```
 
 Consumer usage:
@@ -429,7 +431,11 @@ Consumer usage:
 // nuxt.config.ts
 export default defineNuxtConfig({
     modules: ['@vuecs/nuxt'],
-    vuecs: { palette: { primary: 'green', neutral: 'zinc' } },
+    vuecs: {
+        palette: { primary: 'green', neutral: 'zinc' },
+        // colorMode: true (default) ships the in-house useColorMode().
+        // Set to false to disable and wire @nuxtjs/color-mode yourself.
+    },
 });
 ```
 
@@ -437,13 +443,21 @@ export default defineNuxtConfig({
 <!-- in a component -->
 <script setup>
 const { current, setPalette } = usePalette();
+const { resolved, toggle } = useColorMode();
 </script>
 ```
 
-On the server, the module renders the palette override into the head before
-first paint; the client then reuses the same `<style>` element, avoiding
-FOUC. Runtime calls to `setPalette()` mutate the same element — effectively
-zero-cost palette switching.
+On the server, both plugins render their state into the head before first
+paint (palette `<style>` block + `html.dark`/`html.light` class). The client
+hydrates against the same DOM and continues to manage them reactively —
+effectively zero-cost palette switching and zero-FOUC dark mode (except
+first visits with `preference: 'system'` and no cookie, where the OS
+preference can't be read on the server).
+
+The dark-mode integration is built on `@vueuse/core`'s `usePreferredDark`
+plus a Nuxt cookie (`vc-color-mode` by default). It's NOT
+`@nuxtjs/color-mode` under the hood — that module remains an alternative
+for consumers who prefer it (set `vuecs: { colorMode: false }` to opt out).
 
 ### Bootstrap bridges (theme-bootstrap-v{4,5})
 
