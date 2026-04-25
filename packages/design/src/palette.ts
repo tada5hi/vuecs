@@ -35,7 +35,7 @@ export function renderPaletteStyles(palette: PaletteConfig): string {
  * On the server this is a no-op; use `renderPaletteStyles()` directly and
  * inject the result into the SSR response head (see `@vuecs/nuxt`).
  */
-export function applyPalette(palette: PaletteConfig, doc: Document | undefined = globalThis.document): void {
+export function setPalette(palette: PaletteConfig, doc: Document | undefined = globalThis.document): void {
     if (!doc) return;
 
     const css = renderPaletteStyles(palette);

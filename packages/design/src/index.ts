@@ -1,4 +1,4 @@
-export { applyPalette, renderPaletteStyles } from './palette';
+export { renderPaletteStyles, setPalette } from './palette';
 export {
     PALETTE_SHADES,
     PALETTE_STYLE_ELEMENT_ID,

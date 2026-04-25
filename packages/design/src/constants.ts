@@ -49,7 +49,7 @@ export const PALETTE_SHADES: readonly string[] = [
 ] as const;
 
 /**
- * DOM id used by `applyPalette()` for the injected <style> element.
+ * DOM id used by `setPalette()` for the injected <style> element.
  * The Nuxt SSR plugin uses the same id so client hydration replaces
  * the server-rendered block atomically.
  */

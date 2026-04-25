@@ -74,14 +74,42 @@ describe('tailwindTheme', () => {
             `\\b(?:[a-z-]+:)*(?:bg|text|border|ring|outline|fill|stroke|from|to|via|decoration|placeholder|accent|caret|divide|shadow)-(?:${RAW_PALETTES.join('|')})-(?:50|100|200|300|400|500|600|700|800|900|950)\\b`,
         );
 
+        const check = (where: string, value: unknown): void => {
+            if (typeof value !== 'string') return;
+            const match = pattern.exec(value);
+            if (match) {
+                throw new Error(
+                    `${where} contains raw palette class "${match[0]}" — use semantic tokens (primary-/neutral-/success-/etc.)`,
+                );
+            }
+        };
+
         for (const [name, entry] of Object.entries(theme.elements)) {
             const element = entry as ThemeElementDefinition;
+
+            // 1. classes
             for (const [slot, value] of Object.entries(element.classes || {})) {
-                const match = pattern.exec(typeof value === 'string' ? value : '');
-                if (match) {
-                    throw new Error(
-                        `theme.elements.${name}.classes.${slot} contains raw palette class "${match[0]}" — use semantic tokens (primary-/neutral-/success-/etc.)`,
-                    );
+                check(`theme.elements.${name}.classes.${slot}`, value);
+            }
+
+            // 2. variants — { variantName: { variantValue: { slot: 'classes' } } }
+            for (const [variantName, variantValues] of Object.entries(element.variants || {})) {
+                for (const [variantValue, slots] of Object.entries(variantValues || {})) {
+                    for (const [slot, value] of Object.entries(slots || {})) {
+                        check(
+                            `theme.elements.${name}.variants.${variantName}.${variantValue}.${slot}`,
+                            value,
+                        );
+                    }
+                }
+            }
+
+            // 3. compoundVariants — [{ variants, class: { slot: 'classes' } }, ...]
+            const compounds = element.compoundVariants || [];
+            for (const [i, compound] of compounds.entries()) {
+                const compoundClasses = compound?.class || {};
+                for (const [slot, value] of Object.entries(compoundClasses)) {
+                    check(`theme.elements.${name}.compoundVariants[${i}].class.${slot}`, value);
                 }
             }
         }

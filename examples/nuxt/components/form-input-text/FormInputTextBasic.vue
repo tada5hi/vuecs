@@ -57,7 +57,7 @@ export default defineComponent({
                             :class="[
                                 'inline-flex items-center rounded-l-md px-3 text-sm',
                                 'border border-r-0 border-border bg-bg-muted text-fg-muted',
-                                'hover:bg-bg-muted',
+                                'hover:bg-bg-elevated',
                             ]"
                         >
                             <i class="fa fa-plus" />

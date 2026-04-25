@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 import type { Ref } from 'vue';
-import { applyPalette } from '@vuecs/design';
+import { setPalette as setPaletteCss } from '@vuecs/design';
 import type { PaletteConfig } from '@vuecs/design';
 // @ts-expect-error resolved by Nuxt at build time
 import { useRuntimeConfig } from '#imports';
@@ -27,7 +27,7 @@ export function usePalette(): UsePaletteReturn {
 
     function setPalette(palette: PaletteConfig): void {
         current.value = palette;
-        applyPalette(palette);
+        setPaletteCss(palette);
     }
 
     return { current, setPalette };

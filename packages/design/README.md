@@ -109,13 +109,13 @@ or a JS boot hook).
 Reassign any semantic scale to a different Tailwind palette at runtime:
 
 ```ts
-import { applyPalette } from '@vuecs/design';
+import { setPalette } from '@vuecs/design';
 
 // Switch the primary scale to green and neutral to zinc
-applyPalette({ primary: 'green', neutral: 'zinc' });
+setPalette({ primary: 'green', neutral: 'zinc' });
 ```
 
-`applyPalette()` inserts or updates a single `<style id="vc-palette">`
+`setPalette()` inserts or updates a single `<style id="vc-palette">`
 element in `<head>`. Safe to call repeatedly — subsequent calls replace
 the element's content with no cascade reshuffling.
 
@@ -171,7 +171,7 @@ const { current, setPalette } = usePalette();
 | Export | Description |
 |--------|-------------|
 | `renderPaletteStyles(palette): string` | Pure function — returns a `:root { … }` block remapping semantic scales onto Tailwind palettes |
-| `applyPalette(palette, doc?): void` | Client-side helper — inserts/updates `<style id="vc-palette">` in `<head>` |
+| `setPalette(palette, doc?): void` | Client-side helper — inserts/updates `<style id="vc-palette">` in `<head>` |
 | `SEMANTIC_SCALES` | `readonly SemanticScaleName[]` — all six scale names |
 | `TAILWIND_PALETTES` | `readonly TailwindPaletteName[]` — all 22 Tailwind palette names |
 | `PALETTE_SHADES` | `readonly string[]` — `'50' … '950'` |

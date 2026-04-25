@@ -1,7 +1,8 @@
 import { computed, watch } from 'vue';
 import type { ComputedRef, WritableComputedRef } from 'vue';
-import { useDark, usePreferredDark } from '@vueuse/core';
+import { usePreferredDark } from '@vueuse/core';
 // @ts-expect-error resolved by Nuxt at build time
+ 
 import { useCookie, useRuntimeConfig } from '#imports';
 
 export type ColorMode = 'light' | 'dark' | 'system';
@@ -13,7 +14,11 @@ export interface UseColorModeReturn {
     /** Effective mode — never `'system'`; resolves to `'light'` or `'dark'`. */
     resolved: ComputedRef<'light' | 'dark'>;
 
-    /** Convenience boolean: `resolved.value === 'dark'`. */
+    /**
+     * Convenience boolean tracking `resolved.value === 'dark'`.
+     * Writable: `isDark.value = true` sets `mode` to `'dark'`,
+     * `isDark.value = false` sets it to `'light'`.
+     */
     isDark: WritableComputedRef<boolean>;
 
     /**
@@ -28,7 +33,6 @@ export interface UseColorModeReturn {
  * SSR-safe color mode composable. Persists the user's choice in a
  * cookie (set server-side via the Nuxt module's runtime config), so
  * the server can render the correct `html.dark` class on first paint.
- * Client-side reactivity is powered by `@vueuse/core`'s `useDark`.
  *
  * The cookie stores one of `'light' | 'dark' | 'system'`.
  * `'system'` resolves on the client via `prefers-color-scheme` and
@@ -55,19 +59,6 @@ export function useColorMode(): UseColorModeReturn {
         return preferredDark.value ? 'dark' : 'light';
     });
 
-    // VueUse's useDark handles the client-side DOM class toggle. We pass
-    // `onChanged: noop` because we manage the class-flip via the `watch`
-    // below (to keep the cookie as the single source of truth — useDark
-    // would otherwise write to localStorage).
-    const isDark = useDark({
-        selector: 'html',
-        valueDark: 'dark',
-        valueLight: 'light',
-        storageKey: null,
-        initialValue: () => (resolved.value === 'dark' ? 'dark' : 'light'),
-        onChanged: () => { /* handled by watch below */ },
-    });
-
     const mode = computed<ColorMode>({
         get: () => cookie.value,
         set: (value) => {
@@ -75,13 +66,22 @@ export function useColorMode(): UseColorModeReturn {
         },
     });
 
+    const isDark = computed<boolean>({
+        get: () => resolved.value === 'dark',
+        set: (value) => {
+            cookie.value = value ? 'dark' : 'light';
+        },
+    });
+
+    // Sync the resolved mode to the <html> class. Mirrors what the
+    // SSR plugin does on the server, so the class set during SSR
+    // matches what the client computes.
     if (typeof document !== 'undefined') {
         watch(
             resolved,
             (value) => {
                 document.documentElement.classList.toggle('dark', value === 'dark');
                 document.documentElement.classList.toggle('light', value === 'light');
-                isDark.value = value === 'dark';
             },
             { immediate: true },
         );
@@ -92,9 +92,9 @@ export function useColorMode(): UseColorModeReturn {
     }
 
     return {
-        mode,
-        resolved,
-        isDark,
+        mode, 
+        resolved, 
+        isDark, 
         toggle,
     };
 }

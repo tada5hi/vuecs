@@ -1,9 +1,9 @@
 /*
- * Structural + fallback styling for VCFormSelectSearch. Colors reference
- * @vuecs/design tokens (`--vc-color-*`) so the component follows
- * the active palette and flips automatically under `.dark`. When tokens
- * aren't loaded (e.g. a theme-bootstrap-v5-only consumer), these vars
- * remain undefined and the browser falls back to the framework defaults.
+ * Structural styling for VCFormSelectSearch. Colors reference
+ * @vuecs/design tokens (`--vc-color-*`) with hex fallbacks so the
+ * component remains visually complete even when `@vuecs/design` is
+ * not loaded. When loaded, tokens take over and dark mode flips
+ * automatically.
  */
 .vc-form-select-search {
     position: relative;
@@ -16,9 +16,9 @@
     padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
     line-height: 1.25rem;
-    color: var(--vc-color-fg);
-    background-color: var(--vc-color-bg);
-    border: 1px solid var(--vc-color-border);
+    color: var(--vc-color-fg, #111827);
+    background-color: var(--vc-color-bg, #fff);
+    border: 1px solid var(--vc-color-border, #d1d5db);
     border-radius: var(--vc-radius-md, 0.375rem);
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     cursor: pointer;
@@ -28,13 +28,13 @@
 
 .vc-form-select-search .vc-form-select-search-input:focus {
     outline: 0;
-    border-color: var(--vc-color-primary-500);
-    box-shadow: 0 0 0 1px var(--vc-color-primary-500);
+    border-color: var(--vc-color-primary-500, #3b82f6);
+    box-shadow: 0 0 0 1px var(--vc-color-primary-500, #3b82f6);
 }
 
 .vc-form-select-search .vc-form-select-search-input:disabled {
     cursor: not-allowed;
-    background-color: var(--vc-color-bg-muted);
+    background-color: var(--vc-color-bg-muted, #f9fafb);
     opacity: 1;
 }
 
@@ -46,8 +46,8 @@
     display: block;
     max-height: 15rem;
     overflow-y: auto;
-    background-color: var(--vc-color-bg);
-    border: 1px solid var(--vc-color-border);
+    background-color: var(--vc-color-bg, #fff);
+    border: 1px solid var(--vc-color-border, #d1d5db);
     border-radius: var(--vc-radius-md, 0.375rem);
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     scrollbar-width: none;
@@ -63,18 +63,23 @@
     padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
     line-height: 1.25rem;
-    color: var(--vc-color-fg);
+    color: var(--vc-color-fg, #111827);
     cursor: pointer;
 }
 
 .vc-form-select-search .vc-form-select-search-item:hover,
 .vc-form-select-search .vc-form-select-search-item.current {
-    background-color: var(--vc-color-bg-elevated);
+    background-color: var(--vc-color-bg-elevated, #f3f4f6);
 }
 
+/* Active item: keyboard-focused / selected. Uses semantic tokens
+   (bg-elevated + bold fg) instead of a primary-scale tint so the
+   contrast holds in both light and dark modes — primary-scale shades
+   don't flip under .dark and produced low-contrast pairs there. */
 .vc-form-select-search .vc-form-select-search-item.active {
-    background-color: var(--vc-color-primary-100);
-    color: var(--vc-color-primary-800);
+    background-color: var(--vc-color-bg-elevated, #f3f4f6);
+    color: var(--vc-color-fg, #111827);
+    font-weight: 600;
 }
 
 .vc-form-select-search .vc-form-select-search-selected {

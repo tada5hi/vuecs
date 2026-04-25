@@ -50,7 +50,7 @@ Every class string in this theme uses **semantic** Tailwind color names
 `fg`, `border`, `ring`, `on-*`. The `@vuecs/design` package wires those
 names to `--vc-color-*` CSS variables via a Tailwind v4 `@theme` block.
 
-```
+```text
 bg-primary-600
   → var(--color-primary-600)          (Tailwind @theme)
   → var(--vc-color-primary-600)       (@vuecs/design semantic scale)

@@ -18,8 +18,11 @@ export default defineNuxtPlugin(() => {
     const colorModeConfig = config.public.vuecs?.colorMode;
     if (!colorModeConfig?.enabled) return;
 
+    // Default mirrors the composable's fallback (vc-color-mode) so the
+    // two stay in sync if runtimeConfig is incomplete for any reason.
+    const cookieName = colorModeConfig.cookieName || 'vc-color-mode';
     const cookie = useCookie<'light' | 'dark' | 'system' | undefined>(
-        colorModeConfig.cookieName,
+        cookieName,
         { default: () => undefined },
     );
 

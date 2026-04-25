@@ -2,8 +2,10 @@
  * Structural defaults for VCFormInputCheckbox. Includes a fully-styled custom
  * checkbox (appearance: none + SVG checkmark) as the base, plus a `--switch`
  * modifier class that turns the same native <input> into a toggle switch.
- * Theme layers can override colors via class overrides; the geometry is
- * baked in here so the control looks intentional out of the box.
+ *
+ * Colors reference @vuecs/design tokens with hex fallbacks, so the control
+ * remains visually complete out of the box even if `@vuecs/design` is not
+ * loaded. When loaded, tokens take over and dark mode flips automatically.
  */
 .vc-form-input-checkbox-group {
     display: inline-flex;
@@ -16,7 +18,7 @@
     user-select: none;
     line-height: 1.25;
     font-size: 0.875rem;
-    color: var(--vc-color-fg);
+    color: var(--vc-color-fg, #111827);
 }
 
 /* ---------- Base (native checkbox restyled) ---------- */
@@ -28,9 +30,9 @@
     height: 1rem;
     padding: 0;
     margin: 0;
-    border: 1px solid var(--vc-color-border);
-    border-radius: var(--vc-radius-sm, 0.25rem);
-    background-color: var(--vc-color-bg);
+    border: 1px solid var(--vc-color-border, #d1d5db);
+    border-radius: var(--vc-radius-sm, 0.125rem);
+    background-color: var(--vc-color-bg, #fff);
     background-repeat: no-repeat;
     background-position: center;
     background-size: 0.75rem 0.75rem;
@@ -39,19 +41,19 @@
 }
 
 .vc-form-input-checkbox:focus-visible {
-    outline: 2px solid var(--vc-color-primary-300);
+    outline: 2px solid var(--vc-color-primary-300, #93c5fd);
     outline-offset: 1px;
 }
 
 .vc-form-input-checkbox:checked {
-    background-color: var(--vc-color-primary-600);
-    border-color: var(--vc-color-primary-600);
+    background-color: var(--vc-color-primary-600, #2563eb);
+    border-color: var(--vc-color-primary-600, #2563eb);
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m3 8 3.5 3.5L13 5'/%3e%3c/svg%3e");
 }
 
 .vc-form-input-checkbox:indeterminate {
-    background-color: var(--vc-color-primary-600);
-    border-color: var(--vc-color-primary-600);
+    background-color: var(--vc-color-primary-600, #2563eb);
+    border-color: var(--vc-color-primary-600, #2563eb);
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-width='3' d='M4 8h8'/%3e%3c/svg%3e");
 }
 
@@ -70,8 +72,8 @@
     width: 2.25rem;
     height: 1.25rem;
     border-radius: var(--vc-radius-full, 9999px);
-    background-color: var(--vc-color-bg-elevated);
-    border-color: var(--vc-color-border);
+    background-color: var(--vc-color-bg-elevated, #e5e7eb);
+    border-color: var(--vc-color-border, #d1d5db);
     background-size: 1rem 1rem;
     background-position: calc(0.125rem) center;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3ccircle cx='10' cy='10' r='8' fill='%23fff'/%3e%3c/svg%3e");
@@ -79,8 +81,8 @@
 }
 
 .vc-form-input-checkbox--switch:checked {
-    background-color: var(--vc-color-primary-600);
-    border-color: var(--vc-color-primary-600);
+    background-color: var(--vc-color-primary-600, #2563eb);
+    border-color: var(--vc-color-primary-600, #2563eb);
     background-position: calc(100% - 0.125rem) center;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3ccircle cx='10' cy='10' r='8' fill='%23fff'/%3e%3c/svg%3e");
 }

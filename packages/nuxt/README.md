@@ -12,7 +12,8 @@ composable.
 - [Installation](#installation)
 - [Setup](#setup)
 - [Options](#options)
-- [usePalette()](#usevuecspalette)
+- [usePalette()](#usepalette)
+- [useColorMode()](#usecolormode)
 - [Dark Mode](#dark-mode)
 - [Requirements](#requirements)
 - [License](#license)
@@ -67,6 +68,15 @@ interface ModuleOptions {
      * Default: true
      */
     injectTokens?: boolean;
+
+    /**
+     * SSR-safe dark-mode integration (cookie-backed, FOUC-free). Set
+     * to `false` to skip — useful if you wire `@nuxtjs/color-mode`
+     * yourself. Pass an object to tweak `cookieName` / `preference`.
+     *
+     * Default: true
+     */
+    colorMode?: boolean | { cookieName?: string; preference?: 'light' | 'dark' | 'system' };
 }
 ```
 
@@ -89,20 +99,60 @@ function enableDemoMode() {
 Runtime switches mutate the same `<style>` element the server rendered,
 so there's no layout shift and no cascade reshuffle.
 
+## useColorMode()
+
+The module ships an SSR-safe `useColorMode()` composable, auto-imported
+alongside `usePalette()`. It's built on `@vueuse/core`'s
+`usePreferredDark` plus a Nuxt cookie for persistence — the server reads
+the cookie before first paint, applies `class="dark"` (or `light`) to
+`<html>`, and the client hydrates against the same class without FOUC.
+
+```vue
+<script setup lang="ts">
+const { mode, resolved, isDark, toggle } = useColorMode();
+
+// `mode` is 'light' | 'dark' | 'system' (writable)
+// `resolved` is 'light' | 'dark' (always concrete)
+// `isDark` is a writable boolean
+// `toggle()` flips between light and dark
+</script>
+
+<template>
+    <button @click="toggle">
+        {{ resolved === 'dark' ? '☀️ Light' : '🌙 Dark' }}
+    </button>
+</template>
+```
+
+Configure cookie name and default preference via the module's
+`colorMode` option:
+
+```ts
+export default defineNuxtConfig({
+    modules: ['@vuecs/nuxt'],
+    vuecs: {
+        colorMode: { cookieName: 'theme', preference: 'dark' },
+    },
+});
+```
+
+Set `colorMode: false` to disable the integration entirely (e.g. if you
+prefer to wire `@nuxtjs/color-mode` yourself).
+
 ## Dark Mode
 
-This module does not ship a dark-mode strategy — pair it with a
-color-mode library of your choice. For `@nuxtjs/color-mode`:
+The `@vuecs/design` tokens flip under `.dark` automatically — no
+per-component overrides needed. Pair the design tokens with the
+built-in `useColorMode()` (above) for SSR-safe dark mode out of the
+box, or with `@nuxtjs/color-mode` if you prefer:
 
 ```ts
 export default defineNuxtConfig({
     modules: ['@vuecs/nuxt', '@nuxtjs/color-mode'],
-    colorMode: { classSuffix: '' }, // emit `class="dark"` (what @vuecs/design expects)
+    vuecs: { colorMode: false },               // disable our integration
+    colorMode: { classSuffix: '' },            // emit `class="dark"`
 });
 ```
-
-The `@vuecs/design` tokens flip under `.dark` automatically — no
-per-component overrides needed.
 
 ## Requirements
 

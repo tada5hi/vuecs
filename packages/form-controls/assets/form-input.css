@@ -30,7 +30,7 @@
  */
 .vc-form-input-group > .vc-form-input:focus,
 .vc-form-input-group > .vc-form-input:focus-visible {
-    border-color: var(--vc-color-border);
+    border-color: var(--vc-color-border, #d1d5db);
     box-shadow: none;
     outline: 0;
 }

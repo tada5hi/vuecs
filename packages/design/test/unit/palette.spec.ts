@@ -5,7 +5,7 @@ import {
     expect, 
     it, 
 } from 'vitest';
-import { applyPalette, renderPaletteStyles } from '../../src/palette';
+import { renderPaletteStyles, setPalette } from '../../src/palette';
 import { PALETTE_STYLE_ELEMENT_ID } from '../../src/constants';
 
 describe('renderPaletteStyles', () => {
@@ -33,18 +33,18 @@ describe('renderPaletteStyles', () => {
     });
 });
 
-describe('applyPalette', () => {
+describe('setPalette', () => {
     afterEach(() => {
         const existing = document.getElementById(PALETTE_STYLE_ELEMENT_ID);
         if (existing) existing.remove();
     });
 
     it('should be a no-op when no document is provided', () => {
-        expect(() => applyPalette({ primary: 'green' }, undefined)).not.toThrow();
+        expect(() => setPalette({ primary: 'green' }, undefined)).not.toThrow();
     });
 
     it('should create a <style id="vc-palette"> element on first call', () => {
-        applyPalette({ primary: 'green' });
+        setPalette({ primary: 'green' });
         const style = document.getElementById(PALETTE_STYLE_ELEMENT_ID);
         expect(style).not.toBeNull();
         expect(style!.tagName).toBe('STYLE');
@@ -52,8 +52,8 @@ describe('applyPalette', () => {
     });
 
     it('should replace the existing <style> content on subsequent calls', () => {
-        applyPalette({ primary: 'green' });
-        applyPalette({ primary: 'violet' });
+        setPalette({ primary: 'green' });
+        setPalette({ primary: 'violet' });
 
         const styles = document.querySelectorAll(`style#${PALETTE_STYLE_ELEMENT_ID}`);
         expect(styles.length).toBe(1);

@@ -92,12 +92,21 @@ export default defineNuxtModule<ModuleOptions>({
                 {}),
         };
 
-        nuxt.options.runtimeConfig.public.vuecs = {
-            palette: options.palette || {},
-            colorMode: {
-                enabled: colorModeEnabled,
-                cookieName: colorModeOptions.cookieName,
-                preference: colorModeOptions.preference,
+        // Merge into any existing public.vuecs config (set by the user
+        // in nuxt.config or by another module) instead of overwriting,
+        // so we don't clobber unrelated keys.
+        const existingPublic = (nuxt.options.runtimeConfig.public || {}) as Record<string, any>;
+        const existingVuecs = (existingPublic.vuecs || {}) as Record<string, any>;
+        nuxt.options.runtimeConfig.public = {
+            ...existingPublic,
+            vuecs: {
+                ...existingVuecs,
+                palette: options.palette || {},
+                colorMode: {
+                    enabled: colorModeEnabled,
+                    cookieName: colorModeOptions.cookieName,
+                    preference: colorModeOptions.preference,
+                },
             },
         };
 

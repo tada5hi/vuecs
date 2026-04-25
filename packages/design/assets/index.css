@@ -228,6 +228,23 @@
     --color-info-900: var(--vc-color-info-900);
     --color-info-950: var(--vc-color-info-950);
 
+    /* Override Tailwind's default `neutral-*` so `bg-neutral-500` etc.
+       resolve through the vc semantic-scale chain (and respect
+       setPalette({ neutral: 'zinc' | 'slate' | ... })). Without this,
+       Tailwind would emit `bg-neutral-500` pointing at its own
+       `--color-neutral-500`, bypassing the token layer. */
+    --color-neutral-50:  var(--vc-color-neutral-50);
+    --color-neutral-100: var(--vc-color-neutral-100);
+    --color-neutral-200: var(--vc-color-neutral-200);
+    --color-neutral-300: var(--vc-color-neutral-300);
+    --color-neutral-400: var(--vc-color-neutral-400);
+    --color-neutral-500: var(--vc-color-neutral-500);
+    --color-neutral-600: var(--vc-color-neutral-600);
+    --color-neutral-700: var(--vc-color-neutral-700);
+    --color-neutral-800: var(--vc-color-neutral-800);
+    --color-neutral-900: var(--vc-color-neutral-900);
+    --color-neutral-950: var(--vc-color-neutral-950);
+
     /* Semantic aliases (light/dark flip via .dark) */
     --color-bg:           var(--vc-color-bg);
     --color-bg-muted:     var(--vc-color-bg-muted);
@@ -246,8 +263,9 @@
     --color-on-neutral: var(--vc-color-on-neutral);
 
     /* Radius */
-    --radius-sm: var(--vc-radius-sm);
-    --radius-md: var(--vc-radius-md);
-    --radius-lg: var(--vc-radius-lg);
-    --radius-xl: var(--vc-radius-xl);
+    --radius-sm:   var(--vc-radius-sm);
+    --radius-md:   var(--vc-radius-md);
+    --radius-lg:   var(--vc-radius-lg);
+    --radius-xl:   var(--vc-radius-xl);
+    --radius-full: var(--vc-radius-full);
 }
