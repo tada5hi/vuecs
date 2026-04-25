@@ -19,6 +19,7 @@
         "email": "contact@tada5hi.net",
         "url": "https://tada5hi.net"
     },
+    "license": "Apache-2.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/tada5hi/vuecs.git",

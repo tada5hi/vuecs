@@ -15,16 +15,32 @@ vuecs/
     navigation/       # @vuecs/navigation
     nuxt/             # @vuecs/nuxt — Nuxt module: SSR palette + useColorMode()
     pagination/       # @vuecs/pagination
-    theme-bootstrap-v4/ # @vuecs/theme-bootstrap-v4 — Bootstrap v4 theme + bridge.css
-    theme-bootstrap-v5/ # @vuecs/theme-bootstrap-v5 — Bootstrap v5 theme + bridge.css
+    theme-bootstrap-v4/ # @vuecs/theme-bootstrap-v4 — Bootstrap v4 theme + design-token bridge (assets/index.css)
+    theme-bootstrap-v5/ # @vuecs/theme-bootstrap-v5 — Bootstrap v5 theme + design-token bridge (assets/index.css)
     theme-font-awesome/ # @vuecs/theme-font-awesome — Font Awesome icon theme
     theme-tailwind/     # @vuecs/theme-tailwind — Tailwind v4 theme (semantic tokens)
     timeago/          # @vuecs/timeago
   examples/
     nuxt/             # Nuxt demo app showcasing all components
+  docs/               # @vuecs/docs — VitePress documentation site (deployed to vuecs.dev)
+    src/
+      .vitepress/
+        config.mts    # title, nav, sidebar, search, edit-link, social
+        theme/
+          index.ts    # extends DefaultTheme; installs vuecs plugin + component plugins
+          style.css   # tailwind + design tokens + VitePress brand overrides
+          components/ # Hero, FeatureGrid, ThemeShowcase, CodeTabs, NuxtSection, Demo
+          demos/      # Per-component live demo SFCs (e.g. FormCheckbox.vue)
+      index.md        # Marketing landing page (composes the theme components)
+      getting-started/
+      guide/
+      components/     # One page per component (Vue + CSS code-group tabs)
+      themes/
+      nuxt/
+      public/         # CNAME, logo.svg
   .github/
     actions/          # Reusable composite actions (install, build)
-    workflows/        # CI (main.yml) and release (release.yml)
+    workflows/        # CI (main.yml), release (release.yml), docs deploy (docs.yml)
 ```
 
 ## Package Internal Structure

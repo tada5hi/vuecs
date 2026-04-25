@@ -395,9 +395,16 @@ describe('VCFormSubmit', () => {
         expect(wrapper.find('button').attributes('disabled')).toBeDefined();
     });
 
-    it('should render icon when icon is true', () => {
-        const wrapper = mount(VCFormSubmit, { global: { plugins: [themePlugin] } });
+    it('should render icon when icon is true and a theme provides an icon class', () => {
+        // The component skips the empty <i> node when no icon class is set —
+        // otherwise themes without icons (e.g. plain Tailwind) would render
+        // a phantom node that produces visible left padding before the label.
+        const wrapper = mount(VCFormSubmit, {
+            props: { themeClass: { createIcon: 'fa fa-plus', updateIcon: 'fa fa-edit' } },
+            global: { plugins: [themePlugin] },
+        });
         expect(wrapper.find('i').exists()).toBe(true);
+        expect(wrapper.find('i').classes()).toContain('fa-plus');
     });
 
     it('should not render icon when icon is false', () => {
@@ -405,6 +412,11 @@ describe('VCFormSubmit', () => {
             props: { icon: false },
             global: { plugins: [themePlugin] },
         });
+        expect(wrapper.find('i').exists()).toBe(false);
+    });
+
+    it('should not render icon when icon class is empty', () => {
+        const wrapper = mount(VCFormSubmit, { global: { plugins: [themePlugin] } });
         expect(wrapper.find('i').exists()).toBe(false);
     });
 

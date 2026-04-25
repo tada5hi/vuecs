@@ -47,7 +47,7 @@ export default defineComponent({
         },
     },
     emits: ['update:modelValue', 'change'],
-    async setup(props, { emit }) {
+    setup(props, { emit }) {
         const listElement = ref<globalThis.HTMLElement | null>(null);
         const inputElement = ref<globalThis.HTMLElement | null>(null);
 

@@ -412,6 +412,18 @@ via a `<style id="vc-palette">` block, leaving layers 1-2 and 4-5 untouched.
 - **Tailwind CSS v4+.** `assets/index.css` uses `@theme { … }` and references Tailwind's default `--color-<name>-<shade>` vars. Tailwind v3 is not supported.
 - **Dark mode toggle via `.dark` class.** Consumers wire this however they prefer (Nuxt's `@nuxtjs/color-mode`, a Pinia store, vanilla JS). No `prefers-color-scheme` media query layer ships today.
 
+### Runtime palette safelist
+
+`@vuecs/design`'s `assets/index.css` ends with:
+
+```css
+@source inline("bg-{red,orange,...,neutral}-{50,100,...,950}");
+```
+
+This force-includes all 22 Tailwind palettes × 11 shades in the JIT output. Without it, Tailwind v4 only emits `--color-<palette>-*` tokens for palettes referenced by used utility classes — so `setPalette({ primary: 'emerald' })` would silently fail because `--color-emerald-*` was tree-shaken.
+
+The directive depends on Tailwind v4's documented behavior of emitting `--color-<palette>-<shade>` as a side effect of safelisting `bg-<palette>-<shade>`. If a future Tailwind major changes how palette emission works, this directive needs to update too. See the inline comment in `assets/index.css` for the full rationale.
+
 ### Nuxt integration (@vuecs/nuxt)
 
 ```
@@ -461,12 +473,12 @@ for consumers who prefer it (set `vuecs: { colorMode: false }` to opt out).
 
 ### Bootstrap bridges (theme-bootstrap-v{4,5})
 
-Both Bootstrap theme packages ship an optional `bridge.css` that wires
-Bootstrap's `:root` theme-color variables onto `--vc-color-*`. Each
-package's `package.json` exposes a `style` conditional export, so bare
-`@import "@vuecs/theme-bootstrap-v5"` (and `-v4`) in a CSS file
-resolves to the bridge. Explicit subpath imports
-(`@vuecs/theme-bootstrap-v5/index.css`) also work.
+Both Bootstrap theme packages ship an optional CSS file at
+`assets/index.css` that wires Bootstrap's `:root` theme-color variables
+onto `--vc-color-*`. Each package's `package.json` exposes a `style`
+conditional export, so a bare `@import "@vuecs/theme-bootstrap-v5"`
+(and `-v4`) in a CSS file resolves to the bridge. Explicit subpath
+imports (`@vuecs/theme-bootstrap-v5/index.css`) also work.
 
 | Package | Scope | Affects Bootstrap components? |
 |---------|-------|-------------------------------|
@@ -479,17 +491,28 @@ repaletting requires rebuilding Bootstrap from Sass.
 
 ### Short-form CSS imports
 
-All three style-carrying packages use the `style` conditional export so
+All style-carrying packages use the `style` conditional export so
 consumers can write bare imports:
 
 ```css
 @import "@vuecs/design";              /* → assets/index.css */
-@import "@vuecs/theme-bootstrap-v5";  /* → assets/index.css */
-@import "@vuecs/theme-bootstrap-v4";  /* → assets/index.css */
+@import "@vuecs/theme-bootstrap-v5";  /* → assets/index.css (bridge) */
+@import "@vuecs/theme-bootstrap-v4";  /* → assets/index.css (bridge) */
+@import "@vuecs/form-controls";       /* → dist/style.css */
+@import "@vuecs/list-controls";       /* → dist/style.css */
+@import "@vuecs/navigation";          /* → dist/style.css */
+@import "@vuecs/pagination";          /* → dist/style.css */
 ```
 
-Explicit subpath forms (`@vuecs/design/index.css`, `.../bridge.css`)
-remain supported for clarity when mixing multiple CSS entry points.
+The component-package CSS bundles ship the structural rules that the JS
+entry doesn't auto-import (extracted at build time by tsdown). Consumers
+who don't import these will see the bundled JS render correctly but lose
+component-specific structural styling — checkbox switch variant,
+range-slider track and thumbs, search-dropdown panel, nav tree-line, etc.
+
+Explicit subpath forms (`@vuecs/design/index.css`, `@vuecs/form-controls/style.css`,
+`@vuecs/form-controls/dist/style.css`) remain supported for clarity when
+mixing multiple CSS entry points.
 
 ## NavigationManager (@vuecs/navigation)
 
