@@ -96,3 +96,11 @@ Do this as part of the same commit — documentation should never lag behind the
    - Row in `docs/src/components/index.md` under the matching package section
    - If the package adds new exports, plugin install glue, or auto-imports — update `docs/src/.vitepress/theme/index.ts` so demos can use it
 7. If the package ships its own CSS, add the `style` conditional export in `package.json` so consumers can use `@import "@vuecs/<name>"` (see [architecture.md → Short-form CSS imports](architecture.md))
+
+References
+External project references live in .agents/references/. When looking up source code in a referenced project (e.g., tsoa), always update the corresponding reference file with:
+
+The source file path / function name in the external project
+The corresponding TRAPI file path / function name
+Any behavioral differences between the implementations
+This builds a cumulative mapping over time so future work can quickly find corresponding code without re-searching.
