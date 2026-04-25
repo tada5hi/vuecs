@@ -82,7 +82,7 @@ export default function tailwindTheme(): Theme {
                     separator: 'my-2 text-xs font-semibold uppercase tracking-wide text-fg-muted',
                     link: 'flex cursor-pointer items-center gap-2 px-3 py-2 text-sm text-fg no-underline hover:bg-bg-muted',
                     linkRoot: 'font-medium text-fg',
-                    linkIcon: 'h-4 w-4 shrink-0',
+                    linkIcon: 'inline-flex h-4 w-4 shrink-0 items-center justify-center',
                     linkText: 'flex-1 truncate',
                 },
             },

@@ -228,22 +228,19 @@
     --color-info-900: var(--vc-color-info-900);
     --color-info-950: var(--vc-color-info-950);
 
-    /* Override Tailwind's default `neutral-*` so `bg-neutral-500` etc.
-       resolve through the vc semantic-scale chain (and respect
-       setPalette({ neutral: 'zinc' | 'slate' | ... })). Without this,
-       Tailwind would emit `bg-neutral-500` pointing at its own
-       `--color-neutral-500`, bypassing the token layer. */
-    --color-neutral-50:  var(--vc-color-neutral-50);
-    --color-neutral-100: var(--vc-color-neutral-100);
-    --color-neutral-200: var(--vc-color-neutral-200);
-    --color-neutral-300: var(--vc-color-neutral-300);
-    --color-neutral-400: var(--vc-color-neutral-400);
-    --color-neutral-500: var(--vc-color-neutral-500);
-    --color-neutral-600: var(--vc-color-neutral-600);
-    --color-neutral-700: var(--vc-color-neutral-700);
-    --color-neutral-800: var(--vc-color-neutral-800);
-    --color-neutral-900: var(--vc-color-neutral-900);
-    --color-neutral-950: var(--vc-color-neutral-950);
+    /* NOTE: we deliberately do NOT override Tailwind's `--color-neutral-*`
+       here. Doing so would create a circular reference because the
+       `:root` block above binds `--vc-color-neutral-*: var(--color-neutral-*)`
+       (so the semantic scale follows Tailwind's `neutral` palette by
+       default). Cycle would resolve invalid for every neutral-based
+       token, including the semantic aliases below — breaking the dark
+       mode flip entirely.
+
+       Trade-off: utility classes like `bg-neutral-500` use Tailwind's
+       default neutral palette and DO NOT follow `setPalette({ neutral })`
+       at runtime. The semantic aliases (`bg-bg`, `text-fg`, etc., below)
+       DO follow palette swaps because they reference `--vc-color-neutral-*`
+       directly, which is overridden by the runtime setPalette() output. */
 
     /* Semantic aliases (light/dark flip via .dark) */
     --color-bg:           var(--vc-color-bg);
