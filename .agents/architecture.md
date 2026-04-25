@@ -461,12 +461,12 @@ for consumers who prefer it (set `vuecs: { colorMode: false }` to opt out).
 
 ### Bootstrap bridges (theme-bootstrap-v{4,5})
 
-Both Bootstrap theme packages ship an optional `bridge.css` that wires
-Bootstrap's `:root` theme-color variables onto `--vc-color-*`. Each
-package's `package.json` exposes a `style` conditional export, so bare
-`@import "@vuecs/theme-bootstrap-v5"` (and `-v4`) in a CSS file
-resolves to the bridge. Explicit subpath imports
-(`@vuecs/theme-bootstrap-v5/index.css`) also work.
+Both Bootstrap theme packages ship an optional CSS file at
+`assets/index.css` that wires Bootstrap's `:root` theme-color variables
+onto `--vc-color-*`. Each package's `package.json` exposes a `style`
+conditional export, so a bare `@import "@vuecs/theme-bootstrap-v5"`
+(and `-v4`) in a CSS file resolves to the bridge. Explicit subpath
+imports (`@vuecs/theme-bootstrap-v5/index.css`) also work.
 
 | Package | Scope | Affects Bootstrap components? |
 |---------|-------|-------------------------------|
@@ -479,17 +479,28 @@ repaletting requires rebuilding Bootstrap from Sass.
 
 ### Short-form CSS imports
 
-All three style-carrying packages use the `style` conditional export so
+All style-carrying packages use the `style` conditional export so
 consumers can write bare imports:
 
 ```css
 @import "@vuecs/design";              /* → assets/index.css */
-@import "@vuecs/theme-bootstrap-v5";  /* → assets/index.css */
-@import "@vuecs/theme-bootstrap-v4";  /* → assets/index.css */
+@import "@vuecs/theme-bootstrap-v5";  /* → assets/index.css (bridge) */
+@import "@vuecs/theme-bootstrap-v4";  /* → assets/index.css (bridge) */
+@import "@vuecs/form-controls";       /* → dist/style.css */
+@import "@vuecs/list-controls";       /* → dist/style.css */
+@import "@vuecs/navigation";          /* → dist/style.css */
+@import "@vuecs/pagination";          /* → dist/style.css */
 ```
 
-Explicit subpath forms (`@vuecs/design/index.css`, `.../bridge.css`)
-remain supported for clarity when mixing multiple CSS entry points.
+The component-package CSS bundles ship the structural rules that the JS
+entry doesn't auto-import (extracted at build time by tsdown). Consumers
+who don't import these will see the bundled JS render correctly but lose
+component-specific structural styling — checkbox switch variant,
+range-slider track and thumbs, search-dropdown panel, nav tree-line, etc.
+
+Explicit subpath forms (`@vuecs/design/index.css`, `@vuecs/form-controls/style.css`,
+`@vuecs/form-controls/dist/style.css`) remain supported for clarity when
+mixing multiple CSS entry points.
 
 ## NavigationManager (@vuecs/navigation)
 

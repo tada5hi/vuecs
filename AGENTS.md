@@ -52,9 +52,13 @@ Layer 3 (integration):       nuxt (depends on design + @nuxt/kit)
 
 `navigation` also depends on `@vuecs/link`. `theme-tailwind` is designed to pair with `@vuecs/design` (Tailwind v4 + CSS-variable tokens); `theme-bootstrap-v5` ships an optional bridge that maps Bootstrap's `--bs-*` theme vars onto the design-system tokens.
 
+## Documentation Site
+
+Public docs live in `docs/` (private workspace `@vuecs/docs`, VitePress) and are deployed to **[vuecs.dev](https://vuecs.dev)**. **Update the docs alongside code changes** — the per-package READMEs are intentionally thin pointers that delegate prose to the docs site. See [Conventions → Documentation Updates](.agents/conventions.md#documentation-updates) for which pages map to which kinds of changes.
+
 ## Detailed Guides
 
-- **[Project Structure](.agents/structure.md)** — Monorepo layout, package organization, nested core re-exports, and build outputs
+- **[Project Structure](.agents/structure.md)** — Monorepo layout, package organization, nested core re-exports, build outputs, and docs site layout
 - **[Architecture](.agents/architecture.md)** — Vue plugin pattern, theme system, NavigationManager, and theme architecture
 - **[Testing](.agents/testing.md)** — Jest setup, test locations, and coverage
-- **[Conventions](.agents/conventions.md)** — Commit messages, linting, release-please, CI/CD pipelines
+- **[Conventions](.agents/conventions.md)** — Commit messages, linting, release-please, CI/CD, and **documentation update rules**

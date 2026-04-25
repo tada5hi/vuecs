@@ -1,0 +1,29 @@
+/*
+ * Busy-state structural styling for VCFormSubmit. Themes provide the
+ * default look; this rule kicks in only when the component sets
+ * `vc-form-submit--busy` (during async submit / `:busy="true"`).
+ *
+ * Rationale: every theme already styles the "default" button differently
+ * (Tailwind, Bootstrap, etc.), but a busy/disabled affordance needs to
+ * look obvious in all of them. Doing it here means consumers don't have
+ * to re-declare the busy variant per theme.
+ */
+.vc-form-submit--busy {
+    cursor: wait !important;
+    opacity: 0.65;
+    /* Pulse the background to signal in-flight work. Animation is subtle
+       so it doesn't distract from surrounding form fields. */
+    animation: vc-form-submit-busy-pulse 1.6s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes vc-form-submit-busy-pulse {
+    0%, 100% { opacity: 0.65; }
+    50%      { opacity: 0.45; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vc-form-submit--busy {
+        animation: none;
+    }
+}

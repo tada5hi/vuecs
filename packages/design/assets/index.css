@@ -266,3 +266,36 @@
     --radius-xl:   var(--vc-radius-xl);
     --radius-full: var(--vc-radius-full);
 }
+
+/* -----------------------------------------------------------------
+   Force-include all 22 Tailwind palettes × 11 shades.
+
+   Runtime palette switching via `setPalette()` rewrites
+   `--vc-color-<scale>-*` to `var(--color-<palette>-*)`. Tailwind v4's
+   JIT only emits palettes referenced by used classes — so without
+   this directive, only the palettes the consumer happens to use in
+   utility classes are compiled, and `setPalette({ primary: 'emerald' })`
+   would silently fail because `--color-emerald-*` was tree-shaken.
+
+   We include all 22 palettes so any setPalette() call resolves to
+   real CSS variables. Adds a few KB of unused class definitions to
+   the bundle — the cost of "runtime palette switching just works".
+
+   Why `bg-{palette}-{shade}` and not the underlying var directly?
+   Tailwind v4 keeps a `--color-<palette>-<shade>` token in the
+   compiled output as a *side effect* of any utility class that
+   references that palette/shade pair (`bg-`, `text-`, `border-`,
+   `ring-` all work). `bg-` is the most universally used family and
+   covers the full shade range. This is a documented Tailwind v4
+   behavior, not an internal — see the `@source inline` directive
+   docs — but it does couple this file to v4's safelist semantics.
+   If a future Tailwind major changes how palette emission works,
+   this directive may need to be updated alongside.
+
+   Consumers who don't need this (e.g. a fixed brand color) can
+   override by importing only the @theme + :root portions of this
+   file via a fork; or opt into a smaller subset via their own
+   `@source inline()` directive after this import.
+   ----------------------------------------------------------------- */
+
+@source inline("bg-{red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose,slate,gray,zinc,stone,neutral}-{50,100,200,300,400,500,600,700,800,900,950}");

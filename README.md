@@ -201,4 +201,4 @@ npm run lint
 
 Made with 💚
 
-Published under [MIT License](./LICENSE).
+Published under [Apache 2.0 License](./LICENSE).

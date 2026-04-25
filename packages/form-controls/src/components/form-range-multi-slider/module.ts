@@ -22,6 +22,22 @@ export class FormRangeSlider {
 
     private mouseX: number;
 
+    // Stored bound handlers so addEventListener and removeEventListener
+    // receive the same function reference. Without this, .bind() returns a
+    // fresh function each call and removeEventListener becomes a no-op,
+    // leaking listeners on unmount.
+    private boundClick = this.clickEventHandler.bind(this);
+
+    private boundTouchend = this.touchendEventHandler.bind(this);
+
+    private boundMouseMove = this.mouseMoveEventHandler.bind(this);
+
+    private boundMouseUp = this.mouseUpEventHandler.bind(this);
+
+    private boundTouchMove = this.touchMoveEventHandler.bind(this);
+
+    private boundTouchEnd = this.touchEndEventHandler.bind(this);
+
     constructor(ctx: FormRangeSliderContext) {
         this._min = ctx.min;
         this._max = ctx.max;
@@ -42,8 +58,8 @@ export class FormRangeSlider {
     }
 
     mount() {
-        this.trackElement.addEventListener('click', this.clickEventHandler.bind(this));
-        this.trackElement.addEventListener('touchend', this.touchendEventHandler.bind(this));
+        this.trackElement.addEventListener('click', this.boundClick);
+        this.trackElement.addEventListener('touchend', this.boundTouchend);
 
         this.sliderMin = new FormRangeSliderThumb(this.el.querySelector('.lower'), this);
         this.sliderMin.mount();
@@ -54,17 +70,17 @@ export class FormRangeSlider {
         this.sliderMax.setPercent(this._max);
 
         if (typeof window !== 'undefined') {
-            window.addEventListener('mousemove', this.mouseMoveEventHandler.bind(this));
-            window.addEventListener('mouseup', this.mouseUpEventHandler.bind(this));
+            window.addEventListener('mousemove', this.boundMouseMove);
+            window.addEventListener('mouseup', this.boundMouseUp);
 
-            window.addEventListener('touchmove', this.touchMoveEventHandler.bind(this));
-            window.addEventListener('touchend', this.touchEndEventHandler.bind(this));
+            window.addEventListener('touchmove', this.boundTouchMove);
+            window.addEventListener('touchend', this.boundTouchEnd);
         }
     }
 
     unmount() {
-        this.trackElement.removeEventListener('click', this.clickEventHandler);
-        this.trackElement.removeEventListener('touchend', this.touchendEventHandler);
+        this.trackElement.removeEventListener('click', this.boundClick);
+        this.trackElement.removeEventListener('touchend', this.boundTouchend);
 
         if (this.sliderMin) {
             this.sliderMin.unmount();
@@ -77,11 +93,11 @@ export class FormRangeSlider {
         }
 
         if (typeof window !== 'undefined') {
-            window.removeEventListener('mousemove', this.mouseMoveEventHandler);
-            window.removeEventListener('mouseup', this.mouseUpEventHandler);
+            window.removeEventListener('mousemove', this.boundMouseMove);
+            window.removeEventListener('mouseup', this.boundMouseUp);
 
-            window.removeEventListener('touchmove', this.touchMoveEventHandler);
-            window.removeEventListener('touchend', this.touchEndEventHandler);
+            window.removeEventListener('touchmove', this.boundTouchMove);
+            window.removeEventListener('touchend', this.boundTouchEnd);
         }
     }
 
@@ -99,10 +115,38 @@ export class FormRangeSlider {
     public change(): void {
         if (!this.sliderMin || !this.sliderMax) return;
 
-        const newMin = this.sliderMin.getPercent();
-        const newMax = this.sliderMax.getPercent();
+        // Snap thumb positions to integer percentages. Floor the lower thumb,
+        // ceil the upper — gives a slightly conservative (inclusive) range so
+        // consumers filtering with `>= min && <= max` cover the full visual
+        // span of the thumbs without sub-percent jitter on every emit.
+        let newMin = Math.floor(this.sliderMin.getPercent());
+        let newMax = Math.ceil(this.sliderMax.getPercent());
 
-        if (newMax - newMin - 1 <= 0) {
+        // Maintain at least 1% gap between thumbs. Identify which thumb
+        // moved (its raw percent diverged from the stored snapped value)
+        // and clamp ONLY that thumb to the boundary — reverting the other
+        // produces a jarring snap-back of an untouched thumb.
+        if (newMax - newMin <= 1) {
+            const minMoved = newMin !== this._min;
+            const maxMoved = newMax !== this._max;
+            if (maxMoved && !minMoved) {
+                newMax = this._min + 1;
+            } else if (minMoved && !maxMoved) {
+                newMin = this._max - 1;
+            } else {
+                // Both diverged (e.g. programmatic set or rare race) — fall
+                // back to the previous valid state on both.
+                newMin = this._min;
+                newMax = this._max;
+            }
+        }
+
+        // No-op guard: only fire `change` when the snapped values actually
+        // differ from the stored state. Otherwise the 500 Hz drag tick
+        // produces hundreds of redundant identical-payload emits per second.
+        if (newMin === this._min && newMax === this._max) {
+            // Still align the thumb visual to the snapped value in case a
+            // float drift left it off by a fraction of a percent.
             this.sliderMin.setPercent(this._min, false);
             this.sliderMax.setPercent(this._max, false);
             return;
@@ -110,6 +154,13 @@ export class FormRangeSlider {
 
         this._min = newMin;
         this._max = newMax;
+
+        // Keep the thumb visuals in sync with the snapped values; otherwise
+        // the thumb sits at a fractional percent while the emitted value is
+        // already rounded, producing a sub-pixel drift between the thumb
+        // center and the underlying value.
+        this.sliderMin.setPercent(newMin, false);
+        this.sliderMax.setPercent(newMax, false);
 
         this.updateDiff();
 

@@ -1,0 +1,43 @@
+{
+    "name": "@vuecs/docs",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "description": "vuecs documentation site (VitePress).",
+    "author": {
+        "name": "Peter Placzek",
+        "email": "contact@tada5hi.net",
+        "url": "https://github.com/tada5hi"
+    },
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Tada5hi/vuecs.git",
+        "directory": "docs"
+    },
+    "scripts": {
+        "dev": "vitepress dev src --temp .temp",
+        "build": "vitepress build src --temp .temp",
+        "preview": "vitepress preview src --temp .temp"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    },
+    "devDependencies": {
+        "@tailwindcss/vite": "^4.2.4",
+        "@vuecs/core": "*",
+        "@vuecs/countdown": "*",
+        "@vuecs/design": "*",
+        "@vuecs/form-controls": "*",
+        "@vuecs/gravatar": "*",
+        "@vuecs/link": "*",
+        "@vuecs/list-controls": "*",
+        "@vuecs/navigation": "*",
+        "@vuecs/pagination": "*",
+        "@vuecs/theme-tailwind": "*",
+        "@vuecs/timeago": "*",
+        "tailwindcss": "^4.2.4",
+        "vitepress": "^1.6.3",
+        "vue": "^3.5.28"
+    }
+}

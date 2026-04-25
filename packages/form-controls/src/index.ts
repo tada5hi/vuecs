@@ -5,6 +5,7 @@ import '../assets/form-input.css';
 import '../assets/form-input-checkbox.css';
 import '../assets/form-select-search.css';
 import '../assets/form-range-multi-slider.css';
+import '../assets/form-submit.css';
 import './vue';
 
 import {

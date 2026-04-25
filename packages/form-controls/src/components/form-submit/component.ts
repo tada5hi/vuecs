@@ -78,24 +78,33 @@ export const VCFormSubmit = defineComponent({
             const resolvedDefaults = defaults.value;
             const isBusy = props.modelValue || props.busy;
 
-            let icon: VNodeArrayChildren = [];
-            if (resolvedDefaults.icon) {
-                icon = [
-                    h('i', {
-                        class: props.isEditing ?
-                            (resolved.updateIcon || undefined) :
-                            (resolved.createIcon || undefined),
-                    }),
-                ];
-            }
+            // Only render the icon node when the icon class is actually set.
+            // Themes that don't ship icons (e.g. theme-tailwind without
+            // theme-font-awesome) leave createIcon/updateIcon empty — without
+            // this guard we'd render an empty <i></i> that produces a
+            // phantom space between the button's left edge and its label.
+            const iconClass = props.isEditing ? resolved.updateIcon : resolved.createIcon;
+            const icon: VNodeArrayChildren = resolvedDefaults.icon && iconClass ?
+                [h('i', { class: iconClass }), ' '] :
+                [];
+
+            const themeButtonClass = props.isEditing ?
+                (resolved.updateButton || undefined) :
+                (resolved.createButton || undefined);
 
             return h(
                 resolvedDefaults.type,
                 mergeProps({
                     ...(resolvedDefaults.type === 'button' ? { type: 'submit' } : {}),
-                    class: props.isEditing ?
-                        (resolved.updateButton || undefined) :
-                        (resolved.createButton || undefined),
+                    // Adding the structural `vc-form-submit--busy` class lets
+                    // the form-controls assets style the busy state
+                    // independently of the active theme — every theme gets a
+                    // consistent "this is loading" appearance without
+                    // re-declaring it per-theme.
+                    class: [
+                        themeButtonClass,
+                        isBusy ? 'vc-form-submit--busy' : undefined,
+                    ],
                     disabled: props.invalid || isBusy,
                     onClick($event: any) {
                         $event.preventDefault();
@@ -117,7 +126,6 @@ export const VCFormSubmit = defineComponent({
                 }, attrs),
                 [
                     ...icon,
-                    ' ',
                     props.isEditing ? resolvedDefaults.updateText : resolvedDefaults.createText,
                 ],
             );

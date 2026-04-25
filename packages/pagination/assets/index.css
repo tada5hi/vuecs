@@ -14,6 +14,14 @@
 
 .vc-pagination > .vc-pagination-item {
     display: flex;
+    /*
+     * Reset margin so prose-style content wrappers can't push items off the
+     * baseline. VitePress's `.vp-doc li + li { margin-top: 8px }` is the
+     * canonical case — without this reset, the 2nd/3rd/4th pagination
+     * buttons sit lower than the first. Other prose wrappers (Astro
+     * `.prose`, Docusaurus content) ship similar rules.
+     */
+    margin: 0;
 }
 
 /* Adjacent buttons overlap their shared border so it reads as one line

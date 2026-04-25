@@ -1,0 +1,81 @@
+@import "tailwindcss";
+@import "@vuecs/design";
+
+/*
+ * Component packages publish their structural CSS via the `style` conditional
+ * export. Bare imports resolve to each package's `dist/style.css` — needed for
+ * the switch variant, range-slider thumbs, search-dropdown panel, etc.
+ */
+@import "@vuecs/form-controls";
+@import "@vuecs/list-controls";
+@import "@vuecs/navigation";
+@import "@vuecs/pagination";
+
+/*
+ * Scan the theme-tailwind source so JIT keeps the class names it emits.
+ * Pages and theme components in this docs workspace are scanned by default.
+ *
+ * The runtime-palette safelist (`@source inline()` for all 22 Tailwind
+ * palettes) ships from `@vuecs/design` itself — no need to duplicate it
+ * here.
+ */
+@source "../../../../packages/theme-tailwind/src";
+
+/* VitePress already sets `.dark` on <html>; align our custom-variant. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * VitePress brand override: route the brand color through the design-system
+ * primary scale so palette switching (setPalette({ primary: 'green' })) flips
+ * the docs chrome too — sidebar accents, heading underlines, hero buttons.
+ */
+:root {
+    --vp-c-brand-1: var(--vc-color-primary-600);
+    --vp-c-brand-2: var(--vc-color-primary-700);
+    --vp-c-brand-3: var(--vc-color-primary-500);
+    --vp-c-brand-soft: color-mix(in oklab, var(--vc-color-primary-500) 15%, transparent);
+    --vp-c-brand-next: var(--vc-color-primary-500);
+    --vp-button-brand-bg: var(--vc-color-primary-600);
+    --vp-button-brand-hover-bg: var(--vc-color-primary-500);
+    --vp-button-brand-active-bg: var(--vc-color-primary-700);
+    --vp-button-brand-border: var(--vc-color-primary-600);
+    --vp-button-brand-hover-border: var(--vc-color-primary-500);
+    --vp-button-brand-active-border: var(--vc-color-primary-700);
+    --vp-home-hero-name-color: transparent;
+    --vp-home-hero-name-background: linear-gradient(120deg, var(--vc-color-primary-500), var(--vc-color-info-500));
+}
+
+.dark {
+    --vp-c-brand-1: var(--vc-color-primary-400);
+    --vp-c-brand-2: var(--vc-color-primary-300);
+    --vp-c-brand-3: var(--vc-color-primary-500);
+    --vp-c-brand-soft: color-mix(in oklab, var(--vc-color-primary-400) 18%, transparent);
+}
+
+/*
+ * VitePress ships an unlayered `input,select,textarea,button { padding: 0 }`
+ * reset (its CSS predates Tailwind v4's layered utilities). Per the CSS
+ * cascade-layer spec, unlayered rules always win against anything inside
+ * `@layer utilities` — regardless of source order or specificity. So the
+ * theme's `px-3 py-2` classes lose, and placeholder text ends up flush
+ * against the left border.
+ *
+ * Re-assert padding here in unlayered CSS so it lands at the same cascade
+ * origin as VitePress's reset and wins on selector specificity. Values
+ * mirror what `@vuecs/theme-tailwind` declares so the visual result is
+ * identical to a non-VitePress consumer.
+ */
+.vc-form-input,
+.vc-form-textarea,
+.vc-form-select {
+    padding-inline: 0.75rem;
+    padding-block: 0.5rem;
+}
+
+/* Demo-rendered buttons (e.g. inside VCFormSubmit, VCPagination) — scope the
+   reset reversal to demo content so VitePress's own chrome buttons (theme
+   toggle, search, edit-link) stay untouched. */
+.vc-demo-preview button {
+    padding-inline: 0.75rem;
+    padding-block: 0.375rem;
+}

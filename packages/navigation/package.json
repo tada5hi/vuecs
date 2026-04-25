@@ -7,10 +7,13 @@
         "./package.json": "./package.json",
         ".": {
             "types": "./dist/index.d.ts",
+            "style": "./dist/style.css",
             "import": "./dist/index.mjs"
         },
+        "./style.css": "./dist/style.css",
         "./dist/style.css": "./dist/style.css"
     },
+    "style": "./dist/style.css",
     "files": [
         "dist"
     ],
@@ -32,6 +35,7 @@
         "email": "contact@tada5hi.net",
         "url": "https://tada5hi.net"
     },
+    "license": "Apache-2.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/tada5hi/vuecs.git",
