@@ -115,7 +115,7 @@ app.use(vuecs, {
     overrides: {
         elements: {
             listItem: { classes: { root: extend('border-b') } },
-            formSubmit: { classes: { root: 'my-custom-btn' } },
+            button: { classes: { root: 'my-custom-btn' } },
         },
     },
 });
@@ -273,7 +273,7 @@ import vuecs from '@vuecs/core';
 app.use(vuecs, {
     themes: [bootstrapV5(), fontAwesome()],
     defaults: {
-        formSubmit: {
+        submitButton: {
             createText: computed(() => t('actions.create')),
             updateText: 'Aktualisieren',
         },
@@ -290,16 +290,17 @@ app.use(vuecs, {
 ### Component consumption
 
 Components drop Vue-level prop defaults (so `undefined` means "fall through") and
-resolve via the composable:
+resolve via the composable. The same composable powers experimental
+*standalone* hooks like `useSubmitButton()` in `@vuecs/form-controls` —
+the only difference is that the "props" arg is an empty object so every
+key falls through to the global defaults / hardcoded layer.
 
 ```typescript
-const behavioralDefaults = { createText: 'Create', updateText: 'Update', icon: true };
+const behavioralDefaults = { createText: 'Create', updateText: 'Update', createIcon: '' };
 
-setup(props) {
-    const defaults = useComponentDefaults('formSubmit', props, behavioralDefaults);
-    // defaults.value.createText → reactive resolved value
-    return () => h('button', [defaults.value.createText]);
-}
+// Inside a Vue composable (no `setup` props):
+const defaults = useComponentDefaults('submitButton', {}, behavioralDefaults);
+// defaults.value.createText → reactive resolved value
 ```
 
 ### Key APIs
@@ -324,10 +325,10 @@ export type ComponentDefaultValues<T> = {
     [K in keyof T]?: MaybeRef<T[K] | undefined>;
 };
 
-// In a component package
+// In a component package (or composable module)
 declare module '@vuecs/core' {
     interface ComponentDefaults {
-        formSubmit?: ComponentDefaultValues<FormSubmitDefaults>;
+        submitButton?: ComponentDefaultValues<SubmitButtonDefaults>;
     }
 }
 ```
@@ -351,9 +352,9 @@ classes, defaults handle everything else. The top-level `CoreOptions` type and
 The following components resolve the listed behavioral props via
 `useComponentDefaults`:
 
-| Component | Keys |
-|-----------|------|
-| `VCFormSubmit` | `type`, `icon`, `createText`, `updateText` |
+| Component / hook | Keys |
+|------------------|------|
+| `useSubmitButton()` (`submitButton`) | `createText`, `updateText`, `createIcon`, `updateIcon`, `createColor`, `updateColor` |
 | `VCFormSelect` | `optionDefault`, `optionDefaultId`, `optionDefaultValue` |
 | `VCFormGroup` | `validation` |
 | `VCFormInputCheckbox` | `labelContent` |
@@ -362,7 +363,11 @@ The following components resolve the listed behavioral props via
 
 For these props the Vue `prop.default` is `undefined`; the effective default now
 lives in the component's `behavioralDefaults` constant, which is passed to the
-composable as the lowest-priority layer.
+composable as the lowest-priority layer. The `submitButton` row is unusual —
+it's the only entry without a corresponding `VC*` component. The previous
+`VCFormSubmit` was decomposed into `VCButton` (in `@vuecs/button`) plus a
+`useSubmitButton()` reactive bind-object helper (in `@vuecs/form-controls`,
+marked `@experimental`); the defaults registration moved with the helper.
 
 ## Design System (@vuecs/design, #1506)
 
@@ -568,3 +573,29 @@ Components ──read─────────┘ (via useComponentTheme / use
 ## Building blocks (Reka UI)
 
 Some components compose [Reka UI](https://reka-ui.com/) primitives internally for accessibility heavy lifting (focus management, keyboard nav, edge-aware rendering). Consumers don't see this — the public API (props, emits, theme classes) is the vuecs contract; Reka is an implementation detail. Today this applies to `@vuecs/pagination` (wraps `PaginationRoot` / `PaginationList` / `PaginationListItem` / `PaginationFirst|Prev|Next|Last` / `PaginationEllipsis`). The roadmap for broader Reka adoption (overlays, form-controls migration, headless composables) lives at [`.agents/plans/reka-ui-adoption-roadmap.md`](plans/reka-ui-adoption-roadmap.md). See [`.agents/references/reka-ui.md`](references/reka-ui.md) for the conceptual mapping.
+
+## Headless composables (@vuecs/core, Phase 2)
+
+Alongside `useComponentTheme` and `useComponentDefaults`, `@vuecs/core` exposes
+a set of small, framework-friendly composables ported from Reka UI's shared
+utilities. They live at the root export (no subpath) so consumers see one flat
+import surface. Re-implemented in-tree rather than vendored so `@vuecs/core`
+stays zero-dep beyond Vue 3.
+
+| Composable | Purpose |
+|---|---|
+| `useForwardProps(props)` | `ComputedRef` of props with `undefined` keys dropped — for `v-bind`-ing onto an inner component without overriding its defaults |
+| `useEmitAsProps(emit)` | Maps the wrapper's declared `emits` to `onEventName` handler props |
+| `useForwardPropsEmits(props, emit?)` | `useForwardProps` + `useEmitAsProps` in one call |
+| `useForwardExpose()` | Re-exposes the inner element/component on the wrapper's `expose`. Returns `{ forwardRef, currentRef, currentElement }` |
+| `useArrowNavigation(event, current, parent, options?)` | Resolves the next focusable item for arrow / Home / End keys. Default attribute selector: `[data-vc-collection-item]` (vuecs-namespaced; Reka uses `[data-reka-collection-item]`) |
+| `useTypeahead(callback?)` | Accumulates keystrokes for ~1 s and focuses the next item whose text starts with the buffer. Also exports `getNextMatch` and `wrapArray` for custom matching loops |
+| `useId(deterministicId?, prefix?)` | Wraps Vue 3.5's native `useId()` with a default `vc-` prefix |
+| `useStateMachine(initial, machine)` | Tiny state machine on top of `ref()`. Unknown events leave state unchanged. Phase-3 prerequisite for `@vuecs/overlays` |
+
+Source under `packages/core/src/utils/composables/`. Tests under
+`packages/core/test/unit/composables/`. All eight composables ship in
+`@vuecs/core` 2.x as the Phase-2 deliverable of the Reka UI adoption
+roadmap. `@vuecs/navigation` consumes `useArrowNavigation` in `VCNavItems`
+to provide vertical arrow / Home / End keyboard navigation across
+sibling items at any depth.

@@ -12,7 +12,6 @@ import { VCFormGroup } from '../../src/components/form-group/component';
 import { VCFormInput } from '../../src/components/form-input/component';
 import { VCFormInputCheckbox } from '../../src/components/form-input-checkbox/component';
 import { VCFormSelect } from '../../src/components/form-select/component';
-import { VCFormSubmit } from '../../src/components/form-submit/component';
 import { VCFormTextarea } from '../../src/components/form-textarea/component';
 import { VCValidationGroup } from '../../src/components/validation-group/module';
 
@@ -357,116 +356,6 @@ describe('VCFormTextarea', () => {
         });
         await wrapper.find('textarea').setValue('text');
         expect(wrapper.emitted('update:modelValue')![0]).toEqual(['text']);
-    });
-});
-
-describe('VCFormSubmit', () => {
-    it('should render a button element by default', () => {
-        const wrapper = mount(VCFormSubmit, { global: { plugins: [themePlugin] } });
-        expect(wrapper.find('button').exists()).toBe(true);
-    });
-
-    it('should show create text by default', () => {
-        const wrapper = mount(VCFormSubmit, { global: { plugins: [themePlugin] } });
-        expect(wrapper.text()).toContain('Create');
-    });
-
-    it('should show update text when isEditing', () => {
-        const wrapper = mount(VCFormSubmit, {
-            props: { isEditing: true },
-            global: { plugins: [themePlugin] },
-        });
-        expect(wrapper.text()).toContain('Update');
-    });
-
-    it('should be disabled when invalid', () => {
-        const wrapper = mount(VCFormSubmit, {
-            props: { invalid: true },
-            global: { plugins: [themePlugin] },
-        });
-        expect(wrapper.find('button').attributes('disabled')).toBeDefined();
-    });
-
-    it('should be disabled when busy', () => {
-        const wrapper = mount(VCFormSubmit, {
-            props: { invalid: false, busy: true },
-            global: { plugins: [themePlugin] },
-        });
-        expect(wrapper.find('button').attributes('disabled')).toBeDefined();
-    });
-
-    it('should render icon when icon is true and a theme provides an icon class', () => {
-        // The component skips the empty <i> node when no icon class is set —
-        // otherwise themes without icons (e.g. plain Tailwind) would render
-        // a phantom node that produces visible left padding before the label.
-        const wrapper = mount(VCFormSubmit, {
-            props: { themeClass: { createIcon: 'fa fa-plus', updateIcon: 'fa fa-edit' } },
-            global: { plugins: [themePlugin] },
-        });
-        expect(wrapper.find('i').exists()).toBe(true);
-        expect(wrapper.find('i').classes()).toContain('fa-plus');
-    });
-
-    it('should not render icon when icon is false', () => {
-        const wrapper = mount(VCFormSubmit, {
-            props: { icon: false },
-            global: { plugins: [themePlugin] },
-        });
-        expect(wrapper.find('i').exists()).toBe(false);
-    });
-
-    it('should not render icon when icon class is empty', () => {
-        const wrapper = mount(VCFormSubmit, { global: { plugins: [themePlugin] } });
-        expect(wrapper.find('i').exists()).toBe(false);
-    });
-
-    it('should call submit and emit busy=true then busy=false on resolve', async () => {
-        let resolveFn: () => void;
-        const submitPromise = new Promise<void>((resolve) => { resolveFn = resolve; });
-        const submitFn = vi.fn(() => submitPromise);
-        const wrapper = mount(VCFormSubmit, {
-            props: { invalid: false, submit: submitFn },
-            global: { plugins: [themePlugin] },
-        });
-
-        await wrapper.find('button').trigger('click');
-
-        expect(submitFn).toHaveBeenCalled();
-        expect(wrapper.emitted('update:modelValue')![0]).toEqual([true]);
-
-        // Resolve the promise
-        resolveFn!();
-        await submitPromise;
-        // Wait for the finally() to fire
-        await new Promise((r) => { setTimeout(r, 0); });
-
-        expect(wrapper.emitted('update:modelValue')![1]).toEqual([false]);
-    });
-
-    it('should emit busy=false immediately for synchronous submit', async () => {
-        const submitFn = vi.fn(() => 'sync result');
-        const wrapper = mount(VCFormSubmit, {
-            props: { invalid: false, submit: submitFn },
-            global: { plugins: [themePlugin] },
-        });
-
-        await wrapper.find('button').trigger('click');
-
-        const emitted = wrapper.emitted('update:modelValue')!;
-        expect(emitted[0]).toEqual([true]);
-        expect(emitted[1]).toEqual([false]);
-    });
-
-    it('should not call submit when no submit prop provided', async () => {
-        const wrapper = mount(VCFormSubmit, {
-            props: { invalid: false },
-            global: { plugins: [themePlugin] },
-        });
-
-        await wrapper.find('button').trigger('click');
-
-        // Should not throw, should not emit busy state
-        expect(wrapper.emitted('update:modelValue')).toBeFalsy();
     });
 });
 

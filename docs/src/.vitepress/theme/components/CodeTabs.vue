@@ -32,7 +32,8 @@ createApp(App)
         // Split the closing tag so Vue's SFC parser doesn't terminate the
         // surrounding script block when reading this file.
         code: `<script setup lang="ts">
-import { VCFormInput, VCFormSubmit } from '@vuecs/form-controls';
+import { VCButton } from '@vuecs/button';
+import { VCFormInput } from '@vuecs/form-controls';
 import { ref } from 'vue';
 
 const value = ref('');
@@ -40,7 +41,7 @@ ${'</'}script>
 
 <template>
     <VCFormInput v-model="value" placeholder="Email" />
-    <VCFormSubmit type="primary" />
+    <VCButton type="submit" color="primary" label="Sign in" />
 </template>`,
     },
 ];

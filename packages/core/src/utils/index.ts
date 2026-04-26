@@ -1,3 +1,4 @@
+export * from './composables';
 export * from './has-own-property';
 export * from './evaluate';
 export * from './inject';

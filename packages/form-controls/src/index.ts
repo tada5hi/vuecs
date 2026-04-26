@@ -5,7 +5,6 @@ import '../assets/form-input.css';
 import '../assets/form-input-checkbox.css';
 import '../assets/form-select-search.css';
 import '../assets/form-range-multi-slider.css';
-import '../assets/form-submit.css';
 import './vue';
 
 import {
@@ -15,12 +14,12 @@ import {
     VCFormRangeMultiSlider,
     VCFormSelect,
     VCFormSelectSearch,
-    VCFormSubmit,
     VCFormTextarea,
 } from './components';
 import type { Options } from './type';
 
 export * from './components';
+export * from './composables';
 export * from './type';
 
 export function install(instance: App, options: Options = {}): void {
@@ -34,7 +33,6 @@ export function install(instance: App, options: Options = {}): void {
         VCFormRangeMultiSlider,
         VCFormSelect,
         VCFormSelectSearch,
-        VCFormSubmit,
         VCFormTextarea,
     }).forEach(([componentName, component]) => {
         instance.component(componentName, component);

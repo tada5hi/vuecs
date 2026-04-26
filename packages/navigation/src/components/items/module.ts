@@ -1,4 +1,9 @@
-import { hasNormalizedSlot, normalizeSlot, useComponentTheme } from '@vuecs/core';
+import { 
+    hasNormalizedSlot, 
+    normalizeSlot, 
+    useArrowNavigation, 
+    useComponentTheme, 
+} from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import type {
     PropType,
@@ -47,6 +52,21 @@ export const VCNavItems = defineComponent({
     }>,
     setup(props, { slots }) {
         const theme = useComponentTheme('navigation', props, themeDefaults);
+
+        const rootRef = ref<HTMLUListElement | null>(null);
+
+        const onKeyDown = (event: KeyboardEvent) => {
+            useArrowNavigation(
+                event,
+                event.target as HTMLElement | null,
+                rootRef.value,
+                {
+                    arrowKeyOptions: 'vertical',
+                    focus: true,
+                    loop: true,
+                },
+            );
+        };
 
         const manager = injectNavigationManager();
         const managerItems = ref<NavigationItemNormalized[]>([]);
@@ -111,7 +131,18 @@ export const VCNavItems = defineComponent({
                 vNodes.push(vNode);
             }
 
-            return h('ul', { class: resolved.group || undefined }, vNodes);
+            const isRoot = props.level === 0;
+
+            return h(
+                'ul',
+                {
+                    class: resolved.group || undefined,
+                    ...(isRoot ?
+                        { ref: rootRef, onKeydown: onKeyDown } :
+                        {}),
+                },
+                vNodes,
+            );
         };
     },
 });

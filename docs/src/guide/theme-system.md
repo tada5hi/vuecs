@@ -33,8 +33,8 @@ app.use(vuecs, {
     themes: [tailwindTheme()],
     overrides: {
         elements: {
-            // Replace: VCFormSubmit's root becomes literally 'my-btn'
-            formSubmit: { classes: { root: 'my-btn' } },
+            // Replace: VCButton's root becomes literally 'my-btn'
+            button: { classes: { root: 'my-btn' } },
 
             // Merge: keep theme classes + add 'border-b'
             listItem: { classes: { root: extend('border-b') } },

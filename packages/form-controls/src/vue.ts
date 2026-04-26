@@ -5,7 +5,6 @@ import type {
     VCFormRangeMultiSlider,
     VCFormSelect,
     VCFormSelectSearch,
-    VCFormSubmit,
     VCFormTextarea,
 } from './components';
 
@@ -17,7 +16,6 @@ declare module '@vue/runtime-core' {
         VCFormRangeMultiSlider: typeof VCFormRangeMultiSlider,
         VCFormSelect: typeof VCFormSelect,
         VCFormSelectSearch: typeof VCFormSelectSearch,
-        VCFormSubmit: typeof VCFormSubmit,
         VCFormTextarea: typeof VCFormTextarea,
     }
 }

@@ -43,7 +43,7 @@ From `packages/core/src/`:
 
 | Overlap with vuecs | vuecs has, Reka doesn't | Reka has, vuecs is missing |
 |---|---|---|
-| Pagination, Checkbox, Switch, RadioGroup, Select, Slider, NavigationMenu | Countdown, Gravatar, Timeago, themed list controls, form-submit pattern | Dialog/AlertDialog, DropdownMenu/ContextMenu/Menubar, Tooltip/HoverCard, Popover, Tabs, Accordion, Combobox/Autocomplete, Toast, Calendar/DatePicker family, ColorPicker family, ScrollArea, Splitter, Stepper, Tree, Editable, NumberField, PinInput, TagsInput, Toolbar |
+| Pagination, Checkbox, Switch, RadioGroup, Select, Slider, NavigationMenu | Button, Countdown, Gravatar, Timeago, themed list controls | Dialog/AlertDialog, DropdownMenu/ContextMenu/Menubar, Tooltip/HoverCard, Popover, Tabs, Accordion, Combobox/Autocomplete, Toast, Calendar/DatePicker family, ColorPicker family, ScrollArea, Splitter, Stepper, Tree, Editable, NumberField, PinInput, TagsInput, Toolbar |
 
 ## Composables (from `packages/core/src/shared/`)
 
@@ -80,7 +80,7 @@ Reka UI's design has several well-tested patterns worth absorbing into vuecs's a
 
 ### 1. Compound-component pattern over monolithic props
 
-Reka splits each component into named parts (`DialogRoot`, `DialogTrigger`, `DialogContent`, `DialogTitle`, `DialogClose`) that share state via context. vuecs today leans monolithic — e.g. `VCFormSubmit` accepts `createText`/`updateText`/`icon` props instead of letting the consumer compose `<VCFormSubmit><VCFormSubmitIcon /><VCFormSubmitLabel>...</VCFormSubmitLabel></VCFormSubmit>`. **For new composite components (especially overlays), prefer compound parts.** Each part gets its own `useComponentTheme` slot key, which slots cleanly into the existing `ThemeElements` augmentation.
+Reka splits each component into named parts (`DialogRoot`, `DialogTrigger`, `DialogContent`, `DialogTitle`, `DialogClose`) that share state via context. vuecs today leans monolithic — e.g. `VCButton` accepts `iconLeft`/`iconRight`/`label` props instead of letting the consumer compose `<VCButton><VCButtonIcon /><VCButtonLabel>...</VCButtonLabel></VCButton>`. **For new composite components (especially overlays), prefer compound parts.** Each part gets its own `useComponentTheme` slot key, which slots cleanly into the existing `ThemeElements` augmentation.
 
 ### 2. `data-state` / `data-*` attributes as the styling contract
 

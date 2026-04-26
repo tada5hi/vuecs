@@ -91,6 +91,12 @@ export default defineConfig({
                     ],
                 },
                 {
+                    text: '@vuecs/button',
+                    items: [
+                        { text: 'Button', link: '/components/button' },
+                    ],
+                },
+                {
                     text: '@vuecs/form-controls',
                     items: [
                         { text: 'FormInput', link: '/components/form-input' },
@@ -99,7 +105,6 @@ export default defineConfig({
                         { text: 'FormSelectSearch', link: '/components/form-select-search' },
                         { text: 'FormCheckbox', link: '/components/form-checkbox' },
                         { text: 'FormRangeSlider', link: '/components/form-range-slider' },
-                        { text: 'FormSubmit', link: '/components/form-submit' },
                     ],
                 },
                 {

@@ -9,6 +9,7 @@ import vuecs from '@vuecs/core';
 import tailwind from '@vuecs/theme-tailwind';
 import fontAwesome from '@vuecs/theme-font-awesome';
 
+import installButton from '@vuecs/button';
 import installCountdown from '@vuecs/countdown';
 import installFormControl from '@vuecs/form-controls';
 import installGravatar from '@vuecs/gravatar';
@@ -23,6 +24,7 @@ import { findNavigationItems } from '~/config/layout';
 export default defineNuxtPlugin((ctx) => {
     ctx.vueApp.use(vuecs, { themes: [tailwind(), fontAwesome()] });
 
+    ctx.vueApp.use(installButton);
     ctx.vueApp.use(installCountdown);
     ctx.vueApp.use(installFormControl);
     ctx.vueApp.use(installGravatar);

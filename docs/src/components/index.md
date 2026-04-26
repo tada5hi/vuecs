@@ -2,6 +2,12 @@
 
 vuecs ships its components across separate packages — install only what you use. Each package is also a Vue plugin (`app.use(formControls)`) for global registration.
 
+## @vuecs/button
+
+| Component | Notes |
+|-----------|-------|
+| [Button](/components/button) | General-purpose button with color/variant/size and a `useSubmitButton()` create-update helper |
+
 ## @vuecs/countdown
 
 | Component | Notes |
@@ -18,7 +24,6 @@ vuecs ships its components across separate packages — install only what you us
 | [FormSelectSearch](/components/form-select-search) | Searchable select for long option lists |
 | [FormCheckbox](/components/form-checkbox) | Checkbox or switch (variant) |
 | [FormRangeSlider](/components/form-range-slider) | Dual-handle range slider |
-| [FormSubmit](/components/form-submit) | Submit button with create/update modes |
 
 ## @vuecs/gravatar
 

@@ -42,11 +42,14 @@ import type { Theme } from '@vuecs/core';
 export default function myTheme(): Theme {
     return {
         elements: {
-            formSubmit: {
-                classes: { root: 'my-btn my-btn-primary' },
+            button: {
+                classes: { root: 'my-btn' },
                 variants: {
-                    busy: { true: { root: 'opacity-50 cursor-wait' } },
+                    loading: { true: { root: 'opacity-50 cursor-wait' } },
                 },
+                compoundVariants: [
+                    { variants: { variant: 'solid', color: 'primary' }, class: { root: 'my-btn-primary' } },
+                ],
             },
         },
     };

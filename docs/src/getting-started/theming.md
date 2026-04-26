@@ -36,8 +36,8 @@ app.use(vuecs, {
     themes: [tailwindTheme()],
     overrides: {
         elements: {
-            // Replace the entire root class for VCFormSubmit
-            formSubmit: { classes: { root: 'my-custom-btn' } },
+            // Replace the entire root class for VCButton
+            button: { classes: { root: 'my-custom-btn' } },
 
             // Merge an extra class onto VCListItem.root, keeping theme classes
             listItem: { classes: { root: extend('border-b border-dashed') } },
