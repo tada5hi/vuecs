@@ -1,6 +1,7 @@
 import type { Theme } from 'vitepress';
 import DefaultTheme from 'vitepress/theme';
 import Demo from './components/Demo.vue';
+import Layout from './Layout.vue';
 
 import './style.css';
 
@@ -11,12 +12,17 @@ import './style.css';
  * installs its own `@vuecs/*` plugins via `app.use(...)` against
  * the same `@vuecs/theme-tailwind` configuration.
  *
+ * `Layout` extends VitePress's default with a palette switcher in the
+ * navbar — palette is global state (see `composables/use-docs-palette`),
+ * so each Demo.vue reads it and forwards via postMessage to its iframe.
+ *
  * If you ever need to embed a real VC* component on a docs page
  * outside of a `<Demo name="...">`, install the relevant plugin
  * here and re-import its structural CSS in `style.css`.
  */
 export default {
     extends: DefaultTheme,
+    Layout,
     enhanceApp({ app }) {
         app.component('Demo', Demo);
     },

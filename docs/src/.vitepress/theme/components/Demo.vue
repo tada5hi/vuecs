@@ -4,10 +4,12 @@ import {
     computed,
     onBeforeUnmount,
     onMounted,
+    reactive,
     ref,
     useTemplateRef,
     watch,
 } from 'vue';
+import { useDocsPalette } from '../composables/use-docs-palette';
 
 interface Props {
     title?: string;
@@ -20,6 +22,14 @@ interface Props {
      * `docs/demos/vite.config.ts` into `docs/src/public/demos/`).
      */
     name?: string;
+    /**
+     * Component name to show in the live-config snippet (e.g. `VCPagination`).
+     * If omitted, derived from `name` by capitalising and prefixing `VC` —
+     * which works for single-word demos (countdown → VCCountdown). For
+     * multi-word kebab-case names (form-input-checkbox → VCFormInputCheckbox)
+     * pass it explicitly.
+     */
+    component?: string;
 }
 
 const props = defineProps<Props>();
@@ -31,6 +41,18 @@ const frameRef = useTemplateRef<globalThis.HTMLIFrameElement>('frame');
 const frameHeight = ref<number>(160);
 let copyTimer: ReturnType<typeof setTimeout> | null = null;
 
+// Variant catalog announced by the iframe via postMessage. Empty until
+// the demo mounts and calls `announceVariants(...)` in iframe-bridge —
+// at that point we render a dropdown per variant key in the toolbar.
+const variantCatalog = ref<Record<string, readonly string[]>>({});
+const variantValues = reactive<Record<string, string>>({});
+
+// Global palette state — lives in the navbar `PaletteSwitch` component.
+// Demo.vue subscribes and forwards changes to its iframe. Local
+// dropdowns intentionally NOT rendered here (palette is page-wide, not
+// per-component, so it belongs in the navbar).
+const palette = useDocsPalette();
+
 const { isDark } = useData();
 
 // `withBase` prepends VitePress's configured `base` (currently '/' for the
@@ -41,6 +63,24 @@ const { isDark } = useData();
 // when changing deploy paths.
 const frameSrc = computed(() => (props.name ? withBase(`/demos/${props.name}.html`) : null));
 
+const componentName = computed(() => {
+    if (props.component) return props.component;
+    if (!props.name) return 'VCComponent';
+    const camel = props.name.split('-').map((p) => p.charAt(0).toUpperCase() + p.slice(1)).join('');
+    return `VC${camel}`;
+});
+
+const variantSnippet = computed(() => {
+    const keys = Object.keys(variantValues);
+    if (keys.length === 0) return '';
+    const inner = keys.map((k) => `${k}: '${variantValues[k]}'`).join(', ');
+    return `<${componentName.value} :theme-variant="{ ${inner} }" />`;
+});
+
+const paletteSnippet = computed(() => `setPalette({ primary: '${palette.primary}', neutral: '${palette.neutral}' });`);
+
+const hasVariants = computed(() => Object.keys(variantCatalog.value).length > 0);
+
 const postColorMode = (): void => {
     const win = frameRef.value?.contentWindow;
     if (!win) return;
@@ -50,22 +90,76 @@ const postColorMode = (): void => {
     );
 };
 
+const postVariants = (): void => {
+    const win = frameRef.value?.contentWindow;
+    if (!win) return;
+    win.postMessage(
+        { type: 'set-variants', values: { ...variantValues } },
+        '*',
+    );
+};
+
+const postPalette = (): void => {
+    const win = frameRef.value?.contentWindow;
+    if (!win) return;
+    win.postMessage(
+        {
+            type: 'set-palette',
+            primary: palette.primary,
+            neutral: palette.neutral,
+        },
+        '*',
+    );
+};
+
 const onFrameLoad = (): void => {
+    // Reset variant state for the new iframe (in case Demo.vue is reused
+    // across navigations and the previous demo had a different catalog).
+    variantCatalog.value = {};
+    Object.keys(variantValues).forEach((k) => delete variantValues[k]);
     postColorMode();
+    postPalette();
 };
 
 const onFrameMessage = (event: MessageEvent): void => {
-    const data = event.data as { type?: string, height?: number };
-    if (!data || data.type !== 'demo-resize') return;
     if (event.source !== frameRef.value?.contentWindow) return;
-    if (typeof data.height === 'number') {
+    const data = event.data as {
+        type?: string;
+        height?: number;
+        catalog?: Record<string, readonly string[]>;
+        defaults?: Record<string, string>;
+    };
+    if (!data || typeof data !== 'object') return;
+    if (data.type === 'demo-resize' && typeof data.height === 'number') {
         frameHeight.value = data.height;
+        return;
+    }
+    if (data.type === 'demo-variants' && data.catalog && data.defaults) {
+        variantCatalog.value = data.catalog;
+        Object.keys(variantValues).forEach((k) => delete variantValues[k]);
+        Object.assign(variantValues, data.defaults);
     }
 };
 
 watch(isDark, () => {
     postColorMode();
 });
+
+watch(
+    variantValues,
+    () => {
+        postVariants();
+    },
+    { deep: true },
+);
+
+watch(
+    palette,
+    () => {
+        postPalette();
+    },
+    { deep: true },
+);
 
 onMounted(() => {
     globalThis.window.addEventListener('message', onFrameMessage);
@@ -113,6 +207,40 @@ const copy = async () => {
             class="vc-demo-title"
         >
             {{ title }}
+        </div>
+
+        <div
+            v-if="hasVariants"
+            class="vc-demo-controls"
+        >
+            <div class="vc-demo-controls-row">
+                <span class="vc-demo-controls-label">Variant</span>
+                <div class="vc-demo-controls-fields">
+                    <label
+                        v-for="(values, key) in variantCatalog"
+                        :key="key"
+                        class="vc-demo-control"
+                    >
+                        <span class="vc-demo-control-name">{{ key }}</span>
+                        <select
+                            v-model="variantValues[key]"
+                            class="vc-demo-control-select"
+                        >
+                            <option
+                                v-for="value in values"
+                                :key="value"
+                                :value="value"
+                            >
+                                {{ value }}
+                            </option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+            <div class="vc-demo-snippet">
+                <code class="vc-demo-snippet-code">{{ variantSnippet }}</code>
+                <code class="vc-demo-snippet-code vc-demo-snippet-code--muted">{{ paletteSnippet }}</code>
+            </div>
         </div>
 
         <div
@@ -174,6 +302,98 @@ const copy = async () => {
     font-weight: 600;
     color: var(--vc-color-fg-muted);
     background: var(--vc-color-bg-elevated);
+}
+
+/* Controls panel — sits above the iframe preview, contains the variant
+   dropdowns + the live-config snippet showing how the consumer would
+   write the same call. The palette controls live in the navbar; the
+   snippet here mirrors both the variant and the palette so the user
+   sees the full picture in one place. */
+.vc-demo-controls {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--vc-color-border);
+    background: var(--vc-color-bg-elevated);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.vc-demo-controls-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.vc-demo-controls-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--vc-color-fg-muted);
+    min-width: 4rem;
+}
+
+.vc-demo-controls-fields {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.vc-demo-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.vc-demo-control-name {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--vc-color-fg-muted);
+    text-transform: capitalize;
+}
+
+.vc-demo-control-select {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.375rem;
+    border: 1px solid var(--vc-color-border);
+    border-radius: 0.25rem;
+    background: var(--vc-color-bg);
+    color: var(--vc-color-fg);
+    cursor: pointer;
+}
+.vc-demo-control-select:focus {
+    outline: none;
+    border-color: var(--vc-color-primary-500);
+    box-shadow: 0 0 0 1px var(--vc-color-primary-500);
+}
+
+/* Live-config snippet — shows the Vue/JS call the user would write
+   to reproduce the current state. Updates reactively. */
+.vc-demo-snippet {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    padding: 0.5rem 0.625rem;
+    border-radius: 0.375rem;
+    background: var(--vc-color-bg);
+    border: 1px dashed var(--vc-color-border);
+    font-family: var(--font-mono);
+}
+
+.vc-demo-snippet-code {
+    font-size: 0.6875rem;
+    color: var(--vc-color-fg);
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: transparent;
+    padding: 0;
+    border: 0;
+}
+
+.vc-demo-snippet-code--muted {
+    color: var(--vc-color-fg-muted);
 }
 
 .vc-demo-preview {
