@@ -50,12 +50,52 @@ export default function tailwindTheme(): Theme {
                 defaultVariants: { variant: 'checkbox' },
             },
             formSelect: { classes: { root: 'block w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-fg shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:bg-bg-muted' } },
-            formSubmit: {
+            button: {
                 classes: {
-                    root: 'inline-flex items-center gap-2',
-                    createButton: 'inline-flex items-center gap-1.5 rounded-md bg-success-600 px-3 py-1.5 text-sm font-medium text-on-success shadow-sm hover:bg-success-700 focus:outline-none focus:ring-2 focus:ring-success-500 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60',
-                    updateButton: 'inline-flex items-center gap-1.5 rounded-md bg-primary-600 px-3 py-1.5 text-sm font-medium text-on-primary shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60',
+                    // Structural baseline — every visual treatment composes
+                    // on top via compound variants below. Focus ring uses the
+                    // active color's `-500` shade picked per variant.
+                    root: 'inline-flex items-center justify-center gap-1.5 rounded-md font-medium shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60',
+                    leading: 'inline-flex shrink-0 items-center',
+                    trailing: 'inline-flex shrink-0 items-center',
+                    label: '',
                 },
+                variants: {
+                    size: {
+                        sm: { root: 'px-2.5 py-1 text-xs' },
+                        md: { root: 'px-3 py-1.5 text-sm' },
+                        lg: { root: 'px-4 py-2 text-base' },
+                    },
+                },
+                // Color × variant matrix. We ship the full solid palette
+                // (every semantic color) plus the secondary treatments
+                // (soft / outline / ghost / link) for `primary` and
+                // `neutral` — the two colors a real app reaches for 90%
+                // of the time. Consumers wanting a soft-error or
+                // outline-success button can extend via `overrides` on
+                // `app.use()` rather than ship a 30-entry matrix here.
+                compoundVariants: [
+                    // solid
+                    { variants: { variant: 'solid', color: 'primary' }, class: { root: 'bg-primary-600 text-on-primary hover:bg-primary-700 focus:ring-primary-500' } },
+                    { variants: { variant: 'solid', color: 'neutral' }, class: { root: 'bg-neutral-700 text-on-neutral hover:bg-neutral-800 focus:ring-neutral-500' } },
+                    { variants: { variant: 'solid', color: 'success' }, class: { root: 'bg-success-600 text-on-success hover:bg-success-700 focus:ring-success-500' } },
+                    { variants: { variant: 'solid', color: 'warning' }, class: { root: 'bg-warning-600 text-on-warning hover:bg-warning-700 focus:ring-warning-500' } },
+                    { variants: { variant: 'solid', color: 'error' }, class: { root: 'bg-error-600 text-on-error hover:bg-error-700 focus:ring-error-500' } },
+                    { variants: { variant: 'solid', color: 'info' }, class: { root: 'bg-info-600 text-on-info hover:bg-info-700 focus:ring-info-500' } },
+                    // soft
+                    { variants: { variant: 'soft', color: 'primary' }, class: { root: 'bg-primary-100 text-primary-700 hover:bg-primary-200 focus:ring-primary-500 dark:bg-primary-900/30 dark:text-primary-300 dark:hover:bg-primary-900/50' } },
+                    { variants: { variant: 'soft', color: 'neutral' }, class: { root: 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200 focus:ring-neutral-500 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700' } },
+                    // outline
+                    { variants: { variant: 'outline', color: 'primary' }, class: { root: 'border border-primary-600 bg-bg text-primary-700 shadow-none hover:bg-primary-50 focus:ring-primary-500 dark:text-primary-400 dark:hover:bg-primary-900/30' } },
+                    { variants: { variant: 'outline', color: 'neutral' }, class: { root: 'border border-border bg-bg text-fg shadow-none hover:bg-bg-muted focus:ring-neutral-500' } },
+                    // ghost
+                    { variants: { variant: 'ghost', color: 'primary' }, class: { root: 'bg-transparent text-primary-700 shadow-none hover:bg-primary-50 focus:ring-primary-500 dark:text-primary-400 dark:hover:bg-primary-900/30' } },
+                    { variants: { variant: 'ghost', color: 'neutral' }, class: { root: 'bg-transparent text-fg shadow-none hover:bg-bg-muted focus:ring-neutral-500' } },
+                    // link
+                    { variants: { variant: 'link', color: 'primary' }, class: { root: 'bg-transparent p-0 text-primary-700 shadow-none underline underline-offset-4 hover:text-primary-800 focus:ring-primary-500 dark:text-primary-400' } },
+                    { variants: { variant: 'link', color: 'neutral' }, class: { root: 'bg-transparent p-0 text-fg shadow-none underline underline-offset-4 hover:text-fg-muted focus:ring-neutral-500' } },
+                ],
+                defaultVariants: { variant: 'solid', color: 'primary', size: 'md' },
             },
             formTextarea: { classes: { root: 'block w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-fg shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:bg-bg-muted' } },
             validationGroup: { classes: { item: 'text-xs text-error-600' } },

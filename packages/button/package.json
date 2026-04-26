@@ -1,0 +1,56 @@
+{
+    "name": "@vuecs/button",
+    "version": "0.0.0",
+    "type": "module",
+    "description": "A general-purpose button component for Vue 3.",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./dist/index.d.ts",
+            "style": "./dist/style.css",
+            "import": "./dist/index.mjs"
+        },
+        "./style.css": "./dist/style.css",
+        "./dist/style.css": "./dist/style.css"
+    },
+    "style": "./dist/style.css",
+    "files": [
+        "dist"
+    ],
+    "keywords": [
+        "vue",
+        "button",
+        "component",
+        "vuecs"
+    ],
+    "author": {
+        "name": "Peter Placzek",
+        "email": "contact@tada5hi.net",
+        "url": "https://tada5hi.net"
+    },
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tada5hi/vuecs.git",
+        "directory": "packages/button"
+    },
+    "scripts": {
+        "build:js": "tsdown",
+        "build:types": "vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json",
+        "build": "rimraf dist && npm run build:js && npm run build:types"
+    },
+    "devDependencies": {
+        "@vuecs/core": "^2.0.0",
+        "vue": "^3.5.28"
+    },
+    "peerDependencies": {
+        "@vuecs/core": "^2.0.0",
+        "vue": "^3.x"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

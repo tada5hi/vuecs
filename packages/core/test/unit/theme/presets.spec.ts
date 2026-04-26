@@ -88,12 +88,6 @@ describe('fontAwesomeTheme', () => {
         }
     });
 
-    it('should define formSubmit icon classes', () => {
-        const entry = (preset.elements.formSubmit as ThemeElementDefinition).classes!;
-        expect(isExtendValue(entry.createIcon)).toBe(true);
-        expect(isExtendValue(entry.updateIcon)).toBe(true);
-    });
-
     it('should define pagination icon classes', () => {
         const entry = (preset.elements.pagination as ThemeElementDefinition).classes!;
         expect(isExtendValue(entry.prevIcon)).toBe(true);

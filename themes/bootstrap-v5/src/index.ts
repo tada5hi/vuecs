@@ -27,11 +27,40 @@ export default function bootstrapV5Theme(): Theme {
                 },
             },
             formSelect: { classes: { root: 'form-select' } },
-            formSubmit: {
-                classes: {
-                    createButton: 'btn btn-xs btn-success',
-                    updateButton: 'btn btn-xs btn-primary',
+            button: {
+                classes: { root: 'btn' },
+                variants: {
+                    size: {
+                        sm: { root: 'btn-sm' },
+                        md: { root: '' },
+                        lg: { root: 'btn-lg' },
+                    },
                 },
+                // Map each (variant, color) pair onto a Bootstrap button
+                // class. `outline` uses Bootstrap's own `btn-outline-*`
+                // family; `soft` and `ghost` don't have direct equivalents
+                // — we approximate them with the standard solid classes
+                // plus light/transparent utilities that ship in Bootstrap.
+                compoundVariants: [
+                    // solid
+                    { variants: { variant: 'solid', color: 'primary' }, class: { root: 'btn-primary' } },
+                    { variants: { variant: 'solid', color: 'neutral' }, class: { root: 'btn-secondary' } },
+                    { variants: { variant: 'solid', color: 'success' }, class: { root: 'btn-success' } },
+                    { variants: { variant: 'solid', color: 'warning' }, class: { root: 'btn-warning' } },
+                    { variants: { variant: 'solid', color: 'error' }, class: { root: 'btn-danger' } },
+                    { variants: { variant: 'solid', color: 'info' }, class: { root: 'btn-info' } },
+                    // outline
+                    { variants: { variant: 'outline', color: 'primary' }, class: { root: 'btn-outline-primary' } },
+                    { variants: { variant: 'outline', color: 'neutral' }, class: { root: 'btn-outline-secondary' } },
+                    // soft / ghost / link approximations
+                    { variants: { variant: 'soft', color: 'primary' }, class: { root: 'btn-primary bg-opacity-25 text-primary border-0' } },
+                    { variants: { variant: 'soft', color: 'neutral' }, class: { root: 'btn-light' } },
+                    { variants: { variant: 'ghost', color: 'primary' }, class: { root: 'btn-link text-decoration-none' } },
+                    { variants: { variant: 'ghost', color: 'neutral' }, class: { root: 'btn-link text-decoration-none text-secondary' } },
+                    { variants: { variant: 'link', color: 'primary' }, class: { root: 'btn-link' } },
+                    { variants: { variant: 'link', color: 'neutral' }, class: { root: 'btn-link text-secondary' } },
+                ],
+                defaultVariants: { variant: 'solid', color: 'primary', size: 'md' },
             },
             formTextarea: { classes: { root: 'form-control' } },
             list: { classes: { root: 'd-flex flex-column gap-1' } },

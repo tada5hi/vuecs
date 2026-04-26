@@ -10,6 +10,7 @@ export default defineNuxtConfig({
         '@fortawesome/fontawesome-free/css/all.css',
     ],
     alias: {
+        '@vuecs/button': path.join(__dirname, '..', '..', 'packages', 'button', 'src'),
         '@vuecs/countdown': path.join(__dirname, '..', '..', 'packages', 'countdown', 'src'),
         '@vuecs/core': path.join(__dirname, '..', '..', 'packages', 'core', 'src'),
         // design-system is resolved via the workspace symlink so that

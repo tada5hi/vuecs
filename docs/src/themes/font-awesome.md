@@ -1,6 +1,6 @@
 # Font Awesome theme
 
-`@vuecs/theme-font-awesome` provides icons for components that have icon slots (form-submit, list-controls, navigation, pagination). It's purely additive — stack it on top of any other theme.
+`@vuecs/theme-font-awesome` provides icons for components that have icon slots (list-controls, pagination). It's purely additive — stack it on top of any other theme.
 
 ```bash
 npm install @vuecs/theme-font-awesome @fortawesome/fontawesome-free
@@ -25,11 +25,10 @@ app.use(vuecs, {
 
 ## What it does
 
-The theme contributes class strings like `fa fa-plus` to the icon slots that real components actually expose. The slot names per component:
+The theme contributes class strings like `fa fa-bars` to the icon slots that real components actually expose. The slot names per component:
 
 | Component | Slot keys |
 |-----------|-----------|
-| `formSubmit` | `createIcon`, `updateIcon` |
 | `listItem` | `icon` |
 | `pagination` | `prevIcon`, `nextIcon`, `firstIcon`, `lastIcon` |
 
@@ -37,7 +36,7 @@ If you add icons for a component the theme doesn't ship defaults for, add them y
 
 ## Customizing icons per component
 
-Override individual icon classes via the `overrides` layer. The slot key must match the component's actual icon slot — e.g. `createIcon` / `updateIcon` for `formSubmit`:
+Override individual icon classes via the `overrides` layer. The slot key must match the component's actual icon slot:
 
 ```ts
 import vuecs, { extend } from '@vuecs/core';
@@ -46,10 +45,10 @@ app.use(vuecs, {
     themes: [tailwindTheme(), fontAwesome()],
     overrides: {
         elements: {
-            formSubmit: {
+            pagination: {
                 classes: {
-                    createIcon: extend('fa-rocket'),
-                    updateIcon: extend('fa-pen'),
+                    prevIcon: extend('fa-arrow-left'),
+                    nextIcon: extend('fa-arrow-right'),
                 },
             },
         },
@@ -59,9 +58,25 @@ app.use(vuecs, {
 
 (`extend()` keeps the `fa` base from the theme and appends the extra glyph class.)
 
+## Submit-button icons
+
+`VCButton` has no per-action icon slots — pass `iconLeft` / `iconRight` at the call site. For the `useSubmitButton()` create / update sugar, register icon classes via the `submitButton` defaults instead of through the theme system:
+
+```ts
+app.use(vuecs, {
+    themes: [tailwindTheme(), fontAwesome()],
+    defaults: {
+        submitButton: {
+            createIcon: 'fa fa-plus',
+            updateIcon: 'fa fa-save',
+        },
+    },
+});
+```
+
 ## Alternative: drop the icons
 
-If you'd rather render no icons at all, omit the theme. Most components have an `icon` boolean prop (or behavioral default) you can toggle off too — see each component's API.
+If you'd rather render no icons at all, omit the theme.
 
 ## See also
 

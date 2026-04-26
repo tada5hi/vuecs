@@ -1,8 +1,146 @@
 # Composables
 
-`@vuecs/design` ships framework-agnostic Vue composables for the two pieces of state that consumers usually want to mutate at runtime: the active palette and the dark/light color mode. They run in any Vue 3 setup — VitePress, plain Vite, Astro, or non-Nuxt SSR — and the Nuxt module thin-wraps them with cookie-backed storage for true SSR persistence.
+vuecs ships two families of Vue composables:
 
-## Requirements
+- **`@vuecs/core`** — primitives for building component wrappers (forwarders, focus / typeahead helpers, ID generation, state machines). Zero runtime deps beyond Vue 3.
+- **`@vuecs/design`** — runtime palette and color-mode state for consumers.
+
+Both families run in any Vue 3 setup — VitePress, plain Vite, Astro, non-Nuxt SSR. The Nuxt module thin-wraps the design composables with cookie-backed storage for true SSR persistence.
+
+## `@vuecs/core`
+
+These composables are exported from `@vuecs/core`'s root entry (no subpath) alongside `useComponentTheme` and `useComponentDefaults`. Most are direct ports of [Reka UI](https://reka-ui.com/)'s shared utilities, kept in-tree so `@vuecs/core` stays zero-dep and so consumers don't need to install `reka-ui` to benefit from the patterns.
+
+### `useForwardProps()`
+
+Returns a `ComputedRef` of the wrapper's props with `undefined` values dropped, suitable for `v-bind`-ing onto an inner component without leaking `undefined` over the inner's defaults.
+
+```ts
+import { useForwardProps } from '@vuecs/core';
+
+const Wrapper = defineComponent({
+    props: {
+        size: { type: String, default: 'md' },
+        color: String,
+    },
+    setup(props) {
+        const forwarded = useForwardProps(props);
+        return () => h(Inner, forwarded.value);
+    },
+});
+```
+
+### `useEmitAsProps()`
+
+Converts the wrapper's declared `emits` into a map of `onEventName` handler props. Use with `useForwardProps` (or via `useForwardPropsEmits`) when forwarding to an inner component.
+
+```ts
+import { useEmitAsProps } from '@vuecs/core';
+
+setup(_, { emit }) {
+    const emitsAsProps = useEmitAsProps(emit);
+    // → { onChange: fn, 'onUpdate:modelValue': fn, ... }
+}
+```
+
+### `useForwardPropsEmits()`
+
+`useForwardProps` + `useEmitAsProps` in one call. Returns a `ComputedRef` ready for `v-bind`.
+
+```ts
+import { useForwardPropsEmits } from '@vuecs/core';
+
+setup(props, { emit }) {
+    const bound = useForwardPropsEmits(props, emit);
+    return () => h(Inner, bound.value);
+}
+```
+
+### `useForwardExpose()`
+
+Re-exposes the inner element/component on the wrapper's `expose`. Returns a `forwardRef` to attach as `ref` on the inner component, plus reactive `currentRef` / `currentElement` accessors.
+
+```ts
+import { useForwardExpose } from '@vuecs/core';
+
+setup() {
+    const { forwardRef, currentElement } = useForwardExpose();
+    return () => h(InnerPrimitive, { ref: forwardRef });
+}
+```
+
+After this, the wrapper's template ref forwards through to whatever the inner primitive exposes (DOM element, exposed methods, etc.).
+
+### `useArrowNavigation()`
+
+Resolves the next focusable item in a collection given an `ArrowUp` / `ArrowDown` / `Home` / `End` keyboard event. Items are matched by a CSS selector (default `[data-vc-collection-item]`); disabled items are skipped.
+
+```ts
+import { useArrowNavigation } from '@vuecs/core';
+
+const onKeyDown = (event: KeyboardEvent) => {
+    useArrowNavigation(event, event.target as HTMLElement, listRef.value, {
+        arrowKeyOptions: 'vertical',
+        focus: true,
+        loop: true,
+    });
+};
+```
+
+Used internally by `@vuecs/navigation` for keyboard-driven nav between sibling items at any depth.
+
+### `useTypeahead()`
+
+Accumulates keystrokes for ~1 s and resolves the next item whose text starts with the buffer. Repeated single characters cycle through items starting with that character.
+
+```ts
+import { useTypeahead } from '@vuecs/core';
+
+const { handleTypeaheadSearch, resetTypeahead } = useTypeahead();
+
+const onKeyDown = (event: KeyboardEvent) => {
+    if (event.key.length === 1) {
+        handleTypeaheadSearch(event.key, items);
+    }
+};
+```
+
+`getNextMatch` and `wrapArray` are also exported for custom matching loops.
+
+### `useId()`
+
+Thin wrapper around Vue 3.5's native `useId()` with a default `vc-` prefix. Pass a deterministic ID to short-circuit (useful for tests).
+
+```ts
+import { useId } from '@vuecs/core';
+
+const id = useId();              // → 'vc-v-1'
+const named = useId('my-id');    // → 'my-id'
+const custom = useId(null, 'x'); // → 'x-v-2'
+```
+
+### `useStateMachine()`
+
+Tiny state machine on top of `ref()`. Pass an initial state and a transition table; receive `state` and `dispatch`. Unknown events are ignored — they leave the state unchanged.
+
+```ts
+import { useStateMachine } from '@vuecs/core';
+
+const { state, dispatch } = useStateMachine('closed', {
+    closed: { OPEN: 'open' },
+    open: { CLOSE: 'closed', TOGGLE: 'closed' },
+} as const);
+
+dispatch('OPEN'); // state.value === 'open'
+```
+
+Shipped as a Phase-3 prerequisite for the upcoming `@vuecs/overlays` package (open/closed transitions for modals, popovers, etc.).
+
+## `@vuecs/design`
+
+Framework-agnostic Vue composables for the two pieces of state that consumers usually want to mutate at runtime: the active palette and the dark/light color mode.
+
+### Requirements
 
 - **Vue 3** as a peer dep (already required by every component package).
 - **`@vueuse/core`** as a peer dep. The composables import from VueUse at the top level and `@vuecs/design`'s root entry re-exports them, so VueUse must be installed for any consumer of `@vuecs/design` — including those who only import `setPalette` or `renderPaletteStyles`.
@@ -11,7 +149,7 @@
 npm install @vuecs/design @vueuse/core
 ```
 
-## `usePalette()`
+### `usePalette()`
 
 Reactive palette state with localStorage persistence. Wrapped via `createSharedComposable` — every call site shares the same ref + watcher, so picking a palette in one component updates every other consumer instantly.
 
@@ -31,7 +169,7 @@ const { current, set, extend } = usePalette({
 </template>
 ```
 
-### API
+#### API
 
 ```ts
 interface UsePaletteOptions {
@@ -53,7 +191,7 @@ interface UsePaletteReturn {
 }
 ```
 
-### `set` vs `extend`
+#### `set` vs `extend`
 
 | Verb | Semantic | Use when |
 |------|----------|----------|
@@ -62,7 +200,7 @@ interface UsePaletteReturn {
 
 `extend()` mirrors the `extend()` marker in `@vuecs/core`'s theme system: same vocabulary, same "merge instead of replace" intent.
 
-### Persistence
+#### Persistence
 
 Default backend is localStorage at the `vc-palette` key. Sanitization runs on every read — unknown scales and non-Tailwind palette names are dropped silently. To opt out:
 
@@ -72,7 +210,7 @@ const { current, set } = usePalette({ persist: false });
 
 For SSR-readable persistence (e.g. Nuxt cookie), see [Custom storage backends](#custom-storage-backends) below.
 
-## `useColorMode()`
+### `useColorMode()`
 
 Reactive light/dark/system mode with `<html>` class sync. Uses VueUse's `usePreferredDark` to resolve `'system'`.
 
@@ -91,7 +229,7 @@ const { mode, resolved, isDark, toggle } = useColorMode();
 </template>
 ```
 
-### API
+#### API
 
 ```ts
 type ColorMode = 'light' | 'dark' | 'system';
@@ -119,7 +257,7 @@ interface UseColorModeReturn {
 }
 ```
 
-## Custom storage backends
+### Custom storage backends
 
 For SSR-readable persistence (cookies, request-aware storage), call the lower-level building blocks with any reactive `Ref`:
 
@@ -156,7 +294,7 @@ export function usePalette() {
 
 Same return shape, SSR-aware persistence. Apply this pattern for any framework with its own reactive storage primitive (Astro, custom Vite plugins, IndexedDB-backed Pinia stores, etc.).
 
-## SSR notes
+### SSR notes
 
 - The composables are **client-side stateful** — on the server, watchers are still installed but `setPalette()` is a DOM-only no-op, and `useStorage` from VueUse reads/writes nothing. The first reactive read on the client triggers the initial paint.
 - For zero-FOUC palette / color mode on first paint, you need an SSR plugin that injects `<style id="vc-palette">` and `class="dark"|"light"` before client JS runs. The `@vuecs/nuxt` module ships both. Other SSR frameworks need to roll their own using `renderPaletteStyles()` from `@vuecs/design`.

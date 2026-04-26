@@ -4,7 +4,6 @@ export * from './form-input-checkbox';
 export * from './form-range-multi-slider';
 export * from './form-select';
 export * from './form-select-search';
-export * from './form-submit';
 export * from './form-textarea';
 export * from './validation-group';
 export * from './constants';

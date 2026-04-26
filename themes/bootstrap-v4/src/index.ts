@@ -26,11 +26,36 @@ export default function bootstrapV4Theme(): Theme {
                 },
             },
             formSelect: { classes: { root: 'form-control' } },
-            formSubmit: {
-                classes: {
-                    createButton: 'btn btn-xs btn-success',
-                    updateButton: 'btn btn-xs btn-primary',
+            button: {
+                classes: { root: 'btn' },
+                variants: {
+                    size: {
+                        sm: { root: 'btn-sm' },
+                        md: { root: '' },
+                        lg: { root: 'btn-lg' },
+                    },
                 },
+                // API parity with the bootstrap-v5 / tailwind themes. Bootstrap 4
+                // doesn't ship `btn-outline-info` / `btn-outline-warning` etc.,
+                // so we keep outline coverage to primary + secondary; consumers
+                // wanting a full matrix override via `app.use()`.
+                compoundVariants: [
+                    { variants: { variant: 'solid', color: 'primary' }, class: { root: 'btn-primary' } },
+                    { variants: { variant: 'solid', color: 'neutral' }, class: { root: 'btn-secondary' } },
+                    { variants: { variant: 'solid', color: 'success' }, class: { root: 'btn-success' } },
+                    { variants: { variant: 'solid', color: 'warning' }, class: { root: 'btn-warning' } },
+                    { variants: { variant: 'solid', color: 'error' }, class: { root: 'btn-danger' } },
+                    { variants: { variant: 'solid', color: 'info' }, class: { root: 'btn-info' } },
+                    { variants: { variant: 'outline', color: 'primary' }, class: { root: 'btn-outline-primary' } },
+                    { variants: { variant: 'outline', color: 'neutral' }, class: { root: 'btn-outline-secondary' } },
+                    { variants: { variant: 'soft', color: 'primary' }, class: { root: 'btn-primary' } },
+                    { variants: { variant: 'soft', color: 'neutral' }, class: { root: 'btn-light' } },
+                    { variants: { variant: 'ghost', color: 'primary' }, class: { root: 'btn-link' } },
+                    { variants: { variant: 'ghost', color: 'neutral' }, class: { root: 'btn-link text-secondary' } },
+                    { variants: { variant: 'link', color: 'primary' }, class: { root: 'btn-link' } },
+                    { variants: { variant: 'link', color: 'neutral' }, class: { root: 'btn-link text-secondary' } },
+                ],
+                defaultVariants: { variant: 'solid', color: 'primary', size: 'md' },
             },
             formTextarea: { classes: { root: 'form-control' } },
             listBody: { classes: { root: 'list-unstyled' } },

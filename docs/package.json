@@ -29,6 +29,7 @@
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.2.4",
+        "@vuecs/button": "*",
         "@vuecs/core": "*",
         "@vuecs/countdown": "*",
         "@vuecs/design": "*",

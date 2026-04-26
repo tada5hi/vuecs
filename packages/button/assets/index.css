@@ -1,0 +1,36 @@
+/*
+ * Busy-state structural styling for VCButton (`:loading="true"`).
+ * Themes provide the resting look; this rule kicks in only when the
+ * component sets `vc-button--busy`.
+ *
+ * Rationale matches the pre-button form-submit asset: every theme
+ * (Tailwind, Bootstrap, …) styles a default button differently, but
+ * the loading/disabled affordance needs to read consistently across
+ * all of them. Doing it here means consumers don't redeclare it
+ * per-theme.
+ *
+ * Activation is blocked by the native `disabled` attribute — using
+ * `pointer-events: none` would also block tooltip/focus listeners
+ * consumers attach AND defeat `cursor: wait` (which only applies
+ * when the element actually receives pointer events). Anchors
+ * (`tag="a"`) ignore `disabled`; consumers rendering the button as
+ * a link must guard navigation themselves.
+ */
+.vc-button--busy {
+    cursor: wait;
+    opacity: 0.65;
+    /* Subtle pulse to signal in-flight work without distracting from
+       surrounding form fields. */
+    animation: vc-button-busy-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes vc-button-busy-pulse {
+    0%, 100% { opacity: 0.65; }
+    50%      { opacity: 0.45; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vc-button--busy {
+        animation: none;
+    }
+}

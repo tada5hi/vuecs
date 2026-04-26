@@ -4,12 +4,11 @@ import type { Theme } from '@vuecs/core';
 export default function fontAwesomeTheme(): Theme {
     return {
         elements: {
-            formSubmit: {
-                classes: {
-                    createIcon: extend('fa fa-plus'),
-                    updateIcon: extend('fa fa-save'),
-                },
-            },
+            // VCButton has no per-action icon slots — icons are passed at the
+            // call site via `iconLeft` / `iconRight`. Consumers using
+            // `useSubmitButton` who want the legacy `fa fa-plus` / `fa fa-save`
+            // defaults must register them on `submitButton.{createIcon,updateIcon}`
+            // through the DefaultsManager (passed to `app.use(vuecs, { defaults })`).
             listItem: { classes: { icon: extend('fa fa-bars') } },
             pagination: {
                 classes: {

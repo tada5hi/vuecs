@@ -4,7 +4,7 @@
 
 ## Why a second system?
 
-The theme system handles CSS classes. But things like `<VCFormSubmit>`'s "Create" / "Update" labels, `<VCFormSelect>`'s placeholder option text, and `<VCListItem>`'s `textPropName` aren't classes — they're plain values. Putting them through the theme resolver would conflate two different concerns. So they get their own manager with the same shape.
+The theme system handles CSS classes. But things like the `useSubmitButton()` composable's "Create" / "Update" labels (`submitButton` defaults), `<VCFormSelect>`'s placeholder option text, and `<VCListItem>`'s `textPropName` aren't classes — they're plain values. Putting them through the theme resolver would conflate two different concerns. So they get their own manager with the same shape.
 
 ## Resolution layers
 
@@ -35,7 +35,7 @@ const { t } = useI18n();
 app.use(vuecs, {
     themes: [tailwindTheme()],
     defaults: {
-        formSubmit: {
+        submitButton: {
             createText: computed(() => t('actions.create')),
             updateText: computed(() => t('actions.update')),
         },
@@ -54,14 +54,18 @@ app.use(vuecs, {
 ## Consumer side
 
 ```vue
-<!-- Uses the global default 'actions.create' -->
-<VCFormSubmit />
+<script setup lang="ts">
+import { VCButton } from '@vuecs/button';
+import { useSubmitButton } from '@vuecs/form-controls';
 
-<!-- Override per instance -->
-<VCFormSubmit createText="Save changes" />
+// `submit` is a reactive bind-object — label / icon / color swap with `isEditing`,
+// resolved through the `submitButton` defaults registered above.
+const submit = useSubmitButton({ isEditing: () => false });
+</script>
 
-<!-- Explicitly unset (falls through to hardcoded fallback 'Create') -->
-<VCFormSubmit :create-text="null" />
+<template>
+    <VCButton v-bind="submit" />
+</template>
 ```
 
 ## Composite components — important
@@ -74,7 +78,7 @@ See `VCList.noMoreContent` and `VCList.itemTextPropName` (both `default: undefin
 
 | Component | Configurable keys |
 |-----------|-------------------|
-| `VCFormSubmit` | `type`, `icon`, `createText`, `updateText` |
+| `useSubmitButton()` (`submitButton`) | `createText`, `updateText`, `createIcon`, `updateIcon`, `createColor`, `updateColor` |
 | `VCFormSelect` | `optionDefault`, `optionDefaultId`, `optionDefaultValue` |
 | `VCFormGroup` | `validation` |
 | `VCFormInputCheckbox` | `labelContent` |
@@ -90,10 +94,11 @@ The augmentable `ComponentDefaults` interface registers each component's keys:
 ```ts
 declare module '@vuecs/core' {
     interface ComponentDefaults {
-        formSubmit?: ComponentDefaultValues<{
+        submitButton?: ComponentDefaultValues<{
             createText: string;
             updateText: string;
-            icon: boolean;
+            createIcon: string;
+            updateIcon: string;
         }>;
     }
 }

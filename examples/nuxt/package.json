@@ -30,6 +30,7 @@
         "@ilingo/vuelidate": "^6.0.0",
         "@pinia/nuxt": "^0.11.3",
         "@tailwindcss/vite": "^4.2.4",
+        "@vuecs/button": "^0.0.0",
         "@vuecs/countdown": "^1.0.1",
         "@vuecs/design": "^0.0.0",
         "@vuecs/form-controls": "^2.5.0",

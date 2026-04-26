@@ -128,6 +128,7 @@ export const VCNavItem = defineComponent({
 
                     return h(VCLink, {
                         class: [resolved.link],
+                        'data-vc-collection-item': '',
                         ...linkProps,
                         onClicked() {
                             if (!data.value.url) {
@@ -171,9 +172,19 @@ export const VCNavItem = defineComponent({
                 } else {
                     title = h('div', {
                         class: resolved.link,
+                        'data-vc-collection-item': '',
+                        tabindex: 0,
+                        role: 'button',
                         onClick($event: any) {
                             $event.preventDefault();
                             return toggle(data.value);
+                        },
+                        onKeydown($event: KeyboardEvent) {
+                            if ($event.key === 'Enter' || $event.key === ' ') {
+                                $event.preventDefault();
+                                return toggle(data.value);
+                            }
+                            return undefined;
                         },
                     }, [
                         ...(data.value.icon ?
