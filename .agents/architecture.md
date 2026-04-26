@@ -393,19 +393,32 @@ via a `<style id="vc-palette">` block, leaving layers 1-2 and 4-5 untouched.
 @vuecs/design/
   assets/index.css    <- :root + .dark + @theme (pure CSS, no build step)
   src/
-    types.ts           <- PaletteConfig, SemanticScaleName, TailwindPaletteName
-    constants.ts       <- SEMANTIC_SCALES, TAILWIND_PALETTES, PALETTE_SHADES, PALETTE_STYLE_ELEMENT_ID
-    palette.ts         <- renderPaletteStyles() (pure), setPalette() (DOM)
-    index.ts           <- barrel
+    types.ts                     <- PaletteConfig, SemanticScaleName, TailwindPaletteName
+    constants.ts                 <- SEMANTIC_SCALES, TAILWIND_PALETTES, PALETTE_SHADES, PALETTE_STYLE_ELEMENT_ID
+    palette.ts                   <- renderPaletteStyles() (pure), setPalette() (DOM)
+    composables/
+      use-palette.ts             <- bindPalette(ref), usePalette(opts) — Vue + VueUse
+      use-color-mode.ts          <- bindColorMode(ref, opts), useColorMode(opts)
+      index.ts                   <- composables barrel
+    index.ts                     <- top-level barrel
 ```
 
 ### Key exports
 
+**Pure / DOM-side:**
 - **`renderPaletteStyles(palette): string`** — pure function. Returns a `:root { … }` block that remaps `--vc-color-<scale>-*` onto `var(--color-<palette>-*)` for every scale set in `palette`. Safe on server and client; used by `@vuecs/nuxt` for SSR pre-hydration.
 - **`setPalette(palette, doc?)`** — client-only. Idempotently inserts or updates a `<style id="vc-palette">` element in `<head>`.
 - **`PaletteConfig`** — `Partial<Record<SemanticScaleName, TailwindPaletteName>>`.
 - **`SemanticScaleName`** — `'primary' | 'neutral' | 'success' | 'warning' | 'error' | 'info'`.
 - **`TailwindPaletteName`** — union of all 22 Tailwind v4 palettes.
+
+**Vue composables (require Vue 3 + `@vueuse/core` as peer deps):**
+- **`usePalette(options?)`** — reactive palette state with localStorage persistence. Wrapped via `createSharedComposable`, so every call site shares the same ref + watcher. Returns `{ current: ComputedRef<PaletteConfig>, set(palette) }`. Applies via `setPalette()` on init and on every change.
+- **`bindPalette(source: Ref<PaletteConfig>)`** — building block. Wires any reactive ref into the design system (apply on init + watcher). The Nuxt module's `usePalette()` calls this with a cookie-backed ref; the default `usePalette()` calls it with a `useStorage`-backed ref.
+- **`useColorMode(options?)`** — reactive light/dark/system mode with localStorage persistence + `<html>` class sync. Returns `{ mode, resolved, isDark, toggle }`. Uses `usePreferredDark` from VueUse to resolve `'system'`.
+- **`bindColorMode(source: Ref<ColorMode>, options?)`** — building block; same pattern as `bindPalette`.
+
+`@vueuse/core` is declared as an **optional peer dep**: tree-shaking ensures consumers who only import `setPalette` / `renderPaletteStyles` don't pull it in. Anyone importing the composables installs VueUse alongside Vue.
 
 ### Requirements
 
@@ -433,8 +446,8 @@ The directive depends on Tailwind v4's documented behavior of emitting `--color-
     runtime/
       plugins/palette.server.ts                <- emits <style id="vc-palette"> into head via useHead (palette override)
       plugins/colorMode.server.ts              <- emits class="dark"|"light" on <html> via useHead (cookie-driven)
-      composables/usePalette.ts                <- { current, setPalette } — palette runtime switcher
-      composables/useColorMode.ts              <- { mode, resolved, isDark, toggle } — SSR-safe dark mode (VueUse + cookie)
+      composables/usePalette.ts                <- thin wrapper: bindPalette(useCookie<PaletteConfig>(...)) — { current, set }
+      composables/useColorMode.ts              <- thin wrapper: bindColorMode(useCookie<ColorMode>(...)) — { mode, resolved, isDark, toggle }
 ```
 
 Consumer usage:
@@ -454,10 +467,17 @@ export default defineNuxtConfig({
 ```vue
 <!-- in a component -->
 <script setup>
-const { current, setPalette } = usePalette();
+const { current, set } = usePalette();
 const { resolved, toggle } = useColorMode();
 </script>
 ```
+
+The Nuxt module's auto-imports point at thin wrappers that swap the
+storage layer for `useCookie` (so the SSR plugins can read the same
+cookie at request time), then delegate to `bindPalette()` /
+`bindColorMode()` from `@vuecs/design`. The return shape matches the
+default composables exactly, so Nuxt and non-Nuxt consumers see the
+same `{ current, set }` / `{ mode, resolved, isDark, toggle }` API.
 
 On the server, both plugins render their state into the head before first
 paint (palette `<style>` block + `html.dark`/`html.light` class). The client

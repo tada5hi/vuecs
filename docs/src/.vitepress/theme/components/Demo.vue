@@ -9,7 +9,7 @@ import {
     useTemplateRef,
     watch,
 } from 'vue';
-import { useDocsPalette } from '../composables/use-docs-palette';
+import { usePalette } from '@vuecs/design';
 
 interface Props {
     title?: string;
@@ -51,7 +51,11 @@ const variantValues = reactive<Record<string, string>>({});
 // Demo.vue subscribes and forwards changes to its iframe. Local
 // dropdowns intentionally NOT rendered here (palette is page-wide, not
 // per-component, so it belongs in the navbar).
-const palette = useDocsPalette();
+//
+// `usePalette()` from `@vuecs/design` is shared (createSharedComposable),
+// so this returns the same `current` ref the navbar's PaletteSwitch
+// writes to.
+const { current: palette } = usePalette();
 
 const { isDark } = useData();
 
@@ -85,7 +89,7 @@ const variantSnippet = computed(() => {
     return `<${componentName.value} :theme-variant="{ ${inner} }" />`;
 });
 
-const paletteSnippet = computed(() => `setPalette({ primary: '${palette.primary}', neutral: '${palette.neutral}' });`);
+const paletteSnippet = computed(() => `setPalette({ primary: '${palette.value.primary}', neutral: '${palette.value.neutral}' });`);
 
 const hasVariants = computed(() => Object.keys(variantCatalog.value).length > 0);
 
@@ -125,8 +129,8 @@ const postPalette = (): void => {
     win.postMessage(
         {
             type: 'set-palette',
-            primary: palette.primary,
-            neutral: palette.neutral,
+            primary: palette.value.primary,
+            neutral: palette.value.neutral,
         },
         globalThis.location.origin,
     );

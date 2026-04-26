@@ -1,24 +1,24 @@
 {
-    "name": "@vuecs/theme-bootstrap-v4",
-    "version": "1.0.1",
+    "name": "@vuecs/theme-tailwind",
+    "version": "0.0.0",
     "type": "module",
-    "description": "",
+    "description": "Tailwind CSS theme for vuecs components.",
     "exports": {
         "./package.json": "./package.json",
         ".": {
             "types": "./dist/index.d.ts",
-            "style": "./assets/index.css",
             "import": "./dist/index.mjs"
-        },
-        "./index.css": "./assets/index.css",
-        "./assets/index.css": "./assets/index.css"
+        }
     },
-    "style": "./assets/index.css",
     "files": [
-        "dist",
-        "assets"
+        "dist"
     ],
-    "keywords": [],
+    "keywords": [
+        "vuecs",
+        "theme",
+        "tailwind",
+        "tailwindcss"
+    ],
     "author": {
         "name": "Peter Placzek",
         "email": "contact@tada5hi.net",
@@ -28,15 +28,16 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/tada5hi/vuecs.git",
-        "directory": "packages/theme-bootstrap-v4"
+        "directory": "themes/tailwind"
     },
-    "sideEffects": [
-        "./assets/*.css"
-    ],
+    "sideEffects": false,
     "scripts": {
         "build:js": "tsdown",
         "build:types": "tsc --emitDeclarationOnly -p tsconfig.build.json",
         "build": "rimraf dist && npm run build:js && npm run build:types"
+    },
+    "dependencies": {
+        "tailwind-merge": "^3.3.1"
     },
     "devDependencies": {
         "@vuecs/core": "^2.0.0"

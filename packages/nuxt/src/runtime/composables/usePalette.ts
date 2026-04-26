@@ -1,34 +1,29 @@
-import { ref } from 'vue';
-import type { Ref } from 'vue';
-import { setPalette as setPaletteCss } from '@vuecs/design';
-import type { PaletteConfig } from '@vuecs/design';
+import { bindPalette } from '@vuecs/design';
+import type { PaletteConfig, UsePaletteReturn } from '@vuecs/design';
 // @ts-expect-error resolved by Nuxt at build time
-import { useRuntimeConfig } from '#imports';
+import { useCookie, useRuntimeConfig } from '#imports';
 
-export interface UsePaletteReturn {
-    /**
-     * Current palette — reflects the server-rendered value on first load,
-     * updated by `setPalette()`.
-     */
-    current: Ref<PaletteConfig>;
-
-    /**
-     * Apply a new palette at runtime. On the client this mutates a
-     * `<style id="vc-palette">` element in `<head>`; on the server this
-     * is a no-op (SSR reads the palette via `appConfig` / `runtimeConfig`).
-     */
-    setPalette(palette: PaletteConfig): void;
-}
-
+/**
+ * SSR-safe palette composable. Backed by a Nuxt cookie so the server
+ * can render the correct `<style id="vc-palette">` block on first
+ * paint via the bundled SSR plugin.
+ *
+ * Falls back to `runtimeConfig.public.vuecs.palette` (set by the Nuxt
+ * module from the user's config) when no cookie exists. Delegates all
+ * apply-on-watch logic to `@vuecs/design`'s `bindPalette()` — both the
+ * default composable and this one expose the same
+ * `{ current, set, extend }` shape.
+ */
 export function usePalette(): UsePaletteReturn {
     const config = useRuntimeConfig();
     const initial = (config.public.vuecs?.palette || {}) as PaletteConfig;
-    const current = ref<PaletteConfig>({ ...initial }) as Ref<PaletteConfig>;
 
-    function setPalette(palette: PaletteConfig): void {
-        current.value = palette;
-        setPaletteCss(palette);
-    }
+    const cookie = useCookie<PaletteConfig>('vc-palette', {
+        default: () => ({ ...initial }),
+        watch: true,
+    });
 
-    return { current, setPalette };
+    return bindPalette(cookie);
 }
+
+export type { UsePaletteReturn } from '@vuecs/design';

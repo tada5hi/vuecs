@@ -30,7 +30,7 @@ Repo: <https://github.com/nuxt/ui>
 | Concept | Nuxt UI | vuecs |
 |---------|---------|-------|
 | **Module entry** | `src/module.ts` (defineNuxtModule) | `packages/nuxt/src/module.ts` |
-| **Theme files (per component)** | `src/theme/<component>.ts` (factory functions returning slot/variant maps) | Theme classes co-located in `packages/theme-{tailwind,bootstrap-v4,bootstrap-v5,font-awesome}/src/index.ts` |
+| **Theme files (per component)** | `src/theme/<component>.ts` (factory functions returning slot/variant maps) | Theme classes co-located in `themes/{tailwind,bootstrap-v4,bootstrap-v5,font-awesome}/src/index.ts` |
 | **Component slots/variants** | `src/runtime/components/<Component>.vue` references theme via `useUI()` | `packages/<component>/src/component.ts` calls `useComponentTheme(name, props, defaults)` |
 | **Color config** | `app.config.ts` `ui.colors` (build-time hint + runtime) | `packages/design/src/palette.ts` `setPalette()` — pure runtime |
 | **Composables** | `useUI()`, `useAppConfig()`, `useColorMode()` | `useComponentTheme()`, `useComponentDefaults()`, `usePalette()`, `useColorMode()` |

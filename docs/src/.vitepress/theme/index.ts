@@ -13,8 +13,9 @@ import './style.css';
  * the same `@vuecs/theme-tailwind` configuration.
  *
  * `Layout` extends VitePress's default with a palette switcher in the
- * navbar — palette is global state (see `composables/use-docs-palette`),
- * so each Demo.vue reads it and forwards via postMessage to its iframe.
+ * navbar — palette is global state (`usePalette` from `@vuecs/design`,
+ * shared via `createSharedComposable`), so each Demo.vue reads it and
+ * forwards via postMessage to its iframe.
  *
  * If you ever need to embed a real VC* component on a docs page
  * outside of a `<Demo name="...">`, install the relevant plugin

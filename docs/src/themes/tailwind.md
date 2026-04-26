@@ -37,7 +37,7 @@ The example above assumes a flat layout — `styles.css` in the project root. Th
 | Flat (`styles.css` in root) | `"../node_modules/@vuecs/theme-tailwind/dist"` |
 | Conventional (`src/styles.css`) | `"../../node_modules/@vuecs/theme-tailwind/dist"` |
 | Monorepo with hoisted deps | walk up to the hoisted `node_modules` (e.g. `"../../../node_modules/@vuecs/theme-tailwind/dist"`) |
-| Monorepo workspace (linked package) | point at the source: `"../../../packages/theme-tailwind/src"` |
+| Monorepo workspace (linked package) | point at the source: `"../../../themes/tailwind/src"` |
 
 If the build emits classes you don't expect (or strips ones you do), the path is almost always the cause — Tailwind silently no-ops on a non-existent `@source` glob.
 :::

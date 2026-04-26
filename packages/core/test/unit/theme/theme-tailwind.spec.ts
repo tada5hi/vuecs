@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import tailwindTheme, { merge } from '../../../../theme-tailwind/src/index';
+import tailwindTheme, { merge } from '../../../../../themes/tailwind/src/index';
 import { resolveComponentTheme } from '../../../src/theme/resolve';
 import type { ThemeElementDefinition } from '../../../src/theme/types';
 
