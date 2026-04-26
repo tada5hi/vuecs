@@ -1,3 +1,4 @@
+import vue from '@vitejs/plugin-vue';
 import { defineConfig } from 'tsdown';
 
 export default defineConfig({
@@ -5,4 +6,5 @@ export default defineConfig({
     format: 'esm',
     dts: false,
     sourcemap: true,
+    plugins: [vue()],
 });

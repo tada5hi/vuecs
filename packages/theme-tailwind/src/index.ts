@@ -90,9 +90,39 @@ export default function tailwindTheme(): Theme {
                 classes: {
                     root: 'inline-flex items-center',
                     item: 'inline-flex',
-                    link: 'inline-flex h-8 min-w-8 items-center justify-center rounded-md border border-border bg-bg px-3 text-sm leading-none text-fg hover:bg-bg-muted focus:outline-none focus:ring-1 focus:ring-ring',
+                    // Structural only — sizing/padding/typography come from the
+                    // `size` variant, bg/border/colors come from the `variant`
+                    // variant. Keeping concerns split lets consumers pick a
+                    // size and a visual treatment independently.
+                    link: 'inline-flex items-center justify-center rounded-md leading-none focus:outline-none focus:ring-1 focus:ring-ring',
                     linkActive: '!border-primary-600 !bg-primary-600 !text-on-primary hover:!bg-primary-700',
+                    // The component composes `link + ellipsis` onto
+                    // PaginationEllipsis so it inherits the box styling
+                    // (size, border, bg) from the link slot. These overrides
+                    // turn the inherited interactivity off and mute the
+                    // text — matching the "non-clickable spacer" semantics.
+                    ellipsis: 'pointer-events-none cursor-default text-fg-muted',
                 },
+                variants: {
+                    variant: {
+                        // Default — clear edges that read as discrete buttons
+                        // on any page bg (including white-on-white surfaces).
+                        outline: { link: 'border border-neutral-300 bg-bg text-fg hover:bg-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-700' },
+                        // Tinted background, no border — for a softer feel
+                        // when the surrounding chrome already provides
+                        // visual separation.
+                        soft: { link: 'border border-transparent bg-bg-muted text-fg hover:bg-bg-elevated' },
+                        // Pre-pilot defaults — blends into a non-white page
+                        // bg. Available for consumers who liked the old look.
+                        ghost: { link: 'border border-border bg-bg text-fg hover:bg-bg-muted' },
+                    },
+                    size: {
+                        sm: { link: 'h-7 min-w-7 px-2 text-xs' },
+                        md: { link: 'h-8 min-w-8 px-3 text-sm' },
+                        lg: { link: 'h-10 min-w-10 px-4 text-base' },
+                    },
+                },
+                defaultVariants: { variant: 'outline', size: 'md' },
             },
             gravatar: { classes: { root: 'inline-block overflow-hidden rounded-full' } },
         },

@@ -6,9 +6,13 @@ import {
 } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { installThemeManager } from '@vuecs/core';
-import { VCPagination } from '../../src/component';
+import { VCPagination } from '../../src';
 
 const themePlugin = { install: (app: any) => installThemeManager(app) };
+
+const findPageButton = (wrapper: ReturnType<typeof mount>, page: number) => wrapper
+    .findAll('button[data-type="page"]')
+    .find((b) => b.text().trim() === String(page));
 
 describe('VCPagination', () => {
     it('should render with default theme class', () => {
@@ -22,29 +26,28 @@ describe('VCPagination', () => {
     it('should render page buttons for multiple pages', () => {
         const wrapper = mount(VCPagination, {
             props: {
-                total: 50, 
-                limit: 10, 
-                offset: 0, 
+                total: 50,
+                limit: 10,
+                offset: 0,
             },
             global: { plugins: [themePlugin] },
         });
-        const buttons = wrapper.findAll('button');
-        // Pages 1-3 visible (current=1, range [1,2,3]) + next + last
-        expect(buttons.length).toBeGreaterThanOrEqual(3);
+        const pageButtons = wrapper.findAll('button[data-type="page"]');
+        expect(pageButtons.length).toBeGreaterThanOrEqual(3);
     });
 
     it('should emit load event on page click', async () => {
         const wrapper = mount(VCPagination, {
             props: {
-                total: 50, 
-                limit: 10, 
-                offset: 0, 
+                total: 50,
+                limit: 10,
+                offset: 0,
             },
             global: { plugins: [themePlugin] },
         });
-        const buttons = wrapper.findAll('button');
-        // Click page 2 (second button)
-        await buttons[1].trigger('click');
+        const pageTwo = findPageButton(wrapper, 2);
+        expect(pageTwo).toBeTruthy();
+        await pageTwo!.trigger('click');
         expect(wrapper.emitted('load')).toBeTruthy();
         const loadData = wrapper.emitted('load')![0][0] as any;
         expect(loadData.page).toBe(2);
@@ -55,39 +58,40 @@ describe('VCPagination', () => {
     it('should not emit load when clicking current page', async () => {
         const wrapper = mount(VCPagination, {
             props: {
-                total: 50, 
-                limit: 10, 
-                offset: 0, 
+                total: 50,
+                limit: 10,
+                offset: 0,
             },
             global: { plugins: [themePlugin] },
         });
-        const buttons = wrapper.findAll('button');
-        // First button is page 1 (current)
-        await buttons[0].trigger('click');
+        const pageOne = findPageButton(wrapper, 1);
+        expect(pageOne).toBeTruthy();
+        await pageOne!.trigger('click');
         expect(wrapper.emitted('load')).toBeFalsy();
     });
 
     it('should not emit load when busy', async () => {
         const wrapper = mount(VCPagination, {
             props: {
-                total: 50, 
-                limit: 10, 
-                offset: 0, 
-                busy: true, 
+                total: 50,
+                limit: 10,
+                offset: 0,
+                busy: true,
             },
             global: { plugins: [themePlugin] },
         });
-        const buttons = wrapper.findAll('button');
-        await buttons[1].trigger('click');
+        const pageTwo = findPageButton(wrapper, 2);
+        expect(pageTwo).toBeTruthy();
+        await pageTwo!.trigger('click');
         expect(wrapper.emitted('load')).toBeFalsy();
     });
 
     it('should apply active class to current page', () => {
         const wrapper = mount(VCPagination, {
             props: {
-                total: 50, 
-                limit: 10, 
-                offset: 0, 
+                total: 50,
+                limit: 10,
+                offset: 0,
             },
             global: { plugins: [themePlugin] },
         });
@@ -106,21 +110,85 @@ describe('VCPagination', () => {
         });
         const activeButtons = wrapper.findAll('.active');
         expect(activeButtons).toHaveLength(1);
-        // Page 2 should be active (offset 10 / limit 10 + 1 = 2)
-        expect(activeButtons[0].text()).toBe('2');
+        expect(activeButtons[0].text().trim()).toBe('2');
     });
 
-    it('should render single page without navigation arrows', () => {
+    it('should hide First/Prev when hideDisabled and on page 1', () => {
         const wrapper = mount(VCPagination, {
             props: {
-                total: 5, 
-                limit: 10, 
-                offset: 0, 
+                total: 50,
+                limit: 10,
+                offset: 0,
+                hideDisabled: true,
             },
             global: { plugins: [themePlugin] },
         });
-        const buttons = wrapper.findAll('button');
-        // Only page 1
-        expect(buttons).toHaveLength(1);
+        expect(wrapper.find('button[aria-label="First Page"]').exists()).toBe(false);
+        expect(wrapper.find('button[aria-label="Previous Page"]').exists()).toBe(false);
+        expect(wrapper.find('button[aria-label="Next Page"]').exists()).toBe(true);
+        expect(wrapper.find('button[aria-label="Last Page"]').exists()).toBe(true);
+    });
+
+    it('should hide Next/Last when hideDisabled and on the last page', () => {
+        const wrapper = mount(VCPagination, {
+            props: {
+                total: 50,
+                limit: 10,
+                offset: 40,
+                hideDisabled: true,
+            },
+            global: { plugins: [themePlugin] },
+        });
+        expect(wrapper.find('button[aria-label="First Page"]').exists()).toBe(true);
+        expect(wrapper.find('button[aria-label="Previous Page"]').exists()).toBe(true);
+        expect(wrapper.find('button[aria-label="Next Page"]').exists()).toBe(false);
+        expect(wrapper.find('button[aria-label="Last Page"]').exists()).toBe(false);
+    });
+
+    it('should render all edge controls when hideDisabled and on a middle page', () => {
+        const wrapper = mount(VCPagination, {
+            props: {
+                total: 50,
+                limit: 10,
+                offset: 20,
+                hideDisabled: true,
+            },
+            global: { plugins: [themePlugin] },
+        });
+        expect(wrapper.find('button[aria-label="First Page"]').exists()).toBe(true);
+        expect(wrapper.find('button[aria-label="Previous Page"]').exists()).toBe(true);
+        expect(wrapper.find('button[aria-label="Next Page"]').exists()).toBe(true);
+        expect(wrapper.find('button[aria-label="Last Page"]').exists()).toBe(true);
+    });
+
+    it('should render edge controls disabled (not hidden) when hideDisabled is false on page 1', () => {
+        const wrapper = mount(VCPagination, {
+            props: {
+                total: 50,
+                limit: 10,
+                offset: 0,
+            },
+            global: { plugins: [themePlugin] },
+        });
+        const first = wrapper.find('button[aria-label="First Page"]');
+        const prev = wrapper.find('button[aria-label="Previous Page"]');
+        expect(first.exists()).toBe(true);
+        expect(prev.exists()).toBe(true);
+        expect(first.attributes('disabled')).toBeDefined();
+        expect(prev.attributes('disabled')).toBeDefined();
+    });
+
+    it('should render only one page-type button when total <= limit', () => {
+        const wrapper = mount(VCPagination, {
+            props: {
+                total: 5,
+                limit: 10,
+                offset: 0,
+            },
+            global: { plugins: [themePlugin] },
+        });
+        const pageButtons = wrapper.findAll('button[data-type="page"]');
+        expect(pageButtons).toHaveLength(1);
+        expect(pageButtons[0].text().trim()).toBe('1');
     });
 });

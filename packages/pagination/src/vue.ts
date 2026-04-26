@@ -1,4 +1,4 @@
-import type { VCPagination } from './component';
+import type VCPagination from './component.vue';
 
 declare module '@vue/runtime-core' {
     export interface GlobalComponents {

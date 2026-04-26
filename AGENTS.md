@@ -62,3 +62,11 @@ Public docs live in `docs/` (private workspace `@vuecs/docs`, VitePress) and are
 - **[Architecture](.agents/architecture.md)** — Vue plugin pattern, theme system, NavigationManager, and theme architecture
 - **[Testing](.agents/testing.md)** — Jest setup, test locations, and coverage
 - **[Conventions](.agents/conventions.md)** — Commit messages, linting, release-please, CI/CD, and **documentation update rules**
+
+## External References
+
+vuecs draws directly from upstream projects. When working on related areas, read the matching reference for context, version snapshots, and concept mappings:
+
+- **[Tailwind CSS](.agents/references/tailwind.md)** — required runtime for `@vuecs/design` and `@vuecs/theme-tailwind`. v4-only; documents our JIT-internals dependency on `@source inline()` palette emission
+- **[Nuxt UI](.agents/references/nuxt-ui.md)** — primary inspiration for the design-token + runtime palette + dark-mode-via-tokens architecture. Useful when watching for upstream patterns to adopt
+- **[Reka UI](.agents/references/reka-ui.md)** — headless Vue 3 primitives (Vue port of Radix UI; the layer Nuxt UI is built on). Source of architectural lessons (compound components, `data-state` styling, headless composables, `ConfigProvider`) and the natural lower-layer dep for a future `@vuecs/overlays` package

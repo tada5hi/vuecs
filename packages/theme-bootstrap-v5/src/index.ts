@@ -49,7 +49,39 @@ export default function bootstrapV5Theme(): Theme {
                     link: 'nav-link',
                 },
             },
-            pagination: { classes: { root: 'd-flex justify-content-center pagination' } },
+            pagination: {
+                classes: {
+                    root: 'd-flex justify-content-center pagination',
+                    // Apply Bootstrap's `page-item` / `page-link` so Bootstrap
+                    // CSS picks up the joined-button styling (border, hover,
+                    // disabled state, focus ring). Active state uses
+                    // Bootstrap's own `.active.page-link` rules; we merge
+                    // `active` into linkActive below.
+                    item: 'page-item',
+                    link: 'page-link',
+                    linkActive: 'active',
+                    // Wrapper composes `link + ellipsis` onto PaginationEllipsis
+                    // so it inherits the page-link box. Disable interactivity.
+                    ellipsis: 'pe-none text-muted',
+                },
+                variants: {
+                    // Bootstrap pagination is a single visual style. We
+                    // expose the same variant catalog as the Tailwind theme
+                    // for API parity; soft / ghost are minor tweaks rather
+                    // than a different visual treatment.
+                    variant: {
+                        outline: { link: '' },
+                        soft: { link: 'border-0' },
+                        ghost: { link: 'border-0 bg-transparent' },
+                    },
+                    size: {
+                        sm: { root: 'pagination-sm' },
+                        md: { root: '' },
+                        lg: { root: 'pagination-lg' },
+                    },
+                },
+                defaultVariants: { variant: 'outline', size: 'md' },
+            },
         },
     };
 }

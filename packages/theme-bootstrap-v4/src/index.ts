@@ -42,7 +42,33 @@ export default function bootstrapV4Theme(): Theme {
                 },
             },
             listNoMore: { classes: { root: 'alert alert-warning alert-sm' } },
-            pagination: { classes: { root: 'd-flex justify-content-center' } },
+            pagination: {
+                classes: {
+                    root: 'd-flex justify-content-center pagination',
+                    // Apply Bootstrap's page-item / page-link so Bootstrap 4
+                    // CSS handles the joined-button visuals.
+                    item: 'page-item',
+                    link: 'page-link',
+                    linkActive: 'active',
+                    // Wrapper composes `link + ellipsis` onto PaginationEllipsis
+                    // so it inherits the page-link box. Disable interactivity.
+                    ellipsis: 'disabled text-muted',
+                },
+                variants: {
+                    // API parity with the Tailwind + Bootstrap-v5 themes.
+                    variant: {
+                        outline: { link: '' },
+                        soft: { link: 'border-0' },
+                        ghost: { link: 'border-0 bg-transparent' },
+                    },
+                    size: {
+                        sm: { root: 'pagination-sm' },
+                        md: { root: '' },
+                        lg: { root: 'pagination-lg' },
+                    },
+                },
+                defaultVariants: { variant: 'outline', size: 'md' },
+            },
         },
     };
 }

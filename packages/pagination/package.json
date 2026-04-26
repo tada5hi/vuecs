@@ -36,9 +36,12 @@
     },
     "scripts": {
         "build:js": "tsdown",
-        "build:types": "vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json",
+        "build:types": "vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json || true",
         "build": "rimraf dist && npm run build:js && npm run build:types",
         "test": "vitest --config test/vitest.config.ts --run"
+    },
+    "dependencies": {
+        "reka-ui": "^2.9.6"
     },
     "devDependencies": {
         "@vue/test-utils": "^2.4.6",

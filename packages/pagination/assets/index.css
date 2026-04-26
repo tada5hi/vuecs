@@ -24,6 +24,15 @@
     margin: 0;
 }
 
+/* Cursor: pointer on enabled pagination links — interactivity is a
+   structural concern, not theme-specific. Disabled links (Reka adds the
+   `disabled` attribute on First/Prev/Next/Last when at edges, and on every
+   button when `busy` is set on the root) keep the browser default
+   `not-allowed`. */
+.vc-pagination-link:not(:disabled) {
+    cursor: pointer;
+}
+
 /* Adjacent buttons overlap their shared border so it reads as one line
    instead of doubling up. */
 .vc-pagination > .vc-pagination-item:not(:first-child) > .vc-pagination-link {

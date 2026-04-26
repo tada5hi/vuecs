@@ -4,10 +4,10 @@ import type { App, Plugin } from 'vue';
 import '../assets/index.css';
 import './vue';
 
-import { VCPagination } from './component';
+import VCPagination from './component.vue';
 import type { Options } from './type';
 
-export * from './component';
+export { VCPagination };
 export * from './type';
 export * from './utils';
 

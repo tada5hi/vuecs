@@ -4,7 +4,7 @@ import Pagination from '../.vitepress/theme/demos/Pagination.vue';
 
 # Pagination
 
-Paginates a list by offset/limit, emitting `load` events when the user navigates pages.
+Paginates a list by offset/limit, emitting `load` events when the user navigates pages. Built on top of [Reka UI](https://reka-ui.com/)'s headless pagination primitives — accessible by default, with edge-aware rendering (first/last anchors plus ellipses for large page counts).
 
 ```bash
 npm install @vuecs/pagination
@@ -65,8 +65,10 @@ const load = (next) => {
 | `offset` | `number` | `0` | Current offset |
 | `limit` | `number` | `0` | Items per page (must be > 0 for the component to render any pages) |
 | `busy` | `boolean` | `false` | Disable controls during loading |
+| `hideDisabled` | `boolean` | `false` | When `true`, edge controls (First/Prev at page 1, Next/Last at the last page) are unrendered instead of rendered-disabled. Does not apply to the `busy` state. |
 | `tag` | `string` | `'ul'` | Root element tag |
 | `itemTag` | `string` | `'li'` | Item wrapper tag |
+| `iconTag` | `string` | `'i'` | Tag used to render `firstIcon` / `prevIcon` / `nextIcon` / `lastIcon` theme classes |
 
 ## Events
 
