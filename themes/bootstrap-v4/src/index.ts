@@ -55,7 +55,11 @@ export default function bootstrapV4Theme(): Theme {
                     { variants: { variant: 'link', color: 'primary' }, class: { root: 'btn-link' } },
                     { variants: { variant: 'link', color: 'neutral' }, class: { root: 'btn-link text-secondary' } },
                 ],
-                defaultVariants: { variant: 'solid', color: 'primary', size: 'md' },
+                defaultVariants: {
+                    variant: 'solid', 
+                    color: 'primary', 
+                    size: 'md', 
+                },
             },
             formTextarea: { classes: { root: 'form-control' } },
             listBody: { classes: { root: 'list-unstyled' } },

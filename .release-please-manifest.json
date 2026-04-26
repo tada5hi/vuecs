@@ -1,4 +1,5 @@
 {
+    "packages/button": "0.0.0",
     "packages/core": "2.0.0",
     "packages/countdown": "1.0.1",
     "packages/design": "0.0.0",

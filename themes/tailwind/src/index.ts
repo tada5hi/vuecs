@@ -95,7 +95,11 @@ export default function tailwindTheme(): Theme {
                     { variants: { variant: 'link', color: 'primary' }, class: { root: 'bg-transparent p-0 text-primary-700 shadow-none underline underline-offset-4 hover:text-primary-800 focus:ring-primary-500 dark:text-primary-400' } },
                     { variants: { variant: 'link', color: 'neutral' }, class: { root: 'bg-transparent p-0 text-fg shadow-none underline underline-offset-4 hover:text-fg-muted focus:ring-neutral-500' } },
                 ],
-                defaultVariants: { variant: 'solid', color: 'primary', size: 'md' },
+                defaultVariants: {
+                    variant: 'solid', 
+                    color: 'primary', 
+                    size: 'md', 
+                },
             },
             formTextarea: { classes: { root: 'block w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-fg shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:bg-bg-muted' } },
             validationGroup: { classes: { item: 'text-xs text-error-600' } },

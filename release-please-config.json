@@ -5,6 +5,7 @@
     "bump-minor-pre-major": true,
     "bump-patch-for-minor-pre-major": true,
     "packages": {
+        "packages/button": {"component": "button" },
         "packages/core": {"component": "core" },
         "packages/countdown": {"component": "countdown" },
         "packages/design": {"component": "design" },

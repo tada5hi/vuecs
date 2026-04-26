@@ -179,7 +179,7 @@ app.use(vuecs, {
 
 [![npm version](https://badge.fury.io/js/@vuecs%2Ftheme-font-awesome.svg)](https://badge.fury.io/js/@vuecs%2Ftheme-font-awesome)
 
-Font Awesome icon classes for icon slots (`formSubmit.createIcon`, `pagination.prevIcon`, `listItem.icon`, …). All values use `extend()` so it layers on top of a CSS-framework theme without wiping its classes.
+Font Awesome icon classes for icon slots (`pagination.prevIcon`, `listItem.icon`, …). All values use `extend()` so it layers on top of a CSS-framework theme without wiping its classes. (`VCButton`'s create/update icon defaults are registered through `submitButton` defaults instead — see `useSubmitButton()` in `@vuecs/form-controls`.)
 
 ```typescript
 import bootstrapV5 from '@vuecs/theme-bootstrap-v5';

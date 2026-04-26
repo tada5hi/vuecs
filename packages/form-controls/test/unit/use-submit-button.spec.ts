@@ -17,9 +17,7 @@ const themePlugin = {
 };
 
 const Host = defineComponent({
-    props: {
-        isEditing: { type: Boolean, default: false },
-    },
+    props: { isEditing: { type: Boolean, default: false } },
     setup(props) {
         return { bindings: useSubmitButton({ isEditing: () => props.isEditing }) };
     },
@@ -70,13 +68,7 @@ describe('useSubmitButton', () => {
         const PluginWithReactive = {
             install: (app: any) => {
                 installThemeManager(app);
-                installDefaultsManager(app, {
-                    defaults: {
-                        submitButton: {
-                            createText: computed(() => label.value),
-                        },
-                    },
-                });
+                installDefaultsManager(app, { defaults: { submitButton: { createText: computed(() => label.value) } } });
             },
         };
         const wrapper = mount(Host, { global: { plugins: [PluginWithReactive] } });

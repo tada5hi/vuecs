@@ -10,27 +10,72 @@ const submit = useSubmitButton({ isEditing: () => isEditing.value });
 <template>
     <div style="display: flex; flex-direction: column; gap: 1rem;">
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
-            <VCButton color="primary" label="Primary" />
-            <VCButton color="success" label="Success" />
-            <VCButton color="warning" label="Warning" />
-            <VCButton color="error" label="Danger" />
-            <VCButton color="neutral" label="Neutral" />
+            <VCButton
+                color="primary"
+                label="Primary"
+            />
+            <VCButton
+                color="success"
+                label="Success"
+            />
+            <VCButton
+                color="warning"
+                label="Warning"
+            />
+            <VCButton
+                color="error"
+                label="Danger"
+            />
+            <VCButton
+                color="neutral"
+                label="Neutral"
+            />
         </div>
 
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
-            <VCButton variant="solid" label="Solid" />
-            <VCButton variant="soft" label="Soft" />
-            <VCButton variant="outline" label="Outline" />
-            <VCButton variant="ghost" label="Ghost" />
-            <VCButton variant="link" label="Link" />
+            <VCButton
+                variant="solid"
+                label="Solid"
+            />
+            <VCButton
+                variant="soft"
+                label="Soft"
+            />
+            <VCButton
+                variant="outline"
+                label="Outline"
+            />
+            <VCButton
+                variant="ghost"
+                label="Ghost"
+            />
+            <VCButton
+                variant="link"
+                label="Link"
+            />
         </div>
 
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
-            <VCButton size="sm" label="Small" />
-            <VCButton size="md" label="Medium" />
-            <VCButton size="lg" label="Large" />
-            <VCButton :loading="true" label="Loading…" />
-            <VCButton :disabled="true" label="Disabled" />
+            <VCButton
+                size="sm"
+                label="Small"
+            />
+            <VCButton
+                size="md"
+                label="Medium"
+            />
+            <VCButton
+                size="lg"
+                label="Large"
+            />
+            <VCButton
+                :loading="true"
+                label="Loading…"
+            />
+            <VCButton
+                :disabled="true"
+                label="Disabled"
+            />
         </div>
 
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
