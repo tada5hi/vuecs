@@ -1,7 +1,3 @@
-<script setup>
-import FormInput from '../.vitepress/theme/demos/FormInput.vue';
-</script>
-
 # FormInput
 
 Text input with `v-model` binding and optional debounce.
@@ -12,8 +8,7 @@ npm install @vuecs/form-controls
 
 ## Basic usage
 
-<Demo>
-  <FormInput />
+<Demo name="form-input">
 
   <template #code>
 

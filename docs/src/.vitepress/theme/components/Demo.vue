@@ -1,16 +1,79 @@
 <script setup lang="ts">
-import { ref, useTemplateRef } from 'vue';
+import { useData, withBase } from 'vitepress';
+import {
+    computed,
+    onBeforeUnmount,
+    onMounted,
+    ref,
+    useTemplateRef,
+    watch,
+} from 'vue';
 
 interface Props {
     title?: string;
+    /**
+     * Name of the iframe-isolated demo. When set, the demo renders inside
+     * `<iframe src="/demos/<name>.html">` instead of the default slot —
+     * the demo runs in its own document so VitePress's CSS resets and
+     * `.vp-doc` chrome don't leak in. Files live under
+     * `docs/demos/src/<name>.{html,ts,demo.vue}` (built by
+     * `docs/demos/vite.config.ts` into `docs/src/public/demos/`).
+     */
+    name?: string;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 
 const showCode = ref(true);
 const copied = ref(false);
 const codeRoot = useTemplateRef<globalThis.HTMLElement>('codeRoot');
+const frameRef = useTemplateRef<globalThis.HTMLIFrameElement>('frame');
+const frameHeight = ref<number>(160);
 let copyTimer: ReturnType<typeof setTimeout> | null = null;
+
+const { isDark } = useData();
+
+// `withBase` prepends VitePress's configured `base` (currently '/' for the
+// vuecs.dev deploy). If the site is ever moved to a subpath (e.g. a
+// project page at `/vuecs/`), the iframe URL follows. The demos' own
+// internal asset paths use Vite's `base` in `docs/demos/vite.config.ts`
+// — that value must be kept in sync with VitePress's `base + 'demos/'`
+// when changing deploy paths.
+const frameSrc = computed(() => (props.name ? withBase(`/demos/${props.name}.html`) : null));
+
+const postColorMode = (): void => {
+    const win = frameRef.value?.contentWindow;
+    if (!win) return;
+    win.postMessage(
+        { type: 'set-color-mode', mode: isDark.value ? 'dark' : 'light' },
+        '*',
+    );
+};
+
+const onFrameLoad = (): void => {
+    postColorMode();
+};
+
+const onFrameMessage = (event: MessageEvent): void => {
+    const data = event.data as { type?: string, height?: number };
+    if (!data || data.type !== 'demo-resize') return;
+    if (event.source !== frameRef.value?.contentWindow) return;
+    if (typeof data.height === 'number') {
+        frameHeight.value = data.height;
+    }
+};
+
+watch(isDark, () => {
+    postColorMode();
+});
+
+onMounted(() => {
+    globalThis.window.addEventListener('message', onFrameMessage);
+});
+
+onBeforeUnmount(() => {
+    globalThis.window.removeEventListener('message', onFrameMessage);
+});
 
 const copy = async () => {
     if (!codeRoot.value) return;
@@ -52,8 +115,19 @@ const copy = async () => {
             {{ title }}
         </div>
 
-        <div class="vc-demo-preview">
-            <slot />
+        <div
+            class="vc-demo-preview"
+            :class="{ 'vc-demo-preview--iframe': !!frameSrc }"
+        >
+            <iframe
+                v-if="frameSrc"
+                ref="frame"
+                :src="frameSrc"
+                :style="{ height: `${frameHeight}px` }"
+                title="Demo"
+                @load="onFrameLoad"
+            />
+            <slot v-else />
         </div>
 
         <div class="vc-demo-toolbar">
@@ -105,8 +179,23 @@ const copy = async () => {
 .vc-demo-preview {
     padding: 1.5rem;
     background: var(--vc-color-bg);
-    /* If the demo content is a single column it should center vertically;
-       overrideable via slot content's own layout. */
+}
+
+/* Iframe demos own their own document padding (see docs/demos/src/style.css);
+   the host preview just needs to provide the surface and let the iframe
+   span it. */
+.vc-demo-preview--iframe {
+    padding: 0;
+}
+
+.vc-demo-preview iframe {
+    display: block;
+    width: 100%;
+    border: 0;
+    background: var(--vc-color-bg);
+    /* Smooth height transitions when content reflows (e.g. dark-mode
+       toggle alters image dimensions, palette swap re-flows wrapping). */
+    transition: height 0.15s ease;
 }
 
 .vc-demo-toolbar {

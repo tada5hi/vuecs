@@ -1,7 +1,3 @@
-<script setup>
-import FormSelect from '../.vitepress/theme/demos/FormSelect.vue';
-</script>
-
 # FormSelect
 
 Dropdown select with `v-model` binding and configurable option shape.
@@ -12,8 +8,7 @@ npm install @vuecs/form-controls
 
 ## Basic usage
 
-<Demo>
-  <FormSelect />
+<Demo name="form-select">
 
   <template #code>
 

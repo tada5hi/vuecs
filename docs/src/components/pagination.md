@@ -1,7 +1,3 @@
-<script setup>
-import Pagination from '../.vitepress/theme/demos/Pagination.vue';
-</script>
-
 # Pagination
 
 Paginates a list by offset/limit, emitting `load` events when the user navigates pages. Built on top of [Reka UI](https://reka-ui.com/)'s headless pagination primitives — accessible by default, with edge-aware rendering (first/last anchors plus ellipses for large page counts).
@@ -12,9 +8,7 @@ npm install @vuecs/pagination
 
 ## Basic usage
 
-<Demo>
-  <Pagination />
-
+<Demo name="pagination">
   <template #code>
 
 ::: code-group

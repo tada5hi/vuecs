@@ -1,7 +1,3 @@
-<script setup>
-import ListControls from '../.vitepress/theme/demos/ListControls.vue';
-</script>
-
 # ListControls
 
 A composable list with header, body, footer, and "no more results" slots — designed to wrap your own item rendering with consistent loading / empty / paginated states.
@@ -12,8 +8,7 @@ npm install @vuecs/list-controls
 
 ## Basic usage
 
-<Demo>
-  <ListControls />
+<Demo name="list-controls">
 
   <template #code>
 

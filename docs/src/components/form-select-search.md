@@ -1,8 +1,3 @@
-<script setup>
-import FormSelectSearch from '../.vitepress/theme/demos/FormSelectSearch.vue';
-import FormSelectSearchMultiple from '../.vitepress/theme/demos/FormSelectSearchMultiple.vue';
-</script>
-
 # FormSelectSearch
 
 Searchable select for long option lists — type to filter, pick one (or many) without scrolling through hundreds of items.
@@ -13,8 +8,7 @@ npm install @vuecs/form-controls
 
 ## Basic usage
 
-<Demo>
-  <FormSelectSearch />
+<Demo name="form-select-search">
 
   <template #code>
 
@@ -62,8 +56,7 @@ for (let i = 1; i <= 100; i++) {
 
 Bind an array to `modelValue` to switch into multi-select mode — there is no separate `multiple` prop, the shape of the bound value is what the component reads. In multi-select mode the component pushes the full `FormSelectOption` object (with `id` and `value`) onto the array:
 
-<Demo>
-  <FormSelectSearchMultiple />
+<Demo name="form-select-search-multiple">
 
   <template #code>
 

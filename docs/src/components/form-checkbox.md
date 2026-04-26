@@ -1,7 +1,3 @@
-<script setup>
-import FormCheckbox from '../.vitepress/theme/demos/FormCheckbox.vue';
-</script>
-
 # FormCheckbox
 
 Boolean checkbox with `v-model`. Supports a `switch` variant via `themeVariant`. The label text is set via the `label-content` prop or the named `#label` slot — there is no default slot.
@@ -12,8 +8,7 @@ npm install @vuecs/form-controls
 
 ## Basic usage
 
-<Demo>
-  <FormCheckbox />
+<Demo name="form-checkbox">
 
   <template #code>
 

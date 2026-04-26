@@ -1,26 +1,6 @@
 @import "tailwindcss";
 @import "@vuecs/design";
 
-/*
- * Component packages publish their structural CSS via the `style` conditional
- * export. Bare imports resolve to each package's `dist/style.css` — needed for
- * the switch variant, range-slider thumbs, search-dropdown panel, etc.
- */
-@import "@vuecs/form-controls";
-@import "@vuecs/list-controls";
-@import "@vuecs/navigation";
-@import "@vuecs/pagination";
-
-/*
- * Scan the theme-tailwind source so JIT keeps the class names it emits.
- * Pages and theme components in this docs workspace are scanned by default.
- *
- * The runtime-palette safelist (`@source inline()` for all 22 Tailwind
- * palettes) ships from `@vuecs/design` itself — no need to duplicate it
- * here.
- */
-@source "../../../../packages/theme-tailwind/src";
-
 /* VitePress already sets `.dark` on <html>; align our custom-variant. */
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -53,51 +33,21 @@
 }
 
 /*
- * VitePress ships an unlayered `input,select,textarea,button { padding: 0 }`
- * reset (its CSS predates Tailwind v4's layered utilities). Per the CSS
- * cascade-layer spec, unlayered rules always win against anything inside
- * `@layer utilities` — regardless of source order or specificity. So the
- * theme's `px-3 py-2` classes lose, and placeholder text ends up flush
- * against the left border.
+ * NOTE: vuecs component renders happen inside iframe demos
+ * (`docs/demos/`), which load their own consumer-equivalent CSS bundle —
+ * Tailwind utilities, theme-tailwind classes, and @vuecs/* structural CSS
+ * stay isolated to that document. The docs site itself only loads
+ * Tailwind + @vuecs/design here for the landing/marketing chrome
+ * (Hero, FeatureGrid, ThemeShowcase, CodeTabs).
  *
- * Re-assert padding here in unlayered CSS so it lands at the same cascade
- * origin as VitePress's reset and wins on selector specificity. Values
- * mirror what `@vuecs/theme-tailwind` declares so the visual result is
- * identical to a non-VitePress consumer.
- */
-.vc-form-input,
-.vc-form-textarea,
-.vc-form-select {
-    padding-inline: 0.75rem;
-    padding-block: 0.5rem;
-}
-
-/* Demo-rendered buttons (e.g. inside VCFormSubmit, VCPagination) — scope the
-   reset reversal to demo content so VitePress's own chrome buttons (theme
-   toggle, search, edit-link) stay untouched. */
-.vc-demo-preview button {
-    padding-inline: 0.75rem;
-    padding-block: 0.375rem;
-}
-
-/*
- * VitePress's `button { background-color: transparent }` (unlayered) still
- * beats the theme's `bg-bg` and `hover:bg-neutral-100` utilities (layered)
- * regardless of how we structure the variant. The `outline` variant's
- * border survives (no border reset), but the fill and hover do not.
+ * If you ever embed a real VC* component inline in the docs (not via
+ * <Demo name="...">), you'll need to:
+ *   1. Re-add the matching `@import "@vuecs/<package>"` here
+ *   2. Re-add `@source "../../../../packages/theme-tailwind/src"` so JIT
+ *      keeps the theme's class names
+ *   3. Re-add unlayered overrides for any utility classes that VitePress's
+ *      base reset strips (notably `button { background-color: transparent }`)
  *
- * Re-assert bg + hover bg unlayered, scoped to the pagination link, so
- * the buttons read as filled outlined elements in the docs preview.
- * Theme-tailwind itself stays untouched so consumer overrides via
- * `extend('bg-red-500')` still work without `!important` ceremony.
+ * The simpler answer is to keep all component renders inside iframes —
+ * which is the whole point of the docs/demos/ pipeline.
  */
-.vc-pagination-link {
-    background-color: var(--vc-color-bg);
-}
-.vc-pagination-link:hover {
-    background-color: var(--vc-color-neutral-100);
-}
-.dark .vc-pagination-link:hover {
-    background-color: var(--vc-color-neutral-700);
-}
-

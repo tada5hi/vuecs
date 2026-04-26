@@ -1,7 +1,3 @@
-<script setup>
-import FormSubmit from '../.vitepress/theme/demos/FormSubmit.vue';
-</script>
-
 # FormSubmit
 
 Submit button with create/update modes — text resolves through the [Behavioral Defaults](/guide/behavioral-defaults) system, so the button label is i18n-friendly without per-instance overrides. The `isEditing` prop swaps the rendered text and theme classes (separate `createButton` vs `updateButton` slot in the theme).
@@ -12,8 +8,7 @@ npm install @vuecs/form-controls
 
 ## Basic usage
 
-<Demo>
-  <FormSubmit />
+<Demo name="form-submit">
 
   <template #code>
 

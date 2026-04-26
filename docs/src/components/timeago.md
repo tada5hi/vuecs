@@ -1,7 +1,3 @@
-<script setup>
-import Timeago from '../.vitepress/theme/demos/Timeago.vue';
-</script>
-
 # Timeago
 
 Renders a timestamp as a relative time string ("3 minutes ago", "yesterday", etc.) with locale support.
@@ -12,8 +8,7 @@ npm install @vuecs/timeago
 
 ## Basic usage
 
-<Demo>
-  <Timeago />
+<Demo name="timeago">
 
   <template #code>
 
