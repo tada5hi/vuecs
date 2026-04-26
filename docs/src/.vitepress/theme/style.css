@@ -43,7 +43,7 @@
  * If you ever embed a real VC* component inline in the docs (not via
  * <Demo name="...">), you'll need to:
  *   1. Re-add the matching `@import "@vuecs/<package>"` here
- *   2. Re-add `@source "../../../../packages/theme-tailwind/src"` so JIT
+ *   2. Re-add `@source "../../../../themes/tailwind/src"` so JIT
  *      keeps the theme's class names
  *   3. Re-add unlayered overrides for any utility classes that VitePress's
  *      base reset strips (notably `button { background-color: transparent }`)

@@ -1,15 +1,15 @@
 # usePalette
 
-SSR-safe palette switching. The composable reads the active palette and lets you swap any of the six semantic scales at runtime.
+SSR-safe palette switching. The composable reads the active palette and lets you swap any of the six semantic scales at runtime — and persists the user's choice via a Nuxt cookie so the server can paint the correct palette on first load.
 
 ## Basic usage
 
 ```vue
 <script setup lang="ts">
-const { current, setPalette } = usePalette();
+const { current, extend } = usePalette();
 
 const goGreen = () => {
-    setPalette({ primary: 'green' });
+    extend({ primary: 'green' });
 };
 </script>
 
@@ -21,39 +21,49 @@ const goGreen = () => {
 
 ## API
 
+Identical return shape to `@vuecs/design`'s default `usePalette()` — see the [Composables guide](/guide/composables#usepalette) for the full reference. Quick recap:
+
 ```ts
 interface UsePaletteReturn {
-    /** Current palette assignment (reactive) */
     current: ComputedRef<PaletteConfig>;
-    /** Update one or more scales — merges with current */
-    setPalette: (palette: PaletteConfig) => void;
+    set(palette: PaletteConfig): void;       // replace
+    extend(partial: PaletteConfig): void;    // merge
 }
 ```
 
 ## How SSR works
 
-On the server, the Nuxt module's `palette.server.ts` plugin emits a `<style id="vc-palette">` block into `<head>` containing the initial palette (configured in `nuxt.config.ts`). On the client, `setPalette()` updates the same element idempotently — no flash on hydration.
+On the server, the Nuxt module's `palette.server.ts` plugin reads the `vc-palette` cookie (or the `nuxt.config.ts` default) and emits a `<style id="vc-palette">` block into `<head>` containing the initial palette. On the client, `set()` writes the cookie via `useCookie` and re-applies via `setPalette()`, idempotently updating the same `<style>` element — no flash on hydration.
 
-## Persisting changes
+The composable is a thin wrapper over `bindPalette()` from `@vuecs/design`: the cookie ref is the reactive source, `bindPalette()` handles the apply-on-init / apply-on-change logic.
 
-The composable doesn't persist palette choices by itself — it just updates the live state. If you want user-selected palettes to survive page reloads, save the choice to a cookie or localStorage and restore it on app mount:
+## Persistence
 
-```vue
-<script setup lang="ts">
-const { current, setPalette } = usePalette();
-const palette = useCookie('user-palette', { default: () => ({}) });
+User palette choices persist automatically via the `vc-palette` cookie. Defaults: 1-year `maxAge`, `sameSite='lax'`, `path='/'`. The Nuxt module's SSR plugin reads the same cookie at request time, so a returning visitor sees their preferred palette before any client JS runs. To clear the cookie, call `set({})`.
 
-// Restore on mount
-if (palette.value.primary) setPalette(palette.value);
+### Configuring cookie attributes
 
-watch(current, (next) => {
-    palette.value = next;
+Override the defaults via `vuecs.cookie` in `nuxt.config.ts` — applies to both this cookie and the color-mode cookie:
+
+```ts
+export default defineNuxtConfig({
+    modules: ['@vuecs/nuxt'],
+    vuecs: {
+        cookie: {
+            maxAge: 60 * 60 * 24 * 30,   // 30 days
+            sameSite: 'strict',
+            domain: '.example.com',      // share across subdomains
+            secure: true,                 // required when sameSite='none'
+            path: '/',
+        },
+    },
 });
-</script>
 ```
+
+Per-cookie overrides aren't currently exposed — both vuecs cookies are typically deployed under the same domain with the same SameSite policy. If you need divergent semantics, use `bindPalette()` from `@vuecs/design` directly with your own `useCookie` call.
 
 ## See also
 
 - [`useColorMode`](/nuxt/use-color-mode) — the SSR pattern is identical
-- [Design Tokens](/guide/design-tokens) — the layer below the composable
+- [Design Tokens — Vue composables](/guide/design-tokens#vue-composables) — the framework-agnostic `usePalette()` from `@vuecs/design` (localStorage-backed)
 - [`setPalette()`](/guide/design-tokens#runtime-palette-switching) — pure DOM API

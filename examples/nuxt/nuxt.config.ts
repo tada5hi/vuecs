@@ -19,8 +19,8 @@ export default defineNuxtConfig({
         '@vuecs/link': path.join(__dirname, '..', '..', 'packages', 'link', 'src'),
         '@vuecs/navigation': path.join(__dirname, '..', '..', 'packages', 'navigation', 'src'),
         '@vuecs/pagination': path.join(__dirname, '..', '..', 'packages', 'pagination', 'src'),
-        '@vuecs/theme-tailwind': path.join(__dirname, '..', '..', 'packages', 'theme-tailwind', 'src'),
-        '@vuecs/theme-font-awesome': path.join(__dirname, '..', '..', 'packages', 'theme-font-awesome', 'src'),
+        '@vuecs/theme-tailwind': path.join(__dirname, '..', '..', 'themes', 'tailwind', 'src'),
+        '@vuecs/theme-font-awesome': path.join(__dirname, '..', '..', 'themes', 'font-awesome', 'src'),
         '@vuecs/timeago': path.join(__dirname, '..', '..', 'packages', 'timeago', 'src'),
     },
     modules: [

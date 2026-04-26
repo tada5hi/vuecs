@@ -16,7 +16,7 @@
 @import "@vuecs/pagination";
 
 /* Scan theme-tailwind so JIT keeps the class names it emits. */
-@source "../../../packages/theme-tailwind/src";
+@source "../../../themes/tailwind/src";
 
 /* Demos use class-based dark mode toggled via the iframe-bridge runtime
    (parent docs site posts the current theme on load + change). */

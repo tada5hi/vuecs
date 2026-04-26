@@ -1,33 +1,38 @@
 <script setup lang="ts">
 import { useData } from 'vitepress';
+import { usePalette } from '@vuecs/design';
 import {
     NEUTRAL_PALETTES,
     type NeutralPalette,
     type PrimaryPalette,
-    useDocsPalette,
-} from '../composables/use-docs-palette';
+} from '../palette-options';
 
 const { isDark } = useData();
 
 /*
  * Hero swatches share the SAME reactive state as the navbar
- * `PaletteSwitch` (via `useDocsPalette`). Picking a swatch updates the
- * navbar dropdown; the navbar dropdown updates the active swatch.
- * `setPalette()` is called centrally inside the composable's watcher,
- * not here. Cookie persistence is also handled there.
+ * `PaletteSwitch` — `usePalette()` from `@vuecs/design` is wrapped
+ * with `createSharedComposable`, so every call site reads/writes the
+ * one shared ref. `setPalette()` is invoked inside the composable
+ * (apply on init + apply on change). localStorage persists across
+ * reloads.
  */
-const palette = useDocsPalette();
+// No `initial` — `usePalette()` is wrapped in `createSharedComposable`,
+// so options are first-call-wins. Demo.vue calls without options, so an
+// `initial` here would be silently dropped. Design-token defaults paint
+// `primary=blue` / `neutral=neutral` for the empty case.
+const { current, extend } = usePalette();
 
 // Hero shows a curated 6-color visual swatch grid (constrained
-// horizontally by the hero card). The full enum lives in the composable.
+// horizontally by the hero card). The full enum lives in palette-options.ts.
 const swatchPalettes: PrimaryPalette[] = ['blue', 'green', 'orange', 'red', 'purple', 'teal'];
 
 const setPrimary = (value: PrimaryPalette) => {
-    palette.primary = value;
+    extend({ primary: value });
 };
 
 const setNeutral = (value: NeutralPalette) => {
-    palette.neutral = value;
+    extend({ neutral: value });
 };
 
 const toggleDark = () => {
@@ -95,7 +100,7 @@ const toggleDark = () => {
                             :key="swatch"
                             type="button"
                             class="vc-hero-card-swatch"
-                            :class="{ 'vc-hero-card-swatch-active': palette.primary === swatch }"
+                            :class="{ 'vc-hero-card-swatch-active': (current.primary ?? 'blue') === swatch }"
                             :title="swatch"
                             :style="{ backgroundColor: `var(--color-${swatch}-500)` }"
                             @click="setPrimary(swatch)"
@@ -106,9 +111,9 @@ const toggleDark = () => {
                         Neutral palette
                     </p>
                     <select
-                        :value="palette.neutral"
+                        :value="current.neutral ?? 'neutral'"
                         class="vc-hero-card-select"
-                        @change="setNeutral(($event.target as globalThis.HTMLSelectElement).value as typeof palette.neutral)"
+                        @change="setNeutral(($event.target as globalThis.HTMLSelectElement).value as NeutralPalette)"
                     >
                         <option
                             v-for="p in NEUTRAL_PALETTES"

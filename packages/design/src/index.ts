@@ -10,3 +10,4 @@ export type {
     SemanticScaleName,
     TailwindPaletteName,
 } from './types';
+export * from './composables';

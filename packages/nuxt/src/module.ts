@@ -6,6 +6,52 @@ import {
 } from '@nuxt/kit';
 import type { PaletteConfig } from '@vuecs/design';
 
+/**
+ * Subset of Nuxt `useCookie`'s options that we forward verbatim. Kept
+ * intentionally narrow — additional fields can be added on demand
+ * without breaking consumers.
+ */
+export interface CookieOptions {
+    /**
+     * Cookie lifetime in seconds. Without this, Nuxt produces a
+     * session cookie that expires when the browser closes — so
+     * returning visitors lose their persisted choice.
+     *
+     * @default 60 * 60 * 24 * 365 // 1 year
+     */
+    maxAge?: number;
+
+    /**
+     * SameSite attribute. Use `'none'` (with `secure: true`) for
+     * cross-subdomain SSO scenarios.
+     *
+     * @default 'lax'
+     */
+    sameSite?: 'lax' | 'strict' | 'none' | boolean;
+
+    /**
+     * Cookie Domain attribute. Useful for sharing across subdomains
+     * (e.g. `'.example.com'`). Omitted by default — browser scopes
+     * the cookie to the exact host.
+     */
+    domain?: string;
+
+    /**
+     * Add the `Secure` flag. Required when `sameSite: 'none'`. In
+     * production, you almost always want this.
+     *
+     * @default false
+     */
+    secure?: boolean;
+
+    /**
+     * Cookie Path attribute.
+     *
+     * @default '/'
+     */
+    path?: string;
+}
+
 export interface ColorModeOptions {
     /**
      * Name of the cookie used to persist the selected mode. The cookie
@@ -61,6 +107,20 @@ export interface ModuleOptions {
      * @default true
      */
     colorMode?: boolean | ColorModeOptions;
+
+    /**
+     * Shared cookie attributes applied to BOTH the palette
+     * (`vc-palette` by default) and the color-mode cookie. Useful when
+     * deploying across subdomains (`domain: '.example.com'`), behind
+     * a same-origin SSO flow (`sameSite: 'none', secure: true`), or
+     * with custom retention requirements.
+     *
+     * Both cookies use the same options today — splitting per-cookie
+     * is feature creep. Power users can wire their own composables
+     * via `bindPalette()` / `bindColorMode()` from `@vuecs/design` if
+     * they need divergent semantics.
+     */
+    cookie?: CookieOptions;
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -92,6 +152,15 @@ export default defineNuxtModule<ModuleOptions>({
                 {}),
         };
 
+        // Documented defaults match the doc-site claim of 1y / lax. Spread
+        // the user-provided cookie options on top so they win per-key.
+        const cookieOptions: CookieOptions = {
+            maxAge: 60 * 60 * 24 * 365,
+            sameSite: 'lax',
+            path: '/',
+            ...(options.cookie || {}),
+        };
+
         // Merge into any existing public.vuecs config (set by the user
         // in nuxt.config or by another module) instead of overwriting,
         // so we don't clobber unrelated keys.
@@ -107,6 +176,7 @@ export default defineNuxtModule<ModuleOptions>({
                     cookieName: colorModeOptions.cookieName,
                     preference: colorModeOptions.preference,
                 },
+                cookie: cookieOptions,
             },
         };
 

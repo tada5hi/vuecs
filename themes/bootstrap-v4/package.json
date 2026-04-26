@@ -1,6 +1,6 @@
 {
-    "name": "@vuecs/theme-bootstrap-v5",
-    "version": "2.0.1",
+    "name": "@vuecs/theme-bootstrap-v4",
+    "version": "1.0.1",
     "type": "module",
     "description": "",
     "exports": {
@@ -18,9 +18,6 @@
         "dist",
         "assets"
     ],
-    "sideEffects": [
-        "./assets/*.css"
-    ],
     "keywords": [],
     "author": {
         "name": "Peter Placzek",
@@ -31,8 +28,11 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/tada5hi/vuecs.git",
-        "directory": "packages/theme-bootstrap-v5"
+        "directory": "themes/bootstrap-v4"
     },
+    "sideEffects": [
+        "./assets/*.css"
+    ],
     "scripts": {
         "build:js": "tsdown",
         "build:types": "tsc --emitDeclarationOnly -p tsconfig.build.json",

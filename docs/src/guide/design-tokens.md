@@ -105,6 +105,10 @@ Bootstrap 5 components read `--bs-*` at runtime, so the bridge propagates `setPa
 | `SEMANTIC_SCALES` | const | Array of the 6 scale names |
 | `TAILWIND_PALETTES` | const | Array of all 22 Tailwind palette names |
 
+## Vue composables
+
+`@vuecs/design` ships `usePalette()` and `useColorMode()` for reactive runtime palette / dark-mode state — see the dedicated [Composables](/guide/composables) page for API reference and persistence details.
+
 ## See also
 
 - [Dark Mode](/getting-started/dark-mode) — `.dark` flip mechanics

@@ -6,7 +6,7 @@
  * Tailwind v4's JIT keeps them in the final CSS bundle. Example-app
  * components and pages are scanned by default.
  */
-@source "../../../../packages/theme-tailwind/src";
+@source "../../../../themes/tailwind/src";
 
 /*
  * Enable class-based dark mode so the `.dark` class set by

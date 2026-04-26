@@ -1,17 +1,25 @@
 {
-    "name": "@vuecs/theme-font-awesome",
-    "version": "1.1.1",
+    "name": "@vuecs/theme-bootstrap-v5",
+    "version": "2.0.1",
     "type": "module",
     "description": "",
     "exports": {
         "./package.json": "./package.json",
         ".": {
             "types": "./dist/index.d.ts",
+            "style": "./assets/index.css",
             "import": "./dist/index.mjs"
-        }
+        },
+        "./index.css": "./assets/index.css",
+        "./assets/index.css": "./assets/index.css"
     },
+    "style": "./assets/index.css",
     "files": [
-        "dist"
+        "dist",
+        "assets"
+    ],
+    "sideEffects": [
+        "./assets/*.css"
     ],
     "keywords": [],
     "author": {
@@ -23,9 +31,8 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/tada5hi/vuecs.git",
-        "directory": "packages/theme-font-awesome"
+        "directory": "themes/bootstrap-v5"
     },
-    "sideEffects": false,
     "scripts": {
         "build:js": "tsdown",
         "build:types": "tsc --emitDeclarationOnly -p tsconfig.build.json",

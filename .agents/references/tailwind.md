@@ -29,7 +29,7 @@ Every one of these is load-bearing in `@vuecs/design`. Replacing v4 with v3 woul
 | Concept | Tailwind v4 | vuecs |
 |---------|-------------|-------|
 | **Token registration** | `@theme { --color-X: …; }` | `packages/design/assets/index.css` `@theme` block — exposes `--vc-color-*` aliases as `--color-*` so utilities resolve |
-| **Class scanning** | `@source "<path>"` | `packages/theme-tailwind/src` is scanned by every consumer (theme classes are baked into source); `@vuecs/design` ships `@source inline(…)` for the 22-palette safelist |
+| **Class scanning** | `@source "<path>"` | `themes/tailwind/src` is scanned by every consumer (theme classes are baked into source); `@vuecs/design` ships `@source inline(…)` for the 22-palette safelist |
 | **Inline safelist** | `@source inline("classname1 classname2")` (supports `{a,b,c}` cartesian product) | Used in `@vuecs/design/assets/index.css` to force-emit `bg-{22 palettes}-{50…950}` — without it, `setPalette({ primary: 'emerald' })` fails because emerald gets tree-shaken |
 | **Default palettes** | `--color-blue-*`, `--color-emerald-*`, …, 22 palettes × 11 shades | Referenced as the **lower layer** in the design-token chain: `--vc-color-primary-* → var(--color-blue-*)` by default |
 | **Dark variant** | `@custom-variant dark (&:where(.dark, .dark *))` (manual config in v4) | Recommended docs setup — pairs with `@vuecs/design`'s `.dark` token flips |

@@ -62,13 +62,26 @@ export default defineNuxtConfig({
             cookieName: 'my-app-color-mode',
             preference: 'dark',  // default for first-time visitors
         },
+        // Optional — applies to BOTH the color-mode and palette
+        // cookies. See the cookie configuration section in the
+        // module overview for the full option list.
+        cookie: {
+            sameSite: 'strict',
+        },
     },
 });
 ```
 
 ## Use without Nuxt
 
-In a non-Nuxt app, use [`@vueuse/core`'s `useDark`](https://vueuse.org/core/useDark/) directly — it provides the same toggle pattern. The bundled `useColorMode()` is just `useDark` + Nuxt cookie + SSR plugin glue.
+`@vuecs/design` ships a framework-agnostic `useColorMode()` with the same return shape, persisting to localStorage instead of a cookie:
+
+```ts
+import { useColorMode } from '@vuecs/design';
+const { mode, resolved, isDark, toggle } = useColorMode();
+```
+
+The Nuxt-aware composable from `@vuecs/nuxt` is a thin wrapper over `bindColorMode()` from `@vuecs/design` — it swaps the storage layer for `useCookie` so the SSR plugin can read the same cookie at request time, but the apply / class-sync logic is shared.
 
 ## See also
 

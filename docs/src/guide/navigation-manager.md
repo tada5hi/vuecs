@@ -55,7 +55,7 @@ There is no per-item id — items are addressed by `(level, item)` and identifie
 
 When the route changes, the manager walks items looking for one whose `url` (or `activeMatch` regex) matches the new path. The match becomes the active item at its level; `vue-router`-active CSS classes (`router-link-active`, `router-link-exact-active`) fire on the corresponding `<a>` element naturally — the manager doesn't override them.
 
-The CSS for the active state is themeable via the `navLink` element — see [theme-tailwind source](https://github.com/tada5hi/vuecs/tree/master/packages/theme-tailwind/src) for examples.
+The CSS for the active state is themeable via the `navLink` element — see [theme-tailwind source](https://github.com/tada5hi/vuecs/tree/master/themes/tailwind/src) for examples.
 
 ## Custom integration
 

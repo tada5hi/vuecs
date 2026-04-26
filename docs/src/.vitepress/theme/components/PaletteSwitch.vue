@@ -1,11 +1,33 @@
 <script setup lang="ts">
+import { usePalette } from '@vuecs/design';
+import { computed } from 'vue';
 import {
     NEUTRAL_PALETTES,
+    type NeutralPalette,
     PRIMARY_PALETTES,
-    useDocsPalette,
-} from '../composables/use-docs-palette';
+    type PrimaryPalette,
+} from '../palette-options';
 
-const palette = useDocsPalette();
+// No `initial` — `usePalette()` is wrapped in `createSharedComposable`,
+// which means options are honored only on the FIRST call. Demo.vue may
+// mount first with no options, so passing `initial` here would be
+// silently dropped. Design-token defaults in `@vuecs/design` already
+// paint `primary=blue` / `neutral=neutral` when the palette is empty;
+// the `??` fallbacks below handle the UI display.
+const { current, extend } = usePalette();
+
+// Writable computed proxies so `<select v-model>` keeps working — the
+// shared `usePalette` exposes a read-only `current`; mutations go via
+// `extend()` so each select touches only its own scale and preserves
+// the other.
+const primary = computed<PrimaryPalette>({
+    get: () => (current.value.primary as PrimaryPalette) ?? 'blue',
+    set: (value) => extend({ primary: value }),
+});
+const neutral = computed<NeutralPalette>({
+    get: () => (current.value.neutral as NeutralPalette) ?? 'neutral',
+    set: (value) => extend({ neutral: value }),
+});
 </script>
 
 <template>
@@ -13,7 +35,7 @@ const palette = useDocsPalette();
         <label class="vc-palette-switch-label">
             <span class="vc-palette-switch-name">primary</span>
             <select
-                v-model="palette.primary"
+                v-model="primary"
                 class="vc-palette-switch-select"
                 aria-label="Primary palette"
             >
@@ -29,7 +51,7 @@ const palette = useDocsPalette();
         <label class="vc-palette-switch-label">
             <span class="vc-palette-switch-name">neutral</span>
             <select
-                v-model="palette.neutral"
+                v-model="neutral"
                 class="vc-palette-switch-select"
                 aria-label="Neutral palette"
             >
