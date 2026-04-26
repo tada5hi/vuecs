@@ -16,6 +16,10 @@
         "directory": "docs"
     },
     "scripts": {
+        "demos:build": "vite build --config demos/vite.config.ts",
+        "demos:dev": "vite build --config demos/vite.config.ts --watch",
+        "predev": "npm run demos:build",
+        "prebuild": "npm run demos:build",
         "dev": "vitepress dev src",
         "build": "vitepress build src",
         "preview": "vitepress preview src"

@@ -1,7 +1,3 @@
-<script setup>
-import Countdown from '../.vitepress/theme/demos/Countdown.vue';
-</script>
-
 # Countdown
 
 Counts down from a target time, exposing `hours`, `minutes`, `seconds`, and `days` via slot props.
@@ -12,8 +8,7 @@ npm install @vuecs/countdown
 
 ## Basic usage
 
-<Demo>
-  <Countdown />
+<Demo name="countdown">
 
   <template #code>
 

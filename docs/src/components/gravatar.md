@@ -1,7 +1,3 @@
-<script setup>
-import Gravatar from '../.vitepress/theme/demos/Gravatar.vue';
-</script>
-
 # Gravatar
 
 Renders a [Gravatar](https://gravatar.com) avatar from an email address.
@@ -12,8 +8,7 @@ npm install @vuecs/gravatar
 
 ## Basic usage
 
-<Demo>
-  <Gravatar />
+<Demo name="gravatar">
 
   <template #code>
 

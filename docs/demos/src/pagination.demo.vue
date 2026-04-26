@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { VCPagination } from '@vuecs/pagination';
 import { ref } from 'vue';
+import { variantState } from './iframe-bridge';
 
 const meta = ref({
     total: 100,
@@ -18,6 +19,7 @@ const load = (next: { offset: number }) => {
         :total="meta.total"
         :offset="meta.offset"
         :limit="meta.limit"
+        :theme-variant="variantState"
         @load="load"
     />
 </template>

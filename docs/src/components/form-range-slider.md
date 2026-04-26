@@ -1,7 +1,3 @@
-<script setup>
-import FormRangeSlider from '../.vitepress/theme/demos/FormRangeSlider.vue';
-</script>
-
 # FormRangeSlider
 
 Dual-handle range slider. Always renders two thumbs (lower + upper); the user drags them to select a sub-range of `[min, max]`. The selected range is delivered via the `change` event — there is no `v-model`.
@@ -12,8 +8,7 @@ npm install @vuecs/form-controls
 
 ## Basic usage
 
-<Demo>
-  <FormRangeSlider />
+<Demo name="form-range-slider">
 
   <template #code>
 

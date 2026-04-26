@@ -1,7 +1,3 @@
-<script setup>
-import FormTextarea from '../.vitepress/theme/demos/FormTextarea.vue';
-</script>
-
 # FormTextarea
 
 Multi-line text input with `v-model` and optional debounce — same API surface as [FormInput](/components/form-input) but for `<textarea>`.
@@ -12,8 +8,7 @@ npm install @vuecs/form-controls
 
 ## Basic usage
 
-<Demo>
-  <FormTextarea />
+<Demo name="form-textarea">
 
   <template #code>
 

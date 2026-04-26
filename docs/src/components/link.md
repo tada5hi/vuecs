@@ -1,7 +1,3 @@
-<script setup>
-import Link from '../.vitepress/theme/demos/Link.vue';
-</script>
-
 # Link
 
 Router-aware anchor — picks `<NuxtLink>`, `<RouterLink>`, or a plain `<a>` automatically depending on the runtime context.
@@ -12,8 +8,7 @@ npm install @vuecs/link
 
 ## Basic usage
 
-<Demo>
-  <Link />
+<Demo name="link">
 
   <template #code>
 
