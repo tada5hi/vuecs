@@ -8,19 +8,28 @@ import { reactive, watch } from 'vue';
  * picking a swatch on the hero updates the navbar dropdown, and
  * vice versa.
  *
- * SSR safety: VitePress's SSG runs Node at build time (no `document`,
- * no cookies). Module-level state initializes to defaults; the cookie
- * is read on first client-side `useDocsPalette()` call AFTER mount, so
- * SSR-rendered HTML matches the initial client render and Vue doesn't
- * log a hydration mismatch. Once mounted, state mutations are
- * persisted to the cookie and `setPalette()` is called automatically.
+ * Hydration timing — IMPORTANT:
+ * `useDocsPalette()` is conventionally called inside `<script setup>`,
+ * which runs DURING setup, BEFORE the first client paint. Module-level
+ * state initializes to the defaults (blue / neutral) and SSG renders
+ * with those defaults. On the first client-side invocation
+ * `ensureInitialized()` synchronously mutates the state from the
+ * cookie — so when the cookie holds a non-default palette, the very
+ * first client render diverges from the SSG'd HTML. Vue logs a
+ * hydration warning AND there's a brief visual flash before
+ * `setPalette()` re-paints.
  *
- * Note on FOUC: On a fresh page load the SSG'd HTML uses the default
- * palette; the cookie-stored choice is applied after hydration, so
- * non-default palettes show a brief flash on first paint. A FOUC
- * prevention pass (inline `<script>` in head that reads the cookie
- * pre-paint and injects `<style id="vc-palette">`) is a separate
- * follow-up — out of scope for the iframe-demos work.
+ * This trade-off is accepted: the alternative (deferring the cookie
+ * read to `onMounted()`) widens the FOUC window without removing it
+ * — by then the page has already painted with defaults. The proper
+ * fix is a small inline `<script>` in `<head>` that reads the cookie
+ * pre-paint and injects `<style id="vc-palette">` so SSR + first
+ * paint + first client render all see the persisted palette.
+ *
+ * That FOUC + hydration-mismatch fix is tracked as a follow-up: see
+ * `.agents/plans/shared-palette-color-mode-composables.md` ("FOUC
+ * prevention" section). Until it lands, accept a one-frame flash and
+ * a console warning on cookie-different palettes.
  */
 
 export const PRIMARY_PALETTES = ['blue', 'green', 'orange', 'red', 'purple', 'pink', 'teal', 'indigo'] as const;
@@ -110,8 +119,10 @@ const ensureInitialized = (): void => {
  * `.neutral` to change the palette site-wide — the watcher persists to
  * a cookie and calls `setPalette()` automatically.
  *
- * SSR-safe: returns the default-state object on the server; client-side
- * calls (after hydration) read the persisted cookie on first invocation.
+ * Server-side (no `document`): returns the default-state object as a
+ * no-op. Client-side: on first invocation, synchronously loads the
+ * cookie and applies `setPalette()`. See module-level doc comment for
+ * the hydration-timing trade-off.
  */
 export function useDocsPalette(): DocsPaletteState {
     ensureInitialized();

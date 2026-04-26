@@ -28,11 +28,24 @@ const buildEntries = (): Record<string, string> => Object.fromEntries(
         .map((file) => [file.replace(/\.html$/, ''), `${srcDir}/${file}`]),
 );
 
+/*
+ * MUST match VitePress's `base` in docs/src/.vitepress/config.mts. Demos
+ * are served at `${VITEPRESS_BASE}demos/<name>.html`; the iframe URL is
+ * built parent-side via `withBase('/demos/<name>.html')` in Demo.vue,
+ * which respects VitePress's base. Vite's own `base` config below
+ * controls the asset paths emitted INSIDE each demo's HTML
+ * (`/demos/assets/...`). If these two sides drift, the iframe loads but
+ * its inner JS/CSS 404s.
+ *
+ * If the docs ever move off the root path (e.g. `/vuecs/`), update both
+ * `VITEPRESS_BASE` here and `base` in `.vitepress/config.mts`.
+ */
+const VITEPRESS_BASE = '/';
+const DEMO_BASE = `${VITEPRESS_BASE}demos/`;
+
 export default defineConfig({
     root: srcDir,
-    // Demos are served by VitePress under `/demos/`; emit asset URLs
-    // relative to that prefix so the iframe resolves CSS/JS correctly.
-    base: '/demos/',
+    base: DEMO_BASE,
     publicDir: false,
     plugins: [
         vue(),

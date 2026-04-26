@@ -8,6 +8,7 @@ import type { Ref } from 'vue';
  *
  *   parent → iframe { type: 'set-color-mode', mode: 'light' | 'dark' }
  *   parent → iframe { type: 'set-variants', values: { <variantName>: <value> } }
+ *   parent → iframe { type: 'set-palette', primary?, neutral? }
  *   iframe → parent { type: 'demo-resize', height: number }
  *   iframe → parent { type: 'demo-variants', catalog, defaults }
  *
@@ -18,9 +19,17 @@ import type { Ref } from 'vue';
  * which any demo Vue component can `import` and bind to its
  * `:theme-variant` prop.
  *
- * Origin is intentionally `'*'` — the iframe is same-origin in production
- * (served from the same docs host), and dev runs on localhost. No
- * untrusted parties are involved.
+ * Origin handling: outgoing `postMessage` calls use `location.origin` as
+ * the targetOrigin (not `'*'`), so the message is delivered only when
+ * the parent serves the iframe from the same origin — which is always
+ * the case for the vuecs.dev docs deploy. Cross-origin embedders never
+ * receive height or variant catalog data.
+ *
+ * Incoming messages from `window.parent` are gated on
+ * `event.origin === location.origin` for the same reason: a malicious
+ * page that iframes ours can't trigger color-mode/variant/palette
+ * mutations. `event.source === window.parent` is also checked as a
+ * defense-in-depth against same-origin sibling frames.
  */
 
 type ParentMessage =    | { type: 'set-color-mode', mode: 'light' | 'dark' } |
@@ -52,7 +61,10 @@ const postHeight = (): void => {
     if (rafHandle !== null) cancelAnimationFrame(rafHandle);
     rafHandle = requestAnimationFrame(() => {
         rafHandle = null;
-        window.parent.postMessage({ type: 'demo-resize', height: next }, '*');
+        window.parent.postMessage(
+            { type: 'demo-resize', height: next },
+            window.location.origin,
+        );
     });
 };
 
@@ -65,6 +77,12 @@ const applyColorMode = (mode: 'light' | 'dark'): void => {
 };
 
 const handleParentMessage = (event: MessageEvent<ParentMessage>): void => {
+    // Reject cross-origin messages outright. Demos are same-origin with
+    // the docs host, so any other origin means an unintended embedder.
+    if (event.origin !== window.location.origin) return;
+    // Defense-in-depth: only accept messages from our actual parent,
+    // not sibling same-origin frames.
+    if (event.source !== window.parent) return;
     const { data } = event;
     if (!data || typeof data !== 'object') return;
     if (data.type === 'set-color-mode') {
@@ -95,11 +113,14 @@ const handleParentMessage = (event: MessageEvent<ParentMessage>): void => {
 export function announceVariants(catalog: VariantCatalog, defaults: VariantValues): void {
     if (typeof window === 'undefined' || window.parent === window) return;
     variantState.value = { ...defaults };
-    window.parent.postMessage({
-        type: 'demo-variants', 
-        catalog, 
-        defaults, 
-    }, '*');
+    window.parent.postMessage(
+        {
+            type: 'demo-variants',
+            catalog,
+            defaults,
+        },
+        window.location.origin,
+    );
 }
 
 export function installIframeBridge(): void {

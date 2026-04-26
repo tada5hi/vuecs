@@ -70,6 +70,14 @@ const componentName = computed(() => {
     return `VC${camel}`;
 });
 
+// Per-iframe accessibility name. Pages with multiple demos (e.g.
+// form-select-search has two) need distinct titles so screen readers
+// can tell them apart.
+const frameTitle = computed(() => {
+    if (props.title) return `${props.title} demo`;
+    return `${componentName.value} demo`;
+});
+
 const variantSnippet = computed(() => {
     const keys = Object.keys(variantValues);
     if (keys.length === 0) return '';
@@ -81,21 +89,33 @@ const paletteSnippet = computed(() => `setPalette({ primary: '${palette.primary}
 
 const hasVariants = computed(() => Object.keys(variantCatalog.value).length > 0);
 
+/*
+ * postMessage targetOrigin: demos are served same-origin with the docs
+ * host (`vuecs.dev/demos/<name>.html` for the deploy, localhost for
+ * dev). Pinning the targetOrigin to `globalThis.location.origin`
+ * ensures the message is delivered ONLY to a same-origin parent —
+ * cross-origin embedders never receive control messages.
+ */
 const postColorMode = (): void => {
     const win = frameRef.value?.contentWindow;
     if (!win) return;
     win.postMessage(
         { type: 'set-color-mode', mode: isDark.value ? 'dark' : 'light' },
-        '*',
+        globalThis.location.origin,
     );
 };
 
 const postVariants = (): void => {
     const win = frameRef.value?.contentWindow;
     if (!win) return;
+    // Skip empty payloads — `onFrameLoad` clears `variantValues` before
+    // the iframe announces its catalog, which would otherwise trigger
+    // the deep watcher and post an empty `set-variants` round-trip
+    // that the iframe immediately overwrites with its own announce.
+    if (Object.keys(variantValues).length === 0) return;
     win.postMessage(
         { type: 'set-variants', values: { ...variantValues } },
-        '*',
+        globalThis.location.origin,
     );
 };
 
@@ -108,7 +128,7 @@ const postPalette = (): void => {
             primary: palette.primary,
             neutral: palette.neutral,
         },
-        '*',
+        globalThis.location.origin,
     );
 };
 
@@ -122,6 +142,11 @@ const onFrameLoad = (): void => {
 };
 
 const onFrameMessage = (event: MessageEvent): void => {
+    // Only accept messages from THIS demo's iframe. Both checks together:
+    //  - origin: rejects cross-origin messages (defense if Demo.vue is
+    //    ever embedded in an unexpected context)
+    //  - source: rejects same-origin sibling iframes that aren't ours
+    if (event.origin !== globalThis.location.origin) return;
     if (event.source !== frameRef.value?.contentWindow) return;
     const data = event.data as {
         type?: string;
@@ -252,7 +277,7 @@ const copy = async () => {
                 ref="frame"
                 :src="frameSrc"
                 :style="{ height: `${frameHeight}px` }"
-                title="Demo"
+                :title="frameTitle"
                 @load="onFrameLoad"
             />
             <slot v-else />
