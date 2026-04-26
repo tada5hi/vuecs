@@ -5,6 +5,17 @@ import { SEMANTIC_SCALES, TAILWIND_PALETTES } from '../constants';
 import { setPalette } from '../palette';
 import type { PaletteConfig, SemanticScaleName, TailwindPaletteName } from '../types';
 
+/**
+ * Options for `usePalette()`. Note that `usePalette` is wrapped with
+ * `createSharedComposable`, so these options are honored **only on
+ * the first call**. Subsequent invocations from anywhere in the app
+ * receive the cached instance with the original options — passing a
+ * different `storageKey` or `initial` is a silent no-op.
+ *
+ * If you need a per-call configuration (e.g. multiple independent
+ * palettes, custom storage backend), call `bindPalette()` directly
+ * with your own reactive ref instead.
+ */
 export interface UsePaletteOptions {
     /** Initial palette when no persisted value exists. Default: `{}`. */
     initial?: PaletteConfig;
@@ -98,7 +109,8 @@ export function bindPalette(source: Ref<PaletteConfig>): UsePaletteReturn {
  *
  * For SSR-aware cookie-backed storage (Nuxt), the `@vuecs/nuxt` module
  * ships its own `usePalette()` that calls `bindPalette()` directly with
- * a cookie-backed ref. Both expose the same `{ current, set }` shape.
+ * a cookie-backed ref. Both expose the same `{ current, set, extend }`
+ * shape.
  */
 export const usePalette = createSharedComposable(
     (options: UsePaletteOptions = {}): UsePaletteReturn => {

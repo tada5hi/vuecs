@@ -4,6 +4,16 @@ import type { ComputedRef, Ref, WritableComputedRef } from 'vue';
 
 export type ColorMode = 'light' | 'dark' | 'system';
 
+/**
+ * Options for `useColorMode()`. Note that `useColorMode` is wrapped
+ * with `createSharedComposable`, so these options are honored **only
+ * on the first call**. Subsequent invocations from anywhere in the
+ * app receive the cached instance — passing a different `storageKey`,
+ * `initial`, or `syncClass` is a silent no-op.
+ *
+ * If you need a per-call configuration, call `bindColorMode()`
+ * directly with your own reactive ref instead.
+ */
 export interface UseColorModeOptions {
     /** Initial mode when no persisted value exists. Default: `'system'`. */
     initial?: ColorMode;

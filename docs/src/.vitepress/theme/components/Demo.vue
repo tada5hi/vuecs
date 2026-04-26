@@ -89,7 +89,15 @@ const variantSnippet = computed(() => {
     return `<${componentName.value} :theme-variant="{ ${inner} }" />`;
 });
 
-const paletteSnippet = computed(() => `setPalette({ primary: '${palette.value.primary}', neutral: '${palette.value.neutral}' });`);
+// Fall back to the design-token defaults from `@vuecs/design/assets/index.css`
+// when no palette has been picked yet. Without these the snippet would
+// render `setPalette({ primary: 'undefined', neutral: 'undefined' })` for
+// fresh visitors with empty localStorage — a misleading copy-paste example.
+const paletteSnippet = computed(() => {
+    const primary = palette.value.primary ?? 'blue';
+    const neutral = palette.value.neutral ?? 'neutral';
+    return `setPalette({ primary: '${primary}', neutral: '${neutral}' });`;
+});
 
 const hasVariants = computed(() => Object.keys(variantCatalog.value).length > 0);
 
@@ -129,8 +137,8 @@ const postPalette = (): void => {
     win.postMessage(
         {
             type: 'set-palette',
-            primary: palette.value.primary,
-            neutral: palette.value.neutral,
+            primary: palette.value.primary ?? 'blue',
+            neutral: palette.value.neutral ?? 'neutral',
         },
         globalThis.location.origin,
     );

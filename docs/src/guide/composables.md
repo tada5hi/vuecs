@@ -5,7 +5,7 @@
 ## Requirements
 
 - **Vue 3** as a peer dep (already required by every component package).
-- **`@vueuse/core`** as an optional peer dep — only needed if you import the composables. Tree-shaking ensures pure-CSS / pure-`setPalette` consumers don't pull it in.
+- **`@vueuse/core`** as a peer dep. The composables import from VueUse at the top level and `@vuecs/design`'s root entry re-exports them, so VueUse must be installed for any consumer of `@vuecs/design` — including those who only import `setPalette` or `renderPaletteStyles`.
 
 ```bash
 npm install @vuecs/design @vueuse/core

@@ -26,6 +26,12 @@ export function useColorMode(): UseColorModeReturn {
     const cookie = useCookie<ColorMode>(cookieName, {
         default: () => defaultPreference,
         watch: true,
+        // Match the SSR plugin contract — server-side rendering reads
+        // the same cookie at request time, so a returning visitor
+        // gets their resolved mode pre-paint. Without explicit
+        // `maxAge`, the cookie expires at end of session.
+        maxAge: 60 * 60 * 24 * 365,
+        sameSite: 'lax',
     });
 
     return bindColorMode(cookie);

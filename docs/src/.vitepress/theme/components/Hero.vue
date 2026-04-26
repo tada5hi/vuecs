@@ -17,7 +17,11 @@ const { isDark } = useData();
  * (apply on init + apply on change). localStorage persists across
  * reloads.
  */
-const { current, extend } = usePalette({ initial: { primary: 'blue', neutral: 'neutral' } });
+// No `initial` — `usePalette()` is wrapped in `createSharedComposable`,
+// so options are first-call-wins. Demo.vue calls without options, so an
+// `initial` here would be silently dropped. Design-token defaults paint
+// `primary=blue` / `neutral=neutral` for the empty case.
+const { current, extend } = usePalette();
 
 // Hero shows a curated 6-color visual swatch grid (constrained
 // horizontally by the hero card). The full enum lives in palette-options.ts.
@@ -96,7 +100,7 @@ const toggleDark = () => {
                             :key="swatch"
                             type="button"
                             class="vc-hero-card-swatch"
-                            :class="{ 'vc-hero-card-swatch-active': current.primary === swatch }"
+                            :class="{ 'vc-hero-card-swatch-active': (current.primary ?? 'blue') === swatch }"
                             :title="swatch"
                             :style="{ backgroundColor: `var(--color-${swatch}-500)` }"
                             @click="setPrimary(swatch)"
@@ -107,7 +111,7 @@ const toggleDark = () => {
                         Neutral palette
                     </p>
                     <select
-                        :value="current.neutral"
+                        :value="current.neutral ?? 'neutral'"
                         class="vc-hero-card-select"
                         @change="setNeutral(($event.target as globalThis.HTMLSelectElement).value as NeutralPalette)"
                     >

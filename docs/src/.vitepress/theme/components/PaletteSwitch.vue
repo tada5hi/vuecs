@@ -8,7 +8,13 @@ import {
     type PrimaryPalette,
 } from '../palette-options';
 
-const { current, extend } = usePalette({ initial: { primary: 'blue', neutral: 'neutral' } });
+// No `initial` — `usePalette()` is wrapped in `createSharedComposable`,
+// which means options are honored only on the FIRST call. Demo.vue may
+// mount first with no options, so passing `initial` here would be
+// silently dropped. Design-token defaults in `@vuecs/design` already
+// paint `primary=blue` / `neutral=neutral` when the palette is empty;
+// the `??` fallbacks below handle the UI display.
+const { current, extend } = usePalette();
 
 // Writable computed proxies so `<select v-model>` keeps working — the
 // shared `usePalette` exposes a read-only `current`; mutations go via
