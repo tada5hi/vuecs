@@ -38,9 +38,9 @@ export default function bootstrapV5Theme(): Theme {
                 },
                 // Map each (variant, color) pair onto a Bootstrap button
                 // class. `outline` uses Bootstrap's own `btn-outline-*`
-                // family; `soft` and `ghost` don't have direct equivalents
-                // — we approximate them with the standard solid classes
-                // plus light/transparent utilities that ship in Bootstrap.
+                // family; `soft` leverages v5's `bg-opacity-*` utility for
+                // a tinted look; `ghost` strips the link underline so it
+                // reads as a borderless button rather than a hyperlink.
                 compoundVariants: [
                     // solid
                     { variants: { variant: 'solid', color: 'primary' }, class: { root: 'btn-primary' } },
@@ -52,13 +52,31 @@ export default function bootstrapV5Theme(): Theme {
                     // outline
                     { variants: { variant: 'outline', color: 'primary' }, class: { root: 'btn-outline-primary' } },
                     { variants: { variant: 'outline', color: 'neutral' }, class: { root: 'btn-outline-secondary' } },
-                    // soft / ghost / link approximations
+                    { variants: { variant: 'outline', color: 'success' }, class: { root: 'btn-outline-success' } },
+                    { variants: { variant: 'outline', color: 'warning' }, class: { root: 'btn-outline-warning' } },
+                    { variants: { variant: 'outline', color: 'error' }, class: { root: 'btn-outline-danger' } },
+                    { variants: { variant: 'outline', color: 'info' }, class: { root: 'btn-outline-info' } },
+                    // soft — colored fill at 25% opacity + colored text
                     { variants: { variant: 'soft', color: 'primary' }, class: { root: 'btn-primary bg-opacity-25 text-primary border-0' } },
                     { variants: { variant: 'soft', color: 'neutral' }, class: { root: 'btn-light' } },
+                    { variants: { variant: 'soft', color: 'success' }, class: { root: 'btn-success bg-opacity-25 text-success border-0' } },
+                    { variants: { variant: 'soft', color: 'warning' }, class: { root: 'btn-warning bg-opacity-25 text-warning border-0' } },
+                    { variants: { variant: 'soft', color: 'error' }, class: { root: 'btn-danger bg-opacity-25 text-danger border-0' } },
+                    { variants: { variant: 'soft', color: 'info' }, class: { root: 'btn-info bg-opacity-25 text-info border-0' } },
+                    // ghost — borderless / no underline, colored text
                     { variants: { variant: 'ghost', color: 'primary' }, class: { root: 'btn-link text-decoration-none' } },
                     { variants: { variant: 'ghost', color: 'neutral' }, class: { root: 'btn-link text-decoration-none text-secondary' } },
+                    { variants: { variant: 'ghost', color: 'success' }, class: { root: 'btn-link text-decoration-none text-success' } },
+                    { variants: { variant: 'ghost', color: 'warning' }, class: { root: 'btn-link text-decoration-none text-warning' } },
+                    { variants: { variant: 'ghost', color: 'error' }, class: { root: 'btn-link text-decoration-none text-danger' } },
+                    { variants: { variant: 'ghost', color: 'info' }, class: { root: 'btn-link text-decoration-none text-info' } },
+                    // link — underlined hyperlink-style, color via text-*
                     { variants: { variant: 'link', color: 'primary' }, class: { root: 'btn-link' } },
                     { variants: { variant: 'link', color: 'neutral' }, class: { root: 'btn-link text-secondary' } },
+                    { variants: { variant: 'link', color: 'success' }, class: { root: 'btn-link text-success' } },
+                    { variants: { variant: 'link', color: 'warning' }, class: { root: 'btn-link text-warning' } },
+                    { variants: { variant: 'link', color: 'error' }, class: { root: 'btn-link text-danger' } },
+                    { variants: { variant: 'link', color: 'info' }, class: { root: 'btn-link text-info' } },
                 ],
                 defaultVariants: {
                     variant: 'solid', 

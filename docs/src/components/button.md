@@ -24,7 +24,7 @@ import { VCButton } from '@vuecs/button';
     <VCButton color="primary" label="Save" />
     <VCButton color="error" label="Delete" />
 
-    <!-- Variants control the treatment shape (filled / tinted / outlined / minimal). -->
+    <!-- Variants control the treatment (solid / soft / outline / ghost / link). -->
     <VCButton variant="outline" color="primary" label="Cancel" />
     <VCButton variant="ghost" color="neutral" label="Skip" />
     <VCButton variant="link" color="primary" label="Read more" />
@@ -130,4 +130,5 @@ The composable's option names, return shape, and defaults key may change in a fu
 
 - Setting `tag="a"` renders the button as `<a>`. The structural busy class still applies, but the native `disabled` attribute is a no-op on anchors — guard navigation via your own click handler if you mount the button as a link.
 - The `loading` prop is also passed as a `themeVariant` (`loading: true`), so themes can target the busy state via a variant if they want a custom look beyond the structural pulse.
-- Themes ship `solid` for every color and `soft` / `outline` / `ghost` / `link` for `primary` and `neutral` only — register additional combinations via `app.use(vuecs, { overrides: { elements: { button: { compoundVariants: [...] } } } })`.
+- Themes ship the full color × variant matrix (six colors × five variants). Override individual cells via `app.use(vuecs, { overrides: { elements: { button: { compoundVariants: [...] } } } })` if you need a different shade.
+- The `loading` state replaces the leading icon with a spinner and lifts opacity above the framework-disabled value so loading reads distinctly from disabled (the busy class otherwise inherits the framework's `disabled:opacity-*` and the two states would render identically).

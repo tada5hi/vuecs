@@ -23,8 +23,18 @@ const ignoredElements = ['INPUT', 'TEXTAREA'] as const;
 
 /**
  * Resolves the next focusable collection item for an arrow / Home / End key
- * event. Skips disabled elements (`disabled` attribute set to anything but
- * `"false"`).
+ * event. Skips both disabled and visually-hidden elements so collapsed
+ * submenus and disabled links don't trap focus.
+ *
+ * Disabled detection accepts the native `disabled` attribute, `aria-disabled`,
+ * `data-disabled`, and the `.disabled` class — `VCLink` (the navigation
+ * consumer) renders disabled state as a class, so the reka-ui-style
+ * attribute-only check would let arrow navigation land on disabled links.
+ *
+ * Visibility uses `Element.checkVisibility()` (Chromium 105+, Firefox 125+,
+ * Safari 17.4+). When it isn't available (older browsers, jsdom under unit
+ * tests) we treat elements as visible; production browsers get the correct
+ * filtering, tests get the existing behavior.
  *
  * Mirrors reka-ui's `useArrowNavigation` (MIT, https://github.com/unovue/reka-ui).
  * Default `attributeName` is changed from `[data-reka-collection-item]` to
@@ -72,9 +82,13 @@ export function useArrowNavigation(
         return null;
     }
 
-    const allCollectionItems = parentElement ?
+    const collected = parentElement ?
         Array.from(parentElement.querySelectorAll<HTMLElement>(attributeName)) :
         itemsArray;
+
+    // Filter out hidden items (e.g. inside a collapsed submenu) so arrow
+    // navigation can't focus them. See the visibility helper below.
+    const allCollectionItems = collected.filter(isVisibleElement);
 
     if (!allCollectionItems.length) {
         return null;
@@ -129,9 +143,45 @@ function findNextFocusableElement(
     if (!candidate) {
         return null;
     }
-    const isDisabled = candidate.hasAttribute('disabled') && candidate.getAttribute('disabled') !== 'false';
-    if (isDisabled) {
+    if (isDisabledElement(candidate)) {
         return findNextFocusableElement(elements, candidate, options, iterations);
     }
     return candidate;
+}
+
+function isDisabledElement(el: HTMLElement): boolean {
+    // Native `disabled` attribute — set explicitly to anything other than
+    // the string `"false"` (HTML allows `disabled=""` and `disabled="disabled"`).
+    if (el.hasAttribute('disabled') && el.getAttribute('disabled') !== 'false') {
+        return true;
+    }
+    // ARIA + data-* equivalents for non-button targets (anchors, divs).
+    if (el.getAttribute('aria-disabled') === 'true') {
+        return true;
+    }
+    if (el.hasAttribute('data-disabled')) {
+        return true;
+    }
+    // CSS-class disabled state — `VCLink` (the navigation consumer)
+    // toggles a `disabled` class on its anchor instead of setting the
+    // attribute, so an attribute-only check would never skip disabled
+    // navigation links.
+    if (el.classList.contains('disabled')) {
+        return true;
+    }
+    return false;
+}
+
+function isVisibleElement(el: HTMLElement): boolean {
+    // `checkVisibility()` is the modern "is this actually rendered?" API
+    // (Chromium 105+, Firefox 125+, Safari 17.4+). It correctly handles
+    // `display: none` on the element OR any ancestor — exactly what we need
+    // for collapsed submenu items. When it's missing (older browsers,
+    // jsdom under unit tests) we fall through to treating the element as
+    // visible so test environments without layout don't filter everything.
+    const cv = (el as HTMLElement & { checkVisibility?: () => boolean }).checkVisibility;
+    if (typeof cv === 'function') {
+        return cv.call(el);
+    }
+    return true;
 }

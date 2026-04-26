@@ -175,6 +175,7 @@ export const VCNavItem = defineComponent({
                         'data-vc-collection-item': '',
                         tabindex: 0,
                         role: 'button',
+                        'aria-expanded': data.value.displayChildren ? 'true' : 'false',
                         onClick($event: any) {
                             $event.preventDefault();
                             return toggle(data.value);

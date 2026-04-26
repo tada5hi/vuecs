@@ -1,36 +1,72 @@
 /*
- * Busy-state structural styling for VCButton (`:loading="true"`).
- * Themes provide the resting look; this rule kicks in only when the
- * component sets `vc-button--busy`.
+ * Loading-state styling for VCButton (`:loading="true"`).
  *
- * Rationale matches the pre-button form-submit asset: every theme
- * (Tailwind, Bootstrap, …) styles a default button differently, but
- * the loading/disabled affordance needs to read consistently across
- * all of them. Doing it here means consumers don't redeclare it
- * per-theme.
+ * Two pieces:
+ *   1. The `vc-button--busy` rule on the root — switches the cursor and
+ *      raises opacity above the framework-disabled value so the loading
+ *      state reads as "in progress", not "off-limits". Without the
+ *      `!important`, Tailwind's `disabled:opacity-60` (active because the
+ *      component sets `disabled` while loading) wins and loading and
+ *      disabled render identically.
  *
- * Activation is blocked by the native `disabled` attribute — using
- * `pointer-events: none` would also block tooltip/focus listeners
- * consumers attach AND defeat `cursor: wait` (which only applies
- * when the element actually receives pointer events). Anchors
- * (`tag="a"`) ignore `disabled`; consumers rendering the button as
- * a link must guard navigation themselves.
+ *   2. The `vc-button-spinner` rule — a single-purpose CSS spinner the
+ *      component renders in the leading slot when loading. Sized in `em`
+ *      so it scales with the surrounding font-size variant; uses
+ *      `currentColor` so it inherits whatever color the active variant +
+ *      color combination paints onto the button text.
+ *
+ * Native `disabled` attribute (set by the component while loading) blocks
+ * pointer events on `<button>`, which would normally defeat `cursor: wait`.
+ * Browsers honor the cursor on disabled controls anyway when the button
+ * itself is the hover target, which is what we want here. Anchors
+ * (`tag="a"`) ignore `disabled` — consumers rendering a button-as-link
+ * must guard navigation themselves.
  */
 .vc-button--busy {
     cursor: wait;
-    opacity: 0.65;
-    /* Subtle pulse to signal in-flight work without distracting from
-       surrounding form fields. */
-    animation: vc-button-busy-pulse 1.6s ease-in-out infinite;
+    opacity: 0.85 !important;
 }
 
-@keyframes vc-button-busy-pulse {
-    0%, 100% { opacity: 0.65; }
-    50%      { opacity: 0.45; }
+.vc-button-spinner {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    border: 2px solid currentcolor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: vc-button-spin 0.7s linear infinite;
+}
+
+@keyframes vc-button-spin {
+    to { transform: rotate(360deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .vc-button--busy {
-        animation: none;
+    /* Slow rather than disable — a stationary "spinner" is meaningless;
+       a slowly-rotating one still communicates active work without
+       inducing motion sickness. */
+    .vc-button-spinner {
+        animation-duration: 2.4s;
     }
+}
+
+/*
+ * Visually-hidden but available to screen readers. Renders the "Loading"
+ * label inside the spinner wrapper without affecting layout — AT users
+ * hear "Loading" while the button is `aria-busy`, sighted users see only
+ * the spinning ring.
+ *
+ * Standard SR-only pattern (cribbed from Tailwind's `.sr-only`); shipped
+ * here so the button package doesn't depend on consumer CSS for a11y.
+ */
+.vc-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
 }

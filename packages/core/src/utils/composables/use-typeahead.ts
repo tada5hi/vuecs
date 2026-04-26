@@ -1,9 +1,14 @@
-import { ref } from 'vue';
+import { onScopeDispose, ref } from 'vue';
 import type { Ref } from 'vue';
 
 export type TypeaheadItem<T = unknown> = {
     ref: HTMLElement;
-    value?: T & { textValue?: string };
+    value?: T;
+    // Split out of `value` (was `T & { textValue?: string }`) — the
+    // intersection collapses `value` to `never` when `T` is a primitive
+    // (e.g. `TypeaheadItem<string>`), making the field unusable for
+    // non-object data sources.
+    textValue?: string;
 };
 
 function getActiveElement(): Element | null {
@@ -58,6 +63,18 @@ export function useTypeahead<T = unknown>(callback?: (key: string) => void): {
     const search = ref('');
     let timer: ReturnType<typeof setTimeout> | null = null;
 
+    // Clear the in-flight reset timer when the owning scope disposes
+    // (component unmount, manual effect-scope stop). Without this, a
+    // pending timer fires after disposal and writes to `search.value`
+    // post-unmount. `onScopeDispose` outside an active scope is a no-op
+    // in production and only warns in dev — safe to call unconditionally.
+    onScopeDispose(() => {
+        if (timer) {
+            clearTimeout(timer);
+            timer = null;
+        }
+    });
+
     const setSearch = (value: string) => {
         search.value = value;
         if (timer) {
@@ -82,7 +99,7 @@ export function useTypeahead<T = unknown>(callback?: (key: string) => void): {
         const currentEl = getActiveElement();
         const itemsWithText = items.map((item) => ({
             ...item,
-            textValue: item.value?.textValue ?? item.ref.textContent?.trim() ?? '',
+            textValue: item.textValue ?? item.ref.textContent?.trim() ?? '',
         }));
         const currentMatch = itemsWithText.find((item) => item.ref === currentEl);
         const values = itemsWithText.map((item) => item.textValue);

@@ -30,7 +30,7 @@ describe('getNextMatch', () => {
         expect(getNextMatch(values, 'b', 'Banana')).toBe('Blueberry');
     });
 
-    it('returns undefined when no match advances past the current', () => {
+    it('wraps to the first match when no match advances past the current', () => {
         expect(getNextMatch(values, 'b', 'Blueberry')).toBe('Banana');
     });
 

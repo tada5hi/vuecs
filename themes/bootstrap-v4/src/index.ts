@@ -35,25 +35,52 @@ export default function bootstrapV4Theme(): Theme {
                         lg: { root: 'btn-lg' },
                     },
                 },
-                // API parity with the bootstrap-v5 / tailwind themes. Bootstrap 4
-                // doesn't ship `btn-outline-info` / `btn-outline-warning` etc.,
-                // so we keep outline coverage to primary + secondary; consumers
-                // wanting a full matrix override via `app.use()`.
+                // Bootstrap 4 ships `btn-outline-*` for every theme color,
+                // so the outline matrix is complete. The non-solid filled
+                // variants (`soft`, `ghost`, `link`) have no native Bootstrap
+                // 4 equivalents — `bg-opacity-*` was added in v5 — so we
+                // approximate with `text-<color>` + `text-decoration-none`
+                // to give each (variant, color) pair a distinct visual
+                // identity instead of collapsing into another variant.
                 compoundVariants: [
+                    // solid
                     { variants: { variant: 'solid', color: 'primary' }, class: { root: 'btn-primary' } },
                     { variants: { variant: 'solid', color: 'neutral' }, class: { root: 'btn-secondary' } },
                     { variants: { variant: 'solid', color: 'success' }, class: { root: 'btn-success' } },
                     { variants: { variant: 'solid', color: 'warning' }, class: { root: 'btn-warning' } },
                     { variants: { variant: 'solid', color: 'error' }, class: { root: 'btn-danger' } },
                     { variants: { variant: 'solid', color: 'info' }, class: { root: 'btn-info' } },
+                    // outline
                     { variants: { variant: 'outline', color: 'primary' }, class: { root: 'btn-outline-primary' } },
                     { variants: { variant: 'outline', color: 'neutral' }, class: { root: 'btn-outline-secondary' } },
-                    { variants: { variant: 'soft', color: 'primary' }, class: { root: 'btn-primary' } },
+                    { variants: { variant: 'outline', color: 'success' }, class: { root: 'btn-outline-success' } },
+                    { variants: { variant: 'outline', color: 'warning' }, class: { root: 'btn-outline-warning' } },
+                    { variants: { variant: 'outline', color: 'error' }, class: { root: 'btn-outline-danger' } },
+                    { variants: { variant: 'outline', color: 'info' }, class: { root: 'btn-outline-info' } },
+                    // soft — light bg + colored text. `btn-light` for
+                    // neutral; for the others we lean on `bg-light` to
+                    // avoid the colored fill `btn-<color>` would apply.
+                    { variants: { variant: 'soft', color: 'primary' }, class: { root: 'btn-light text-primary border-0' } },
                     { variants: { variant: 'soft', color: 'neutral' }, class: { root: 'btn-light' } },
-                    { variants: { variant: 'ghost', color: 'primary' }, class: { root: 'btn-link' } },
-                    { variants: { variant: 'ghost', color: 'neutral' }, class: { root: 'btn-link text-secondary' } },
+                    { variants: { variant: 'soft', color: 'success' }, class: { root: 'btn-light text-success border-0' } },
+                    { variants: { variant: 'soft', color: 'warning' }, class: { root: 'btn-light text-warning border-0' } },
+                    { variants: { variant: 'soft', color: 'error' }, class: { root: 'btn-light text-danger border-0' } },
+                    { variants: { variant: 'soft', color: 'info' }, class: { root: 'btn-light text-info border-0' } },
+                    // ghost — link color, no underline. Differentiates
+                    // from `link` (which keeps the underline).
+                    { variants: { variant: 'ghost', color: 'primary' }, class: { root: 'btn-link text-decoration-none' } },
+                    { variants: { variant: 'ghost', color: 'neutral' }, class: { root: 'btn-link text-decoration-none text-secondary' } },
+                    { variants: { variant: 'ghost', color: 'success' }, class: { root: 'btn-link text-decoration-none text-success' } },
+                    { variants: { variant: 'ghost', color: 'warning' }, class: { root: 'btn-link text-decoration-none text-warning' } },
+                    { variants: { variant: 'ghost', color: 'error' }, class: { root: 'btn-link text-decoration-none text-danger' } },
+                    { variants: { variant: 'ghost', color: 'info' }, class: { root: 'btn-link text-decoration-none text-info' } },
+                    // link — underline kept, color applied via text-*
                     { variants: { variant: 'link', color: 'primary' }, class: { root: 'btn-link' } },
                     { variants: { variant: 'link', color: 'neutral' }, class: { root: 'btn-link text-secondary' } },
+                    { variants: { variant: 'link', color: 'success' }, class: { root: 'btn-link text-success' } },
+                    { variants: { variant: 'link', color: 'warning' }, class: { root: 'btn-link text-warning' } },
+                    { variants: { variant: 'link', color: 'error' }, class: { root: 'btn-link text-danger' } },
+                    { variants: { variant: 'link', color: 'info' }, class: { root: 'btn-link text-info' } },
                 ],
                 defaultVariants: {
                     variant: 'solid', 
