@@ -62,6 +62,12 @@ export default defineNuxtConfig({
             cookieName: 'my-app-color-mode',
             preference: 'dark',  // default for first-time visitors
         },
+        // Optional — applies to BOTH the color-mode and palette
+        // cookies. See the cookie configuration section in the
+        // module overview for the full option list.
+        cookie: {
+            sameSite: 'strict',
+        },
     },
 });
 ```

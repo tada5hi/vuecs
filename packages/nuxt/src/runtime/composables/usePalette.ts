@@ -18,15 +18,15 @@ export function usePalette(): UsePaletteReturn {
     const config = useRuntimeConfig();
     const initial = (config.public.vuecs?.palette || {}) as PaletteConfig;
 
+    // Cookie options are populated by the Nuxt module from
+    // `vuecs.cookie` in `nuxt.config.ts`, with documented defaults
+    // (1y, lax, path=/). The module guarantees this is always set.
+    const cookieOptions = (config.public.vuecs?.cookie || {}) as Record<string, unknown>;
+
     const cookie = useCookie<PaletteConfig>('vc-palette', {
         default: () => ({ ...initial }),
         watch: true,
-        // Match the documented contract — a returning visitor sees
-        // their persisted palette before any client JS runs. Without
-        // explicit `maxAge`, Nuxt produces a session cookie that
-        // doesn't survive browser restart.
-        maxAge: 60 * 60 * 24 * 365,
-        sameSite: 'lax',
+        ...cookieOptions,
     });
 
     return bindPalette(cookie);

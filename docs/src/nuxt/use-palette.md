@@ -39,7 +39,28 @@ The composable is a thin wrapper over `bindPalette()` from `@vuecs/design`: the 
 
 ## Persistence
 
-User palette choices persist automatically via the `vc-palette` cookie (1-year expiry, `samesite=lax`). The Nuxt module's SSR plugin reads the same cookie at request time, so a returning visitor sees their preferred palette before any client JS runs. To clear the cookie, call `set({})`.
+User palette choices persist automatically via the `vc-palette` cookie. Defaults: 1-year `maxAge`, `sameSite='lax'`, `path='/'`. The Nuxt module's SSR plugin reads the same cookie at request time, so a returning visitor sees their preferred palette before any client JS runs. To clear the cookie, call `set({})`.
+
+### Configuring cookie attributes
+
+Override the defaults via `vuecs.cookie` in `nuxt.config.ts` — applies to both this cookie and the color-mode cookie:
+
+```ts
+export default defineNuxtConfig({
+    modules: ['@vuecs/nuxt'],
+    vuecs: {
+        cookie: {
+            maxAge: 60 * 60 * 24 * 30,   // 30 days
+            sameSite: 'strict',
+            domain: '.example.com',      // share across subdomains
+            secure: true,                 // required when sameSite='none'
+            path: '/',
+        },
+    },
+});
+```
+
+Per-cookie overrides aren't currently exposed — both vuecs cookies are typically deployed under the same domain with the same SameSite policy. If you need divergent semantics, use `bindPalette()` from `@vuecs/design` directly with your own `useCookie` call.
 
 ## See also
 
