@@ -58,10 +58,38 @@ describe('useArrowNavigation', () => {
         expect(result).toBeNull();
     });
 
-    it('skips disabled items', () => {
+    it('skips disabled items (native attribute)', () => {
         const { ul, items } = buildList(4, { disabledIndices: [1, 2] });
         const result = useArrowNavigation(key('ArrowDown'), items[0], ul);
         expect(result).toBe(items[3]);
+    });
+
+    it('skips items with aria-disabled="true"', () => {
+        const { ul, items } = buildList(3);
+        items[1].setAttribute('aria-disabled', 'true');
+        const result = useArrowNavigation(key('ArrowDown'), items[0], ul);
+        expect(result).toBe(items[2]);
+    });
+
+    it('skips items with data-disabled', () => {
+        const { ul, items } = buildList(3);
+        items[1].setAttribute('data-disabled', '');
+        const result = useArrowNavigation(key('ArrowDown'), items[0], ul);
+        expect(result).toBe(items[2]);
+    });
+
+    it('skips items with the `disabled` class', () => {
+        const { ul, items } = buildList(3);
+        items[1].classList.add('disabled');
+        const result = useArrowNavigation(key('ArrowDown'), items[0], ul);
+        expect(result).toBe(items[2]);
+    });
+
+    it('treats disabled="false" as enabled', () => {
+        const { ul, items } = buildList(3);
+        items[1].setAttribute('disabled', 'false');
+        const result = useArrowNavigation(key('ArrowDown'), items[0], ul);
+        expect(result).toBe(items[1]);
     });
 
     it('Home jumps to first', () => {

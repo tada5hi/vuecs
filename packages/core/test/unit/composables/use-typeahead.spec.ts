@@ -7,6 +7,8 @@ import {
     it,
     vi,
 } from 'vitest';
+import { defineComponent, h } from 'vue';
+import { mount } from '@vue/test-utils';
 import {
     getNextMatch,
     useTypeahead,
@@ -105,5 +107,32 @@ describe('useTypeahead', () => {
         const result = handleTypeaheadSearch('a', items);
         expect(cb).toHaveBeenCalledWith('a');
         expect(result).toBeUndefined();
+    });
+
+    it('clears the in-flight reset timer when called twice', () => {
+        const items = makeItems(['Apple', 'Banana']);
+        const { search, handleTypeaheadSearch } = useTypeahead();
+
+        handleTypeaheadSearch('a', items);
+        vi.advanceTimersByTime(900);
+        handleTypeaheadSearch('p', items); // restarts the 1 s window
+        vi.advanceTimersByTime(900);
+        expect(search.value).toBe('ap');
+    });
+
+    it('clears the timer on scope dispose (component unmount)', () => {
+        const Owner = defineComponent({
+            setup() {
+                const items = makeItems(['Apple']);
+                const { handleTypeaheadSearch } = useTypeahead();
+                handleTypeaheadSearch('a', items);
+                return () => h('div');
+            },
+        });
+
+        const wrapper = mount(Owner);
+        wrapper.unmount();
+        // Advancing past the timeout should not throw or reach the cleared callback
+        expect(() => vi.advanceTimersByTime(2000)).not.toThrow();
     });
 });
