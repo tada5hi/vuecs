@@ -11,7 +11,7 @@ const { isDark } = useData();
 
 /*
  * Hero swatches share the SAME reactive state as the navbar
- * `PaletteSwitch` — `usePalette()` from `@vuecs/design` is wrapped
+ * `SettingsModal` — `usePalette()` from `@vuecs/design` is wrapped
  * with `createSharedComposable`, so every call site reads/writes the
  * one shared ref. `setPalette()` is invoked inside the composable
  * (apply on init + apply on change). localStorage persists across

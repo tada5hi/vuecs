@@ -1,3 +1,6 @@
+import vuecs from '@vuecs/core';
+import overlays from '@vuecs/overlays';
+import tailwindTheme from '@vuecs/theme-tailwind';
 import type { Theme } from 'vitepress';
 import DefaultTheme from 'vitepress/theme';
 import Demo from './components/Demo.vue';
@@ -6,25 +9,24 @@ import Layout from './Layout.vue';
 import './style.css';
 
 /*
- * VitePress theme entry. The docs site itself doesn't render any
- * VC* components inline — every component demo lives in an iframe
- * (see `docs/demos/`). Each iframe is a separate document that
- * installs its own `@vuecs/*` plugins via `app.use(...)` against
- * the same `@vuecs/theme-tailwind` configuration.
+ * VitePress theme entry. Most component examples live in iframes (see
+ * `docs/demos/`) so their CSS stays isolated from VitePress's chrome.
  *
- * `Layout` extends VitePress's default with a palette switcher in the
- * navbar — palette is global state (`usePalette` from `@vuecs/design`,
- * shared via `createSharedComposable`), so each Demo.vue reads it and
- * forwards via postMessage to its iframe.
- *
- * If you ever need to embed a real VC* component on a docs page
- * outside of a `<Demo name="...">`, install the relevant plugin
- * here and re-import its structural CSS in `style.css`.
+ * The single inline vuecs component on the docs site is `<VCModal>`,
+ * used by the navbar `<SettingsModal>`. We install `@vuecs/core` (with
+ * theme-tailwind so the modal picks up its positioning/animation
+ * classes) + `@vuecs/overlays` here. Form-controls / button packages
+ * are intentionally NOT installed inline — their structural CSS would
+ * leak rules into VitePress's marketing chrome (Hero, FeatureGrid).
+ * The settings modal styles its inner select/button controls with
+ * plain HTML + `--vc-color-*` design-token vars instead.
  */
 export default {
     extends: DefaultTheme,
     Layout,
     enhanceApp({ app }) {
+        app.use(vuecs, { themes: [tailwindTheme()] });
+        app.use(overlays);
         app.component('Demo', Demo);
     },
 } satisfies Theme;

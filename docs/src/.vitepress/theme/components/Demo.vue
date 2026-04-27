@@ -47,13 +47,13 @@ let copyTimer: ReturnType<typeof setTimeout> | null = null;
 const variantCatalog = ref<Record<string, readonly string[]>>({});
 const variantValues = reactive<Record<string, string>>({});
 
-// Global palette state — lives in the navbar `PaletteSwitch` component.
+// Global palette state — lives in the navbar `SettingsModal` component.
 // Demo.vue subscribes and forwards changes to its iframe. Local
 // dropdowns intentionally NOT rendered here (palette is page-wide, not
 // per-component, so it belongs in the navbar).
 //
 // `usePalette()` from `@vuecs/design` is shared (createSharedComposable),
-// so this returns the same `current` ref the navbar's PaletteSwitch
+// so this returns the same `current` ref the navbar's SettingsModal
 // writes to.
 const { current: palette } = usePalette();
 

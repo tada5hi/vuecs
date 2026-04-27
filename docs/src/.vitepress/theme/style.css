@@ -4,6 +4,11 @@
 /* VitePress already sets `.dark` on <html>; align our custom-variant. */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* The navbar `<SettingsModal>` renders a real `<VCModal>` inline. The
+   modal's positioning/animation classes come from `@vuecs/theme-tailwind`,
+   so tell Tailwind's JIT to scan its source for those class strings. */
+@source "../../../../themes/tailwind/src";
+
 /*
  * VitePress brand override: route the brand color through the design-system
  * primary scale so palette switching (setPalette({ primary: 'green' })) flips
@@ -33,21 +38,23 @@
 }
 
 /*
- * NOTE: vuecs component renders happen inside iframe demos
+ * NOTE: most vuecs component renders happen inside iframe demos
  * (`docs/demos/`), which load their own consumer-equivalent CSS bundle —
  * Tailwind utilities, theme-tailwind classes, and @vuecs/* structural CSS
  * stay isolated to that document. The docs site itself only loads
  * Tailwind + @vuecs/design here for the landing/marketing chrome
  * (Hero, FeatureGrid, ThemeShowcase, CodeTabs).
  *
- * If you ever embed a real VC* component inline in the docs (not via
- * <Demo name="...">), you'll need to:
- *   1. Re-add the matching `@import "@vuecs/<package>"` here
- *   2. Re-add `@source "../../../../themes/tailwind/src"` so JIT
- *      keeps the theme's class names
- *   3. Re-add unlayered overrides for any utility classes that VitePress's
- *      base reset strips (notably `button { background-color: transparent }`)
+ * The single inline VC component is `<VCModal>` for the navbar
+ * `<SettingsModal>`; it portals to <body> so its content escapes
+ * VitePress's `.vp-doc` chrome. Inner controls (selects + buttons) are
+ * styled with plain HTML + `--vc-color-*` design-token vars (see
+ * `SettingsModal.vue`'s scoped <style>) to avoid pulling in package CSS
+ * bundles that would conflict with VitePress's marketing chrome.
  *
- * The simpler answer is to keep all component renders inside iframes —
- * which is the whole point of the docs/demos/ pipeline.
+ * If you ever embed a real VC* component inline outside `<Demo>`, you
+ * generally need to:
+ *   1. Re-add the matching `@import "@vuecs/<package>"` here
+ *   2. Carefully audit for rules that collide with VitePress chrome
+ *      (the FeatureGrid + Hero are particularly vulnerable)
  */
