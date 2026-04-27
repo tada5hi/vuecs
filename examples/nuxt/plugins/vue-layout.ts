@@ -15,6 +15,7 @@ import installFormControl from '@vuecs/form-controls';
 import installGravatar from '@vuecs/gravatar';
 import installLink from '@vuecs/link';
 import { install as installNavigation } from '@vuecs/navigation';
+import installOverlays from '@vuecs/overlays';
 import installPagination from '@vuecs/pagination';
 import installTimeago from '@vuecs/timeago';
 import { de } from 'date-fns/locale';
@@ -39,4 +40,5 @@ export default defineNuxtPlugin((ctx) => {
     });
 
     ctx.vueApp.use(installPagination);
+    ctx.vueApp.use(installOverlays);
 });

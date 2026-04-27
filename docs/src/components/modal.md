@@ -3,7 +3,7 @@
 Accessible modal dialog built on [Reka UI](https://reka-ui.com/)'s Dialog primitives. Includes a `useModal()` composable with **view-stack** support — push/pop views inside one modal instance instead of stacking dialogs.
 
 ```bash
-npm install @vuecs/overlays @vuecs/core reka-ui
+npm install @vuecs/overlays
 ```
 
 ## Compound API
@@ -19,12 +19,17 @@ npm install @vuecs/overlays @vuecs/core reka-ui
 | `VCModalDescription` | `DialogDescription` | aria-describedby target. |
 | `VCModalClose` | `DialogClose` | Button that closes. Default content is `×`. |
 
-```vue
+<Demo name="modal" component="VCModal">
+  <template #code>
+
+::: code-group
+
+```vue [Vue]
 <script setup lang="ts">
 import {
     VCModal,
-    VCModalContent,
     VCModalClose,
+    VCModalContent,
     VCModalDescription,
     VCModalTitle,
     VCModalTrigger,
@@ -38,18 +43,44 @@ const open = ref(false);
     <VCModal v-model:open="open">
         <VCModalTrigger>Open dialog</VCModalTrigger>
         <VCModalContent>
+            <!-- Renders the default × in the top-right (the position
+                 styled by the theme-tailwind `close` slot). -->
+            <VCModalClose />
             <VCModalTitle>Confirm action</VCModalTitle>
             <VCModalDescription>
                 This will permanently delete the record.
             </VCModalDescription>
             <div class="flex justify-end gap-2">
-                <VCModalClose>Cancel</VCModalClose>
+                <button @click="open = false">Cancel</button>
                 <button @click="open = false">Confirm</button>
             </div>
         </VCModalContent>
     </VCModal>
 </template>
 ```
+
+```css [CSS]
+@import "tailwindcss";
+@import "@vuecs/design";
+
+@custom-variant dark (&:where(.dark, .dark *));
+```
+
+:::
+
+  </template>
+</Demo>
+
+::: tip When to use `<VCModalClose>` vs a plain `<button>`
+The theme-tailwind `close` slot is styled for the **top-right corner ×**
+(`absolute right-3 top-3 h-7 w-7`). Use `<VCModalClose />` (no children) for
+that position. For Cancel/Confirm-style buttons elsewhere in the dialog,
+use plain `<button @click="open = false">` — Vue's `class` attribute merges
+with the theme's classes rather than replacing them, so the corner-positioning
+leaks if you reuse `<VCModalClose>` in the footer. To use `<VCModalClose>`
+outside the corner (e.g. for a labelled Cancel button), pass a full theme
+override via `:theme-class="{ close: 'rounded-md border ...' }"`.
+:::
 
 ## `useModal()` composable
 
@@ -111,10 +142,14 @@ type UseModalReturn = {
 
 ### Wiring with the compound API
 
-```vue
+<Demo name="modal-view-stack" component="VCModal">
+  <template #code>
+
+::: code-group
+
+```vue [Vue]
 <script setup lang="ts">
 import { VCModal, VCModalContent, VCModalTitle, useModal } from '@vuecs/overlays';
-import { h } from 'vue';
 import ListView from './ListView.vue';
 import DetailView from './DetailView.vue';
 
@@ -126,7 +161,9 @@ const showItem = (id: number) => {
 </script>
 
 <template>
-    <button @click="modal.open({ component: ListView })">Open list</button>
+    <button @click="modal.open({ component: ListView, title: 'List' })">
+        Open list
+    </button>
 
     <VCModal :open="modal.isOpen.value" @update:open="modal.setOpen">
         <VCModalContent>
@@ -144,6 +181,18 @@ const showItem = (id: number) => {
     </VCModal>
 </template>
 ```
+
+```css [CSS]
+@import "tailwindcss";
+@import "@vuecs/design";
+
+@custom-variant dark (&:where(.dark, .dark *));
+```
+
+:::
+
+  </template>
+</Demo>
 
 ## Theme keys
 
@@ -171,6 +220,90 @@ The Reka Dialog primitives provide:
 - **Escape key** — closes the modal. Combine with `useModal()`'s `popView()` for view-stack flows by intercepting `update:open` to call `popView` while `hasHistory` is true.
 - **ARIA** — `role="dialog"`, `aria-modal`, `aria-labelledby` (linked to `<VCModalTitle>`), `aria-describedby` (linked to `<VCModalDescription>`).
 
+## API Reference
+
+### `<VCModal>`
+
+Holds the open/closed state and provides context to every nested part. Wraps Reka's `DialogRoot`.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `open` | `boolean \| undefined` | `undefined` | Controlled open state. Use `v-model:open` or pair `:open` with `@update:open`. |
+| `defaultOpen` | `boolean` | `false` | Initial open state for uncontrolled usage (when `open` is omitted). |
+| `modal` | `boolean` | `true` | Trap focus inside the dialog and disable interaction with content outside. |
+
+| Emit | Payload | Description |
+|---|---|---|
+| `update:open` | `boolean` | Fired when the open state changes (Escape, click-outside, `<VCModalClose>` click). |
+
+### `<VCModalTrigger>`
+
+Button that toggles the modal open. Composes `DialogTrigger` over the configured `as` element.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `as` | `string` | `'button'` | HTML tag to render. Set to `'div'`, `'span'`, etc. when you need non-button semantics. |
+| `asChild` | `boolean` | `false` | Render the trigger via the default slot's child element instead of `as`. The slot's element receives the trigger's listeners + ARIA. |
+| `themeClass` | `Partial<ModalThemeClasses>` | `undefined` | Per-instance theme override (slot keys → class strings). |
+| `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |
+
+### `<VCModalContent>`
+
+Floating dialog panel. Bundles `DialogPortal` + `DialogOverlay` + `DialogContent` so consumers don't compose them manually.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `inline` | `boolean` | `false` | Skip the `DialogPortal` and render where the component sits in the DOM. Useful for testing or custom mounting. |
+| `hideOverlay` | `boolean` | `false` | Skip the backdrop element. |
+| `themeClass` | `Partial<ModalThemeClasses>` | `undefined` | Per-instance theme override. |
+| `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |
+
+Extra `DialogContent` props (`onEscapeKeyDown`, `onPointerDownOutside`, `onInteractOutside`, etc.) pass through via `attrs`.
+
+### `<VCModalTitle>`
+
+Accessible dialog title, linked to the panel via `aria-labelledby`. Wraps `DialogTitle`.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `themeClass` | `Partial<ModalThemeClasses>` | `undefined` | Per-instance theme override. |
+| `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |
+
+### `<VCModalDescription>`
+
+Accessible description, linked via `aria-describedby`. Wraps `DialogDescription`.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `themeClass` | `Partial<ModalThemeClasses>` | `undefined` | Per-instance theme override. |
+| `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |
+
+### `<VCModalClose>`
+
+Button that dismisses the modal. Wraps `DialogClose`. Default slot content is `×` when no children are provided.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `as` | `string` | `'button'` | HTML tag to render. |
+| `asChild` | `boolean` | `false` | Render via the default slot's child element. |
+| `themeClass` | `Partial<ModalThemeClasses>` | `undefined` | Per-instance theme override. |
+| `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |
+
+### `useModal(options?)`
+
+Reactive view-stack composable. See [`useModal()` composable](#usemodal-composable) above for usage.
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `initialView` | `ModalView` | `undefined` | Pushed onto the stack the first time `open()` is called without a `view` argument. |
+| `onClose` | `() => void` | `undefined` | Called after the modal closes (after the stack is cleared). |
+
+The return shape (`isOpen` / `currentView` / `hasHistory` / `depth` / `open` / `close` / `pushView` / `popView` / `replaceView` / `setOpen`) is documented in the API block above.
+
+::: tip Header / body / footer
+`header`, `body`, and `footer` are theme keys, not components — vuecs doesn't ship `<VCModalHeader>` etc. Compose them as plain `<div>` / `<header>` / `<footer>` and apply the theme classes manually if you want the layout helpers from `theme-tailwind`. The theme key list above shows the default classes.
+:::
+
 ## Status
 
-`@vuecs/overlays` is the first piece of Phase 3 of the [Reka UI adoption roadmap](https://github.com/tada5hi/vuecs/blob/master/.agents/plans/reka-ui-adoption-roadmap.md). `VCPopover`, `VCTooltip`, `VCDropdownMenu`, and `VCContextMenu` will follow on the same compound + `useComponentTheme` shape.
+`@vuecs/overlays` ships Modal alongside Popover, Tooltip, DropdownMenu, and ContextMenu — all on the same compound + `useComponentTheme` shape. See the [Reka UI adoption roadmap](https://github.com/tada5hi/vuecs/blob/master/.agents/plans/reka-ui-adoption-roadmap.md) for the broader plan.

@@ -133,6 +133,74 @@ export default function bootstrapV5Theme(): Theme {
                 },
                 defaultVariants: { variant: 'outline', size: 'md' },
             },
+            // Reka primitives drive open/close via `data-state="open|closed"`,
+            // not Bootstrap's `.show` class. The mappings below give consumers
+            // Bootstrap's chrome (border, padding, typography) but the
+            // show/hide animation lifecycle is Reka's, not Bootstrap's.
+            // Consumers wanting the BS fade transition can layer
+            // `data-[state=open]:animate-... ` rules on top via overrides.
+            modal: {
+                classes: {
+                    overlay: 'modal-backdrop fade show',
+                    content: 'modal-content position-fixed top-50 start-50 translate-middle shadow',
+                    header: 'modal-header',
+                    title: 'modal-title',
+                    description: 'text-muted small',
+                    body: 'modal-body',
+                    footer: 'modal-footer',
+                    trigger: '',
+                    close: 'btn-close position-absolute top-0 end-0 m-2',
+                    back: 'btn btn-sm btn-link p-1',
+                },
+            },
+            popover: {
+                classes: {
+                    trigger: '',
+                    content: 'popover bs-popover-auto show',
+                    arrow: 'popover-arrow',
+                    close: 'btn-close position-absolute top-0 end-0 m-1',
+                },
+            },
+            tooltip: {
+                classes: {
+                    trigger: '',
+                    content: 'tooltip bs-tooltip-auto show tooltip-inner',
+                    arrow: 'tooltip-arrow',
+                },
+            },
+            dropdownMenu: {
+                classes: {
+                    trigger: '',
+                    content: 'dropdown-menu show',
+                    item: 'dropdown-item',
+                    checkboxItem: 'dropdown-item ps-4',
+                    radioItem: 'dropdown-item ps-4',
+                    radioGroup: '',
+                    itemIndicator: 'position-absolute start-0 ms-2',
+                    label: 'dropdown-header',
+                    separator: 'dropdown-divider',
+                    group: '',
+                    subTrigger: 'dropdown-item dropdown-toggle',
+                    subContent: 'dropdown-menu show',
+                    arrow: '',
+                },
+            },
+            contextMenu: {
+                classes: {
+                    trigger: '',
+                    content: 'dropdown-menu show',
+                    item: 'dropdown-item',
+                    checkboxItem: 'dropdown-item ps-4',
+                    radioItem: 'dropdown-item ps-4',
+                    radioGroup: '',
+                    itemIndicator: 'position-absolute start-0 ms-2',
+                    label: 'dropdown-header',
+                    separator: 'dropdown-divider',
+                    group: '',
+                    subTrigger: 'dropdown-item dropdown-toggle',
+                    subContent: 'dropdown-menu show',
+                },
+            },
         },
     };
 }
