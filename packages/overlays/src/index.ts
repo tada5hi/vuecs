@@ -3,6 +3,7 @@ import { installConfigManager, installDefaultsManager, installThemeManager } fro
 import type { CoreOptions } from '@vuecs/core';
 
 import './vue';
+import { registerOverlayConfigDefaults } from './config';
 import {
     VCContextMenu,
     VCContextMenuCheckboxItem,
@@ -59,7 +60,8 @@ export type Options = CoreOptions;
 export function install(app: App, options: Options = {}): void {
     installThemeManager(app, options);
     installDefaultsManager(app, options);
-    installConfigManager(app, options);
+    const config = installConfigManager(app, options);
+    registerOverlayConfigDefaults(config);
 
     Object.entries({
         VCPresence,

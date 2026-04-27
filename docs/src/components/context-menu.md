@@ -105,7 +105,7 @@ const onAction = (key: string) => console.log('action:', key);
 | Key | Default class | Notes |
 |---|---|---|
 | `trigger` | `vc-context-menu-trigger` | |
-| `content` | `vc-context-menu-content` | Menu panel; `data-state="open|closed"` for animation. |
+| `content` | `vc-context-menu-content` | Menu panel; `data-state="open\|closed"` for animation. |
 | `item` | `vc-context-menu-item` | `data-highlighted` while hovered/focused, `data-disabled` when disabled. |
 | `label` | `vc-context-menu-label` | |
 | `separator` | `vc-context-menu-separator` | |

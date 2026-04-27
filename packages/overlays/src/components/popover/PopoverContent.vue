@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, h } from 'vue';
+import { defineComponent, h, mergeProps } from 'vue';
 import type { PropType } from 'vue';
 import { PopoverContent, PopoverPortal } from 'reka-ui';
 import { useComponentTheme } from '@vuecs/core';
@@ -26,15 +26,14 @@ export default defineComponent({
 
         const renderContent = () => h(
             PopoverContent,
-            {
-                ...attrs,
+            mergeProps(attrs, {
                 side: props.side,
                 sideOffset: props.sideOffset,
                 align: props.align,
                 alignOffset: props.alignOffset,
                 avoidCollisions: props.avoidCollisions,
                 class: theme.value.content || undefined,
-            },
+            }),
             { default: () => slots.default?.() },
         );
 

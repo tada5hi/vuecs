@@ -5,7 +5,7 @@ import {
 } from 'vue';
 import type { Component, ComputedRef, Ref } from 'vue';
 
-export type ModalView<P extends Record<string, any> = Record<string, any>> = {
+export type ModalView = {
     /**
      * Distinguishing key. Used as the Vue render `key` so swapping views
      * remounts the content (state inside the previous view is discarded).
@@ -14,7 +14,7 @@ export type ModalView<P extends Record<string, any> = Record<string, any>> = {
     /** Component to render in the modal body. */
     component: Component;
     /** Props passed to the rendered component. */
-    props?: P;
+    props?: Record<string, unknown>;
     /** Optional title to render in `<VCModalTitle>` when no slot is provided. */
     title?: string;
 };
@@ -82,9 +82,15 @@ export function useModal(options: UseModalOptions = {}): UseModalReturn {
     };
 
     const close = () => {
+        // Guard against double-fire: if already closed, don't re-invoke
+        // onClose. Triggers: setOpen(false) on an already-closed modal,
+        // popView() on an empty stack, duplicate update:open emissions.
+        const wasOpen = isOpen.value;
         isOpen.value = false;
         setStack([]);
-        options.onClose?.();
+        if (wasOpen) {
+            options.onClose?.();
+        }
     };
 
     const pushView = (view: ModalView) => {

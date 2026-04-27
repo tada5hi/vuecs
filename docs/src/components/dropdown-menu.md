@@ -114,7 +114,7 @@ const onAction = (key: string) => console.log('action:', key);
 | Key | Default class | Notes |
 |---|---|---|
 | `trigger` | `vc-dropdown-trigger` | |
-| `content` | `vc-dropdown-content` | Menu panel; `data-state="open|closed"` for animation. |
+| `content` | `vc-dropdown-content` | Menu panel; `data-state="open\|closed"` for animation. |
 | `item` | `vc-dropdown-item` | Single entry; `data-highlighted` while hovered/focused, `data-disabled` when disabled. |
 | `label` | `vc-dropdown-label` | |
 | `separator` | `vc-dropdown-separator` | |

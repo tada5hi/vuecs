@@ -90,7 +90,7 @@ import {
 | Key | Default class | Notes |
 |---|---|---|
 | `trigger` | `vc-popover-trigger` | |
-| `content` | `vc-popover-content` | Floating panel; supports `data-state="open|closed"` for animation. |
+| `content` | `vc-popover-content` | Floating panel; supports `data-state="open\|closed"` for animation. |
 | `arrow` | `vc-popover-arrow` | |
 | `close` | `vc-popover-close` | |
 
@@ -164,6 +164,8 @@ Optional pointer arrow that follows the panel's position. Wraps `PopoverArrow`.
 ### `<VCPopoverClose>`
 
 Button that dismisses the popover. Wraps `PopoverClose`. Default content is `×`.
+
+When no slot content is supplied, `<VCPopoverClose>` auto-applies `aria-label="Close"` so screen readers don't announce the bare `×` glyph as "multiplication sign". Pass an explicit `aria-label` via attrs to override, or supply visible text content to drop the auto-label.
 
 | Prop | Type | Default | Description |
 |---|---|---|---|

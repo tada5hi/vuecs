@@ -41,10 +41,29 @@ function buildApp() {
 describe('<VCContextMenu>', () => {
     afterEach(() => { document.body.innerHTML = ''; });
 
-    it('renders trigger but no content until right-clicked', async () => {
+    it('renders trigger and keeps content closed by default', async () => {
         const wrapper = buildApp();
         await nextTick();
         expect(wrapper.find('[data-testid="trigger"]').exists()).toBe(true);
         expect(document.body.querySelector('[data-testid="content"]')).toBeNull();
+    });
+
+    it('opens the content on contextmenu (right-click) event', async () => {
+        const wrapper = buildApp();
+        await nextTick();
+
+        const trigger = wrapper.find('[data-testid="trigger"]').element as HTMLElement;
+        trigger.dispatchEvent(new MouseEvent('contextmenu', {
+            bubbles: true,
+            cancelable: true,
+            button: 2,
+            clientX: 10,
+            clientY: 10,
+        }));
+        await nextTick();
+        await nextTick();
+
+        expect(document.body.querySelector('[data-testid="content"]')).not.toBeNull();
+        expect(document.body.querySelector('[data-testid="item"]')).not.toBeNull();
     });
 });

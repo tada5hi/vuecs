@@ -17,7 +17,7 @@ npm install @vuecs/overlays
 | `VCModalContent` | `DialogPortal` + `DialogOverlay` + `DialogContent` | Backdrop + focused panel. Use `inline` to skip the portal, `hideOverlay` to skip the backdrop. |
 | `VCModalTitle` | `DialogTitle` | aria-labelledby target. |
 | `VCModalDescription` | `DialogDescription` | aria-describedby target. |
-| `VCModalClose` | `DialogClose` | Button that closes. Default content is `×`. |
+| `VCModalClose` | `DialogClose` | Button that closes. Default content is `×` (auto `aria-label="Close"` when no slot). |
 
 <Demo name="modal" component="VCModal">
   <template #code>
@@ -118,10 +118,10 @@ type UseModalOptions = {
     onClose?: () => void;
 };
 
-type ModalView<P = Record<string, any>> = {
+type ModalView = {
     key?: string | number | symbol;
     component: Component;
-    props?: P;
+    props?: Record<string, unknown>;
     title?: string;
 };
 
@@ -302,6 +302,8 @@ Accessible description, linked via `aria-describedby`. Wraps `DialogDescription`
 ### `<VCModalClose>`
 
 Button that dismisses the modal. Wraps `DialogClose`. Default slot content is `×` when no children are provided.
+
+When no slot content is supplied, `<VCModalClose>` auto-applies `aria-label="Close"` so screen readers don't announce the bare `×` glyph as "multiplication sign". Pass an explicit `aria-label` via attrs to override, or supply visible text content (e.g. `<VCModalClose>Close</VCModalClose>`) — visible text takes precedence and the auto-label is dropped.
 
 | Prop | Type | Default | Description |
 |---|---|---|---|

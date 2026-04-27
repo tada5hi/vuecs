@@ -3,21 +3,28 @@ import type { MaybeRef } from 'vue';
 export type Direction = 'ltr' | 'rtl';
 
 /**
- * Cross-cutting configuration shared by overlay components and any consumer
- * that needs reading direction, locale, CSP nonce, or a non-default scroll
- * lock target. Mirrors reka-ui's `ConfigProvider` shape but is installed
- * via vuecs's plugin API instead of a wrapper component.
+ * Cross-cutting configuration. Augmentable interface — child packages
+ * register their own keys via TypeScript declaration merging, mirroring
+ * the `ThemeElements` and `ComponentDefaults` pattern.
+ *
+ * Core declares only the truly cross-cutting keys (`dir`, `locale`).
+ * Child packages declare the rest:
+ *
+ *   - `@vuecs/design` augments with `nonce` (CSP nonce for `setPalette`'s
+ *     injected `<style id="vc-palette">` block).
+ *   - `@vuecs/overlays` augments with `scrollLockTarget` (selector / element
+ *     that should receive scroll-lock when an overlay opens).
+ *
+ * Adding a new key: declaration-merge into this interface from your package
+ * AND ship a side-effect import (e.g. `import '@vuecs/yourpkg/config'`) so
+ * the augmentation file is loaded.
  */
-export type Config = {
+export interface Config {
     /** Reading direction. Used by `useArrowNavigation` and overlay positioning. */
-    dir: Direction;
+    dir?: Direction;
     /** BCP-47 locale tag. Reserved for future date / number / RTL-aware components. */
-    locale: string;
-    /** CSP nonce written onto inline `<style>` tags created at runtime (palette switcher, etc.). */
-    nonce?: string;
-    /** Selector or element that should receive scroll-lock when an overlay opens. Defaults to `<body>`. */
-    scrollLockTarget?: string | HTMLElement;
-};
+    locale?: string;
+}
 
 export type ConfigManagerOptions = {
     config?: Partial<{

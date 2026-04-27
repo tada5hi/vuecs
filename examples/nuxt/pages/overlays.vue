@@ -131,7 +131,9 @@ export default defineNuxtComponent({
         </h3>
 
         <section class="space-y-2">
-            <h4 class="text-lg font-semibold">Modal</h4>
+            <h4 class="text-lg font-semibold">
+                Modal
+            </h4>
             <div class="flex flex-wrap gap-3">
                 <VCModal v-model:open="open">
                     <VCModalTrigger
@@ -194,7 +196,9 @@ export default defineNuxtComponent({
         </section>
 
         <section class="space-y-2">
-            <h4 class="text-lg font-semibold">Popover</h4>
+            <h4 class="text-lg font-semibold">
+                Popover
+            </h4>
             <VCPopover>
                 <VCPopoverTrigger
                     class="rounded-md border border-border bg-bg px-3 py-1.5 text-sm font-medium
@@ -206,14 +210,18 @@ export default defineNuxtComponent({
                     side="bottom"
                     :side-offset="8"
                 >
-                    <p class="text-sm">Hello from a popover.</p>
+                    <p class="text-sm">
+                        Hello from a popover.
+                    </p>
                     <VCPopoverArrow />
                 </VCPopoverContent>
             </VCPopover>
         </section>
 
         <section class="space-y-2">
-            <h4 class="text-lg font-semibold">Tooltip</h4>
+            <h4 class="text-lg font-semibold">
+                Tooltip
+            </h4>
             <VCTooltipProvider :delay-duration="200">
                 <VCTooltip>
                     <VCTooltipTrigger
@@ -228,7 +236,9 @@ export default defineNuxtComponent({
         </section>
 
         <section class="space-y-2">
-            <h4 class="text-lg font-semibold">DropdownMenu</h4>
+            <h4 class="text-lg font-semibold">
+                DropdownMenu
+            </h4>
             <VCDropdownMenu>
                 <VCDropdownMenuTrigger
                     class="rounded-md border border-border bg-bg px-3 py-1.5 text-sm font-medium
@@ -238,8 +248,12 @@ export default defineNuxtComponent({
                 </VCDropdownMenuTrigger>
                 <VCDropdownMenuContent>
                     <VCDropdownMenuLabel>Manage</VCDropdownMenuLabel>
-                    <VCDropdownMenuItem @select="lastAction = 'edit'">Edit</VCDropdownMenuItem>
-                    <VCDropdownMenuItem @select="lastAction = 'duplicate'">Duplicate</VCDropdownMenuItem>
+                    <VCDropdownMenuItem @select="lastAction = 'edit'">
+                        Edit
+                    </VCDropdownMenuItem>
+                    <VCDropdownMenuItem @select="lastAction = 'duplicate'">
+                        Duplicate
+                    </VCDropdownMenuItem>
                     <VCDropdownMenuSeparator />
                     <VCDropdownMenuCheckboxItem v-model="checked">
                         <VCDropdownMenuItemIndicator />
@@ -271,7 +285,9 @@ export default defineNuxtComponent({
         </section>
 
         <section class="space-y-2">
-            <h4 class="text-lg font-semibold">ContextMenu</h4>
+            <h4 class="text-lg font-semibold">
+                ContextMenu
+            </h4>
             <VCContextMenu>
                 <VCContextMenuTrigger>
                     <div
@@ -283,10 +299,16 @@ export default defineNuxtComponent({
                 </VCContextMenuTrigger>
                 <VCContextMenuContent>
                     <VCContextMenuLabel>Item options</VCContextMenuLabel>
-                    <VCContextMenuItem @select="lastAction = 'open'">Open</VCContextMenuItem>
-                    <VCContextMenuItem @select="lastAction = 'rename'">Rename</VCContextMenuItem>
+                    <VCContextMenuItem @select="lastAction = 'open'">
+                        Open
+                    </VCContextMenuItem>
+                    <VCContextMenuItem @select="lastAction = 'rename'">
+                        Rename
+                    </VCContextMenuItem>
                     <VCContextMenuSeparator />
-                    <VCContextMenuItem @select="lastAction = 'delete'">Delete</VCContextMenuItem>
+                    <VCContextMenuItem @select="lastAction = 'delete'">
+                        Delete
+                    </VCContextMenuItem>
                 </VCContextMenuContent>
             </VCContextMenu>
         </section>

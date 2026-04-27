@@ -38,7 +38,7 @@
     },
     "scripts": {
         "build:js": "tsdown",
-        "build:types": "vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json || true",
+        "build:types": "vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json",
         "build": "rimraf dist && npm run build:js && npm run build:types",
         "test": "vitest --config test/vitest.config.ts --run",
         "test:coverage": "vitest --config test/vitest.config.ts --run --coverage"

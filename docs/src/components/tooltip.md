@@ -91,7 +91,7 @@ For most apps, install `<VCTooltipProvider>` once at the root and wrap individua
 | Key | Default class | Notes |
 |---|---|---|
 | `trigger` | `vc-tooltip-trigger` | |
-| `content` | `vc-tooltip-content` | Bubble; supports `data-state="delayed-open|closed"` for animation. |
+| `content` | `vc-tooltip-content` | Bubble; supports `data-state="delayed-open\|closed"` for animation. |
 | `arrow` | `vc-tooltip-arrow` | |
 
 ## Accessibility

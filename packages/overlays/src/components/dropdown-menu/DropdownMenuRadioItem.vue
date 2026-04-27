@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, h } from 'vue';
+import { defineComponent, h, mergeProps } from 'vue';
 import type { PropType } from 'vue';
 import { DropdownMenuRadioItem } from 'reka-ui';
 import { useComponentTheme } from '@vuecs/core';
@@ -27,12 +27,13 @@ export default defineComponent({
         return () => h(
             DropdownMenuRadioItem,
             {
-                ...attrs,
+                ...mergeProps(attrs, {
+                    disabled: props.disabled,
+                    textValue: props.textValue,
+                    onSelect: (event: Event) => emit('select', event),
+                    class: theme.value.radioItem || undefined,
+                }),
                 value: props.value,
-                disabled: props.disabled,
-                textValue: props.textValue,
-                onSelect: (event: Event) => emit('select', event),
-                class: theme.value.radioItem || undefined,
             },
             { default: () => slots.default?.() },
         );

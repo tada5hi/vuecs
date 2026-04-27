@@ -15,17 +15,28 @@ export default defineComponent({
         themeClass: { type: Object as PropType<ThemeClassesOverride<ModalThemeClasses>>, default: undefined },
         themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
     },
-    setup(props, { slots }) {
+    setup(props, { slots, attrs }) {
         const theme = useComponentTheme('modal', props, modalThemeDefaults);
-        return () => h(
-            DialogClose,
-            {
-                as: props.as,
-                asChild: props.asChild,
-                class: theme.value.close || undefined,
-            },
-            { default: () => slots.default?.() ?? '×' },
-        );
+        return () => {
+            // When the consumer doesn't supply slot content the rendered
+            // button only contains the "×" glyph (U+00D7), which screen
+            // readers announce as "multiplication sign". Provide a default
+            // aria-label so the fallback is accessible out of the box;
+            // consumers can still override via attrs.
+            const hasSlot = !!slots.default;
+            const ariaLabel = (attrs['aria-label'] as string | undefined) ??
+                (hasSlot ? undefined : 'Close');
+            return h(
+                DialogClose,
+                {
+                    as: props.as,
+                    asChild: props.asChild,
+                    class: theme.value.close || undefined,
+                    'aria-label': ariaLabel,
+                },
+                { default: () => slots.default?.() ?? '×' },
+            );
+        };
     },
 });
 </script>

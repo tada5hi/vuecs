@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, h } from 'vue';
+import { defineComponent, h, mergeProps } from 'vue';
 import type { PropType } from 'vue';
 import { DropdownMenuContent, DropdownMenuPortal } from 'reka-ui';
 import { useComponentTheme } from '@vuecs/core';
@@ -26,8 +26,7 @@ export default defineComponent({
 
         const renderContent = () => h(
             DropdownMenuContent,
-            {
-                ...attrs,
+            mergeProps(attrs, {
                 side: props.side,
                 sideOffset: props.sideOffset,
                 align: props.align,
@@ -35,7 +34,7 @@ export default defineComponent({
                 avoidCollisions: props.avoidCollisions,
                 loop: props.loop,
                 class: theme.value.content || undefined,
-            },
+            }),
             { default: () => slots.default?.() },
         );
 

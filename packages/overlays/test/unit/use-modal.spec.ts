@@ -91,6 +91,34 @@ describe('useModal', () => {
         expect(onClose).toHaveBeenCalledOnce();
     });
 
+    it('does NOT fire onClose when close() is called on an already-closed modal', () => {
+        const onClose = vi.fn();
+        const m = useModal({ onClose });
+        // Already closed — close() should be a no-op, not re-fire onClose.
+        m.close();
+        expect(onClose).not.toHaveBeenCalled();
+    });
+
+    it('does NOT fire onClose when popView() runs on an empty stack', () => {
+        const onClose = vi.fn();
+        const m = useModal({ onClose });
+        // No views pushed yet, modal is closed → popView falls through to
+        // close() but onClose must not double-fire.
+        m.popView();
+        expect(onClose).not.toHaveBeenCalled();
+    });
+
+    it('does NOT fire onClose on duplicate setOpen(false)', () => {
+        const onClose = vi.fn();
+        const m = useModal({ onClose });
+        m.open({ component: View1 });
+        m.setOpen(false);
+        expect(onClose).toHaveBeenCalledOnce();
+        // Second false — should be a no-op, not re-fire onClose.
+        m.setOpen(false);
+        expect(onClose).toHaveBeenCalledOnce();
+    });
+
     it('replaceView() swaps the entire stack', () => {
         const m = useModal();
         m.pushView({ component: View1 });

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, h } from 'vue';
+import { defineComponent, h, mergeProps } from 'vue';
 import type { PropType } from 'vue';
 import {
     DialogContent,
@@ -30,10 +30,7 @@ export default defineComponent({
                 [h(DialogOverlay, { class: theme.value.overlay || undefined })]),
             h(
                 DialogContent,
-                {
-                    ...attrs,
-                    class: theme.value.content || undefined,
-                },
+                mergeProps(attrs, { class: theme.value.content || undefined }),
                 { default: () => slots.default?.() },
             ),
         ];

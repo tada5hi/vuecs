@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, h } from 'vue';
+import { defineComponent, h, mergeProps } from 'vue';
 import type { PropType } from 'vue';
 import { ContextMenuItem } from 'reka-ui';
 import { useComponentTheme } from '@vuecs/core';
@@ -27,15 +27,14 @@ export default defineComponent({
         const theme = useComponentTheme('contextMenu', props, contextMenuThemeDefaults);
         return () => h(
             ContextMenuItem,
-            {
-                ...attrs,
+            mergeProps(attrs, {
                 as: props.as,
                 asChild: props.asChild,
                 disabled: props.disabled,
                 textValue: props.textValue,
                 onSelect: (event: Event) => emit('select', event),
                 class: theme.value.item || undefined,
-            },
+            }),
             { default: () => slots.default?.() },
         );
     },
