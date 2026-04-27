@@ -38,6 +38,7 @@
         "@vuecs/link": "*",
         "@vuecs/list-controls": "*",
         "@vuecs/navigation": "*",
+        "@vuecs/overlays": "*",
         "@vuecs/pagination": "*",
         "@vuecs/theme-tailwind": "*",
         "@vuecs/timeago": "*",

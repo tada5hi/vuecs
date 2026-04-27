@@ -369,6 +369,95 @@ it's the only entry without a corresponding `VC*` component. The previous
 `useSubmitButton()` reactive bind-object helper (in `@vuecs/form-controls`,
 marked `@experimental`); the defaults registration moved with the helper.
 
+## Cross-cutting Config (@vuecs/core, Phase 3 prerequisite)
+
+The third manager alongside theme and defaults. Carries cross-cutting state
+that vuecs components (and future RTL-aware features) need to read at runtime.
+
+```
+@vuecs/core/src/config/
+  types.ts       <- Config (augmentable interface), ConfigManagerOptions, Direction
+  manager.ts     <- ConfigManager (shallowRef state, withDefaults(), per-instance defaults map)
+  install.ts     <- installConfigManager(app, options) / provideConfigManager(manager) / injectConfigManager()
+  composable.ts  <- useConfig(key) — reactive ComputedRef<Config[K] | undefined>;
+                    useConfig(key, fallback) overload returns NonNullable<Config[K]>
+  provider/
+    Provider.vue <- <VCConfigProvider> SFC for subtree-scoped config
+```
+
+### Federated schema (declaration merging)
+
+`Config` is an empty-by-default augmentable **interface** (mirrors
+`ThemeElements` and `ComponentDefaults`). Core declares only the truly
+cross-cutting keys:
+
+```ts
+// @vuecs/core/src/config/types.ts
+export interface Config {
+    dir?: Direction;       // 'ltr' | 'rtl'
+    locale?: string;       // BCP-47
+}
+```
+
+Child packages augment via TypeScript declaration merging AND register
+runtime defaults via `manager.withDefaults()`:
+
+| Package | Augments | `withDefaults` registers |
+|---|---|---|
+| `@vuecs/core` | `dir`, `locale` | `dir: 'ltr'`, `locale: 'en-US'` |
+| `@vuecs/design` | `nonce` (CSP nonce for `setPalette`'s `<style>`) | none — no sensible default |
+| `@vuecs/overlays` | `scrollLockTarget` (selector / element receiving scroll-lock) | `scrollLockTarget: 'body'` |
+
+Each augmentation lives in `<package>/src/config.ts`, side-effect imported
+from the package's `index.ts` so the augmentation loads whenever the
+package is depended on. Augmentations need a type-only anchor import
+(`import type {} from '@vuecs/core'`) so TypeScript can resolve the target
+module. Each augmenting package adds `@vuecs/core` as a `devDependency`
+(type-only — no runtime cost beyond the existing peer dep).
+
+### Resolution order
+
+```
+1. Consumer config (setConfig / install options / <VCConfigProvider :config>)
+2. Registered defaults (withDefaults from child packages + CORE_DEFAULTS)
+3. undefined
+```
+
+`useConfig(key)` returns `Config[K] | undefined` (honest — augmented keys
+may have no default). The overload `useConfig(key, fallback)` returns
+`NonNullable<Config[K]>` when a fallback is provided, mirroring how
+`useComponentDefaults`'s `hardcoded` arg works.
+
+Values may be `MaybeRef`, so reactive sources (e.g. `useLocale()` from an
+i18n integration) unwrap transparently via Vue's `isRef`/`unref` (NOT a
+`'value' in raw` heuristic — that would accidentally unwrap any object
+with a `.value` property like `HTMLInputElement`).
+
+### Subtree scoping with `<VCConfigProvider>`
+
+Two ways to install config:
+
+```ts
+// App-level (most common)
+app.use(vuecs, { config: { dir: 'rtl' } });
+
+// Subtree-scoped (for an RTL block in an LTR app, etc.)
+<VCConfigProvider :config="{ dir: 'rtl' }">
+    <RestOfSubtree />
+</VCConfigProvider>
+```
+
+`<VCConfigProvider>` creates a child `ConfigManager` and **inherits the
+parent's defaults at mount time** (snapshot, not reactive). Calls to
+`withDefaults` inside the subtree affect only the local manager — the
+parent stays untouched. The component uses Vue's raw `provide` (bypassing
+vuecs's `provide` helper, which short-circuits on existing keys) so it
+properly overrides the parent inject.
+
+Mirrors Reka UI's `<ConfigProvider>` shape but layered on top of the
+manager pattern (you get both the install API for global config AND the
+component API for subtree overrides).
+
 ## Design System (@vuecs/design, #1506)
 
 Sits beside — not inside — the theme system. Themes resolve **CSS class
@@ -396,7 +485,8 @@ via a `<style id="vc-palette">` block, leaving layers 1-2 and 4-5 untouched.
 
 ```
 @vuecs/design/
-  assets/index.css    <- :root + .dark + @theme (pure CSS, no build step)
+  assets/index.css       <- :root + .dark + @theme + @import "./animations.css"
+  assets/animations.css  <- Motion primitives — vanilla-CSS port of tw-animate-css (MIT, attributed in header)
   src/
     types.ts                     <- PaletteConfig, SemanticScaleName, TailwindPaletteName
     constants.ts                 <- SEMANTIC_SCALES, TAILWIND_PALETTES, PALETTE_SHADES, PALETTE_STYLE_ELEMENT_ID
@@ -407,6 +497,59 @@ via a `<style id="vc-palette">` block, leaving layers 1-2 and 4-5 untouched.
       index.ts                   <- composables barrel
     index.ts                     <- top-level barrel
 ```
+
+### Motion primitives (animations.css)
+
+A vanilla-CSS port of [`tw-animate-css`](https://github.com/Wombosvideo/tw-animate-css)
+v1.4.0 (MIT). Auto-imported by `assets/index.css` so the bare
+`@import "@vuecs/design"` brings tokens AND motion in one go. Subpath
+exports `@vuecs/design/animations.css` (motion only) and
+`@vuecs/design/index.css` (= bare import) are also available.
+
+**Why a port instead of a runtime dep:** `tw-animate-css` ships its
+classes as Tailwind v4 `@utility` / `@theme inline` directives — they
+only compile inside Tailwind. Bootstrap-themed (or theme-less) consumers
+can't use it. The vanilla rewrite uses the same class names so any theme
+can reference them. Tailwind users keep using `data-[state=open]:fade-in-0
+zoom-in-95` (Tailwind's `data-[state=]:` variant prefix points at the
+same vanilla CSS classes); Bootstrap users get them via unconditional
+class application in their theme entries.
+
+**Class catalog:** `animate-in` / `animate-out` (master triggers),
+`fade-{in,out}-{0,25,50,75,90,95,100}`, `zoom-{in,out}-{0,50,75,90,95,100,105,110,125,150}`,
+`slide-{in-from,out-to}-{top,bottom,left,right,start,end}` (with size stops),
+`spin-{in,out}` ± negatives, `blur-{in,out}` (sm/md/lg/xl/2xl/3xl),
+`accordion-{down,up}`, `collapsible-{down,up}`, `caret-blink`,
+`duration-*`, `delay-*`, `repeat-*`, `direction-*`, `fill-mode-*`,
+`running`, `paused`. Plus a `prefers-reduced-motion: reduce` block that
+disables every animation.
+
+**Maintenance:** when tw-animate-css adds new animations upstream, port
+them here using the same naming and bump the version comment in the file
+header.
+
+**Reka Presence handles unmount delay automatically.** All five Reka
+overlay `*Content` primitives (DialogContent, PopoverContent,
+TooltipContent, MenuContent — used by both DropdownMenu and ContextMenu)
+already wrap themselves in Reka's `Presence` component internally:
+`Presence` reads the element's computed `animation-name` when
+`data-state` flips, suspends unmount until `animationend`, and then
+removes the element. So consumers don't need to wire Presence themselves
+for exit animations to play — the theme's exit-state classes (`animate-out`
++ `fade-out-0` etc. for theme-tailwind, or the `vc-overlay-anim` /
+`vc-overlay-fade-anim` / `vc-tooltip-anim` dual-state helpers for
+theme-bootstrap-v5) just need to be in place. `<VCPresence>` is still
+exported for ad-hoc use (e.g. animating a custom panel that isn't a Reka
+overlay), but isn't required for the shipped overlay families.
+
+**Vuecs dual-state helper classes** (`vc-overlay-anim`,
+`vc-overlay-fade-anim`, `vc-tooltip-anim`) live in `animations.css`
+alongside the tw-animate-css port. They package `data-state`-gated
+enter+exit animations into a single class so theme strings without
+attribute-selector capability (theme-bootstrap-v5, custom CSS-only themes)
+can drive overlay animations. theme-tailwind keeps using the more
+flexible `data-[state=open]:animate-in fade-in-0 zoom-in-95
+data-[state=closed]:animate-out fade-out-0 zoom-out-95` composition.
 
 ### Key exports
 
@@ -572,7 +715,7 @@ Components ──read─────────┘ (via useComponentTheme / use
 
 ## Building blocks (Reka UI)
 
-Some components compose [Reka UI](https://reka-ui.com/) primitives internally for accessibility heavy lifting (focus management, keyboard nav, edge-aware rendering). Consumers don't see this — the public API (props, emits, theme classes) is the vuecs contract; Reka is an implementation detail. Today this applies to `@vuecs/pagination` (wraps `PaginationRoot` / `PaginationList` / `PaginationListItem` / `PaginationFirst|Prev|Next|Last` / `PaginationEllipsis`). The roadmap for broader Reka adoption (overlays, form-controls migration, headless composables) lives at [`.agents/plans/reka-ui-adoption-roadmap.md`](plans/reka-ui-adoption-roadmap.md). See [`.agents/references/reka-ui.md`](references/reka-ui.md) for the conceptual mapping.
+Some components compose [Reka UI](https://reka-ui.com/) primitives internally for accessibility heavy lifting (focus management, keyboard nav, edge-aware rendering). Consumers don't see this — the public API (props, emits, theme classes) is the vuecs contract; Reka is an implementation detail. Today this applies to `@vuecs/pagination` (wraps `PaginationRoot` / `PaginationList` / `PaginationListItem` / `PaginationFirst|Prev|Next|Last` / `PaginationEllipsis`). The roadmap for broader Reka adoption (overlays, form-controls migration, headless composables) lives at [`.agents/plans/009-reka-ui-adoption-roadmap.md`](plans/009-reka-ui-adoption-roadmap.md). See [`.agents/references/reka-ui.md`](references/reka-ui.md) for the conceptual mapping.
 
 ## Headless composables (@vuecs/core, Phase 2)
 
@@ -599,3 +742,91 @@ Source under `packages/core/src/utils/composables/`. Tests under
 roadmap. `@vuecs/navigation` consumes `useArrowNavigation` in `VCNavItems`
 to provide vertical arrow / Home / End keyboard navigation across
 sibling items at any depth.
+
+## Overlays (@vuecs/overlays, Phase 3)
+
+The first compound-component package. Wraps Reka's Dialog / Popover /
+Tooltip / DropdownMenu / ContextMenu primitives. Each part is a thin
+SFC that renders the matching Reka component and threads our
+`useComponentTheme(<family>, props, <familyThemeDefaults>)` over it for
+theme class resolution. Content components (`*Content`) bundle the
+matching `*Portal` so consumers don't have to compose them manually
+(an `inline` prop bypasses the portal for testing or custom mounting).
+
+```
+@vuecs/overlays/
+  src/
+    components/
+      modal/
+        Modal.vue           <- DialogRoot wrapper (v-model:open)
+        ModalTrigger.vue    <- DialogTrigger
+        ModalContent.vue    <- DialogPortal + DialogOverlay + DialogContent
+        ModalTitle.vue
+        ModalDescription.vue
+        ModalClose.vue
+        theme.ts            <- shared modalThemeDefaults (single source for all parts)
+        types.ts            <- ModalThemeClasses + ThemeElements augmentation
+        use-modal.ts        <- useModal() view-stack composable (issue #1480)
+        index.ts
+      popover/                <- Popover / Trigger / Content / Arrow / Close
+      tooltip/                <- TooltipProvider / Tooltip / Trigger / Content / Arrow
+      dropdown-menu/          <- DropdownMenu / Trigger / Content / Item / Label / Separator / Group / Arrow
+      context-menu/           <- ContextMenu / Trigger / Content / Item / Label / Separator / Group
+    vue.ts                  <- GlobalComponents augmentation (every VC* part)
+    index.ts                <- install() (themes, defaults, config; registers all VC* components)
+```
+
+Every overlay family follows the same per-folder layout: each component is a
+small SFC, plus `theme.ts` (single shared defaults), `types.ts`
+(`<Family>ThemeClasses` + `ThemeElements` augmentation), and `index.ts`
+re-export barrel. Tooltip additionally exposes `<VCTooltipProvider>` for
+app-level `delayDuration` / `skipDelayDuration` config; the other families
+read state from their own root (`v-model:open` on Modal/Popover/Dropdown,
+right-click on ContextMenu).
+
+The `useModal()` composable is the vuecs-specific value-add on top of
+Reka's Dialog. It exposes a **view stack** (`pushView` / `popView` /
+`replaceView`) and an `onClose` hook so consumers can build flows like
+"list view → push detail view → pop back" without stacking modals or
+fighting z-index. Originally proposed in
+[issue #1480](https://github.com/tada5hi/vuecs/issues/1480); the
+roadmap-scoped Reka-wrapped compound API is layered on top of it (the
+composable owns the state, `<VCModal>` v-binds to it). Equivalent
+composables for the other families haven't shipped — most of those don't
+need stateful flows, and consumers can wire `:open`/`@update:open`
+manually when they do.
+
+Theme entries for all five families (`modal`, `popover`, `tooltip`,
+`dropdownMenu`, `contextMenu`) ship in **both** `@vuecs/theme-tailwind` AND
+`@vuecs/theme-bootstrap-v5` with `data-state` animation hooks (`open|closed`
+for modal/popover/menu, `delayed-open|closed` for tooltip). Menu items also
+expose `data-highlighted` (hover/focus) and `data-disabled`. Animation
+classes (`animate-in`, `fade-in-0`, `zoom-in-95`, etc.) come from
+`@vuecs/design`'s `animations.css` (vanilla-CSS port of `tw-animate-css`)
+— see "Motion primitives" under the Design System section above.
+- Tailwind theme references the per-state classes via the `data-[state=open]:`
+  / `data-[state=closed]:` variant prefix (Tailwind compiles each variant
+  into a selector that scopes the class to the matching state).
+- Bootstrap-v5 theme uses vuecs's dual-state helper classes
+  (`vc-overlay-anim`, `vc-overlay-fade-anim`, `vc-tooltip-anim` from
+  `animations.css`) which package `data-state`-gated enter+exit
+  animations into a single class. Required because BS5 theme strings
+  can't carry `data-[state=]:` attribute selectors.
+- `theme-bootstrap-v4` doesn't ship overlay entries (Sass-compiled,
+  doesn't map cleanly to Reka's `data-state` contract).
+
+**Both enter AND exit animations fire** today. Reka's `*Content`
+primitives wrap themselves in `Presence` internally — when `data-state`
+flips to `closed`, Presence reads the element's computed `animation-name`,
+suspends unmount, and waits for `animationend` before removing the
+element. So the theme's exit-state classes (the `data-[state=closed]:`
+variants on theme-tailwind, the `[data-state="closed"]` rules in the
+`vc-*-anim` helpers for BS5) actually play. No additional wiring on the
+vuecs side is required.
+
+Reka stays an internal dependency; consumers don't touch `reka-ui`
+directly — the `<VC*>` parts are the vuecs contract.
+
+DropdownMenu and ContextMenu ship the **full surface** including
+`CheckboxItem`, `RadioGroup`, `RadioItem`, `ItemIndicator`, `Sub`,
+`SubTrigger`, and `SubContent` parts.

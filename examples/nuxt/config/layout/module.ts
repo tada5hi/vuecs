@@ -68,9 +68,15 @@ const secondaryDefaultItems : NavigationItem[] = [
         url: '/pagination',
     },
     {
-        name: 'Timeago', 
-        type: 'link', 
-        icon: 'fa-solid fa-clock', 
+        name: 'Overlays',
+        type: 'link',
+        icon: 'fa-solid fa-window-restore',
+        url: '/overlays',
+    },
+    {
+        name: 'Timeago',
+        type: 'link',
+        icon: 'fa-solid fa-clock',
         url: '/timeago',
     },
 ];

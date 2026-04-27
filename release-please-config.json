@@ -15,6 +15,7 @@
         "packages/list-controls": {"component": "list-controls" },
         "packages/navigation": {"component": "navigation" },
         "packages/nuxt": {"component": "nuxt" },
+        "packages/overlays": {"component": "overlays" },
         "packages/pagination": {"component": "pagination" },
         "themes/bootstrap-v4": {"component": "theme-bootstrap-v4" },
         "themes/bootstrap-v5": {"component": "theme-bootstrap-v5" },

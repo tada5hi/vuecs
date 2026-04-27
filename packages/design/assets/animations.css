@@ -1,0 +1,440 @@
+/*
+ * Overlay animations — vanilla-CSS port of tw-animate-css's public class
+ * surface so the same classes work for any theme (Tailwind, Bootstrap, custom),
+ * not just Tailwind v4.
+ *
+ * Source: https://github.com/Wombosvideo/tw-animate-css (v1.4.0, MIT)
+ *
+ * tw-animate-css ships its rules as Tailwind v4 `@utility` / `@theme inline`
+ * directives — they only compile inside Tailwind. This file rewrites those
+ * same rules as plain class selectors so consumers without Tailwind (e.g.
+ * Bootstrap-themed sites) can use them too. Tailwind users keep using the
+ * `data-[state=open]:fade-in-0 zoom-in-95 ...` variant pattern unchanged —
+ * Tailwind's `data-[state=]` variant prefix points at these CSS classes the
+ * same way it would at any other utility.
+ *
+ * When tw-animate-css adds new animations upstream, port them here using
+ * the same naming. Keep this file in lockstep with the upstream version
+ * pinned above; bump the version comment when you re-port.
+ *
+ * Composition model (mirrors tw-animate-css):
+ *   <element class="animate-in fade-in-0 zoom-in-95 duration-150">
+ *
+ * - `animate-in` / `animate-out` apply the master `enter` / `exit`
+ *   keyframes which read these CSS custom properties:
+ *       --tw-enter-opacity, --tw-enter-scale, --tw-enter-rotate,
+ *       --tw-enter-translate-x, --tw-enter-translate-y, --tw-enter-blur
+ *       (and matching --tw-exit-* for animate-out)
+ * - Modifier classes (`fade-in`, `zoom-in-95`, `slide-in-from-top`, etc.)
+ *   set the corresponding custom property; the master keyframe interpolates.
+ * - `duration-*` / `delay-*` / `repeat-*` / `direction-*` / `fill-mode-*`
+ *   tune timing & lifecycle.
+ *
+ * For our overlays, theme-tailwind already references the relevant subset
+ * (animate-in, animate-out, fade-in-0, fade-out-0, zoom-in-95, zoom-out-95)
+ * via Tailwind's `data-[state=open|closed]:` variant prefix. Bootstrap
+ * theme entries can reference the same classes directly.
+ */
+
+/* ---------- Custom properties (defaults for the master keyframes) ------- */
+
+@property --tw-animation-delay { syntax: "*"; inherits: false; initial-value: 0s; }
+@property --tw-animation-direction { syntax: "*"; inherits: false; initial-value: normal; }
+@property --tw-animation-duration { syntax: "*"; inherits: false; initial-value: 150ms; }
+@property --tw-animation-fill-mode { syntax: "*"; inherits: false; initial-value: none; }
+@property --tw-animation-iteration-count { syntax: "*"; inherits: false; initial-value: 1; }
+@property --tw-ease { syntax: "*"; inherits: false; initial-value: ease; }
+
+@property --tw-enter-blur { syntax: "*"; inherits: false; initial-value: 0; }
+@property --tw-enter-opacity { syntax: "*"; inherits: false; initial-value: 1; }
+@property --tw-enter-rotate { syntax: "*"; inherits: false; initial-value: 0; }
+@property --tw-enter-scale { syntax: "*"; inherits: false; initial-value: 1; }
+@property --tw-enter-translate-x { syntax: "*"; inherits: false; initial-value: 0; }
+@property --tw-enter-translate-y { syntax: "*"; inherits: false; initial-value: 0; }
+
+@property --tw-exit-blur { syntax: "*"; inherits: false; initial-value: 0; }
+@property --tw-exit-opacity { syntax: "*"; inherits: false; initial-value: 1; }
+@property --tw-exit-rotate { syntax: "*"; inherits: false; initial-value: 0; }
+@property --tw-exit-scale { syntax: "*"; inherits: false; initial-value: 1; }
+@property --tw-exit-translate-x { syntax: "*"; inherits: false; initial-value: 0; }
+@property --tw-exit-translate-y { syntax: "*"; inherits: false; initial-value: 0; }
+
+/* Reka-injected vars consumed by accordion / collapsible keyframes.
+   Reka's `<AccordionContent>` and `<CollapsibleContent>` runtime sets
+   these on mount; declaring them here gives static analysers (and IDE
+   inspectors) something to resolve, plus a sensible `auto` fallback when
+   no Reka primitive is providing them. tw-animate-css upstream chains
+   var() fallbacks through radix / bits / kobalte / ng-primitives
+   namespaces too — vuecs only ever pairs with Reka, so we keep just
+   the one. If you ever need to swap or layer another radix-clone,
+   declare its var here too and chain it in the keyframe `var()` calls. */
+@property --reka-accordion-content-height { syntax: "*"; inherits: false; initial-value: auto; }
+@property --reka-collapsible-content-height { syntax: "*"; inherits: false; initial-value: auto; }
+
+/* ---------- Master keyframes ------------------------------------------- */
+
+@keyframes enter {
+    from {
+        opacity: var(--tw-enter-opacity, 1);
+        transform: translate3d(var(--tw-enter-translate-x, 0), var(--tw-enter-translate-y, 0), 0)
+            scale3d(var(--tw-enter-scale, 1), var(--tw-enter-scale, 1), var(--tw-enter-scale, 1))
+            rotate(var(--tw-enter-rotate, 0));
+        filter: blur(var(--tw-enter-blur, 0));
+    }
+}
+
+@keyframes exit {
+    to {
+        opacity: var(--tw-exit-opacity, 1);
+        transform: translate3d(var(--tw-exit-translate-x, 0), var(--tw-exit-translate-y, 0), 0)
+            scale3d(var(--tw-exit-scale, 1), var(--tw-exit-scale, 1), var(--tw-exit-scale, 1))
+            rotate(var(--tw-exit-rotate, 0));
+        filter: blur(var(--tw-exit-blur, 0));
+    }
+}
+
+/* ---------- Specialised keyframes (Reka-driven height transitions) ----- */
+
+/* Reka exposes the resolved height as `--reka-accordion-content-height`;
+   tw-animate-css also reads radix-/bits-/kobalte-/ng-primitives variants
+   so the same animations work across the radix-clone ecosystem. */
+@keyframes accordion-down {
+    from { height: 0; }
+    to { height: var(--reka-accordion-content-height); }
+}
+@keyframes accordion-up {
+    from { height: var(--reka-accordion-content-height); }
+    to { height: 0; }
+}
+@keyframes collapsible-down {
+    from { height: 0; }
+    to { height: var(--reka-collapsible-content-height); }
+}
+@keyframes collapsible-up {
+    from { height: var(--reka-collapsible-content-height); }
+    to { height: 0; }
+}
+@keyframes caret-blink {
+    0%, 70%, 100% { opacity: 1; }
+    20%, 50% { opacity: 0; }
+}
+
+/* ---------- Master triggers -------------------------------------------- */
+
+.animate-in {
+    animation: enter var(--tw-animation-duration, 150ms)
+        var(--tw-ease, ease)
+        var(--tw-animation-delay, 0s)
+        var(--tw-animation-iteration-count, 1)
+        var(--tw-animation-direction, normal)
+        var(--tw-animation-fill-mode, none);
+}
+.animate-out {
+    animation: exit var(--tw-animation-duration, 150ms)
+        var(--tw-ease, ease)
+        var(--tw-animation-delay, 0s)
+        var(--tw-animation-iteration-count, 1)
+        var(--tw-animation-direction, normal)
+        var(--tw-animation-fill-mode, none);
+}
+
+.animate-accordion-down { animation: accordion-down 200ms ease-out; }
+.animate-accordion-up { animation: accordion-up 200ms ease-out; }
+.animate-collapsible-down { animation: collapsible-down 200ms ease-out; }
+.animate-collapsible-up { animation: collapsible-up 200ms ease-out; }
+.animate-caret-blink { animation: caret-blink 1.25s ease-out infinite; }
+
+/* ---------- Fade ------------------------------------------------------- */
+
+.fade-in { --tw-enter-opacity: 0; }
+.fade-in-0 { --tw-enter-opacity: 0; }
+.fade-in-25 { --tw-enter-opacity: 0.25; }
+.fade-in-50 { --tw-enter-opacity: 0.5; }
+.fade-in-75 { --tw-enter-opacity: 0.75; }
+.fade-in-90 { --tw-enter-opacity: 0.9; }
+.fade-in-95 { --tw-enter-opacity: 0.95; }
+.fade-in-100 { --tw-enter-opacity: 1; }
+
+.fade-out { --tw-exit-opacity: 0; }
+.fade-out-0 { --tw-exit-opacity: 0; }
+.fade-out-25 { --tw-exit-opacity: 0.25; }
+.fade-out-50 { --tw-exit-opacity: 0.5; }
+.fade-out-75 { --tw-exit-opacity: 0.75; }
+.fade-out-90 { --tw-exit-opacity: 0.9; }
+.fade-out-95 { --tw-exit-opacity: 0.95; }
+.fade-out-100 { --tw-exit-opacity: 1; }
+
+/* ---------- Zoom ------------------------------------------------------- */
+
+.zoom-in { --tw-enter-scale: 0; }
+.zoom-in-0 { --tw-enter-scale: 0; }
+.zoom-in-50 { --tw-enter-scale: 0.5; }
+.zoom-in-75 { --tw-enter-scale: 0.75; }
+.zoom-in-90 { --tw-enter-scale: 0.9; }
+.zoom-in-95 { --tw-enter-scale: 0.95; }
+.zoom-in-100 { --tw-enter-scale: 1; }
+.zoom-in-105 { --tw-enter-scale: 1.05; }
+.zoom-in-110 { --tw-enter-scale: 1.1; }
+.zoom-in-125 { --tw-enter-scale: 1.25; }
+.zoom-in-150 { --tw-enter-scale: 1.5; }
+
+.zoom-out { --tw-exit-scale: 0; }
+.zoom-out-0 { --tw-exit-scale: 0; }
+.zoom-out-50 { --tw-exit-scale: 0.5; }
+.zoom-out-75 { --tw-exit-scale: 0.75; }
+.zoom-out-90 { --tw-exit-scale: 0.9; }
+.zoom-out-95 { --tw-exit-scale: 0.95; }
+.zoom-out-100 { --tw-exit-scale: 1; }
+.zoom-out-105 { --tw-exit-scale: 1.05; }
+.zoom-out-110 { --tw-exit-scale: 1.1; }
+.zoom-out-125 { --tw-exit-scale: 1.25; }
+.zoom-out-150 { --tw-exit-scale: 1.5; }
+
+/* ---------- Spin ------------------------------------------------------- */
+
+.spin-in { --tw-enter-rotate: 30deg; }
+.spin-in-1 { --tw-enter-rotate: 1deg; }
+.spin-in-3 { --tw-enter-rotate: 3deg; }
+.spin-in-6 { --tw-enter-rotate: 6deg; }
+.spin-in-12 { --tw-enter-rotate: 12deg; }
+.spin-in-45 { --tw-enter-rotate: 45deg; }
+.spin-in-90 { --tw-enter-rotate: 90deg; }
+.spin-in-180 { --tw-enter-rotate: 180deg; }
+.\-spin-in { --tw-enter-rotate: -30deg; }
+.\-spin-in-1 { --tw-enter-rotate: -1deg; }
+.\-spin-in-3 { --tw-enter-rotate: -3deg; }
+.\-spin-in-6 { --tw-enter-rotate: -6deg; }
+.\-spin-in-12 { --tw-enter-rotate: -12deg; }
+.\-spin-in-45 { --tw-enter-rotate: -45deg; }
+.\-spin-in-90 { --tw-enter-rotate: -90deg; }
+.\-spin-in-180 { --tw-enter-rotate: -180deg; }
+
+.spin-out { --tw-exit-rotate: 30deg; }
+.spin-out-1 { --tw-exit-rotate: 1deg; }
+.spin-out-3 { --tw-exit-rotate: 3deg; }
+.spin-out-6 { --tw-exit-rotate: 6deg; }
+.spin-out-12 { --tw-exit-rotate: 12deg; }
+.spin-out-45 { --tw-exit-rotate: 45deg; }
+.spin-out-90 { --tw-exit-rotate: 90deg; }
+.spin-out-180 { --tw-exit-rotate: 180deg; }
+.\-spin-out { --tw-exit-rotate: -30deg; }
+.\-spin-out-1 { --tw-exit-rotate: -1deg; }
+.\-spin-out-3 { --tw-exit-rotate: -3deg; }
+.\-spin-out-6 { --tw-exit-rotate: -6deg; }
+.\-spin-out-12 { --tw-exit-rotate: -12deg; }
+.\-spin-out-45 { --tw-exit-rotate: -45deg; }
+.\-spin-out-90 { --tw-exit-rotate: -90deg; }
+.\-spin-out-180 { --tw-exit-rotate: -180deg; }
+
+/* ---------- Blur ------------------------------------------------------- */
+
+.blur-in { --tw-enter-blur: 20px; }
+.blur-in-sm { --tw-enter-blur: 4px; }
+.blur-in-md { --tw-enter-blur: 12px; }
+.blur-in-lg { --tw-enter-blur: 16px; }
+.blur-in-xl { --tw-enter-blur: 24px; }
+.blur-in-2xl { --tw-enter-blur: 40px; }
+.blur-in-3xl { --tw-enter-blur: 64px; }
+
+.blur-out { --tw-exit-blur: 20px; }
+.blur-out-sm { --tw-exit-blur: 4px; }
+.blur-out-md { --tw-exit-blur: 12px; }
+.blur-out-lg { --tw-exit-blur: 16px; }
+.blur-out-xl { --tw-exit-blur: 24px; }
+.blur-out-2xl { --tw-exit-blur: 40px; }
+.blur-out-3xl { --tw-exit-blur: 64px; }
+
+/* ---------- Slide ------------------------------------------------------ */
+
+/* Cardinal directions */
+.slide-in-from-top { --tw-enter-translate-y: -100%; }
+.slide-in-from-top-1 { --tw-enter-translate-y: -0.25rem; }
+.slide-in-from-top-2 { --tw-enter-translate-y: -0.5rem; }
+.slide-in-from-top-4 { --tw-enter-translate-y: -1rem; }
+.slide-in-from-top-8 { --tw-enter-translate-y: -2rem; }
+.slide-in-from-top-full { --tw-enter-translate-y: -100%; }
+
+.slide-in-from-bottom { --tw-enter-translate-y: 100%; }
+.slide-in-from-bottom-1 { --tw-enter-translate-y: 0.25rem; }
+.slide-in-from-bottom-2 { --tw-enter-translate-y: 0.5rem; }
+.slide-in-from-bottom-4 { --tw-enter-translate-y: 1rem; }
+.slide-in-from-bottom-8 { --tw-enter-translate-y: 2rem; }
+.slide-in-from-bottom-full { --tw-enter-translate-y: 100%; }
+
+.slide-in-from-left { --tw-enter-translate-x: -100%; }
+.slide-in-from-left-1 { --tw-enter-translate-x: -0.25rem; }
+.slide-in-from-left-2 { --tw-enter-translate-x: -0.5rem; }
+.slide-in-from-left-4 { --tw-enter-translate-x: -1rem; }
+.slide-in-from-left-8 { --tw-enter-translate-x: -2rem; }
+.slide-in-from-left-full { --tw-enter-translate-x: -100%; }
+
+.slide-in-from-right { --tw-enter-translate-x: 100%; }
+.slide-in-from-right-1 { --tw-enter-translate-x: 0.25rem; }
+.slide-in-from-right-2 { --tw-enter-translate-x: 0.5rem; }
+.slide-in-from-right-4 { --tw-enter-translate-x: 1rem; }
+.slide-in-from-right-8 { --tw-enter-translate-x: 2rem; }
+.slide-in-from-right-full { --tw-enter-translate-x: 100%; }
+
+.slide-out-to-top { --tw-exit-translate-y: -100%; }
+.slide-out-to-top-1 { --tw-exit-translate-y: -0.25rem; }
+.slide-out-to-top-2 { --tw-exit-translate-y: -0.5rem; }
+.slide-out-to-top-4 { --tw-exit-translate-y: -1rem; }
+.slide-out-to-top-8 { --tw-exit-translate-y: -2rem; }
+.slide-out-to-top-full { --tw-exit-translate-y: -100%; }
+
+.slide-out-to-bottom { --tw-exit-translate-y: 100%; }
+.slide-out-to-bottom-1 { --tw-exit-translate-y: 0.25rem; }
+.slide-out-to-bottom-2 { --tw-exit-translate-y: 0.5rem; }
+.slide-out-to-bottom-4 { --tw-exit-translate-y: 1rem; }
+.slide-out-to-bottom-8 { --tw-exit-translate-y: 2rem; }
+.slide-out-to-bottom-full { --tw-exit-translate-y: 100%; }
+
+.slide-out-to-left { --tw-exit-translate-x: -100%; }
+.slide-out-to-left-1 { --tw-exit-translate-x: -0.25rem; }
+.slide-out-to-left-2 { --tw-exit-translate-x: -0.5rem; }
+.slide-out-to-left-4 { --tw-exit-translate-x: -1rem; }
+.slide-out-to-left-8 { --tw-exit-translate-x: -2rem; }
+.slide-out-to-left-full { --tw-exit-translate-x: -100%; }
+
+.slide-out-to-right { --tw-exit-translate-x: 100%; }
+.slide-out-to-right-1 { --tw-exit-translate-x: 0.25rem; }
+.slide-out-to-right-2 { --tw-exit-translate-x: 0.5rem; }
+.slide-out-to-right-4 { --tw-exit-translate-x: 1rem; }
+.slide-out-to-right-8 { --tw-exit-translate-x: 2rem; }
+.slide-out-to-right-full { --tw-exit-translate-x: 100%; }
+
+/* Logical directions (LTR/RTL aware) */
+.slide-in-from-start:where(:dir(ltr), [dir="ltr"], [dir="ltr"] *) { --tw-enter-translate-x: -100%; }
+.slide-in-from-start:where(:dir(rtl), [dir="rtl"], [dir="rtl"] *) { --tw-enter-translate-x: 100%; }
+.slide-in-from-end:where(:dir(ltr), [dir="ltr"], [dir="ltr"] *) { --tw-enter-translate-x: 100%; }
+.slide-in-from-end:where(:dir(rtl), [dir="rtl"], [dir="rtl"] *) { --tw-enter-translate-x: -100%; }
+.slide-out-to-start:where(:dir(ltr), [dir="ltr"], [dir="ltr"] *) { --tw-exit-translate-x: -100%; }
+.slide-out-to-start:where(:dir(rtl), [dir="rtl"], [dir="rtl"] *) { --tw-exit-translate-x: 100%; }
+.slide-out-to-end:where(:dir(ltr), [dir="ltr"], [dir="ltr"] *) { --tw-exit-translate-x: 100%; }
+.slide-out-to-end:where(:dir(rtl), [dir="rtl"], [dir="rtl"] *) { --tw-exit-translate-x: -100%; }
+
+/* ---------- Duration --------------------------------------------------- */
+
+.duration-0 { --tw-animation-duration: 0s; animation-duration: 0s; }
+.duration-75 { --tw-animation-duration: 75ms; animation-duration: 75ms; }
+.duration-100 { --tw-animation-duration: 100ms; animation-duration: 100ms; }
+.duration-150 { --tw-animation-duration: 150ms; animation-duration: 150ms; }
+.duration-200 { --tw-animation-duration: 200ms; animation-duration: 200ms; }
+.duration-300 { --tw-animation-duration: 300ms; animation-duration: 300ms; }
+.duration-500 { --tw-animation-duration: 500ms; animation-duration: 500ms; }
+.duration-700 { --tw-animation-duration: 700ms; animation-duration: 700ms; }
+.duration-1000 { --tw-animation-duration: 1000ms; animation-duration: 1000ms; }
+
+/* ---------- Delay ------------------------------------------------------ */
+
+.delay-0 { --tw-animation-delay: 0s; animation-delay: 0s; }
+.delay-75 { --tw-animation-delay: 75ms; animation-delay: 75ms; }
+.delay-100 { --tw-animation-delay: 100ms; animation-delay: 100ms; }
+.delay-150 { --tw-animation-delay: 150ms; animation-delay: 150ms; }
+.delay-200 { --tw-animation-delay: 200ms; animation-delay: 200ms; }
+.delay-300 { --tw-animation-delay: 300ms; animation-delay: 300ms; }
+.delay-500 { --tw-animation-delay: 500ms; animation-delay: 500ms; }
+.delay-700 { --tw-animation-delay: 700ms; animation-delay: 700ms; }
+.delay-1000 { --tw-animation-delay: 1000ms; animation-delay: 1000ms; }
+
+/* ---------- Iteration count ------------------------------------------- */
+
+.repeat-0 { --tw-animation-iteration-count: 0; animation-iteration-count: 0; }
+.repeat-1 { --tw-animation-iteration-count: 1; animation-iteration-count: 1; }
+.repeat-infinite { --tw-animation-iteration-count: infinite; animation-iteration-count: infinite; }
+
+/* ---------- Direction ------------------------------------------------- */
+
+.direction-normal { --tw-animation-direction: normal; animation-direction: normal; }
+.direction-reverse { --tw-animation-direction: reverse; animation-direction: reverse; }
+.direction-alternate { --tw-animation-direction: alternate; animation-direction: alternate; }
+.direction-alternate-reverse { --tw-animation-direction: alternate-reverse; animation-direction: alternate-reverse; }
+
+/* ---------- Fill mode ------------------------------------------------- */
+
+.fill-mode-none { --tw-animation-fill-mode: none; animation-fill-mode: none; }
+.fill-mode-forwards { --tw-animation-fill-mode: forwards; animation-fill-mode: forwards; }
+.fill-mode-backwards { --tw-animation-fill-mode: backwards; animation-fill-mode: backwards; }
+.fill-mode-both { --tw-animation-fill-mode: both; animation-fill-mode: both; }
+
+/* ---------- Play state ------------------------------------------------ */
+
+.running { animation-play-state: running; }
+.paused { animation-play-state: paused; }
+
+/* ---------- Vuecs overlay helpers (NOT in tw-animate-css) ------------- */
+
+/*
+ * Dual-state helpers for Reka-driven overlays. Apply ONE of these to an
+ * element that has a `data-state="open|closed"` attribute and the
+ * enter/exit animations fire automatically.
+ *
+ * Why these exist (vs the tw-animate-css class composition):
+ *   theme-tailwind reaches the same effect with the more flexible
+ *   `data-[state=open]:animate-in fade-in-0 zoom-in-95
+ *    data-[state=closed]:animate-out fade-out-0 zoom-out-95` composition,
+ *   but Tailwind's `data-[state=]:` variant prefix is what makes that
+ *   compile to a per-state selector. Themes whose theme-string format is
+ *   class-names-only (theme-bootstrap-v5, custom CSS-only themes) can't
+ *   carry an attribute selector inside a class string. These vuecs
+ *   helpers package the same gating into a single class so any theme
+ *   can drive overlay animations.
+ *
+ * Reka's Presence (already wrapping every `*Content` primitive: Dialog,
+ * Popover, Tooltip, Menu) reads the element's computed `animation-name`
+ * when `data-state` flips and suspends unmount until `animationend` —
+ * so exit animations actually play; the element isn't yanked out of the
+ * DOM mid-animation.
+ */
+
+/* Modal/popover/menu content — fade + zoom-95. Default for floating panels. */
+.vc-overlay-anim[data-state="open"] {
+    animation: enter var(--tw-animation-duration, 150ms) ease-out;
+    --tw-enter-opacity: 0;
+    --tw-enter-scale: 0.95;
+}
+.vc-overlay-anim[data-state="closed"] {
+    animation: exit var(--tw-animation-duration, 100ms) ease-in;
+    --tw-exit-opacity: 0;
+    --tw-exit-scale: 0.95;
+}
+
+/* Modal backdrop / overlay layer — fade only, no zoom. */
+.vc-overlay-fade-anim[data-state="open"] {
+    animation: enter var(--tw-animation-duration, 150ms) ease-out;
+    --tw-enter-opacity: 0;
+}
+.vc-overlay-fade-anim[data-state="closed"] {
+    animation: exit var(--tw-animation-duration, 100ms) ease-in;
+    --tw-exit-opacity: 0;
+}
+
+/* Tooltip — Reka uses `delayed-open` (after delayDuration) instead of `open`. */
+.vc-tooltip-anim[data-state="delayed-open"] {
+    animation: enter var(--tw-animation-duration, 150ms) ease-out;
+    --tw-enter-opacity: 0;
+    --tw-enter-scale: 0.95;
+}
+.vc-tooltip-anim[data-state="closed"] {
+    animation: exit var(--tw-animation-duration, 100ms) ease-in;
+    --tw-exit-opacity: 0;
+    --tw-exit-scale: 0.95;
+}
+
+/* ---------- Reduced motion ------------------------------------------- */
+
+/* Honour OS-level "reduce motion" preferences — kill animations entirely. */
+@media (prefers-reduced-motion: reduce) {
+    .animate-in,
+    .animate-out,
+    .animate-accordion-down,
+    .animate-accordion-up,
+    .animate-collapsible-down,
+    .animate-collapsible-up,
+    .animate-caret-blink,
+    .vc-overlay-anim[data-state],
+    .vc-overlay-fade-anim[data-state],
+    .vc-tooltip-anim[data-state] {
+        animation: none !important;
+    }
+}

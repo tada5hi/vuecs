@@ -7,13 +7,14 @@ vuecs/
   packages/           # Component + infrastructure packages (npm workspaces)
     core/             # @vuecs/core — theme system, defaults manager, utilities
     countdown/        # @vuecs/countdown
-    design/           # @vuecs/design — CSS design tokens + runtime palette switcher
+    design/           # @vuecs/design — CSS design tokens + motion primitives (animations.css) + runtime palette switcher
     form-controls/    # @vuecs/form-controls
     gravatar/         # @vuecs/gravatar
     link/             # @vuecs/link
     list-controls/    # @vuecs/list-controls
     navigation/       # @vuecs/navigation
     nuxt/             # @vuecs/nuxt — Nuxt module: SSR palette + useColorMode()
+    overlays/         # @vuecs/overlays — Modal (+ useModal view-stack) on Reka primitives; popover/tooltip/dropdown follow
     pagination/       # @vuecs/pagination
     timeago/          # @vuecs/timeago
   themes/             # Theme packages (npm workspaces) — pure data, no Vue runtime deps

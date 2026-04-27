@@ -1,10 +1,12 @@
 /*!
- * @vuecs/design — Design tokens
+ * @vuecs/design — Design tokens + motion primitives
  *
- * Semantic color scales, aliases, and sizing tokens for the vuecs
- * component library. Requires Tailwind CSS v4+ (consumers must
- * `@import "tailwindcss"` in their own stylesheet — this file only
- * defines the vuecs token layer on top of Tailwind's default palette).
+ * Semantic color scales, aliases, sizing tokens, AND animation
+ * primitives (vanilla-CSS port of tw-animate-css; see animations.css)
+ * for the vuecs component library. Requires Tailwind CSS v4+
+ * (consumers must `@import "tailwindcss"` in their own stylesheet —
+ * this file only defines the vuecs token layer on top of Tailwind's
+ * default palette).
  *
  * Resolution:
  *   Component class string (e.g. `bg-primary-600`)
@@ -18,6 +20,16 @@
  * rewrites the `--vc-color-<scale>-*` vars to reference a different
  * Tailwind palette (e.g. `var(--color-green-600)`); no other layer changes.
  */
+
+/* Motion primitives — `animate-in fade-in-0 zoom-in-95` etc. as plain CSS
+   classes (NOT Tailwind utilities), so any theme can drive overlay
+   animations via `data-state`-keyed selectors. See animations.css for the
+   full class catalog and the tw-animate-css attribution. Consumers who
+   want only the design tokens (no motion) should bypass index.css and
+   pull a custom subset themselves; the subpath export
+   "@vuecs/design/animations.css" is also available for the inverse case
+   (motion only, no tokens). */
+@import "./animations.css";
 
 :root {
     /* -------------------------------------------------------------
