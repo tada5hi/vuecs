@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/design",
-    "version": "0.0.0",
+    "version": "1.0.0",
     "type": "module",
     "description": "Design tokens (CSS variables) and runtime palette switcher for vuecs components.",
     "exports": {

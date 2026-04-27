@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/theme-tailwind",
-    "version": "0.0.0",
+    "version": "1.0.0",
     "type": "module",
     "description": "Tailwind CSS theme for vuecs components.",
     "exports": {
@@ -40,10 +40,10 @@
         "tailwind-merge": "^3.3.1"
     },
     "devDependencies": {
-        "@vuecs/core": "^2.0.0"
+        "@vuecs/core": "^3.0.0"
     },
     "peerDependencies": {
-        "@vuecs/core": "^2.0.0"
+        "@vuecs/core": "^3.0.0"
     },
     "engines": {
         "node": ">=22.0.0"

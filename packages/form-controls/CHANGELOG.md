@@ -1,5 +1,35 @@
 # Changelog
 
+## [3.0.0](https://github.com/tada5hi/vuecs/compare/form-controls-v2.5.0...form-controls-v3.0.0) (2026-04-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* Replace hardcoded Tailwind palette classes across theme packages with a CSS-variable design-token layer
+* Replace hardcoded Tailwind palette classes across theme packages with a CSS-variable design-token layer
+* change architecture
+
+### Features
+
+* add composables + separate button ([#1515](https://github.com/tada5hi/vuecs/issues/1515)) ([e876b6e](https://github.com/tada5hi/vuecs/commit/e876b6ece12ffa7933ddfbdf66192865c6c01e75))
+* add VitePress docs site, switch to Apache 2.0, fix library bugs ([#1512](https://github.com/tada5hi/vuecs/issues/1512)) ([9892980](https://github.com/tada5hi/vuecs/commit/989298063a1184921498e8d5932fa6c95e6abd07))
+* **core:** add global behavioral defaults system ([#1507](https://github.com/tada5hi/vuecs/issues/1507)) ([b52f4e5](https://github.com/tada5hi/vuecs/commit/b52f4e5a360d2804279465ada37f3ce6522d37b4))
+* **core:** add structured variant system and classes sub-object ([#1497](https://github.com/tada5hi/vuecs/issues/1497)) ([529a5bf](https://github.com/tada5hi/vuecs/commit/529a5bf2afff6874a4b952db5b2c9a4a67d72dae))
+* **core:** type-safe theme slots via ThemeElements declaration merging ([#1496](https://github.com/tada5hi/vuecs/issues/1496)) ([f0571c6](https://github.com/tada5hi/vuecs/commit/f0571c69416b1322bb071bb6b3d8f2f65f723885))
+* design-token layer + runtime palette switcher + Nuxt module ([#1508](https://github.com/tada5hi/vuecs/issues/1508)) ([398fb85](https://github.com/tada5hi/vuecs/commit/398fb8555b4ed16b87c3d2703bfed67e31af38fc))
+* export typed slot prop interfaces per component ([#1502](https://github.com/tada5hi/vuecs/issues/1502)) ([01e2a17](https://github.com/tada5hi/vuecs/commit/01e2a176c5b163c88f64aac41338c5e939c11e0f))
+* **form-controls:** add optional debounce prop to VCFormInput and VCFormTextarea ([fa39631](https://github.com/tada5hi/vuecs/commit/fa39631ec8ed9f04a2cac9b8aacd8511ca8ede4d))
+* replace store system with theme resolution engine ([#1492](https://github.com/tada5hi/vuecs/issues/1492)) ([7d586b3](https://github.com/tada5hi/vuecs/commit/7d586b3707d5210970ce0138985e3cc8210264cf))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^2.0.0 to ^3.0.0
+  * peerDependencies
+    * @vuecs/core bumped from ^2.0.0 to ^3.0.0
+
 ## [2.5.0](https://github.com/tada5hi/vuecs/compare/form-controls-v2.4.3...form-controls-v2.5.0) (2026-02-18)
 
 
