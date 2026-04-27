@@ -1,0 +1,9 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "lib": ["ESNext", "DOM"],
+        "jsx": "preserve",
+        "skipLibCheck": true
+    },
+    "include": ["src/**/*.ts", "src/**/*.vue"]
+}

@@ -11,7 +11,9 @@
             "import": "./dist/index.mjs"
         },
         "./index.css": "./assets/index.css",
-        "./assets/index.css": "./assets/index.css"
+        "./assets/index.css": "./assets/index.css",
+        "./animations.css": "./assets/animations.css",
+        "./assets/animations.css": "./assets/animations.css"
     },
     "style": "./assets/index.css",
     "files": [
@@ -51,6 +53,7 @@
         "test:coverage": "vitest --config test/vitest.config.ts --run --coverage"
     },
     "devDependencies": {
+        "@vuecs/core": "^2.0.0",
         "@vueuse/core": "^14.2.1",
         "jsdom": "^29.0.2",
         "vue": "^3.5.28"

@@ -1,0 +1,12 @@
+{
+    "extends": "../../tsconfig.build.json",
+    "compilerOptions": {
+        "lib": ["ESNext", "DOM"],
+        "outDir": "./dist",
+        "declarationDir": "./dist",
+        "jsx": "preserve",
+        "skipLibCheck": true
+    },
+    "exclude": ["node_modules", "dist"],
+    "include": ["src/**/*.ts", "src/**/*.vue"]
+}

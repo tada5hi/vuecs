@@ -185,6 +185,68 @@ export default function tailwindTheme(): Theme {
                 defaultVariants: { variant: 'outline', size: 'md' },
             },
             gravatar: { classes: { root: 'inline-block overflow-hidden rounded-full' } },
+            modal: {
+                classes: {
+                    overlay: 'fixed inset-0 z-50 bg-neutral-950/60 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+                    content: 'fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg border border-border bg-bg p-6 shadow-lg outline-none focus:outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
+                    header: 'flex flex-col gap-1.5',
+                    title: 'text-lg font-semibold text-fg',
+                    description: 'text-sm text-fg-muted',
+                    body: 'flex flex-col gap-2 text-sm text-fg',
+                    footer: 'flex flex-row items-center justify-end gap-2',
+                    trigger: '',
+                    close: 'absolute right-3 top-3 inline-flex h-7 w-7 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
+                    back: 'inline-flex h-7 w-7 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
+                },
+            },
+            popover: {
+                classes: {
+                    trigger: '',
+                    content: 'z-50 w-72 rounded-md border border-border bg-bg p-4 text-sm text-fg shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
+                    arrow: 'fill-bg',
+                    close: 'absolute right-2 top-2 inline-flex h-6 w-6 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
+                },
+            },
+            tooltip: {
+                classes: {
+                    trigger: '',
+                    content: 'z-50 overflow-hidden rounded-md bg-neutral-900 px-3 py-1.5 text-xs text-on-neutral shadow-md data-[state=delayed-open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=delayed-open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=delayed-open]:zoom-in-95 dark:bg-neutral-50 dark:text-neutral-900',
+                    arrow: 'fill-neutral-900 dark:fill-neutral-50',
+                },
+            },
+            dropdownMenu: {
+                classes: {
+                    trigger: '',
+                    content: 'z-50 min-w-[8rem] overflow-hidden rounded-md border border-border bg-bg p-1 text-sm text-fg shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
+                    item: 'relative flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 outline-none data-[highlighted]:bg-bg-muted data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+                    checkboxItem: 'relative flex cursor-pointer select-none items-center gap-2 rounded-sm py-1.5 pl-7 pr-2 outline-none data-[highlighted]:bg-bg-muted data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+                    radioItem: 'relative flex cursor-pointer select-none items-center gap-2 rounded-sm py-1.5 pl-7 pr-2 outline-none data-[highlighted]:bg-bg-muted data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+                    radioGroup: '',
+                    itemIndicator: 'absolute left-2 inline-flex h-3.5 w-3.5 items-center justify-center',
+                    label: 'px-2 py-1.5 text-xs font-semibold text-fg-muted',
+                    separator: '-mx-1 my-1 h-px bg-border',
+                    group: '',
+                    subTrigger: 'relative flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 outline-none data-[highlighted]:bg-bg-muted data-[state=open]:bg-bg-muted data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+                    subContent: 'z-50 min-w-[8rem] overflow-hidden rounded-md border border-border bg-bg p-1 text-sm text-fg shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
+                    arrow: 'fill-bg',
+                },
+            },
+            contextMenu: {
+                classes: {
+                    trigger: '',
+                    content: 'z-50 min-w-[8rem] overflow-hidden rounded-md border border-border bg-bg p-1 text-sm text-fg shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
+                    item: 'relative flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 outline-none data-[highlighted]:bg-bg-muted data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+                    checkboxItem: 'relative flex cursor-pointer select-none items-center gap-2 rounded-sm py-1.5 pl-7 pr-2 outline-none data-[highlighted]:bg-bg-muted data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+                    radioItem: 'relative flex cursor-pointer select-none items-center gap-2 rounded-sm py-1.5 pl-7 pr-2 outline-none data-[highlighted]:bg-bg-muted data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+                    radioGroup: '',
+                    itemIndicator: 'absolute left-2 inline-flex h-3.5 w-3.5 items-center justify-center',
+                    label: 'px-2 py-1.5 text-xs font-semibold text-fg-muted',
+                    separator: '-mx-1 my-1 h-px bg-border',
+                    group: '',
+                    subTrigger: 'relative flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 outline-none data-[highlighted]:bg-bg-muted data-[state=open]:bg-bg-muted data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+                    subContent: 'z-50 min-w-[8rem] overflow-hidden rounded-md border border-border bg-bg p-1 text-sm text-fg shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
+                },
+            },
         },
     };
 }

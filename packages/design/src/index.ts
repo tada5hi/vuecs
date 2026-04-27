@@ -1,3 +1,5 @@
+import './config';
+
 export { renderPaletteStyles, setPalette } from './palette';
 export {
     PALETTE_SHADES,

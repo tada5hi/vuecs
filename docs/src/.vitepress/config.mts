@@ -132,6 +132,16 @@ export default defineConfig({
                     ],
                 },
                 {
+                    text: '@vuecs/overlays',
+                    items: [
+                        { text: 'Modal', link: '/components/modal' },
+                        { text: 'Popover', link: '/components/popover' },
+                        { text: 'Tooltip', link: '/components/tooltip' },
+                        { text: 'DropdownMenu', link: '/components/dropdown-menu' },
+                        { text: 'ContextMenu', link: '/components/context-menu' },
+                    ],
+                },
+                {
                     text: '@vuecs/pagination',
                     items: [
                         { text: 'Pagination', link: '/components/pagination' },
