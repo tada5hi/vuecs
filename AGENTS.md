@@ -35,6 +35,7 @@ npm run lint:fix       # Auto-fix lint issues
 | `@vuecs/list-controls` | List display controls | 2.0.1 |
 | `@vuecs/navigation` | Multi-level navigation with NavigationManager | 2.4.1 |
 | `@vuecs/nuxt` | Nuxt module — SSR palette + @vuecs/design auto-import | 0.0.0 |
+| `@vuecs/overlays` | Compound overlays on Reka primitives — Modal (+ `useModal()` view-stack composable), Popover, Tooltip, DropdownMenu, ContextMenu | 0.0.0 |
 | `@vuecs/pagination` | Pagination component | 1.3.1 |
 | `@vuecs/theme-bootstrap-v4` | Bootstrap v4 theme | 1.0.1 |
 | `@vuecs/theme-bootstrap-v5` | Bootstrap v5 theme | 2.0.1 |
@@ -46,12 +47,12 @@ npm run lint:fix       # Auto-fix lint issues
 
 ```
 Layer 0 (no internal deps):  core, countdown, design, gravatar, link, timeago
-Layer 1 (depends on core):   button, form-controls, list-controls, navigation, pagination
+Layer 1 (depends on core):   button, form-controls, list-controls, navigation, overlays, pagination
 Layer 2 (depends on Layer 0): themes (@vuecs/core peer dep only — pure data that targets component packages at runtime)
 Layer 3 (integration):       nuxt (depends on design + @nuxt/kit)
 ```
 
-`navigation` also depends on `@vuecs/link`. `theme-tailwind` is designed to pair with `@vuecs/design` (Tailwind v4 + CSS-variable tokens); `theme-bootstrap-v5` ships an optional bridge that maps Bootstrap's `--bs-*` theme vars onto the design-system tokens.
+`navigation` also depends on `@vuecs/link`. `pagination` and `overlays` also take a runtime dep on `reka-ui` (they wrap Reka's headless primitives — pagination + dialog respectively). `theme-tailwind` is designed to pair with `@vuecs/design` (Tailwind v4 + CSS-variable tokens); `theme-bootstrap-v5` ships an optional bridge that maps Bootstrap's `--bs-*` theme vars onto the design-system tokens.
 
 ## Documentation Site
 

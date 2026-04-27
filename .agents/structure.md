@@ -14,6 +14,7 @@ vuecs/
     list-controls/    # @vuecs/list-controls
     navigation/       # @vuecs/navigation
     nuxt/             # @vuecs/nuxt — Nuxt module: SSR palette + useColorMode()
+    overlays/         # @vuecs/overlays — Modal (+ useModal view-stack) on Reka primitives; popover/tooltip/dropdown follow
     pagination/       # @vuecs/pagination
     timeago/          # @vuecs/timeago
   themes/             # Theme packages (npm workspaces) — pure data, no Vue runtime deps

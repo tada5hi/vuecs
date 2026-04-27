@@ -1,0 +1,65 @@
+{
+    "name": "@vuecs/overlays",
+    "version": "0.0.0",
+    "type": "module",
+    "description": "Overlay components (Modal, Popover, Tooltip, DropdownMenu, ContextMenu) for vuecs, built on Reka UI primitives.",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "keywords": [
+        "vue",
+        "vuecs",
+        "modal",
+        "dialog",
+        "popover",
+        "tooltip",
+        "dropdown",
+        "menu",
+        "overlay",
+        "reka-ui"
+    ],
+    "author": {
+        "name": "Peter Placzek",
+        "email": "contact@tada5hi.net",
+        "url": "https://tada5hi.net"
+    },
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tada5hi/vuecs.git",
+        "directory": "packages/overlays"
+    },
+    "scripts": {
+        "build:js": "tsdown",
+        "build:types": "vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json || true",
+        "build": "rimraf dist && npm run build:js && npm run build:types",
+        "test": "vitest --config test/vitest.config.ts --run",
+        "test:coverage": "vitest --config test/vitest.config.ts --run --coverage"
+    },
+    "dependencies": {
+        "reka-ui": "^2.9.6"
+    },
+    "devDependencies": {
+        "@vue/test-utils": "^2.4.6",
+        "@vuecs/core": "^2.0.0",
+        "jsdom": "^29.0.2",
+        "vue": "^3.5.28"
+    },
+    "peerDependencies": {
+        "@vuecs/core": "^2.0.0",
+        "vue": "^3.x"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

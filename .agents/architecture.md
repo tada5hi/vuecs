@@ -369,6 +369,39 @@ it's the only entry without a corresponding `VC*` component. The previous
 `useSubmitButton()` reactive bind-object helper (in `@vuecs/form-controls`,
 marked `@experimental`); the defaults registration moved with the helper.
 
+## Cross-cutting Config (@vuecs/core, Phase 3 prerequisite)
+
+The third manager alongside theme and defaults. Carries cross-cutting state
+that overlay primitives (and future RTL-aware components) need to read at
+runtime: reading direction, locale, CSP nonce, and an optional non-default
+scroll-lock target.
+
+```
+@vuecs/core/src/config/
+  types.ts       <- Config (typed shape), ConfigManagerOptions, Direction
+  manager.ts     <- ConfigManager (shallowRef state, get(key) returns DEFAULT on missing)
+  install.ts     <- installConfigManager(app, options) / injectConfigManager()
+  composable.ts  <- useConfig(key) — reactive ComputedRef<Config[K]>
+```
+
+Resolution order is intentionally simpler than the theme/defaults systems:
+
+```
+1. Configured value (passed to app.use(vuecs, { config: { dir: 'rtl' } }))
+2. Framework default (`{ dir: 'ltr', locale: 'en-US' }` — from constants
+   in `manager.ts`)
+```
+
+Values may be `MaybeRef`, so reactive sources (e.g. `useLocale()` from an
+i18n integration) unwrap transparently. The composable returns a
+ComputedRef that recomputes on locale/direction changes.
+
+Mirrors Reka UI's `ConfigProvider` shape (the field set is the same, except
+we drop `useId` since `@vuecs/core` already exports its own — see Phase 2's
+"Headless composables" below) but stays under our install API rather than
+introducing a wrapper component. The same `app.use(vuecs, { ... })` call
+that installs themes/defaults installs this too.
+
 ## Design System (@vuecs/design, #1506)
 
 Sits beside — not inside — the theme system. Themes resolve **CSS class
@@ -599,3 +632,74 @@ Source under `packages/core/src/utils/composables/`. Tests under
 roadmap. `@vuecs/navigation` consumes `useArrowNavigation` in `VCNavItems`
 to provide vertical arrow / Home / End keyboard navigation across
 sibling items at any depth.
+
+## Overlays (@vuecs/overlays, Phase 3)
+
+The first compound-component package. Wraps Reka's Dialog / Popover /
+Tooltip / DropdownMenu / ContextMenu primitives. Each part is a thin
+SFC that renders the matching Reka component and threads our
+`useComponentTheme(<family>, props, <familyThemeDefaults>)` over it for
+theme class resolution. Content components (`*Content`) bundle the
+matching `*Portal` so consumers don't have to compose them manually
+(an `inline` prop bypasses the portal for testing or custom mounting).
+
+```
+@vuecs/overlays/
+  src/
+    components/
+      modal/
+        Modal.vue           <- DialogRoot wrapper (v-model:open)
+        ModalTrigger.vue    <- DialogTrigger
+        ModalContent.vue    <- DialogPortal + DialogOverlay + DialogContent
+        ModalTitle.vue
+        ModalDescription.vue
+        ModalClose.vue
+        theme.ts            <- shared modalThemeDefaults (single source for all parts)
+        types.ts            <- ModalThemeClasses + ThemeElements augmentation
+        use-modal.ts        <- useModal() view-stack composable (issue #1480)
+        index.ts
+      popover/                <- Popover / Trigger / Content / Arrow / Close
+      tooltip/                <- TooltipProvider / Tooltip / Trigger / Content / Arrow
+      dropdown-menu/          <- DropdownMenu / Trigger / Content / Item / Label / Separator / Group / Arrow
+      context-menu/           <- ContextMenu / Trigger / Content / Item / Label / Separator / Group
+    vue.ts                  <- GlobalComponents augmentation (every VC* part)
+    index.ts                <- install() (themes, defaults, config; registers all VC* components)
+```
+
+Every overlay family follows the same per-folder layout: each component is a
+small SFC, plus `theme.ts` (single shared defaults), `types.ts`
+(`<Family>ThemeClasses` + `ThemeElements` augmentation), and `index.ts`
+re-export barrel. Tooltip additionally exposes `<VCTooltipProvider>` for
+app-level `delayDuration` / `skipDelayDuration` config; the other families
+read state from their own root (`v-model:open` on Modal/Popover/Dropdown,
+right-click on ContextMenu).
+
+The `useModal()` composable is the vuecs-specific value-add on top of
+Reka's Dialog. It exposes a **view stack** (`pushView` / `popView` /
+`replaceView`) and an `onClose` hook so consumers can build flows like
+"list view → push detail view → pop back" without stacking modals or
+fighting z-index. Originally proposed in
+[issue #1480](https://github.com/tada5hi/vuecs/issues/1480); the
+roadmap-scoped Reka-wrapped compound API is layered on top of it (the
+composable owns the state, `<VCModal>` v-binds to it). Equivalent
+composables for the other families haven't shipped — most of those don't
+need stateful flows, and consumers can wire `:open`/`@update:open`
+manually when they do.
+
+Theme entries for all five families (`modal`, `popover`, `tooltip`,
+`dropdownMenu`, `contextMenu`) ship in `@vuecs/theme-tailwind` with
+`data-state` animation hooks (`open|closed` for modal/popover/menu,
+`delayed-open|closed` for tooltip) ready for the `tailwindcss-animate`
+plugin or any `data-state`-aware utility set. Menu items also expose
+`data-highlighted` (hover/focus) and `data-disabled`. Bootstrap themes
+can add their own entries when there's user demand — Bootstrap 5's own
+overlay CSS is opinionated enough that mapping it onto the Reka shape is
+non-trivial, so we deferred it from Phase 3 scope.
+
+Reka stays an internal dependency; consumers don't touch `reka-ui`
+directly — the `<VC*>` parts are the vuecs contract.
+
+DropdownMenu and ContextMenu currently ship the **core parts only** —
+`Item` / `Label` / `Separator` / `Group`. Reka also offers
+`CheckboxItem` / `RadioItem` / `Sub*` (nested submenus); these are
+documented per-page as out-of-scope and will land based on demand.
