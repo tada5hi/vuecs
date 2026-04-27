@@ -52,12 +52,12 @@
         "@posva/event-emitter": "^1.0.2"
     },
     "devDependencies": {
-        "@vue/test-utils": "^2.4.6",
+        "@vue/test-utils": "^2.4.8",
         "@vuecs/core": "^2.0.0",
         "@vuecs/link": "^1.0.1",
-        "jsdom": "^29.0.2",
-        "vue": "^3.5.28",
-        "vue-router": "^5.0.2"
+        "jsdom": "^29.1.0",
+        "vue": "^3.5.33",
+        "vue-router": "^5.0.6"
     },
     "peerDependencies": {
         "@vuecs/core": "^2.0.0",
