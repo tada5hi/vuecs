@@ -62,4 +62,59 @@ describe('useForwardExpose', () => {
 
         expect(wrapper.element.tagName).toBe('SECTION');
     });
+
+    it('returns early when forwardRef is called with null', async () => {
+        let api: ReturnType<typeof useForwardExpose>;
+
+        const Wrapper = defineComponent({
+            setup() {
+                api = useForwardExpose();
+                return () => h('div', { ref: api.forwardRef });
+            },
+        });
+
+        mount(Wrapper);
+        await nextTick();
+
+        expect(() => api!.forwardRef(null)).not.toThrow();
+        expect(api!.currentRef.value).toBeNull();
+    });
+
+    it('preserves a pre-existing local expose on the wrapper', async () => {
+        const Wrapper = defineComponent({
+            setup(_, { expose }) {
+                expose({ greet: () => 'hi' });
+                const { forwardRef } = useForwardExpose();
+                return () => h('div', { ref: forwardRef });
+            },
+        });
+
+        const wrapper = mount(Wrapper);
+        await nextTick();
+
+        expect(typeof (wrapper.vm as any).greet).toBe('function');
+        expect((wrapper.vm as any).greet()).toBe('hi');
+    });
+
+    it('merges exposed methods from a forwarded child component', async () => {
+        const Child = defineComponent({
+            setup(_, { expose }) {
+                expose({ doStuff: () => 'child-value' });
+                return () => h('span', 'child');
+            },
+        });
+
+        const Wrapper = defineComponent({
+            setup() {
+                const { forwardRef } = useForwardExpose();
+                return () => h(Child, { ref: forwardRef });
+            },
+        });
+
+        const wrapper = mount(Wrapper);
+        await nextTick();
+
+        expect(typeof (wrapper.vm as any).doStuff).toBe('function');
+        expect((wrapper.vm as any).doStuff()).toBe('child-value');
+    });
 });

@@ -47,7 +47,8 @@
         "build:js": "tsdown",
         "build:types": "tsc --emitDeclarationOnly -p tsconfig.build.json",
         "build": "rimraf dist && npm run build:js && npm run build:types",
-        "test": "vitest --config test/vitest.config.ts --run"
+        "test": "vitest --config test/vitest.config.ts --run",
+        "test:coverage": "vitest --config test/vitest.config.ts --run --coverage"
     },
     "devDependencies": {
         "@vueuse/core": "^14.2.1",

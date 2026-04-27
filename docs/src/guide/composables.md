@@ -73,7 +73,15 @@ After this, the wrapper's template ref forwards through to whatever the inner pr
 
 ### `useArrowNavigation()`
 
-Resolves the next focusable item in a collection given an `ArrowUp` / `ArrowDown` / `Home` / `End` keyboard event. Items are matched by a CSS selector (default `[data-vc-collection-item]`); disabled items are skipped.
+Resolves the next focusable item in a collection given an `ArrowUp` / `ArrowDown` / `Home` / `End` keyboard event. Items are matched by a CSS selector (default `[data-vc-collection-item]`).
+
+Items are skipped when any of the following is true:
+
+- the native `disabled` attribute is set to anything other than `"false"`
+- `aria-disabled="true"`
+- the `data-disabled` attribute is present
+- the `disabled` CSS class is present (`VCLink` toggles its disabled state via class, not attribute)
+- the element fails `Element.checkVisibility()` — collapsed submenu items inside `display: none` ancestors are filtered out so arrow keys can't focus them. In environments without layout (jsdom, older browsers) the visibility check is treated as passing.
 
 ```ts
 import { useArrowNavigation } from '@vuecs/core';
