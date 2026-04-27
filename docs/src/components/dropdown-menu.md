@@ -130,6 +130,10 @@ Provided by Reka:
 - Focus returns to the trigger on close
 - ARIA `role="menu"` / `role="menuitem"` with `aria-orientation`
 
+## Animations
+
+Both `theme-tailwind` and `theme-bootstrap-v5` ship enter and exit animations (fade + zoom-95) on the menu panel and nested `subContent` via `@vuecs/design`'s vanilla-CSS port of [tw-animate-css](https://github.com/Wombosvideo/tw-animate-css). Tailwind uses `data-[state=open]:` / `data-[state=closed]:` variant prefixes; BS5 uses the dual-state helper class `vc-overlay-anim`. Reka's `MenuContent` (the primitive backing both DropdownMenu and ContextMenu) wraps with `Presence` so exit animations play before unmount. `prefers-reduced-motion: reduce` disables every animation.
+
 ## Theme keys for extras
 
 | Key | Default class | Notes |

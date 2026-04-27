@@ -101,6 +101,10 @@ Provided by Reka:
 - Escape key closes
 - ARIA `role="tooltip"` linked via `aria-describedby` on the trigger
 
+## Animations
+
+Tooltip uses `data-state="delayed-open|closed"` (not `open|closed`). Both `theme-tailwind` and `theme-bootstrap-v5` ship enter and exit animations (fade + zoom-95) via `@vuecs/design`'s vanilla-CSS port of [tw-animate-css](https://github.com/Wombosvideo/tw-animate-css). Tailwind theme gates via `data-[state=delayed-open]:` / `data-[state=closed]:` variants; BS5 theme uses the dual-state helper class `vc-tooltip-anim` (which knows about the `delayed-open` state, not `open`). Reka's `TooltipContent` wraps with `Presence` so exit animations play before unmount. `prefers-reduced-motion: reduce` disables every animation.
+
 ## API Reference
 
 ### `<VCTooltipProvider>`

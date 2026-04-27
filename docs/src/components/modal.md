@@ -220,6 +220,27 @@ The Reka Dialog primitives provide:
 - **Escape key** — closes the modal. Combine with `useModal()`'s `popView()` for view-stack flows by intercepting `update:open` to call `popView` while `hasHistory` is true.
 - **ARIA** — `role="dialog"`, `aria-modal`, `aria-labelledby` (linked to `<VCModalTitle>`), `aria-describedby` (linked to `<VCModalDescription>`).
 
+## Animations
+
+Both `theme-tailwind` and `theme-bootstrap-v5` ship **enter and exit animations** out of the box (fade + zoom-95 on `<VCModalContent>`, fade-only on the overlay). Animation classes resolve through `@vuecs/design`'s `animations.css` — a vanilla-CSS port of [`tw-animate-css`](https://github.com/Wombosvideo/tw-animate-css), so the same class names work for any theme.
+
+How the per-state gating works in each theme:
+
+- `theme-tailwind` uses Tailwind's `data-[state=open]:animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out fade-out-0 zoom-out-95` composition — Tailwind compiles each variant to a selector scoped to the matching `data-state`.
+- `theme-bootstrap-v5` uses vuecs's dual-state helper classes (`vc-overlay-anim`, `vc-overlay-fade-anim`) which package the same gating into a single class. Required because BS5 theme strings can't carry `data-[state=]:` attribute selectors.
+
+Reka's `DialogContent` already wraps with `Presence` internally — it reads the element's computed `animation-name` when `data-state` flips to `closed`, suspends unmount, and waits for `animationend` before removing the element. So exit animations actually play; nothing extra to wire on the vuecs side.
+
+Per-instance overrides (e.g. opt out of motion entirely):
+
+```vue
+<VCModalContent :theme-class="{ content: '', overlay: '' }">
+    ...
+</VCModalContent>
+```
+
+The `prefers-reduced-motion: reduce` CSS media query also disables every animation in `animations.css` automatically.
+
 ## API Reference
 
 ### `<VCModal>`
@@ -306,4 +327,4 @@ The return shape (`isOpen` / `currentView` / `hasHistory` / `depth` / `open` / `
 
 ## Status
 
-`@vuecs/overlays` ships Modal alongside Popover, Tooltip, DropdownMenu, and ContextMenu — all on the same compound + `useComponentTheme` shape. See the [Reka UI adoption roadmap](https://github.com/tada5hi/vuecs/blob/master/.agents/plans/reka-ui-adoption-roadmap.md) for the broader plan.
+`@vuecs/overlays` ships Modal alongside Popover, Tooltip, DropdownMenu, and ContextMenu — all on the same compound + `useComponentTheme` shape. See the [Reka UI adoption roadmap](https://github.com/tada5hi/vuecs/blob/master/.agents/plans/009-reka-ui-adoption-roadmap.md) for the broader plan.

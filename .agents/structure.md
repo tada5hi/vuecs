@@ -7,7 +7,7 @@ vuecs/
   packages/           # Component + infrastructure packages (npm workspaces)
     core/             # @vuecs/core — theme system, defaults manager, utilities
     countdown/        # @vuecs/countdown
-    design/           # @vuecs/design — CSS design tokens + runtime palette switcher
+    design/           # @vuecs/design — CSS design tokens + motion primitives (animations.css) + runtime palette switcher
     form-controls/    # @vuecs/form-controls
     gravatar/         # @vuecs/gravatar
     link/             # @vuecs/link

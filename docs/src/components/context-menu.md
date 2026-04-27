@@ -115,6 +115,10 @@ const onAction = (key: string) => console.log('action:', key);
 
 Same as DropdownMenu — keyboard arrow navigation, typeahead, Escape close, focus restoration. The trigger fires on long-press on touch devices, in addition to right-click on desktop.
 
+## Animations
+
+Same as [DropdownMenu](/components/dropdown-menu#animations) — both `theme-tailwind` and `theme-bootstrap-v5` ship enter and exit animations (fade + zoom-95) via `@vuecs/design`'s vanilla-CSS port of [tw-animate-css](https://github.com/Wombosvideo/tw-animate-css). Reka's shared `MenuContent` primitive wraps with `Presence` so exit animations play before unmount.
+
 ## Extras
 
 Same shape as [DropdownMenu](/components/dropdown-menu) — `VCContextMenuCheckboxItem`, `VCContextMenuRadioGroup` / `VCContextMenuRadioItem`, `VCContextMenuItemIndicator`, and `VCContextMenuSub` / `VCContextMenuSubTrigger` / `VCContextMenuSubContent` are all available with the same prop / event / theme-key shape (just `vc-context-menu-*` instead of `vc-dropdown-*`).

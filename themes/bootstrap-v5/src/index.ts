@@ -135,14 +135,19 @@ export default function bootstrapV5Theme(): Theme {
             },
             // Reka primitives drive open/close via `data-state="open|closed"`,
             // not Bootstrap's `.show` class. The mappings below give consumers
-            // Bootstrap's chrome (border, padding, typography) but the
-            // show/hide animation lifecycle is Reka's, not Bootstrap's.
-            // Consumers wanting the BS fade transition can layer
-            // `data-[state=open]:animate-... ` rules on top via overrides.
+            // Bootstrap's chrome (border, padding, typography) plus enter+exit
+            // animations via vuecs's dual-state helpers from @vuecs/design's
+            // animations.css (`vc-overlay-anim`, `vc-overlay-fade-anim`,
+            // `vc-tooltip-anim`). These helpers package the per-state gating
+            // into a single class because BS5 theme strings can't carry the
+            // `data-[state=]:` attribute-selector prefix that theme-tailwind
+            // uses. Reka's Presence (already wrapping every *Content
+            // primitive) keeps the element mounted until the exit animation
+            // finishes.
             modal: {
                 classes: {
-                    overlay: 'modal-backdrop fade show',
-                    content: 'modal-content position-fixed top-50 start-50 translate-middle shadow',
+                    overlay: 'modal-backdrop fade show vc-overlay-fade-anim',
+                    content: 'modal-content position-fixed top-50 start-50 translate-middle shadow vc-overlay-anim',
                     header: 'modal-header',
                     title: 'modal-title',
                     description: 'text-muted small',
@@ -156,7 +161,7 @@ export default function bootstrapV5Theme(): Theme {
             popover: {
                 classes: {
                     trigger: '',
-                    content: 'popover bs-popover-auto show',
+                    content: 'popover bs-popover-auto show vc-overlay-anim',
                     arrow: 'popover-arrow',
                     close: 'btn-close position-absolute top-0 end-0 m-1',
                 },
@@ -164,14 +169,14 @@ export default function bootstrapV5Theme(): Theme {
             tooltip: {
                 classes: {
                     trigger: '',
-                    content: 'tooltip bs-tooltip-auto show tooltip-inner',
+                    content: 'tooltip bs-tooltip-auto show tooltip-inner vc-tooltip-anim',
                     arrow: 'tooltip-arrow',
                 },
             },
             dropdownMenu: {
                 classes: {
                     trigger: '',
-                    content: 'dropdown-menu show',
+                    content: 'dropdown-menu show vc-overlay-anim',
                     item: 'dropdown-item',
                     checkboxItem: 'dropdown-item ps-4',
                     radioItem: 'dropdown-item ps-4',
@@ -181,14 +186,14 @@ export default function bootstrapV5Theme(): Theme {
                     separator: 'dropdown-divider',
                     group: '',
                     subTrigger: 'dropdown-item dropdown-toggle',
-                    subContent: 'dropdown-menu show',
+                    subContent: 'dropdown-menu show vc-overlay-anim',
                     arrow: '',
                 },
             },
             contextMenu: {
                 classes: {
                     trigger: '',
-                    content: 'dropdown-menu show',
+                    content: 'dropdown-menu show vc-overlay-anim',
                     item: 'dropdown-item',
                     checkboxItem: 'dropdown-item ps-4',
                     radioItem: 'dropdown-item ps-4',
@@ -198,7 +203,7 @@ export default function bootstrapV5Theme(): Theme {
                     separator: 'dropdown-divider',
                     group: '',
                     subTrigger: 'dropdown-item dropdown-toggle',
-                    subContent: 'dropdown-menu show',
+                    subContent: 'dropdown-menu show vc-overlay-anim',
                 },
             },
         },

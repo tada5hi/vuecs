@@ -11,7 +11,9 @@
             "import": "./dist/index.mjs"
         },
         "./index.css": "./assets/index.css",
-        "./assets/index.css": "./assets/index.css"
+        "./assets/index.css": "./assets/index.css",
+        "./animations.css": "./assets/animations.css",
+        "./assets/animations.css": "./assets/animations.css"
     },
     "style": "./assets/index.css",
     "files": [
