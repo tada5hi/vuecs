@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.0.0](https://github.com/tada5hi/vuecs/compare/link-v1.0.1...link-v2.0.0) (2026-04-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* Replace hardcoded Tailwind palette classes across theme packages with a CSS-variable design-token layer
+* change architecture
+
+### Features
+
+* add VitePress docs site, switch to Apache 2.0, fix library bugs ([#1512](https://github.com/tada5hi/vuecs/issues/1512)) ([9892980](https://github.com/tada5hi/vuecs/commit/989298063a1184921498e8d5932fa6c95e6abd07))
+* replace store system with theme resolution engine ([#1492](https://github.com/tada5hi/vuecs/issues/1492)) ([7d586b3](https://github.com/tada5hi/vuecs/commit/7d586b3707d5210970ce0138985e3cc8210264cf))
+
 ## [1.0.1](https://github.com/tada5hi/vuecs/compare/link-v1.0.0...link-v1.0.1) (2026-02-18)
 
 

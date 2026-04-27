@@ -1,5 +1,42 @@
 # Changelog
 
+## [4.0.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v3.5.0...examples-nuxt-v4.0.0) (2026-04-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* Replace hardcoded Tailwind palette classes across theme packages with a CSS-variable design-token layer
+* Replace hardcoded Tailwind palette classes across theme packages with a CSS-variable design-token layer
+* Public api changed
+* change architecture
+
+### Features
+
+* add composables + separate button ([#1515](https://github.com/tada5hi/vuecs/issues/1515)) ([e876b6e](https://github.com/tada5hi/vuecs/commit/e876b6ece12ffa7933ddfbdf66192865c6c01e75))
+* add VitePress docs site, switch to Apache 2.0, fix library bugs ([#1512](https://github.com/tada5hi/vuecs/issues/1512)) ([9892980](https://github.com/tada5hi/vuecs/commit/989298063a1184921498e8d5932fa6c95e6abd07))
+* design-token layer + runtime palette switcher + Nuxt module ([#1508](https://github.com/tada5hi/vuecs/issues/1508)) ([398fb85](https://github.com/tada5hi/vuecs/commit/398fb8555b4ed16b87c3d2703bfed67e31af38fc))
+* drop meta prop in favor of v-bind spread ([e188248](https://github.com/tada5hi/vuecs/commit/e188248691c0c7427c7e433441ab95ef435a97ce))
+* replace store system with theme resolution engine ([#1492](https://github.com/tada5hi/vuecs/issues/1492)) ([7d586b3](https://github.com/tada5hi/vuecs/commit/7d586b3707d5210970ce0138985e3cc8210264cf))
+* shared usePalette + useColorMode composables in @vuecs/design ([#1514](https://github.com/tada5hi/vuecs/issues/1514)) ([d0dc920](https://github.com/tada5hi/vuecs/commit/d0dc920a96e3e048dbf28fd1513c3400d29708f4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/button bumped from ^0.0.0 to ^1.0.0
+    * @vuecs/countdown bumped from ^1.0.1 to ^2.0.0
+    * @vuecs/design bumped from ^0.0.0 to ^1.0.0
+    * @vuecs/form-controls bumped from ^2.5.0 to ^3.0.0
+    * @vuecs/gravatar bumped from ^1.0.2 to ^2.0.0
+    * @vuecs/list-controls bumped from ^2.0.1 to ^3.0.0
+    * @vuecs/navigation bumped from ^2.4.1 to ^3.0.0
+    * @vuecs/nuxt bumped from ^0.0.0 to ^1.0.0
+    * @vuecs/pagination bumped from ^1.3.1 to ^2.0.0
+    * @vuecs/theme-font-awesome bumped from ^1.1.1 to ^1.2.0
+    * @vuecs/theme-tailwind bumped from ^0.0.0 to ^1.0.0
+    * @vuecs/timeago bumped from ^1.1.2 to ^2.0.0
+
 ## [3.5.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v3.4.0...examples-nuxt-v3.5.0) (2026-02-18)
 
 

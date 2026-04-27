@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/nuxt",
-    "version": "0.0.0",
+    "version": "1.0.0",
     "type": "module",
     "description": "Nuxt module for vuecs — wires @vuecs/design with SSR-safe palette and color-mode support.",
     "exports": {
@@ -40,7 +40,7 @@
     "dependencies": {
         "@nuxt/kit": "^4.0.0",
         "@vueuse/core": "^14.2.1",
-        "@vuecs/design": "^0.0.0"
+        "@vuecs/design": "^1.0.0"
     },
     "devDependencies": {
         "@nuxt/module-builder": "^1.0.1",
