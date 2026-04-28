@@ -1,5 +1,5 @@
 <script lang="ts">
-import { useComponentDefaults, useComponentTheme } from '@vuecs/core';
+import { useComponentDefaults, useComponentTheme, useId } from '@vuecs/core';
 import type {
     ComponentDefaultValues,
     ThemeClassesOverride,
@@ -82,7 +82,9 @@ export default defineComponent({
     setup(props, { attrs, slots }) {
         const theme = useComponentTheme('formRadio', props, themeDefaults);
         const defaults = useComponentDefaults('formRadio', props, behavioralDefaults);
-        const fallbackId = `vc-form-radio-${(Math.random() + 1).toString(36).substring(7)}`;
+        // SSR-safe stable id (Vue 3.5's native `useId` under the hood) —
+        // see FormCheckbox.vue.
+        const fallbackId = useId(undefined, 'vc-form-radio');
 
         return () => {
             const resolved = theme.value;

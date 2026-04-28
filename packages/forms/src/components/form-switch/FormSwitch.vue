@@ -1,5 +1,5 @@
 <script lang="ts">
-import { useComponentDefaults, useComponentTheme } from '@vuecs/core';
+import { useComponentDefaults, useComponentTheme, useId } from '@vuecs/core';
 import type {
     ComponentDefaultValues,
     ThemeClassesOverride,
@@ -59,7 +59,10 @@ export default defineComponent({
     name: 'VCFormSwitch',
     inheritAttrs: false,
     props: {
-        modelValue: { type: Boolean as PropType<boolean | null | undefined>, default: undefined },
+        // `null` in the runtime type alongside Boolean so consumers can pass
+        // `null` (the documented "unset" value) without tripping Vue's prop
+        // validation warnings.
+        modelValue: { type: [Boolean, null] as PropType<boolean | null | undefined>, default: undefined },
         disabled: { type: Boolean, default: false },
         required: { type: Boolean, default: false },
         name: { type: String, default: undefined },
@@ -82,7 +85,9 @@ export default defineComponent({
     }) {
         const theme = useComponentTheme('formSwitch', props, themeDefaults);
         const defaults = useComponentDefaults('formSwitch', props, behavioralDefaults);
-        const fallbackId = `vc-form-switch-${(Math.random() + 1).toString(36).substring(7)}`;
+        // SSR-safe stable id (Vue 3.5's native `useId` under the hood) —
+        // see FormCheckbox.vue.
+        const fallbackId = useId(undefined, 'vc-form-switch');
 
         return () => {
             const resolved = theme.value;
@@ -93,13 +98,17 @@ export default defineComponent({
                 SwitchRoot,
                 mergeProps(attrs, {
                     id,
-                    modelValue: props.modelValue ?? false,
                     value: props.value,
                     disabled: props.disabled,
                     required: props.required,
                     name: props.name,
                     'onUpdate:modelValue': (value: boolean) => emit('update:modelValue', value),
                     class: resolved.root || undefined,
+                    // Forward `modelValue` only when explicitly set —
+                    // pass-through preserves `null` (Reka's documented
+                    // "uncontrolled / unset" value); coercing to `false`
+                    // would silently change the consumer's input.
+                    ...(props.modelValue !== undefined ? { modelValue: props.modelValue } : {}),
                 }),
                 {
                     default: () => h(

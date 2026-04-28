@@ -53,7 +53,10 @@ export default defineComponent({
     inheritAttrs: false,
     props: {
         modelValue: {
-            type: [Number, Array] as PropType<FormSliderModelValue | null>,
+            // `null` in the runtime type alongside Number/Array so
+            // consumers can pass `null` (the documented "unset" value)
+            // without tripping Vue's prop validation warnings.
+            type: [Number, Array, null] as PropType<FormSliderModelValue | null>,
             default: undefined,
         },
         min: { type: Number, default: 0 },

@@ -44,7 +44,10 @@ export default defineComponent({
     name: 'VCFormNumber',
     inheritAttrs: false,
     props: {
-        modelValue: { type: Number as PropType<number | null | undefined>, default: undefined },
+        // `null` in the runtime type alongside Number so consumers can pass
+        // `null` (the documented "unset" value) without tripping Vue's prop
+        // validation warnings.
+        modelValue: { type: [Number, null] as PropType<number | null | undefined>, default: undefined },
         min: { type: Number, default: undefined },
         max: { type: Number, default: undefined },
         step: { type: Number, default: 1 },

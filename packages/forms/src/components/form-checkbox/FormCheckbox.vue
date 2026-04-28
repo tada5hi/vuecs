@@ -1,5 +1,5 @@
 <script lang="ts">
-import { useComponentDefaults, useComponentTheme } from '@vuecs/core';
+import { useComponentDefaults, useComponentTheme, useId } from '@vuecs/core';
 import type {
     ComponentDefaultValues,
     ThemeClassesOverride,
@@ -63,7 +63,10 @@ export default defineComponent({
     inheritAttrs: false,
     props: {
         modelValue: {
-            type: [Boolean, String] as PropType<FormCheckboxModelValue>,
+            // `null` is in the runtime type alongside Boolean/String so consumers
+            // can pass `null` (the documented "unset" value) without tripping
+            // Vue's prop validation warnings.
+            type: [Boolean, String, null] as PropType<FormCheckboxModelValue>,
             default: undefined,
         },
         value: { type: [String, Number, Boolean, Object] as PropType<unknown>, default: undefined },
@@ -88,7 +91,10 @@ export default defineComponent({
     }) {
         const theme = useComponentTheme('formCheckbox', props, themeDefaults);
         const defaults = useComponentDefaults('formCheckbox', props, behavioralDefaults);
-        const fallbackId = `vc-form-checkbox-${(Math.random() + 1).toString(36).substring(7)}`;
+        // SSR-safe stable id (Vue 3.5's native `useId` under the hood).
+        // Replaces a `Math.random()` fallback that caused hydration
+        // mismatches and made IDs non-deterministic across renders.
+        const fallbackId = useId(undefined, 'vc-form-checkbox');
 
         return () => {
             const resolved = theme.value;
@@ -99,13 +105,18 @@ export default defineComponent({
                 CheckboxRoot,
                 mergeProps(attrs, {
                     id,
-                    modelValue: props.modelValue ?? false,
                     value: props.value,
                     disabled: props.disabled,
                     required: props.required,
                     name: props.name,
                     'onUpdate:modelValue': (value: FormCheckboxModelValue) => emit('update:modelValue', value),
                     class: resolved.root || undefined,
+                    // Only forward `modelValue` when explicitly set —
+                    // `undefined` lets a parent `<VCFormCheckboxGroup>`'s
+                    // context manage the checked state. Forcing `false`
+                    // here would override the group context and break
+                    // group-controlled selection.
+                    ...(props.modelValue !== undefined ? { modelValue: props.modelValue } : {}),
                 }),
                 {
                     default: () => h(

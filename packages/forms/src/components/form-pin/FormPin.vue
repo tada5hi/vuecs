@@ -39,7 +39,10 @@ export default defineComponent({
     inheritAttrs: false,
     props: {
         modelValue: {
-            type: Array as PropType<FormPinModelValue | null>,
+            // `null` in the runtime type alongside Array so consumers can
+            // pass `null` (the documented "unset" value) without tripping
+            // Vue's prop validation warnings.
+            type: [Array, null] as PropType<FormPinModelValue | null>,
             default: undefined,
         },
         /** Number of input cells rendered. */

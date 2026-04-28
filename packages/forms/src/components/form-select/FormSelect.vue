@@ -49,7 +49,11 @@ const renderOption = (option: FormOption, modelValue: AcceptableValue | undefine
     'option',
     {
         key: String(option.value),
-        value: option.value as string | number | undefined,
+        // Pass `option.value` through unchanged — Vue's `<option>._value`
+        // patching preserves identity for non-string primitives (boolean,
+        // bigint, object). Casting to `string | number | undefined` would
+        // drop those cases and break the round-trip in `onChange`.
+        value: option.value,
         selected: option.value === modelValue,
         disabled: option.disabled,
     },
