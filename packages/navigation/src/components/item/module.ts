@@ -2,11 +2,11 @@ import { hasNormalizedSlot, normalizeSlot, useComponentTheme } from '@vuecs/core
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import type { LinkProperties } from '@vuecs/link';
 import { VCLink } from '@vuecs/link';
-import type { 
-    ExtractPublicPropTypes, 
-    PropType, 
-    SlotsType, 
-    VNodeChild, 
+import type {
+    ExtractPublicPropTypes,
+    PropType,
+    SlotsType,
+    VNodeChild,
 } from 'vue';
 import {
     computed,

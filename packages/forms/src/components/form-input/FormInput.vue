@@ -2,11 +2,11 @@
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
 import { useDebounceFn } from '@vueuse/core';
-import type { 
-    ExtractPublicPropTypes, 
-    PropType, 
-    SlotsType, 
-    VNodeChild, 
+import type {
+    ExtractPublicPropTypes,
+    PropType,
+    SlotsType,
+    VNodeChild,
 } from 'vue';
 import {
     defineComponent,

@@ -2,17 +2,17 @@ import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import { defineComponent, h } from 'vue';
-import type { 
-    ListBaseSlotProps, 
-    ListBodySlotProps, 
-    ListBodyThemeClasses, 
-    ListItemThemeClasses,  
+import type {
+    ListBaseSlotProps,
+    ListBodySlotProps,
+    ListBodyThemeClasses,
+    ListItemThemeClasses,
 } from '../type';
-import type { 
-    ListEventFn, 
-    ListItemId, 
-    ListItemKey, 
-    ListLoadFn, 
+import type {
+    ListEventFn,
+    ListItemId,
+    ListItemKey,
+    ListLoadFn,
 } from '../../type';
 import { VCListItem } from '../list-item/module';
 

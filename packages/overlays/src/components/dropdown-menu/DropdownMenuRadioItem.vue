@@ -23,9 +23,9 @@ export default defineComponent({
     props: dropdownMenuRadioItemProps,
     emits: ['select'],
     setup(props, {
-        slots, 
-        emit, 
-        attrs, 
+        slots,
+        emit,
+        attrs,
     }) {
         const theme = useComponentTheme('dropdownMenu', props, dropdownMenuThemeDefaults);
         return () => h(

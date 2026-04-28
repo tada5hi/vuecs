@@ -7,11 +7,11 @@ import {
 } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { merge } from 'smob';
-import type { 
-    ExtractPublicPropTypes, 
-    PropType, 
-    SlotsType, 
-    VNodeChild, 
+import type {
+    ExtractPublicPropTypes,
+    PropType,
+    SlotsType,
+    VNodeChild,
 } from 'vue';
 import {
     defineComponent,
@@ -133,9 +133,9 @@ export const VCListItem = defineComponent({
             let slotPropsResolved: ListItemSlotProps<any>;
             if (props.slotProps) {
                 const {
-                    updated, 
-                    deleted, 
-                    ...original 
+                    updated,
+                    deleted,
+                    ...original
                 } = props.slotProps;
                 slotPropsResolved = {
                     ...original,

@@ -23,9 +23,9 @@ export default defineComponent({
     props: contextMenuRadioItemProps,
     emits: ['select'],
     setup(props, {
-        slots, 
-        emit, 
-        attrs, 
+        slots,
+        emit,
+        attrs,
     }) {
         const theme = useComponentTheme('contextMenu', props, contextMenuThemeDefaults);
         return () => h(

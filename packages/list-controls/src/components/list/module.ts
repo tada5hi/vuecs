@@ -1,10 +1,10 @@
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
-import type { 
-    ExtractPublicPropTypes, 
-    PropType, 
-    SlotsType, 
-    VNodeArrayChildren, 
+import type {
+    ExtractPublicPropTypes,
+    PropType,
+    SlotsType,
+    VNodeArrayChildren,
 } from 'vue';
 import { defineComponent, h } from 'vue';
 import type {

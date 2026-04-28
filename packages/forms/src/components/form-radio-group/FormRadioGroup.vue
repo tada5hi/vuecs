@@ -61,9 +61,9 @@ export default defineComponent({
     props: formRadioGroupProps,
     emits: ['update:modelValue'],
     setup(props, {
-        attrs, 
-        emit, 
-        slots, 
+        attrs,
+        emit,
+        slots,
     }) {
         const theme = useComponentTheme('formRadioGroup', props, themeDefaults);
 

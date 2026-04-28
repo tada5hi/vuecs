@@ -21,9 +21,9 @@ export default defineComponent({
     props: contextMenuRadioGroupProps,
     emits: ['update:modelValue'],
     setup(props, {
-        slots, 
-        emit, 
-        attrs, 
+        slots,
+        emit,
+        attrs,
     }) {
         const theme = useComponentTheme('contextMenu', props, contextMenuThemeDefaults);
         return () => h(

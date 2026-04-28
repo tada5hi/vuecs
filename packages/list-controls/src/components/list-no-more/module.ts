@@ -1,8 +1,8 @@
-import { 
-    hasOwnProperty, 
-    isObject, 
-    useComponentDefaults, 
-    useComponentTheme, 
+import {
+    hasOwnProperty,
+    isObject,
+    useComponentDefaults,
+    useComponentTheme,
 } from '@vuecs/core';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import { defineComponent, h } from 'vue';

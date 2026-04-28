@@ -71,9 +71,9 @@ export const VCCountdown = defineComponent({
         default: CountdownSlotProps;
     }>,
     setup(props, {
-        emit, 
-        expose, 
-        slots, 
+        emit,
+        expose,
+        slots,
     }) {
         const theme = useComponentTheme('countdown', props, themeDefaults);
 
@@ -221,9 +221,9 @@ export const VCCountdown = defineComponent({
         });
 
         expose({
-            start, 
-            abort, 
-            end, 
+            start,
+            abort,
+            end,
         });
 
         return () => {

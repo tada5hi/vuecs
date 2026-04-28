@@ -21,9 +21,9 @@ export default defineComponent({
     props: dropdownMenuRadioGroupProps,
     emits: ['update:modelValue'],
     setup(props, {
-        slots, 
-        emit, 
-        attrs, 
+        slots,
+        emit,
+        attrs,
     }) {
         const theme = useComponentTheme('dropdownMenu', props, dropdownMenuThemeDefaults);
         return () => h(

@@ -7,11 +7,11 @@ import type {
     VariantValues,
 } from '@vuecs/core';
 import type { AcceptableValue } from 'reka-ui';
-import type { 
-    ExtractPublicPropTypes, 
-    PropType, 
-    VNode, 
-    VNodeChild, 
+import type {
+    ExtractPublicPropTypes,
+    PropType,
+    VNode,
+    VNodeChild,
 } from 'vue';
 import {
     defineComponent,

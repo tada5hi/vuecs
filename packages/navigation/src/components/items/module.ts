@@ -1,8 +1,8 @@
-import { 
-    hasNormalizedSlot, 
-    normalizeSlot, 
-    useArrowNavigation, 
-    useComponentTheme, 
+import {
+    hasNormalizedSlot,
+    normalizeSlot,
+    useArrowNavigation,
+    useComponentTheme,
 } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import type {

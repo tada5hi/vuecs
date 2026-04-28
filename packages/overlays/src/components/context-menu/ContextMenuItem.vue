@@ -24,9 +24,9 @@ export default defineComponent({
     props: contextMenuItemProps,
     emits: ['select'],
     setup(props, {
-        slots, 
-        emit, 
-        attrs, 
+        slots,
+        emit,
+        attrs,
     }) {
         const theme = useComponentTheme('contextMenu', props, contextMenuThemeDefaults);
         return () => h(
