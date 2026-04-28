@@ -10,20 +10,18 @@ import { useTranslationsForBaseValidation } from '@ilingo/vuelidate';
 import { required } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {
-    defineComponent, 
-    reactive, 
+    defineComponent,
+    reactive,
     ref,
 } from 'vue';
 
 export default defineComponent({
     setup() {
-        const form = reactive({ text: null });
+        const form = reactive({ accepted: false, notifications: true });
+        const valueMultiple = ref<number[]>([]);
 
-        const valueMultiple = ref([]);
-
-        const $v = useVuelidate({ text: { required } }, form);
-
-        const validationMessages = useTranslationsForBaseValidation($v.value.text);
+        const $v = useVuelidate({ accepted: { required } }, form);
+        const validationMessages = useTranslationsForBaseValidation($v.value.accepted);
 
         return {
             valueMultiple,
@@ -42,55 +40,48 @@ export default defineComponent({
                 :label-content="'Checkbox'"
                 :validation-messages="validationMessages"
             >
-                <VCFormInputCheckbox
-                    v-model="form.text"
+                <VCFormCheckbox
+                    v-model="form.accepted"
                     :label="true"
-                    :label-content="'Enable notifications'"
-                    :group="true"
+                    :label-content="'I accept the terms'"
                 />
             </VCFormGroup>
             <VCFormGroup
                 :label="true"
                 :label-content="'Switch'"
             >
-                <VCFormInputCheckbox
-                    v-model="form.text"
+                <VCFormSwitch
+                    v-model="form.notifications"
                     :label="true"
                     :label-content="'Enable notifications'"
-                    :group="true"
-                    :theme-variant="{ variant: 'switch' }"
                 />
             </VCFormGroup>
         </div>
         <div class="space-y-2">
-            <VCFormGroup
-                :label="true"
-            >
+            <VCFormGroup :label="true">
                 <template #label>
-                    <label>Label</label>
+                    <label>Pick numbers</label>
                 </template>
-                <VCFormInputCheckbox
-                    v-model="valueMultiple"
-                    :value="0"
-                    :label="true"
-                    :group="true"
-                >
-                    <template #label="{id}">
-                        <label :for="id">zero</label>
-                    </template>
-                </VCFormInputCheckbox>
-            </VCFormGroup>
-            <VCFormGroup
-                :label="true"
-                :label-content="'Label'"
-            >
-                <VCFormInputCheckbox
-                    v-model="valueMultiple"
-                    :value="1"
-                    :label="true"
-                    :label-content="'one'"
-                    :group="true"
-                />
+                <VCFormCheckboxGroup v-model="valueMultiple">
+                    <VCFormCheckbox
+                        :value="0"
+                        :label="true"
+                    >
+                        <template #label="{id}">
+                            <label :for="id">zero</label>
+                        </template>
+                    </VCFormCheckbox>
+                    <VCFormCheckbox
+                        :value="1"
+                        :label="true"
+                        :label-content="'one'"
+                    />
+                    <VCFormCheckbox
+                        :value="2"
+                        :label="true"
+                        :label-content="'two'"
+                    />
+                </VCFormCheckboxGroup>
             </VCFormGroup>
             <pre class="text-xs text-fg-muted">{{ valueMultiple }}</pre>
         </div>

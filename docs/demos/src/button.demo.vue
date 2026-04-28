@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { VCButton } from '@vuecs/button';
-import { useSubmitButton } from '@vuecs/form-controls';
+import { useSubmitButton } from '@vuecs/forms';
 import { ref } from 'vue';
 
 const isEditing = ref(false);

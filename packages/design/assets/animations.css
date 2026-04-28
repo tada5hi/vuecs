@@ -375,7 +375,7 @@
  *    data-[state=closed]:animate-out fade-out-0 zoom-out-95` composition,
  *   but Tailwind's `data-[state=]:` variant prefix is what makes that
  *   compile to a per-state selector. Themes whose theme-string format is
- *   class-names-only (theme-bootstrap-v5, custom CSS-only themes) can't
+ *   class-names-only (theme-bootstrap, custom CSS-only themes) can't
  *   carry an attribute selector inside a class string. These vuecs
  *   helpers package the same gating into a single class so any theme
  *   can drive overlay animations.

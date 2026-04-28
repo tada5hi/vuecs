@@ -1,20 +1,18 @@
 <script setup lang="ts">
-import { VCFormSelectSearch } from '@vuecs/form-controls';
-import type { FormSelectOption } from '@vuecs/form-controls';
-import { computed, ref } from 'vue';
+import type { FormOption } from '@vuecs/forms';
+import { VCFormSelectSearch } from '@vuecs/forms';
+import { ref } from 'vue';
 
-// Initializing the bound value as an array switches the component into
-// multi-select mode — there is no separate `multiple` prop. The shape of
-// `modelValue` is what determines single vs multi. The component pushes
-// the full `FormSelectOption` object (not just the id) onto the array.
-const values = ref<FormSelectOption[]>([]);
+// Initializing modelValue as an array puts the component in multi-select
+// mode — there is no separate `multiple` prop. With FormOption shape the
+// component now emits an array of `value` (your bound type T), not whole
+// option objects.
+const values = ref<number[]>([]);
 
-const options: FormSelectOption[] = [];
+const options: FormOption<number>[] = [];
 for (let i = 1; i <= 50; i++) {
-    options.push({ id: i, value: `Option ${i}` });
+    options.push({ value: i, label: `Option ${i}` });
 }
-
-const summary = computed(() => values.value.map((v) => v.value).join(', '));
 </script>
 
 <template>
@@ -24,7 +22,7 @@ const summary = computed(() => values.value.map((v) => v.value).join(', '));
             :options="options"
         />
         <p style="font-size: 0.875rem; color: var(--vc-color-fg-muted); margin: 0;">
-            Selected: <code>{{ summary || '(none)' }}</code>
+            Selected: <code>{{ values.join(', ') || '(none)' }}</code>
         </p>
     </div>
 </template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { VCFormInput } from '@vuecs/form-controls';
+import { VCFormInput } from '@vuecs/forms';
 import { ref } from 'vue';
 
 const value = ref('');

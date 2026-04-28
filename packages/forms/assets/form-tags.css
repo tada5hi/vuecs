@@ -1,0 +1,78 @@
+/*
+ * Structural defaults for VCFormTags (Reka TagsInputRoot + Item + ItemText
+ * + ItemDelete + Input). The root is a flex-wrap container holding chips
+ * and the trailing input.
+ */
+.vc-form-tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.5rem;
+    border: 1px solid var(--vc-color-border, #d1d5db);
+    border-radius: var(--vc-radius-md, 0.375rem);
+    background-color: var(--vc-color-bg, #fff);
+    cursor: text;
+    min-height: 2.5rem;
+}
+
+.vc-form-tags:focus-within {
+    border-color: var(--vc-color-primary-500, #3b82f6);
+    box-shadow: 0 0 0 1px var(--vc-color-primary-500, #3b82f6);
+}
+
+.vc-form-tags[data-disabled] {
+    cursor: not-allowed;
+    opacity: 0.6;
+    background-color: var(--vc-color-bg-muted, #f3f4f6);
+}
+
+.vc-form-tags-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1.25;
+    color: var(--vc-color-on-primary, #fff);
+    background-color: var(--vc-color-primary-600, #2563eb);
+    border-radius: 9999px;
+}
+
+.vc-form-tags-item-text {
+    user-select: none;
+}
+
+.vc-form-tags-item-delete {
+    appearance: none;
+    -webkit-appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    height: 1rem;
+    padding: 0;
+    color: inherit;
+    background-color: transparent;
+    border: 0;
+    border-radius: 9999px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.vc-form-tags-item-delete:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.vc-form-tags-input {
+    appearance: none;
+    -webkit-appearance: none;
+    flex: 1 0 6rem;
+    min-width: 6rem;
+    padding: 0.125rem 0;
+    font-size: 0.875rem;
+    color: var(--vc-color-fg, #111827);
+    background-color: transparent;
+    border: 0;
+    outline: none;
+}

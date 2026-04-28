@@ -40,22 +40,76 @@ export default function tailwindTheme(): Theme {
                     groupPrepend: 'inline-flex items-center rounded-l-md border border-r-0 border-border bg-bg-muted px-3 text-sm text-fg-muted',
                 },
             },
-            formInputCheckbox: {
+            formCheckbox: {
                 classes: {
-                    root: '',
-                    label: 'text-sm text-fg',
+                    root: 'inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-sm border border-border bg-bg text-on-primary shadow-sm transition-colors hover:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1 data-[state=checked]:bg-primary-600 data-[state=checked]:border-primary-600 data-[state=indeterminate]:bg-primary-600 data-[state=indeterminate]:border-primary-600 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
+                    indicator: 'inline-flex items-center justify-center text-current',
+                    label: 'text-sm text-fg cursor-pointer select-none',
                     group: 'inline-flex items-center gap-2',
                 },
-                variants: { variant: { switch: { root: 'vc-form-input-checkbox--switch' } } },
-                defaultVariants: { variant: 'checkbox' },
+            },
+            formCheckboxGroup: { classes: { root: 'flex flex-col gap-2 data-[orientation=horizontal]:flex-row data-[orientation=horizontal]:items-center' } },
+            formSwitch: {
+                classes: {
+                    root: 'inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border border-border bg-bg-muted p-0.5 shadow-sm transition-colors hover:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1 data-[state=checked]:bg-primary-600 data-[state=checked]:border-primary-600 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
+                    thumb: 'block h-3.5 w-3.5 rounded-full bg-bg shadow ring-0 transition-transform translate-x-0 data-[state=checked]:translate-x-4',
+                    label: 'text-sm text-fg cursor-pointer select-none',
+                    group: 'inline-flex items-center gap-2',
+                },
             },
             formSelect: { classes: { root: 'block w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-fg shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:bg-bg-muted' } },
+            formRadio: {
+                classes: {
+                    root: 'inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-border bg-bg shadow-sm transition-colors hover:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1 data-[state=checked]:border-primary-600 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
+                    indicator: 'block h-2 w-2 rounded-full bg-primary-600',
+                    label: 'text-sm text-fg cursor-pointer select-none',
+                    group: 'inline-flex items-center gap-2',
+                },
+            },
+            formRadioGroup: { classes: { root: 'flex flex-col gap-2 data-[orientation=horizontal]:flex-row data-[orientation=horizontal]:items-center data-[orientation=horizontal]:gap-4' } },
+            formPin: {
+                classes: {
+                    root: 'inline-flex items-center gap-2',
+                    input: 'h-10 w-10 rounded-md border border-border bg-bg text-center text-lg font-medium text-fg shadow-sm tabular-nums focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 disabled:cursor-not-allowed disabled:bg-bg-muted disabled:opacity-50',
+                },
+            },
+            formSlider: {
+                classes: {
+                    root: 'relative flex items-center select-none touch-none w-full h-5 data-[orientation=vertical]:flex-col data-[orientation=vertical]:w-5 data-[orientation=vertical]:h-32',
+                    track: 'relative grow rounded-full bg-bg-muted h-1 data-[orientation=vertical]:w-1 data-[orientation=vertical]:h-full',
+                    range: 'absolute rounded-full bg-primary-600 h-full data-[orientation=vertical]:w-full',
+                    thumb: 'block h-4 w-4 rounded-full border-2 border-primary-600 bg-bg shadow-sm transition-shadow hover:shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
+                },
+            },
+            formNumber: {
+                classes: {
+                    root: 'inline-flex w-fit items-stretch overflow-hidden rounded-md border border-border bg-bg shadow-sm focus-within:border-primary-500 focus-within:ring-1 focus-within:ring-primary-500',
+                    // `field-sizing: content` lets the input auto-grow to fit
+                    // formatted strings (e.g. "$20.05") instead of clipping.
+                    // `min-w-16` keeps a sensible floor for empty / short
+                    // values; the parent `w-fit` follows along.
+                    input: 'min-w-16 [field-sizing:content] bg-transparent border-0 px-3 py-2 text-center text-sm text-fg outline-none tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none',
+                    decrement: 'inline-flex w-8 items-center justify-center bg-bg-muted text-fg hover:bg-bg-elevated focus-visible:outline-2 focus-visible:outline-primary-500 -outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
+                    increment: 'inline-flex w-8 items-center justify-center bg-bg-muted text-fg hover:bg-bg-elevated focus-visible:outline-2 focus-visible:outline-primary-500 -outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
+                },
+            },
+            formTags: {
+                classes: {
+                    root: 'flex flex-wrap items-center gap-1.5 rounded-md border border-border bg-bg px-2 py-1.5 text-sm shadow-sm cursor-text focus-within:border-primary-500 focus-within:ring-1 focus-within:ring-primary-500 data-[disabled]:cursor-not-allowed data-[disabled]:bg-bg-muted data-[disabled]:opacity-60',
+                    item: 'inline-flex items-center gap-1 rounded-full bg-primary-600 px-2 py-0.5 text-xs leading-tight text-on-primary',
+                    itemText: 'select-none',
+                    itemDelete: 'inline-flex h-4 w-4 items-center justify-center rounded-full bg-transparent text-current hover:bg-black/10',
+                    input: 'flex-1 min-w-24 bg-transparent border-0 outline-none text-fg px-0 py-0.5 text-sm',
+                },
+            },
             button: {
                 classes: {
                     // Structural baseline — every visual treatment composes
                     // on top via compound variants below. Focus ring uses the
-                    // active color's `-500` shade picked per variant.
-                    root: 'inline-flex items-center justify-center gap-1.5 rounded-md font-medium shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60',
+                    // active color's `-500` shade picked per variant. `gap-2`
+                    // (8px) keeps the leading-icon / spinner visually
+                    // separated from the label without looking spaced-out.
+                    root: 'inline-flex items-center justify-center gap-2 rounded-md font-medium shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60',
                     leading: 'inline-flex shrink-0 items-center',
                     trailing: 'inline-flex shrink-0 items-center',
                     label: '',

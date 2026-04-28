@@ -97,14 +97,19 @@ export default defineConfig({
                     ],
                 },
                 {
-                    text: '@vuecs/form-controls',
+                    text: '@vuecs/forms',
                     items: [
                         { text: 'FormInput', link: '/components/form-input' },
+                        { text: 'FormNumber', link: '/components/form-number' },
+                        { text: 'FormPin', link: '/components/form-pin' },
                         { text: 'FormTextarea', link: '/components/form-textarea' },
                         { text: 'FormSelect', link: '/components/form-select' },
                         { text: 'FormSelectSearch', link: '/components/form-select-search' },
                         { text: 'FormCheckbox', link: '/components/form-checkbox' },
-                        { text: 'FormRangeSlider', link: '/components/form-range-slider' },
+                        { text: 'FormSwitch', link: '/components/form-switch' },
+                        { text: 'FormRadio', link: '/components/form-radio' },
+                        { text: 'FormSlider', link: '/components/form-slider' },
+                        { text: 'FormTags', link: '/components/form-tags' },
                     ],
                 },
                 {
@@ -160,8 +165,7 @@ export default defineConfig({
                     items: [
                         { text: 'Overview', link: '/themes/' },
                         { text: 'Tailwind', link: '/themes/tailwind' },
-                        { text: 'Bootstrap v5', link: '/themes/bootstrap-v5' },
-                        { text: 'Bootstrap v4', link: '/themes/bootstrap-v4' },
+                        { text: 'Bootstrap', link: '/themes/bootstrap' },
                         { text: 'Font Awesome', link: '/themes/font-awesome' },
                     ],
                 },

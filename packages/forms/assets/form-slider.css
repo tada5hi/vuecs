@@ -1,0 +1,74 @@
+/*
+ * Structural defaults for VCFormSlider (Reka SliderRoot + SliderTrack +
+ * SliderRange + SliderThumb).
+ *
+ * The root sets up the flex container; track owns the rail; range fills the
+ * selected portion (between thumbs for multi-thumb / left edge to thumb for
+ * single); thumbs are draggable handles. Reka exposes `data-orientation`
+ * (horizontal | vertical) on every part.
+ */
+.vc-form-slider {
+    position: relative;
+    display: flex;
+    align-items: center;
+    user-select: none;
+    touch-action: none;
+    width: 100%;
+    height: 1.25rem;
+}
+
+.vc-form-slider[data-orientation="vertical"] {
+    flex-direction: column;
+    width: 1.25rem;
+    height: 8rem;
+}
+
+.vc-form-slider-track {
+    position: relative;
+    flex-grow: 1;
+    background-color: var(--vc-color-bg-muted, #f3f4f6);
+    border-radius: 9999px;
+    height: 0.25rem;
+}
+
+.vc-form-slider[data-orientation="vertical"] .vc-form-slider-track {
+    width: 0.25rem;
+    height: 100%;
+}
+
+.vc-form-slider-range {
+    position: absolute;
+    background-color: var(--vc-color-primary-600, #2563eb);
+    border-radius: 9999px;
+    height: 100%;
+}
+
+.vc-form-slider[data-orientation="vertical"] .vc-form-slider-range {
+    width: 100%;
+}
+
+.vc-form-slider-thumb {
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    background-color: var(--vc-color-bg, #fff);
+    border: 2px solid var(--vc-color-primary-600, #2563eb);
+    border-radius: 9999px;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.1);
+    cursor: pointer;
+    transition: box-shadow 0.15s ease-in-out;
+}
+
+.vc-form-slider-thumb:hover {
+    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 0.15);
+}
+
+.vc-form-slider-thumb:focus-visible {
+    outline: 2px solid var(--vc-color-primary-500, #3b82f6);
+    outline-offset: 2px;
+}
+
+.vc-form-slider[data-disabled] .vc-form-slider-thumb {
+    cursor: not-allowed;
+    opacity: 0.5;
+}

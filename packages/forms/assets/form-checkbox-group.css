@@ -1,0 +1,16 @@
+/*
+ * Structural defaults for VCFormCheckboxGroup (Reka CheckboxGroupRoot).
+ * The group renders a wrapping element with role/data hooks for roving
+ * focus; layout defaults to a vertical column, override via theme classes
+ * or attrs for horizontal/grid layouts.
+ */
+.vc-form-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.vc-form-checkbox-group[data-orientation="horizontal"] {
+    flex-direction: row;
+    align-items: center;
+}

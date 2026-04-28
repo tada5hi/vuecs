@@ -7,7 +7,49 @@
         "noEmit": true,
         "allowImportingTsExtensions": true,
         "noUncheckedIndexedAccess": false,
-        "verbatimModuleSyntax": false
+        "verbatimModuleSyntax": false,
+        // Path mappings so the IDE resolves cross-package `@vuecs/*` imports
+        // to source files instead of relying on workspace symlinks (which
+        // sometimes lag behind, or point at the built `dist/` after a
+        // build, hiding source-only types). Build pipelines (tsdown,
+        // vue-tsc with `tsconfig.build.json`) intentionally don't inherit
+        // these — they consume each package via its `package.json` exports
+        // map so the published surface is what's bundled.
+        "baseUrl": ".",
+        "paths": {
+            "@vuecs/button": ["./packages/button/src"],
+            "@vuecs/button/*": ["./packages/button/src/*"],
+            "@vuecs/core": ["./packages/core/src"],
+            "@vuecs/core/*": ["./packages/core/src/*"],
+            "@vuecs/countdown": ["./packages/countdown/src"],
+            "@vuecs/countdown/*": ["./packages/countdown/src/*"],
+            "@vuecs/design": ["./packages/design/src"],
+            "@vuecs/design/*": ["./packages/design/src/*"],
+            "@vuecs/forms": ["./packages/forms/src"],
+            "@vuecs/forms/*": ["./packages/forms/src/*"],
+            "@vuecs/gravatar": ["./packages/gravatar/src"],
+            "@vuecs/gravatar/*": ["./packages/gravatar/src/*"],
+            "@vuecs/link": ["./packages/link/src"],
+            "@vuecs/link/*": ["./packages/link/src/*"],
+            "@vuecs/list-controls": ["./packages/list-controls/src"],
+            "@vuecs/list-controls/*": ["./packages/list-controls/src/*"],
+            "@vuecs/navigation": ["./packages/navigation/src"],
+            "@vuecs/navigation/*": ["./packages/navigation/src/*"],
+            "@vuecs/nuxt": ["./packages/nuxt/src"],
+            "@vuecs/nuxt/*": ["./packages/nuxt/src/*"],
+            "@vuecs/overlays": ["./packages/overlays/src"],
+            "@vuecs/overlays/*": ["./packages/overlays/src/*"],
+            "@vuecs/pagination": ["./packages/pagination/src"],
+            "@vuecs/pagination/*": ["./packages/pagination/src/*"],
+            "@vuecs/timeago": ["./packages/timeago/src"],
+            "@vuecs/timeago/*": ["./packages/timeago/src/*"],
+            "@vuecs/theme-bootstrap": ["./themes/bootstrap/src"],
+            "@vuecs/theme-bootstrap/*": ["./themes/bootstrap/src/*"],
+            "@vuecs/theme-font-awesome": ["./themes/font-awesome/src"],
+            "@vuecs/theme-font-awesome/*": ["./themes/font-awesome/src/*"],
+            "@vuecs/theme-tailwind": ["./themes/tailwind/src"],
+            "@vuecs/theme-tailwind/*": ["./themes/tailwind/src/*"]
+        }
     },
-    "include": ["packages/*/src/**/*"]
+    "include": ["packages/*/src/**/*", "themes/*/src/**/*"]
 }

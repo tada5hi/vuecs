@@ -27,16 +27,16 @@ Themes are resolved at runtime by `@vuecs/core`'s theme manager through four lay
 ## Getting Started
 
 ```bash
-npm install @vuecs/core @vuecs/theme-bootstrap-v5 @vuecs/theme-font-awesome
+npm install @vuecs/core @vuecs/theme-bootstrap @vuecs/theme-font-awesome
 ```
 
 ```typescript
 import vuecs, { extend } from '@vuecs/core';
-import bootstrapV5 from '@vuecs/theme-bootstrap-v5';
+import bootstrap from '@vuecs/theme-bootstrap';
 import fontAwesome from '@vuecs/theme-font-awesome';
 
 app.use(vuecs, {
-    themes: [bootstrapV5(), fontAwesome()],
+    themes: [bootstrap(), fontAwesome()],
     overrides: {
         elements: { listItem: { classes: { root: extend('border-bottom') } } },
     },
@@ -72,11 +72,11 @@ List display with loading, empty state, header/footer/body, and per-item event h
 
 [Full documentation](./packages/list-controls/README.md)
 
-### `@vuecs/form-controls`
+### `@vuecs/forms`
 
-[![npm version](https://badge.fury.io/js/@vuecs%2Fform-controls.svg)](https://badge.fury.io/js/@vuecs%2Fform-controls)
+[![npm version](https://badge.fury.io/js/@vuecs%2Fforms.svg)](https://badge.fury.io/js/@vuecs%2Fforms)
 
-Form inputs with validation support: input, checkbox, select, textarea, submit, searchable select, and range slider.
+Form inputs on Reka UI primitives, with validation support: Checkbox + CheckboxGroup, Switch, Radio + RadioGroup, Input, Number, Pin, Select + SelectSearch, Slider (single + range), Tags, Textarea.
 
 ```vue
 <VCFormGroup label-content="Email" :validation-messages="errors">
@@ -84,7 +84,7 @@ Form inputs with validation support: input, checkbox, select, textarea, submit, 
 </VCFormGroup>
 ```
 
-[Full documentation](./packages/form-controls/README.md)
+[Full documentation](./packages/forms/README.md)
 
 ### `@vuecs/pagination`
 
@@ -142,23 +142,17 @@ Relative time display with locale support and auto-update.
 
 Themes are functions returning `{ elements, classesMergeFn? }`. Multiple themes compose in array order — e.g. a CSS-framework theme for layout plus an icon theme for glyphs. Themes only depend on `@vuecs/core`; the class strings they provide target whichever component packages the consumer has installed.
 
-### `@vuecs/theme-bootstrap-v5`
+### `@vuecs/theme-bootstrap`
 
-[![npm version](https://badge.fury.io/js/@vuecs%2Ftheme-bootstrap-v5.svg)](https://badge.fury.io/js/@vuecs%2Ftheme-bootstrap-v5)
+[![npm version](https://badge.fury.io/js/@vuecs%2Ftheme-bootstrap.svg)](https://badge.fury.io/js/@vuecs%2Ftheme-bootstrap)
 
-Bootstrap v5 class defaults (`form-control`, `btn btn-primary`, `d-flex`, …) for every component.
+Bootstrap class defaults (`form-control`, `btn btn-primary`, `d-flex`, …) for every component. Currently targets Bootstrap 5; renamed from `@vuecs/theme-bootstrap-v5` in 3.0 (clean break — no shim). The previous `@vuecs/theme-bootstrap-v4` package was removed in the same release; Bootstrap 4's Sass-compiled stylesheet didn't benefit from the design-token bridge.
 
 ```typescript
-import bootstrapV5 from '@vuecs/theme-bootstrap-v5';
+import bootstrap from '@vuecs/theme-bootstrap';
 
-app.use(vuecs, { themes: [bootstrapV5()] });
+app.use(vuecs, { themes: [bootstrap()] });
 ```
-
-### `@vuecs/theme-bootstrap-v4`
-
-[![npm version](https://badge.fury.io/js/@vuecs%2Ftheme-bootstrap-v4.svg)](https://badge.fury.io/js/@vuecs%2Ftheme-bootstrap-v4)
-
-Bootstrap v4 class defaults — for projects still on the v4 stylesheet.
 
 ### `@vuecs/theme-tailwind`
 
@@ -179,13 +173,13 @@ app.use(vuecs, {
 
 [![npm version](https://badge.fury.io/js/@vuecs%2Ftheme-font-awesome.svg)](https://badge.fury.io/js/@vuecs%2Ftheme-font-awesome)
 
-Font Awesome icon classes for icon slots (`pagination.prevIcon`, `listItem.icon`, …). All values use `extend()` so it layers on top of a CSS-framework theme without wiping its classes. (`VCButton`'s create/update icon defaults are registered through `submitButton` defaults instead — see `useSubmitButton()` in `@vuecs/form-controls`.)
+Font Awesome icon classes for icon slots (`pagination.prevIcon`, `listItem.icon`, …). All values use `extend()` so it layers on top of a CSS-framework theme without wiping its classes. (`VCButton`'s create/update icon defaults are registered through `submitButton` defaults instead — see `useSubmitButton()` in `@vuecs/forms`.)
 
 ```typescript
-import bootstrapV5 from '@vuecs/theme-bootstrap-v5';
+import bootstrap from '@vuecs/theme-bootstrap';
 import fontAwesome from '@vuecs/theme-font-awesome';
 
-app.use(vuecs, { themes: [bootstrapV5(), fontAwesome()] });
+app.use(vuecs, { themes: [bootstrap(), fontAwesome()] });
 ```
 
 ## Contributing

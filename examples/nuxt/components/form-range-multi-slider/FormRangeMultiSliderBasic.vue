@@ -13,25 +13,20 @@ import {
 
 export default defineComponent({
     setup() {
-        const value = ref<{ min: number, max: number }>(false);
+        // Range mode: array v-model. Same VCFormSlider component, the array
+        // shape determines thumb count.
+        const value = ref<number[]>([20, 80]);
 
-        const submit = async (range: { min: number, max: number }) => {
-            value.value = range;
-        };
-
-        return {
-            value,
-            submit,
-        };
+        return { value };
     },
 });
 </script>
 <template>
     <div class="space-y-3">
-        <VCFormRangeMultiSlider
+        <VCFormSlider
+            v-model="value"
             :min="0"
             :max="100"
-            @change="submit"
         />
         <div class="rounded-md border border-blue-200 bg-blue-50 p-2 text-sm text-blue-800">
             Current Value: {{ value }}

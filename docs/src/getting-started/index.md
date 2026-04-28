@@ -19,7 +19,7 @@ Most Vue libraries make you pick a CSS framework upfront and bake it in. vuecs t
 ## What's in the box
 
 - **Components** — form controls, navigation, pagination, list controls, countdown, gravatar, link, timeago.
-- **Themes** — `@vuecs/theme-tailwind`, `@vuecs/theme-bootstrap-v5`, `@vuecs/theme-bootstrap-v4`, `@vuecs/theme-font-awesome`.
+- **Themes** — `@vuecs/theme-tailwind`, `@vuecs/theme-bootstrap`, `@vuecs/theme-font-awesome`.
 - **Design tokens** — `@vuecs/design` ships CSS variables + a runtime palette switcher.
 - **Nuxt module** — `@vuecs/nuxt` ships SSR-safe palette + color-mode composables.
 

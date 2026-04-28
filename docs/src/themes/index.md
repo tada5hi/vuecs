@@ -20,8 +20,7 @@ app.use(vuecs, {
 | Theme | Package | What it does |
 |-------|---------|--------------|
 | [Tailwind](/themes/tailwind) | `@vuecs/theme-tailwind` | Tailwind v4 utility classes for every component, paired with the design tokens |
-| [Bootstrap v5](/themes/bootstrap-v5) | `@vuecs/theme-bootstrap-v5` | Bootstrap 5.x classes + optional `--bs-*` → `--vc-color-*` bridge |
-| [Bootstrap v4](/themes/bootstrap-v4) | `@vuecs/theme-bootstrap-v4` | Bootstrap 4.x classes — bridge has limited reach (see page) |
+| [Bootstrap](/themes/bootstrap) | `@vuecs/theme-bootstrap` | Bootstrap 5.x classes + optional `--bs-*` → `--vc-color-*` bridge |
 | [Font Awesome](/themes/font-awesome) | `@vuecs/theme-font-awesome` | Icons — `fa fa-*` glyphs slotted into icon elements |
 
 ## Merge semantics

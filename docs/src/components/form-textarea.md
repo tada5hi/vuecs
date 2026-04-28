@@ -3,7 +3,7 @@
 Multi-line text input with `v-model` and optional debounce — same API surface as [FormInput](/components/form-input) but for `<textarea>`.
 
 ```bash
-npm install @vuecs/form-controls
+npm install @vuecs/forms
 ```
 
 ## Basic usage
@@ -16,7 +16,7 @@ npm install @vuecs/form-controls
 
 ```vue [Vue]
 <script setup lang="ts">
-import { VCFormTextarea } from '@vuecs/form-controls';
+import { VCFormTextarea } from '@vuecs/forms';
 import { ref } from 'vue';
 
 const value = ref('');

@@ -117,7 +117,7 @@ Same as DropdownMenu — keyboard arrow navigation, typeahead, Escape close, foc
 
 ## Animations
 
-Same as [DropdownMenu](/components/dropdown-menu#animations) — both `theme-tailwind` and `theme-bootstrap-v5` ship enter and exit animations (fade + zoom-95) via `@vuecs/design`'s vanilla-CSS port of [tw-animate-css](https://github.com/Wombosvideo/tw-animate-css). Reka's shared `MenuContent` primitive wraps with `Presence` so exit animations play before unmount.
+Same as [DropdownMenu](/components/dropdown-menu#animations) — both `theme-tailwind` and `theme-bootstrap` ship enter and exit animations (fade + zoom-95) via `@vuecs/design`'s vanilla-CSS port of [tw-animate-css](https://github.com/Wombosvideo/tw-animate-css). Reka's shared `MenuContent` primitive wraps with `Presence` so exit animations play before unmount.
 
 ## Extras
 

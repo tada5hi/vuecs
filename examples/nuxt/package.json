@@ -33,7 +33,7 @@
         "@vuecs/button": "^0.0.0",
         "@vuecs/countdown": "^1.0.1",
         "@vuecs/design": "^0.0.0",
-        "@vuecs/form-controls": "^2.5.0",
+        "@vuecs/forms": "^3.0.0",
         "@vuecs/gravatar": "^1.0.2",
         "@vuecs/list-controls": "^2.0.1",
         "@vuecs/navigation": "^2.4.1",

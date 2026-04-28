@@ -107,11 +107,11 @@ The resolution logic (`resolve.ts`, `variant.ts`) has zero Vue imports — testa
 
 ```typescript
 import vuecs, { extend } from '@vuecs/core';
-import bootstrapV5 from '@vuecs/theme-bootstrap-v5';
+import bootstrap from '@vuecs/theme-bootstrap';
 import fontAwesome from '@vuecs/theme-font-awesome';
 
 app.use(vuecs, {
-    themes: [bootstrapV5(), fontAwesome()],
+    themes: [bootstrap(), fontAwesome()],
     overrides: {
         elements: {
             listItem: { classes: { root: extend('border-b') } },
@@ -154,7 +154,7 @@ The composable signature `(name, props, defaults)` matches `useComponentDefaults
 
 ## Theme Architecture
 
-Theme packages (`theme-bootstrap-v4`, `theme-bootstrap-v5`, `theme-font-awesome`, `theme-tailwind`) are functions returning `Theme` objects with an `elements` map. They configure component appearance via CSS class mappings and optional variant definitions. Multiple themes are merged in array order. `@vuecs/theme-tailwind` ships a `twMerge`-backed `merge` function pre-wired as its `classesMergeFn` and exports it as `merge: ClassesMergeFn` for reuse in overrides.
+Theme packages (`theme-bootstrap`, `theme-font-awesome`, `theme-tailwind`) are functions returning `Theme` objects with an `elements` map. They configure component appearance via CSS class mappings and optional variant definitions. Multiple themes are merged in array order. `@vuecs/theme-tailwind` ships a `twMerge`-backed `merge` function pre-wired as its `classesMergeFn` and exports it as `merge: ClassesMergeFn` for reuse in overrides.
 
 ```typescript
 // Theme type structure
@@ -271,7 +271,7 @@ for the pattern.
 import vuecs from '@vuecs/core';
 
 app.use(vuecs, {
-    themes: [bootstrapV5(), fontAwesome()],
+    themes: [bootstrap(), fontAwesome()],
     defaults: {
         submitButton: {
             createText: computed(() => t('actions.create')),
@@ -281,7 +281,7 @@ app.use(vuecs, {
             content: 'Keine weiteren Einträge verfügbar...',
         },
         formSelect: {
-            optionDefaultValue: '-- Auswählen --',
+            placeholder: '-- Auswählen --',
         },
     },
 });
@@ -291,7 +291,7 @@ app.use(vuecs, {
 
 Components drop Vue-level prop defaults (so `undefined` means "fall through") and
 resolve via the composable. The same composable powers experimental
-*standalone* hooks like `useSubmitButton()` in `@vuecs/form-controls` —
+*standalone* hooks like `useSubmitButton()` in `@vuecs/forms` —
 the only difference is that the "props" arg is an empty object so every
 key falls through to the global defaults / hardcoded layer.
 
@@ -355,9 +355,10 @@ The following components resolve the listed behavioral props via
 | Component / hook | Keys |
 |------------------|------|
 | `useSubmitButton()` (`submitButton`) | `createText`, `updateText`, `createIcon`, `updateIcon`, `createColor`, `updateColor` |
-| `VCFormSelect` | `optionDefault`, `optionDefaultId`, `optionDefaultValue` |
+| `VCFormSelect` | `placeholder` |
 | `VCFormGroup` | `validation` |
-| `VCFormInputCheckbox` | `labelContent` |
+| `VCFormCheckbox` | `labelContent` |
+| `VCFormSwitch` | `labelContent` |
 | `VCListItem` | `textPropName` |
 | `VCListNoMore` | `content` |
 
@@ -366,7 +367,7 @@ lives in the component's `behavioralDefaults` constant, which is passed to the
 composable as the lowest-priority layer. The `submitButton` row is unusual —
 it's the only entry without a corresponding `VC*` component. The previous
 `VCFormSubmit` was decomposed into `VCButton` (in `@vuecs/button`) plus a
-`useSubmitButton()` reactive bind-object helper (in `@vuecs/form-controls`,
+`useSubmitButton()` reactive bind-object helper (in `@vuecs/forms`,
 marked `@experimental`); the defaults registration moved with the helper.
 
 ## Cross-cutting Config (@vuecs/core, Phase 3 prerequisite)
@@ -538,7 +539,7 @@ removes the element. So consumers don't need to wire Presence themselves
 for exit animations to play — the theme's exit-state classes (`animate-out`
 + `fade-out-0` etc. for theme-tailwind, or the `vc-overlay-anim` /
 `vc-overlay-fade-anim` / `vc-tooltip-anim` dual-state helpers for
-theme-bootstrap-v5) just need to be in place. `<VCPresence>` is still
+theme-bootstrap) just need to be in place. `<VCPresence>` is still
 exported for ad-hoc use (e.g. animating a custom panel that isn't a Reka
 overlay), but isn't required for the shipped overlay families.
 
@@ -546,7 +547,7 @@ overlay), but isn't required for the shipped overlay families.
 `vc-overlay-fade-anim`, `vc-tooltip-anim`) live in `animations.css`
 alongside the tw-animate-css port. They package `data-state`-gated
 enter+exit animations into a single class so theme strings without
-attribute-selector capability (theme-bootstrap-v5, custom CSS-only themes)
+attribute-selector capability (theme-bootstrap, custom CSS-only themes)
 can drive overlay animations. theme-tailwind keeps using the more
 flexible `data-[state=open]:animate-in fade-in-0 zoom-in-95
 data-[state=closed]:animate-out fade-out-0 zoom-out-95` composition.
@@ -640,23 +641,21 @@ plus a Nuxt cookie (`vc-color-mode` by default). It's NOT
 `@nuxtjs/color-mode` under the hood — that module remains an alternative
 for consumers who prefer it (set `vuecs: { colorMode: false }` to opt out).
 
-### Bootstrap bridges (theme-bootstrap-v{4,5})
+### Bootstrap bridge (theme-bootstrap)
 
-Both Bootstrap theme packages ship an optional CSS file at
-`assets/index.css` that wires Bootstrap's `:root` theme-color variables
-onto `--vc-color-*`. Each package's `package.json` exposes a `style`
-conditional export, so a bare `@import "@vuecs/theme-bootstrap-v5"`
-(and `-v4`) in a CSS file resolves to the bridge. Explicit subpath
-imports (`@vuecs/theme-bootstrap-v5/index.css`) also work.
+`@vuecs/theme-bootstrap` ships an optional CSS file at `assets/index.css`
+that wires Bootstrap's `:root` theme-color variables onto `--vc-color-*`.
+The package's `package.json` exposes a `style` conditional export, so a
+bare `@import "@vuecs/theme-bootstrap"` in a CSS file resolves to the
+bridge. The explicit subpath form (`@vuecs/theme-bootstrap/index.css`)
+also works. Currently targets Bootstrap 5 — remaps `--bs-primary`,
+`--bs-success`, etc. Bootstrap 5 components read `--bs-*` at runtime, so
+runtime palette switches via `setPalette()` propagate.
 
-| Package | Scope | Affects Bootstrap components? |
-|---------|-------|-------------------------------|
-| `theme-bootstrap-v5` | Remaps `--bs-primary`, `--bs-success`, ... | ✅ Yes — Bootstrap 5 components read `--bs-*` at runtime |
-| `theme-bootstrap-v4` | Remaps `--primary`, `--success`, ... | ⚠️ No — Bootstrap 4 component CSS is Sass-compiled to literal hex; the bridge only affects consumer-authored rules that reference `var(--primary)` |
-
-The v4 bridge is intentionally shipped for API parity and for custom-CSS
-use cases, but its practical surface is limited; full Bootstrap 4
-repaletting requires rebuilding Bootstrap from Sass.
+`@vuecs/theme-bootstrap-v4` was removed in vuecs 3.0 — Bootstrap 4
+component CSS is Sass-compiled to literal hex, so the design-token
+bridge had no practical effect on Bootstrap-rendered widgets, only on
+consumer-authored CSS that referenced `var(--primary)`.
 
 ### Short-form CSS imports
 
@@ -665,9 +664,8 @@ consumers can write bare imports:
 
 ```css
 @import "@vuecs/design";              /* → assets/index.css */
-@import "@vuecs/theme-bootstrap-v5";  /* → assets/index.css (bridge) */
-@import "@vuecs/theme-bootstrap-v4";  /* → assets/index.css (bridge) */
-@import "@vuecs/form-controls";       /* → dist/style.css */
+@import "@vuecs/theme-bootstrap";     /* → assets/index.css (bridge) */
+@import "@vuecs/forms";       /* → dist/style.css */
 @import "@vuecs/list-controls";       /* → dist/style.css */
 @import "@vuecs/navigation";          /* → dist/style.css */
 @import "@vuecs/pagination";          /* → dist/style.css */
@@ -679,8 +677,8 @@ who don't import these will see the bundled JS render correctly but lose
 component-specific structural styling — checkbox switch variant,
 range-slider track and thumbs, search-dropdown panel, nav tree-line, etc.
 
-Explicit subpath forms (`@vuecs/design/index.css`, `@vuecs/form-controls/style.css`,
-`@vuecs/form-controls/dist/style.css`) remain supported for clarity when
+Explicit subpath forms (`@vuecs/design/index.css`, `@vuecs/forms/style.css`,
+`@vuecs/forms/dist/style.css`) remain supported for clarity when
 mixing multiple CSS entry points.
 
 ## NavigationManager (@vuecs/navigation)
@@ -694,7 +692,7 @@ The navigation package has its own manager pattern using `@posva/event-emitter`:
 
 ## Component Rendering
 
-Components use TypeScript render functions (not `.vue` SFCs) via `defineComponent` + `h()`. This avoids the Vue template compiler dependency in most packages. The `@vitejs/plugin-vue` plugin is only enabled for packages that contain `.vue` files (form-controls, pagination).
+Components use TypeScript render functions (not `.vue` SFCs) via `defineComponent` + `h()`. This avoids the Vue template compiler dependency in most packages. The `@vitejs/plugin-vue` plugin is only enabled for packages that contain `.vue` files (forms, pagination, overlays).
 
 ## CSS Strategy
 
@@ -798,7 +796,7 @@ manually when they do.
 
 Theme entries for all five families (`modal`, `popover`, `tooltip`,
 `dropdownMenu`, `contextMenu`) ship in **both** `@vuecs/theme-tailwind` AND
-`@vuecs/theme-bootstrap-v5` with `data-state` animation hooks (`open|closed`
+`@vuecs/theme-bootstrap` with `data-state` animation hooks (`open|closed`
 for modal/popover/menu, `delayed-open|closed` for tooltip). Menu items also
 expose `data-highlighted` (hover/focus) and `data-disabled`. Animation
 classes (`animate-in`, `fade-in-0`, `zoom-in-95`, etc.) come from
@@ -812,8 +810,6 @@ classes (`animate-in`, `fade-in-0`, `zoom-in-95`, etc.) come from
   `animations.css`) which package `data-state`-gated enter+exit
   animations into a single class. Required because BS5 theme strings
   can't carry `data-[state=]:` attribute selectors.
-- `theme-bootstrap-v4` doesn't ship overlay entries (Sass-compiled,
-  doesn't map cleanly to Reka's `data-state` contract).
 
 **Both enter AND exit animations fire** today. Reka's `*Content`
 primitives wrap themselves in `Presence` internally — when `data-state`

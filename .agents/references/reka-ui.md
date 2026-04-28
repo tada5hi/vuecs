@@ -123,7 +123,7 @@ Reka exposes `reka-ui/internal` for advanced consumers. vuecs's packages export 
 
 1. **`@vuecs/navigation` keyboard a11y.** `RovingFocus`, `useArrowNavigation`, `useTypeahead` would replace any custom keyboard handling in `NavigationManager`/`VCNavItems`. Direct fit.
 2. **A future `@vuecs/overlays` package** (Modal, Drawer, Popover, Tooltip, DropdownMenu) is the highest-value plug-in point — exactly what vuecs lacks today and exactly what Reka does best. Focus trap + scroll lock + portal + dismissable layer + floating-ui positioning all come for free.
-3. **`@vuecs/form-controls`:** `Checkbox`, `Switch`, `RadioGroup`, `Slider`, `Select` from Reka could replace hand-rolled internals while keeping the existing `useComponentTheme`/`useComponentDefaults` outer shells. Risk: would need to map vuecs's `themeVariant`/`themeClass` model onto Reka parts (root vs trigger vs content vs indicator).
+3. **`@vuecs/forms`:** `Checkbox`, `Switch`, `RadioGroup`, `Slider`, `Select` from Reka could replace hand-rolled internals while keeping the existing `useComponentTheme`/`useComponentDefaults` outer shells. Risk: would need to map vuecs's `themeVariant`/`themeClass` model onto Reka parts (root vs trigger vs content vs indicator).
 4. **`@vuecs/pagination`:** Reka ships `PaginationRoot/List/ListItem/First/Prev/Next/Last/Ellipsis`. Directly substitutable as the inner mechanic; vuecs could re-skin via the existing theme system. **Lowest-risk pilot.**
 5. **Shared composables to adopt independently** (no full UI-lib dep): `useForwardProps`, `useForwardPropsEmits`, `useForwardExpose`, `useEmitAsProps`. Pure, would simplify any future composite components in `core`.
 
@@ -242,7 +242,7 @@ Per CSS Cascade Layers, **unlayered always wins over layered**, regardless of sp
 - **New runtime dependency footprint.** `@floating-ui/dom`+`@floating-ui/vue`, `@internationalized/date`+`number`, `@tanstack/vue-virtual`, `@vueuse/core`, `aria-hidden`. Tree-shaking helps, but every overlay pulls floating-ui.
 - **Framework-agnostic stance is unaffected for theme packages.** Reka has no theme contract — it just renders DOM with `data-state`. `@vuecs/theme-{bootstrap-v4,bootstrap-v5,font-awesome,tailwind}` continue as pure data.
 - **API surface widens.** Each vuecs component would inherit Reka prop surfaces (`DialogRootProps` etc.) and the `asChild` mental model.
-- **Render-function vs `.vue` mix.** vuecs avoids the template compiler in most packages, but `@vuecs/form-controls` already uses `.vue` SFCs — so importing Reka SFCs into render-function components is precedented (just means importing the compiled component, not the SFC).
+- **Render-function vs `.vue` mix.** vuecs avoids the template compiler in most packages, but `@vuecs/forms` already uses `.vue` SFCs — so importing Reka SFCs into render-function components is precedented (just means importing the compiled component, not the SFC).
 - **SSR / Nuxt parity.** Reka supports SSR and ships a `./nuxt` subpath. `@vuecs/nuxt` would coexist cleanly.
 - **Locale / direction overlap.** Reka's `ConfigProvider` overlaps with vuecs's `DefaultsManager` philosophically. Two providers to keep aligned (or merge — see lesson #6).
 - **Versioning churn.** v2.9.x in active development. Some component families are still "Alpha" (date, color); Dialog/Popover/Menu are battle-tested via Nuxt UI.
@@ -254,7 +254,7 @@ Reka UI is **the natural lower layer** for vuecs's missing overlay/menu/tabs/acc
 1. **Adopt the patterns first** (lessons #1–#9) — `data-*` state, compound components, headless composables, prop-type re-exports — without taking a runtime dep.
 2. **Adopt the pure composables** (`useForward*`, `useArrowNavigation`, `useTypeahead`) into existing components.
 3. **Build a new `@vuecs/overlays` package** on top of Reka UI's `Dialog`, `Popover`, `DropdownMenu`, `Tooltip`.
-4. **Optionally** migrate `@vuecs/pagination` and `@vuecs/form-controls` internals to Reka parts behind the existing `useComponentTheme` API — keeping the public theme-system contract intact so theme packages don't break.
+4. **Optionally** migrate `@vuecs/pagination` and `@vuecs/forms` internals to Reka parts behind the existing `useComponentTheme` API — keeping the public theme-system contract intact so theme packages don't break.
 
 ## Areas to Watch
 

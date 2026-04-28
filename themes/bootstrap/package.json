@@ -1,0 +1,53 @@
+{
+    "name": "@vuecs/theme-bootstrap",
+    "version": "3.0.0",
+    "type": "module",
+    "description": "Bootstrap theme for vuecs components. Currently targets Bootstrap 5; the version number tracks vuecs theme breaking changes, not Bootstrap's.",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./dist/index.d.ts",
+            "style": "./assets/index.css",
+            "import": "./dist/index.mjs"
+        },
+        "./index.css": "./assets/index.css",
+        "./assets/index.css": "./assets/index.css"
+    },
+    "style": "./assets/index.css",
+    "files": [
+        "dist",
+        "assets"
+    ],
+    "sideEffects": [
+        "./assets/*.css"
+    ],
+    "keywords": [],
+    "author": {
+        "name": "Peter Placzek",
+        "email": "contact@tada5hi.net",
+        "url": "https://tada5hi.net"
+    },
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tada5hi/vuecs.git",
+        "directory": "themes/bootstrap"
+    },
+    "scripts": {
+        "build:js": "tsdown",
+        "build:types": "tsc --emitDeclarationOnly -p tsconfig.build.json",
+        "build": "rimraf dist && npm run build:js && npm run build:types"
+    },
+    "devDependencies": {
+        "@vuecs/core": "^2.0.0"
+    },
+    "peerDependencies": {
+        "@vuecs/core": "^2.0.0"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

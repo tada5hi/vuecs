@@ -14,16 +14,21 @@ vuecs ships its components across separate packages — install only what you us
 |-----------|-------|
 | [Countdown](/components/countdown) | Timer countdown with typed slot props |
 
-## @vuecs/form-controls
+## @vuecs/forms
 
 | Component | Notes |
 |-----------|-------|
 | [FormInput](/components/form-input) | Text input with optional debounce |
+| [FormNumber](/components/form-number) | Typed numeric input with steppers (Reka primitive) |
+| [FormPin](/components/form-pin) | PIN / OTP input (Reka primitive) |
 | [FormTextarea](/components/form-textarea) | Multi-line text input |
-| [FormSelect](/components/form-select) | Dropdown select |
+| [FormSelect](/components/form-select) | Dropdown select with `FormOption` shape + grouping |
 | [FormSelectSearch](/components/form-select-search) | Searchable select for long option lists |
-| [FormCheckbox](/components/form-checkbox) | Checkbox or switch (variant) |
-| [FormRangeSlider](/components/form-range-slider) | Dual-handle range slider |
+| [FormCheckbox](/components/form-checkbox) | Checkbox + group (Reka primitive); supports tri-state |
+| [FormSwitch](/components/form-switch) | Toggle switch (Reka primitive) |
+| [FormRadio](/components/form-radio) | Radio + group with single v-model (Reka primitive) |
+| [FormSlider](/components/form-slider) | Single-thumb or range slider; thumb count derives from v-model shape |
+| [FormTags](/components/form-tags) | Multi-value chip input (Reka primitive) |
 
 ## @vuecs/gravatar
 

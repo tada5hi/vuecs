@@ -20,25 +20,14 @@ const themes: ThemeCard[] = [
         ],
     },
     {
-        name: 'Bootstrap v5',
+        name: 'Bootstrap',
         accent: 'var(--vc-color-primary-500)',
-        href: '/themes/bootstrap-v5',
+        href: '/themes/bootstrap',
         summary: 'Drop-in Bootstrap 5 classes with optional design-token bridge for runtime palette switching.',
         bullets: [
             'Bootstrap 5.x classes',
             'design-token bridge maps --bs-* → --vc-color-*',
             'Repalettes Bootstrap components at runtime',
-        ],
-    },
-    {
-        name: 'Bootstrap v4',
-        accent: 'var(--vc-color-warning-500)',
-        href: '/themes/bootstrap-v4',
-        summary: 'Legacy Bootstrap 4 support for projects still on the older release line.',
-        bullets: [
-            'Bootstrap 4.x classes',
-            'design-token bridge for consumer-authored CSS',
-            'Bootstrap components themselves are Sass-compiled (limited reach)',
         ],
     },
 ];

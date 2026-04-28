@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { VCFormTextarea } from '@vuecs/form-controls';
+import { VCFormTextarea } from '@vuecs/forms';
 import { ref } from 'vue';
 
 const value = ref('');
