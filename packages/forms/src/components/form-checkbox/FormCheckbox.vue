@@ -7,7 +7,7 @@ import type {
     VariantValues,
 } from '@vuecs/core';
 import { CheckboxIndicator, CheckboxRoot } from 'reka-ui';
-import type { PropType, SlotsType } from 'vue';
+import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import {
     defineComponent,
     h,
@@ -58,27 +58,31 @@ export type FormCheckboxIndicatorSlotProps = {
 
 export type FormCheckboxModelValue = boolean | 'indeterminate' | null;
 
+const formCheckboxProps = {
+    modelValue: {
+        // `null` is in the runtime type alongside Boolean/String so consumers
+        // can pass `null` (the documented "unset" value) without tripping
+        // Vue's prop validation warnings.
+        type: [Boolean, String, null] as PropType<FormCheckboxModelValue>,
+        default: undefined,
+    },
+    value: { type: [String, Number, Boolean, Object] as PropType<unknown>, default: undefined },
+    disabled: { type: Boolean, default: false },
+    required: { type: Boolean, default: false },
+    name: { type: String, default: undefined },
+    id: { type: String, default: undefined },
+    label: { type: Boolean, default: true },
+    labelContent: { type: String, default: undefined },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<FormCheckboxThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+};
+
+export type FormCheckboxProps = ExtractPublicPropTypes<typeof formCheckboxProps>;
+
 export default defineComponent({
     name: 'VCFormCheckbox',
     inheritAttrs: false,
-    props: {
-        modelValue: {
-            // `null` is in the runtime type alongside Boolean/String so consumers
-            // can pass `null` (the documented "unset" value) without tripping
-            // Vue's prop validation warnings.
-            type: [Boolean, String, null] as PropType<FormCheckboxModelValue>,
-            default: undefined,
-        },
-        value: { type: [String, Number, Boolean, Object] as PropType<unknown>, default: undefined },
-        disabled: { type: Boolean, default: false },
-        required: { type: Boolean, default: false },
-        name: { type: String, default: undefined },
-        id: { type: String, default: undefined },
-        label: { type: Boolean, default: true },
-        labelContent: { type: String, default: undefined },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<FormCheckboxThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-    },
+    props: formCheckboxProps,
     emits: ['update:modelValue'],
     slots: Object as SlotsType<{
         label: FormCheckboxLabelSlotProps;

@@ -6,7 +6,7 @@ import type {
     VariantValues,
 } from '@vuecs/core';
 import { CheckboxGroupRoot } from 'reka-ui';
-import type { PropType } from 'vue';
+import type { ExtractPublicPropTypes, PropType } from 'vue';
 import {
     defineComponent,
     h,
@@ -27,23 +27,27 @@ const themeDefaults = { classes: { root: 'vc-form-checkbox-group' } };
 
 export type FormCheckboxGroupOrientation = 'vertical' | 'horizontal';
 
+const formCheckboxGroupProps = {
+    modelValue: { type: Array as PropType<unknown[]>, default: undefined },
+    disabled: { type: Boolean, default: false },
+    required: { type: Boolean, default: false },
+    name: { type: String, default: undefined },
+    orientation: {
+        type: String as PropType<FormCheckboxGroupOrientation>,
+        default: 'vertical',
+    },
+    loop: { type: Boolean, default: true },
+    rovingFocus: { type: Boolean, default: true },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<FormCheckboxGroupThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+};
+
+export type FormCheckboxGroupProps = ExtractPublicPropTypes<typeof formCheckboxGroupProps>;
+
 export default defineComponent({
     name: 'VCFormCheckboxGroup',
     inheritAttrs: false,
-    props: {
-        modelValue: { type: Array as PropType<unknown[]>, default: undefined },
-        disabled: { type: Boolean, default: false },
-        required: { type: Boolean, default: false },
-        name: { type: String, default: undefined },
-        orientation: {
-            type: String as PropType<FormCheckboxGroupOrientation>,
-            default: 'vertical',
-        },
-        loop: { type: Boolean, default: true },
-        rovingFocus: { type: Boolean, default: true },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<FormCheckboxGroupThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-    },
+    props: formCheckboxGroupProps,
     emits: ['update:modelValue'],
     setup(props, {
         attrs,

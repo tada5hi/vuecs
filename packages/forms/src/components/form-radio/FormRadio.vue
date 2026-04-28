@@ -8,7 +8,7 @@ import type {
 } from '@vuecs/core';
 import { RadioGroupIndicator, RadioGroupItem } from 'reka-ui';
 import type { AcceptableValue } from 'reka-ui';
-import type { PropType, SlotsType } from 'vue';
+import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import {
     defineComponent,
     h,
@@ -59,22 +59,26 @@ export type FormRadioIndicatorSlotProps = {
     class: string;
 };
 
+const formRadioProps = {
+    value: {
+        type: [String, Number, Boolean, Object, null] as PropType<AcceptableValue>,
+        required: true,
+    },
+    disabled: { type: Boolean, default: false },
+    required: { type: Boolean, default: false },
+    id: { type: String, default: undefined },
+    label: { type: Boolean, default: true },
+    labelContent: { type: String, default: undefined },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<FormRadioThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+};
+
+export type FormRadioProps = ExtractPublicPropTypes<typeof formRadioProps>;
+
 export default defineComponent({
     name: 'VCFormRadio',
     inheritAttrs: false,
-    props: {
-        value: {
-            type: [String, Number, Boolean, Object, null] as PropType<AcceptableValue>,
-            required: true,
-        },
-        disabled: { type: Boolean, default: false },
-        required: { type: Boolean, default: false },
-        id: { type: String, default: undefined },
-        label: { type: Boolean, default: true },
-        labelContent: { type: String, default: undefined },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<FormRadioThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-    },
+    props: formRadioProps,
     slots: Object as SlotsType<{
         label: FormRadioLabelSlotProps;
         indicator: FormRadioIndicatorSlotProps;

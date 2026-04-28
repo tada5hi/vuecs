@@ -14,4 +14,20 @@ export { default as VCDropdownMenuSubTrigger } from './DropdownMenuSubTrigger.vu
 export { default as VCDropdownMenuSubContent } from './DropdownMenuSubContent.vue';
 export { default as VCDropdownMenuArrow } from './DropdownMenuArrow.vue';
 
+export type { DropdownMenuProps } from './DropdownMenu.vue';
+export type { DropdownMenuTriggerProps } from './DropdownMenuTrigger.vue';
+export type { DropdownMenuContentProps } from './DropdownMenuContent.vue';
+export type { DropdownMenuItemProps } from './DropdownMenuItem.vue';
+export type { DropdownMenuCheckboxItemProps } from './DropdownMenuCheckboxItem.vue';
+export type { DropdownMenuRadioGroupProps } from './DropdownMenuRadioGroup.vue';
+export type { DropdownMenuRadioItemProps } from './DropdownMenuRadioItem.vue';
+export type { DropdownMenuItemIndicatorProps } from './DropdownMenuItemIndicator.vue';
+export type { DropdownMenuLabelProps } from './DropdownMenuLabel.vue';
+export type { DropdownMenuSeparatorProps } from './DropdownMenuSeparator.vue';
+export type { DropdownMenuGroupProps } from './DropdownMenuGroup.vue';
+export type { DropdownMenuSubProps } from './DropdownMenuSub.vue';
+export type { DropdownMenuSubTriggerProps } from './DropdownMenuSubTrigger.vue';
+export type { DropdownMenuSubContentProps } from './DropdownMenuSubContent.vue';
+export type { DropdownMenuArrowProps } from './DropdownMenuArrow.vue';
+
 export * from './types';

@@ -8,6 +8,7 @@ import VCPagination from './component.vue';
 import type { Options } from './type';
 
 export { VCPagination };
+export type { PaginationProps } from './component.vue';
 export * from './type';
 export * from './utils';
 

@@ -1,11 +1,11 @@
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
 import md5 from 'md5';
-import type { PropType } from 'vue';
-import { 
-    computed, 
-    defineComponent, 
-    h, 
+import type { ExtractPublicPropTypes, PropType } from 'vue';
+import {
+    computed,
+    defineComponent,
+    h,
 } from 'vue';
 
 export type GravatarThemeClasses = {
@@ -20,45 +20,49 @@ declare module '@vuecs/core' {
 
 const themeDefaults = { classes: { root: '' } };
 
+const gravatarProps = {
+    themeClass: { type: Object as PropType<ThemeClassesOverride<GravatarThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+    email: {
+        type: String,
+        default: '',
+    },
+    hash: {
+        type: String,
+        default: '',
+    },
+    size: {
+        type: Number,
+        default: 80,
+    },
+    defaultImg: {
+        type: String,
+        default: 'retro',
+    },
+    rating: {
+        type: String,
+        default: 'g',
+    },
+    alt: {
+        type: String,
+        default: 'Avatar',
+    },
+    protocol: {
+        type: String,
+        default: '',
+    },
+    hostname: {
+        type: String,
+        default: 'www.gravatar.com',
+    },
+};
+
+export type GravatarProps = ExtractPublicPropTypes<typeof gravatarProps>;
+
 export const VCGravatar = defineComponent({
     name: 'VCGravatar',
     inheritAttrs: false,
-    props: {
-        themeClass: { type: Object as PropType<ThemeClassesOverride<GravatarThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-        email: {
-            type: String,
-            default: '',
-        },
-        hash: {
-            type: String,
-            default: '',
-        },
-        size: {
-            type: Number,
-            default: 80,
-        },
-        defaultImg: {
-            type: String,
-            default: 'retro',
-        },
-        rating: {
-            type: String,
-            default: 'g',
-        },
-        alt: {
-            type: String,
-            default: 'Avatar',
-        },
-        protocol: {
-            type: String,
-            default: '',
-        },
-        hostname: {
-            type: String,
-            default: 'www.gravatar.com',
-        },
-    },
+    props: gravatarProps,
     setup(props, ctx) {
         const theme = useComponentTheme('gravatar', props, themeDefaults);
 

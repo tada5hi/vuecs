@@ -1,7 +1,8 @@
 import type {
-    DefineComponent, 
-    PropType, 
-    VNodeProps, 
+    DefineComponent,
+    ExtractPublicPropTypes,
+    PropType,
+    VNodeProps,
     VNodeTypes,
 } from 'vue';
 import {
@@ -14,34 +15,38 @@ import {
 import type { LinkQuery } from './types';
 import { isObject } from './utils';
 
-export const VCLink = defineComponent({
-    props: {
-        active: {
-            type: Boolean,
-            default: false,
-        },
-        disabled: {
-            type: Boolean,
-            default: false,
-        },
-        href: {
-            type: String,
-            default: undefined,
-        },
-        prefetch: {
-            type: Boolean,
-            default: true,
-        },
-        target: {
-            type: String,
-            default: '_self',
-        },
-        to: {
-            type: [String, Object] as PropType<string | Record<string, any>>,
-            default: undefined,
-        },
-        query: { type: Object as PropType<LinkQuery> },
+const linkProps = {
+    active: {
+        type: Boolean,
+        default: false,
     },
+    disabled: {
+        type: Boolean,
+        default: false,
+    },
+    href: {
+        type: String,
+        default: undefined,
+    },
+    prefetch: {
+        type: Boolean,
+        default: true,
+    },
+    target: {
+        type: String,
+        default: '_self',
+    },
+    to: {
+        type: [String, Object] as PropType<string | Record<string, any>>,
+        default: undefined,
+    },
+    query: { type: Object as PropType<LinkQuery> },
+};
+
+export type LinkProps = ExtractPublicPropTypes<typeof linkProps>;
+
+export const VCLink = defineComponent({
+    props: linkProps,
     emits: ['click', 'clicked'],
     setup(props, { emit, slots }) {
         const query = toRef(props, 'query');

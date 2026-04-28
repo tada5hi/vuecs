@@ -1,18 +1,22 @@
 <script lang="ts">
 import { defineComponent, h } from 'vue';
-import type { PropType } from 'vue';
+import type { ExtractPublicPropTypes, PropType } from 'vue';
 import { DropdownMenuRoot } from 'reka-ui';
 import { useForwardPropsEmits } from '@vuecs/core';
+
+const dropdownMenuProps = {
+    open: { type: Boolean as PropType<boolean | undefined>, default: undefined },
+    defaultOpen: { type: Boolean, default: false },
+    modal: { type: Boolean, default: true },
+    dir: { type: String as PropType<'ltr' | 'rtl' | undefined>, default: undefined },
+};
+
+export type DropdownMenuProps = ExtractPublicPropTypes<typeof dropdownMenuProps>;
 
 export default defineComponent({
     name: 'VCDropdownMenu',
     inheritAttrs: false,
-    props: {
-        open: { type: Boolean as PropType<boolean | undefined>, default: undefined },
-        defaultOpen: { type: Boolean, default: false },
-        modal: { type: Boolean, default: true },
-        dir: { type: String as PropType<'ltr' | 'rtl' | undefined>, default: undefined },
-    },
+    props: dropdownMenuProps,
     emits: ['update:open'],
     setup(props, { slots, emit }) {
         const forwarded = useForwardPropsEmits(props, emit);

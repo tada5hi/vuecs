@@ -7,7 +7,7 @@ import type {
     VariantValues,
 } from '@vuecs/core';
 import { SwitchRoot, SwitchThumb } from 'reka-ui';
-import type { PropType, SlotsType } from 'vue';
+import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import {
     defineComponent,
     h,
@@ -55,24 +55,28 @@ export type FormSwitchThumbSlotProps = {
     class: string;
 };
 
+const formSwitchProps = {
+    // `null` in the runtime type alongside Boolean so consumers can pass
+    // `null` (the documented "unset" value) without tripping Vue's prop
+    // validation warnings.
+    modelValue: { type: [Boolean, null] as PropType<boolean | null | undefined>, default: undefined },
+    disabled: { type: Boolean, default: false },
+    required: { type: Boolean, default: false },
+    name: { type: String, default: undefined },
+    value: { type: String, default: undefined },
+    id: { type: String, default: undefined },
+    label: { type: Boolean, default: true },
+    labelContent: { type: String, default: undefined },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<FormSwitchThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+};
+
+export type FormSwitchProps = ExtractPublicPropTypes<typeof formSwitchProps>;
+
 export default defineComponent({
     name: 'VCFormSwitch',
     inheritAttrs: false,
-    props: {
-        // `null` in the runtime type alongside Boolean so consumers can pass
-        // `null` (the documented "unset" value) without tripping Vue's prop
-        // validation warnings.
-        modelValue: { type: [Boolean, null] as PropType<boolean | null | undefined>, default: undefined },
-        disabled: { type: Boolean, default: false },
-        required: { type: Boolean, default: false },
-        name: { type: String, default: undefined },
-        value: { type: String, default: undefined },
-        id: { type: String, default: undefined },
-        label: { type: Boolean, default: true },
-        labelContent: { type: String, default: undefined },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<FormSwitchThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-    },
+    props: formSwitchProps,
     emits: ['update:modelValue'],
     slots: Object as SlotsType<{
         label: FormSwitchLabelSlotProps;

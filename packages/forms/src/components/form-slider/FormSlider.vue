@@ -11,7 +11,7 @@ import {
     SliderThumb,
     SliderTrack,
 } from 'reka-ui';
-import type { PropType } from 'vue';
+import type { ExtractPublicPropTypes, PropType } from 'vue';
 import {
     computed,
     defineComponent,
@@ -48,32 +48,36 @@ export type FormSliderOrientation = 'horizontal' | 'vertical';
  */
 export type FormSliderModelValue = number | number[];
 
+const formSliderProps = {
+    modelValue: {
+        // `null` in the runtime type alongside Number/Array so
+        // consumers can pass `null` (the documented "unset" value)
+        // without tripping Vue's prop validation warnings.
+        type: [Number, Array, null] as PropType<FormSliderModelValue | null>,
+        default: undefined,
+    },
+    min: { type: Number, default: 0 },
+    max: { type: Number, default: 100 },
+    step: { type: Number, default: 1 },
+    orientation: {
+        type: String as PropType<FormSliderOrientation>,
+        default: 'horizontal',
+    },
+    inverted: { type: Boolean, default: false },
+    disabled: { type: Boolean, default: false },
+    required: { type: Boolean, default: false },
+    name: { type: String, default: undefined },
+    minStepsBetweenThumbs: { type: Number, default: 0 },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<FormSliderThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+};
+
+export type FormSliderProps = ExtractPublicPropTypes<typeof formSliderProps>;
+
 export default defineComponent({
     name: 'VCFormSlider',
     inheritAttrs: false,
-    props: {
-        modelValue: {
-            // `null` in the runtime type alongside Number/Array so
-            // consumers can pass `null` (the documented "unset" value)
-            // without tripping Vue's prop validation warnings.
-            type: [Number, Array, null] as PropType<FormSliderModelValue | null>,
-            default: undefined,
-        },
-        min: { type: Number, default: 0 },
-        max: { type: Number, default: 100 },
-        step: { type: Number, default: 1 },
-        orientation: {
-            type: String as PropType<FormSliderOrientation>,
-            default: 'horizontal',
-        },
-        inverted: { type: Boolean, default: false },
-        disabled: { type: Boolean, default: false },
-        required: { type: Boolean, default: false },
-        name: { type: String, default: undefined },
-        minStepsBetweenThumbs: { type: Number, default: 0 },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<FormSliderThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-    },
+    props: formSliderProps,
     emits: ['update:modelValue', 'valueCommit'],
     setup(props, { attrs, emit }) {
         const theme = useComponentTheme('formSlider', props, themeDefaults);

@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, h, mergeProps } from 'vue';
-import type { PropType } from 'vue';
+import type { ExtractPublicPropTypes, PropType } from 'vue';
 import {
     DialogContent,
     DialogOverlay,
@@ -11,16 +11,20 @@ import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { modalThemeDefaults } from './theme';
 import type { ModalThemeClasses } from './types';
 
+const modalContentProps = {
+    /** Render outside a `<DialogPortal>` (e.g. when consumer composes their own portal). */
+    inline: { type: Boolean, default: false },
+    /** Disable the overlay backdrop. */
+    hideOverlay: { type: Boolean, default: false },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<ModalThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+};
+
+export type ModalContentProps = ExtractPublicPropTypes<typeof modalContentProps>;
+
 export default defineComponent({
     name: 'VCModalContent',
-    props: {
-        /** Render outside a `<DialogPortal>` (e.g. when consumer composes their own portal). */
-        inline: { type: Boolean, default: false },
-        /** Disable the overlay backdrop. */
-        hideOverlay: { type: Boolean, default: false },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<ModalThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-    },
+    props: modalContentProps,
     setup(props, { slots, attrs }) {
         const theme = useComponentTheme('modal', props, modalThemeDefaults);
 

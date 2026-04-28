@@ -1,16 +1,20 @@
 <script lang="ts">
 import { defineComponent, h } from 'vue';
-import type { PropType } from 'vue';
+import type { ExtractPublicPropTypes, PropType } from 'vue';
 import { ContextMenuSub } from 'reka-ui';
 import { useForwardPropsEmits } from '@vuecs/core';
+
+const contextMenuSubProps = {
+    open: { type: Boolean as PropType<boolean | undefined>, default: undefined },
+    defaultOpen: { type: Boolean, default: false },
+};
+
+export type ContextMenuSubProps = ExtractPublicPropTypes<typeof contextMenuSubProps>;
 
 export default defineComponent({
     name: 'VCContextMenuSub',
     inheritAttrs: false,
-    props: {
-        open: { type: Boolean as PropType<boolean | undefined>, default: undefined },
-        defaultOpen: { type: Boolean, default: false },
-    },
+    props: contextMenuSubProps,
     emits: ['update:open'],
     setup(props, { slots, emit }) {
         const forwarded = useForwardPropsEmits(props, emit);

@@ -4,7 +4,7 @@ import {
     useInfiniteScroll,
 } from '@vueuse/core';
 import type { AcceptableValue } from 'reka-ui';
-import type { PropType } from 'vue';
+import type { ExtractPublicPropTypes, PropType } from 'vue';
 import {
     computed,
     defineComponent,
@@ -15,40 +15,44 @@ import {
 import type { FormOption } from '../../types/option';
 import FormSelectSearchEntry from './FormSelectSearchEntry.vue';
 
+const formSelectSearchProps = {
+    modelValue: {
+        type: [String, Number, Boolean, Object, Array, null] as PropType<
+            AcceptableValue | AcceptableValue[] | undefined
+        >,
+        default: undefined,
+    },
+    options: {
+        type: Array as PropType<FormOption[]>,
+        default: () => [],
+    },
+    placeholder: {
+        type: String,
+        required: false,
+        default: '...',
+    },
+    disabled: {
+        type: Boolean,
+        required: false,
+        default: false,
+    },
+    maxItems: {
+        type: Number,
+        required: false,
+        default: 10,
+    },
+    scrollDistance: {
+        type: Number,
+        required: false,
+        default: 10,
+    },
+};
+
+export type FormSelectSearchProps = ExtractPublicPropTypes<typeof formSelectSearchProps>;
+
 export default defineComponent({
     components: { FormSelectSearchEntry },
-    props: {
-        modelValue: {
-            type: [String, Number, Boolean, Object, Array, null] as PropType<
-                AcceptableValue | AcceptableValue[] | undefined
-            >,
-            default: undefined,
-        },
-        options: {
-            type: Array as PropType<FormOption[]>,
-            default: () => [],
-        },
-        placeholder: {
-            type: String,
-            required: false,
-            default: '...',
-        },
-        disabled: {
-            type: Boolean,
-            required: false,
-            default: false,
-        },
-        maxItems: {
-            type: Number,
-            required: false,
-            default: 10,
-        },
-        scrollDistance: {
-            type: Number,
-            required: false,
-            default: 10,
-        },
-    },
+    props: formSelectSearchProps,
     emits: ['update:modelValue', 'change'],
     setup(props, { emit }) {
         const listElement = ref<globalThis.HTMLElement | null>(null);

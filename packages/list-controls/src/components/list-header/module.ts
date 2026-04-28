@@ -1,5 +1,10 @@
 import { useComponentTheme } from '@vuecs/core';
-import type { PropType, SlotsType, VNodeChild } from 'vue';
+import type { 
+    ExtractPublicPropTypes, 
+    PropType, 
+    SlotsType, 
+    VNodeChild, 
+} from 'vue';
 import {
     defineComponent,
     h,
@@ -9,14 +14,18 @@ import type { ListBaseSlotProps, ListHeaderThemeClasses } from '../type';
 
 const themeDefaults = { classes: { root: 'vc-list-header' } };
 
+const listHeaderProps = {
+    tag: { type: String, default: 'div' },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<ListHeaderThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+    slotProps: { type: Object as PropType<ListBaseSlotProps<any>>, default: () => ({}) },
+};
+
+export type ListHeaderProps = ExtractPublicPropTypes<typeof listHeaderProps>;
+
 export const VCListHeader = defineComponent({
     name: 'VCListHeader',
-    props: {
-        tag: { type: String, default: 'div' },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<ListHeaderThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-        slotProps: { type: Object as PropType<ListBaseSlotProps<any>>, default: () => ({}) },
-    },
+    props: listHeaderProps,
     slots: Object as SlotsType<{
         default?: ListBaseSlotProps<any>;
     }>,

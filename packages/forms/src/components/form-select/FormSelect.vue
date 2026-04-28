@@ -7,7 +7,12 @@ import type {
     VariantValues,
 } from '@vuecs/core';
 import type { AcceptableValue } from 'reka-ui';
-import type { PropType, VNode, VNodeChild } from 'vue';
+import type { 
+    ExtractPublicPropTypes, 
+    PropType, 
+    VNode, 
+    VNodeChild, 
+} from 'vue';
 import {
     defineComponent,
     h,
@@ -70,26 +75,30 @@ const renderGroup = (group: FormOptionGroup, modelValue: AcceptableValue | undef
     group.options.map((option) => renderOption(option, modelValue)),
 );
 
+const formSelectProps = {
+    modelValue: {
+        type: [String, Number, Boolean, Object, null] as PropType<AcceptableValue | undefined>,
+        default: undefined,
+    },
+    options: {
+        type: Array as PropType<FormOptionItems>,
+        required: true,
+    },
+    /**
+     * Placeholder text rendered as a leading disabled option. Falls back
+     * to the global `formSelect.placeholder` default; when both are empty
+     * no placeholder is rendered.
+     */
+    placeholder: { type: String, default: undefined },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<FormSelectThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+};
+
+export type FormSelectProps = ExtractPublicPropTypes<typeof formSelectProps>;
+
 export default defineComponent({
     name: 'VCFormSelect',
-    props: {
-        modelValue: {
-            type: [String, Number, Boolean, Object, null] as PropType<AcceptableValue | undefined>,
-            default: undefined,
-        },
-        options: {
-            type: Array as PropType<FormOptionItems>,
-            required: true,
-        },
-        /**
-         * Placeholder text rendered as a leading disabled option. Falls back
-         * to the global `formSelect.placeholder` default; when both are empty
-         * no placeholder is rendered.
-         */
-        placeholder: { type: String, default: undefined },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<FormSelectThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-    },
+    props: formSelectProps,
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {
         const theme = useComponentTheme('formSelect', props, themeDefaults);

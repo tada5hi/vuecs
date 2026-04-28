@@ -5,7 +5,12 @@ import type {
     UseComponentThemeProps,
     VariantValues,
 } from '@vuecs/core';
-import type { PropType, SlotsType, VNodeArrayChildren } from 'vue';
+import type { 
+    ExtractPublicPropTypes, 
+    PropType, 
+    SlotsType, 
+    VNodeArrayChildren, 
+} from 'vue';
 import {
     defineComponent,
     h,
@@ -34,22 +39,26 @@ const themeDefaults = {
     },
 };
 
+const buttonProps = {
+    color: { type: String as PropType<ButtonColor>, default: undefined },
+    variant: { type: String as PropType<ButtonVariant>, default: undefined },
+    size: { type: String as PropType<ButtonSize>, default: undefined },
+    type: { type: String, default: 'button' },
+    tag: { type: String, default: 'button' },
+    label: { type: String, default: undefined },
+    iconLeft: { type: String, default: undefined },
+    iconRight: { type: String, default: undefined },
+    loading: { type: Boolean, default: false },
+    disabled: { type: Boolean, default: false },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<ButtonThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+};
+
+export type ButtonProps = ExtractPublicPropTypes<typeof buttonProps>;
+
 export const VCButton = defineComponent({
     name: 'VCButton',
-    props: {
-        color: { type: String as PropType<ButtonColor>, default: undefined },
-        variant: { type: String as PropType<ButtonVariant>, default: undefined },
-        size: { type: String as PropType<ButtonSize>, default: undefined },
-        type: { type: String, default: 'button' },
-        tag: { type: String, default: 'button' },
-        label: { type: String, default: undefined },
-        iconLeft: { type: String, default: undefined },
-        iconRight: { type: String, default: undefined },
-        loading: { type: Boolean, default: false },
-        disabled: { type: Boolean, default: false },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<ButtonThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-    },
+    props: buttonProps,
     slots: Object as SlotsType<{
         default: ButtonSlotProps;
         leading: ButtonSlotProps;

@@ -2,7 +2,12 @@
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
 import { useDebounceFn } from '@vueuse/core';
-import type { PropType, SlotsType, VNodeChild } from 'vue';
+import type { 
+    ExtractPublicPropTypes, 
+    PropType, 
+    SlotsType, 
+    VNodeChild, 
+} from 'vue';
 import {
     defineComponent,
     h,
@@ -38,20 +43,24 @@ export type FormInputGroupSlotProps = {
     tag: string;
 };
 
+const formInputProps = {
+    modelValue: { type: String, default: '' },
+    type: { type: String, default: 'text' },
+    group: { type: Boolean, default: false },
+    groupPrepend: { type: Boolean, default: false },
+    groupPrependContent: { type: String, default: undefined },
+    groupAppend: { type: Boolean, default: false },
+    groupAppendContent: { type: String, default: undefined },
+    debounce: { type: Number, default: 0 },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<FormInputThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+};
+
+export type FormInputProps = ExtractPublicPropTypes<typeof formInputProps>;
+
 export default defineComponent({
     name: 'VCFormInput',
-    props: {
-        modelValue: { type: String, default: '' },
-        type: { type: String, default: 'text' },
-        group: { type: Boolean, default: false },
-        groupPrepend: { type: Boolean, default: false },
-        groupPrependContent: { type: String, default: undefined },
-        groupAppend: { type: Boolean, default: false },
-        groupAppendContent: { type: String, default: undefined },
-        debounce: { type: Number, default: 0 },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<FormInputThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-    },
+    props: formInputProps,
     emits: ['update:modelValue'],
     slots: Object as SlotsType<{
         groupAppend: FormInputGroupSlotProps;
