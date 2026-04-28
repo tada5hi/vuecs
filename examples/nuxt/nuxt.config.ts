@@ -15,7 +15,7 @@ export default defineNuxtConfig({
         '@vuecs/core': path.join(__dirname, '..', '..', 'packages', 'core', 'src'),
         // design-system is resolved via the workspace symlink so that
         // subpath exports (`@vuecs/design/index.css`) work.
-        '@vuecs/form-controls': path.join(__dirname, '..', '..', 'packages', 'form-controls', 'src'),
+        '@vuecs/forms': path.join(__dirname, '..', '..', 'packages', 'forms', 'src'),
         '@vuecs/list-controls': path.join(__dirname, '..', '..', 'packages', 'list-controls', 'src'),
         '@vuecs/link': path.join(__dirname, '..', '..', 'packages', 'link', 'src'),
         '@vuecs/navigation': path.join(__dirname, '..', '..', 'packages', 'navigation', 'src'),

@@ -8,7 +8,7 @@ vuecs/
     core/             # @vuecs/core — theme system, defaults manager, utilities
     countdown/        # @vuecs/countdown
     design/           # @vuecs/design — CSS design tokens + motion primitives (animations.css) + runtime palette switcher
-    form-controls/    # @vuecs/form-controls
+    forms/            # @vuecs/forms (renamed from @vuecs/form-controls in 3.0; checkbox/switch on Reka primitives)
     gravatar/         # @vuecs/gravatar
     link/             # @vuecs/link
     list-controls/    # @vuecs/list-controls

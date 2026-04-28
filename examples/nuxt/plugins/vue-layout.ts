@@ -11,7 +11,7 @@ import fontAwesome from '@vuecs/theme-font-awesome';
 
 import installButton from '@vuecs/button';
 import installCountdown from '@vuecs/countdown';
-import installFormControl from '@vuecs/form-controls';
+import installFormControl from '@vuecs/forms';
 import installGravatar from '@vuecs/gravatar';
 import installLink from '@vuecs/link';
 import { install as installNavigation } from '@vuecs/navigation';

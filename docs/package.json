@@ -33,7 +33,7 @@
         "@vuecs/core": "*",
         "@vuecs/countdown": "*",
         "@vuecs/design": "*",
-        "@vuecs/form-controls": "*",
+        "@vuecs/forms": "*",
         "@vuecs/gravatar": "*",
         "@vuecs/link": "*",
         "@vuecs/list-controls": "*",

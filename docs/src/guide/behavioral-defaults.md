@@ -43,7 +43,7 @@ app.use(vuecs, {
             content: computed(() => t('list.noMore')),
         },
         formSelect: {
-            optionDefaultValue: computed(() => t('forms.selectPlaceholder')),
+            placeholder: computed(() => t('forms.selectPlaceholder')),
         },
     },
 });
@@ -56,7 +56,7 @@ app.use(vuecs, {
 ```vue
 <script setup lang="ts">
 import { VCButton } from '@vuecs/button';
-import { useSubmitButton } from '@vuecs/form-controls';
+import { useSubmitButton } from '@vuecs/forms';
 
 // `submit` is a reactive bind-object — label / icon / color swap with `isEditing`,
 // resolved through the `submitButton` defaults registered above.
@@ -79,9 +79,10 @@ See `VCList.noMoreContent` and `VCList.itemTextPropName` (both `default: undefin
 | Component | Configurable keys |
 |-----------|-------------------|
 | `useSubmitButton()` (`submitButton`) | `createText`, `updateText`, `createIcon`, `updateIcon`, `createColor`, `updateColor` |
-| `VCFormSelect` | `optionDefault`, `optionDefaultId`, `optionDefaultValue` |
+| `VCFormSelect` | `placeholder` |
 | `VCFormGroup` | `validation` |
-| `VCFormInputCheckbox` | `labelContent` |
+| `VCFormCheckbox` | `labelContent` |
+| `VCFormSwitch` | `labelContent` |
 | `VCListItem` | `textPropName` |
 | `VCListNoMore` | `content` |
 

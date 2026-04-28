@@ -1,0 +1,72 @@
+/*
+ * Structural defaults for VCFormSwitch (Reka SwitchRoot + SwitchThumb).
+ *
+ * Reka renders a real <button role="switch"> with `data-state="checked|unchecked"`.
+ * The thumb slides via translate; transitions are kept short to feel snappy.
+ */
+.vc-form-switch-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.vc-form-switch-label {
+    cursor: pointer;
+    user-select: none;
+    line-height: 1.25;
+    font-size: 0.875rem;
+    color: var(--vc-color-fg, #111827);
+}
+
+.vc-form-switch {
+    appearance: none;
+    -webkit-appearance: none;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    width: 2.25rem;
+    height: 1.25rem;
+    padding: 0.125rem;
+    border: 1px solid var(--vc-color-border, #d1d5db);
+    border-radius: 9999px;
+    background-color: var(--vc-color-bg-muted, #f3f4f6);
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.vc-form-switch:hover {
+    border-color: var(--vc-color-primary-500, #3b82f6);
+}
+
+.vc-form-switch:focus-visible {
+    outline: 2px solid var(--vc-color-primary-500, #3b82f6);
+    outline-offset: 2px;
+}
+
+.vc-form-switch[data-state="checked"] {
+    background-color: var(--vc-color-primary-600, #2563eb);
+    border-color: var(--vc-color-primary-600, #2563eb);
+}
+
+.vc-form-switch[data-disabled],
+.vc-form-switch:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.vc-form-switch-thumb {
+    display: block;
+    width: 0.875rem;
+    height: 0.875rem;
+    border-radius: 9999px;
+    background-color: var(--vc-color-bg, #fff);
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.1);
+    transition: transform 0.18s ease-in-out;
+    transform: translateX(0);
+    will-change: transform;
+}
+
+.vc-form-switch[data-state="checked"] .vc-form-switch-thumb {
+    transform: translateX(1rem);
+}

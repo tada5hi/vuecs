@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import { useTranslationsForBaseValidation } from '@ilingo/vuelidate';
-import type { FormSelectOption } from '@vuecs/form-controls';
+import type { FormOption } from '@vuecs/forms';
 import { required } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {
@@ -17,16 +17,16 @@ import {
 
 export default defineComponent({
     setup() {
-        const form = reactive({ value: '' });
+        const form = reactive<{ value: number | undefined }>({ value: undefined });
 
         const $v = useVuelidate({ value: { required } }, form);
 
         const validationMessages = useTranslationsForBaseValidation($v.value.value);
 
-        const options : FormSelectOption[] = [];
+        const options : FormOption<number>[] = [];
 
         for (let i = 1; i <= 100; i++) {
-            options.push({ id: i, value: `Option ${i}` });
+            options.push({ value: i, label: `Option ${i}` });
         }
 
         return {

@@ -9,7 +9,7 @@
         "packages/core": {"component": "core" },
         "packages/countdown": {"component": "countdown" },
         "packages/design": {"component": "design" },
-        "packages/form-controls": {"component": "form-controls" },
+        "packages/forms": {"component": "forms" },
         "packages/gravatar": {"component": "gravatar" },
         "packages/link": {"component": "link" },
         "packages/list-controls": {"component": "list-controls" },

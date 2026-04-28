@@ -31,7 +31,7 @@ const neutral = computed<NeutralPalette>({
 });
 
 // SVG path data is opaque — splitting it visually doesn't aid readability.
-// eslint-disable-next-line @stylistic/max-len
+ 
 const cogIconPath = 'M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z';
 </script>
 
@@ -54,7 +54,11 @@ const cogIconPath = 'M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 
                 aria-hidden="true"
             >
                 <path :d="cogIconPath" />
-                <circle cx="12" cy="12" r="3" />
+                <circle
+                    cx="12"
+                    cy="12"
+                    r="3"
+                />
             </svg>
         </VCModalTrigger>
         <VCModalContent>
@@ -66,16 +70,30 @@ const cogIconPath = 'M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 
             <div class="vc-settings-body">
                 <label class="vc-settings-field">
                     <span class="vc-settings-label">Primary palette</span>
-                    <select v-model="primary" class="vc-settings-select">
-                        <option v-for="p in PRIMARY_PALETTES" :key="p" :value="p">
+                    <select
+                        v-model="primary"
+                        class="vc-settings-select"
+                    >
+                        <option
+                            v-for="p in PRIMARY_PALETTES"
+                            :key="p"
+                            :value="p"
+                        >
                             {{ p }}
                         </option>
                     </select>
                 </label>
                 <label class="vc-settings-field">
                     <span class="vc-settings-label">Neutral palette</span>
-                    <select v-model="neutral" class="vc-settings-select">
-                        <option v-for="p in NEUTRAL_PALETTES" :key="p" :value="p">
+                    <select
+                        v-model="neutral"
+                        class="vc-settings-select"
+                    >
+                        <option
+                            v-for="p in NEUTRAL_PALETTES"
+                            :key="p"
+                            :value="p"
+                        >
                             {{ p }}
                         </option>
                     </select>
@@ -83,7 +101,11 @@ const cogIconPath = 'M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 
                 <hr class="vc-settings-divider">
                 <div class="vc-settings-row">
                     <span class="vc-settings-label">Color mode</span>
-                    <div class="vc-settings-segment" role="group" aria-label="Color mode">
+                    <div
+                        class="vc-settings-segment"
+                        role="group"
+                        aria-label="Color mode"
+                    >
                         <button
                             type="button"
                             class="vc-settings-segment-btn"

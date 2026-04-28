@@ -26,7 +26,7 @@ interface Props {
      * Component name to show in the live-config snippet (e.g. `VCPagination`).
      * If omitted, derived from `name` by capitalising and prefixing `VC` —
      * which works for single-word demos (countdown → VCCountdown). For
-     * multi-word kebab-case names (form-input-checkbox → VCFormInputCheckbox)
+     * multi-word kebab-case names (form-checkbox-group → VCFormCheckboxGroup)
      * pass it explicitly.
      */
     component?: string;

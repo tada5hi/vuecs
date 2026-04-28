@@ -1,9 +1,9 @@
 # FormSelect
 
-Dropdown select with `v-model` binding and configurable option shape.
+Dropdown select with `v-model` binding. Accepts a flat `FormOption[]` or a mixed array of options and `FormOptionGroup`s (rendered as HTML `<optgroup>`). Supports a `placeholder` prop that renders a leading disabled option.
 
 ```bash
-npm install @vuecs/form-controls
+npm install @vuecs/forms
 ```
 
 ## Basic usage
@@ -16,19 +16,39 @@ npm install @vuecs/form-controls
 
 ```vue [Vue]
 <script setup lang="ts">
-import { VCFormSelect } from '@vuecs/form-controls';
+import { VCFormSelect } from '@vuecs/forms';
 import { ref } from 'vue';
 
-const value = ref<string | null>(null);
-const options = [
-    { id: 'sm', value: 'Small' },
-    { id: 'md', value: 'Medium' },
-    { id: 'lg', value: 'Large' },
+const size = ref<string | undefined>(undefined);
+const region = ref<string | undefined>(undefined);
+
+const sizes = [
+    { value: 'sm', label: 'Small' },
+    { value: 'md', label: 'Medium' },
+    { value: 'lg', label: 'Large' },
+];
+
+const regions = [
+    {
+        label: 'Americas',
+        options: [
+            { value: 'us', label: 'United States' },
+            { value: 'br', label: 'Brazil' },
+        ],
+    },
+    {
+        label: 'Europe',
+        options: [
+            { value: 'de', label: 'Germany' },
+            { value: 'fr', label: 'France' },
+        ],
+    },
 ];
 </script>
 
 <template>
-    <VCFormSelect v-model="value" :options="options" />
+    <VCFormSelect v-model="size" :options="sizes" placeholder="-- Pick a size --" />
+    <VCFormSelect v-model="region" :options="regions" placeholder="-- Pick a region --" />
 </template>
 ```
 
@@ -44,22 +64,93 @@ const options = [
   </template>
 </Demo>
 
-## Behavioral defaults
+## The `FormOption` shape
 
-`VCFormSelect` resolves these via `useComponentDefaults` — set them globally in `app.use(vuecs, { defaults: ... })`:
+```ts
+type FormOption<T = AcceptableValue> = {
+    value: T;                  // bound value — what flows through v-model
+    label: string;             // display string the user sees
+    disabled?: boolean;
+    description?: string;      // optional secondary line (used by VCFormSelectSearch)
+    icon?: string;             // optional icon token (consumer renders)
+    meta?: Record<string, unknown>;
+};
+
+type FormOptionGroup<T = AcceptableValue> = {
+    label: string;
+    options: FormOption<T>[];
+    disabled?: boolean;
+};
+
+// VCFormSelect.options accepts:
+type FormOptionItems<T = AcceptableValue> = (FormOption<T> | FormOptionGroup<T>)[];
+```
+
+`AcceptableValue` (re-exported from `reka-ui`) covers `string | number | bigint | Record<string, any> | null` — every primitive a `<select>` can sensibly bind. Pass a generic to narrow: `FormOption<number>`.
+
+## Generic value type
+
+`<VCFormSelect>` is generic over `T` — TypeScript infers the bound type from `options[*].value`:
+
+```ts
+const options: FormOption<number>[] = [
+    { value: 1, label: 'One' },
+    { value: 2, label: 'Two' },
+];
+
+const id = ref<number | undefined>(undefined);
+// <VCFormSelect v-model="id" :options="options" />
+//                                 ↑ id is number | undefined
+```
+
+## Placeholder
+
+`placeholder` renders a leading `<option disabled selected>` whenever `modelValue` is `undefined` or `''`. Falls back to the global `formSelect.placeholder` default; when both are empty no placeholder renders.
+
+```vue
+<VCFormSelect
+    v-model="region"
+    :options="regions"
+    placeholder="-- Pick a region --"
+/>
+```
+
+For i18n, set the global default once:
+
+```ts
+app.use(vuecs, {
+    defaults: {
+        formSelect: {
+            placeholder: computed(() => t('forms.selectPlaceholder')),
+        },
+    },
+});
+```
+
+## Behavioral defaults
 
 | Key | Default | Description |
 |-----|---------|-------------|
-| `optionDefault` | `true` | Render a default empty option |
-| `optionDefaultId` | `''` | Id of the default option |
-| `optionDefaultValue` | `''` | Display text for the default option (e.g. `'-- Select --'`) |
+| `placeholder` | `''` | Leading disabled option text. Empty disables the placeholder. |
 
 See [Behavioral Defaults](/guide/behavioral-defaults) for the resolution rules.
 
-## Props (selection)
+## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `modelValue` | `string \| number` | — | Bound option id |
-| `options` | `{ id, value }[]` | — | Option list |
-| `disabled` | `boolean` | `false` | Disable the select |
+| `modelValue` | `T \| undefined` | `undefined` | Bound value (matches an option's `value`) |
+| `options` | `FormOptionItems<T>` | — | Flat options, groups, or a mix |
+| `placeholder` | `string` | (defaults system) | Leading disabled option text |
+| `themeClass` | `Partial<FormSelectThemeClasses>` | `undefined` | Per-instance theme override |
+| `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values |
+
+## Events
+
+| Event | Payload | Description |
+|-------|---------|-------------|
+| `update:modelValue` | `T` | Fired when the user picks an option |
+
+## See also
+
+- [`<VCFormSelectSearch>`](/components/form-select-search) — searchable select for long option lists; same `FormOption` shape

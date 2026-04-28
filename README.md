@@ -72,11 +72,11 @@ List display with loading, empty state, header/footer/body, and per-item event h
 
 [Full documentation](./packages/list-controls/README.md)
 
-### `@vuecs/form-controls`
+### `@vuecs/forms`
 
-[![npm version](https://badge.fury.io/js/@vuecs%2Fform-controls.svg)](https://badge.fury.io/js/@vuecs%2Fform-controls)
+[![npm version](https://badge.fury.io/js/@vuecs%2Fforms.svg)](https://badge.fury.io/js/@vuecs%2Fforms)
 
-Form inputs with validation support: input, checkbox, select, textarea, submit, searchable select, and range slider.
+Form inputs on Reka UI primitives, with validation support: Checkbox + CheckboxGroup, Switch, Radio + RadioGroup, Input, Number, Pin, Select + SelectSearch, Slider (single + range), Tags, Textarea.
 
 ```vue
 <VCFormGroup label-content="Email" :validation-messages="errors">
@@ -84,7 +84,7 @@ Form inputs with validation support: input, checkbox, select, textarea, submit, 
 </VCFormGroup>
 ```
 
-[Full documentation](./packages/form-controls/README.md)
+[Full documentation](./packages/forms/README.md)
 
 ### `@vuecs/pagination`
 
@@ -179,7 +179,7 @@ app.use(vuecs, {
 
 [![npm version](https://badge.fury.io/js/@vuecs%2Ftheme-font-awesome.svg)](https://badge.fury.io/js/@vuecs%2Ftheme-font-awesome)
 
-Font Awesome icon classes for icon slots (`pagination.prevIcon`, `listItem.icon`, …). All values use `extend()` so it layers on top of a CSS-framework theme without wiping its classes. (`VCButton`'s create/update icon defaults are registered through `submitButton` defaults instead — see `useSubmitButton()` in `@vuecs/form-controls`.)
+Font Awesome icon classes for icon slots (`pagination.prevIcon`, `listItem.icon`, …). All values use `extend()` so it layers on top of a CSS-framework theme without wiping its classes. (`VCButton`'s create/update icon defaults are registered through `submitButton` defaults instead — see `useSubmitButton()` in `@vuecs/forms`.)
 
 ```typescript
 import bootstrapV5 from '@vuecs/theme-bootstrap-v5';

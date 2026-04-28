@@ -10,7 +10,7 @@
 @import "tailwindcss";
 @import "@vuecs/design";
 
-@import "@vuecs/form-controls";
+@import "@vuecs/forms";
 @import "@vuecs/list-controls";
 @import "@vuecs/navigation";
 @import "@vuecs/pagination";

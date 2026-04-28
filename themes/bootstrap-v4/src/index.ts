@@ -18,14 +18,64 @@ export default function bootstrapV4Theme(): Theme {
                     groupPrepend: 'input-group-text',
                 },
             },
-            formInputCheckbox: {
+            formCheckbox: {
                 classes: {
                     root: 'form-check-input',
+                    indicator: '',
                     label: 'form-check-label',
                     group: 'form-check',
                 },
             },
+            formCheckboxGroup: { classes: { root: 'd-flex flex-column' } },
+            formSwitch: {
+                classes: {
+                    root: 'custom-control-input',
+                    thumb: '',
+                    label: 'custom-control-label',
+                    group: 'custom-control custom-switch',
+                },
+            },
             formSelect: { classes: { root: 'form-control' } },
+            formRadio: {
+                classes: {
+                    root: 'form-check-input',
+                    indicator: '',
+                    label: 'form-check-label',
+                    group: 'form-check',
+                },
+            },
+            formRadioGroup: { classes: { root: 'd-flex flex-column' } },
+            formPin: {
+                classes: {
+                    root: 'd-inline-flex align-items-center',
+                    input: 'form-control text-center mr-1',
+                },
+            },
+            formSlider: {
+                classes: {
+                    root: 'custom-range position-relative d-flex align-items-center',
+                    track: 'flex-grow-1 bg-secondary',
+                    range: 'position-absolute bg-primary',
+                    thumb: 'rounded-circle bg-white border border-primary',
+                },
+            },
+            formNumber: {
+                classes: {
+                    root: 'input-group',
+                    input: 'form-control text-center',
+                    decrement: 'btn btn-outline-secondary',
+                    increment: 'btn btn-outline-secondary',
+                },
+            },
+            formTags: {
+                classes: {
+                    root: 'form-control d-flex flex-wrap align-items-center p-2',
+                    item: 'badge badge-pill badge-primary d-inline-flex align-items-center mr-1',
+                    itemText: '',
+                    itemDelete: 'close text-white ml-1',
+                    input: 'form-control border-0 flex-grow-1 p-0 shadow-none',
+                },
+            },
             button: {
                 classes: { root: 'btn' },
                 variants: {

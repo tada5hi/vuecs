@@ -46,7 +46,7 @@ That's it. The `@vuecs/design` import registers the CSS variables (`--vc-color-p
 Install each component package you want:
 
 ```bash
-npm install @vuecs/form-controls @vuecs/navigation @vuecs/pagination
+npm install @vuecs/forms @vuecs/navigation @vuecs/pagination
 ```
 
 Each package re-installs the theme and defaults managers under the hood, so `app.use(vuecs, ...)` configures all of them at once. You can also `app.use(formControls)` individually if you prefer narrower plugin boundaries.
@@ -54,7 +54,7 @@ Each package re-installs the theme and defaults managers under the hood, so `app
 Some packages also ship structural CSS — checkbox switch variant, range-slider track and thumb, search-dropdown panel, nav tree-line. Import each you use:
 
 ```css
-@import "@vuecs/form-controls";
+@import "@vuecs/forms";
 @import "@vuecs/list-controls";
 @import "@vuecs/navigation";
 @import "@vuecs/pagination";

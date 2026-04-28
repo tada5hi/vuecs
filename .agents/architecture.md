@@ -281,7 +281,7 @@ app.use(vuecs, {
             content: 'Keine weiteren Einträge verfügbar...',
         },
         formSelect: {
-            optionDefaultValue: '-- Auswählen --',
+            placeholder: '-- Auswählen --',
         },
     },
 });
@@ -291,7 +291,7 @@ app.use(vuecs, {
 
 Components drop Vue-level prop defaults (so `undefined` means "fall through") and
 resolve via the composable. The same composable powers experimental
-*standalone* hooks like `useSubmitButton()` in `@vuecs/form-controls` —
+*standalone* hooks like `useSubmitButton()` in `@vuecs/forms` —
 the only difference is that the "props" arg is an empty object so every
 key falls through to the global defaults / hardcoded layer.
 
@@ -355,9 +355,10 @@ The following components resolve the listed behavioral props via
 | Component / hook | Keys |
 |------------------|------|
 | `useSubmitButton()` (`submitButton`) | `createText`, `updateText`, `createIcon`, `updateIcon`, `createColor`, `updateColor` |
-| `VCFormSelect` | `optionDefault`, `optionDefaultId`, `optionDefaultValue` |
+| `VCFormSelect` | `placeholder` |
 | `VCFormGroup` | `validation` |
-| `VCFormInputCheckbox` | `labelContent` |
+| `VCFormCheckbox` | `labelContent` |
+| `VCFormSwitch` | `labelContent` |
 | `VCListItem` | `textPropName` |
 | `VCListNoMore` | `content` |
 
@@ -366,7 +367,7 @@ lives in the component's `behavioralDefaults` constant, which is passed to the
 composable as the lowest-priority layer. The `submitButton` row is unusual —
 it's the only entry without a corresponding `VC*` component. The previous
 `VCFormSubmit` was decomposed into `VCButton` (in `@vuecs/button`) plus a
-`useSubmitButton()` reactive bind-object helper (in `@vuecs/form-controls`,
+`useSubmitButton()` reactive bind-object helper (in `@vuecs/forms`,
 marked `@experimental`); the defaults registration moved with the helper.
 
 ## Cross-cutting Config (@vuecs/core, Phase 3 prerequisite)
@@ -667,7 +668,7 @@ consumers can write bare imports:
 @import "@vuecs/design";              /* → assets/index.css */
 @import "@vuecs/theme-bootstrap-v5";  /* → assets/index.css (bridge) */
 @import "@vuecs/theme-bootstrap-v4";  /* → assets/index.css (bridge) */
-@import "@vuecs/form-controls";       /* → dist/style.css */
+@import "@vuecs/forms";       /* → dist/style.css */
 @import "@vuecs/list-controls";       /* → dist/style.css */
 @import "@vuecs/navigation";          /* → dist/style.css */
 @import "@vuecs/pagination";          /* → dist/style.css */
@@ -679,8 +680,8 @@ who don't import these will see the bundled JS render correctly but lose
 component-specific structural styling — checkbox switch variant,
 range-slider track and thumbs, search-dropdown panel, nav tree-line, etc.
 
-Explicit subpath forms (`@vuecs/design/index.css`, `@vuecs/form-controls/style.css`,
-`@vuecs/form-controls/dist/style.css`) remain supported for clarity when
+Explicit subpath forms (`@vuecs/design/index.css`, `@vuecs/forms/style.css`,
+`@vuecs/forms/dist/style.css`) remain supported for clarity when
 mixing multiple CSS entry points.
 
 ## NavigationManager (@vuecs/navigation)
@@ -694,7 +695,7 @@ The navigation package has its own manager pattern using `@posva/event-emitter`:
 
 ## Component Rendering
 
-Components use TypeScript render functions (not `.vue` SFCs) via `defineComponent` + `h()`. This avoids the Vue template compiler dependency in most packages. The `@vitejs/plugin-vue` plugin is only enabled for packages that contain `.vue` files (form-controls, pagination).
+Components use TypeScript render functions (not `.vue` SFCs) via `defineComponent` + `h()`. This avoids the Vue template compiler dependency in most packages. The `@vitejs/plugin-vue` plugin is only enabled for packages that contain `.vue` files (forms, pagination, overlays).
 
 ## CSS Strategy
 

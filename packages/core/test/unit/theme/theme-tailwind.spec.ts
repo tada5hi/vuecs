@@ -22,11 +22,24 @@ describe('tailwindTheme', () => {
         expect(entry.classes!.groupAppend).toContain('rounded-r-md');
     });
 
-    it('should define a switch variant for formInputCheckbox', () => {
-        const entry = theme.elements.formInputCheckbox as ThemeElementDefinition;
-        expect(entry.variants).toBeDefined();
-        expect(entry.variants!.variant.switch.root).toBe('vc-form-input-checkbox--switch');
-        expect(entry.defaultVariants).toEqual({ variant: 'checkbox' });
+    it('should define formCheckbox / formCheckboxGroup / formSwitch entries (post-3.0 split)', () => {
+        const checkbox = theme.elements.formCheckbox as ThemeElementDefinition;
+        const group = theme.elements.formCheckboxGroup as ThemeElementDefinition;
+        const swtch = theme.elements.formSwitch as ThemeElementDefinition;
+
+        expect(checkbox).toBeDefined();
+        expect(checkbox.classes!.root).toContain('data-[state=checked]:bg-primary-600');
+        expect(checkbox.classes!.indicator).toContain('inline-flex');
+
+        expect(group).toBeDefined();
+        expect(group.classes!.root).toContain('data-[orientation=horizontal]:flex-row');
+
+        expect(swtch).toBeDefined();
+        expect(swtch.classes!.root).toContain('data-[state=checked]:bg-primary-600');
+        expect(swtch.classes!.thumb).toContain('data-[state=checked]:translate-x-4');
+
+        // The legacy variant-driven `formInputCheckbox` entry is gone.
+        expect(theme.elements.formInputCheckbox).toBeUndefined();
     });
 
     it('should define pagination with active state using Tailwind `!` modifier to beat base link classes', () => {

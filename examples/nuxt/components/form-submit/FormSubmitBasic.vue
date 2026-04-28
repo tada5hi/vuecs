@@ -6,7 +6,7 @@
   -->
 
 <script lang="ts">
-import { useSubmitButton } from '@vuecs/form-controls';
+import { useSubmitButton } from '@vuecs/forms';
 import {
     defineComponent,
     ref,
@@ -19,7 +19,7 @@ export default defineComponent({
 
         // Reactive bind-object — label / icon / color all come from the
         // `submitButton` defaults registered in @vuecs/core install. The
-        // composable is marked @experimental in @vuecs/form-controls.
+        // composable is marked @experimental in @vuecs/forms.
         const submit = useSubmitButton({
             isEditing: () => isEditing.value,
             loading: () => busy.value,

@@ -83,12 +83,12 @@ import { VCButton } from '@vuecs/button';
 
 ## Submit-button helper
 
-For the create / update / save form-submit pattern previously baked into `VCFormSubmit`, `@vuecs/form-controls` ships an experimental `useSubmitButton()` composable. It returns a reactive bind-object that swaps `label` / `iconLeft` / `color` based on `isEditing`, with all four customization knobs resolved through the [Behavioral Defaults](/guide/behavioral-defaults) system.
+For the create / update / save form-submit pattern previously baked into `VCFormSubmit`, `@vuecs/forms` ships an experimental `useSubmitButton()` composable. It returns a reactive bind-object that swaps `label` / `iconLeft` / `color` based on `isEditing`, with all four customization knobs resolved through the [Behavioral Defaults](/guide/behavioral-defaults) system.
 
 ```vue
 <script setup lang="ts">
 import { VCButton } from '@vuecs/button';
-import { useSubmitButton } from '@vuecs/form-controls';
+import { useSubmitButton } from '@vuecs/forms';
 import { ref } from 'vue';
 
 const isEditing = ref(false);

@@ -3,7 +3,7 @@
 Text input with `v-model` binding and optional debounce.
 
 ```bash
-npm install @vuecs/form-controls
+npm install @vuecs/forms
 ```
 
 ## Basic usage
@@ -16,7 +16,7 @@ npm install @vuecs/form-controls
 
 ```vue [Vue]
 <script setup lang="ts">
-import { VCFormInput } from '@vuecs/form-controls';
+import { VCFormInput } from '@vuecs/forms';
 import { ref } from 'vue';
 
 const value = ref('');
@@ -32,7 +32,7 @@ const value = ref('');
 @import "@vuecs/design";
 
 /* Required only if you use the input-group variant (prepend/append). */
-@import "@vuecs/form-controls";
+@import "@vuecs/forms";
 
 @custom-variant dark (&:where(.dark, .dark *));
 ```

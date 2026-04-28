@@ -33,7 +33,7 @@ createApp(App)
         // surrounding script block when reading this file.
         code: `<script setup lang="ts">
 import { VCButton } from '@vuecs/button';
-import { VCFormInput } from '@vuecs/form-controls';
+import { VCFormInput } from '@vuecs/forms';
 import { ref } from 'vue';
 
 const value = ref('');

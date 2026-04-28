@@ -13,23 +13,23 @@ import {
     defineComponent,
     reactive,
 } from 'vue';
-import type { FormSelectOption } from '@vuecs/form-controls';
+import type { FormOption } from '@vuecs/forms';
 
 export default defineComponent({
     setup() {
-        const form = reactive({ text: '' });
+        const form = reactive<{ text: number | undefined }>({ text: undefined });
 
         const $v = useVuelidate({ text: { required } }, form);
 
         const validationMessages = useTranslationsForBaseValidation($v.value.text);
 
-        const options : FormSelectOption[] = [
-            { id: 1, value: 'Option 1' },
-            { id: 2, value: 'Option 2' },
+        const options : FormOption<number>[] = [
+            { value: 1, label: 'Option 1' },
+            { value: 2, label: 'Option 2' },
             {
-                id: 3, 
-                value: 'Option 3', 
-                disabled: true, 
+                value: 3,
+                label: 'Option 3',
+                disabled: true,
             },
         ];
 
@@ -51,6 +51,7 @@ export default defineComponent({
         <VCFormSelect
             v-model="form.text"
             :options="options"
+            placeholder="-- Pick one --"
         />
     </VCFormGroup>
 </template>

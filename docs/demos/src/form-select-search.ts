@@ -1,4 +1,4 @@
-import formControls from '@vuecs/form-controls';
+import formControls from '@vuecs/forms';
 import { createApp } from 'vue';
 import { installIframeBridge } from './iframe-bridge';
 import { installVuecs } from './shared';
