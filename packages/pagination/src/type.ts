@@ -1,4 +1,4 @@
-import type { CoreOptions, ThemeElementDefinition } from '@vuecs/core';
+import type { ComponentDefaultValues, CoreOptions, ThemeElementDefinition } from '@vuecs/core';
 
 export type PaginationMeta = {
     busy?: boolean;
@@ -20,9 +20,23 @@ export type PaginationThemeClasses = {
     lastIcon: string;
 };
 
+export type PaginationDefaults = {
+    firstIcon: string;
+    prevIcon: string;
+    nextIcon: string;
+    lastIcon: string;
+    firstLabel: string;
+    prevLabel: string;
+    nextLabel: string;
+    lastLabel: string;
+};
+
 declare module '@vuecs/core' {
     interface ThemeElements {
         pagination?: ThemeElementDefinition<PaginationThemeClasses>;
+    }
+    interface ComponentDefaults {
+        pagination?: ComponentDefaultValues<PaginationDefaults>;
     }
 }
 

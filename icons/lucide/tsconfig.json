@@ -1,0 +1,17 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "skipLibCheck": true,
+        "paths": {
+            "@vuecs/core": [
+                "./packages/core/src"
+            ],
+            "@vuecs/core/*": [
+                "./packages/core/src/*"
+            ]
+        }
+    },
+    "include": [
+        "src/**/*.ts"
+    ]
+}

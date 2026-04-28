@@ -39,8 +39,10 @@ npm run lint:fix       # Auto-fix lint issues
 | `@vuecs/overlays` | Compound overlays on Reka primitives — Modal (+ `useModal()` view-stack composable), Popover, Tooltip, DropdownMenu, ContextMenu | 0.0.0 |
 | `@vuecs/pagination` | Pagination component | 1.3.1 |
 | `@vuecs/theme-bootstrap` | Bootstrap theme (currently targets v5; renamed from `@vuecs/theme-bootstrap-v5` in 3.0) | 3.0.0 |
-| `@vuecs/theme-font-awesome` | Font Awesome icon theme | 1.1.1 |
+| `@vuecs/theme-font-awesome` | Font Awesome icon theme (deprecated; succeeded by `@vuecs/icons-font-awesome`) | 1.1.1 |
 | `@vuecs/theme-tailwind` | Tailwind CSS theme (exports `merge: ClassesMergeFn`) | 0.0.0 |
+| `@vuecs/icons-font-awesome` | Font Awesome 6 Solid icon-name preset for vuecs (Iconify-backed) | 0.0.0 |
+| `@vuecs/icons-lucide` | Lucide icon-name preset for vuecs (Iconify-backed) | 0.0.0 |
 | `@vuecs/timeago` | Relative time display component | 1.1.2 |
 
 ### Dependency Layers
@@ -49,6 +51,7 @@ npm run lint:fix       # Auto-fix lint issues
 Layer 0 (no internal deps):  core, countdown, design, gravatar, icon, link, timeago
 Layer 1 (depends on core):   button, forms, list-controls, navigation, overlays, pagination
 Layer 2 (depends on Layer 0): themes (@vuecs/core peer dep only — pure data that targets component packages at runtime)
+Layer 2': icons (@vuecs/core peer dep only — Iconify-name vocabularies for @vuecs/icon's <VCIcon>, registered via `app.use(vuecs, { icons: [...] })`)
 Layer 3 (integration):       nuxt (depends on design + @nuxt/kit)
 ```
 

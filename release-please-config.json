@@ -21,6 +21,8 @@
         "themes/bootstrap": {"component": "theme-bootstrap" },
         "themes/font-awesome": {"component": "theme-font-awesome" },
         "themes/tailwind": {"component": "theme-tailwind" },
+        "icons/font-awesome": {"component": "icons-font-awesome" },
+        "icons/lucide": {"component": "icons-lucide" },
         "packages/timeago": {"component": "timeago" },
         "examples/nuxt": {"component": "examples-nuxt"}
     },
