@@ -20,8 +20,10 @@ vuecs/
     timeago/          # @vuecs/timeago
   themes/             # Theme packages (npm workspaces) — pure data, no Vue runtime deps
     bootstrap/        # @vuecs/theme-bootstrap — Bootstrap (currently v5) theme + design-token bridge (assets/index.css)
-    font-awesome/     # @vuecs/theme-font-awesome — Font Awesome icon theme
     tailwind/         # @vuecs/theme-tailwind — Tailwind v4 theme (semantic tokens)
+  icons/              # Icon-preset packages (npm workspaces) — Iconify-name vocabularies for @vuecs/icon, no runtime icon data
+    font-awesome/     # @vuecs/icons-font-awesome — Font Awesome 6 Solid icon names (replaces the removed @vuecs/theme-font-awesome)
+    lucide/           # @vuecs/icons-lucide — Lucide icon names (modern default)
   examples/
     nuxt/             # Nuxt demo app showcasing all components
   docs/               # @vuecs/docs — VitePress documentation site (deployed to vuecs.dev)

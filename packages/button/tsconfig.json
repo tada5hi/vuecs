@@ -13,6 +13,9 @@
             ],
             "@vuecs/core/*": [
                 "./packages/core/src/*"
+            ],
+            "@vuecs/icon": [
+                "./packages/icon/src"
             ]
         }
     },

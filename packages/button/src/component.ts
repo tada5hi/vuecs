@@ -5,6 +5,7 @@ import type {
     UseComponentThemeProps,
     VariantValues,
 } from '@vuecs/core';
+import { VCIcon } from '@vuecs/icon';
 import type {
     ExtractPublicPropTypes,
     PropType,
@@ -126,8 +127,11 @@ export const VCButton = defineComponent({
                     children.push(h('span', { class: resolved.leading || undefined }, leadingOut));
                 }
             } else if (props.iconLeft) {
+                // The string is treated as an Iconify name (e.g. 'lucide:plus')
+                // and resolved through <VCIcon>. Consumers wanting raw class
+                // strings should slot their own element via #leading instead.
                 children.push(h('span', { class: resolved.leading || undefined }, [
-                    h('i', { class: props.iconLeft }),
+                    h(VCIcon, { name: props.iconLeft }),
                 ]));
             }
 
@@ -145,7 +149,7 @@ export const VCButton = defineComponent({
                 }
             } else if (props.iconRight) {
                 children.push(h('span', { class: resolved.trailing || undefined }, [
-                    h('i', { class: props.iconRight }),
+                    h(VCIcon, { name: props.iconRight }),
                 ]));
             }
 

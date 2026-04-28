@@ -14,10 +14,6 @@ export type PaginationThemeClasses = {
     link: string;
     linkActive: string;
     ellipsis: string;
-    prevIcon: string;
-    nextIcon: string;
-    firstIcon: string;
-    lastIcon: string;
 };
 
 export type PaginationDefaults = {

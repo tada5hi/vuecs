@@ -39,9 +39,8 @@ npm run lint:fix       # Auto-fix lint issues
 | `@vuecs/overlays` | Compound overlays on Reka primitives — Modal (+ `useModal()` view-stack composable), Popover, Tooltip, DropdownMenu, ContextMenu | 0.0.0 |
 | `@vuecs/pagination` | Pagination component | 1.3.1 |
 | `@vuecs/theme-bootstrap` | Bootstrap theme (currently targets v5; renamed from `@vuecs/theme-bootstrap-v5` in 3.0) | 3.0.0 |
-| `@vuecs/theme-font-awesome` | Font Awesome icon theme (deprecated; succeeded by `@vuecs/icons-font-awesome`) | 1.1.1 |
 | `@vuecs/theme-tailwind` | Tailwind CSS theme (exports `merge: ClassesMergeFn`) | 0.0.0 |
-| `@vuecs/icons-font-awesome` | Font Awesome 6 Solid icon-name preset for vuecs (Iconify-backed) | 0.0.0 |
+| `@vuecs/icons-font-awesome` | Font Awesome 6 Solid icon-name preset for vuecs (Iconify-backed; replaces the removed `@vuecs/theme-font-awesome`) | 0.0.0 |
 | `@vuecs/icons-lucide` | Lucide icon-name preset for vuecs (Iconify-backed) | 0.0.0 |
 | `@vuecs/timeago` | Relative time display component | 1.1.2 |
 
