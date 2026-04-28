@@ -5,6 +5,11 @@
 .vc-form-number {
     display: inline-flex;
     align-items: stretch;
+    width: fit-content;
+    /* Prevent stretching to full width when nested in a column-flex parent
+       with the default `align-items: stretch`. The contents (input + ±
+       buttons) are intentionally compact; the wrapper should hug them. */
+    align-self: flex-start;
     border: 1px solid var(--vc-color-border, #d1d5db);
     border-radius: var(--vc-radius-md, 0.375rem);
     background-color: var(--vc-color-bg, #fff);
@@ -28,7 +33,11 @@
     outline: none;
     text-align: center;
     font-variant-numeric: tabular-nums;
-    width: 4rem;
+    /* `field-sizing: content` lets the input auto-grow to fit formatted
+       strings (e.g. "$20.05") instead of clipping. `min-width` keeps a
+       sensible floor for empty / short values. */
+    min-width: 4rem;
+    field-sizing: content;
 }
 
 .vc-form-number-input::-webkit-outer-spin-button,

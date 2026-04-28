@@ -87,10 +87,10 @@ Tailwind utilities like `bg-neutral-500` use **Tailwind's** default `--color-neu
 
 ## Bootstrap bridges
 
-For Bootstrap consumers, `@vuecs/theme-bootstrap-v5` ships a design-token bridge (`assets/index.css`) that maps `--bs-*` theme vars onto `--vc-color-*`:
+For Bootstrap consumers, `@vuecs/theme-bootstrap` ships a design-token bridge (`assets/index.css`) that maps `--bs-*` theme vars onto `--vc-color-*`:
 
 ```css
-@import "@vuecs/theme-bootstrap-v5";  /* via the `style` conditional export */
+@import "@vuecs/theme-bootstrap";  /* via the `style` conditional export */
 ```
 
 Bootstrap 5 components read `--bs-*` at runtime, so the bridge propagates `setPalette()` to Bootstrap components. Bootstrap 4's bridge is shipped for API parity but has limited reach — Bootstrap 4's component CSS is Sass-compiled to literal hex, so the bridge only affects consumer-authored rules.

@@ -37,8 +37,7 @@ npm run lint:fix       # Auto-fix lint issues
 | `@vuecs/nuxt` | Nuxt module — SSR palette + @vuecs/design auto-import | 0.0.0 |
 | `@vuecs/overlays` | Compound overlays on Reka primitives — Modal (+ `useModal()` view-stack composable), Popover, Tooltip, DropdownMenu, ContextMenu | 0.0.0 |
 | `@vuecs/pagination` | Pagination component | 1.3.1 |
-| `@vuecs/theme-bootstrap-v4` | Bootstrap v4 theme | 1.0.1 |
-| `@vuecs/theme-bootstrap-v5` | Bootstrap v5 theme | 2.0.1 |
+| `@vuecs/theme-bootstrap` | Bootstrap theme (currently targets v5; renamed from `@vuecs/theme-bootstrap-v5` in 3.0) | 3.0.0 |
 | `@vuecs/theme-font-awesome` | Font Awesome icon theme | 1.1.1 |
 | `@vuecs/theme-tailwind` | Tailwind CSS theme (exports `merge: ClassesMergeFn`) | 0.0.0 |
 | `@vuecs/timeago` | Relative time display component | 1.1.2 |

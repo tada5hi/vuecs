@@ -83,8 +83,12 @@ export default function tailwindTheme(): Theme {
             },
             formNumber: {
                 classes: {
-                    root: 'inline-flex items-stretch overflow-hidden rounded-md border border-border bg-bg shadow-sm focus-within:border-primary-500 focus-within:ring-1 focus-within:ring-primary-500',
-                    input: 'w-16 bg-transparent border-0 px-3 py-2 text-center text-sm text-fg outline-none tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none',
+                    root: 'inline-flex w-fit items-stretch overflow-hidden rounded-md border border-border bg-bg shadow-sm focus-within:border-primary-500 focus-within:ring-1 focus-within:ring-primary-500',
+                    // `field-sizing: content` lets the input auto-grow to fit
+                    // formatted strings (e.g. "$20.05") instead of clipping.
+                    // `min-w-16` keeps a sensible floor for empty / short
+                    // values; the parent `w-fit` follows along.
+                    input: 'min-w-16 [field-sizing:content] bg-transparent border-0 px-3 py-2 text-center text-sm text-fg outline-none tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none',
                     decrement: 'inline-flex w-8 items-center justify-center bg-bg-muted text-fg hover:bg-bg-elevated focus-visible:outline-2 focus-visible:outline-primary-500 -outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
                     increment: 'inline-flex w-8 items-center justify-center bg-bg-muted text-fg hover:bg-bg-elevated focus-visible:outline-2 focus-visible:outline-primary-500 -outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
                 },
@@ -102,8 +106,10 @@ export default function tailwindTheme(): Theme {
                 classes: {
                     // Structural baseline — every visual treatment composes
                     // on top via compound variants below. Focus ring uses the
-                    // active color's `-500` shade picked per variant.
-                    root: 'inline-flex items-center justify-center gap-1.5 rounded-md font-medium shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60',
+                    // active color's `-500` shade picked per variant. `gap-2`
+                    // (8px) keeps the leading-icon / spinner visually
+                    // separated from the label without looking spaced-out.
+                    root: 'inline-flex items-center justify-center gap-2 rounded-md font-medium shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60',
                     leading: 'inline-flex shrink-0 items-center',
                     trailing: 'inline-flex shrink-0 items-center',
                     label: '',

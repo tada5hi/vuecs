@@ -18,8 +18,7 @@ vuecs/
     pagination/       # @vuecs/pagination
     timeago/          # @vuecs/timeago
   themes/             # Theme packages (npm workspaces) — pure data, no Vue runtime deps
-    bootstrap-v4/     # @vuecs/theme-bootstrap-v4 — Bootstrap v4 theme + design-token bridge (assets/index.css)
-    bootstrap-v5/     # @vuecs/theme-bootstrap-v5 — Bootstrap v5 theme + design-token bridge (assets/index.css)
+    bootstrap/        # @vuecs/theme-bootstrap — Bootstrap (currently v5) theme + design-token bridge (assets/index.css)
     font-awesome/     # @vuecs/theme-font-awesome — Font Awesome icon theme
     tailwind/         # @vuecs/theme-tailwind — Tailwind v4 theme (semantic tokens)
   examples/

@@ -12,7 +12,7 @@ The two layers are decoupled: themes resolve **class strings**, tokens define **
 ```ts
 import vuecs from '@vuecs/core';
 import tailwindTheme from '@vuecs/theme-tailwind';
-import bootstrap5 from '@vuecs/theme-bootstrap-v5';
+import bootstrap from '@vuecs/theme-bootstrap';
 import fontAwesome from '@vuecs/theme-font-awesome';
 
 app.use(vuecs, {

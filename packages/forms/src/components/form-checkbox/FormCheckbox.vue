@@ -39,7 +39,9 @@ const themeDefaults = {
         root: 'vc-form-checkbox',
         indicator: 'vc-form-checkbox-indicator',
         label: 'vc-form-checkbox-label',
-        group: 'vc-form-checkbox-group',
+        // See FormRadio.vue — collides with `vc-form-checkbox-group`
+        // used by `<VCFormCheckboxGroup>` (column layout).
+        group: 'vc-form-checkbox-wrapper',
     },
 };
 

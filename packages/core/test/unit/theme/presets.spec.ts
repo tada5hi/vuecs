@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import bootstrapV5Theme from '../../../../../themes/bootstrap-v5/src/index';
+import bootstrapTheme from '../../../../../themes/bootstrap/src/index';
 import bootstrapV4Theme from '../../../../../themes/bootstrap-v4/src/index';
 import fontAwesomeTheme from '../../../../../themes/font-awesome/src/index';
 import { isExtendValue } from '../../../src/theme/extend';
 import { resolveComponentTheme } from '../../../src/theme/resolve';
 import type { ThemeElementDefinition } from '../../../src/theme/types';
 
-describe('bootstrapV5Theme', () => {
-    const preset = bootstrapV5Theme();
+describe('bootstrapTheme', () => {
+    const preset = bootstrapTheme();
 
     it('should return an object with elements property', () => {
         expect(preset).toHaveProperty('elements');
@@ -97,7 +97,7 @@ describe('fontAwesomeTheme', () => {
 
 describe('preset integration', () => {
     it('should resolve bootstrap + font-awesome presets together', () => {
-        const presets = [bootstrapV5Theme(), fontAwesomeTheme()];
+        const presets = [bootstrapTheme(), fontAwesomeTheme()];
         const defaults = {
             classes: {
                 root: 'vc-list-item',
@@ -114,7 +114,7 @@ describe('preset integration', () => {
     });
 
     it('should allow user theme to override preset values', () => {
-        const presets = [bootstrapV5Theme()];
+        const presets = [bootstrapTheme()];
         const overrides: Record<string, ThemeElementDefinition> = { formGroup: { classes: { root: 'my-custom-group' } } };
         const defaults = {
             classes: {

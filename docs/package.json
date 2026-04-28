@@ -40,6 +40,7 @@
         "@vuecs/navigation": "*",
         "@vuecs/overlays": "*",
         "@vuecs/pagination": "*",
+        "@vuecs/theme-bootstrap": "*",
         "@vuecs/theme-tailwind": "*",
         "@vuecs/timeago": "*",
         "tailwindcss": "^4.2.4",

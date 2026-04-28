@@ -1,6 +1,7 @@
 import { setPalette } from '@vuecs/design';
 import { ref, watch } from 'vue';
 import type { Ref } from 'vue';
+import { type DemoThemeName, setDemoTheme } from './shared';
 
 /*
  * Iframe runtime — runs inside each demo and coordinates with the parent
@@ -35,10 +36,11 @@ import type { Ref } from 'vue';
 type ParentMessage =    | { type: 'set-color-mode', mode: 'light' | 'dark' } |
     { type: 'set-variants', values: Record<string, string> } |
     {
-        type: 'set-palette', 
-        primary?: string, 
-        neutral?: string 
-    };
+        type: 'set-palette',
+        primary?: string,
+        neutral?: string
+    } |
+    { type: 'set-theme', theme: DemoThemeName };
 
 type VariantCatalog = Record<string, readonly string[]>;
 type VariantValues = Record<string, string>;
@@ -97,6 +99,13 @@ const handleParentMessage = (event: MessageEvent<ParentMessage>): void => {
         if (data.primary) palette.primary = data.primary;
         if (data.neutral) palette.neutral = data.neutral;
         setPalette(palette as Parameters<typeof setPalette>[0]);
+        postHeight();
+    } else if (data.type === 'set-theme') {
+        // Live runtime vuecs-theme swap (tailwind ↔ bootstrap-v5). Calls
+        // ThemeManager.setThemes which triggers every useComponentTheme()
+        // computed to recompute. Bootstrap CSS is preloaded as a disabled
+        // <link> in the demo HTML shell; setDemoTheme toggles it.
+        setDemoTheme(data.theme);
         postHeight();
     }
 };

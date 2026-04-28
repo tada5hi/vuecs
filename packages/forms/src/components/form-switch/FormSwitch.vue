@@ -39,7 +39,8 @@ const themeDefaults = {
         root: 'vc-form-switch',
         thumb: 'vc-form-switch-thumb',
         label: 'vc-form-switch-label',
-        group: 'vc-form-switch-group',
+        // See FormRadio.vue / FormCheckbox.vue — name collision avoidance.
+        group: 'vc-form-switch-wrapper',
     },
 };
 

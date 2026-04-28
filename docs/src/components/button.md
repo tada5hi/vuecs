@@ -1,6 +1,6 @@
 # Button
 
-General-purpose button with semantic `color`, `variant`, and `size` variants. The two themes that ship visual class mappings (`@vuecs/theme-tailwind`, `@vuecs/theme-bootstrap-v5`) provide the full color × variant × size matrix; consumers switch looks by changing variant values, not by re-styling per instance.
+General-purpose button with semantic `color`, `variant`, and `size` variants. The two themes that ship visual class mappings (`@vuecs/theme-tailwind`, `@vuecs/theme-bootstrap`) provide the full color × variant × size matrix; consumers switch looks by changing variant values, not by re-styling per instance.
 
 ```bash
 npm install @vuecs/button

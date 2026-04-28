@@ -10,6 +10,7 @@ import {
     watch,
 } from 'vue';
 import { usePalette } from '@vuecs/design';
+import { useDemoTheme } from '../use-demo-theme';
 
 interface Props {
     title?: string;
@@ -56,6 +57,7 @@ const variantValues = reactive<Record<string, string>>({});
 // so this returns the same `current` ref the navbar's SettingsModal
 // writes to.
 const { current: palette } = usePalette();
+const { current: demoTheme } = useDemoTheme();
 
 const { isDark } = useData();
 
@@ -144,6 +146,15 @@ const postPalette = (): void => {
     );
 };
 
+const postTheme = (): void => {
+    const win = frameRef.value?.contentWindow;
+    if (!win) return;
+    win.postMessage(
+        { type: 'set-theme', theme: demoTheme.value },
+        globalThis.location.origin,
+    );
+};
+
 const onFrameLoad = (): void => {
     // Reset variant state for the new iframe (in case Demo.vue is reused
     // across navigations and the previous demo had a different catalog).
@@ -151,6 +162,7 @@ const onFrameLoad = (): void => {
     Object.keys(variantValues).forEach((k) => delete variantValues[k]);
     postColorMode();
     postPalette();
+    postTheme();
 };
 
 const onFrameMessage = (event: MessageEvent): void => {
@@ -197,6 +209,10 @@ watch(
     },
     { deep: true },
 );
+
+watch(demoTheme, () => {
+    postTheme();
+});
 
 onMounted(() => {
     globalThis.window.addEventListener('message', onFrameMessage);

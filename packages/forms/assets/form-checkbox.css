@@ -5,7 +5,7 @@
  * The indicator is a child element only present (or visible) while checked/indeterminate.
  * Colors reference @vuecs/design tokens with hex fallbacks.
  */
-.vc-form-checkbox-group {
+.vc-form-checkbox-wrapper {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -46,10 +46,14 @@
     outline-offset: 2px;
 }
 
+/* `!important` because theme-package utility classes (Bootstrap's
+   `.bg-white !important` etc.) would otherwise beat this rule and break
+   the checked-state visual affordance. Themes can change the *color*
+   via the design-token cascade; they shouldn't eliminate the fill flip. */
 .vc-form-checkbox[data-state="checked"],
 .vc-form-checkbox[data-state="indeterminate"] {
-    background-color: var(--vc-color-primary-600, #2563eb);
-    border-color: var(--vc-color-primary-600, #2563eb);
+    background-color: var(--vc-color-primary-600, #2563eb) !important;
+    border-color: var(--vc-color-primary-600, #2563eb) !important;
 }
 
 .vc-form-checkbox[data-disabled],

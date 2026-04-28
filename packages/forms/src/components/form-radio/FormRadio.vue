@@ -40,7 +40,11 @@ const themeDefaults = {
         root: 'vc-form-radio',
         indicator: 'vc-form-radio-indicator',
         label: 'vc-form-radio-label',
-        group: 'vc-form-radio-group',
+        // `wrapper` (not `group`) — collides with `vc-form-radio-group`
+        // used by `<VCFormRadioGroup>` for the multi-radio container,
+        // which has `flex-direction: column` and would stack the radio
+        // above its label.
+        group: 'vc-form-radio-wrapper',
     },
 };
 

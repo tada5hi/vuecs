@@ -1,6 +1,6 @@
 import type { Theme } from '@vuecs/core';
 
-export default function bootstrapV5Theme(): Theme {
+export default function bootstrapTheme(): Theme {
     return {
         elements: {
             formGroup: {
@@ -19,45 +19,66 @@ export default function bootstrapV5Theme(): Theme {
                     groupPrepend: 'input-group-text',
                 },
             },
+            // Reka renders the checkbox / radio / switch as `<button role="…">`,
+            // not native `<input type="…">`. Bootstrap's `.form-check-input`
+            // selector targets inputs only, so we don't apply it. Instead we
+            // layer Bootstrap shadow + bg utilities on top of the `vc-form-*`
+            // structural defaults — but deliberately skip border utilities:
+            // bootstrap's `.border-*` utilities carry `!important` and would
+            // beat the structural CSS's `data-state="checked"` border-color
+            // rule, making checked / unchecked visually identical. Letting
+            // structural CSS own border-color preserves the checked-state
+            // visual diff (neutral border → primary border on check).
             formCheckbox: {
                 classes: {
-                    root: 'form-check-input',
-                    indicator: '',
+                    root: 'bg-white shadow-sm',
+                    indicator: 'text-white',
                     label: 'form-check-label',
-                    group: 'form-check',
+                    group: '',
                 },
             },
             formCheckboxGroup: { classes: { root: 'd-flex flex-column gap-2' } },
             formSwitch: {
                 classes: {
-                    root: 'form-check-input',
-                    thumb: '',
+                    root: 'shadow-sm',
+                    thumb: 'bg-white shadow-sm',
                     label: 'form-check-label',
-                    group: 'form-check form-switch',
+                    group: '',
                 },
             },
             formSelect: { classes: { root: 'form-select' } },
             formRadio: {
                 classes: {
-                    root: 'form-check-input',
-                    indicator: '',
+                    root: 'bg-white shadow-sm',
+                    indicator: 'bg-primary',
                     label: 'form-check-label',
-                    group: 'form-check',
+                    group: '',
                 },
             },
             formRadioGroup: { classes: { root: 'd-flex flex-column gap-2' } },
+            // PinInputInput DOES render a real <input>, so `.form-control`
+            // would technically apply — but it sets `width: 100%` and
+            // collapses every cell into the container's full width. Use
+            // bootstrap utilities that mirror form-control's look (border
+            // + rounded + shadow + bg) without the width hint; structural
+            // CSS keeps the per-cell 2.5rem sizing.
             formPin: {
                 classes: {
                     root: 'd-inline-flex align-items-center gap-2',
-                    input: 'form-control text-center',
+                    input: 'border border-secondary-subtle bg-white shadow-sm text-center fw-semibold',
                 },
             },
+            // Reka Slider renders <span> elements, not <input type="range">.
+            // Bootstrap's `.form-range` selector is `input[type=range]` so
+            // it never applies — drop it. Layer bootstrap utilities for the
+            // visual: muted track, primary range fill, white thumb with a
+            // bootstrap-blue ring.
             formSlider: {
                 classes: {
-                    root: 'form-range position-relative d-flex align-items-center',
-                    track: 'flex-grow-1 bg-secondary rounded-pill',
-                    range: 'position-absolute bg-primary rounded-pill',
-                    thumb: 'rounded-circle bg-white border border-primary',
+                    root: '',
+                    track: 'bg-secondary-subtle rounded-pill',
+                    range: 'bg-primary rounded-pill',
+                    thumb: 'rounded-circle bg-white border border-2 border-primary shadow-sm',
                 },
             },
             formNumber: {
@@ -73,12 +94,21 @@ export default function bootstrapV5Theme(): Theme {
                     root: 'form-control d-flex flex-wrap align-items-center gap-2 p-2',
                     item: 'badge rounded-pill text-bg-primary d-inline-flex align-items-center gap-1',
                     itemText: '',
-                    itemDelete: 'btn-close btn-close-white',
+                    // Plain styled button — `.btn-close` was wrong here: it
+                    // renders an × via background-image SVG, which combined
+                    // with the slot's literal "×" text produced a doubled
+                    // delete glyph in every chip.
+                    itemDelete: 'd-inline-flex align-items-center justify-content-center bg-transparent border-0 text-white p-0 ms-1 lh-1',
                     input: 'form-control border-0 flex-grow-1 p-0 shadow-none',
                 },
             },
             button: {
-                classes: { root: 'btn' },
+                // `.btn` is `display: inline-block` by default — gives the
+                // leading icon / spinner no gap from the label. Force
+                // inline-flex so Bootstrap's `.gap-2` utility takes effect
+                // (only affects layout when there are multiple children;
+                // single-label buttons render identically).
+                classes: { root: 'btn d-inline-flex align-items-center justify-content-center gap-2' },
                 variants: {
                     size: {
                         sm: { root: 'btn-sm' },
@@ -88,9 +118,10 @@ export default function bootstrapV5Theme(): Theme {
                 },
                 // Map each (variant, color) pair onto a Bootstrap button
                 // class. `outline` uses Bootstrap's own `btn-outline-*`
-                // family; `soft` leverages v5's `bg-opacity-*` utility for
-                // a tinted look; `ghost` strips the link underline so it
-                // reads as a borderless button rather than a hyperlink.
+                // family; `soft` uses Bootstrap 5.3+'s `*-subtle` /
+                // `*-emphasis` token pair (tint bg + dark colored text);
+                // `ghost` strips the link underline so it reads as a
+                // borderless button rather than a hyperlink.
                 compoundVariants: [
                     // solid
                     { variants: { variant: 'solid', color: 'primary' }, class: { root: 'btn-primary' } },
@@ -106,13 +137,15 @@ export default function bootstrapV5Theme(): Theme {
                     { variants: { variant: 'outline', color: 'warning' }, class: { root: 'btn-outline-warning' } },
                     { variants: { variant: 'outline', color: 'error' }, class: { root: 'btn-outline-danger' } },
                     { variants: { variant: 'outline', color: 'info' }, class: { root: 'btn-outline-info' } },
-                    // soft — colored fill at 25% opacity + colored text
-                    { variants: { variant: 'soft', color: 'primary' }, class: { root: 'btn-primary bg-opacity-25 text-primary border-0' } },
-                    { variants: { variant: 'soft', color: 'neutral' }, class: { root: 'btn-light' } },
-                    { variants: { variant: 'soft', color: 'success' }, class: { root: 'btn-success bg-opacity-25 text-success border-0' } },
-                    { variants: { variant: 'soft', color: 'warning' }, class: { root: 'btn-warning bg-opacity-25 text-warning border-0' } },
-                    { variants: { variant: 'soft', color: 'error' }, class: { root: 'btn-danger bg-opacity-25 text-danger border-0' } },
-                    { variants: { variant: 'soft', color: 'info' }, class: { root: 'btn-info bg-opacity-25 text-info border-0' } },
+                    // soft — Bootstrap 5.3+'s subtle bg + emphasis text.
+                    // Both tokens are bridged onto design-system shades by
+                    // theme-bootstrap/assets/index.css.
+                    { variants: { variant: 'soft', color: 'primary' }, class: { root: 'bg-primary-subtle text-primary-emphasis border-0' } },
+                    { variants: { variant: 'soft', color: 'neutral' }, class: { root: 'bg-secondary-subtle text-secondary-emphasis border-0' } },
+                    { variants: { variant: 'soft', color: 'success' }, class: { root: 'bg-success-subtle text-success-emphasis border-0' } },
+                    { variants: { variant: 'soft', color: 'warning' }, class: { root: 'bg-warning-subtle text-warning-emphasis border-0' } },
+                    { variants: { variant: 'soft', color: 'error' }, class: { root: 'bg-danger-subtle text-danger-emphasis border-0' } },
+                    { variants: { variant: 'soft', color: 'info' }, class: { root: 'bg-info-subtle text-info-emphasis border-0' } },
                     // ghost — borderless / no underline, colored text
                     { variants: { variant: 'ghost', color: 'primary' }, class: { root: 'btn-link text-decoration-none' } },
                     { variants: { variant: 'ghost', color: 'neutral' }, class: { root: 'btn-link text-decoration-none text-secondary' } },

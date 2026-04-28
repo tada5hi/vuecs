@@ -165,8 +165,7 @@ export default defineConfig({
                     items: [
                         { text: 'Overview', link: '/themes/' },
                         { text: 'Tailwind', link: '/themes/tailwind' },
-                        { text: 'Bootstrap v5', link: '/themes/bootstrap-v5' },
-                        { text: 'Bootstrap v4', link: '/themes/bootstrap-v4' },
+                        { text: 'Bootstrap', link: '/themes/bootstrap' },
                         { text: 'Font Awesome', link: '/themes/font-awesome' },
                     ],
                 },

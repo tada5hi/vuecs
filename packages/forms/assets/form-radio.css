@@ -4,6 +4,11 @@
  *
  * Reka renders <button role="radio"> with `data-state="checked|unchecked"`.
  * The indicator is mounted only while checked.
+ *
+ * Class names:
+ *   .vc-form-radio-group   → outer container of multiple radios (column)
+ *   .vc-form-radio-wrapper → per-single-radio inline wrapper around
+ *                            the radio button + its label
  */
 .vc-form-radio-group {
     display: flex;
@@ -14,6 +19,12 @@
 .vc-form-radio-group[data-orientation="horizontal"] {
     flex-direction: row;
     align-items: center;
+}
+
+.vc-form-radio-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .vc-form-radio-label {
@@ -28,9 +39,15 @@
     appearance: none;
     -webkit-appearance: none;
     box-sizing: border-box;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    /* `position: relative` is the positioning context for the indicator's
+       absolute centering — see `.vc-form-radio-indicator` below. We
+       deliberately don't use flex/grid centering here: at root font-sizes
+       that produce odd content widths (the docs iframe sets html { font-
+       size: 14px } → content area = 12px, indicator = 7px, fractional
+       2.5px gap), the browser snaps the position differently at each zoom
+       level and the dot visibly jitters horizontally. */
+    position: relative;
+    display: inline-block;
     flex-shrink: 0;
     width: 1rem;
     height: 1rem;
@@ -51,8 +68,10 @@
     outline-offset: 2px;
 }
 
+/* `!important` so theme-package utility classes don't accidentally
+   beat the checked-state visual affordance. See form-checkbox.css. */
 .vc-form-radio[data-state="checked"] {
-    border-color: var(--vc-color-primary-600, #2563eb);
+    border-color: var(--vc-color-primary-600, #2563eb) !important;
 }
 
 .vc-form-radio[data-disabled],
@@ -62,15 +81,17 @@
 }
 
 .vc-form-radio-indicator {
-    display: inline-block;
+    /* Absolute-position centering via `transform: translate(-50%, -50%)`.
+       Browsers compute transforms at subpixel precision and rasterise
+       consistently across zoom levels — sidesteps the integer-pixel
+       rounding that flex/grid centering does on odd content widths. */
+    position: absolute;
+    top: 50%;
+    left: 50%;
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 9999px;
     background-color: var(--vc-color-primary-600, #2563eb);
+    transform: translate(-50%, -50%);
 }
 
-/* Each group children container — radio + label paired horizontally. */
-.vc-form-radio-group .vc-form-radio + .vc-form-radio-label,
-.vc-form-radio-group > * {
-    margin-right: 0.25rem;
-}

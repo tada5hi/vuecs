@@ -1,0 +1,368 @@
+/*!
+ * @vuecs/theme-bootstrap — Design-token bridge
+ *
+ * Wires Bootstrap 5.3+'s CSS variables onto vuecs design-system tokens
+ * (`--vc-color-*`). Importing this file alongside Bootstrap and
+ * `@vuecs/design/index.css` makes Bootstrap's buttons, alerts, badges,
+ * background utilities, etc. respond to `setPalette()` / `.dark` just
+ * like the Tailwind theme.
+ *
+ * Import order:
+ *   1. Bootstrap CSS (provides the default --bs-* values).
+ *   2. @vuecs/design/index.css (provides --vc-color-*).
+ *   3. This bridge (overrides --bs-* to reference --vc-color-*).
+ *
+ * What this covers:
+ *   - The global `--bs-primary` / `-secondary` / `-success` / `-warning`
+ *     / `-danger` / `-info` tokens — read directly by some utilities
+ *     and by anything you reference via `var(--bs-primary)` yourself.
+ *   - The per-variant button vars (`.btn-primary { --bs-btn-bg: … }`)
+ *     for default / hover / active / disabled states. Bootstrap 5.3+
+ *     hardcodes hex values in each `.btn-<variant>` block, so just
+ *     overriding `--bs-primary` doesn't reach buttons; we have to
+ *     redeclare the per-variant chain here.
+ *   - The `.bg-<variant>` / `.text-<variant>` / `.border-<variant>`
+ *     utility classes — each gets its `background-color` / `color` /
+ *     `border-color` rebound to the matching `--vc-color-*`.
+ *   - The `.badge.text-bg-<variant>` background for chip-style badges.
+ *
+ * Limitations:
+ *   - `--bs-<color>-rgb` triplets are NOT bridged (CSS has no
+ *     hex→rgb-triplet conversion). Bootstrap features that rely on
+ *     `rgba(var(--bs-primary-rgb), α)` — focus-ring translucency,
+ *     soft hovers — keep their original Bootstrap palette. The
+ *     workaround is a JS hook that writes the triplet at palette
+ *     change; not provided by this bridge.
+ *   - Bootstrap's `[data-bs-theme="dark"]` palette is not touched;
+ *     this bridge uses the `.dark` class (same toggle as the rest of
+ *     the vuecs design-system). Pick one source of truth.
+ */
+
+:root {
+    --bs-primary: var(--vc-color-primary-500);
+    --bs-secondary: var(--vc-color-neutral-500);
+    --bs-success: var(--vc-color-success-500);
+    --bs-info: var(--vc-color-info-500);
+    --bs-warning: var(--vc-color-warning-500);
+    --bs-danger: var(--vc-color-error-500);
+
+    --bs-body-bg: var(--vc-color-bg);
+    --bs-body-color: var(--vc-color-fg);
+    --bs-border-color: var(--vc-color-border);
+    --bs-link-color: var(--vc-color-primary-600);
+    --bs-link-hover-color: var(--vc-color-primary-700);
+}
+
+.dark {
+    /* Bootstrap expects a slightly brighter primary on dark bg — use the
+       400 shade, matching the design-system's own `--vc-color-ring`
+       dark-mode flip. */
+    --bs-primary: var(--vc-color-primary-400);
+    --bs-secondary: var(--vc-color-neutral-400);
+    --bs-success: var(--vc-color-success-400);
+    --bs-info: var(--vc-color-info-400);
+    --bs-warning: var(--vc-color-warning-400);
+    --bs-danger: var(--vc-color-error-400);
+
+    --bs-body-bg: var(--vc-color-bg);
+    --bs-body-color: var(--vc-color-fg);
+    --bs-border-color: var(--vc-color-border);
+    --bs-link-color: var(--vc-color-primary-400);
+    --bs-link-hover-color: var(--vc-color-primary-300);
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * Per-variant button vars (Bootstrap 5.3+).
+ * Bootstrap hardcodes hex values in each `.btn-<variant>` block, so we
+ * need to redeclare the per-variant token chain — overriding
+ * `--bs-primary` alone doesn't reach `.btn-primary`'s bg.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.btn-primary {
+    --bs-btn-bg: var(--vc-color-primary-600);
+    --bs-btn-border-color: var(--vc-color-primary-600);
+    --bs-btn-hover-bg: var(--vc-color-primary-700);
+    --bs-btn-hover-border-color: var(--vc-color-primary-700);
+    --bs-btn-active-bg: var(--vc-color-primary-700);
+    --bs-btn-active-border-color: var(--vc-color-primary-700);
+    --bs-btn-disabled-bg: var(--vc-color-primary-400);
+    --bs-btn-disabled-border-color: var(--vc-color-primary-400);
+}
+
+.btn-secondary {
+    --bs-btn-bg: var(--vc-color-neutral-600);
+    --bs-btn-border-color: var(--vc-color-neutral-600);
+    --bs-btn-hover-bg: var(--vc-color-neutral-700);
+    --bs-btn-hover-border-color: var(--vc-color-neutral-700);
+    --bs-btn-active-bg: var(--vc-color-neutral-700);
+    --bs-btn-active-border-color: var(--vc-color-neutral-700);
+    --bs-btn-disabled-bg: var(--vc-color-neutral-400);
+    --bs-btn-disabled-border-color: var(--vc-color-neutral-400);
+}
+
+.btn-success {
+    --bs-btn-bg: var(--vc-color-success-600);
+    --bs-btn-border-color: var(--vc-color-success-600);
+    --bs-btn-hover-bg: var(--vc-color-success-700);
+    --bs-btn-hover-border-color: var(--vc-color-success-700);
+    --bs-btn-active-bg: var(--vc-color-success-700);
+    --bs-btn-active-border-color: var(--vc-color-success-700);
+    --bs-btn-disabled-bg: var(--vc-color-success-400);
+    --bs-btn-disabled-border-color: var(--vc-color-success-400);
+}
+
+.btn-warning {
+    --bs-btn-bg: var(--vc-color-warning-600);
+    --bs-btn-border-color: var(--vc-color-warning-600);
+    --bs-btn-hover-bg: var(--vc-color-warning-700);
+    --bs-btn-hover-border-color: var(--vc-color-warning-700);
+    --bs-btn-active-bg: var(--vc-color-warning-700);
+    --bs-btn-active-border-color: var(--vc-color-warning-700);
+    --bs-btn-disabled-bg: var(--vc-color-warning-400);
+    --bs-btn-disabled-border-color: var(--vc-color-warning-400);
+}
+
+.btn-danger {
+    --bs-btn-bg: var(--vc-color-error-600);
+    --bs-btn-border-color: var(--vc-color-error-600);
+    --bs-btn-hover-bg: var(--vc-color-error-700);
+    --bs-btn-hover-border-color: var(--vc-color-error-700);
+    --bs-btn-active-bg: var(--vc-color-error-700);
+    --bs-btn-active-border-color: var(--vc-color-error-700);
+    --bs-btn-disabled-bg: var(--vc-color-error-400);
+    --bs-btn-disabled-border-color: var(--vc-color-error-400);
+}
+
+.btn-info {
+    --bs-btn-bg: var(--vc-color-info-600);
+    --bs-btn-border-color: var(--vc-color-info-600);
+    --bs-btn-hover-bg: var(--vc-color-info-700);
+    --bs-btn-hover-border-color: var(--vc-color-info-700);
+    --bs-btn-active-bg: var(--vc-color-info-700);
+    --bs-btn-active-border-color: var(--vc-color-info-700);
+    --bs-btn-disabled-bg: var(--vc-color-info-400);
+    --bs-btn-disabled-border-color: var(--vc-color-info-400);
+}
+
+/* `btn-outline-*` — inverse: transparent bg, colored text + border, then
+   solid colored bg on hover. */
+.btn-outline-primary {
+    --bs-btn-color: var(--vc-color-primary-600);
+    --bs-btn-border-color: var(--vc-color-primary-600);
+    --bs-btn-hover-bg: var(--vc-color-primary-600);
+    --bs-btn-hover-border-color: var(--vc-color-primary-600);
+    --bs-btn-active-bg: var(--vc-color-primary-700);
+    --bs-btn-active-border-color: var(--vc-color-primary-700);
+    --bs-btn-disabled-color: var(--vc-color-primary-400);
+    --bs-btn-disabled-border-color: var(--vc-color-primary-400);
+}
+
+.btn-outline-secondary {
+    --bs-btn-color: var(--vc-color-neutral-600);
+    --bs-btn-border-color: var(--vc-color-neutral-600);
+    --bs-btn-hover-bg: var(--vc-color-neutral-600);
+    --bs-btn-hover-border-color: var(--vc-color-neutral-600);
+    --bs-btn-active-bg: var(--vc-color-neutral-700);
+    --bs-btn-active-border-color: var(--vc-color-neutral-700);
+    --bs-btn-disabled-color: var(--vc-color-neutral-400);
+    --bs-btn-disabled-border-color: var(--vc-color-neutral-400);
+}
+
+.btn-outline-success {
+    --bs-btn-color: var(--vc-color-success-600);
+    --bs-btn-border-color: var(--vc-color-success-600);
+    --bs-btn-hover-bg: var(--vc-color-success-600);
+    --bs-btn-hover-border-color: var(--vc-color-success-600);
+    --bs-btn-active-bg: var(--vc-color-success-700);
+    --bs-btn-active-border-color: var(--vc-color-success-700);
+}
+
+.btn-outline-warning {
+    --bs-btn-color: var(--vc-color-warning-600);
+    --bs-btn-border-color: var(--vc-color-warning-600);
+    --bs-btn-hover-bg: var(--vc-color-warning-600);
+    --bs-btn-hover-border-color: var(--vc-color-warning-600);
+    --bs-btn-active-bg: var(--vc-color-warning-700);
+    --bs-btn-active-border-color: var(--vc-color-warning-700);
+}
+
+.btn-outline-danger {
+    --bs-btn-color: var(--vc-color-error-600);
+    --bs-btn-border-color: var(--vc-color-error-600);
+    --bs-btn-hover-bg: var(--vc-color-error-600);
+    --bs-btn-hover-border-color: var(--vc-color-error-600);
+    --bs-btn-active-bg: var(--vc-color-error-700);
+    --bs-btn-active-border-color: var(--vc-color-error-700);
+}
+
+.btn-outline-info {
+    --bs-btn-color: var(--vc-color-info-600);
+    --bs-btn-border-color: var(--vc-color-info-600);
+    --bs-btn-hover-bg: var(--vc-color-info-600);
+    --bs-btn-hover-border-color: var(--vc-color-info-600);
+    --bs-btn-active-bg: var(--vc-color-info-700);
+    --bs-btn-active-border-color: var(--vc-color-info-700);
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * Background / text / border utility classes.
+ * Bootstrap's `.bg-primary`, `.text-primary`, `.border-primary` etc.
+ * resolve through `var(--bs-primary-rgb)` (which we can't bridge in
+ * pure CSS) — so override the final color directly.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.bg-primary { background-color: var(--vc-color-primary-600) !important; }
+.bg-secondary { background-color: var(--vc-color-neutral-600) !important; }
+.bg-success { background-color: var(--vc-color-success-600) !important; }
+.bg-warning { background-color: var(--vc-color-warning-600) !important; }
+.bg-danger { background-color: var(--vc-color-error-600) !important; }
+.bg-info { background-color: var(--vc-color-info-600) !important; }
+
+.text-primary { color: var(--vc-color-primary-600) !important; }
+.text-secondary { color: var(--vc-color-neutral-600) !important; }
+.text-success { color: var(--vc-color-success-600) !important; }
+.text-warning { color: var(--vc-color-warning-600) !important; }
+.text-danger { color: var(--vc-color-error-600) !important; }
+.text-info { color: var(--vc-color-info-600) !important; }
+
+.border-primary { border-color: var(--vc-color-primary-600) !important; }
+.border-secondary { border-color: var(--vc-color-neutral-600) !important; }
+.border-success { border-color: var(--vc-color-success-600) !important; }
+.border-warning { border-color: var(--vc-color-warning-600) !important; }
+.border-danger { border-color: var(--vc-color-error-600) !important; }
+.border-info { border-color: var(--vc-color-info-600) !important; }
+
+/* `text-bg-*` is the chip-style combined utility used on badges. */
+.text-bg-primary { background-color: var(--vc-color-primary-600) !important; color: var(--vc-color-on-primary) !important; }
+.text-bg-secondary { background-color: var(--vc-color-neutral-600) !important; color: var(--vc-color-on-neutral) !important; }
+.text-bg-success { background-color: var(--vc-color-success-600) !important; color: var(--vc-color-on-success) !important; }
+.text-bg-warning { background-color: var(--vc-color-warning-600) !important; color: var(--vc-color-on-warning) !important; }
+.text-bg-danger { background-color: var(--vc-color-error-600) !important; color: var(--vc-color-on-error) !important; }
+.text-bg-info { background-color: var(--vc-color-info-600) !important; color: var(--vc-color-on-info) !important; }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * Subtle / tinted variants (Bootstrap 5.3+).
+ * Used by soft-button styles, slider track backgrounds, alert tints, etc.
+ * Bootstrap defines these with hardcoded hex values per variant; mirror
+ * them to the `-100` / `-200` design-system shades.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.bg-primary-subtle { background-color: var(--vc-color-primary-100) !important; }
+.bg-secondary-subtle { background-color: var(--vc-color-neutral-100) !important; }
+.bg-success-subtle { background-color: var(--vc-color-success-100) !important; }
+.bg-warning-subtle { background-color: var(--vc-color-warning-100) !important; }
+.bg-danger-subtle { background-color: var(--vc-color-error-100) !important; }
+.bg-info-subtle { background-color: var(--vc-color-info-100) !important; }
+.bg-light { background-color: var(--vc-color-bg-muted) !important; }
+.bg-light-subtle { background-color: var(--vc-color-bg) !important; }
+
+.border-primary-subtle { border-color: var(--vc-color-primary-200) !important; }
+.border-secondary-subtle { border-color: var(--vc-color-neutral-200) !important; }
+.border-success-subtle { border-color: var(--vc-color-success-200) !important; }
+.border-warning-subtle { border-color: var(--vc-color-warning-200) !important; }
+.border-danger-subtle { border-color: var(--vc-color-error-200) !important; }
+.border-info-subtle { border-color: var(--vc-color-info-200) !important; }
+
+.text-primary-emphasis { color: var(--vc-color-primary-700) !important; }
+.text-secondary-emphasis { color: var(--vc-color-neutral-700) !important; }
+.text-success-emphasis { color: var(--vc-color-success-700) !important; }
+.text-warning-emphasis { color: var(--vc-color-warning-700) !important; }
+.text-danger-emphasis { color: var(--vc-color-error-700) !important; }
+.text-info-emphasis { color: var(--vc-color-info-700) !important; }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * Alert variants — same chain as buttons. Bootstrap hardcodes the alert
+ * colors per variant block; redeclare against design tokens.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.alert-primary {
+    --bs-alert-color: var(--vc-color-primary-700);
+    --bs-alert-bg: var(--vc-color-primary-100);
+    --bs-alert-border-color: var(--vc-color-primary-200);
+    --bs-alert-link-color: var(--vc-color-primary-800);
+}
+.alert-secondary {
+    --bs-alert-color: var(--vc-color-neutral-700);
+    --bs-alert-bg: var(--vc-color-neutral-100);
+    --bs-alert-border-color: var(--vc-color-neutral-200);
+    --bs-alert-link-color: var(--vc-color-neutral-800);
+}
+.alert-success {
+    --bs-alert-color: var(--vc-color-success-700);
+    --bs-alert-bg: var(--vc-color-success-100);
+    --bs-alert-border-color: var(--vc-color-success-200);
+    --bs-alert-link-color: var(--vc-color-success-800);
+}
+.alert-warning {
+    --bs-alert-color: var(--vc-color-warning-700);
+    --bs-alert-bg: var(--vc-color-warning-100);
+    --bs-alert-border-color: var(--vc-color-warning-200);
+    --bs-alert-link-color: var(--vc-color-warning-800);
+}
+.alert-danger {
+    --bs-alert-color: var(--vc-color-error-700);
+    --bs-alert-bg: var(--vc-color-error-100);
+    --bs-alert-border-color: var(--vc-color-error-200);
+    --bs-alert-link-color: var(--vc-color-error-800);
+}
+.alert-info {
+    --bs-alert-color: var(--vc-color-info-700);
+    --bs-alert-bg: var(--vc-color-info-100);
+    --bs-alert-border-color: var(--vc-color-info-200);
+    --bs-alert-link-color: var(--vc-color-info-800);
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * Form controls — `.form-control`, `.form-select`, `.form-check-input`.
+ * Bootstrap reads `--bs-border-color` (already bridged at :root) for the
+ * default border. Focus states use `--bs-primary` (bridged) but the
+ * focus-ring shadow uses `--bs-primary-rgb` which can't be bridged in
+ * pure CSS — focus-ring color stays bootstrap-default. The `accent-color`
+ * for native checkbox/radio respects `--bs-form-check-bg-image-checked`
+ * which encodes the SVG fill as a hardcoded data URI, so native checked
+ * indicators stay bootstrap-blue without a JS hook.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+    border-color: var(--vc-color-primary-500);
+}
+
+.form-check-input:checked {
+    background-color: var(--vc-color-primary-600);
+    border-color: var(--vc-color-primary-600);
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * Pagination, list-group, nav-pills active states — common cases that
+ * read `--bs-primary` directly.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.page-link {
+    --bs-pagination-color: var(--vc-color-primary-600);
+    --bs-pagination-hover-color: var(--vc-color-primary-700);
+    --bs-pagination-focus-color: var(--vc-color-primary-700);
+    --bs-pagination-active-bg: var(--vc-color-primary-600);
+    --bs-pagination-active-border-color: var(--vc-color-primary-600);
+}
+
+.list-group {
+    --bs-list-group-active-color: var(--vc-color-on-primary);
+    --bs-list-group-active-bg: var(--vc-color-primary-600);
+    --bs-list-group-active-border-color: var(--vc-color-primary-600);
+}
+
+.nav-pills {
+    --bs-nav-pills-link-active-bg: var(--vc-color-primary-600);
+    --bs-nav-link-color: var(--vc-color-primary-600);
+    --bs-nav-link-hover-color: var(--vc-color-primary-700);
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * Progress bars — `--bs-progress-bar-bg` defaults to `--bs-primary`-derived.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.progress, .progress-stacked {
+    --bs-progress-bar-bg: var(--vc-color-primary-600);
+}
