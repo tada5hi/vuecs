@@ -101,7 +101,7 @@ const handleParentMessage = (event: MessageEvent<ParentMessage>): void => {
         setPalette(palette as Parameters<typeof setPalette>[0]);
         postHeight();
     } else if (data.type === 'set-theme') {
-        // Live runtime vuecs-theme swap (tailwind ↔ bootstrap-v5). Calls
+        // Live runtime vuecs-theme swap (tailwind ↔ bootstrap). Calls
         // ThemeManager.setThemes which triggers every useComponentTheme()
         // computed to recompute. Bootstrap CSS is preloaded as a disabled
         // <link> in the demo HTML shell; setDemoTheme toggles it.

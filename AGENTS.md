@@ -51,7 +51,7 @@ Layer 2 (depends on Layer 0): themes (@vuecs/core peer dep only — pure data th
 Layer 3 (integration):       nuxt (depends on design + @nuxt/kit)
 ```
 
-`navigation` also depends on `@vuecs/link`. `pagination` and `overlays` also take a runtime dep on `reka-ui` (they wrap Reka's headless primitives — pagination + dialog respectively). `theme-tailwind` is designed to pair with `@vuecs/design` (Tailwind v4 + CSS-variable tokens); `theme-bootstrap-v5` ships an optional bridge that maps Bootstrap's `--bs-*` theme vars onto the design-system tokens.
+`navigation` also depends on `@vuecs/link`. `pagination` and `overlays` also take a runtime dep on `reka-ui` (they wrap Reka's headless primitives — pagination + dialog respectively). `theme-tailwind` is designed to pair with `@vuecs/design` (Tailwind v4 + CSS-variable tokens); `theme-bootstrap` ships an optional bridge that maps Bootstrap's `--bs-*` theme vars onto the design-system tokens.
 
 ## Documentation Site
 

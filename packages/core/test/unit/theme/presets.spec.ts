@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import bootstrapTheme from '../../../../../themes/bootstrap/src/index';
-import bootstrapV4Theme from '../../../../../themes/bootstrap-v4/src/index';
 import fontAwesomeTheme from '../../../../../themes/font-awesome/src/index';
 import { isExtendValue } from '../../../src/theme/extend';
 import { resolveComponentTheme } from '../../../src/theme/resolve';
@@ -48,24 +47,6 @@ describe('bootstrapTheme', () => {
         const entry = preset.elements.navigation as ThemeElementDefinition;
         expect(entry.classes!.group).toBe('nav-items');
         expect(entry.classes!.link).toBe('nav-link');
-    });
-});
-
-describe('bootstrapV4Theme', () => {
-    const preset = bootstrapV4Theme();
-
-    it('should return an object with elements property', () => {
-        expect(preset).toHaveProperty('elements');
-    });
-
-    it('should use ml-auto for listItem actions (v4 utility)', () => {
-        const entry = preset.elements.listItem as ThemeElementDefinition;
-        expect(entry.classes!.actionsWrapper).toBe('ml-auto');
-    });
-
-    it('should use form-control for formSelect (v4 has no form-select)', () => {
-        const entry = preset.elements.formSelect as ThemeElementDefinition;
-        expect(entry.classes!.root).toBe('form-control');
     });
 });
 

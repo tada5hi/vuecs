@@ -539,7 +539,7 @@ removes the element. So consumers don't need to wire Presence themselves
 for exit animations to play — the theme's exit-state classes (`animate-out`
 + `fade-out-0` etc. for theme-tailwind, or the `vc-overlay-anim` /
 `vc-overlay-fade-anim` / `vc-tooltip-anim` dual-state helpers for
-theme-bootstrap-v5) just need to be in place. `<VCPresence>` is still
+theme-bootstrap) just need to be in place. `<VCPresence>` is still
 exported for ad-hoc use (e.g. animating a custom panel that isn't a Reka
 overlay), but isn't required for the shipped overlay families.
 
@@ -547,7 +547,7 @@ overlay), but isn't required for the shipped overlay families.
 `vc-overlay-fade-anim`, `vc-tooltip-anim`) live in `animations.css`
 alongside the tw-animate-css port. They package `data-state`-gated
 enter+exit animations into a single class so theme strings without
-attribute-selector capability (theme-bootstrap-v5, custom CSS-only themes)
+attribute-selector capability (theme-bootstrap, custom CSS-only themes)
 can drive overlay animations. theme-tailwind keeps using the more
 flexible `data-[state=open]:animate-in fade-in-0 zoom-in-95
 data-[state=closed]:animate-out fade-out-0 zoom-out-95` composition.

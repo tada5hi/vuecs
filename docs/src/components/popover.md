@@ -104,7 +104,7 @@ Provided by Reka:
 
 ## Animations
 
-Both `theme-tailwind` and `theme-bootstrap-v5` ship enter and exit animations (fade + zoom-95) via `@vuecs/design`'s vanilla-CSS port of [tw-animate-css](https://github.com/Wombosvideo/tw-animate-css). Tailwind theme uses `data-[state=open]:` / `data-[state=closed]:` variant prefixes; BS5 theme uses the dual-state helper class `vc-overlay-anim`. Reka's `PopoverContent` wraps with `Presence` internally so exit animations actually play before unmount. `prefers-reduced-motion: reduce` disables every animation. Override per-instance via `:theme-class="{ content: '...' }"`.
+Both `theme-tailwind` and `theme-bootstrap` ship enter and exit animations (fade + zoom-95) via `@vuecs/design`'s vanilla-CSS port of [tw-animate-css](https://github.com/Wombosvideo/tw-animate-css). Tailwind theme uses `data-[state=open]:` / `data-[state=closed]:` variant prefixes; BS5 theme uses the dual-state helper class `vc-overlay-anim`. Reka's `PopoverContent` wraps with `Presence` internally so exit animations actually play before unmount. `prefers-reduced-motion: reduce` disables every animation. Override per-instance via `:theme-class="{ content: '...' }"`.
 
 ## API Reference
 
