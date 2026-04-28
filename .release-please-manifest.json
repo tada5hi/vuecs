@@ -5,6 +5,7 @@
     "packages/design": "0.0.0",
     "packages/forms": "3.0.0",
     "packages/gravatar": "1.0.2",
+    "packages/icon": "0.0.0",
     "packages/link": "1.0.1",
     "packages/list-controls": "2.0.1",
     "packages/navigation": "2.4.1",

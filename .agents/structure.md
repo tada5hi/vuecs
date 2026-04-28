@@ -10,6 +10,7 @@ vuecs/
     design/           # @vuecs/design — CSS design tokens + motion primitives (animations.css) + runtime palette switcher
     forms/            # @vuecs/forms (renamed from @vuecs/form-controls in 3.0; checkbox/switch on Reka primitives)
     gravatar/         # @vuecs/gravatar
+    icon/             # @vuecs/icon — <VCIcon> component wrapping @iconify/vue
     link/             # @vuecs/link
     list-controls/    # @vuecs/list-controls
     navigation/       # @vuecs/navigation

@@ -31,6 +31,7 @@ npm run lint:fix       # Auto-fix lint issues
 | `@vuecs/design` | CSS design tokens (color scales, semantic aliases) + motion primitives (vanilla-CSS port of `tw-animate-css`) + runtime palette switcher + `usePalette` / `useColorMode` Vue composables | 0.0.0 |
 | `@vuecs/forms` | Form components on Reka UI primitives — `VCFormCheckbox` / `VCFormCheckboxGroup`, `VCFormSwitch`, `VCFormRadio` / `VCFormRadioGroup`, `VCFormPin`, `VCFormSlider` (single+range), `VCFormNumber`, `VCFormTags`, `VCFormSelect` / `VCFormSelectSearch` (FormOption shape), `VCFormInput` / `VCFormTextarea` (native), plus the experimental `useSubmitButton()` helper for `@vuecs/button`. Renamed from `@vuecs/form-controls` in 3.0 (clean break — old package removed). | 3.0.0 |
 | `@vuecs/gravatar` | Gravatar avatar component | 1.0.2 |
+| `@vuecs/icon` | `<VCIcon>` component — thin Iconify wrapper for vuecs's icon-string-prop slots and consumer slot content | 0.0.0 |
 | `@vuecs/link` | Router-aware link component (vue-router/nuxt) | 1.0.1 |
 | `@vuecs/list-controls` | List display controls | 2.0.1 |
 | `@vuecs/navigation` | Multi-level navigation with NavigationManager | 2.4.1 |
@@ -45,7 +46,7 @@ npm run lint:fix       # Auto-fix lint issues
 ### Dependency Layers
 
 ```
-Layer 0 (no internal deps):  core, countdown, design, gravatar, link, timeago
+Layer 0 (no internal deps):  core, countdown, design, gravatar, icon, link, timeago
 Layer 1 (depends on core):   button, forms, list-controls, navigation, overlays, pagination
 Layer 2 (depends on Layer 0): themes (@vuecs/core peer dep only — pure data that targets component packages at runtime)
 Layer 3 (integration):       nuxt (depends on design + @nuxt/kit)

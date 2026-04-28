@@ -5,4 +5,6 @@ export type {
     ComponentDefaults,
     ComponentDefaultValues,
     DefaultsManagerOptions,
+    Icon,
+    IconsOptions,
 } from './types';

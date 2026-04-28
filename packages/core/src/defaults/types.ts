@@ -17,3 +17,18 @@ export type ComponentDefaultValues<T> = {
 export type DefaultsManagerOptions = {
     defaults?: Partial<ComponentDefaults>;
 };
+
+/**
+ * An icon preset — bundles a set of behavioral defaults that map vuecs's
+ * semantic icon-prop slots (e.g. `pagination.prevIcon`) to Iconify icon
+ * names (e.g. `'lucide:chevron-left'`). Presets are configuration mappings
+ * only; they do not ship runtime icon data. Consumers wire icon delivery
+ * via their own tooling (`@nuxt/icon`, `addCollection()`, `unplugin-icons`).
+ */
+export type Icon = {
+    defaults?: Partial<ComponentDefaults>;
+};
+
+export type IconsOptions = {
+    icons?: Icon[];
+};
