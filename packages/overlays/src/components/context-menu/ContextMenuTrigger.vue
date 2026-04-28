@@ -1,21 +1,25 @@
 <script lang="ts">
 import { defineComponent, h } from 'vue';
-import type { PropType } from 'vue';
+import type { ExtractPublicPropTypes, PropType } from 'vue';
 import { ContextMenuTrigger } from 'reka-ui';
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { contextMenuThemeDefaults } from './theme';
 import type { ContextMenuThemeClasses } from './types';
 
+const contextMenuTriggerProps = {
+    as: { type: String, default: 'span' },
+    asChild: { type: Boolean, default: false },
+    disabled: { type: Boolean, default: false },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<ContextMenuThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+};
+
+export type ContextMenuTriggerProps = ExtractPublicPropTypes<typeof contextMenuTriggerProps>;
+
 export default defineComponent({
     name: 'VCContextMenuTrigger',
-    props: {
-        as: { type: String, default: 'span' },
-        asChild: { type: Boolean, default: false },
-        disabled: { type: Boolean, default: false },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<ContextMenuThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-    },
+    props: contextMenuTriggerProps,
     setup(props, { slots }) {
         const theme = useComponentTheme('contextMenu', props, contextMenuThemeDefaults);
         return () => h(

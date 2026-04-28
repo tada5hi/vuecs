@@ -1,27 +1,31 @@
 <script lang="ts">
 import { defineComponent, h, mergeProps } from 'vue';
-import type { PropType } from 'vue';
+import type { ExtractPublicPropTypes, PropType } from 'vue';
 import { ContextMenuRadioItem } from 'reka-ui';
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { contextMenuThemeDefaults } from './theme';
 import type { ContextMenuThemeClasses } from './types';
 
+const contextMenuRadioItemProps = {
+    value: { type: String, required: true },
+    disabled: { type: Boolean, default: false },
+    textValue: { type: String, default: undefined },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<ContextMenuThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+};
+
+export type ContextMenuRadioItemProps = ExtractPublicPropTypes<typeof contextMenuRadioItemProps>;
+
 export default defineComponent({
     name: 'VCContextMenuRadioItem',
     inheritAttrs: false,
-    props: {
-        value: { type: String, required: true },
-        disabled: { type: Boolean, default: false },
-        textValue: { type: String, default: undefined },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<ContextMenuThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-    },
+    props: contextMenuRadioItemProps,
     emits: ['select'],
     setup(props, {
-        slots, 
-        emit, 
-        attrs, 
+        slots,
+        emit,
+        attrs,
     }) {
         const theme = useComponentTheme('contextMenu', props, contextMenuThemeDefaults);
         return () => h(

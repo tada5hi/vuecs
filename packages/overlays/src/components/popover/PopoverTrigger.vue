@@ -1,20 +1,24 @@
 <script lang="ts">
 import { defineComponent, h } from 'vue';
-import type { PropType } from 'vue';
+import type { ExtractPublicPropTypes, PropType } from 'vue';
 import { PopoverTrigger } from 'reka-ui';
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { popoverThemeDefaults } from './theme';
 import type { PopoverThemeClasses } from './types';
 
+const popoverTriggerProps = {
+    as: { type: String, default: 'button' },
+    asChild: { type: Boolean, default: false },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<PopoverThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+};
+
+export type PopoverTriggerProps = ExtractPublicPropTypes<typeof popoverTriggerProps>;
+
 export default defineComponent({
     name: 'VCPopoverTrigger',
-    props: {
-        as: { type: String, default: 'button' },
-        asChild: { type: Boolean, default: false },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<PopoverThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-    },
+    props: popoverTriggerProps,
     setup(props, { slots }) {
         const theme = useComponentTheme('popover', props, popoverThemeDefaults);
         return () => h(

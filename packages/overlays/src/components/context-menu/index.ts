@@ -13,4 +13,19 @@ export { default as VCContextMenuSub } from './ContextMenuSub.vue';
 export { default as VCContextMenuSubTrigger } from './ContextMenuSubTrigger.vue';
 export { default as VCContextMenuSubContent } from './ContextMenuSubContent.vue';
 
+export type { ContextMenuProps } from './ContextMenu.vue';
+export type { ContextMenuTriggerProps } from './ContextMenuTrigger.vue';
+export type { ContextMenuContentProps } from './ContextMenuContent.vue';
+export type { ContextMenuItemProps } from './ContextMenuItem.vue';
+export type { ContextMenuCheckboxItemProps } from './ContextMenuCheckboxItem.vue';
+export type { ContextMenuRadioGroupProps } from './ContextMenuRadioGroup.vue';
+export type { ContextMenuRadioItemProps } from './ContextMenuRadioItem.vue';
+export type { ContextMenuItemIndicatorProps } from './ContextMenuItemIndicator.vue';
+export type { ContextMenuLabelProps } from './ContextMenuLabel.vue';
+export type { ContextMenuSeparatorProps } from './ContextMenuSeparator.vue';
+export type { ContextMenuGroupProps } from './ContextMenuGroup.vue';
+export type { ContextMenuSubProps } from './ContextMenuSub.vue';
+export type { ContextMenuSubTriggerProps } from './ContextMenuSubTrigger.vue';
+export type { ContextMenuSubContentProps } from './ContextMenuSubContent.vue';
+
 export * from './types';

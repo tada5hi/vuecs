@@ -1,11 +1,12 @@
-import { 
-    hasNormalizedSlot, 
-    normalizeSlot, 
-    useArrowNavigation, 
-    useComponentTheme, 
+import {
+    hasNormalizedSlot,
+    normalizeSlot,
+    useArrowNavigation,
+    useComponentTheme,
 } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import type {
+    ExtractPublicPropTypes,
     PropType,
     SlotsType,
     VNodeArrayChildren,
@@ -39,14 +40,18 @@ const themeDefaults = {
     },
 };
 
+const navItemsProps = {
+    level: { type: Number, default: 0 },
+    data: { type: Array as PropType<NavigationItemNormalized[]>, default: undefined },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<NavigationThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+};
+
+export type NavItemsProps = ExtractPublicPropTypes<typeof navItemsProps>;
+
 export const VCNavItems = defineComponent({
     name: 'VCNavItems',
-    props: {
-        level: { type: Number, default: 0 },
-        data: { type: Array as PropType<NavigationItemNormalized[]>, default: undefined },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<NavigationThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-    },
+    props: navItemsProps,
     slots: Object as SlotsType<{
         item: NavItemsItemSlotProps;
     }>,

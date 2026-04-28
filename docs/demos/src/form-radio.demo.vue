@@ -11,9 +11,18 @@ const region = ref<string | undefined>(undefined);
         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
             <span style="font-size: 0.75rem; color: var(--vc-color-fg-muted);">Compound children</span>
             <VCFormRadioGroup v-model="size">
-                <VCFormRadio value="sm" label-content="Small" />
-                <VCFormRadio value="md" label-content="Medium" />
-                <VCFormRadio value="lg" label-content="Large" />
+                <VCFormRadio
+                    value="sm"
+                    label-content="Small"
+                />
+                <VCFormRadio
+                    value="md"
+                    label-content="Medium"
+                />
+                <VCFormRadio
+                    value="lg"
+                    label-content="Large"
+                />
             </VCFormRadioGroup>
         </div>
 

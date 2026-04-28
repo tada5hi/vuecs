@@ -12,13 +12,34 @@ import {
     PaginationRoot,
 } from 'reka-ui';
 import { computed, defineComponent } from 'vue';
-import type { PropType } from 'vue';
+import type { ExtractPublicPropTypes, PropType } from 'vue';
 import type { PaginationMeta, PaginationThemeClasses } from './type';
 import {
     calculateOffset,
     calculatePage,
     calculatePagesTotal,
 } from './utils';
+
+const paginationProps = {
+    total: { type: Number, default: 0 },
+    limit: { type: Number, default: 0 },
+    offset: { type: Number, default: 0 },
+    busy: { type: Boolean, default: false },
+    tag: { type: String, default: 'ul' },
+    itemTag: { type: String, default: 'li' },
+    iconTag: { type: String, default: 'i' },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<PaginationThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+    // When true, edge controls (First/Prev at page 1, Next/Last at the
+    // last page) are unrendered instead of rendered-disabled. Defaults
+    // false so consumers see a stable button row across pages —
+    // matching modern UI library conventions and Reka's own defaults.
+    // Does NOT apply to the `busy` state (loading should not make
+    // pagination disappear).
+    hideDisabled: { type: Boolean, default: false },
+};
+
+export type PaginationProps = ExtractPublicPropTypes<typeof paginationProps>;
 
 export default defineComponent({
     name: 'VCPagination',
@@ -32,24 +53,7 @@ export default defineComponent({
         PaginationPrev,
         PaginationRoot,
     },
-    props: {
-        total: { type: Number, default: 0 },
-        limit: { type: Number, default: 0 },
-        offset: { type: Number, default: 0 },
-        busy: { type: Boolean, default: false },
-        tag: { type: String, default: 'ul' },
-        itemTag: { type: String, default: 'li' },
-        iconTag: { type: String, default: 'i' },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<PaginationThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-        // When true, edge controls (First/Prev at page 1, Next/Last at the
-        // last page) are unrendered instead of rendered-disabled. Defaults
-        // false so consumers see a stable button row across pages —
-        // matching modern UI library conventions and Reka's own defaults.
-        // Does NOT apply to the `busy` state (loading should not make
-        // pagination disappear).
-        hideDisabled: { type: Boolean, default: false },
-    },
+    props: paginationProps,
     emits: ['load'],
     setup(props, { emit }) {
         const theme = useComponentTheme('pagination', props, {

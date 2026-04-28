@@ -2,7 +2,7 @@
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
 import { useDebounceFn } from '@vueuse/core';
-import type { PropType } from 'vue';
+import type { ExtractPublicPropTypes, PropType } from 'vue';
 import {
     defineComponent,
     h,
@@ -23,14 +23,18 @@ declare module '@vuecs/core' {
 
 const themeDefaults = { classes: { root: '' } };
 
+const formTextareaProps = {
+    modelValue: { type: String, default: '' },
+    debounce: { type: Number, default: 0 },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<FormTextareaThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+};
+
+export type FormTextareaProps = ExtractPublicPropTypes<typeof formTextareaProps>;
+
 export default defineComponent({
     name: 'VCFormTextarea',
-    props: {
-        modelValue: { type: String, default: '' },
-        debounce: { type: Number, default: 0 },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<FormTextareaThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-    },
+    props: formTextareaProps,
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {
         const theme = useComponentTheme('formTextarea', props, themeDefaults);

@@ -6,7 +6,7 @@ import type {
     VariantValues,
 } from '@vuecs/core';
 import { PinInputInput, PinInputRoot } from 'reka-ui';
-import type { PropType } from 'vue';
+import type { ExtractPublicPropTypes, PropType } from 'vue';
 import {
     defineComponent,
     h,
@@ -34,34 +34,38 @@ const themeDefaults = {
 export type FormPinType = 'text' | 'number';
 export type FormPinModelValue = string[] | number[];
 
+const formPinProps = {
+    modelValue: {
+        // `null` in the runtime type alongside Array so consumers can
+        // pass `null` (the documented "unset" value) without tripping
+        // Vue's prop validation warnings.
+        type: [Array, null] as PropType<FormPinModelValue | null>,
+        default: undefined,
+    },
+    /** Number of input cells rendered. */
+    length: { type: Number, default: 6 },
+    /** `'text'` (default) or `'number'`. Drives both input mode and modelValue array element type. */
+    type: { type: String as PropType<FormPinType>, default: 'text' },
+    /** Per-cell placeholder character. */
+    placeholder: { type: String, default: '' },
+    /** When `true`, render values as `<input type="password">` (dots). */
+    mask: { type: Boolean, default: false },
+    /** Enable mobile OTP autofill (sets `autocomplete="one-time-code"`). */
+    otp: { type: Boolean, default: false },
+    disabled: { type: Boolean, default: false },
+    required: { type: Boolean, default: false },
+    name: { type: String, default: undefined },
+    id: { type: String, default: undefined },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<FormPinThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+};
+
+export type FormPinProps = ExtractPublicPropTypes<typeof formPinProps>;
+
 export default defineComponent({
     name: 'VCFormPin',
     inheritAttrs: false,
-    props: {
-        modelValue: {
-            // `null` in the runtime type alongside Array so consumers can
-            // pass `null` (the documented "unset" value) without tripping
-            // Vue's prop validation warnings.
-            type: [Array, null] as PropType<FormPinModelValue | null>,
-            default: undefined,
-        },
-        /** Number of input cells rendered. */
-        length: { type: Number, default: 6 },
-        /** `'text'` (default) or `'number'`. Drives both input mode and modelValue array element type. */
-        type: { type: String as PropType<FormPinType>, default: 'text' },
-        /** Per-cell placeholder character. */
-        placeholder: { type: String, default: '' },
-        /** When `true`, render values as `<input type="password">` (dots). */
-        mask: { type: Boolean, default: false },
-        /** Enable mobile OTP autofill (sets `autocomplete="one-time-code"`). */
-        otp: { type: Boolean, default: false },
-        disabled: { type: Boolean, default: false },
-        required: { type: Boolean, default: false },
-        name: { type: String, default: undefined },
-        id: { type: String, default: undefined },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<FormPinThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-    },
+    props: formPinProps,
     emits: ['update:modelValue', 'complete'],
     setup(props, { attrs, emit }) {
         const theme = useComponentTheme('formPin', props, themeDefaults);

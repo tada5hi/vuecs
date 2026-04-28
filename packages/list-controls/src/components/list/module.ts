@@ -1,6 +1,11 @@
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
-import type { PropType, SlotsType, VNodeArrayChildren } from 'vue';
+import type {
+    ExtractPublicPropTypes,
+    PropType,
+    SlotsType,
+    VNodeArrayChildren,
+} from 'vue';
 import { defineComponent, h } from 'vue';
 import type {
     ListEventFn,
@@ -27,54 +32,58 @@ import { VCListNoMore } from '../list-no-more/module';
 
 const themeDefaults = { classes: { root: 'vc-list' } };
 
+const listProps = {
+    data: { type: Array as PropType<any[]>, default: () => [] },
+    tag: { type: String, default: 'div' },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<ListThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+
+    // Sub-component themes
+    headerThemeClass: { type: Object as PropType<ThemeClassesOverride<ListHeaderThemeClasses>>, default: undefined },
+    footerThemeClass: { type: Object as PropType<ThemeClassesOverride<ListFooterThemeClasses>>, default: undefined },
+    bodyThemeClass: { type: Object as PropType<ThemeClassesOverride<ListBodyThemeClasses>>, default: undefined },
+    itemThemeClass: { type: Object as PropType<ThemeClassesOverride<ListItemThemeClasses>>, default: undefined },
+    loadingThemeClass: { type: Object as PropType<ThemeClassesOverride<ListLoadingThemeClasses>>, default: undefined },
+    noMoreThemeClass: { type: Object as PropType<ThemeClassesOverride<ListNoMoreThemeClasses>>, default: undefined },
+
+    // Section visibility
+    header: { type: Boolean, default: true },
+    footer: { type: Boolean, default: true },
+    body: { type: Boolean, default: true },
+    loading: { type: Boolean, default: true },
+    noMore: { type: Boolean, default: true },
+
+    // List state
+    busy: { type: Boolean, default: false },
+    total: { type: Number, default: undefined },
+    load: { type: Function as PropType<ListLoadFn>, default: undefined },
+    meta: { type: Object, default: undefined },
+
+    // Item matching
+    itemId: { type: Function as PropType<ListItemId<any>>, default: undefined },
+    itemKey: { type: [String, Function] as PropType<ListItemKey<any>>, default: undefined },
+
+    // Item display options
+    itemTag: { type: String, default: 'li' },
+    itemIcon: { type: Boolean, default: true },
+    itemText: { type: Boolean, default: true },
+    itemTextPropName: { type: String, default: undefined },
+    itemActions: { type: Boolean, default: true },
+
+    // No more content
+    noMoreContent: { type: String, default: undefined },
+
+    // Events
+    onCreated: { type: Function as PropType<ListEventFn<any>>, default: undefined },
+    onDeleted: { type: Function as PropType<ListEventFn<any>>, default: undefined },
+    onUpdated: { type: Function as PropType<ListEventFn<any>>, default: undefined },
+};
+
+export type ListProps = ExtractPublicPropTypes<typeof listProps>;
+
 export const VCList = defineComponent({
     name: 'VCList',
-    props: {
-        data: { type: Array as PropType<any[]>, default: () => [] },
-        tag: { type: String, default: 'div' },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<ListThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-
-        // Sub-component themes
-        headerThemeClass: { type: Object as PropType<ThemeClassesOverride<ListHeaderThemeClasses>>, default: undefined },
-        footerThemeClass: { type: Object as PropType<ThemeClassesOverride<ListFooterThemeClasses>>, default: undefined },
-        bodyThemeClass: { type: Object as PropType<ThemeClassesOverride<ListBodyThemeClasses>>, default: undefined },
-        itemThemeClass: { type: Object as PropType<ThemeClassesOverride<ListItemThemeClasses>>, default: undefined },
-        loadingThemeClass: { type: Object as PropType<ThemeClassesOverride<ListLoadingThemeClasses>>, default: undefined },
-        noMoreThemeClass: { type: Object as PropType<ThemeClassesOverride<ListNoMoreThemeClasses>>, default: undefined },
-
-        // Section visibility
-        header: { type: Boolean, default: true },
-        footer: { type: Boolean, default: true },
-        body: { type: Boolean, default: true },
-        loading: { type: Boolean, default: true },
-        noMore: { type: Boolean, default: true },
-
-        // List state
-        busy: { type: Boolean, default: false },
-        total: { type: Number, default: undefined },
-        load: { type: Function as PropType<ListLoadFn>, default: undefined },
-        meta: { type: Object, default: undefined },
-
-        // Item matching
-        itemId: { type: Function as PropType<ListItemId<any>>, default: undefined },
-        itemKey: { type: [String, Function] as PropType<ListItemKey<any>>, default: undefined },
-
-        // Item display options
-        itemTag: { type: String, default: 'li' },
-        itemIcon: { type: Boolean, default: true },
-        itemText: { type: Boolean, default: true },
-        itemTextPropName: { type: String, default: undefined },
-        itemActions: { type: Boolean, default: true },
-
-        // No more content
-        noMoreContent: { type: String, default: undefined },
-
-        // Events
-        onCreated: { type: Function as PropType<ListEventFn<any>>, default: undefined },
-        onDeleted: { type: Function as PropType<ListEventFn<any>>, default: undefined },
-        onUpdated: { type: Function as PropType<ListEventFn<any>>, default: undefined },
-    },
+    props: listProps,
     slots: Object as SlotsType<{
         default?: ListSlotProps<any>;
         header?: any;

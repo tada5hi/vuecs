@@ -11,7 +11,7 @@ import {
     NumberFieldInput,
     NumberFieldRoot,
 } from 'reka-ui';
-import type { PropType } from 'vue';
+import type { ExtractPublicPropTypes, PropType } from 'vue';
 import {
     defineComponent,
     h,
@@ -40,30 +40,34 @@ const themeDefaults = {
     },
 };
 
+const formNumberProps = {
+    // `null` in the runtime type alongside Number so consumers can pass
+    // `null` (the documented "unset" value) without tripping Vue's prop
+    // validation warnings.
+    modelValue: { type: [Number, null] as PropType<number | null | undefined>, default: undefined },
+    min: { type: Number, default: undefined },
+    max: { type: Number, default: undefined },
+    step: { type: Number, default: 1 },
+    stepSnapping: { type: Boolean, default: true },
+    focusOnChange: { type: Boolean, default: false },
+    formatOptions: { type: Object as PropType<Intl.NumberFormatOptions>, default: undefined },
+    locale: { type: String, default: undefined },
+    disabled: { type: Boolean, default: false },
+    required: { type: Boolean, default: false },
+    name: { type: String, default: undefined },
+    id: { type: String, default: undefined },
+    /** Show ± stepper buttons. Default `true`. */
+    steppers: { type: Boolean, default: true },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<FormNumberThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+};
+
+export type FormNumberProps = ExtractPublicPropTypes<typeof formNumberProps>;
+
 export default defineComponent({
     name: 'VCFormNumber',
     inheritAttrs: false,
-    props: {
-        // `null` in the runtime type alongside Number so consumers can pass
-        // `null` (the documented "unset" value) without tripping Vue's prop
-        // validation warnings.
-        modelValue: { type: [Number, null] as PropType<number | null | undefined>, default: undefined },
-        min: { type: Number, default: undefined },
-        max: { type: Number, default: undefined },
-        step: { type: Number, default: 1 },
-        stepSnapping: { type: Boolean, default: true },
-        focusOnChange: { type: Boolean, default: false },
-        formatOptions: { type: Object as PropType<Intl.NumberFormatOptions>, default: undefined },
-        locale: { type: String, default: undefined },
-        disabled: { type: Boolean, default: false },
-        required: { type: Boolean, default: false },
-        name: { type: String, default: undefined },
-        id: { type: String, default: undefined },
-        /** Show ± stepper buttons. Default `true`. */
-        steppers: { type: Boolean, default: true },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<FormNumberThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-    },
+    props: formNumberProps,
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {
         const theme = useComponentTheme('formNumber', props, themeDefaults);

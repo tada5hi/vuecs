@@ -1,6 +1,6 @@
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
-import type { PropType, SlotsType } from 'vue';
+import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import {
     computed,
     defineComponent,
@@ -42,34 +42,38 @@ export type CountdownSlotProps = {
     totalMilliseconds: number;
 };
 
+const countdownProps = {
+    autoStart: { type: Boolean, default: true },
+    emitEvents: { type: Boolean, default: true },
+    interval: {
+        type: Number,
+        default: 1000,
+        validator: (value: number) => value >= 0,
+    },
+    now: { type: Function as PropType<() => number>, default: () => Date.now() },
+    tag: { type: String, default: 'span' },
+    time: {
+        type: Number,
+        default: 0,
+        validator: (value: number) => value >= 0,
+    },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<CountdownThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+};
+
+export type CountdownProps = ExtractPublicPropTypes<typeof countdownProps>;
+
 export const VCCountdown = defineComponent({
     name: 'VCCountdown',
-    props: {
-        autoStart: { type: Boolean, default: true },
-        emitEvents: { type: Boolean, default: true },
-        interval: {
-            type: Number, 
-            default: 1000, 
-            validator: (value: number) => value >= 0, 
-        },
-        now: { type: Function as PropType<() => number>, default: () => Date.now() },
-        tag: { type: String, default: 'span' },
-        time: {
-            type: Number, 
-            default: 0, 
-            validator: (value: number) => value >= 0, 
-        },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<CountdownThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-    },
+    props: countdownProps,
     emits: ['start', 'progress', 'abort', 'end'],
     slots: Object as SlotsType<{
         default: CountdownSlotProps;
     }>,
     setup(props, {
-        emit, 
-        expose, 
-        slots, 
+        emit,
+        expose,
+        slots,
     }) {
         const theme = useComponentTheme('countdown', props, themeDefaults);
 
@@ -217,9 +221,9 @@ export const VCCountdown = defineComponent({
         });
 
         expose({
-            start, 
-            abort, 
-            end, 
+            start,
+            abort,
+            end,
         });
 
         return () => {

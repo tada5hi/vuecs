@@ -7,7 +7,7 @@ import type {
 } from '@vuecs/core';
 import { RadioGroupRoot } from 'reka-ui';
 import type { AcceptableValue } from 'reka-ui';
-import type { PropType } from 'vue';
+import type { ExtractPublicPropTypes, PropType } from 'vue';
 import {
     defineComponent,
     h,
@@ -30,36 +30,40 @@ const themeDefaults = { classes: { root: 'vc-form-radio-group' } };
 
 export type FormRadioGroupOrientation = 'vertical' | 'horizontal';
 
+const formRadioGroupProps = {
+    modelValue: {
+        type: [String, Number, Boolean, Object, null] as PropType<AcceptableValue | undefined>,
+        default: undefined,
+    },
+    /**
+     * Optional declarative shorthand — when set, renders one `<VCFormRadio>`
+     * per option. Mutually exclusive with the default slot. Use the slot
+     * for full per-item control.
+     */
+    options: { type: Array as PropType<FormOption[]>, default: undefined },
+    disabled: { type: Boolean, default: false },
+    required: { type: Boolean, default: false },
+    name: { type: String, default: undefined },
+    orientation: {
+        type: String as PropType<FormRadioGroupOrientation>,
+        default: 'vertical',
+    },
+    loop: { type: Boolean, default: true },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<FormRadioGroupThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+};
+
+export type FormRadioGroupProps = ExtractPublicPropTypes<typeof formRadioGroupProps>;
+
 export default defineComponent({
     name: 'VCFormRadioGroup',
     inheritAttrs: false,
-    props: {
-        modelValue: {
-            type: [String, Number, Boolean, Object, null] as PropType<AcceptableValue | undefined>,
-            default: undefined,
-        },
-        /**
-         * Optional declarative shorthand — when set, renders one `<VCFormRadio>`
-         * per option. Mutually exclusive with the default slot. Use the slot
-         * for full per-item control.
-         */
-        options: { type: Array as PropType<FormOption[]>, default: undefined },
-        disabled: { type: Boolean, default: false },
-        required: { type: Boolean, default: false },
-        name: { type: String, default: undefined },
-        orientation: {
-            type: String as PropType<FormRadioGroupOrientation>,
-            default: 'vertical',
-        },
-        loop: { type: Boolean, default: true },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<FormRadioGroupThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-    },
+    props: formRadioGroupProps,
     emits: ['update:modelValue'],
     setup(props, {
-        attrs, 
-        emit, 
-        slots, 
+        attrs,
+        emit,
+        slots,
     }) {
         const theme = useComponentTheme('formRadioGroup', props, themeDefaults);
 

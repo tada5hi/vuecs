@@ -12,7 +12,7 @@ import {
     TagsInputItemText,
     TagsInputRoot,
 } from 'reka-ui';
-import type { PropType } from 'vue';
+import type { ExtractPublicPropTypes, PropType } from 'vue';
 import {
     defineComponent,
     h,
@@ -45,31 +45,35 @@ const themeDefaults = {
 
 export type FormTagsModelValue = string[] | number[];
 
+const formTagsProps = {
+    modelValue: {
+        // `null` in the runtime type alongside Array so consumers can
+        // pass `null` (the documented "unset" value) without tripping
+        // Vue's prop validation warnings.
+        type: [Array, null] as PropType<FormTagsModelValue | null>,
+        default: undefined,
+    },
+    placeholder: { type: String, default: undefined },
+    disabled: { type: Boolean, default: false },
+    required: { type: Boolean, default: false },
+    max: { type: Number, default: undefined },
+    addOnPaste: { type: Boolean, default: false },
+    addOnTab: { type: Boolean, default: false },
+    addOnBlur: { type: Boolean, default: true },
+    duplicate: { type: Boolean, default: false },
+    delimiter: { type: [String, RegExp] as PropType<string | RegExp>, default: ',' },
+    name: { type: String, default: undefined },
+    id: { type: String, default: undefined },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<FormTagsThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+};
+
+export type FormTagsProps = ExtractPublicPropTypes<typeof formTagsProps>;
+
 export default defineComponent({
     name: 'VCFormTags',
     inheritAttrs: false,
-    props: {
-        modelValue: {
-            // `null` in the runtime type alongside Array so consumers can
-            // pass `null` (the documented "unset" value) without tripping
-            // Vue's prop validation warnings.
-            type: [Array, null] as PropType<FormTagsModelValue | null>,
-            default: undefined,
-        },
-        placeholder: { type: String, default: undefined },
-        disabled: { type: Boolean, default: false },
-        required: { type: Boolean, default: false },
-        max: { type: Number, default: undefined },
-        addOnPaste: { type: Boolean, default: false },
-        addOnTab: { type: Boolean, default: false },
-        addOnBlur: { type: Boolean, default: true },
-        duplicate: { type: Boolean, default: false },
-        delimiter: { type: [String, RegExp] as PropType<string | RegExp>, default: ',' },
-        name: { type: String, default: undefined },
-        id: { type: String, default: undefined },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<FormTagsThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-    },
+    props: formTagsProps,
     emits: ['update:modelValue', 'invalid'],
     setup(props, { attrs, emit }) {
         const theme = useComponentTheme('formTags', props, themeDefaults);

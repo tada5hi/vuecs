@@ -7,7 +7,12 @@ import {
 } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { merge } from 'smob';
-import type { PropType, SlotsType, VNodeChild } from 'vue';
+import type {
+    ExtractPublicPropTypes,
+    PropType,
+    SlotsType,
+    VNodeChild,
+} from 'vue';
 import {
     defineComponent,
     h,
@@ -46,54 +51,58 @@ function maybeWrapContent(input: VNodeChild, wrap: boolean, tag: string, classNa
     return h(tag, { class: className || undefined }, [input]);
 }
 
+const listItemProps = {
+    data: { type: null as unknown as PropType<any>, required: true },
+    index: { type: Number, default: undefined },
+    tag: { type: String, default: 'li' },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<ListItemThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+
+    // Icon options
+    icon: { type: Boolean, default: true },
+    iconTag: { type: String, default: 'i' },
+    iconWrapper: { type: Boolean, default: true },
+    iconWrapperTag: { type: String, default: 'div' },
+
+    // Text options
+    text: { type: Boolean, default: true },
+    textContent: {
+        type: [String, Function] as PropType<VNodeChild | ((item: any, props: ListItemSlotProps<any>) => VNodeChild)>,
+        default: undefined,
+    },
+    textPropName: { type: String, default: undefined },
+    textWrapper: { type: Boolean, default: true },
+    textWrapperTag: { type: String, default: 'div' },
+
+    // Actions options
+    actions: { type: Boolean, default: true },
+    actionsWrapper: { type: Boolean, default: true },
+    actionsWrapperTag: { type: String, default: 'div' },
+
+    // Extra actions options
+    actionsExtraWrapper: { type: Boolean, default: true },
+    actionsExtraWrapperTag: { type: String, default: 'div' },
+
+    // Passed from parent list
+    busy: { type: Boolean, default: false },
+    total: { type: Number, default: undefined },
+    load: { type: Function as PropType<ListLoadFn>, default: undefined },
+    meta: { type: Object, default: undefined },
+    itemId: { type: Function as PropType<ListItemId<any>>, default: undefined },
+    itemKey: { type: [String, Function] as PropType<ListItemKey<any>>, default: undefined },
+    onCreated: { type: Function as PropType<ListEventFn<any>>, default: undefined },
+    onDeleted: { type: Function as PropType<ListEventFn<any>>, default: undefined },
+    onUpdated: { type: Function as PropType<ListEventFn<any>>, default: undefined },
+
+    // Pre-built slot props from parent (internal)
+    slotProps: { type: Object as PropType<ListBaseSlotProps<any>>, default: undefined },
+};
+
+export type ListItemProps = ExtractPublicPropTypes<typeof listItemProps>;
+
 export const VCListItem = defineComponent({
     name: 'VCListItem',
-    props: {
-        data: { type: null as unknown as PropType<any>, required: true },
-        index: { type: Number, default: undefined },
-        tag: { type: String, default: 'li' },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<ListItemThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-
-        // Icon options
-        icon: { type: Boolean, default: true },
-        iconTag: { type: String, default: 'i' },
-        iconWrapper: { type: Boolean, default: true },
-        iconWrapperTag: { type: String, default: 'div' },
-
-        // Text options
-        text: { type: Boolean, default: true },
-        textContent: {
-            type: [String, Function] as PropType<VNodeChild | ((item: any, props: ListItemSlotProps<any>) => VNodeChild)>,
-            default: undefined,
-        },
-        textPropName: { type: String, default: undefined },
-        textWrapper: { type: Boolean, default: true },
-        textWrapperTag: { type: String, default: 'div' },
-
-        // Actions options
-        actions: { type: Boolean, default: true },
-        actionsWrapper: { type: Boolean, default: true },
-        actionsWrapperTag: { type: String, default: 'div' },
-
-        // Extra actions options
-        actionsExtraWrapper: { type: Boolean, default: true },
-        actionsExtraWrapperTag: { type: String, default: 'div' },
-
-        // Passed from parent list
-        busy: { type: Boolean, default: false },
-        total: { type: Number, default: undefined },
-        load: { type: Function as PropType<ListLoadFn>, default: undefined },
-        meta: { type: Object, default: undefined },
-        itemId: { type: Function as PropType<ListItemId<any>>, default: undefined },
-        itemKey: { type: [String, Function] as PropType<ListItemKey<any>>, default: undefined },
-        onCreated: { type: Function as PropType<ListEventFn<any>>, default: undefined },
-        onDeleted: { type: Function as PropType<ListEventFn<any>>, default: undefined },
-        onUpdated: { type: Function as PropType<ListEventFn<any>>, default: undefined },
-
-        // Pre-built slot props from parent (internal)
-        slotProps: { type: Object as PropType<ListBaseSlotProps<any>>, default: undefined },
-    },
+    props: listItemProps,
     slots: Object as SlotsType<{
         default?: ListItemSlotProps<any>;
         actions?: ListItemSlotProps<any>;
@@ -124,9 +133,9 @@ export const VCListItem = defineComponent({
             let slotPropsResolved: ListItemSlotProps<any>;
             if (props.slotProps) {
                 const {
-                    updated, 
-                    deleted, 
-                    ...original 
+                    updated,
+                    deleted,
+                    ...original
                 } = props.slotProps;
                 slotPropsResolved = {
                     ...original,

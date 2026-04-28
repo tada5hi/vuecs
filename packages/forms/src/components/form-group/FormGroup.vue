@@ -6,7 +6,12 @@ import type {
     ThemeElementDefinition,
     VariantValues,
 } from '@vuecs/core';
-import type { PropType, SlotsType, VNodeChild } from 'vue';
+import type {
+    ExtractPublicPropTypes,
+    PropType,
+    SlotsType,
+    VNodeChild,
+} from 'vue';
 import { defineComponent, h } from 'vue';
 import { ValidationSeverity } from '../constants';
 import type { ValidationMessages } from '../type';
@@ -49,24 +54,28 @@ const themeDefaults = {
 
 const behavioralDefaults: FormGroupDefaults = { validation: true };
 
+const formGroupProps = {
+    label: { type: Boolean, default: undefined },
+    labelTag: { type: String, default: 'label' },
+    labelContent: { type: String, default: undefined },
+
+    hint: { type: Boolean, default: undefined },
+    hintTag: { type: String, default: 'div' },
+    hintContent: { type: String, default: undefined },
+
+    validation: { type: Boolean, default: undefined },
+    validationSeverity: { type: String as PropType<`${ValidationSeverity}` | undefined>, default: undefined },
+    validationMessages: { type: [Object, Array] as PropType<ValidationMessages>, default: undefined },
+
+    themeClass: { type: Object as PropType<ThemeClassesOverride<FormGroupThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+};
+
+export type FormGroupProps = ExtractPublicPropTypes<typeof formGroupProps>;
+
 export default defineComponent({
     name: 'VCFormGroup',
-    props: {
-        label: { type: Boolean, default: undefined },
-        labelTag: { type: String, default: 'label' },
-        labelContent: { type: String, default: undefined },
-
-        hint: { type: Boolean, default: undefined },
-        hintTag: { type: String, default: 'div' },
-        hintContent: { type: String, default: undefined },
-
-        validation: { type: Boolean, default: undefined },
-        validationSeverity: { type: String as PropType<`${ValidationSeverity}` | undefined>, default: undefined },
-        validationMessages: { type: [Object, Array] as PropType<ValidationMessages>, default: undefined },
-
-        themeClass: { type: Object as PropType<ThemeClassesOverride<FormGroupThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-    },
+    props: formGroupProps,
     slots: Object as SlotsType<{
         default: Record<string, never>;
         label: Record<string, never>;

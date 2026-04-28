@@ -2,6 +2,7 @@
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
 import type {
+    ExtractPublicPropTypes,
     PropType,
     SlotsType,
     VNodeArrayChildren,
@@ -38,15 +39,19 @@ export type ValidationGroupItemSlotProps = {
     severity: `${ValidationSeverity}`;
 };
 
+const validationGroupProps = {
+    severity: { type: String as PropType<`${ValidationSeverity}`>, default: ValidationSeverity.ERROR },
+    messages: { type: [Object, Array] as PropType<ValidationMessages>, default: () => ({}) },
+    itemTag: { type: String, default: 'div' },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<ValidationGroupThemeClasses>>, default: undefined },
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+};
+
+export type ValidationGroupProps = ExtractPublicPropTypes<typeof validationGroupProps>;
+
 export default defineComponent({
     name: 'VCValidationGroup',
-    props: {
-        severity: { type: String as PropType<`${ValidationSeverity}`>, default: ValidationSeverity.ERROR },
-        messages: { type: [Object, Array] as PropType<ValidationMessages>, default: () => ({}) },
-        itemTag: { type: String, default: 'div' },
-        themeClass: { type: Object as PropType<ThemeClassesOverride<ValidationGroupThemeClasses>>, default: undefined },
-        themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-    },
+    props: validationGroupProps,
     slots: Object as SlotsType<{
         default: ValidationGroupDefaultSlotProps;
         item: ValidationGroupItemSlotProps;
