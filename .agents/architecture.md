@@ -258,13 +258,17 @@ Two rules govern what ends up on `defaults.value`:
 
 ### Composite components must forward `undefined`
 
-When a composite component (e.g. `VCList`) forwards behavioral props to a
-child component whose prop is resolved via `useComponentDefaults`, the
-composite's own Vue `prop.default` must be `undefined`. A composite with
+When a composite component forwards behavioral props to a child component
+whose prop is resolved via `useComponentDefaults`, the composite's own Vue
+`prop.default` must be `undefined`. A composite with
 `prop: { default: 'something' }` that forwards `something` to the child will
 always win layer 1 on the child and shadow the child's global defaults.
-See `VCList.noMoreContent` / `VCList.itemTextPropName` (both `default: undefined`)
-for the pattern.
+
+The plan-010 redesign of `@vuecs/list` eliminated this exact category of
+forwarding (each part now reads from context directly), so there is no
+in-tree example today. Reach for this pattern when wrapping a vuecs
+component in your own composite that opts into the same behavioral-defaults
+flow.
 
 ### Setup API
 
@@ -272,7 +276,8 @@ for the pattern.
 import vuecs from '@vuecs/core';
 
 app.use(vuecs, {
-    themes: [bootstrap(), fontAwesome()],
+    themes: [bootstrap()],
+    icons: [lucide()],
     defaults: {
         submitButton: {
             createText: computed(() => t('actions.create')),
@@ -360,7 +365,6 @@ The following components resolve the listed behavioral props via
 | `VCFormGroup` | `validation` |
 | `VCFormCheckbox` | `labelContent` |
 | `VCFormSwitch` | `labelContent` |
-| `VCListItem` | `textPropName` |
 | `VCListNoMore` | `content` |
 | `VCPagination` | `firstIcon`, `prevIcon`, `nextIcon`, `lastIcon`, `firstLabel`, `prevLabel`, `nextLabel`, `lastLabel` |
 
@@ -744,7 +748,6 @@ consumers can write bare imports:
 @import "@vuecs/design";              /* → assets/index.css */
 @import "@vuecs/theme-bootstrap";     /* → assets/index.css (bridge) */
 @import "@vuecs/forms";       /* → dist/style.css */
-@import "@vuecs/list-controls";       /* → dist/style.css */
 @import "@vuecs/navigation";          /* → dist/style.css */
 @import "@vuecs/pagination";          /* → dist/style.css */
 ```

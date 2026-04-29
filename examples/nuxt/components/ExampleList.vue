@@ -1,44 +1,59 @@
-<!--
-  - Copyright (c) 2022.
-  - Author Peter Placzek (tada5hi)
-  - For the full copyright and license information,
-  - view the LICENSE file that was distributed with this source code.
-  -->
-
 <script lang="ts">
-import { VCList } from '@vuecs/list-controls';
-import { defineComponent, h, ref } from 'vue';
+import { VCList, useList } from '@vuecs/list';
+import { defineComponent, ref } from 'vue';
+
+type User = { id: number; name: string };
 
 export default defineComponent({
-    setup(props, ctx) {
-        const data = ref([
+    components: { VCList },
+    setup() {
+        const users = ref<User[]>([
             { id: 1, name: 'Peter' },
             { id: 2, name: 'Admin' },
         ]);
-        const total = ref(2);
 
-        return () => h(VCList, {
-            data: data.value,
-            total: total.value,
-            footer: true,
-            onCreated(item: { id: number; name: string }) {
-                total.value++;
-                data.value.push(item);
+        // useList() exposes pure helpers + lets us pass arbitrary methods
+        // (created/updated/deleted) through to slot props (Q3 of plan 010).
+        const list = useList<User, unknown, {
+            created: (u: User) => void;
+            updated: (u: User) => void;
+            deleted: (u: User) => void;
+        }>({
+            data: users,
+            mergeOnUpdate: true,
+            created(u) {
+                users.value = list.applyCreate(users.value, u);
             },
-            onUpdated(item: { id: number; name: string }) {
-                const index = data.value.findIndex((el) => el.id === item.id);
-                if (index !== -1) {
-                    data.value[index] = item;
-                }
+            updated(u) {
+                users.value = list.applyUpdate(users.value, u);
             },
-            onDeleted(item: { id: number; name: string }) {
-                const index = data.value.findIndex((el) => el.id === item.id);
-                if (index !== -1) {
-                    data.value.splice(index, 1);
-                    total.value--;
-                }
+            deleted(u) {
+                users.value = list.applyDelete(users.value, u);
             },
-        }, ctx.slots);
+        });
+
+        return { list };
     },
 });
 </script>
+
+<template>
+    <VCList :state="list">
+        <slot
+            name="default"
+            v-bind="list"
+        />
+        <template #item="bind">
+            <slot
+                name="item"
+                v-bind="{ ...bind, ...list }"
+            />
+        </template>
+        <template #footer="bind">
+            <slot
+                name="footer"
+                v-bind="{ ...bind, ...list }"
+            />
+        </template>
+    </VCList>
+</template>

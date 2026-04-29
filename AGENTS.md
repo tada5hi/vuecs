@@ -2,7 +2,7 @@
 
 # vuecs — Agent Guide
 
-A Vue 3 component library monorepo providing reusable UI components (navigation, form controls, pagination, list controls, etc.) with TypeScript support, CSS extraction, and themes for Bootstrap, Tailwind, and Font Awesome. Published as scoped `@vuecs/*` packages on npm.
+A Vue 3 component library monorepo providing reusable UI components (navigation, form controls, pagination, lists, etc.) with TypeScript support, CSS extraction, and themes for Bootstrap and Tailwind. Published as scoped `@vuecs/*` packages on npm.
 
 ## Quick Reference
 
@@ -33,7 +33,7 @@ npm run lint:fix       # Auto-fix lint issues
 | `@vuecs/gravatar` | Gravatar avatar component | 1.0.2 |
 | `@vuecs/icon` | `<VCIcon>` component — thin Iconify wrapper for vuecs's icon-string-prop slots and consumer slot content | 0.0.0 |
 | `@vuecs/link` | Router-aware link component (vue-router/nuxt) | 1.0.1 |
-| `@vuecs/list-controls` | List display controls | 2.0.1 |
+| `@vuecs/list` | Compound list components (List/Header/Body/Item/Footer/Loading/NoMore) + `useList()` state composable. Successor to `@vuecs/list-controls` — clean break, compound API. | 0.0.0 |
 | `@vuecs/navigation` | Multi-level navigation with NavigationManager | 2.4.1 |
 | `@vuecs/nuxt` | Nuxt module — SSR palette + @vuecs/design auto-import | 0.0.0 |
 | `@vuecs/overlays` | Compound overlays on Reka primitives — Modal (+ `useModal()` view-stack composable), Popover, Tooltip, DropdownMenu, ContextMenu | 0.0.0 |
@@ -48,7 +48,7 @@ npm run lint:fix       # Auto-fix lint issues
 
 ```text
 Layer 0 (no internal deps):  core, countdown, design, gravatar, icon, link, timeago
-Layer 1 (depends on core):   button, forms, list-controls, navigation, overlays, pagination
+Layer 1 (depends on core):   button, forms, list, navigation, overlays, pagination
 Layer 2 (depends on Layer 0): themes (@vuecs/core peer dep only — pure data that targets component packages at runtime)
 Layer 2': icons (@vuecs/core peer dep only — Iconify-name vocabularies for @vuecs/icon's <VCIcon>, registered via `app.use(vuecs, { icons: [...] })`)
 Layer 3 (integration):       nuxt (depends on design + @nuxt/kit)

@@ -13,8 +13,8 @@ import { installDefaultsManager } from '../../../src/defaults/install';
 import type { ComponentDefaultValues, DefaultsManagerOptions } from '../../../src/defaults/types';
 
 // Test-local augmentation so we can exercise the `keyof ComponentDefaults`
-// generic constraint without casting. Component packages (form-controls,
-// list-controls) register their own entries via the same pattern.
+// generic constraint without casting. Component packages (forms, list)
+// register their own entries via the same pattern.
 type TestSubmitDefaults = {
     createText: string;
     updateText: string;

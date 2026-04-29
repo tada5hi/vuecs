@@ -169,13 +169,18 @@ export default function bootstrapTheme(): Theme {
             },
             formTextarea: { classes: { root: 'form-control' } },
             list: { classes: { root: 'd-flex flex-column gap-1' } },
+            listHeader: { classes: { root: 'd-flex align-items-center' } },
             listBody: { classes: { root: 'list-unstyled m-0' } },
             listItem: {
                 classes: {
                     root: 'd-flex flex-row align-items-center gap-1',
-                    actionsWrapper: 'ms-auto',
+                    textWrapper: 'd-inline-flex flex-column',
+                    actionsWrapper: 'ms-auto d-inline-flex align-items-center gap-1',
+                    actionsExtraWrapper: 'd-inline-flex align-items-center gap-1',
                 },
             },
+            listFooter: { classes: { root: 'd-flex align-items-center' } },
+            listLoading: { classes: { root: 'py-2 text-center text-muted small' } },
             listNoMore: { classes: { root: 'alert alert-warning alert-sm' } },
             navigation: {
                 classes: {

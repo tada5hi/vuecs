@@ -48,11 +48,11 @@ vuecs ships its components across separate packages — install only what you us
 |-----------|-------|
 | [Link](/components/link) | Router-aware anchor (vue-router / nuxt) |
 
-## @vuecs/list-controls
+## @vuecs/list
 
 | Component | Notes |
 |-----------|-------|
-| [ListControls](/components/list-controls) | List with header/body/footer/no-more states |
+| [List](/components/list) | Compound list (List/Header/Body/Item/Footer/Loading/NoMore) + `useList()` |
 
 ## @vuecs/navigation
 

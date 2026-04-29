@@ -12,7 +12,7 @@ vuecs/
     gravatar/         # @vuecs/gravatar
     icon/             # @vuecs/icon — <VCIcon> component wrapping @iconify/vue
     link/             # @vuecs/link
-    list-controls/    # @vuecs/list-controls
+    list/             # @vuecs/list — compound List / Header / Body / Item / Footer / Loading / NoMore + useList() (renamed from @vuecs/list-controls in plan 010, clean break)
     navigation/       # @vuecs/navigation
     nuxt/             # @vuecs/nuxt — Nuxt module: SSR palette + useColorMode()
     overlays/         # @vuecs/overlays — Modal (+ useModal view-stack) on Reka primitives; popover/tooltip/dropdown follow

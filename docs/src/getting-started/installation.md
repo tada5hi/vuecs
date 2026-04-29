@@ -55,7 +55,6 @@ Some packages also ship structural CSS — checkbox switch variant, range-slider
 
 ```css
 @import "@vuecs/forms";
-@import "@vuecs/list-controls";
 @import "@vuecs/navigation";
 @import "@vuecs/pagination";
 ```

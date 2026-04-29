@@ -180,7 +180,6 @@ export default function tailwindTheme(): Theme {
             listItem: {
                 classes: {
                     root: 'flex flex-row items-center gap-2 py-1',
-                    iconWrapper: 'inline-flex shrink-0 text-fg-muted',
                     textWrapper: 'inline-flex min-w-0 flex-col',
                     actionsWrapper: 'ml-auto inline-flex items-center gap-1',
                     actionsExtraWrapper: 'inline-flex items-center gap-1',
