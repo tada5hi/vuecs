@@ -30,7 +30,7 @@ Repo: <https://github.com/nuxt/ui>
 | Concept | Nuxt UI | vuecs |
 |---------|---------|-------|
 | **Module entry** | `src/module.ts` (defineNuxtModule) | `packages/nuxt/src/module.ts` |
-| **Theme files (per component)** | `src/theme/<component>.ts` (factory functions returning slot/variant maps) | Theme classes co-located in `themes/{tailwind,bootstrap-v4,bootstrap-v5,font-awesome}/src/index.ts` |
+| **Theme files (per component)** | `src/theme/<component>.ts` (factory functions returning slot/variant maps) | Theme classes co-located in `themes/{tailwind,bootstrap}/src/index.ts` |
 | **Component slots/variants** | `src/runtime/components/<Component>.vue` references theme via `useUI()` | `packages/<component>/src/component.ts` calls `useComponentTheme(name, props, defaults)` |
 | **Color config** | `app.config.ts` `ui.colors` (build-time hint + runtime) | `packages/design/src/palette.ts` `setPalette()` — pure runtime |
 | **Composables** | `useUI()`, `useAppConfig()`, `useColorMode()` | `useComponentTheme()`, `useComponentDefaults()`, `usePalette()`, `useColorMode()` |
@@ -47,7 +47,7 @@ Repo: <https://github.com/nuxt/ui>
 ### What we changed
 - **No `tailwind-variants` dependency.** vuecs ships its own pure resolver in `@vuecs/core/src/theme/resolve.ts` + `variant.ts`. Bootstrap and custom themes work the same way Tailwind themes do.
 - **Themes are data, not code.** Nuxt UI themes are TS factories that return slot/variant objects after reading module options. vuecs themes are plain objects (`Theme`) with no Nuxt module dependency — installable in any Vue app.
-- **Multi-theme stacking.** vuecs accepts an array of themes (`{ themes: [tailwind(), fontAwesome()] }`). Nuxt UI is single-themed.
+- **Multi-theme stacking.** vuecs accepts an array of themes (`{ themes: [bootstrap(), customTheme()] }`); icons are configured separately under `icons:`. Nuxt UI is single-themed.
 - **Runtime palette as `<style>` block.** `setPalette()` writes a plain CSS `<style id="vc-palette">` instead of mutating an `appConfig` ref. Works in any framework, not just Nuxt.
 - **`@vuecs/design` is standalone.** Nuxt UI bakes the design tokens into its module. vuecs ships them in a separate package with no Vue dependency — Bootstrap consumers and custom themes both link against it.
 - **Smaller surface.** Nuxt UI ships ~80 components; vuecs ships ~13 focused on data-entry / nav / display.

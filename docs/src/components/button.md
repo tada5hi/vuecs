@@ -32,8 +32,8 @@ import { VCButton } from '@vuecs/button';
     <!-- Loading shows a structural busy state (cursor: wait + opacity pulse). -->
     <VCButton :loading="true" color="primary" label="Saving…" />
 
-    <!-- Icons via class strings (use any icon library) — or pass <template #leading> / #trailing for full control. -->
-    <VCButton icon-left="fa fa-plus" color="success" label="Create" />
+    <!-- Icons are Iconify name strings, resolved through <VCIcon> — or pass <template #leading> / #trailing for full control. -->
+    <VCButton icon-left="lucide:plus" color="success" label="Create" />
 </template>
 ```
 
@@ -66,8 +66,8 @@ import { VCButton } from '@vuecs/button';
 | `type` | `string` | `'button'` | Forwarded as the native `type` attribute when `tag` is `'button'` (use `'submit'` inside `<form>`). |
 | `tag` | `string` | `'button'` | Override the rendered tag — pass `'a'` to render as a link (the component sets `aria-disabled` instead of the no-op `disabled` attribute on non-button tags). |
 | `label` | `string` | — | Inline text. Equivalent to passing the same string as the default slot. |
-| `iconLeft` | `string` | — | CSS class for a leading `<i>` (e.g. `'fa fa-plus'`). Skipped when empty / undefined. |
-| `iconRight` | `string` | — | CSS class for a trailing `<i>`. Same skip behavior as `iconLeft`. |
+| `iconLeft` | `string` | — | Iconify name for a leading icon (e.g. `'lucide:plus'`), resolved through `<VCIcon>`. Skipped when empty / undefined. |
+| `iconRight` | `string` | — | Iconify name for a trailing icon. Same skip behavior as `iconLeft`. |
 | `loading` | `boolean` | `false` | Disables the button and applies `vc-button--busy` (wait cursor + opacity pulse). Also resolves as the `loading` themeVariant. |
 | `disabled` | `boolean` | `false` | Disables without the busy state. |
 | `themeClass` | `Partial<ButtonThemeClasses>` | — | Per-instance slot class overrides — see [Theme System](/guide/theme-system). |
@@ -78,8 +78,8 @@ import { VCButton } from '@vuecs/button';
 | Slot | Slot props | Description |
 |------|------------|-------------|
 | `default` | `{ loading, disabled }` | Button content. Takes precedence over the `label` prop. |
-| `leading` | `{ loading, disabled }` | Custom leading content (replaces the `iconLeft` `<i>`). |
-| `trailing` | `{ loading, disabled }` | Custom trailing content (replaces the `iconRight` `<i>`). |
+| `leading` | `{ loading, disabled }` | Custom leading content (replaces the `iconLeft` `<VCIcon>`). |
+| `trailing` | `{ loading, disabled }` | Custom trailing content (replaces the `iconRight` `<VCIcon>`). |
 
 ## Submit-button helper
 
@@ -113,8 +113,8 @@ app.use(vuecs, {
         submitButton: {
             createText: computed(() => t('actions.create')),
             updateText: computed(() => t('actions.update')),
-            createIcon: 'fa fa-plus',
-            updateIcon: 'fa fa-save',
+            createIcon: 'lucide:plus',
+            updateIcon: 'lucide:save',
             createColor: 'success',
             updateColor: 'primary',
         },

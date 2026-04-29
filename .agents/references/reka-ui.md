@@ -240,7 +240,7 @@ Per CSS Cascade Layers, **unlayered always wins over layered**, regardless of sp
 ## Risks / tradeoffs of adopting Reka UI
 
 - **New runtime dependency footprint.** `@floating-ui/dom`+`@floating-ui/vue`, `@internationalized/date`+`number`, `@tanstack/vue-virtual`, `@vueuse/core`, `aria-hidden`. Tree-shaking helps, but every overlay pulls floating-ui.
-- **Framework-agnostic stance is unaffected for theme packages.** Reka has no theme contract — it just renders DOM with `data-state`. `@vuecs/theme-{bootstrap-v4,bootstrap-v5,font-awesome,tailwind}` continue as pure data.
+- **Framework-agnostic stance is unaffected for theme packages.** Reka has no theme contract — it just renders DOM with `data-state`. `@vuecs/theme-{bootstrap,tailwind}` continue as pure data.
 - **API surface widens.** Each vuecs component would inherit Reka prop surfaces (`DialogRootProps` etc.) and the `asChild` mental model.
 - **Render-function vs `.vue` mix.** vuecs avoids the template compiler in most packages, but `@vuecs/forms` already uses `.vue` SFCs — so importing Reka SFCs into render-function components is precedented (just means importing the compiled component, not the SFC).
 - **SSR / Nuxt parity.** Reka supports SSR and ships a `./nuxt` subpath. `@vuecs/nuxt` would coexist cleanly.

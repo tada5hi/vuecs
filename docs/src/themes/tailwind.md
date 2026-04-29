@@ -70,13 +70,16 @@ Without a merge function, conflicting utilities both appear in the class string 
 
 ## Recommended companion
 
-`@vuecs/theme-font-awesome` — adds `fa fa-*` glyphs into icon slots. Both themes can stack:
+`@vuecs/icons-lucide` (or `@vuecs/icons-font-awesome`) — populates vuecs's semantic icon-prop slots with Iconify names. Configured separately under `icons:`, not as a stacked theme:
 
 ```ts
 app.use(vuecs, {
-    themes: [tailwindTheme(), fontAwesome()],
+    themes: [tailwindTheme()],
+    icons:  [lucide()],
 });
 ```
+
+See [Icons](/getting-started/icons) for the full setup including icon delivery (Nuxt, Vite, SPA).
 
 ## See also
 

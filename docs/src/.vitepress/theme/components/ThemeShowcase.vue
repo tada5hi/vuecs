@@ -40,8 +40,8 @@ const themes: ThemeCard[] = [
                 Pick your CSS framework
             </h2>
             <p class="vc-themes-sub">
-                vuecs ships drop-in themes for Tailwind v4, Bootstrap v5, and Bootstrap v4.
-                Mix and match with @vuecs/theme-font-awesome for icons.
+                vuecs ships drop-in themes for Tailwind v4 and Bootstrap.
+                Add icons through Iconify via @vuecs/icons-lucide, @vuecs/icons-font-awesome, or any other preset.
             </p>
 
             <div class="vc-themes-grid">

@@ -5,15 +5,13 @@ A vuecs theme is a function returning class-map data — `Theme = { elements: { 
 ```ts
 import vuecs from '@vuecs/core';
 import tailwindTheme from '@vuecs/theme-tailwind';
-import fontAwesome from '@vuecs/theme-font-awesome';
 
 app.use(vuecs, {
-    themes: [
-        tailwindTheme(),  // base CSS framework
-        fontAwesome(),    // additive — icons
-    ],
+    themes: [tailwindTheme()],
 });
 ```
+
+Icons used to live as a "theme" entry, but as of vuecs 3.x they are configured separately under `icons:` (Iconify-backed) — see [Icons](/getting-started/icons).
 
 ## Available themes
 
@@ -21,7 +19,6 @@ app.use(vuecs, {
 |-------|---------|--------------|
 | [Tailwind](/themes/tailwind) | `@vuecs/theme-tailwind` | Tailwind v4 utility classes for every component, paired with the design tokens |
 | [Bootstrap](/themes/bootstrap) | `@vuecs/theme-bootstrap` | Bootstrap 5.x classes + optional `--bs-*` → `--vc-color-*` bridge |
-| [Font Awesome](/themes/font-awesome) | `@vuecs/theme-font-awesome` | Icons — `fa fa-*` glyphs slotted into icon elements |
 
 ## Merge semantics
 

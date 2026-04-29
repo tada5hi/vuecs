@@ -46,6 +46,7 @@ export default defineConfig({
                 text: 'Ecosystem',
                 items: [
                     { text: 'Themes', link: '/themes/' },
+                    { text: 'Icons', link: '/icons/' },
                     { text: 'Nuxt Module', link: '/nuxt/' },
                 ],
             },
@@ -59,6 +60,7 @@ export default defineConfig({
                         { text: 'Introduction', link: '/getting-started/' },
                         { text: 'Installation', link: '/getting-started/installation' },
                         { text: 'Theming', link: '/getting-started/theming' },
+                        { text: 'Icons', link: '/getting-started/icons' },
                         { text: 'Dark Mode', link: '/getting-started/dark-mode' },
                     ],
                 },
@@ -119,6 +121,12 @@ export default defineConfig({
                     ],
                 },
                 {
+                    text: '@vuecs/icon',
+                    items: [
+                        { text: 'Icon', link: '/components/icon' },
+                    ],
+                },
+                {
                     text: '@vuecs/link',
                     items: [
                         { text: 'Link', link: '/components/link' },
@@ -166,7 +174,16 @@ export default defineConfig({
                         { text: 'Overview', link: '/themes/' },
                         { text: 'Tailwind', link: '/themes/tailwind' },
                         { text: 'Bootstrap', link: '/themes/bootstrap' },
-                        { text: 'Font Awesome', link: '/themes/font-awesome' },
+                    ],
+                },
+            ],
+            '/icons/': [
+                {
+                    text: 'Icons',
+                    items: [
+                        { text: 'Overview', link: '/icons/' },
+                        { text: 'Lucide', link: '/icons/lucide' },
+                        { text: 'Font Awesome', link: '/icons/font-awesome' },
                     ],
                 },
             ],

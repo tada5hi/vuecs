@@ -1,7 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import bootstrapTheme from '../../../../../themes/bootstrap/src/index';
-import fontAwesomeTheme from '../../../../../themes/font-awesome/src/index';
-import { isExtendValue } from '../../../src/theme/extend';
 import { resolveComponentTheme } from '../../../src/theme/resolve';
 import type { ThemeElementDefinition } from '../../../src/theme/types';
 
@@ -50,50 +48,7 @@ describe('bootstrapTheme', () => {
     });
 });
 
-describe('fontAwesomeTheme', () => {
-    const preset = fontAwesomeTheme();
-
-    it('should return an object with elements property', () => {
-        expect(preset).toHaveProperty('elements');
-    });
-
-    it('should use extend() for all class values', () => {
-        const { elements } = preset;
-        for (const componentKey of Object.keys(elements)) {
-            const component = elements[componentKey] as ThemeElementDefinition;
-            const classes = component.classes!;
-            for (const slotKey of Object.keys(classes)) {
-                const value = classes[slotKey];
-                expect(isExtendValue(value)).toBe(true);
-            }
-        }
-    });
-
-    it('should define pagination icon classes', () => {
-        const entry = (preset.elements.pagination as ThemeElementDefinition).classes!;
-        expect(isExtendValue(entry.prevIcon)).toBe(true);
-        expect(isExtendValue(entry.nextIcon)).toBe(true);
-    });
-});
-
 describe('preset integration', () => {
-    it('should resolve bootstrap + font-awesome presets together', () => {
-        const presets = [bootstrapTheme(), fontAwesomeTheme()];
-        const defaults = {
-            classes: {
-                root: 'vc-list-item',
-                icon: '',
-            },
-        };
-
-        const result = resolveComponentTheme('listItem', defaults, presets, undefined, undefined);
-
-        // Bootstrap replaces root
-        expect(result.root).toContain('d-flex');
-        // Font Awesome extends icon
-        expect(result.icon).toContain('fa fa-bars');
-    });
-
     it('should allow user theme to override preset values', () => {
         const presets = [bootstrapTheme()];
         const overrides: Record<string, ThemeElementDefinition> = { formGroup: { classes: { root: 'my-custom-group' } } };

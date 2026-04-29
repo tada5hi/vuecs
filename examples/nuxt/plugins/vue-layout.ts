@@ -7,12 +7,15 @@
 
 import vuecs from '@vuecs/core';
 import tailwind from '@vuecs/theme-tailwind';
-import fontAwesome from '@vuecs/theme-font-awesome';
+import fontAwesomeIcons from '@vuecs/icons-font-awesome';
+import { addCollection } from '@iconify/vue';
+import faSolid from '@iconify-json/fa6-solid/icons.json';
 
 import installButton from '@vuecs/button';
 import installCountdown from '@vuecs/countdown';
 import installFormControl from '@vuecs/forms';
 import installGravatar from '@vuecs/gravatar';
+import installIcon from '@vuecs/icon';
 import installLink from '@vuecs/link';
 import { install as installNavigation } from '@vuecs/navigation';
 import installOverlays from '@vuecs/overlays';
@@ -22,9 +25,20 @@ import { de } from 'date-fns/locale';
 import { defineNuxtPlugin } from '#app';
 import { findNavigationItems } from '~/config/layout';
 
-export default defineNuxtPlugin((ctx) => {
-    ctx.vueApp.use(vuecs, { themes: [tailwind(), fontAwesome()] });
+// Register the Font Awesome 6 Solid collection with Iconify so <VCIcon>
+// can resolve the names that @vuecs/icons-font-awesome provides
+// (e.g. 'fa6-solid:chevron-left'). For Nuxt apps we recommend @nuxt/icon
+// for SSR support; this manual addCollection() is the no-extra-module
+// path used here for simplicity.
+addCollection(faSolid as any);
 
+export default defineNuxtPlugin((ctx) => {
+    ctx.vueApp.use(vuecs, {
+        themes: [tailwind()],
+        icons: [fontAwesomeIcons()],
+    });
+
+    ctx.vueApp.use(installIcon);
     ctx.vueApp.use(installButton);
     ctx.vueApp.use(installCountdown);
     ctx.vueApp.use(installFormControl);
