@@ -102,6 +102,32 @@ describe('useList', () => {
         });
     });
 
+    describe('getItemKey', () => {
+        const items: User[] = [{ id: 1, name: 'a' }, { id: 2, name: 'b' }];
+
+        it('returns the resolved id from itemId fn', () => {
+            const list = useList<User>({ data: items, itemId: (u) => u.name });
+            expect(list.getItemKey(items[0])).toBe('a');
+        });
+
+        it('returns the resolved id from itemKey', () => {
+            const list = useList<User>({ data: items, itemKey: 'id' });
+            expect(list.getItemKey(items[1])).toBe(2);
+        });
+
+        it('falls back to .id when no hint is configured', () => {
+            const list = useList<User>({ data: items });
+            expect(list.getItemKey(items[0])).toBe(1);
+        });
+
+        it('returns undefined when no identity hint can be resolved', () => {
+            type Bare = { name: string };
+            const bareItems: Bare[] = [{ name: 'a' }];
+            const list = useList<Bare>({ data: bareItems });
+            expect(list.getItemKey(bareItems[0])).toBeUndefined();
+        });
+    });
+
     describe('flags + helpers', () => {
         const items: User[] = [
             { id: 1, name: 'a' },

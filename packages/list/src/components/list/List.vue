@@ -1,12 +1,11 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
-import { 
-    Comment, 
-    Text, 
-    computed, 
-    defineComponent, 
-    h, 
+import {
+    Comment,
+    Text,
+    defineComponent,
+    h,
 } from 'vue';
 import type { ExtractPublicPropTypes, PropType, VNode } from 'vue';
 import { provideListContext } from './context';
@@ -59,31 +58,30 @@ export default defineComponent({
     setup(props, { slots }) {
         const theme = useComponentTheme('list', props, { classes: { root: 'vc-list' } });
 
-        // Q7 — `state` wins over the simple props. Warn in dev if both are set.
-        const state = computed(() => {
-            if (props.state) {
-                if (isDev && (
-                    props.data !== undefined ||
-                    props.busy !== undefined ||
-                    props.total !== undefined ||
-                    props.meta !== undefined
-                )) {
-                    console.warn(
-                        '[VCList] Both `:state` and one of `:data` / `:busy` / `:total` / `:meta` were provided. ' +
-                        '`:state` wins; the convenience props are ignored.',
-                    );
-                }
-                return props.state;
-            }
-            return useList({
-                data: () => props.data ?? [],
-                busy: () => !!props.busy,
-                total: () => props.total,
-                meta: () => props.meta,
-            });
+        // Q7 — `:state` wins over the simple props; both is a usage error.
+        // Resolved once at setup. `useList()` already wraps its inputs in
+        // `computed`, so the simple-prop path stays reactive without a
+        // `computed` wrapper out here.
+        if (isDev && props.state && (
+            props.data !== undefined ||
+            props.busy !== undefined ||
+            props.total !== undefined ||
+            props.meta !== undefined
+        )) {
+            console.warn(
+                '[VCList] Both `:state` and one of `:data` / `:busy` / `:total` / `:meta` were provided. ' +
+                '`:state` wins; the convenience props are ignored.',
+            );
+        }
+
+        const state = props.state ?? useList({
+            data: () => props.data ?? [],
+            busy: () => !!props.busy,
+            total: () => props.total,
+            meta: () => props.meta,
         });
 
-        provideListContext(state.value);
+        provideListContext(state);
 
         return () => {
             const defaultVNodes = slots.default?.();

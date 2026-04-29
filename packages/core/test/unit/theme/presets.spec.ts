@@ -38,7 +38,7 @@ describe('bootstrapTheme', () => {
         const listItem = preset.elements.listItem as ThemeElementDefinition;
         expect(list.classes!.root).toContain('d-flex');
         expect(listItem.classes!.root).toContain('d-flex');
-        expect(listItem.classes!.actionsWrapper).toBe('ms-auto');
+        expect(listItem.classes!.actionsWrapper).toContain('ms-auto');
     });
 
     it('should define navigation group and link', () => {

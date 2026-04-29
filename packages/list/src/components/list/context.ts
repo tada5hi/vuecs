@@ -2,10 +2,14 @@ import { inject, provide } from 'vue';
 import type { InjectionKey } from 'vue';
 import type { UseListReturn } from './use-list';
 
-const LIST_CONTEXT_KEY = Symbol('VCListContext') as InjectionKey<UseListReturn<any, any, any>>;
+// Type-erased context shape. Consumers get the precisely-typed return back
+// via `useListContext<T, M, Extras>()`'s explicit type parameters.
+type ListContext = UseListReturn<unknown, unknown, Record<string, unknown>>;
+
+const LIST_CONTEXT_KEY = Symbol('VCListContext') as InjectionKey<ListContext>;
 
 /** Called by `<VCList>` to expose its state to descendant parts. */
-export function provideListContext(state: UseListReturn<any, any, any>): void {
+export function provideListContext(state: ListContext): void {
     provide(LIST_CONTEXT_KEY, state);
 }
 

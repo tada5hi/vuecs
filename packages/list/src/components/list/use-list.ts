@@ -57,6 +57,13 @@ export type UseListReturn<
     isEmpty: ComputedRef<boolean>;
     /** Locate an item's index in `data`. -1 when missing. */
     findIndex: (item: T) => number;
+    /**
+     * Resolve a stable Vue `:key` for an item. Honors the configured
+     * `itemId` / `itemKey` options and falls back to `.id`. Returns
+     * `undefined` when no identity hint is available — call sites should
+     * fall through to the iteration index in that case.
+     */
+    getItemKey: (item: T) => string | number | undefined;
 
     /** Per-policy flag values (`mergeOnUpdate` / `dedupCreated` / `filterDeleted`). */
     flags: {
@@ -148,6 +155,10 @@ export function useList<
         ));
     };
 
+    const getItemKey = (item: T): string | number | undefined => (
+        resolveItemId(item, options.itemId, options.itemKey)
+    );
+
     const flags = {
         mergeOnUpdate: !!options.mergeOnUpdate,
         dedupCreated: !!options.dedupCreated,
@@ -204,6 +215,7 @@ export function useList<
         meta,
         isEmpty,
         findIndex,
+        getItemKey,
         flags,
         applyCreate,
         applyUpdate,
