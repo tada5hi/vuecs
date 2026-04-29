@@ -1,6 +1,6 @@
 # List
 
-Compound list components: a stateful root (`VCList`) plus thin part components (`VCListHeader`, `VCListBody`, `VCListItem`, `VCListFooter`, `VCListLoading`, `VCListNoMore`) that read shared state from a context provider. Plus a `useList()` composable that holds the state container and lets consumers extend it with arbitrary helpers (per-row mutation, pagination callbacks, refresh, …).
+Compound list components: a stateful root (`VCList`) plus thin part components (`VCListHeader`, `VCListBody`, `VCListItem`, `VCListItemText`, `VCListItemActions`, `VCListFooter`, `VCListLoading`, `VCListEmpty`) that read shared state from a context provider. Plus a `useList()` composable that holds the state container and lets consumers extend it with arbitrary helpers (per-row mutation, pagination callbacks, refresh, …).
 
 ```bash
 npm install @vuecs/list
@@ -19,7 +19,7 @@ This package is the successor to `@vuecs/list-controls@2.x`. It's a clean break 
 
 ```vue [Vue]
 <script setup lang="ts">
-import { VCList, VCListItem } from '@vuecs/list';
+import { VCList, VCListItem, VCListItemText } from '@vuecs/list';
 import { ref } from 'vue';
 
 const data = ref([
@@ -33,7 +33,7 @@ const data = ref([
     <VCList :data="data">
         <template #item="{ data: item }">
             <VCListItem :data="item">
-                <template #text>{{ item.name }}</template>
+                <VCListItemText>{{ item.name }}</VCListItemText>
             </VCListItem>
         </template>
     </VCList>
@@ -58,14 +58,14 @@ const data = ref([
 
 ### Shorthand mode
 
-Pick this when you want the default skeleton (`Header → Body → Loading → NoMore → Footer`). Set any of `#header` / `#item` / `#loading` / `#noMore` / `#footer`; `<VCList>` auto-composes the parts.
+Pick this when you want the default skeleton (`Header → Body → Loading → Empty → Footer`). Set any of `#header` / `#item` / `#loading` / `#empty` / `#footer`; `<VCList>` auto-composes the parts.
 
 ```vue
 <VCList :data="users" :busy="loading" :total="total">
     <template #header>Users</template>
     <template #item="{ data }">
         <VCListItem :data="data">
-            <template #text>{{ data.email }}</template>
+            <VCListItemText>{{ data.email }}</VCListItemText>
         </VCListItem>
     </template>
     <template #footer>{{ users.length }} of {{ total }}</template>
@@ -82,12 +82,25 @@ Pick this when you want explicit control — skip a section, reorder, wrap a par
     <VCListBody>
         <template #item="{ data }">
             <VCListItem :data="data">
-                <template #text>{{ data.email }}</template>
+                <VCListItemText>{{ data.email }}</VCListItemText>
+                <VCListItemActions>
+                    <button @click="edit(data)">Edit</button>
+                </VCListItemActions>
             </VCListItem>
         </template>
     </VCListBody>
     <VCListFooter>{{ users.length }} of {{ total }}</VCListFooter>
 </VCList>
+```
+
+### Row layout
+
+`<VCListItem>` is a flex row. `<VCListItemText>` takes `flex-1` so it consumes available space; any number of `<VCListItemActions>` clusters trail it without fighting for position. For full custom rendering, drop sub-components and use the default slot directly:
+
+```vue
+<VCListItem :data="data" asChild>
+    <article class="my-card">{{ data.name }}</article>
+</VCListItem>
 ```
 
 ## `useList()` composable
@@ -142,6 +155,7 @@ const list = useList({
 | `total` | `number` | `data.length` | Server-side total (used when `state` is omitted) |
 | `meta` | `M` | — | Caller metadata (used when `state` is omitted) |
 | `tag` | `string` | `'div'` | Root element tag |
+| `asChild` | `boolean` | `false` | Reka-style: clone the default slot's first vnode instead of emitting a wrapper |
 | `themeClass` | `Partial<ListThemeClasses>` | — | Slot class overrides |
 | `themeVariant` | `Record<string, string \| boolean>` | — | Variant overrides |
 
@@ -149,23 +163,25 @@ const list = useList({
 
 | Prop | Type | Description |
 |------|------|-------------|
-| `data` | `T` | The item record (forwarded to slots) |
+| `data` | `T` | The item record (forwarded to slot props) |
 | `index` | `number` | Position in the iterating body |
 | `tag` | `string` | Default `'div'` |
-| `themeClass` | `Partial<ListItemThemeClasses>` | Slot class overrides for `root` / `textWrapper` / `actionsWrapper` / `actionsExtraWrapper` |
+| `asChild` | `boolean` | Default `false` — clone the default slot's first vnode instead of wrapping |
+| `themeClass` | `Partial<ListItemThemeClasses>` | Override `root` |
 
-The other parts (`Header`, `Body`, `Footer`, `Loading`, `NoMore`) take only `tag`, `themeClass`, `themeVariant`.
+The remaining parts (`Header`, `Body`, `Item`, `ItemText`, `ItemActions`, `Footer`, `Loading`, `Empty`) all take `tag`, `asChild`, `themeClass`, `themeVariant`.
 
 ## Slots
 
 | Component | Slot | Slot props | Notes |
 |-----------|------|------------|-------|
-| `VCList` (shorthand) | `header` / `item` / `loading` / `noMore` / `footer` | `useList()` state (+ `data` / `index` for `item`) | Triggers shorthand mode |
+| `VCList` (shorthand) | `header` / `item` / `loading` / `empty` / `footer` | `useList()` state (+ `data` / `index` for `item`) | Triggers shorthand mode |
 | `VCList` (compound) | `default` | `useList()` state | Compound child rendering |
 | `VCListBody` | `item` | `{ data, index, …state }` | Auto-iterates `state.data` per row |
 | `VCListBody` | `default` | `useList()` state | Bypasses iteration — escape hatch for virtual scrolling, etc. |
-| `VCListItem` | `default` | `{ data, index }` | Full override of the item row |
-| `VCListItem` | `text` / `actions` / `actionsExtra` | `{ data, index }` | Layout slots |
+| `VCListItem` | `default` | `{ data, index }` | Row contents (compose `VCListItemText` / `VCListItemActions` here) |
+| `VCListItemText` | `default` | — | The text/content area of a row |
+| `VCListItemActions` | `default` | — | A right-trailing action cluster (render multiple for multi-cluster layouts) |
 
 ## Theme keys
 
@@ -174,23 +190,25 @@ The other parts (`Header`, `Body`, `Footer`, `Loading`, `NoMore`) take only `tag
 | `list` | `root` |
 | `listHeader` | `root` |
 | `listBody` | `root` |
-| `listItem` | `root`, `textWrapper`, `actionsWrapper`, `actionsExtraWrapper` |
+| `listItem` | `root` |
+| `listItemText` | `root` |
+| `listItemActions` | `root` |
 | `listFooter` | `root` |
 | `listLoading` | `root` |
-| `listNoMore` | `root` |
+| `listEmpty` | `root` |
 
 ## Behavioral defaults
 
 | Component | Key | Default |
 |-----------|-----|---------|
-| `listNoMore` | `content` | `'No data available...'` |
+| `listEmpty` | `content` | `'No data available...'` |
 
 Override globally for i18n:
 
 ```ts
 app.use(vuecs, {
     defaults: {
-        listNoMore: { content: computed(() => t('list.empty')) },
+        listEmpty: { content: computed(() => t('list.empty')) },
     },
 });
 ```
@@ -212,7 +230,7 @@ app.use(vuecs, {
 <VCList :data="users" :busy="loading" :total="total">
     <template #item="{ data }">
         <VCListItem :data="data" :theme-class="{ root: 'border-b' }">
-            <template #text>{{ data.email }}</template>
+            <VCListItemText>{{ data.email }}</VCListItemText>
         </VCListItem>
     </template>
 </VCList>
@@ -226,8 +244,10 @@ app.use(vuecs, {
 |--------|-------|
 | `headerThemeClass` / `bodyThemeClass` / `itemThemeClass` / … on `<VCList>` | each part owns its own `themeClass` |
 | `header` / `footer` / `body` / `loading` / `noMore` boolean props on `<VCList>` | omit the part to skip it |
-| `itemTag` / `itemIcon` / `itemText` / `itemTextPropName` / `itemActions` on `<VCList>` | move to `<VCListItem>` slots |
-| `noMoreContent` prop on `<VCList>` | put text inside `<VCListNoMore>` or use `defaults.listNoMore.content` |
+| `itemTag` / `itemIcon` / `itemText` / `itemTextPropName` / `itemActions` on `<VCList>` | move to `<VCListItem>` + `<VCListItemText>` / `<VCListItemActions>` children |
+| `<VCListItem>` `text` / `actions` / `actionsExtra` slots | dedicated `<VCListItemText>` / `<VCListItemActions>` sub-components (compose multiple for what was `actionsExtra`) |
+| `noMoreContent` prop on `<VCList>` | put text inside `<VCListEmpty>` or use `defaults.listEmpty.content` |
+| `<VCListNoMore>` | `<VCListEmpty>` (same self-conditioning, accurate name) |
 | `slotProps` prop threaded through every sub-component | gone — children read context |
 | `created` / `updated` / `deleted` slot helpers | gone — consumers handle their own list mutation (use `list.apply*()`) |
 | `load: ListLoadFn` + `meta` props | gone — pass them through `useList()` extras |

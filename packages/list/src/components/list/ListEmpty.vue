@@ -5,39 +5,39 @@ import { defineComponent, h } from 'vue';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import { injectListContextOrThrow } from './context';
 import { applyAsChild } from './render-utils';
-import type { ListNoMoreDefaults, ListNoMoreThemeClasses } from './types';
+import type { ListEmptyDefaults, ListEmptyThemeClasses } from './types';
 import type { UseListReturn } from './use-list';
 
-const listNoMoreProps = {
+const listEmptyProps = {
     tag: { type: String, default: 'div' },
     asChild: { type: Boolean, default: false },
-    themeClass: { type: Object as PropType<ThemeClassesOverride<ListNoMoreThemeClasses>>, default: undefined },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<ListEmptyThemeClasses>>, default: undefined },
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 
-export type ListNoMoreProps = ExtractPublicPropTypes<typeof listNoMoreProps>;
+export type ListEmptyProps = ExtractPublicPropTypes<typeof listEmptyProps>;
 
-type ListNoMoreSlotProps = UseListReturn<unknown, unknown, Record<string, unknown>>;
+type ListEmptySlotProps = UseListReturn<unknown, unknown, Record<string, unknown>>;
 
-const behavioralDefaults: ListNoMoreDefaults = { content: 'No data available...' };
+const behavioralDefaults: ListEmptyDefaults = { content: 'No data available...' };
 
 export default defineComponent({
-    name: 'VCListNoMore',
-    props: listNoMoreProps,
+    name: 'VCListEmpty',
+    props: listEmptyProps,
     slots: Object as SlotsType<{
-        default: ListNoMoreSlotProps;
+        default: ListEmptySlotProps;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('listNoMore', props, { classes: { root: 'vc-list-no-more' } });
-        const defaults = useComponentDefaults('listNoMore', props, behavioralDefaults);
-        const ctx = injectListContextOrThrow('VCListNoMore');
+        const theme = useComponentTheme('listEmpty', props, { classes: { root: 'vc-list-empty' } });
+        const defaults = useComponentDefaults('listEmpty', props, behavioralDefaults);
+        const ctx = injectListContextOrThrow('VCListEmpty');
 
         return () => {
-            // Self-condition on `isEmpty` — NoMore appears only when the
-            // list has settled with zero rows.
+            // Self-condition on `isEmpty` — Empty appears only when the
+            // list has settled with zero rows (`!busy && total === 0`).
             if (!ctx.isEmpty.value) return null;
             const rootClass = theme.value.root || undefined;
-            const slotChildren = slots.default?.(ctx as unknown as ListNoMoreSlotProps);
+            const slotChildren = slots.default?.(ctx as unknown as ListEmptySlotProps);
             // asChild can only clone vnodes — only honor it when the
             // consumer supplies a default slot. The string fallback is
             // not a vnode, so it falls through to the wrapper element.

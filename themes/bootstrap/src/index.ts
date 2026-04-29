@@ -171,17 +171,15 @@ export default function bootstrapTheme(): Theme {
             list: { classes: { root: 'd-flex flex-column gap-1' } },
             listHeader: { classes: { root: 'd-flex align-items-center' } },
             listBody: { classes: { root: 'list-unstyled m-0' } },
-            listItem: {
-                classes: {
-                    root: 'd-flex flex-row align-items-center gap-1',
-                    textWrapper: 'd-inline-flex flex-column',
-                    actionsWrapper: 'ms-auto d-inline-flex align-items-center gap-1',
-                    actionsExtraWrapper: 'd-inline-flex align-items-center gap-1',
-                },
-            },
+            // `<VCListItem>` owns the row's flex layout. `<VCListItemText>`
+            // takes `flex-grow-1` so it consumes available space and pushes
+            // any trailing `<VCListItemActions>` clusters to the right edge.
+            listItem: { classes: { root: 'd-flex flex-row align-items-center gap-1' } },
+            listItemText: { classes: { root: 'd-inline-flex flex-column flex-grow-1 text-truncate' } },
+            listItemActions: { classes: { root: 'd-inline-flex align-items-center gap-1' } },
             listFooter: { classes: { root: 'd-flex align-items-center' } },
             listLoading: { classes: { root: 'py-2 text-center text-muted small' } },
-            listNoMore: { classes: { root: 'alert alert-warning alert-sm' } },
+            listEmpty: { classes: { root: 'alert alert-warning alert-sm' } },
             navigation: {
                 classes: {
                     group: 'nav-items',

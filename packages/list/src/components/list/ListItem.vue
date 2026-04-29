@@ -2,12 +2,7 @@
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { defineComponent, h } from 'vue';
-import type { 
-    ExtractPublicPropTypes, 
-    PropType, 
-    SlotsType, 
-    VNode, 
-} from 'vue';
+import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import { applyAsChild } from './render-utils';
 import type { ListItemThemeClasses } from './types';
 
@@ -19,10 +14,7 @@ const listItemProps = {
     tag: { type: String, default: 'div' },
     /**
      * Reka-style as-child: render by cloning the slot's first vnode
-     * (default slot only) instead of emitting a wrapper. The default
-     * slot is the only as-child target — the layout slots
-     * (`text` / `actions` / `actionsExtra`) are wrapper-bound by
-     * design.
+     * (merging the part's class onto it) instead of emitting a wrapper.
      */
     asChild: { type: Boolean, default: false },
     themeClass: { type: Object as PropType<ThemeClassesOverride<ListItemThemeClasses>>, default: undefined },
@@ -41,47 +33,19 @@ export default defineComponent({
     props: listItemProps,
     slots: Object as SlotsType<{
         default: ListItemSlotProps;
-        text: ListItemSlotProps;
-        actions: ListItemSlotProps;
-        actionsExtra: ListItemSlotProps;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('listItem', props, {
-            classes: {
-                root: 'vc-list-item',
-                textWrapper: 'vc-list-item-text',
-                actionsWrapper: 'vc-list-item-actions',
-                actionsExtraWrapper: 'vc-list-item-actions-extra',
-            },
-        });
+        const theme = useComponentTheme('listItem', props, { classes: { root: 'vc-list-item' } });
 
         return () => {
             const slotProps: ListItemSlotProps = { data: props.data, index: props.index };
             const rootClass = theme.value.root || undefined;
-
-            if (slots.default) {
-                const children = slots.default(slotProps);
-                if (props.asChild) {
-                    const cloned = applyAsChild(children, { class: rootClass });
-                    if (cloned) return cloned;
-                }
-                return h(props.tag, { class: rootClass }, children);
+            const children = slots.default?.(slotProps);
+            if (props.asChild) {
+                const cloned = applyAsChild(children, { class: rootClass });
+                if (cloned) return cloned;
             }
-
-            // Layout-slot mode: wrap each populated slot in its own
-            // theme-keyed div. as-child has no effect here (the
-            // wrappers are the contract).
-            const parts: VNode[] = [];
-            if (slots.text) {
-                parts.push(h('div', { class: theme.value.textWrapper || undefined }, slots.text(slotProps)));
-            }
-            if (slots.actions) {
-                parts.push(h('div', { class: theme.value.actionsWrapper || undefined }, slots.actions(slotProps)));
-            }
-            if (slots.actionsExtra) {
-                parts.push(h('div', { class: theme.value.actionsExtraWrapper || undefined }, slots.actionsExtra(slotProps)));
-            }
-            return h(props.tag, { class: rootClass }, parts);
+            return h(props.tag, { class: rootClass }, children);
         };
     },
 });

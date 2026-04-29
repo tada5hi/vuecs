@@ -12,7 +12,7 @@ import { provideListContext } from './context';
 import ListHeader from './ListHeader.vue';
 import ListBody from './ListBody.vue';
 import ListLoading from './ListLoading.vue';
-import ListNoMore from './ListNoMore.vue';
+import ListEmpty from './ListEmpty.vue';
 import ListFooter from './ListFooter.vue';
 import { applyAsChild, hasMeaningfulVNodes, mergeSlotProps } from './render-utils';
 import type { ListThemeClasses } from './types';
@@ -46,7 +46,7 @@ export type ListProps = ExtractPublicPropTypes<typeof listProps>;
 
 type ListState = UseListReturn<unknown, unknown, Record<string, unknown>>;
 
-const SHORTHAND_SLOT_NAMES = ['header', 'item', 'loading', 'noMore', 'footer'] as const;
+const SHORTHAND_SLOT_NAMES = ['header', 'item', 'loading', 'empty', 'footer'] as const;
 
 const isDev = typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production';
 
@@ -58,7 +58,7 @@ export default defineComponent({
         header: ListState;
         item: ListState & { data: unknown; index: number };
         loading: ListState;
-        noMore: ListState;
+        empty: ListState;
         footer: ListState;
     }>,
     setup(props, { slots }) {
@@ -119,7 +119,7 @@ export default defineComponent({
 
             // Shorthand mode: auto-compose all five sections, threading
             // each named slot to the matching part. Empty slots fall through
-            // to the part's own default rendering (e.g. <VCListNoMore>'s
+            // to the part's own default rendering (e.g. <VCListEmpty>'s
             // behavioral-defaults content).
             const children: VNode[] = [
                 h(ListHeader, {}, slots.header ?
@@ -135,8 +135,8 @@ export default defineComponent({
                 h(ListLoading, {}, slots.loading ?
                     { default: (ctx: ListState) => slots.loading!(ctx) } :
                     {}),
-                h(ListNoMore, {}, slots.noMore ?
-                    { default: (ctx: ListState) => slots.noMore!(ctx) } :
+                h(ListEmpty, {}, slots.empty ?
+                    { default: (ctx: ListState) => slots.empty!(ctx) } :
                     {}),
                 h(ListFooter, {}, slots.footer ?
                     { default: (ctx: ListState) => slots.footer!(ctx) } :

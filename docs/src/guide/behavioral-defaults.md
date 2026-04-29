@@ -39,8 +39,8 @@ app.use(vuecs, {
             createText: computed(() => t('actions.create')),
             updateText: computed(() => t('actions.update')),
         },
-        listNoMore: {
-            content: computed(() => t('list.noMore')),
+        listEmpty: {
+            content: computed(() => t('list.empty')),
         },
         formSelect: {
             placeholder: computed(() => t('forms.selectPlaceholder')),
@@ -83,8 +83,7 @@ See `VCList.noMoreContent` and `VCList.itemTextPropName` (both `default: undefin
 | `VCFormGroup` | `validation` |
 | `VCFormCheckbox` | `labelContent` |
 | `VCFormSwitch` | `labelContent` |
-| `VCListItem` | `textPropName` |
-| `VCListNoMore` | `content` |
+| `VCListEmpty` | `content` |
 
 Each component's Vue `prop.default` is `undefined`; the effective default lives in the `behavioralDefaults` constant inside the component.
 

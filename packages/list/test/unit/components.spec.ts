@@ -7,10 +7,12 @@ import { installConfigManager, installDefaultsManager, installThemeManager } fro
 import {
     VCList,
     VCListBody,
+    VCListEmpty,
     VCListHeader,
     VCListItem,
+    VCListItemActions,
+    VCListItemText,
     VCListLoading,
-    VCListNoMore,
 } from '../../src';
 
 type User = { id: number; name: string };
@@ -66,6 +68,12 @@ describe('VCList — mode dispatch', () => {
         expect(wrapper.findAll('.row').length).toBe(1);
     });
 
+    it('routes the shorthand `empty` slot through <VCListEmpty>', () => {
+        const wrapper = withVuecs(() => h(VCList, { data: [] as User[] }, { empty: () => h('span', { class: 'e' }, 'no rows') }));
+
+        expect(wrapper.find('.vc-list-empty .e').text()).toBe('no rows');
+    });
+
     it('honors the asChild prop in compound mode by cloning the single child', () => {
         const wrapper = withVuecs(() => h(VCList, {
             asChild: true,
@@ -102,7 +110,7 @@ describe('VCListBody — iteration modes', () => {
         expect(rows[2].attributes('data-index')).toBe('2');
     });
 
-    it('keys rows by `itemKey` when provided', async () => {
+    it('keys rows by `itemKey` when provided', () => {
         const data = ref<User[]>([
             { id: 1, name: 'a' },
             { id: 2, name: 'b' },
@@ -139,7 +147,7 @@ describe('VCListBody — iteration modes', () => {
     });
 });
 
-describe('VCListLoading / VCListNoMore — self-conditioning', () => {
+describe('VCListLoading / VCListEmpty — self-conditioning', () => {
     it('renders Loading only while busy is true', async () => {
         const busy = ref(true);
         const wrapper = withVuecs(() => h(VCList, {
@@ -159,47 +167,29 @@ describe('VCListLoading / VCListNoMore — self-conditioning', () => {
         expect(wrapper.find('.vc-list-loading').exists()).toBe(false);
     });
 
-    it('renders NoMore only when the list has settled with zero rows', () => {
+    it('renders Empty only when the list has settled with zero rows', () => {
         const empty = withVuecs(() => h(VCList, {
             data: [],
             busy: false,
-        }, { default: () => [h(VCListNoMore, {}, { default: () => 'empty' })] }));
-        expect(empty.find('.vc-list-no-more').exists()).toBe(true);
-        expect(empty.text()).toContain('empty');
+        }, { default: () => [h(VCListEmpty, {}, { default: () => 'no data' })] }));
+        expect(empty.find('.vc-list-empty').exists()).toBe(true);
+        expect(empty.text()).toContain('no data');
 
-        const populated = withVuecs(() => h(VCList, { data: [{ id: 1, name: 'a' }] as User[] }, { default: () => [h(VCListNoMore, {}, { default: () => 'empty' })] }));
-        expect(populated.find('.vc-list-no-more').exists()).toBe(false);
+        const populated = withVuecs(() => h(VCList, { data: [{ id: 1, name: 'a' }] as User[] }, { default: () => [h(VCListEmpty, {}, { default: () => 'no data' })] }));
+        expect(populated.find('.vc-list-empty').exists()).toBe(false);
     });
 
-    it('falls back to the global default content when NoMore has no slot', () => {
-        const wrapper = withVuecs(() => h(VCList, { data: [] }, { default: () => [h(VCListNoMore)] }));
+    it('falls back to the global default content when Empty has no slot', () => {
+        const wrapper = withVuecs(() => h(VCList, { data: [] }, { default: () => [h(VCListEmpty)] }));
 
-        const noMore = wrapper.find('.vc-list-no-more');
-        expect(noMore.exists()).toBe(true);
-        expect(noMore.text().length).toBeGreaterThan(0);
+        const emptyEl = wrapper.find('.vc-list-empty');
+        expect(emptyEl.exists()).toBe(true);
+        expect(emptyEl.text().length).toBeGreaterThan(0);
     });
 });
 
-describe('VCListHeader / VCListFooter / VCListItem', () => {
-    it('VCListItem layout-slot mode emits per-slot wrapper divs', () => {
-        const wrapper = withVuecs(() => h(VCList, { data: [{ id: 1, name: 'a' }] as User[] }, {
-            default: () => [
-                h(VCListBody, {}, {
-                    item: ({ data }: { data: User }) => h(VCListItem, { data }, {
-                        text: ({ data: row }: { data: User }) => row.name,
-                        actions: () => h('button', { class: 'edit-btn' }, 'edit'),
-                    }),
-                }),
-            ],
-        }));
-
-        expect(wrapper.find('.vc-list-item').exists()).toBe(true);
-        expect(wrapper.find('.vc-list-item-text').text()).toBe('a');
-        expect(wrapper.find('.vc-list-item-actions .edit-btn').exists()).toBe(true);
-        expect(wrapper.find('.vc-list-item-actions-extra').exists()).toBe(false);
-    });
-
-    it('VCListItem default slot wins over layout slots', () => {
+describe('VCListItem + sub-components', () => {
+    it('VCListItem default slot renders consumer-supplied content', () => {
         const wrapper = withVuecs(() => h(VCList, { data: [{ id: 1, name: 'a' }] as User[] }, {
             default: () => [
                 h(VCListBody, {}, { item: ({ data }: { data: User }) => h(VCListItem, { data }, { default: ({ data: row }: { data: User }) => h('span', { class: 'custom' }, row.name) }) }),
@@ -207,10 +197,64 @@ describe('VCListHeader / VCListFooter / VCListItem', () => {
         }));
 
         expect(wrapper.find('.vc-list-item .custom').text()).toBe('a');
-        expect(wrapper.find('.vc-list-item-text').exists()).toBe(false);
     });
 
-    it('VCListHeader / VCListFooter render only when their default slot is provided', () => {
+    it('composes Text + Actions inside ListItem', () => {
+        const wrapper = withVuecs(() => h(VCList, { data: [{ id: 1, name: 'a' }] as User[] }, {
+            default: () => [
+                h(VCListBody, {}, {
+                    item: ({ data }: { data: User }) => h(VCListItem, { data }, {
+                        default: () => [
+                            h(VCListItemText, {}, { default: () => data.name }),
+                            h(VCListItemActions, {}, { default: () => h('button', { class: 'edit-btn' }, 'edit') }),
+                        ],
+                    }),
+                }),
+            ],
+        }));
+
+        const item = wrapper.find('.vc-list-item');
+        expect(item.exists()).toBe(true);
+        expect(item.find('.vc-list-item-text').text()).toBe('a');
+        expect(item.find('.vc-list-item-actions .edit-btn').exists()).toBe(true);
+    });
+
+    it('supports multiple Actions clusters trailing the text', () => {
+        const wrapper = withVuecs(() => h(VCList, { data: [{ id: 1, name: 'a' }] as User[] }, {
+            default: () => [
+                h(VCListBody, {}, {
+                    item: ({ data }: { data: User }) => h(VCListItem, { data }, {
+                        default: () => [
+                            h(VCListItemText, {}, { default: () => data.name }),
+                            h(VCListItemActions, {}, { default: () => h('button', { class: 'a1' }, 'A1') }),
+                            h(VCListItemActions, {}, { default: () => h('button', { class: 'a2' }, 'A2') }),
+                        ],
+                    }),
+                }),
+            ],
+        }));
+
+        const clusters = wrapper.findAll('.vc-list-item-actions');
+        expect(clusters.length).toBe(2);
+        expect(clusters[0].find('.a1').exists()).toBe(true);
+        expect(clusters[1].find('.a2').exists()).toBe(true);
+    });
+
+    it('honors asChild on ListItemText / ListItemActions', () => {
+        const wrapper = withVuecs(() => h(VCListItemText, { asChild: true }, { default: () => h('h3', { class: 'custom-text' }, 'hi') }));
+        const root = wrapper.element as HTMLElement;
+        expect(root.tagName).toBe('H3');
+        expect(root.className).toContain('vc-list-item-text');
+        expect(root.className).toContain('custom-text');
+
+        const aw = withVuecs(() => h(VCListItemActions, { asChild: true }, { default: () => h('nav', { class: 'custom-nav' }, 'x') }));
+        const nav = aw.element as HTMLElement;
+        expect(nav.tagName).toBe('NAV');
+        expect(nav.className).toContain('vc-list-item-actions');
+        expect(nav.className).toContain('custom-nav');
+    });
+
+    it('VCListHeader renders only when its default slot is provided', () => {
         const a = withVuecs(() => h(VCList, { data: [] }, { default: () => [h(VCListHeader)] }));
         // empty wrapper still renders — themes hide it via :empty
         expect(a.find('.vc-list-header').exists()).toBe(true);

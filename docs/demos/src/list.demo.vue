@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { VCList, VCListItem } from '@vuecs/list';
+import { VCList, VCListItem, VCListItemText } from '@vuecs/list';
 import { ref } from 'vue';
 
 const data = ref([
@@ -14,9 +14,9 @@ const data = ref([
         <VCList :data="data">
             <template #item="{ data: item }">
                 <VCListItem :data="item">
-                    <template #text>
+                    <VCListItemText>
                         {{ item.name }}
-                    </template>
+                    </VCListItemText>
                 </VCListItem>
             </template>
         </VCList>

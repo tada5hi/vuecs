@@ -157,16 +157,7 @@ describe('tailwind theme + resolveComponentTheme', () => {
     const theme = tailwindTheme();
 
     it('should merge tailwind classes with component defaults', () => {
-        const defaults = {
-            classes: {
-                root: 'vc-list-item',
-                icon: '',
-                iconWrapper: '',
-                textWrapper: '',
-                actionsWrapper: '',
-                actionsExtraWrapper: '',
-            },
-        };
+        const defaults = { classes: { root: 'vc-list-item' } };
 
         const result = resolveComponentTheme(
             'listItem',

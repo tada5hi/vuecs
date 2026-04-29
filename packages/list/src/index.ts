@@ -6,11 +6,13 @@ import './vue';
 import {
     VCList,
     VCListBody,
+    VCListEmpty,
     VCListFooter,
     VCListHeader,
     VCListItem,
+    VCListItemActions,
+    VCListItemText,
     VCListLoading,
-    VCListNoMore,
 } from './components';
 
 export * from './components';
@@ -27,9 +29,11 @@ export function install(app: App, options: Options = {}): void {
         VCListHeader,
         VCListBody,
         VCListItem,
+        VCListItemText,
+        VCListItemActions,
         VCListFooter,
         VCListLoading,
-        VCListNoMore,
+        VCListEmpty,
     }).forEach(([name, component]) => {
         app.component(name, component);
     });

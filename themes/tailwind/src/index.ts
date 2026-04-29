@@ -181,16 +181,16 @@ export default function tailwindTheme(): Theme {
             listHeader: { classes: { root: 'flex items-center empty:hidden' } },
             listFooter: { classes: { root: 'flex items-center empty:hidden' } },
             listBody: { classes: { root: 'm-0 list-none p-0 empty:hidden' } },
-            listItem: {
-                classes: {
-                    root: 'flex flex-row items-center gap-2 py-1',
-                    textWrapper: 'inline-flex min-w-0 flex-col',
-                    actionsWrapper: 'ml-auto inline-flex items-center gap-1',
-                    actionsExtraWrapper: 'inline-flex items-center gap-1',
-                },
-            },
+            // `<VCListItem>` owns the row's flex layout. `<VCListItemText>`
+            // takes `flex-1 min-w-0` so it consumes available space and
+            // truncates cleanly. `<VCListItemActions>` is positionally
+            // unopinionated so N clusters compose naturally — the text's
+            // `flex-1` is what pushes them to the right edge.
+            listItem: { classes: { root: 'flex flex-row items-center gap-2 py-1' } },
+            listItemText: { classes: { root: 'inline-flex min-w-0 flex-1 flex-col' } },
+            listItemActions: { classes: { root: 'inline-flex items-center gap-1' } },
             listLoading: { classes: { root: 'py-2 text-center text-sm text-fg-muted' } },
-            listNoMore: { classes: { root: 'rounded-md border border-warning-200 bg-warning-50 p-2 text-sm text-warning-800' } },
+            listEmpty: { classes: { root: 'rounded-md border border-warning-200 bg-warning-50 p-2 text-sm text-warning-800' } },
             navigation: {
                 classes: {
                     group: 'm-0 flex list-none flex-col p-0',
