@@ -174,9 +174,13 @@ export default function tailwindTheme(): Theme {
             formTextarea: { classes: { root: 'block w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-fg shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:bg-bg-muted' } },
             validationGroup: { classes: { item: 'text-xs text-error-600' } },
             list: { classes: { root: 'flex flex-col gap-1' } },
-            listHeader: { classes: { root: 'flex items-center' } },
-            listFooter: { classes: { root: 'flex items-center' } },
-            listBody: { classes: { root: 'm-0 list-none p-0' } },
+            // `empty:hidden` — when shorthand mode auto-composes a part
+            // and the consumer didn't supply that slot, the resulting
+            // empty wrapper collapses out of layout instead of taking
+            // its own row.
+            listHeader: { classes: { root: 'flex items-center empty:hidden' } },
+            listFooter: { classes: { root: 'flex items-center empty:hidden' } },
+            listBody: { classes: { root: 'm-0 list-none p-0 empty:hidden' } },
             listItem: {
                 classes: {
                     root: 'flex flex-row items-center gap-2 py-1',

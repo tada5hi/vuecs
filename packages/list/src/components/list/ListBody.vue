@@ -2,57 +2,64 @@
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { 
-    Comment, 
     Fragment, 
-    Text, 
+    cloneVNode, 
     defineComponent, 
     h, 
 } from 'vue';
-import type { ExtractPublicPropTypes, PropType, VNode } from 'vue';
+import type { 
+    ExtractPublicPropTypes, 
+    PropType, 
+    SlotsType, 
+    VNode, 
+} from 'vue';
 import { injectListContextOrThrow } from './context';
+import { 
+    applyAsChild, 
+    hasMeaningfulVNodes, 
+    meaningfulVNodes, 
+    mergeSlotProps, 
+} from './render-utils';
 import type { ListBodyThemeClasses } from './types';
+import type { UseListReturn } from './use-list';
 
 const listBodyProps = {
     tag: { type: String, default: 'div' },
+    /**
+     * Reka-style as-child: only honored in **manual mode** (when the
+     * default slot supplies content directly). Auto-iterate mode emits
+     * one vnode per row, which is structurally not a single-vnode case.
+     */
+    asChild: { type: Boolean, default: false },
     themeClass: { type: Object as PropType<ThemeClassesOverride<ListBodyThemeClasses>>, default: undefined },
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 
 export type ListBodyProps = ExtractPublicPropTypes<typeof listBodyProps>;
 
+type ListBodyState = UseListReturn<unknown, unknown, Record<string, unknown>>;
+type ListItemSlotPayload = ListBodyState & { data: unknown; index: number };
+
 /**
  * `<VCListBody>` has two modes (Q4):
- *  - **Auto-iterate** — when only an `#item` slot is given (and no
+ *  - **Auto-iterate** when only an `#item` slot is given (and no
  *    default-slot vnodes). Body iterates `data` from context, renders
- *    `#item` per row with `{ data, index, …state }` slot props. Stable
- *    keys via `useList().getItemKey()` (`itemId` / `itemKey` honoring),
- *    falling back to the row index.
- *  - **Manual** — when default-slot vnodes are present. Body renders the
+ *    `#item` per row with the full `useList()` state plus per-row
+ *    `{ data, index }` slot props (per-row keys win — see
+ *    `mergeSlotProps`). Stable `:key` resolution via
+ *    `useList().getItemKey()`, falling back to the row index.
+ *  - **Manual** when default-slot vnodes are present. Body renders the
  *    children as-written; iteration is the consumer's job (used for
  *    virtual scrolling and other escape-hatch scenarios). The default
  *    slot receives the full `useList()` return as slot props (Q9).
  */
-function hasMeaningfulVNodes(nodes: VNode[] | undefined): boolean {
-    if (!nodes) return false;
-    return nodes.some((vnode) => {
-        // Fragments wrap arbitrary content; recurse into children rather
-        // than treating the wrapper itself as meaningful.
-        if (vnode.type === Fragment) {
-            const children = Array.isArray(vnode.children) ? (vnode.children as VNode[]) : undefined;
-            return hasMeaningfulVNodes(children);
-        }
-        if (vnode.type === Comment) return false;
-        if (vnode.type === Text) {
-            const text = vnode.children;
-            return typeof text === 'string' && text.trim().length > 0;
-        }
-        return true;
-    });
-}
-
 export default defineComponent({
     name: 'VCListBody',
     props: listBodyProps,
+    slots: Object as SlotsType<{
+        default: ListBodyState;
+        item: ListItemSlotPayload;
+    }>,
     setup(props, { slots }) {
         const theme = useComponentTheme('listBody', props, { classes: { root: 'vc-list-body' } });
         const ctx = injectListContextOrThrow('VCListBody');
@@ -61,37 +68,36 @@ export default defineComponent({
             const rootClass = theme.value.root || undefined;
 
             // Manual mode: invoke default once, decide based on what came back.
-            const defaultVNodes = slots.default?.(ctx as unknown as Record<string, unknown>);
+            const defaultVNodes = slots.default?.(ctx as unknown as ListBodyState);
             if (hasMeaningfulVNodes(defaultVNodes)) {
+                if (props.asChild) {
+                    const cloned = applyAsChild(defaultVNodes, { class: rootClass });
+                    if (cloned) return cloned;
+                }
                 return h(props.tag, { class: rootClass }, defaultVNodes);
             }
 
-            // Auto-iterate mode: render each row through `#item`. Each
-            // iteration produces a vnode array; wrap in a keyed Fragment
-            // so Vue's diff treats every row as a stable unit even when
-            // the slot returns multiple top-level vnodes.
+            // Auto-iterate mode: render each row through `#item`.
+            // Optimisation (#2): when the slot returns exactly one
+            // meaningful vnode, key it directly via cloneVNode instead
+            // of wrapping in a keyed Fragment — saves one vnode per row.
             if (slots.item) {
-                const rows = ctx.data.value.map((item, index) => {
+                const rows: VNode[] = ctx.data.value.map((item, index) => {
                     const id = ctx.getItemKey(item as never);
                     const key = id ?? index;
-                    // Spread `ctx` first so per-row `data` / `index` win
-                    // over the list-state `data` (the array) — Q9 says the
-                    // #item slot adds `{ data, index }` *on top of* state.
-                    return h(
-                        Fragment,
-                        { key },
-                        slots.item!({
-                            ...ctx,
-                            data: item,
-                            index,
-                        }),
-                    );
+                    const slotProps = mergeSlotProps(ctx, { data: item, index });
+                    const result = slots.item!(slotProps as ListItemSlotPayload);
+                    const meaningful = meaningfulVNodes(result);
+                    if (meaningful.length === 1) {
+                        return cloneVNode(meaningful[0], { key });
+                    }
+                    return h(Fragment, { key }, result);
                 });
                 return h(props.tag, { class: rootClass }, rows);
             }
 
             // No slot, no children — render the wrapper anyway so themes
-            // can target it.
+            // can target it (or hide it via `:empty`).
             return h(props.tag, { class: rootClass });
         };
     },
