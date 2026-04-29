@@ -10,6 +10,7 @@ import type {
 } from './defaults';
 import { installConfigManager } from './config';
 import type { ConfigManagerOptions } from './config';
+import { isObject } from './utils';
 
 export * from './config';
 export * from './theme';
@@ -28,8 +29,16 @@ function mergeComponentDefaults(
 ): void {
     if (!source) return;
     for (const [name, value] of Object.entries(source)) {
-        if (value && typeof value === 'object') {
-            target[name] = { ...(target[name] || {}), ...value };
+        if (isObject(value)) {
+            const existing = target[name] || Object.create(null);
+            // Filter out `undefined` so a partial later layer doesn't
+            // implicitly clear a preset's value. The defaults pipeline
+            // uses `undefined` to mean "fall through to lower layer";
+            // explicit "disable" uses `''` instead.
+            const incoming = Object.fromEntries(
+                Object.entries(value).filter(([, v]) => v !== undefined),
+            );
+            target[name] = { ...existing, ...incoming };
         }
     }
 }
@@ -42,7 +51,9 @@ function resolveDefaults(
         return consumerDefaults || {};
     }
 
-    const merged: Record<string, any> = {};
+    // Prototype-free target avoids `__proto__` / `constructor` poisoning when
+    // merging keys from external presets / consumer config.
+    const merged: Record<string, any> = Object.create(null);
     for (const icon of icons) {
         mergeComponentDefaults(merged, icon.defaults);
     }

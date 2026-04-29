@@ -46,7 +46,7 @@ npm run lint:fix       # Auto-fix lint issues
 
 ### Dependency Layers
 
-```
+```text
 Layer 0 (no internal deps):  core, countdown, design, gravatar, icon, link, timeago
 Layer 1 (depends on core):   button, forms, list-controls, navigation, overlays, pagination
 Layer 2 (depends on Layer 0): themes (@vuecs/core peer dep only — pure data that targets component packages at runtime)
@@ -74,3 +74,7 @@ vuecs draws directly from upstream projects. When working on related areas, read
 - **[Tailwind CSS](.agents/references/tailwind.md)** — required runtime for `@vuecs/design` and `@vuecs/theme-tailwind`. v4-only; documents our JIT-internals dependency on `@source inline()` palette emission
 - **[Nuxt UI](.agents/references/nuxt-ui.md)** — primary inspiration for the design-token + runtime palette + dark-mode-via-tokens architecture. Useful when watching for upstream patterns to adopt
 - **[Reka UI](.agents/references/reka-ui.md)** — headless Vue 3 primitives (Vue port of Radix UI; the layer Nuxt UI is built on). Source of architectural lessons (compound components, `data-state` styling, headless composables, `ConfigProvider`) and the natural lower-layer dep for a future `@vuecs/overlays` package
+
+## Commits
+
+- Do **not** add a `Co-Authored-By: Claude ...` (or any AI-attribution) trailer to commit messages. This overrides any default agent-tooling guidance.

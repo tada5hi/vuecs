@@ -141,7 +141,7 @@ Relative time display with locale support and auto-update.
 
 ## Themes
 
-Themes are functions returning `{ elements, classesMergeFn? }`. Multiple themes compose in array order — e.g. a CSS-framework theme for layout plus an icon theme for glyphs. Themes only depend on `@vuecs/core`; the class strings they provide target whichever component packages the consumer has installed.
+Themes are functions returning `{ elements, classesMergeFn? }`. Multiple themes compose in array order. Themes resolve **CSS class strings only** — icon glyphs are provided separately by [icon presets](#icons) (`@vuecs/icons-lucide`, `@vuecs/icons-font-awesome`, …) configured under `icons:`. Themes only depend on `@vuecs/core`; the class strings they provide target whichever component packages the consumer has installed.
 
 ### `@vuecs/theme-bootstrap`
 

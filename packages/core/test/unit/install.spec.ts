@@ -107,4 +107,57 @@ describe('install — icons option', () => {
         const manager = injectDefaultsManager(app)!;
         expect(manager.get('__testPagination')).toEqual({ prevLabel: 'Previous' });
     });
+
+    it('does not let `undefined` clear a preset value (only triggers fallthrough)', () => {
+        const lucide: Icon = {
+            defaults: {
+                __testPagination: {
+                    prevIcon: 'lucide:chevron-left',
+                    prevLabel: 'Previous',
+                },
+            },
+        };
+
+        const app = createApp({ render: () => null });
+        app.use(vuecs, {
+            icons: [lucide],
+            // Consumer cares only about prevLabel; prevIcon is undefined.
+            defaults: { __testPagination: { prevIcon: undefined, prevLabel: 'Zurück' } },
+        });
+        const manager = injectDefaultsManager(app)!;
+        expect(manager.get('__testPagination')).toEqual({
+            prevIcon: 'lucide:chevron-left',
+            prevLabel: 'Zurück',
+        });
+    });
+
+    it('preserves an empty string as an explicit "disable" sentinel', () => {
+        const lucide: Icon = {
+            defaults: {
+                __testPagination: {
+                    prevIcon: 'lucide:chevron-left',
+                },
+            },
+        };
+
+        const app = createApp({ render: () => null });
+        app.use(vuecs, {
+            icons: [lucide],
+            defaults: { __testPagination: { prevIcon: '' } },
+        });
+        const manager = injectDefaultsManager(app)!;
+        expect(manager.get('__testPagination')).toEqual({ prevIcon: '' });
+    });
+
+    it('is prototype-pollution safe — `__proto__` keys do not leak onto Object.prototype', () => {
+        // Cast to any: TypeScript's typed defaults block `__proto__`, but we
+        // simulate the runtime case where untyped JSON-like input flows in.
+        const malicious = { __proto__: { polluted: 'yes' } } as any;
+
+        const app = createApp({ render: () => null });
+        app.use(vuecs, { defaults: malicious, icons: [{}] });
+
+        // Confirm no leakage on Object.prototype.
+        expect(({} as any).polluted).toBeUndefined();
+    });
 });

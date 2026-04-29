@@ -12,7 +12,10 @@ export default defineComponent({
     inheritAttrs: false,
     props: vcIconProps,
     setup(props, { attrs }) {
-        return () => h(Icon, { icon: props.name, ...attrs });
+        // Spread attrs first so the `name` prop always wins; otherwise a
+        // consumer's stray `icon=` attr (e.g. via v-bind="$attrs") could
+        // override the prop value silently.
+        return () => h(Icon, { ...attrs, icon: props.name });
     },
 });
 </script>

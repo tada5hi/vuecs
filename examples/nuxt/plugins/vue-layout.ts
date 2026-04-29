@@ -9,6 +9,7 @@ import vuecs from '@vuecs/core';
 import tailwind from '@vuecs/theme-tailwind';
 import fontAwesomeIcons from '@vuecs/icons-font-awesome';
 import { addCollection } from '@iconify/vue';
+import type { IconifyJSON } from '@iconify/vue';
 import faSolid from '@iconify-json/fa6-solid/icons.json';
 
 import installButton from '@vuecs/button';
@@ -30,7 +31,7 @@ import { findNavigationItems } from '~/config/layout';
 // (e.g. 'fa6-solid:chevron-left'). For Nuxt apps we recommend @nuxt/icon
 // for SSR support; this manual addCollection() is the no-extra-module
 // path used here for simplicity.
-addCollection(faSolid as any);
+addCollection(faSolid as IconifyJSON);
 
 export default defineNuxtPlugin((ctx) => {
     ctx.vueApp.use(vuecs, {
