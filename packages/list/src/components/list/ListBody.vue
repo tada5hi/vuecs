@@ -35,6 +35,12 @@ export type ListBodyProps = ExtractPublicPropTypes<typeof listBodyProps>;
 function hasMeaningfulVNodes(nodes: VNode[] | undefined): boolean {
     if (!nodes) return false;
     return nodes.some((vnode) => {
+        // Fragments wrap arbitrary content; recurse into children rather
+        // than treating the wrapper itself as meaningful.
+        if (vnode.type === Fragment) {
+            const children = Array.isArray(vnode.children) ? (vnode.children as VNode[]) : undefined;
+            return hasMeaningfulVNodes(children);
+        }
         if (vnode.type === Comment) return false;
         if (vnode.type === Text) {
             const text = vnode.children;
@@ -68,13 +74,16 @@ export default defineComponent({
                 const rows = ctx.data.value.map((item, index) => {
                     const id = ctx.getItemKey(item as never);
                     const key = id ?? index;
+                    // Spread `ctx` first so per-row `data` / `index` win
+                    // over the list-state `data` (the array) — Q9 says the
+                    // #item slot adds `{ data, index }` *on top of* state.
                     return h(
                         Fragment,
                         { key },
                         slots.item!({
-                            data: item, 
-                            index, 
-                            ...ctx, 
+                            ...ctx,
+                            data: item,
+                            index,
                         }),
                     );
                 });

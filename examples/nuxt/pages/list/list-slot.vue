@@ -17,6 +17,8 @@ export default defineComponent({ components: { ExampleList, VCListItem } });
                     <div class="flex flex-row gap-1">
                         <button
                             type="button"
+                            aria-label="Update item"
+                            title="Update item"
                             class="inline-flex items-center justify-center rounded-md bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-700"
                             @click.prevent="updated({ id: data.id, name: 'foo' })"
                         >
@@ -24,6 +26,8 @@ export default defineComponent({ components: { ExampleList, VCListItem } });
                         </button>
                         <button
                             type="button"
+                            aria-label="Delete item"
+                            title="Delete item"
                             class="inline-flex items-center justify-center rounded-md bg-neutral-800 px-2 py-1 text-xs text-white"
                             @click.prevent="deleted(data)"
                         >

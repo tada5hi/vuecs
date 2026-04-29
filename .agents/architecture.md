@@ -274,6 +274,8 @@ flow.
 
 ```typescript
 import vuecs from '@vuecs/core';
+import bootstrap from '@vuecs/theme-bootstrap';
+import lucide from '@vuecs/icons-lucide';
 
 app.use(vuecs, {
     themes: [bootstrap()],

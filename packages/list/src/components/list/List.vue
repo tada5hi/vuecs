@@ -3,6 +3,7 @@ import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import {
     Comment,
+    Fragment,
     Text,
     defineComponent,
     h,
@@ -41,6 +42,13 @@ const SHORTHAND_SLOT_NAMES = ['header', 'item', 'loading', 'noMore', 'footer'] a
 function hasMeaningfulVNodes(nodes: VNode[] | undefined): boolean {
     if (!nodes) return false;
     return nodes.some((vnode) => {
+        // Fragments wrap arbitrary content (e.g. <template> blocks, slot
+        // forwarding); recurse into children rather than treating the
+        // wrapper itself as meaningful — an empty fragment is empty.
+        if (vnode.type === Fragment) {
+            const children = Array.isArray(vnode.children) ? (vnode.children as VNode[]) : undefined;
+            return hasMeaningfulVNodes(children);
+        }
         if (vnode.type === Comment) return false;
         if (vnode.type === Text) {
             const text = vnode.children;
@@ -84,7 +92,11 @@ export default defineComponent({
         provideListContext(state);
 
         return () => {
-            const defaultVNodes = slots.default?.();
+            // Pass state into the default slot so compound consumers can
+            // bind it: `<VCList v-slot="{ data, busy, ... }">`. Children
+            // also have it via context injection — slot props are an
+            // ergonomic shortcut.
+            const defaultVNodes = slots.default?.(state as unknown as Record<string, unknown>);
             const isCompound = hasMeaningfulVNodes(defaultVNodes);
             const usesShorthand = SHORTHAND_SLOT_NAMES.some((name) => slots[name]);
 

@@ -46,13 +46,13 @@ export default defineComponent({
         <template #item="bind">
             <slot
                 name="item"
-                v-bind="{ ...bind, ...list }"
+                v-bind="{ ...list, ...bind }"
             />
         </template>
         <template #footer="bind">
             <slot
                 name="footer"
-                v-bind="{ ...bind, ...list }"
+                v-bind="{ ...list, ...bind }"
             />
         </template>
     </VCList>

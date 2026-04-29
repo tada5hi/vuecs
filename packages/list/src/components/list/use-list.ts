@@ -32,8 +32,14 @@ export type UseListOptions<
     meta?: MaybeRefOrGetter<M | undefined>;
     /** Resolve a stable identity for an item (used by findIndex). */
     itemId?: (item: T) => string | number;
-    /** Resolve an identity by key. Falls back to `.id` when neither is set. */
-    itemKey?: keyof T | ((item: T) => keyof T);
+    /**
+     * Resolve an identity by key. Restricted to string / number keys —
+     * symbol keys can't be safely cast to property accessors at runtime,
+     * and the resolver falls back to `.id` when neither is set.
+     */
+    itemKey?:
+        | Extract<keyof T, string | number> |
+        ((item: T) => Extract<keyof T, string | number>);
 
     /** Suppress create-emit when item is already in `data` (by id). Default false. */
     dedupCreated?: boolean;
@@ -104,12 +110,14 @@ const RESERVED_KEYS: ReadonlySet<string> = new Set<UseListReservedKeys>([
 function resolveItemId<T>(
     item: T,
     itemId?: (item: T) => string | number,
-    itemKey?: keyof T | ((item: T) => keyof T),
+    itemKey?:
+        | Extract<keyof T, string | number> |
+        ((item: T) => Extract<keyof T, string | number>),
 ): string | number | undefined {
     if (itemId) return itemId(item);
     if (itemKey) {
         const key = typeof itemKey === 'function' ? itemKey(item) : itemKey;
-        const value = (item as Record<string, unknown>)[key as string];
+        const value = (item as Record<string, unknown>)[String(key)];
         if (typeof value === 'string' || typeof value === 'number') {
             return value;
         }
@@ -208,7 +216,11 @@ export function useList<
         }
     }
 
+    // Extras spread FIRST so core fields can never be shadowed by a
+    // consumer-supplied extra (e.g. someone passing `findIndex: (...) => ...`
+    // by accident wouldn't break the composable's contract).
     return {
+        ...extras,
         data,
         busy,
         total,
@@ -220,6 +232,5 @@ export function useList<
         applyCreate,
         applyUpdate,
         applyDelete,
-        ...extras,
     } as UseListReturn<T, M, Extras>;
 }
