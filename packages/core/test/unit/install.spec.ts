@@ -132,13 +132,7 @@ describe('install — icons option', () => {
     });
 
     it('preserves an empty string as an explicit "disable" sentinel', () => {
-        const lucide: Icon = {
-            defaults: {
-                __testPagination: {
-                    prevIcon: 'lucide:chevron-left',
-                },
-            },
-        };
+        const lucide: Icon = { defaults: { __testPagination: { prevIcon: 'lucide:chevron-left' } } };
 
         const app = createApp({ render: () => null });
         app.use(vuecs, {
