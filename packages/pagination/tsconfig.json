@@ -13,10 +13,14 @@
             ],
             "@vuecs/core/*": [
                 "./packages/core/src/*"
+            ],
+            "@vuecs/icon": [
+                "./packages/icon/src"
             ]
         }
     },
     "include": [
-        "src/**/*.ts"
+        "src/**/*.ts",
+        "src/**/*.vue"
     ]
 }

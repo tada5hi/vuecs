@@ -51,6 +51,53 @@ const load = (next) => {
   </template>
 </Demo>
 
+## Icons
+
+Edge-control icons (First / Prev / Next / Last) are Iconify name strings rendered via `<VCIcon>`. The default values are populated by an icon preset — install one and configure it under `icons:` at `app.use(vuecs, …)` time:
+
+```ts
+import vuecs from '@vuecs/core';
+import lucide from '@vuecs/icons-lucide';
+
+app.use(vuecs, {
+    icons: [lucide()],
+});
+```
+
+This sets `pagination.firstIcon = 'lucide:chevrons-left'`, `prevIcon = 'lucide:chevron-left'`, etc. See [Icons](/getting-started/icons) for the full setup including icon delivery.
+
+Per-instance overrides: pass any of the four icon-name props directly. Pass `''` to suppress an icon.
+
+```vue
+<VCPagination
+    :total="100" :offset="0" :limit="10"
+    prev-icon="lucide:arrow-left"
+    next-icon="lucide:arrow-right"
+    @load="load"
+/>
+```
+
+## Labels (i18n)
+
+Each edge button renders an icon + text label. Defaults: `'First'`, `'Previous'`, `'Next'`, `'Last'`. Override per-instance via `firstLabel` / `prevLabel` / `nextLabel` / `lastLabel`, or globally via the [Behavioral Defaults](/guide/behavioral-defaults) system:
+
+```ts
+import { computed } from 'vue';
+
+app.use(vuecs, {
+    defaults: {
+        pagination: {
+            firstLabel: computed(() => t('pagination.first')),
+            prevLabel:  computed(() => t('pagination.previous')),
+            nextLabel:  computed(() => t('pagination.next')),
+            lastLabel:  computed(() => t('pagination.last')),
+        },
+    },
+});
+```
+
+Pass `''` to suppress the label for icon-only buttons.
+
 ## Props
 
 | Prop | Type | Default | Description |
@@ -62,7 +109,23 @@ const load = (next) => {
 | `hideDisabled` | `boolean` | `false` | When `true`, edge controls (First/Prev at page 1, Next/Last at the last page) are unrendered instead of rendered-disabled. Does not apply to the `busy` state. |
 | `tag` | `string` | `'ul'` | Root element tag |
 | `itemTag` | `string` | `'li'` | Item wrapper tag |
-| `iconTag` | `string` | `'i'` | Tag used to render `firstIcon` / `prevIcon` / `nextIcon` / `lastIcon` theme classes |
+| `firstIcon` | `string` | (preset) | Iconify name for the First-page button. `''` suppresses. |
+| `prevIcon` | `string` | (preset) | Iconify name for the Previous-page button. `''` suppresses. |
+| `nextIcon` | `string` | (preset) | Iconify name for the Next-page button. `''` suppresses. |
+| `lastIcon` | `string` | (preset) | Iconify name for the Last-page button. `''` suppresses. |
+| `firstLabel` | `string` | `'First'` | Visible text for the First-page button. `''` suppresses. |
+| `prevLabel` | `string` | `'Previous'` | Visible text for the Previous-page button. `''` suppresses. |
+| `nextLabel` | `string` | `'Next'` | Visible text for the Next-page button. `''` suppresses. |
+| `lastLabel` | `string` | `'Last'` | Visible text for the Last-page button. `''` suppresses. |
+
+## Slots
+
+| Slot | Description |
+|------|-------------|
+| `first` | Replace the entire First-page button content (overrides `firstIcon` + `firstLabel`). |
+| `prev`  | Replace the entire Previous-page button content. |
+| `next`  | Replace the entire Next-page button content. |
+| `last`  | Replace the entire Last-page button content. |
 
 ## Events
 
@@ -72,4 +135,6 @@ const load = (next) => {
 
 ## See also
 
+- [Icons](/getting-started/icons) — icon preset setup and delivery
+- [Behavioral Defaults](/guide/behavioral-defaults) — global label config (i18n)
 - [Theme System](/guide/theme-system)

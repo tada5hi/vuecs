@@ -12,6 +12,7 @@
     "workspaces": [
         "packages/*",
         "themes/*",
+        "icons/*",
         "examples/*",
         "docs"
     ],

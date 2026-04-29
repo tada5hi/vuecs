@@ -31,6 +31,7 @@ npm run lint:fix       # Auto-fix lint issues
 | `@vuecs/design` | CSS design tokens (color scales, semantic aliases) + motion primitives (vanilla-CSS port of `tw-animate-css`) + runtime palette switcher + `usePalette` / `useColorMode` Vue composables | 0.0.0 |
 | `@vuecs/forms` | Form components on Reka UI primitives — `VCFormCheckbox` / `VCFormCheckboxGroup`, `VCFormSwitch`, `VCFormRadio` / `VCFormRadioGroup`, `VCFormPin`, `VCFormSlider` (single+range), `VCFormNumber`, `VCFormTags`, `VCFormSelect` / `VCFormSelectSearch` (FormOption shape), `VCFormInput` / `VCFormTextarea` (native), plus the experimental `useSubmitButton()` helper for `@vuecs/button`. Renamed from `@vuecs/form-controls` in 3.0 (clean break — old package removed). | 3.0.0 |
 | `@vuecs/gravatar` | Gravatar avatar component | 1.0.2 |
+| `@vuecs/icon` | `<VCIcon>` component — thin Iconify wrapper for vuecs's icon-string-prop slots and consumer slot content | 0.0.0 |
 | `@vuecs/link` | Router-aware link component (vue-router/nuxt) | 1.0.1 |
 | `@vuecs/list-controls` | List display controls | 2.0.1 |
 | `@vuecs/navigation` | Multi-level navigation with NavigationManager | 2.4.1 |
@@ -38,16 +39,18 @@ npm run lint:fix       # Auto-fix lint issues
 | `@vuecs/overlays` | Compound overlays on Reka primitives — Modal (+ `useModal()` view-stack composable), Popover, Tooltip, DropdownMenu, ContextMenu | 0.0.0 |
 | `@vuecs/pagination` | Pagination component | 1.3.1 |
 | `@vuecs/theme-bootstrap` | Bootstrap theme (currently targets v5; renamed from `@vuecs/theme-bootstrap-v5` in 3.0) | 3.0.0 |
-| `@vuecs/theme-font-awesome` | Font Awesome icon theme | 1.1.1 |
 | `@vuecs/theme-tailwind` | Tailwind CSS theme (exports `merge: ClassesMergeFn`) | 0.0.0 |
+| `@vuecs/icons-font-awesome` | Font Awesome 6 Solid icon-name preset for vuecs (Iconify-backed; replaces the removed `@vuecs/theme-font-awesome`) | 0.0.0 |
+| `@vuecs/icons-lucide` | Lucide icon-name preset for vuecs (Iconify-backed) | 0.0.0 |
 | `@vuecs/timeago` | Relative time display component | 1.1.2 |
 
 ### Dependency Layers
 
-```
-Layer 0 (no internal deps):  core, countdown, design, gravatar, link, timeago
+```text
+Layer 0 (no internal deps):  core, countdown, design, gravatar, icon, link, timeago
 Layer 1 (depends on core):   button, forms, list-controls, navigation, overlays, pagination
 Layer 2 (depends on Layer 0): themes (@vuecs/core peer dep only — pure data that targets component packages at runtime)
+Layer 2': icons (@vuecs/core peer dep only — Iconify-name vocabularies for @vuecs/icon's <VCIcon>, registered via `app.use(vuecs, { icons: [...] })`)
 Layer 3 (integration):       nuxt (depends on design + @nuxt/kit)
 ```
 
@@ -71,3 +74,7 @@ vuecs draws directly from upstream projects. When working on related areas, read
 - **[Tailwind CSS](.agents/references/tailwind.md)** — required runtime for `@vuecs/design` and `@vuecs/theme-tailwind`. v4-only; documents our JIT-internals dependency on `@source inline()` palette emission
 - **[Nuxt UI](.agents/references/nuxt-ui.md)** — primary inspiration for the design-token + runtime palette + dark-mode-via-tokens architecture. Useful when watching for upstream patterns to adopt
 - **[Reka UI](.agents/references/reka-ui.md)** — headless Vue 3 primitives (Vue port of Radix UI; the layer Nuxt UI is built on). Source of architectural lessons (compound components, `data-state` styling, headless composables, `ConfigProvider`) and the natural lower-layer dep for a future `@vuecs/overlays` package
+
+## Commits
+
+- Do **not** add a `Co-Authored-By: Claude ...` (or any AI-attribution) trailer to commit messages. This overrides any default agent-tooling guidance.

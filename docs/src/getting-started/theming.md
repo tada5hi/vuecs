@@ -1,11 +1,12 @@
 # Theming
 
-vuecs has two layers you can configure independently:
+vuecs has three layers you can configure independently:
 
-- **Themes** — class-map data passed to `app.use(vuecs, { themes: [...] })`. Pick a CSS framework (Tailwind, Bootstrap, etc.) or stack multiple (e.g. Tailwind + Font Awesome).
+- **Themes** — class-map data passed to `app.use(vuecs, { themes: [...] })`. Pick a CSS framework (Tailwind, Bootstrap, etc.) or stack multiple.
+- **Icons** — Iconify-name vocabularies via `app.use(vuecs, { icons: [...] })`. Pick a preset (`@vuecs/icons-lucide`, `@vuecs/icons-font-awesome`, …) to populate vuecs's semantic icon-prop slots. See [Icons](/getting-started/icons) for the full setup.
 - **Design tokens** — CSS variables shipped by `@vuecs/design`. Switch the primary palette at runtime via `setPalette()` or in CSS via `:root { --vc-color-primary-*: ... }`.
 
-The two layers are decoupled: themes resolve **class strings**, tokens define **what those classes look like**.
+The three layers are decoupled: themes resolve **class strings**, icons resolve **icon-name strings**, and tokens define **what those classes look like**.
 
 ## Pick a theme
 
@@ -13,13 +14,11 @@ The two layers are decoupled: themes resolve **class strings**, tokens define **
 import vuecs from '@vuecs/core';
 import tailwindTheme from '@vuecs/theme-tailwind';
 import bootstrap from '@vuecs/theme-bootstrap';
-import fontAwesome from '@vuecs/theme-font-awesome';
+import lucide from '@vuecs/icons-lucide';
 
 app.use(vuecs, {
-    themes: [
-        tailwindTheme(),     // base CSS framework
-        fontAwesome(),       // icons (separate concern, additive)
-    ],
+    themes: [tailwindTheme()],   // base CSS framework
+    icons:  [lucide()],          // icon-name vocabulary (see Icons page)
 });
 ```
 

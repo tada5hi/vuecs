@@ -29,6 +29,8 @@
             "@vuecs/forms/*": ["./packages/forms/src/*"],
             "@vuecs/gravatar": ["./packages/gravatar/src"],
             "@vuecs/gravatar/*": ["./packages/gravatar/src/*"],
+            "@vuecs/icon": ["./packages/icon/src"],
+            "@vuecs/icon/*": ["./packages/icon/src/*"],
             "@vuecs/link": ["./packages/link/src"],
             "@vuecs/link/*": ["./packages/link/src/*"],
             "@vuecs/list-controls": ["./packages/list-controls/src"],
@@ -45,11 +47,13 @@
             "@vuecs/timeago/*": ["./packages/timeago/src/*"],
             "@vuecs/theme-bootstrap": ["./themes/bootstrap/src"],
             "@vuecs/theme-bootstrap/*": ["./themes/bootstrap/src/*"],
-            "@vuecs/theme-font-awesome": ["./themes/font-awesome/src"],
-            "@vuecs/theme-font-awesome/*": ["./themes/font-awesome/src/*"],
             "@vuecs/theme-tailwind": ["./themes/tailwind/src"],
-            "@vuecs/theme-tailwind/*": ["./themes/tailwind/src/*"]
+            "@vuecs/theme-tailwind/*": ["./themes/tailwind/src/*"],
+            "@vuecs/icons-font-awesome": ["./icons/font-awesome/src"],
+            "@vuecs/icons-font-awesome/*": ["./icons/font-awesome/src/*"],
+            "@vuecs/icons-lucide": ["./icons/lucide/src"],
+            "@vuecs/icons-lucide/*": ["./icons/lucide/src/*"]
         }
     },
-    "include": ["packages/*/src/**/*", "themes/*/src/**/*"]
+    "include": ["packages/*/src/**/*", "themes/*/src/**/*", "icons/*/src/**/*"]
 }

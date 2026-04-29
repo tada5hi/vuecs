@@ -36,6 +36,12 @@ vuecs ships its components across separate packages — install only what you us
 |-----------|-------|
 | [Gravatar](/components/gravatar) | Gravatar avatar from email address |
 
+## @vuecs/icon
+
+| Component | Notes |
+|-----------|-------|
+| [Icon](/components/icon) | Iconify-backed icon component used by `VCButton`, `VCPagination`, … |
+
 ## @vuecs/link
 
 | Component | Notes |

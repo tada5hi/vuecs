@@ -1,6 +1,7 @@
 <script lang="ts">
-import { useComponentTheme } from '@vuecs/core';
+import { useComponentDefaults, useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
+import { VCIcon } from '@vuecs/icon';
 import {
     PaginationEllipsis,
     PaginationFirst,
@@ -13,7 +14,7 @@ import {
 } from 'reka-ui';
 import { computed, defineComponent } from 'vue';
 import type { ExtractPublicPropTypes, PropType } from 'vue';
-import type { PaginationMeta, PaginationThemeClasses } from './type';
+import type { PaginationDefaults, PaginationMeta, PaginationThemeClasses } from './type';
 import {
     calculateOffset,
     calculatePage,
@@ -27,7 +28,6 @@ const paginationProps = {
     busy: { type: Boolean, default: false },
     tag: { type: String, default: 'ul' },
     itemTag: { type: String, default: 'li' },
-    iconTag: { type: String, default: 'i' },
     themeClass: { type: Object as PropType<ThemeClassesOverride<PaginationThemeClasses>>, default: undefined },
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
     // When true, edge controls (First/Prev at page 1, Next/Last at the
@@ -37,9 +37,36 @@ const paginationProps = {
     // Does NOT apply to the `busy` state (loading should not make
     // pagination disappear).
     hideDisabled: { type: Boolean, default: false },
+    // Icon name strings (Iconify format, e.g. 'lucide:chevron-left'),
+    // resolved through <VCIcon>. Default `undefined` falls through to
+    // the DefaultsManager — install an icon preset (e.g. @vuecs/icons-lucide)
+    // to populate. Pass `''` to suppress the icon for this instance.
+    firstIcon: { type: String, default: undefined },
+    prevIcon: { type: String, default: undefined },
+    nextIcon: { type: String, default: undefined },
+    lastIcon: { type: String, default: undefined },
+    // Text labels — default English fallbacks ship in behavioral defaults.
+    // Override per-instance via these props, or globally via
+    // `app.use(vuecs, { defaults: { pagination: { prevLabel: 'Zurück' } } })`
+    // for i18n. Pass `''` to suppress the label for icon-only buttons.
+    firstLabel: { type: String, default: undefined },
+    prevLabel: { type: String, default: undefined },
+    nextLabel: { type: String, default: undefined },
+    lastLabel: { type: String, default: undefined },
 };
 
 export type PaginationProps = ExtractPublicPropTypes<typeof paginationProps>;
+
+const behavioralDefaults: PaginationDefaults = {
+    firstIcon: '',
+    prevIcon: '',
+    nextIcon: '',
+    lastIcon: '',
+    firstLabel: 'First',
+    prevLabel: 'Previous',
+    nextLabel: 'Next',
+    lastLabel: 'Last',
+};
 
 export default defineComponent({
     name: 'VCPagination',
@@ -52,6 +79,7 @@ export default defineComponent({
         PaginationNext,
         PaginationPrev,
         PaginationRoot,
+        VCIcon,
     },
     props: paginationProps,
     emits: ['load'],
@@ -63,12 +91,10 @@ export default defineComponent({
                 link: 'vc-pagination-link',
                 linkActive: 'active',
                 ellipsis: 'vc-pagination-ellipsis',
-                prevIcon: '',
-                nextIcon: '',
-                firstIcon: '',
-                lastIcon: '',
             },
         });
+
+        const defaults = useComponentDefaults('pagination', props, behavioralDefaults);
 
         const currentPage = computed(() => (
             props.total && props.limit ?
@@ -112,6 +138,7 @@ export default defineComponent({
 
         return {
             theme,
+            defaults,
             currentPage,
             showStartControls,
             showEndControls,
@@ -142,23 +169,16 @@ export default defineComponent({
                 :class="theme.item || undefined"
             >
                 <PaginationFirst :class="theme.link || undefined">
-                    <component
-                        :is="iconTag"
-                        v-if="theme.firstIcon"
-                        :class="theme.firstIcon"
+                    <slot
+                        v-if="$slots.first"
+                        name="first"
                     />
-                    <template v-else-if="theme.prevIcon">
-                        <component
-                            :is="iconTag"
-                            :class="theme.prevIcon"
-                        />
-                        <component
-                            :is="iconTag"
-                            :class="theme.prevIcon"
-                        />
-                    </template>
                     <template v-else>
-                        &laquo;
+                        <VCIcon
+                            v-if="defaults.firstIcon"
+                            :name="defaults.firstIcon"
+                        />
+                        <span v-if="defaults.firstLabel">{{ defaults.firstLabel }}</span>
                     </template>
                 </PaginationFirst>
             </component>
@@ -168,13 +188,16 @@ export default defineComponent({
                 :class="theme.item || undefined"
             >
                 <PaginationPrev :class="theme.link || undefined">
-                    <component
-                        :is="iconTag"
-                        v-if="theme.prevIcon"
-                        :class="theme.prevIcon"
+                    <slot
+                        v-if="$slots.prev"
+                        name="prev"
                     />
                     <template v-else>
-                        &lsaquo;
+                        <VCIcon
+                            v-if="defaults.prevIcon"
+                            :name="defaults.prevIcon"
+                        />
+                        <span v-if="defaults.prevLabel">{{ defaults.prevLabel }}</span>
                     </template>
                 </PaginationPrev>
             </component>
@@ -227,13 +250,16 @@ export default defineComponent({
                 :class="theme.item || undefined"
             >
                 <PaginationNext :class="theme.link || undefined">
-                    <component
-                        :is="iconTag"
-                        v-if="theme.nextIcon"
-                        :class="theme.nextIcon"
+                    <slot
+                        v-if="$slots.next"
+                        name="next"
                     />
                     <template v-else>
-                        &rsaquo;
+                        <VCIcon
+                            v-if="defaults.nextIcon"
+                            :name="defaults.nextIcon"
+                        />
+                        <span v-if="defaults.nextLabel">{{ defaults.nextLabel }}</span>
                     </template>
                 </PaginationNext>
             </component>
@@ -243,23 +269,16 @@ export default defineComponent({
                 :class="theme.item || undefined"
             >
                 <PaginationLast :class="theme.link || undefined">
-                    <component
-                        :is="iconTag"
-                        v-if="theme.lastIcon"
-                        :class="theme.lastIcon"
+                    <slot
+                        v-if="$slots.last"
+                        name="last"
                     />
-                    <template v-else-if="theme.nextIcon">
-                        <component
-                            :is="iconTag"
-                            :class="theme.nextIcon"
-                        />
-                        <component
-                            :is="iconTag"
-                            :class="theme.nextIcon"
-                        />
-                    </template>
                     <template v-else>
-                        &raquo;
+                        <VCIcon
+                            v-if="defaults.lastIcon"
+                            :name="defaults.lastIcon"
+                        />
+                        <span v-if="defaults.lastLabel">{{ defaults.lastLabel }}</span>
                     </template>
                 </PaginationLast>
             </component>

@@ -27,16 +27,17 @@ Themes are resolved at runtime by `@vuecs/core`'s theme manager through four lay
 ## Getting Started
 
 ```bash
-npm install @vuecs/core @vuecs/theme-bootstrap @vuecs/theme-font-awesome
+npm install @vuecs/core @vuecs/theme-bootstrap @vuecs/icon @vuecs/icons-lucide
 ```
 
 ```typescript
 import vuecs, { extend } from '@vuecs/core';
 import bootstrap from '@vuecs/theme-bootstrap';
-import fontAwesome from '@vuecs/theme-font-awesome';
+import lucide from '@vuecs/icons-lucide';
 
 app.use(vuecs, {
-    themes: [bootstrap(), fontAwesome()],
+    themes: [bootstrap()],
+    icons:  [lucide()],
     overrides: {
         elements: { listItem: { classes: { root: extend('border-bottom') } } },
     },
@@ -90,7 +91,7 @@ Form inputs on Reka UI primitives, with validation support: Checkbox + CheckboxG
 
 [![npm version](https://badge.fury.io/js/@vuecs%2Fpagination.svg)](https://badge.fury.io/js/@vuecs%2Fpagination)
 
-Pagination component with page calculation utilities and icon slots driven by themes.
+Pagination component with page calculation utilities and Iconify-backed icon props.
 
 ```vue
 <VCPagination :total="100" :limit="10" :offset="0" @load="onPageChange" />
@@ -140,7 +141,7 @@ Relative time display with locale support and auto-update.
 
 ## Themes
 
-Themes are functions returning `{ elements, classesMergeFn? }`. Multiple themes compose in array order — e.g. a CSS-framework theme for layout plus an icon theme for glyphs. Themes only depend on `@vuecs/core`; the class strings they provide target whichever component packages the consumer has installed.
+Themes are functions returning `{ elements, classesMergeFn? }`. Multiple themes compose in array order. Themes resolve **CSS class strings only** — icon glyphs are provided separately by [icon presets](#icons) (`@vuecs/icons-lucide`, `@vuecs/icons-font-awesome`, …) configured under `icons:`. Themes only depend on `@vuecs/core`; the class strings they provide target whichever component packages the consumer has installed.
 
 ### `@vuecs/theme-bootstrap`
 
@@ -169,18 +170,22 @@ app.use(vuecs, {
 });
 ```
 
-### `@vuecs/theme-font-awesome`
+## Icons
 
-[![npm version](https://badge.fury.io/js/@vuecs%2Ftheme-font-awesome.svg)](https://badge.fury.io/js/@vuecs%2Ftheme-font-awesome)
-
-Font Awesome icon classes for icon slots (`pagination.prevIcon`, `listItem.icon`, …). All values use `extend()` so it layers on top of a CSS-framework theme without wiping its classes. (`VCButton`'s create/update icon defaults are registered through `submitButton` defaults instead — see `useSubmitButton()` in `@vuecs/forms`.)
+Icon vocabularies are configured separately from themes. Pick an Iconify-backed preset (`@vuecs/icons-lucide`, `@vuecs/icons-font-awesome`) to populate the semantic icon-prop slots on `VCPagination`, `VCButton`, etc.
 
 ```typescript
+import vuecs from '@vuecs/core';
 import bootstrap from '@vuecs/theme-bootstrap';
-import fontAwesome from '@vuecs/theme-font-awesome';
+import lucide from '@vuecs/icons-lucide';
 
-app.use(vuecs, { themes: [bootstrap(), fontAwesome()] });
+app.use(vuecs, {
+    themes: [bootstrap()],
+    icons:  [lucide()],
+});
 ```
+
+See [`@vuecs/icon`](./packages/icon/README.md) for the runtime component (`<VCIcon>`) and the icon delivery options (Nuxt, Vite, SPA).
 
 ## Contributing
 

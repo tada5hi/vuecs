@@ -5,10 +5,15 @@ import {
     it,
 } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { installThemeManager } from '@vuecs/core';
+import { installDefaultsManager, installThemeManager } from '@vuecs/core';
 import { VCPagination } from '../../src';
 
-const themePlugin = { install: (app: any) => installThemeManager(app) };
+const themePlugin = {
+    install: (app: any) => {
+        installThemeManager(app);
+        installDefaultsManager(app);
+    },
+};
 
 const findPageButton = (wrapper: ReturnType<typeof mount>, page: number) => wrapper
     .findAll('button[data-type="page"]')
@@ -190,5 +195,82 @@ describe('VCPagination', () => {
         const pageButtons = wrapper.findAll('button[data-type="page"]');
         expect(pageButtons).toHaveLength(1);
         expect(pageButtons[0].text().trim()).toBe('1');
+    });
+
+    it('renders default English text labels on edge buttons when no slots/icons provided', () => {
+        const wrapper = mount(VCPagination, {
+            props: {
+                total: 50, 
+                limit: 10, 
+                offset: 20, 
+            },
+            global: { plugins: [themePlugin] },
+        });
+        expect(wrapper.find('button[aria-label="First Page"]').text()).toBe('First');
+        expect(wrapper.find('button[aria-label="Previous Page"]').text()).toBe('Previous');
+        expect(wrapper.find('button[aria-label="Next Page"]').text()).toBe('Next');
+        expect(wrapper.find('button[aria-label="Last Page"]').text()).toBe('Last');
+    });
+
+    it('per-instance label props override the defaults', () => {
+        const wrapper = mount(VCPagination, {
+            props: {
+                total: 50,
+                limit: 10,
+                offset: 20,
+                prevLabel: 'Zurück',
+                nextLabel: 'Weiter',
+            },
+            global: { plugins: [themePlugin] },
+        });
+        expect(wrapper.find('button[aria-label="Previous Page"]').text()).toBe('Zurück');
+        expect(wrapper.find('button[aria-label="Next Page"]').text()).toBe('Weiter');
+    });
+
+    it('empty-string label suppresses the vuecs-rendered label content', () => {
+        // The default 'Previous' label appears in the button when no override
+        // is set. Setting `prevLabel: ''` suppresses vuecs's own label span;
+        // any remaining text is Reka UI's screen-reader-only "Prev page" /
+        // "Next page" affordance, which is intentional and out of scope.
+        const withDefault = mount(VCPagination, {
+            props: {
+                total: 50, 
+                limit: 10, 
+                offset: 20, 
+            },
+            global: { plugins: [themePlugin] },
+        });
+        expect(withDefault.find('button[aria-label="Previous Page"]').text()).toContain('Previous');
+
+        const withEmpty = mount(VCPagination, {
+            props: {
+                total: 50, 
+                limit: 10, 
+                offset: 20, 
+                prevLabel: '', 
+            },
+            global: { plugins: [themePlugin] },
+        });
+        // 'Previous' specifically (capitalised, vuecs's contribution) is gone.
+        // Reka's sr-only "Prev page" (lowercase 'p') may remain.
+        expect(withEmpty.find('button[aria-label="Previous Page"]').text()).not.toMatch(/Previous/);
+    });
+
+    it('full-button slot wins over icon prop and label default', () => {
+        const wrapper = mount(VCPagination, {
+            props: {
+                total: 50,
+                limit: 10,
+                offset: 20,
+                prevIcon: 'lucide:chevron-left',
+            },
+            slots: { prev: '<span class="custom-prev">go back</span>' },
+            global: { plugins: [themePlugin] },
+        });
+        const prev = wrapper.find('button[aria-label="Previous Page"]');
+        expect(prev.find('.custom-prev').exists()).toBe(true);
+        expect(prev.text()).toBe('go back');
+        // Icon prop ignored when full slot present
+        expect(prev.text()).not.toContain('Previous');
     });
 });

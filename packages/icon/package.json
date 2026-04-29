@@ -1,0 +1,53 @@
+{
+    "name": "@vuecs/icon",
+    "version": "0.0.0",
+    "type": "module",
+    "description": "Iconify-backed icon component for vuecs. Wraps @iconify/vue's <Icon> with a vuecs-namespaced <VCIcon>.",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "keywords": [
+        "vue",
+        "vuecs",
+        "icon",
+        "iconify"
+    ],
+    "author": {
+        "name": "Peter Placzek",
+        "email": "contact@tada5hi.net",
+        "url": "https://tada5hi.net"
+    },
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tada5hi/vuecs.git",
+        "directory": "packages/icon"
+    },
+    "scripts": {
+        "build:js": "tsdown",
+        "build:types": "vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json",
+        "build": "rimraf dist && npm run build:js && npm run build:types"
+    },
+    "dependencies": {
+        "@iconify/vue": "^4.3.0"
+    },
+    "devDependencies": {
+        "vue": "^3.5.28"
+    },
+    "peerDependencies": {
+        "vue": "^3.x"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

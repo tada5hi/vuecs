@@ -11,6 +11,7 @@
         "packages/design": {"component": "design" },
         "packages/forms": {"component": "forms" },
         "packages/gravatar": {"component": "gravatar" },
+        "packages/icon": {"component": "icon" },
         "packages/link": {"component": "link" },
         "packages/list-controls": {"component": "list-controls" },
         "packages/navigation": {"component": "navigation" },
@@ -18,8 +19,9 @@
         "packages/overlays": {"component": "overlays" },
         "packages/pagination": {"component": "pagination" },
         "themes/bootstrap": {"component": "theme-bootstrap" },
-        "themes/font-awesome": {"component": "theme-font-awesome" },
         "themes/tailwind": {"component": "theme-tailwind" },
+        "icons/font-awesome": {"component": "icons-font-awesome" },
+        "icons/lucide": {"component": "icons-lucide" },
         "packages/timeago": {"component": "timeago" },
         "examples/nuxt": {"component": "examples-nuxt"}
     },
