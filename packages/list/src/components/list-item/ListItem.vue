@@ -3,8 +3,8 @@ import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { defineComponent, h } from 'vue';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
-import { applyAsChild } from './render-utils';
-import type { ListItemThemeClasses } from './types';
+import { applyAsChild } from '../../utils';
+import type { ListItemThemeClasses } from '../../types';
 
 const listItemProps = {
     /** The item record this row represents. Forwarded as a slot prop. */

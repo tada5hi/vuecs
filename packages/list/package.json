@@ -2,7 +2,7 @@
     "name": "@vuecs/list",
     "version": "0.0.0",
     "type": "module",
-    "description": "Compound list components for vuecs (List / Header / Body / Item / Footer / Loading / NoMore) plus the useList() state composable. Successor to @vuecs/list-controls — clean break, compound API.",
+    "description": "Compound list components for vuecs (List / Header / Body / Item / ItemText / ItemActions / Footer / Loading / Empty) plus the defineList() factory + useList() injector. Successor to @vuecs/list-controls — clean break, compound API.",
     "exports": {
         "./package.json": "./package.json",
         ".": {

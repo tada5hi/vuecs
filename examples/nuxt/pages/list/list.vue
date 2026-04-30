@@ -1,9 +1,13 @@
 <script lang="ts">
-import { VCList, VCListItem } from '@vuecs/list';
+import { VCList, VCListItem, VCListItemText } from '@vuecs/list';
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
-    components: { VCList, VCListItem },
+    components: {
+        VCList, 
+        VCListItem, 
+        VCListItemText, 
+    },
     setup() {
         const items = ref<{ id: number; name: string }[]>([
             { id: 1, name: 'ABC' },
@@ -18,9 +22,9 @@ export default defineComponent({
     <VCList :data="items">
         <template #item="{ data }">
             <VCListItem :data="data">
-                <template #text>
+                <VCListItemText>
                     {{ data.name }}
-                </template>
+                </VCListItemText>
             </VCListItem>
         </template>
     </VCList>

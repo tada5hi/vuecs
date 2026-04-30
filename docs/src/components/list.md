@@ -1,13 +1,13 @@
 # List
 
-Compound list components: a stateful root (`VCList`) plus thin part components (`VCListHeader`, `VCListBody`, `VCListItem`, `VCListItemText`, `VCListItemActions`, `VCListFooter`, `VCListLoading`, `VCListEmpty`) that read shared state from a context provider. Plus a `useList()` composable that holds the state container and lets consumers extend it with arbitrary helpers (per-row mutation, pagination callbacks, refresh, …).
+Compound list components: a stateful root (`VCList`) plus thin part components (`VCListHeader`, `VCListBody`, `VCListItem`, `VCListItemText`, `VCListItemActions`, `VCListFooter`, `VCListLoading`, `VCListEmpty`) that read shared state from a context provider. Plus a `defineList()` composable that holds the state container and lets consumers extend it with arbitrary helpers (per-row mutation, pagination callbacks, refresh, …).
 
 ```bash
 npm install @vuecs/list
 ```
 
 ::: warning Renamed from `@vuecs/list-controls`
-This package is the successor to `@vuecs/list-controls@2.x`. It's a clean break — no shim, no compat layer. The old prop-drilled `<VCList>` with embedded `created`/`updated`/`deleted` slot helpers is gone; the compound API + `useList()` replace it. See [Migration from `@vuecs/list-controls`](#migration-from-vuecs-list-controls) below.
+This package is the successor to `@vuecs/list-controls@2.x`. It's a clean break — no shim, no compat layer. The old prop-drilled `<VCList>` with embedded `created`/`updated`/`deleted` slot helpers is gone; the compound API + `defineList()` replace it. See [Migration from `@vuecs/list-controls`](#migration-from-vuecs-list-controls) below.
 :::
 
 ## Basic usage
@@ -19,23 +19,43 @@ This package is the successor to `@vuecs/list-controls@2.x`. It's a clean break 
 
 ```vue [Vue]
 <script setup lang="ts">
-import { VCList, VCListItem, VCListItemText } from '@vuecs/list';
+import {
+    VCList,
+    VCListItem,
+    VCListItemActions,
+    VCListItemText,
+} from '@vuecs/list';
 import { ref } from 'vue';
 
-const data = ref([
-    { id: 1, name: 'Apples' },
-    { id: 2, name: 'Oranges' },
-    { id: 3, name: 'Pears' },
+type Fruit = { id: number; name: string; stock: number };
+
+const data = ref<Fruit[]>([
+    { id: 1, name: 'Apples', stock: 12 },
+    { id: 2, name: 'Oranges', stock: 5 },
+    { id: 3, name: 'Pears', stock: 8 },
 ]);
+
+function remove(id: number): void {
+    data.value = data.value.filter((row) => row.id !== id);
+}
 </script>
 
 <template>
     <VCList :data="data">
         <template #item="{ data: item }">
             <VCListItem :data="item">
-                <VCListItemText>{{ item.name }}</VCListItemText>
+                <VCListItemText>
+                    <span class="font-medium">{{ item.name }}</span>
+                    <span class="text-xs text-fg-muted">
+                        {{ item.stock }} in stock
+                    </span>
+                </VCListItemText>
+                <VCListItemActions>
+                    <button type="button" @click="remove(item.id)">Remove</button>
+                </VCListItemActions>
             </VCListItem>
         </template>
+        <template #empty>Nothing left — add some fruit.</template>
     </VCList>
 </template>
 ```
@@ -95,7 +115,26 @@ Pick this when you want explicit control — skip a section, reorder, wrap a par
 
 ### Row layout
 
-`<VCListItem>` is a flex row. `<VCListItemText>` takes `flex-1` so it consumes available space; any number of `<VCListItemActions>` clusters trail it without fighting for position. For full custom rendering, drop sub-components and use the default slot directly:
+`<VCListItem>` is a flex row. `<VCListItemText>` takes `flex-1` so it consumes available space; any number of `<VCListItemActions>` clusters trail it without fighting for position.
+
+```vue
+<VCListItem :data="user">
+    <VCListItemText>{{ user.email }}</VCListItemText>
+
+    <!-- Primary actions cluster -->
+    <VCListItemActions>
+        <button @click="edit(user)">Edit</button>
+        <button @click="remove(user)">Delete</button>
+    </VCListItemActions>
+
+    <!-- Overflow cluster — sits next to primary, no `ml-auto` race -->
+    <VCListItemActions>
+        <button @click="openMenu(user)">⋯</button>
+    </VCListItemActions>
+</VCListItem>
+```
+
+For full custom rendering, drop sub-components and use the default slot directly:
 
 ```vue
 <VCListItem :data="data" asChild>
@@ -103,45 +142,94 @@ Pick this when you want explicit control — skip a section, reorder, wrap a par
 </VCListItem>
 ```
 
-## `useList()` composable
+## `defineList()` composable
 
 The state container. `<VCList>` constructs a minimal one internally when only `data` / `busy` / `total` / `meta` are passed; for shared state across views or extensible helpers, build your own and pass via `:state`.
 
 ```ts
-import { useList } from '@vuecs/list';
+import { defineList } from '@vuecs/list';
 
-const list = useList({
-    data: users,                    // ref / getter / plain
+const users = ref<User[]>([]);
+
+const list = defineList({
+    data: users,                              // ref / getter / plain
+    setData: (next) => { users.value = next; },  // OPTIONAL — see below
     busy: loading,
     total,
-    meta,                           // pagination cursor, filters, …
-    itemId: (u) => u.id,            // identity hint for findIndex / applyUpdate
+    itemId: (u) => u.id,                      // identity hint for findIndex / applyUpdate
 
-    mergeOnUpdate: true,            // apply { ...existing, ...patch } on update
+    mergeOnUpdated: true,                     // apply { ...existing, ...patch } on update
 
-    // Arbitrary extras flow to slot props:
-    refresh: () => fetch('/users'),
+    // Anything that's not first-class state goes into the typed `meta` bag —
+    // pagination cursors, filter state, callbacks (`refresh`, `load`),
+    // helper flags. Forwarded verbatim to `list.meta`; nested Refs / closures
+    // stay as-is so consumers manage reactivity inside the bag themselves.
+    meta: {
+        refresh: () => fetch('/users'),
+        cursor,
+    },
 });
 
 // list.data           — ComputedRef<T[]>
 // list.busy           — ComputedRef<boolean>
 // list.total          — ComputedRef<number>            (data.length fallback)
-// list.meta           — ComputedRef<M | undefined>
+// list.meta           — Meta (verbatim; defaults to `{}`)
 // list.isEmpty        — ComputedRef<boolean>           (!busy && total === 0)
 // list.findIndex(item)
 // list.applyCreate(arr, item) / applyUpdate / applyDelete  — pure helpers honoring flags
-// list.refresh        — your own pass-through field
+// list.create(item) / update / delete                — bound mutators (when a writer is derivable)
 ```
 
 ```vue
 <VCList :state="list">
-    <template #item="{ data, refresh }">      <!-- slot props are list.* -->
+    <template #item="{ data, meta }">         <!-- slot props are list.* -->
+        <button @click="meta.refresh()">Reload</button>
         ...
     </template>
 </VCList>
 ```
 
-`useList()` is **state-only** — no event emission, no automatic mutation. The `applyCreate` / `applyUpdate` / `applyDelete` helpers return a *new* array honoring the configured flags; you wire them into your own mutation flow.
+### Mutation: pure helpers vs. bound mutators
+
+`defineList()` exposes ergonomic `create` / `update` / `delete` mutators whenever a writer can be derived from the input:
+
+```ts
+// data is a Ref → mutators are wired automatically:
+const users = ref<User[]>([]);
+const list = defineList({ data: users });
+list.create(item);   // ≡ users.value = applyCreate(users.value, item)
+list.update(item);
+list.delete(item);
+
+// data is a getter or plain array → no auto-write path; pass setData to opt in:
+const list = defineList({
+    data: () => store.users,
+    setData: (next) => store.replaceUsers(next),
+});
+list.create(item);   // routes through the store action
+
+// Explicit setData also overrides the auto-derived setter on a Ref source —
+// useful for hooking side effects (logging, optimistic UI, etc.):
+const list = defineList({
+    data: users,
+    setData: (next) => { logChange(next); users.value = next; },
+});
+```
+
+The pure `applyCreate` / `applyUpdate` / `applyDelete` helpers are always exposed — when you want full control, the explicit-write path stays available:
+
+```ts
+const list = defineList({ data: users });
+users.value = list.applyCreate(users.value, item);
+```
+
+All three flag-honoring forms share the same semantics; the difference is whether the composable does the assignment for you.
+
+**Resolution order for the writer:**
+
+1. Explicit `setData` — wins unconditionally
+2. `data` is a `Ref<T[]>` — auto-derived setter (`(next) => { ref.value = next }`)
+3. Otherwise (getter / plain array, no `setData`) — no mutators; only the pure helpers
 
 ## Props
 
@@ -149,11 +237,11 @@ const list = useList({
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `state` | `UseListReturn` | — | Pre-built state from `useList()`. When set, the simple props are ignored. |
+| `state` | `ListState` | — | Pre-built state from `defineList()`. When set, the simple props are ignored. |
 | `data` | `T[]` | `[]` | Items (used when `state` is omitted) |
 | `busy` | `boolean` | `false` | Loading flag (used when `state` is omitted) |
 | `total` | `number` | `data.length` | Server-side total (used when `state` is omitted) |
-| `meta` | `M` | — | Caller metadata (used when `state` is omitted) |
+| `meta` | `Record<string, unknown>` | — | Verbatim metadata bag (used when `state` is omitted; snapshotted at setup) |
 | `tag` | `string` | `'div'` | Root element tag |
 | `asChild` | `boolean` | `false` | Reka-style: clone the default slot's first vnode instead of emitting a wrapper |
 | `themeClass` | `Partial<ListThemeClasses>` | — | Slot class overrides |
@@ -175,10 +263,10 @@ The remaining parts (`Header`, `Body`, `Item`, `ItemText`, `ItemActions`, `Foote
 
 | Component | Slot | Slot props | Notes |
 |-----------|------|------------|-------|
-| `VCList` (shorthand) | `header` / `item` / `loading` / `empty` / `footer` | `useList()` state (+ `data` / `index` for `item`) | Triggers shorthand mode |
-| `VCList` (compound) | `default` | `useList()` state | Compound child rendering |
+| `VCList` (shorthand) | `header` / `item` / `loading` / `empty` / `footer` | `defineList()` state (+ `data` / `index` for `item`) | Triggers shorthand mode |
+| `VCList` (compound) | `default` | `defineList()` state | Compound child rendering |
 | `VCListBody` | `item` | `{ data, index, …state }` | Auto-iterates `state.data` per row |
-| `VCListBody` | `default` | `useList()` state | Bypasses iteration — escape hatch for virtual scrolling, etc. |
+| `VCListBody` | `default` | `defineList()` state | Bypasses iteration — escape hatch for virtual scrolling, etc. |
 | `VCListItem` | `default` | `{ data, index }` | Row contents (compose `VCListItemText` / `VCListItemActions` here) |
 | `VCListItemText` | `default` | — | The text/content area of a row |
 | `VCListItemActions` | `default` | — | A right-trailing action cluster (render multiple for multi-cluster layouts) |
@@ -250,7 +338,7 @@ app.use(vuecs, {
 | `<VCListNoMore>` | `<VCListEmpty>` (same self-conditioning, accurate name) |
 | `slotProps` prop threaded through every sub-component | gone — children read context |
 | `created` / `updated` / `deleted` slot helpers | gone — consumers handle their own list mutation (use `list.apply*()`) |
-| `load: ListLoadFn` + `meta` props | gone — pass them through `useList()` extras |
+| `load: ListLoadFn` + `meta` props | gone — put callbacks / cursor / filter state in `defineList({ meta: { … } })` |
 | `@vuecs/list-controls` package name | `@vuecs/list` |
 
 ## See also

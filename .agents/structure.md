@@ -12,7 +12,7 @@ vuecs/
     gravatar/         # @vuecs/gravatar
     icon/             # @vuecs/icon — <VCIcon> component wrapping @iconify/vue
     link/             # @vuecs/link
-    list/             # @vuecs/list — compound List / Header / Body / Item / Footer / Loading / NoMore + useList() (renamed from @vuecs/list-controls in plan 010, clean break)
+    list/             # @vuecs/list — compound List / Header / Body / Item / ItemText / ItemActions / Footer / Loading / Empty + defineList() / useList() (renamed from @vuecs/list-controls in plan 010; sub-component split + Empty rename + Pinia-rename + meta unification per plan-010 addenda)
     navigation/       # @vuecs/navigation
     nuxt/             # @vuecs/nuxt — Nuxt module: SSR palette + useColorMode()
     overlays/         # @vuecs/overlays — Modal (+ useModal view-stack) on Reka primitives; popover/tooltip/dropdown follow
@@ -90,6 +90,30 @@ packages/core/src/
     index.ts          # Barrel exports
   utils/              # Shared utilities (inject, provide, normalizeSlot, etc.)
   types.ts            # VNodeClass, VNodeProperties, PartialPick
+```
+
+## List Package Structure
+
+```
+packages/list/src/
+  composables/         # State container + child-side context
+    define-list.ts     # defineList() factory — Pinia-style; returns ListState (+ ListMutators when a writer is derivable)
+    context.ts         # provideList() / useList() — strict Vue inject
+    index.ts
+  components/
+    list/              # Shell parts that read context — wrap `<VCList>`'s state
+      List.vue ListHeader.vue ListBody.vue ListFooter.vue ListLoading.vue ListEmpty.vue
+      index.ts
+    list-item/         # Per-row layout — no context dependency
+      ListItem.vue ListItemText.vue ListItemActions.vue
+      index.ts
+    index.ts
+  utils/               # Render-time helpers (asChild cloning, vnode filtering, slot-prop merge)
+    render-utils.ts
+    index.ts
+  types.ts             # ThemeClasses + ThemeElements / ComponentDefaults augmentations
+  index.ts             # Plugin install + barrel re-exports
+  vue.ts               # GlobalComponents augmentation
 ```
 
 ## Build Outputs

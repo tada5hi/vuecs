@@ -3,10 +3,10 @@ import { useComponentDefaults, useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { defineComponent, h } from 'vue';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
-import { injectListContextOrThrow } from './context';
-import { applyAsChild } from './render-utils';
-import type { ListEmptyDefaults, ListEmptyThemeClasses } from './types';
-import type { UseListReturn } from './use-list';
+import { useList } from '../../composables';
+import type { ListState } from '../../composables';
+import { applyAsChild } from '../../utils';
+import type { ListEmptyDefaults, ListEmptyThemeClasses } from '../../types';
 
 const listEmptyProps = {
     tag: { type: String, default: 'div' },
@@ -17,7 +17,7 @@ const listEmptyProps = {
 
 export type ListEmptyProps = ExtractPublicPropTypes<typeof listEmptyProps>;
 
-type ListEmptySlotProps = UseListReturn<unknown, unknown, Record<string, unknown>>;
+type ListEmptySlotProps = ListState<unknown, Record<string, unknown>>;
 
 const behavioralDefaults: ListEmptyDefaults = { content: 'No data available...' };
 
@@ -30,14 +30,14 @@ export default defineComponent({
     setup(props, { slots }) {
         const theme = useComponentTheme('listEmpty', props, { classes: { root: 'vc-list-empty' } });
         const defaults = useComponentDefaults('listEmpty', props, behavioralDefaults);
-        const ctx = injectListContextOrThrow('VCListEmpty');
+        const ctx = useList('VCListEmpty');
 
         return () => {
             // Self-condition on `isEmpty` — Empty appears only when the
             // list has settled with zero rows (`!busy && total === 0`).
             if (!ctx.isEmpty.value) return null;
             const rootClass = theme.value.root || undefined;
-            const slotChildren = slots.default?.(ctx as unknown as ListEmptySlotProps);
+            const slotChildren = slots.default?.(ctx);
             // asChild can only clone vnodes — only honor it when the
             // consumer supplies a default slot. The string fallback is
             // not a vnode, so it falls through to the wrapper element.

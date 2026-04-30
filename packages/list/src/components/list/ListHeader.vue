@@ -3,10 +3,10 @@ import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { defineComponent, h } from 'vue';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
-import { injectListContextOrThrow } from './context';
-import { applyAsChild } from './render-utils';
-import type { ListHeaderThemeClasses } from './types';
-import type { UseListReturn } from './use-list';
+import { useList } from '../../composables';
+import type { ListState } from '../../composables';
+import { applyAsChild } from '../../utils';
+import type { ListHeaderThemeClasses } from '../../types';
 
 const listHeaderProps = {
     tag: { type: String, default: 'div' },
@@ -23,7 +23,7 @@ const listHeaderProps = {
 
 export type ListHeaderProps = ExtractPublicPropTypes<typeof listHeaderProps>;
 
-type ListHeaderSlotProps = UseListReturn<unknown, unknown, Record<string, unknown>>;
+type ListHeaderSlotProps = ListState<unknown, Record<string, unknown>>;
 
 export default defineComponent({
     name: 'VCListHeader',
@@ -33,11 +33,11 @@ export default defineComponent({
     }>,
     setup(props, { slots }) {
         const theme = useComponentTheme('listHeader', props, { classes: { root: 'vc-list-header' } });
-        const ctx = injectListContextOrThrow('VCListHeader');
+        const ctx = useList('VCListHeader');
 
         return () => {
             const rootClass = theme.value.root || undefined;
-            const children = slots.default?.(ctx as unknown as ListHeaderSlotProps);
+            const children = slots.default?.(ctx);
             if (props.asChild) {
                 const cloned = applyAsChild(children, { class: rootClass });
                 if (cloned) return cloned;

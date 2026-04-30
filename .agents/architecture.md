@@ -285,8 +285,8 @@ app.use(vuecs, {
             createText: computed(() => t('actions.create')),
             updateText: 'Aktualisieren',
         },
-        listNoMore: {
-            content: 'Keine weiteren Einträge verfügbar...',
+        listEmpty: {
+            content: 'Keine Einträge vorhanden...',
         },
         formSelect: {
             placeholder: '-- Auswählen --',
@@ -367,7 +367,7 @@ The following components resolve the listed behavioral props via
 | `VCFormGroup` | `validation` |
 | `VCFormCheckbox` | `labelContent` |
 | `VCFormSwitch` | `labelContent` |
-| `VCListNoMore` | `content` |
+| `VCListEmpty` | `content` |
 | `VCPagination` | `firstIcon`, `prevIcon`, `nextIcon`, `lastIcon`, `firstLabel`, `prevLabel`, `nextLabel`, `lastLabel` |
 
 For these props the Vue `prop.default` is `undefined`; the effective default now

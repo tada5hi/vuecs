@@ -7,15 +7,6 @@ export type { ListHeaderProps } from './ListHeader.vue';
 export { default as VCListBody } from './ListBody.vue';
 export type { ListBodyProps } from './ListBody.vue';
 
-export { default as VCListItem } from './ListItem.vue';
-export type { ListItemProps, ListItemSlotProps } from './ListItem.vue';
-
-export { default as VCListItemText } from './ListItemText.vue';
-export type { ListItemTextProps } from './ListItemText.vue';
-
-export { default as VCListItemActions } from './ListItemActions.vue';
-export type { ListItemActionsProps } from './ListItemActions.vue';
-
 export { default as VCListFooter } from './ListFooter.vue';
 export type { ListFooterProps } from './ListFooter.vue';
 
@@ -24,7 +15,3 @@ export type { ListLoadingProps } from './ListLoading.vue';
 
 export { default as VCListEmpty } from './ListEmpty.vue';
 export type { ListEmptyProps } from './ListEmpty.vue';
-
-export * from './context';
-export * from './types';
-export * from './use-list';

@@ -13,15 +13,15 @@ import type {
     SlotsType, 
     VNode, 
 } from 'vue';
-import { injectListContextOrThrow } from './context';
-import { 
-    applyAsChild, 
-    hasMeaningfulVNodes, 
-    meaningfulVNodes, 
-    mergeSlotProps, 
-} from './render-utils';
-import type { ListBodyThemeClasses } from './types';
-import type { UseListReturn } from './use-list';
+import { useList } from '../../composables';
+import type { ListState } from '../../composables';
+import {
+    applyAsChild,
+    hasMeaningfulVNodes,
+    meaningfulVNodes,
+    mergeSlotProps,
+} from '../../utils';
+import type { ListBodyThemeClasses } from '../../types';
 
 const listBodyProps = {
     tag: { type: String, default: 'div' },
@@ -37,21 +37,21 @@ const listBodyProps = {
 
 export type ListBodyProps = ExtractPublicPropTypes<typeof listBodyProps>;
 
-type ListBodyState = UseListReturn<unknown, unknown, Record<string, unknown>>;
+type ListBodyState = ListState<unknown, Record<string, unknown>>;
 type ListItemSlotPayload = ListBodyState & { data: unknown; index: number };
 
 /**
  * `<VCListBody>` has two modes (Q4):
  *  - **Auto-iterate** when only an `#item` slot is given (and no
  *    default-slot vnodes). Body iterates `data` from context, renders
- *    `#item` per row with the full `useList()` state plus per-row
+ *    `#item` per row with the full `defineList()` state plus per-row
  *    `{ data, index }` slot props (per-row keys win — see
  *    `mergeSlotProps`). Stable `:key` resolution via
  *    `useList().getItemKey()`, falling back to the row index.
  *  - **Manual** when default-slot vnodes are present. Body renders the
  *    children as-written; iteration is the consumer's job (used for
  *    virtual scrolling and other escape-hatch scenarios). The default
- *    slot receives the full `useList()` return as slot props (Q9).
+ *    slot receives the full `defineList()` return as slot props (Q9).
  */
 export default defineComponent({
     name: 'VCListBody',
@@ -62,13 +62,13 @@ export default defineComponent({
     }>,
     setup(props, { slots }) {
         const theme = useComponentTheme('listBody', props, { classes: { root: 'vc-list-body' } });
-        const ctx = injectListContextOrThrow('VCListBody');
+        const ctx = useList('VCListBody');
 
         return () => {
             const rootClass = theme.value.root || undefined;
 
             // Manual mode: invoke default once, decide based on what came back.
-            const defaultVNodes = slots.default?.(ctx as unknown as ListBodyState);
+            const defaultVNodes = slots.default?.(ctx);
             if (hasMeaningfulVNodes(defaultVNodes)) {
                 if (props.asChild) {
                     const cloned = applyAsChild(defaultVNodes, { class: rootClass });
