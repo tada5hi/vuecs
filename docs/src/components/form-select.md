@@ -152,6 +152,19 @@ See [Behavioral Defaults](/guide/behavioral-defaults) for the resolution rules.
 
 ## Theme keys
 
+::: warning Renamed in this release
+The single `root` slot has been **renamed to `trigger`** to reflect the new compound DOM. Per-instance overrides need to migrate:
+
+```vue
+<!-- before -->
+<VCFormSelect :theme-class="{ root: 'my-custom-styles' }" :options="..." />
+<!-- after -->
+<VCFormSelect :theme-class="{ trigger: 'my-custom-styles' }" :options="..." />
+```
+
+Same renaming applies to the `formSelect` entry in `app.use(vuecs, { overrides: { elements: { formSelect: { classes: { ... } } } } })` and to theme packages.
+:::
+
 The compound DOM exposes ten theme slots — target `[data-state=open]`, `[data-highlighted]`, `[data-disabled]`, `[data-placeholder]` for state-driven styling.
 
 | Key | Element |

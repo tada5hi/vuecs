@@ -170,8 +170,6 @@ export default defineComponent({
             return props.options.filter((option) => option.label.match(pattern));
         });
 
-        const itemsLength = computed(() => items.value.length);
-
         const itemsDisplayed = ref<FormOption[]>([]);
         const setItemsDisplayed = () => {
             itemsDisplayed.value = items.value.slice(0, props.maxItems);
@@ -188,11 +186,13 @@ export default defineComponent({
 
         setItemsDisplayed();
 
-        watch(itemsLength, (val, oldValue) => {
-            if (val !== oldValue) {
-                currentIndex.value = 0;
-                setItemsDisplayed();
-            }
+        // Watch the filtered set itself, not just its length — two queries can
+        // return the same number of matches but different items, and the
+        // length-only watcher would miss the content swap, leaving the
+        // dropdown showing the previous query's results.
+        watch(items, () => {
+            currentIndex.value = 0;
+            setItemsDisplayed();
         });
 
         useInfiniteScroll(listElement, () => {
