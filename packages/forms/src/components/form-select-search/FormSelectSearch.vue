@@ -277,11 +277,6 @@ export default defineComponent({
             isDisplayed.value = false;
         };
 
-        const toggleHide = (option: FormOption) => {
-            isDisplayed.value = false;
-            toggle(option);
-        };
-
         onClickOutside(listElement, () => {
             hide();
         }, { ignore: [inputElement] });
@@ -320,7 +315,7 @@ export default defineComponent({
                 }
 
                 if (itemsDisplayed.value.length === 1) {
-                    toggleHide(itemsDisplayed.value[0]);
+                    toggle(itemsDisplayed.value[0]);
                     return;
                 }
 
@@ -328,14 +323,14 @@ export default defineComponent({
                     currentIndex.value >= 0 &&
                     itemsDisplayed.value[currentIndex.value]
                 ) {
-                    toggleHide(itemsDisplayed.value[currentIndex.value]);
+                    toggle(itemsDisplayed.value[currentIndex.value]);
 
                     return;
                 }
 
                 if (selected.value.length === 0) {
                     if (itemsDisplayed.value[0]) {
-                        toggleHide(itemsDisplayed.value[0]);
+                        toggle(itemsDisplayed.value[0]);
                     }
 
                     return;
@@ -358,7 +353,6 @@ export default defineComponent({
 
             isMulti,
             toggle,
-            toggleHide,
             currentIndex,
             q,
             items: itemsDisplayed,

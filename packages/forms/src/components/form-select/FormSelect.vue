@@ -30,6 +30,7 @@ import type {
 import {
     defineComponent,
     h,
+    mergeProps,
 } from 'vue';
 import {
     type FormOption,
@@ -84,12 +85,16 @@ const themeDefaults = {
 
 const behavioralDefaults: FormSelectDefaults = { placeholder: '' };
 
-const renderItem = (option: FormOption, classes: FormSelectThemeClasses): VNode => h(
+const renderItem = (
+    option: FormOption,
+    classes: FormSelectThemeClasses,
+    groupDisabled = false,
+): VNode => h(
     SelectItem,
     {
         key: String(option.value),
         value: option.value,
-        disabled: option.disabled,
+        disabled: groupDisabled || option.disabled,
         class: classes.item,
     },
     {
@@ -106,7 +111,7 @@ const renderGroup = (group: FormOptionGroup, classes: FormSelectThemeClasses): V
     {
         default: () => [
             h(SelectLabel, { class: classes.groupLabel }, () => [group.label]),
-            ...group.options.map((option) => renderItem(option, classes)),
+            ...group.options.map((option) => renderItem(option, classes, !!group.disabled)),
         ],
     },
 );
@@ -169,7 +174,7 @@ export default defineComponent({
                 },
             }, {
                 default: () => [
-                    h(SelectTrigger, { class: resolved.trigger || undefined, ...attrs }, () => [
+                    h(SelectTrigger, mergeProps({ class: resolved.trigger || undefined }, attrs), () => [
                         h(SelectValue, { class: resolved.value || undefined, placeholder }),
                         h(SelectIcon, { class: resolved.icon || undefined }, () => '▾'),
                     ]),

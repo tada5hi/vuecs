@@ -107,7 +107,7 @@ const id = ref<number | undefined>(undefined);
 
 ## Placeholder
 
-`placeholder` renders a leading `<option disabled selected>` whenever `modelValue` is `undefined` or `''`. Falls back to the global `formSelect.placeholder` default; when both are empty no placeholder renders.
+`placeholder` is rendered inside the trigger via Reka's `SelectValue` whenever `modelValue` is unset (no native `<option>` element). The trigger gets a `data-placeholder` attribute so themes can style the empty state (e.g. muted color). Falls back to the global `formSelect.placeholder` default; when both are empty the trigger renders no text.
 
 ```vue
 <VCFormSelect
@@ -133,7 +133,7 @@ app.use(vuecs, {
 
 | Key | Default | Description |
 |-----|---------|-------------|
-| `placeholder` | `''` | Leading disabled option text. Empty disables the placeholder. |
+| `placeholder` | `''` | Trigger text shown while no option is selected. Empty hides the placeholder. |
 
 See [Behavioral Defaults](/guide/behavioral-defaults) for the resolution rules.
 

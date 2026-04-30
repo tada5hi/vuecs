@@ -42,6 +42,17 @@
     color: var(--vc-color-fg-muted, #6b7280);
 }
 
+/* The value sits between the trigger's value-area and the chevron in a flex
+   row. `min-width: 0` allows it to shrink below its intrinsic width so
+   `text-overflow: ellipsis` (driven by theme classes like Bootstrap's
+   `.text-truncate` or Tailwind's `truncate`) actually triggers; without it
+   long labels push the chevron out of view. */
+.vc-form-select-value {
+    flex: 1 1 0%;
+    min-width: 0;
+    overflow: hidden;
+}
+
 .vc-form-select-icon {
     display: inline-flex;
     align-items: center;

@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import {
+    afterEach,
     beforeAll,
     describe,
     expect,
@@ -25,7 +26,10 @@ import { default as VCFormTextarea } from '../../src/components/form-textarea/Fo
 import { default as VCValidationGroup } from '../../src/components/validation-group/ValidationGroup.vue';
 
 // Reka's `useSize` (used by Slider) constructs a `ResizeObserver`. jsdom does
-// not implement it, so install a no-op stub before any component mounts.
+// not implement it. Reka's `SelectTrigger` calls `target.hasPointerCapture`
+// inside its `pointerdown` handler — also missing from jsdom. Both stubs are
+// no-ops; their presence is what matters so the call doesn't throw and abort
+// Reka's open flow.
 beforeAll(() => {
     if (typeof globalThis.ResizeObserver === 'undefined') {
         globalThis.ResizeObserver = class {
@@ -33,6 +37,12 @@ beforeAll(() => {
             unobserve() {}
             disconnect() {}
         } as unknown as typeof globalThis.ResizeObserver;
+    }
+    if (typeof Element !== 'undefined' && !Element.prototype.hasPointerCapture) {
+        Element.prototype.hasPointerCapture = () => false;
+        Element.prototype.setPointerCapture = () => {};
+        Element.prototype.releasePointerCapture = () => {};
+        Element.prototype.scrollIntoView = () => {};
     }
 });
 
@@ -384,16 +394,37 @@ describe('VCFormSwitch', () => {
 });
 
 describe('VCFormSelect', () => {
-    // Reka's Select renders a <button role="combobox"> trigger; the dropdown
-    // mounts in a portal only when open. jsdom can't drive Reka's open flow
-    // reliably (focus/positioning APIs missing), so these tests assert the
-    // trigger surface only — the structurally interesting bits (item rendering,
-    // selection emit, group <optgroup>-equivalent layout) are exercised in
-    // the docs-site demos and the nuxt example, not here.
+    // Reka's Select mounts dropdown contents in a portal under document.body
+    // only after open. We `attachTo: document.body` and click the trigger to
+    // drive the open flow, then query `document.body` for the portal contents.
     const options = [
         { value: '1', label: 'Option 1' },
         { value: '2', label: 'Option 2' },
     ];
+
+    let activeWrapper: ReturnType<typeof mount> | null = null;
+    afterEach(async () => {
+        // Reka schedules microtasks (e.g. closing the dropdown after a pick)
+        // that try to insertBefore on the teleport target. Unmount + flush
+        // before nuking the body so those updates resolve cleanly.
+        if (activeWrapper) {
+            activeWrapper.unmount();
+            activeWrapper = null;
+        }
+        await nextTick();
+        document.body.innerHTML = '';
+    });
+
+    const openSelect = async (wrapper: ReturnType<typeof mount>) => {
+        activeWrapper = wrapper;
+        // Reka's SelectTrigger opens on `pointerdown` (not `click`). Triggering
+        // a synthetic `click` doesn't dispatch the pointer events jsdom needs.
+        const trigger = wrapper.find('button[role="combobox"]');
+        await trigger.trigger('pointerdown');
+        await trigger.trigger('pointerup');
+        await nextTick();
+        await nextTick();
+    };
 
     it('should render a button trigger with role="combobox"', () => {
         const wrapper = mount(VCFormSelect, {
@@ -429,6 +460,113 @@ describe('VCFormSelect', () => {
         });
         const trigger = wrapper.find('button[role="combobox"]');
         expect(trigger.attributes('disabled')).toBeDefined();
+    });
+
+    it('should render every option as a SelectItem when opened', async () => {
+        const wrapper = mount(VCFormSelect, {
+            props: { options },
+            global: { plugins: [themePlugin] },
+            attachTo: document.body,
+        });
+        await openSelect(wrapper);
+        const items = document.body.querySelectorAll('[role="option"]');
+        expect(items.length).toBe(2);
+        expect(items[0].textContent).toContain('Option 1');
+        expect(items[1].textContent).toContain('Option 2');
+    });
+
+    it('should render groups with their label and options', async () => {
+        const grouped = [
+            {
+                label: 'Americas',
+                options: [
+                    { value: 'us', label: 'United States' },
+                    { value: 'br', label: 'Brazil' },
+                ],
+            },
+            {
+                label: 'Europe',
+                options: [
+                    { value: 'de', label: 'Germany' },
+                ],
+            },
+        ];
+        const wrapper = mount(VCFormSelect, {
+            props: { options: grouped },
+            global: { plugins: [themePlugin] },
+            attachTo: document.body,
+        });
+        await openSelect(wrapper);
+        const text = document.body.textContent || '';
+        expect(text).toContain('Americas');
+        expect(text).toContain('Europe');
+        const items = document.body.querySelectorAll('[role="option"]');
+        expect(items.length).toBe(3);
+    });
+
+    it('should mark options inside a disabled group as disabled', async () => {
+        const grouped = [
+            {
+                label: 'Disabled',
+                disabled: true,
+                options: [
+                    { value: 'a', label: 'A' },
+                    { value: 'b', label: 'B' },
+                ],
+            },
+        ];
+        const wrapper = mount(VCFormSelect, {
+            props: { options: grouped },
+            global: { plugins: [themePlugin] },
+            attachTo: document.body,
+        });
+        await openSelect(wrapper);
+        const items = document.body.querySelectorAll('[role="option"]');
+        expect(items.length).toBe(2);
+        items.forEach((item) => {
+            expect(item.getAttribute('data-disabled')).not.toBeNull();
+        });
+    });
+
+    it('should respect the disabled flag on individual options', async () => {
+        const wrapper = mount(VCFormSelect, {
+            props: {
+                options: [
+                    { value: 'a', label: 'A' },
+                    {
+                        value: 'b', 
+                        label: 'B', 
+                        disabled: true, 
+                    },
+                ],
+            },
+            global: { plugins: [themePlugin] },
+            attachTo: document.body,
+        });
+        await openSelect(wrapper);
+        const items = document.body.querySelectorAll('[role="option"]');
+        expect(items[0].getAttribute('data-disabled')).toBeNull();
+        expect(items[1].getAttribute('data-disabled')).not.toBeNull();
+    });
+
+    it('should emit update:modelValue when an option is picked', async () => {
+        const wrapper = mount(VCFormSelect, {
+            props: { options },
+            global: { plugins: [themePlugin] },
+            attachTo: document.body,
+        });
+        await openSelect(wrapper);
+        const items = document.body.querySelectorAll<HTMLElement>('[role="option"]');
+        // Reka SelectItem selects on `pointerup` (not `click`). Dispatch a real
+        // PointerEvent so Reka's handler accepts it; selection runs in a
+        // microtask so we need to await a few ticks.
+        items[1].dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+        items[1].dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
+        await nextTick();
+        await nextTick();
+        const emitted = wrapper.emitted('update:modelValue');
+        expect(emitted).toBeTruthy();
+        expect(emitted![0]).toEqual(['2']);
     });
 });
 

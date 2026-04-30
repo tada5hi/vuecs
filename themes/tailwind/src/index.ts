@@ -77,7 +77,7 @@ export default function tailwindTheme(): Theme {
                     input: 'block w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-fg shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:bg-bg-muted',
                     content: 'absolute inset-x-0 top-[calc(100%+0.25rem)] z-50 max-h-60 overflow-y-auto rounded-md border border-border bg-bg shadow-md',
                     item: 'flex cursor-pointer select-none flex-col gap-0.5 px-3 py-2 text-sm text-fg outline-none hover:bg-bg-muted',
-                    itemActive: '!bg-bg-elevated font-semibold',
+                    itemActive: 'bg-bg-elevated! font-semibold',
                     itemCurrent: 'bg-bg-muted',
                     itemDescription: 'text-xs text-fg-muted',
                     selected: 'mt-2 flex flex-wrap gap-1',
