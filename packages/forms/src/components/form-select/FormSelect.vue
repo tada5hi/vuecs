@@ -6,6 +6,20 @@ import type {
     ThemeElementDefinition,
     VariantValues,
 } from '@vuecs/core';
+import {
+    SelectContent,
+    SelectGroup,
+    SelectIcon,
+    SelectItem,
+    SelectItemIndicator,
+    SelectItemText,
+    SelectLabel,
+    SelectPortal,
+    SelectRoot,
+    SelectTrigger,
+    SelectValue,
+    SelectViewport,
+} from 'reka-ui';
 import type { AcceptableValue } from 'reka-ui';
 import type {
     ExtractPublicPropTypes,
@@ -16,7 +30,6 @@ import type {
 import {
     defineComponent,
     h,
-    mergeProps,
 } from 'vue';
 import {
     type FormOption,
@@ -26,13 +39,21 @@ import {
 } from '../../types/option';
 
 export type FormSelectThemeClasses = {
-    root: string;
+    trigger: string;
+    value: string;
+    icon: string;
+    content: string;
+    viewport: string;
+    item: string;
+    itemIndicator: string;
+    group: string;
+    groupLabel: string;
+    separator: string;
 };
 
 export type FormSelectDefaults = {
     /**
-     * Placeholder text rendered as a leading disabled `<option>`. When unset,
-     * no placeholder option is rendered.
+     * Placeholder text rendered inside the trigger when no option is selected.
      */
     placeholder: string;
 };
@@ -46,33 +67,48 @@ declare module '@vuecs/core' {
     }
 }
 
-const themeDefaults = { classes: { root: '' } };
+const themeDefaults = {
+    classes: {
+        trigger: 'vc-form-select-trigger',
+        value: 'vc-form-select-value',
+        icon: 'vc-form-select-icon',
+        content: 'vc-form-select-content',
+        viewport: 'vc-form-select-viewport',
+        item: 'vc-form-select-item',
+        itemIndicator: 'vc-form-select-item-indicator',
+        group: 'vc-form-select-group',
+        groupLabel: 'vc-form-select-group-label',
+        separator: 'vc-form-select-separator',
+    },
+};
 
 const behavioralDefaults: FormSelectDefaults = { placeholder: '' };
 
-const renderOption = (option: FormOption, modelValue: AcceptableValue | undefined): VNode => h(
-    'option',
+const renderItem = (option: FormOption, classes: FormSelectThemeClasses): VNode => h(
+    SelectItem,
     {
         key: String(option.value),
-        // Pass `option.value` through unchanged — Vue's `<option>._value`
-        // patching preserves identity for non-string primitives (boolean,
-        // bigint, object). Casting to `string | number | undefined` would
-        // drop those cases and break the round-trip in `onChange`.
         value: option.value,
-        selected: option.value === modelValue,
         disabled: option.disabled,
+        class: classes.item,
     },
-    [option.label],
+    {
+        default: () => [
+            h(SelectItemText, null, () => [option.label]),
+            h(SelectItemIndicator, { class: classes.itemIndicator }, () => '✓'),
+        ],
+    },
 );
 
-const renderGroup = (group: FormOptionGroup, modelValue: AcceptableValue | undefined): VNode => h(
-    'optgroup',
+const renderGroup = (group: FormOptionGroup, classes: FormSelectThemeClasses): VNode => h(
+    SelectGroup,
+    { key: group.label, class: classes.group },
     {
-        key: group.label,
-        label: group.label,
-        disabled: group.disabled,
+        default: () => [
+            h(SelectLabel, { class: classes.groupLabel }, () => [group.label]),
+            ...group.options.map((option) => renderItem(option, classes)),
+        ],
     },
-    group.options.map((option) => renderOption(option, modelValue)),
 );
 
 const formSelectProps = {
@@ -85,11 +121,16 @@ const formSelectProps = {
         required: true,
     },
     /**
-     * Placeholder text rendered as a leading disabled option. Falls back
-     * to the global `formSelect.placeholder` default; when both are empty
-     * no placeholder is rendered.
+     * Placeholder text rendered inside the trigger when no option is selected.
+     * Falls back to the global `formSelect.placeholder` default.
      */
     placeholder: { type: String, default: undefined },
+    /** When `true`, blocks user interaction with the trigger. */
+    disabled: { type: Boolean, default: false },
+    /** `name` attribute submitted with the owning form. */
+    name: { type: String, default: undefined },
+    /** When `true`, the field must be set before the owning form can submit. */
+    required: { type: Boolean, default: false },
     themeClass: { type: Object as PropType<ThemeClassesOverride<FormSelectThemeClasses>>, default: undefined },
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
@@ -98,6 +139,7 @@ export type FormSelectProps = ExtractPublicPropTypes<typeof formSelectProps>;
 
 export default defineComponent({
     name: 'VCFormSelect',
+    inheritAttrs: false,
     props: formSelectProps,
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {
@@ -107,49 +149,37 @@ export default defineComponent({
         return () => {
             const resolved = theme.value;
             const { placeholder } = defaults.value;
-            const children: VNodeChild[] = [];
 
-            if (placeholder) {
-                children.push(h(
-                    'option',
-                    {
-                        key: '__placeholder',
-                        value: '',
-                        disabled: true,
-                        selected: props.modelValue === undefined || props.modelValue === '',
-                    },
-                    [placeholder],
-                ));
-            }
-
+            const items: VNodeChild[] = [];
             for (const item of props.options) {
                 if (isFormOptionGroup(item)) {
-                    children.push(renderGroup(item, props.modelValue));
+                    items.push(renderGroup(item, resolved));
                 } else {
-                    children.push(renderOption(item, props.modelValue));
+                    items.push(renderItem(item, resolved));
                 }
             }
 
-            return h('select', mergeProps({
-                class: resolved.root || undefined,
-                onChange($event: Event) {
-                    const target = $event.target as globalThis.HTMLSelectElement;
-                    const selectedRaw = Array.prototype.filter.call(
-                        target.options,
-                        (option: globalThis.HTMLOptionElement) => option.selected,
-                    ).map((option: globalThis.HTMLOptionElement) => {
-                        // Vue patches `_value` onto <option> when `:value`
-                        // resolves to a non-string primitive — preserves the
-                        // original boolean / number / object identity.
-                        const node = option as globalThis.HTMLOptionElement & { _value?: unknown };
-                        return '_value' in node ? node._value : option.value;
-                    });
-
-                    const value = target.multiple ? selectedRaw : selectedRaw[0];
+            return h(SelectRoot, {
+                modelValue: props.modelValue,
+                disabled: props.disabled,
+                name: props.name,
+                required: props.required,
+                'onUpdate:modelValue'(value: AcceptableValue) {
                     emit('update:modelValue', value);
                 },
-                ...(typeof props.modelValue !== 'undefined' ? { value: props.modelValue } : {}),
-            }, attrs), children);
+            }, {
+                default: () => [
+                    h(SelectTrigger, { class: resolved.trigger || undefined, ...attrs }, () => [
+                        h(SelectValue, { class: resolved.value || undefined, placeholder }),
+                        h(SelectIcon, { class: resolved.icon || undefined }, () => '▾'),
+                    ]),
+                    h(SelectPortal, null, () => [
+                        h(SelectContent, { class: resolved.content || undefined, position: 'popper' }, () => [
+                            h(SelectViewport, { class: resolved.viewport || undefined }, () => items),
+                        ]),
+                    ]),
+                ],
+            });
         };
     },
 });

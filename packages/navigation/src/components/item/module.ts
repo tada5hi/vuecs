@@ -182,6 +182,8 @@ export const VCNavItem = defineComponent({
                     title = h('div', {
                         class: resolved.link,
                         'data-vc-collection-item': '',
+                        'data-state': data.value.displayChildren ? 'open' : 'closed',
+                        'data-active': data.value.active ? '' : undefined,
                         tabindex: 0,
                         role: 'button',
                         'aria-expanded': data.value.displayChildren ? 'true' : 'false',
@@ -235,6 +237,8 @@ export const VCNavItem = defineComponent({
                     ...(hasChildren.value ? [resolved.itemNested] : []),
                     { active: data.value.active || data.value.displayChildren },
                 ],
+                'data-active': data.value.active || data.value.displayChildren ? '' : undefined,
+                ...(hasChildren.value ? { 'data-state': data.value.displayChildren ? 'open' : 'closed' } : {}),
             }, [buildItem()]);
         };
     },

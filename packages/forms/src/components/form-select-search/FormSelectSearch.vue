@@ -1,4 +1,10 @@
 <script lang="ts">
+import { useComponentTheme } from '@vuecs/core';
+import type {
+    ThemeClassesOverride,
+    ThemeElementDefinition,
+    VariantValues,
+} from '@vuecs/core';
 import {
     onClickOutside,
     useInfiniteScroll,
@@ -14,6 +20,40 @@ import {
 } from 'vue';
 import type { FormOption } from '../../types/option';
 import FormSelectSearchEntry from './FormSelectSearchEntry.vue';
+
+export type FormSelectSearchThemeClasses = {
+    root: string;
+    input: string;
+    content: string;
+    item: string;
+    itemActive: string;
+    itemCurrent: string;
+    itemDescription: string;
+    selected: string;
+    selectedItem: string;
+    selectedItemRemove: string;
+};
+
+declare module '@vuecs/core' {
+    interface ThemeElements {
+        formSelectSearch?: ThemeElementDefinition<FormSelectSearchThemeClasses>;
+    }
+}
+
+const themeDefaults = {
+    classes: {
+        root: 'vc-form-select-search',
+        input: 'vc-form-select-search-input',
+        content: 'vc-form-select-search-content',
+        item: 'vc-form-select-search-item',
+        itemActive: 'active',
+        itemCurrent: 'current',
+        itemDescription: 'vc-form-select-search-item-description',
+        selected: 'vc-form-select-search-selected',
+        selectedItem: 'vc-form-select-search-selected-item',
+        selectedItemRemove: 'vc-form-select-search-selected-item-remove',
+    },
+};
 
 const formSelectSearchProps = {
     modelValue: {
@@ -46,6 +86,25 @@ const formSelectSearchProps = {
         required: false,
         default: 10,
     },
+    /**
+     * Whether to close the dropdown after a pick. When unset:
+     * - single-select closes (matches the native `<select>` mental model)
+     * - multi-select stays open (so the user can pick several without re-opening)
+     *
+     * Set explicitly (`true` / `false`) to override the mode-default.
+     */
+    closeOnSelect: {
+        type: Boolean as PropType<boolean | undefined>,
+        default: undefined,
+    },
+    themeClass: {
+        type: Object as PropType<ThemeClassesOverride<FormSelectSearchThemeClasses>>,
+        default: undefined,
+    },
+    themeVariant: {
+        type: Object as PropType<VariantValues>,
+        default: undefined,
+    },
 };
 
 export type FormSelectSearchProps = ExtractPublicPropTypes<typeof formSelectSearchProps>;
@@ -55,6 +114,8 @@ export default defineComponent({
     props: formSelectSearchProps,
     emits: ['update:modelValue', 'change'],
     setup(props, { emit }) {
+        const theme = useComponentTheme('formSelectSearch', props, themeDefaults);
+
         const listElement = ref<globalThis.HTMLElement | null>(null);
         const inputElement = ref<globalThis.HTMLElement | null>(null);
 
@@ -113,13 +174,13 @@ export default defineComponent({
 
         const itemsDisplayed = ref<FormOption[]>([]);
         const setItemsDisplayed = () => {
-            itemsDisplayed.value = items.value.slice(0, props.maxItems - 1);
+            itemsDisplayed.value = items.value.slice(0, props.maxItems);
         };
 
         const showMoreItemsDisplayed = () => {
-            const startIndex = itemsDisplayed.value.length - 1;
+            const startIndex = itemsDisplayed.value.length;
             const endIndex = Math.min(startIndex + props.scrollDistance, items.value.length);
-            if (startIndex === endIndex) {
+            if (startIndex >= endIndex) {
                 return;
             }
             itemsDisplayed.value.push(...items.value.slice(startIndex, endIndex));
@@ -144,6 +205,12 @@ export default defineComponent({
 
         const isDisplayed = ref(false);
 
+        // `closeOnSelect === undefined` falls back to the mode-default:
+        // single-select closes, multi stays open.
+        const shouldCloseOnSelect = () => (
+            typeof props.closeOnSelect === 'boolean' ? props.closeOnSelect : !isMulti.value
+        );
+
         const toggle = (option: FormOption) => {
             if (isMulti.value) {
                 const index = selected.value.findIndex((el) => el.value === option.value);
@@ -156,6 +223,10 @@ export default defineComponent({
                 const values = selected.value.map((el) => el.value);
                 emit('update:modelValue', values);
                 emit('change', values);
+
+                if (shouldCloseOnSelect()) {
+                    isDisplayed.value = false;
+                }
                 return;
             }
 
@@ -175,7 +246,9 @@ export default defineComponent({
                 selected.value = [option];
             }
 
-            isDisplayed.value = false;
+            if (shouldCloseOnSelect()) {
+                isDisplayed.value = false;
+            }
 
             if (isBlank) {
                 emit('update:modelValue', null);
@@ -279,6 +352,7 @@ export default defineComponent({
         };
 
         return {
+            theme,
             listElement,
             inputElement,
 
@@ -299,11 +373,11 @@ export default defineComponent({
 });
 </script>
 <template>
-    <div class="vc-form-select-search">
+    <div :class="theme.root">
         <input
             ref="inputElement"
             v-model="q"
-            class="vc-form-select-search-input"
+            :class="theme.input"
             :disabled="disabled"
             :placeholder="placeholder"
             @focus="onFocus"
@@ -314,7 +388,7 @@ export default defineComponent({
         <div
             v-show="isDisplayed"
             ref="listElement"
-            class="vc-form-select-search-content"
+            :class="theme.content"
         >
             <template
                 v-for="(option, index) in items"
@@ -326,17 +400,19 @@ export default defineComponent({
                 >
                     <template #default="{ entry, active }">
                         <div
-                            class="vc-form-select-search-item"
-                            :class="{
-                                'active': active,
-                                'current': index === currentIndex || (index === 0 && currentIndex === -1)
-                            }"
+                            :class="[
+                                theme.item,
+                                {
+                                    [theme.itemActive]: active,
+                                    [theme.itemCurrent]: index === currentIndex || (index === 0 && currentIndex === -1),
+                                },
+                            ]"
                             @mousedown="toggle(entry)"
                         >
                             {{ entry.label }}
                             <span
                                 v-if="entry.description"
-                                class="vc-form-select-search-item-description"
+                                :class="theme.itemDescription"
                             >
                                 {{ entry.description }}
                             </span>
@@ -348,19 +424,26 @@ export default defineComponent({
 
         <div
             v-if="isMulti"
-            class="vc-form-select-search-selected"
+            :class="theme.selected"
         >
             <slot
                 name="selected"
                 :items="selected"
                 :toggle="toggle"
             >
-                <template
+                <button
                     v-for="item in selected"
                     :key="String(item.value)"
+                    type="button"
+                    :class="theme.selectedItem"
+                    @click="toggle(item)"
                 >
                     {{ item.label }}
-                </template>
+                    <span
+                        :class="theme.selectedItemRemove"
+                        aria-hidden="true"
+                    >&times;</span>
+                </button>
             </slot>
         </div>
     </div>

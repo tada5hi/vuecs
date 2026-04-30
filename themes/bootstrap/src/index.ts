@@ -46,7 +46,42 @@ export default function bootstrapTheme(): Theme {
                     group: '',
                 },
             },
-            formSelect: { classes: { root: 'form-select' } },
+            formSelect: {
+                classes: {
+                    // Bootstrap's `.form-select` ships the chevron via background-image —
+                    // it works for native <select> but not for our compound trigger.
+                    // We use `.form-control` for the input chrome plus `d-flex` to lay
+                    // out the value and our own chevron <span> (rendered by SelectIcon).
+                    trigger: 'form-control d-flex align-items-center justify-content-between gap-2 text-start',
+                    value: 'text-truncate',
+                    icon: 'text-muted',
+                    content: 'dropdown-menu show vc-overlay-anim',
+                    viewport: '',
+                    item: 'dropdown-item ps-4 position-relative',
+                    itemIndicator: 'position-absolute start-0 ms-2',
+                    group: '',
+                    groupLabel: 'dropdown-header',
+                    separator: 'dropdown-divider',
+                },
+            },
+            formSelectSearch: {
+                classes: {
+                    root: 'position-relative',
+                    input: 'form-control',
+                    // .show flips Bootstrap's dropdown-menu visibility. The component
+                    // toggles its own v-show, so .show is redundant for visibility,
+                    // but ensures the menu picks up `display: block` if a consumer
+                    // upgrades to a custom toggle that relies on the bootstrap class.
+                    content: 'dropdown-menu show w-100 mt-1 overflow-auto',
+                    item: 'dropdown-item d-flex flex-column gap-1',
+                    itemActive: 'active',
+                    itemCurrent: 'bg-secondary-subtle',
+                    itemDescription: 'small text-muted',
+                    selected: 'd-flex flex-wrap gap-1 mt-2',
+                    selectedItem: 'badge bg-secondary-subtle text-body border d-inline-flex align-items-center gap-1',
+                    selectedItemRemove: 'fw-bold',
+                },
+            },
             formRadio: {
                 classes: {
                     root: 'bg-white shadow-sm',

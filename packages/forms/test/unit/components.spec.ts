@@ -6,7 +6,7 @@ import {
     it,
     vi,
 } from 'vitest';
-import { h } from 'vue';
+import { h, nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import { installDefaultsManager, installThemeManager } from '@vuecs/core';
 import { default as VCFormCheckbox } from '../../src/components/form-checkbox/FormCheckbox.vue';
@@ -384,102 +384,51 @@ describe('VCFormSwitch', () => {
 });
 
 describe('VCFormSelect', () => {
+    // Reka's Select renders a <button role="combobox"> trigger; the dropdown
+    // mounts in a portal only when open. jsdom can't drive Reka's open flow
+    // reliably (focus/positioning APIs missing), so these tests assert the
+    // trigger surface only — the structurally interesting bits (item rendering,
+    // selection emit, group <optgroup>-equivalent layout) are exercised in
+    // the docs-site demos and the nuxt example, not here.
     const options = [
         { value: '1', label: 'Option 1' },
         { value: '2', label: 'Option 2' },
     ];
 
-    it('should render a select element', () => {
+    it('should render a button trigger with role="combobox"', () => {
         const wrapper = mount(VCFormSelect, {
             props: { options },
             global: { plugins: [themePlugin] },
         });
-        expect(wrapper.find('select').exists()).toBe(true);
+        expect(wrapper.find('button[role="combobox"]').exists()).toBe(true);
     });
 
-    it('should render placeholder option when placeholder is set', () => {
+    it('should show placeholder text in the trigger when no value is selected', () => {
         const wrapper = mount(VCFormSelect, {
             props: { options, placeholder: 'Pick one' },
             global: { plugins: [themePlugin] },
         });
-        const opts = wrapper.findAll('option');
-        expect(opts).toHaveLength(3); // placeholder + 2
-        expect(opts[0].text()).toBe('Pick one');
-        expect(opts[0].attributes('disabled')).toBeDefined();
+        expect(wrapper.find('button[role="combobox"]').text()).toContain('Pick one');
     });
 
-    it('should not render placeholder option when placeholder is empty', () => {
-        const wrapper = mount(VCFormSelect, {
-            props: { options },
-            global: { plugins: [themePlugin] },
-        });
-        expect(wrapper.findAll('option')).toHaveLength(2);
-    });
-
-    it('should render all options with their labels', () => {
-        const wrapper = mount(VCFormSelect, {
-            props: { options },
-            global: { plugins: [themePlugin] },
-        });
-        const opts = wrapper.findAll('option');
-        expect(opts[0].text()).toBe('Option 1');
-        expect(opts[1].text()).toBe('Option 2');
-    });
-
-    it('should render groups as <optgroup>', () => {
-        const grouped = [
-            {
-                label: 'Americas',
-                options: [
-                    { value: 'us', label: 'United States' },
-                    { value: 'br', label: 'Brazil' },
-                ],
-            },
-            {
-                label: 'Europe',
-                options: [
-                    { value: 'de', label: 'Germany' },
-                ],
-            },
-        ];
-        const wrapper = mount(VCFormSelect, {
-            props: { options: grouped },
-            global: { plugins: [themePlugin] },
-        });
-        const groups = wrapper.findAll('optgroup');
-        expect(groups).toHaveLength(2);
-        expect(groups[0].attributes('label')).toBe('Americas');
-        expect(groups[1].attributes('label')).toBe('Europe');
-        // Three options under the two groups.
-        const opts = wrapper.findAll('option');
-        expect(opts).toHaveLength(3);
-    });
-
-    it('should mark the matching option as selected from modelValue', () => {
+    it('should show the matching option label in the trigger when modelValue is set', async () => {
         const wrapper = mount(VCFormSelect, {
             props: { options, modelValue: '2' },
             global: { plugins: [themePlugin] },
         });
-        const opts = wrapper.findAll('option');
-        expect((opts[1].element as HTMLOptionElement).selected).toBe(true);
+        // SelectValue resolves the displayed label asynchronously after
+        // SelectItem registers its text — wait one tick.
+        await nextTick();
+        expect(wrapper.find('button[role="combobox"]').text()).toContain('Option 2');
     });
 
-    it('should respect disabled flag on individual options', () => {
+    it('should respect the disabled prop on the trigger', () => {
         const wrapper = mount(VCFormSelect, {
-            props: {
-                options: [
-                    { value: 'a', label: 'A' },
-                    {
-                        value: 'b', 
-                        label: 'B', 
-                        disabled: true, 
-                    },
-                ],
-            },
+            props: { options, disabled: true },
             global: { plugins: [themePlugin] },
         });
-        const opts = wrapper.findAll('option');
-        expect(opts[1].attributes('disabled')).toBeDefined();
+        const trigger = wrapper.find('button[role="combobox"]');
+        expect(trigger.attributes('disabled')).toBeDefined();
     });
 });
 

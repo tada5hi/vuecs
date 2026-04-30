@@ -120,6 +120,7 @@ Filtering matches the `label` field with a case-insensitive `RegExp`. The option
 | `maxItems` | `number` | `10` | Max items rendered before infinite-scroll kicks in |
 | `scrollDistance` | `number` | `10` | Scroll distance threshold for the next page |
 | `disabled` | `boolean` | `false` | Disable the input |
+| `closeOnSelect` | `boolean \| undefined` | `undefined` (mode-default) | Close the dropdown after a pick. Default: single closes, multi stays open. Set explicitly to override. |
 
 ## Events
 
