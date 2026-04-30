@@ -43,12 +43,12 @@ const secondaryDefaultItems : NavigationItem[] = [
         ],
     },
     {
-        name: 'List Controls',
+        name: 'List',
         type: 'link',
         icon: 'fa-solid fa-bars',
         children: [
-            { name: 'default', url: '/list-controls/list' },
-            { name: 'Slot', url: '/list-controls/list-slot' },
+            { name: 'default', url: '/list/list' },
+            { name: 'Slot', url: '/list/list-slot' },
         ],
     },
     {

@@ -133,9 +133,9 @@ export default defineConfig({
                     ],
                 },
                 {
-                    text: '@vuecs/list-controls',
+                    text: '@vuecs/list',
                     items: [
-                        { text: 'ListControls', link: '/components/list-controls' },
+                        { text: 'List', link: '/components/list' },
                     ],
                 },
                 {

@@ -56,22 +56,23 @@ Theme resolution engine and component infrastructure. Exports `installThemeManag
 
 [Full documentation](./packages/core/README.md)
 
-### `@vuecs/list-controls`
+### `@vuecs/list`
 
-[![npm version](https://badge.fury.io/js/@vuecs%2Flist-controls.svg)](https://badge.fury.io/js/@vuecs%2Flist-controls)
+[![npm version](https://badge.fury.io/js/@vuecs%2Flist.svg)](https://badge.fury.io/js/@vuecs%2Flist)
 
-List display with loading, empty state, header/footer/body, and per-item event handling (created/updated/deleted).
+Compound list (`VCList` / `VCListHeader` / `VCListBody` / `VCListItem` / `VCListFooter` / `VCListLoading` / `VCListNoMore`) plus the `useList()` state composable. Successor to `@vuecs/list-controls` — clean break, compound API.
 
 ```vue
 <VCList :data="items" :busy="loading" :total="total">
-    <template #item="{ data, deleted }">
-        <span>{{ data.name }}</span>
-        <button @click="deleted(data)">Remove</button>
+    <template #item="{ data }">
+        <VCListItem :data="data">
+            <template #text>{{ data.name }}</template>
+        </VCListItem>
     </template>
 </VCList>
 ```
 
-[Full documentation](./packages/list-controls/README.md)
+[Full documentation](./packages/list/README.md)
 
 ### `@vuecs/forms`
 

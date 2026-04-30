@@ -174,20 +174,23 @@ export default function tailwindTheme(): Theme {
             formTextarea: { classes: { root: 'block w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-fg shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:bg-bg-muted' } },
             validationGroup: { classes: { item: 'text-xs text-error-600' } },
             list: { classes: { root: 'flex flex-col gap-1' } },
-            listHeader: { classes: { root: 'flex items-center' } },
-            listFooter: { classes: { root: 'flex items-center' } },
-            listBody: { classes: { root: 'm-0 list-none p-0' } },
-            listItem: {
-                classes: {
-                    root: 'flex flex-row items-center gap-2 py-1',
-                    iconWrapper: 'inline-flex shrink-0 text-fg-muted',
-                    textWrapper: 'inline-flex min-w-0 flex-col',
-                    actionsWrapper: 'ml-auto inline-flex items-center gap-1',
-                    actionsExtraWrapper: 'inline-flex items-center gap-1',
-                },
-            },
+            // `empty:hidden` — when shorthand mode auto-composes a part
+            // and the consumer didn't supply that slot, the resulting
+            // empty wrapper collapses out of layout instead of taking
+            // its own row.
+            listHeader: { classes: { root: 'flex items-center empty:hidden' } },
+            listFooter: { classes: { root: 'flex items-center empty:hidden' } },
+            listBody: { classes: { root: 'm-0 list-none p-0 empty:hidden' } },
+            // `<VCListItem>` owns the row's flex layout. `<VCListItemText>`
+            // takes `flex-1 min-w-0` so it consumes available space and
+            // truncates cleanly. `<VCListItemActions>` is positionally
+            // unopinionated so N clusters compose naturally — the text's
+            // `flex-1` is what pushes them to the right edge.
+            listItem: { classes: { root: 'flex flex-row items-center gap-2 py-1' } },
+            listItemText: { classes: { root: 'inline-flex min-w-0 flex-1 flex-col' } },
+            listItemActions: { classes: { root: 'inline-flex items-center gap-1' } },
             listLoading: { classes: { root: 'py-2 text-center text-sm text-fg-muted' } },
-            listNoMore: { classes: { root: 'rounded-md border border-warning-200 bg-warning-50 p-2 text-sm text-warning-800' } },
+            listEmpty: { classes: { root: 'rounded-md border border-warning-200 bg-warning-50 p-2 text-sm text-warning-800' } },
             navigation: {
                 classes: {
                     group: 'm-0 flex list-none flex-col p-0',

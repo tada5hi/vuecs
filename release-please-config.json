@@ -13,7 +13,7 @@
         "packages/gravatar": {"component": "gravatar" },
         "packages/icon": {"component": "icon" },
         "packages/link": {"component": "link" },
-        "packages/list-controls": {"component": "list-controls" },
+        "packages/list": {"component": "list" },
         "packages/navigation": {"component": "navigation" },
         "packages/nuxt": {"component": "nuxt" },
         "packages/overlays": {"component": "overlays" },

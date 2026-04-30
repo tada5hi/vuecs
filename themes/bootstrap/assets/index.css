@@ -366,3 +366,17 @@
 .progress, .progress-stacked {
     --bs-progress-bar-bg: var(--vc-color-primary-600);
 }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * @vuecs/list shorthand-mode wrappers — `<VCList>` always emits
+ * `<VCListHeader>` / `<VCListBody>` / `<VCListFooter>` in shorthand mode
+ * (per Q10), even when the consumer only supplied a subset of slots.
+ * Hide empty wrappers so the layout doesn't sprout extra rows. The
+ * Tailwind theme uses `empty:hidden` for the same effect.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.vc-list-header:empty,
+.vc-list-body:empty,
+.vc-list-footer:empty {
+    display: none;
+}

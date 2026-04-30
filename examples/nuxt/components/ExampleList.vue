@@ -1,44 +1,57 @@
-<!--
-  - Copyright (c) 2022.
-  - Author Peter Placzek (tada5hi)
-  - For the full copyright and license information,
-  - view the LICENSE file that was distributed with this source code.
-  -->
-
 <script lang="ts">
-import { VCList } from '@vuecs/list-controls';
-import { defineComponent, h, ref } from 'vue';
+import { VCList, defineList } from '@vuecs/list';
+import { defineComponent, ref } from 'vue';
+
+type User = { id: number; name: string };
 
 export default defineComponent({
-    setup(props, ctx) {
-        const data = ref([
+    components: { VCList },
+    setup() {
+        const users = ref<User[]>([
             { id: 1, name: 'Peter' },
             { id: 2, name: 'Admin' },
         ]);
-        const total = ref(2);
 
-        return () => h(VCList, {
-            data: data.value,
-            total: total.value,
-            footer: true,
-            onCreated(item: { id: number; name: string }) {
-                total.value++;
-                data.value.push(item);
-            },
-            onUpdated(item: { id: number; name: string }) {
-                const index = data.value.findIndex((el) => el.id === item.id);
-                if (index !== -1) {
-                    data.value[index] = item;
+        // Per-op handlers — each chooses how to apply the operation.
+        // Demonstrates direct mutation (push/splice) instead of array
+        // replacement; equally compatible with store actions or REST calls.
+        const list = defineList<User>({
+            data: users,
+            onCreated: (item) => { users.value.push(item); },
+            onUpdated: (item) => {
+                const idx = list.findIndex(item);
+                if (idx >= 0) {
+                    users.value[idx] = { ...users.value[idx], ...item };
                 }
             },
-            onDeleted(item: { id: number; name: string }) {
-                const index = data.value.findIndex((el) => el.id === item.id);
-                if (index !== -1) {
-                    data.value.splice(index, 1);
-                    total.value--;
-                }
+            onDeleted: (item) => {
+                const idx = list.findIndex(item);
+                if (idx >= 0) users.value.splice(idx, 1);
             },
-        }, ctx.slots);
+        });
+
+        return { list };
     },
 });
 </script>
+
+<template>
+    <VCList :state="list">
+        <slot
+            name="default"
+            v-bind="list"
+        />
+        <template #item="bind">
+            <slot
+                name="item"
+                v-bind="{ ...list, ...bind }"
+            />
+        </template>
+        <template #footer="bind">
+            <slot
+                name="footer"
+                v-bind="{ ...list, ...bind }"
+            />
+        </template>
+    </VCList>
+</template>
