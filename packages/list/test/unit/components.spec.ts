@@ -13,6 +13,7 @@ import {
     VCListItemActions,
     VCListItemText,
     VCListLoading,
+    defineList,
 } from '../../src';
 
 type User = { id: number; name: string };
@@ -110,21 +111,40 @@ describe('VCListBody — iteration modes', () => {
         expect(rows[2].attributes('data-index')).toBe('2');
     });
 
-    it('keys rows by `itemKey` when provided', () => {
+    it('keys rows by `itemKey` so DOM identity follows the record on reorder', async () => {
         const data = ref<User[]>([
             { id: 1, name: 'a' },
             { id: 2, name: 'b' },
         ]);
-        const wrapper = withVuecs(() => h(VCList, {
-            data: data.value,
-            itemKey: 'id',
-        }, {
+        // `itemKey` is on `defineList()`, not `<VCList>`. Build state
+        // explicitly and pass via `:state` so the keyed-iteration path
+        // in `<VCListBody>` actually consults `state.getItemKey()`.
+        const state = defineList<User>({ data, itemKey: 'id' });
+        const wrapper = withVuecs(() => h(VCList, { state }, {
             default: () => [
-                h(VCListBody, {}, { item: ({ data: row }: { data: User }) => h('div', { class: 'row' }, row.name) }),
+                h(VCListBody, {}, {
+                    item: ({ data: row }: { data: User }) => h(
+                        'div',
+                        { class: 'row', 'data-name': row.name },
+                        row.name,
+                    ),
+                }),
             ],
         }));
 
-        expect(wrapper.findAll('.row').map((r) => r.text())).toEqual(['a', 'b']);
+        const initial = wrapper.findAll('.row').map((r) => r.element);
+        expect(initial.map((el) => (el as HTMLElement).dataset.name)).toEqual(['a', 'b']);
+
+        // Reverse the array — keyed reconciliation should reuse the same
+        // DOM nodes (just shuffled) instead of recreating them.
+        data.value = [data.value[1], data.value[0]];
+        await wrapper.vm.$nextTick();
+
+        const reordered = wrapper.findAll('.row').map((r) => r.element);
+        expect(reordered.map((el) => (el as HTMLElement).dataset.name)).toEqual(['b', 'a']);
+        // Node-identity check: the element that previously rendered "b" is now first.
+        expect(reordered[0]).toBe(initial[1]);
+        expect(reordered[1]).toBe(initial[0]);
     });
 
     it('renders manual mode when default slot supplies content', () => {
@@ -181,6 +201,18 @@ describe('VCListLoading / VCListEmpty — self-conditioning', () => {
 
     it('falls back to the global default content when Empty has no slot', () => {
         const wrapper = withVuecs(() => h(VCList, { data: [] }, { default: () => [h(VCListEmpty)] }));
+
+        const emptyEl = wrapper.find('.vc-list-empty');
+        expect(emptyEl.exists()).toBe(true);
+        expect(emptyEl.text().length).toBeGreaterThan(0);
+    });
+
+    it('falls back to the default content when Empty\'s slot resolves to no meaningful vnodes', () => {
+        // A slot returning only comments / empty fragments / whitespace
+        // would leave `slotChildren` truthy (non-null array) but produce
+        // no visible output — the configurable fallback string should
+        // still render.
+        const wrapper = withVuecs(() => h(VCList, { data: [] }, { default: () => [h(VCListEmpty, {}, { default: () => [] })] }));
 
         const emptyEl = wrapper.find('.vc-list-empty');
         expect(emptyEl.exists()).toBe(true);

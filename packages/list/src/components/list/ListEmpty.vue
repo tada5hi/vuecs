@@ -5,7 +5,7 @@ import { defineComponent, h } from 'vue';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import { useList } from '../../composables';
 import type { ListState } from '../../composables';
-import { applyAsChild } from '../../utils';
+import { applyAsChild, hasMeaningfulVNodes } from '../../utils';
 import type { ListEmptyDefaults, ListEmptyThemeClasses } from '../../types';
 
 const listEmptyProps = {
@@ -38,14 +38,18 @@ export default defineComponent({
             if (!ctx.isEmpty.value) return null;
             const rootClass = theme.value.root || undefined;
             const slotChildren = slots.default?.(ctx);
+            // Empty arrays / comment-only / whitespace-only slot output
+            // count as "no content" — a `<template #default><!-- --></template>`
+            // shouldn't suppress the configurable fallback string.
+            const hasSlotContent = hasMeaningfulVNodes(slotChildren);
             // asChild can only clone vnodes — only honor it when the
-            // consumer supplies a default slot. The string fallback is
-            // not a vnode, so it falls through to the wrapper element.
-            if (props.asChild && slotChildren) {
+            // consumer supplies a real default slot. The string fallback
+            // is not a vnode, so it falls through to the wrapper element.
+            if (props.asChild && hasSlotContent) {
                 const cloned = applyAsChild(slotChildren, { class: rootClass });
                 if (cloned) return cloned;
             }
-            const children = slotChildren ?? [defaults.value.content];
+            const children = hasSlotContent ? slotChildren : [defaults.value.content];
             return h(props.tag, { class: rootClass }, children);
         };
     },

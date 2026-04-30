@@ -280,6 +280,47 @@ describe('defineList', () => {
             expect(ref_.value).toHaveLength(4);
             expect(ref_.value.map((u) => u.id)).toEqual([1, 2, 3, 4]);
         });
+
+        it('skips setData when applyCreate is a no-op (dedupCreated gate)', () => {
+            const ref_ = ref<User[]>(items_());
+            const calls: User[][] = [];
+            const list = defineList<User>({
+                data: ref_,
+                dedupCreated: true,
+                setData: (next) => { calls.push(next); ref_.value = next; },
+            });
+            list.create({ id: 1, name: 'a-renamed' });    // gate fires → applyCreate returns same array
+            expect(calls).toEqual([]);
+            list.create({ id: 99, name: 'new' });          // not in list → real append
+            expect(calls).toHaveLength(1);
+        });
+
+        it('skips setData when applyUpdate is a no-op (item not found)', () => {
+            const ref_ = ref<User[]>(items_());
+            const calls: User[][] = [];
+            const list = defineList<User>({
+                data: ref_,
+                setData: (next) => { calls.push(next); ref_.value = next; },
+            });
+            list.update({ id: 999, name: 'ghost' });       // not in list → no-op
+            expect(calls).toEqual([]);
+            list.update({ id: 1, name: 'a-renamed' });     // present → real write
+            expect(calls).toHaveLength(1);
+        });
+
+        it('skips setData when applyDelete is a no-op (filterDeleted gate)', () => {
+            const ref_ = ref<User[]>(items_());
+            const calls: User[][] = [];
+            const list = defineList<User>({
+                data: ref_,
+                filterDeleted: true,
+                setData: (next) => { calls.push(next); ref_.value = next; },
+            });
+            list.delete({ id: 999, name: 'ghost' });       // gate fires → applyDelete returns same array
+            expect(calls).toEqual([]);
+            list.delete({ id: 1, name: 'a' });             // present → real write
+            expect(calls).toHaveLength(1);
+        });
     });
 
     describe('per-op handlers (onCreated / onUpdated / onDeleted)', () => {

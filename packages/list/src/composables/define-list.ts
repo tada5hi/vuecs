@@ -328,6 +328,17 @@ export function defineList<
     const hasAnyWriter = onCreated || onUpdated || onDeleted || fallbackWriter;
 
     if (hasAnyWriter) {
+        // Forward to the fallback writer only when `apply*` produced a
+        // *new* array. Pure helpers preserve the original reference for
+        // gated no-ops (`dedupCreated` skip, missing-`itemId` update,
+        // `filterDeleted` skip), and the documented contract is "silent
+        // no-op" — calling `setData(currentArray)` would still trigger a
+        // user-supplied writer's side effects.
+        const writeNext = (next: T[]) => {
+            if (!fallbackWriter || next === data.value) return;
+            fallbackWriter(next);
+        };
+
         const mutators: ListMutators<T> = {
             create: (item) => {
                 if (onCreated) {
@@ -335,18 +346,14 @@ export function defineList<
                     onCreated(item);
                     return;
                 }
-                if (fallbackWriter) {
-                    fallbackWriter(applyCreate(data.value, item));
-                }
+                writeNext(applyCreate(data.value, item));
             },
             update: (item) => {
                 if (onUpdated) {
                     onUpdated(item);
                     return;
                 }
-                if (fallbackWriter) {
-                    fallbackWriter(applyUpdate(data.value, item));
-                }
+                writeNext(applyUpdate(data.value, item));
             },
             delete: (item) => {
                 if (onDeleted) {
@@ -354,9 +361,7 @@ export function defineList<
                     onDeleted(item);
                     return;
                 }
-                if (fallbackWriter) {
-                    fallbackWriter(applyDelete(data.value, item));
-                }
+                writeNext(applyDelete(data.value, item));
             },
         };
         return { ...base, ...mutators };
