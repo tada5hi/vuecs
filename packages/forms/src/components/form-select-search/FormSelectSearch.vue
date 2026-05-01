@@ -212,6 +212,15 @@ export default defineComponent({
         );
 
         const toggle = (option: FormOption) => {
+            // Disabled-form semantics: a disabled control must not mutate
+            // its bound value or emit change events. Mouse picks on dropdown
+            // items are gated by `display()` (which short-circuits when
+            // disabled), but the multi-select chip-remove buttons render
+            // outside the dropdown and were still callable.
+            if (props.disabled) {
+                return;
+            }
+
             if (isMulti.value) {
                 const index = selected.value.findIndex((el) => el.value === option.value);
                 if (index === -1) {
@@ -430,6 +439,7 @@ export default defineComponent({
                     :key="String(item.value)"
                     type="button"
                     :class="theme.selectedItem"
+                    :disabled="disabled"
                     @click="toggle(item)"
                 >
                     {{ item.label }}
