@@ -146,7 +146,7 @@ export default defineNuxtComponent({
                         Open dialog
                     </VCModalTrigger>
                     <VCModalContent>
-                        <VCModalClose icon />
+                        <VCModalClose />
                         <VCModalTitle>Confirm action</VCModalTitle>
                         <VCModalDescription>
                             This will permanently delete the record.

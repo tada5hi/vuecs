@@ -37,7 +37,12 @@ export default defineComponent({
             const hasSlot = !!slots.default;
             const ariaLabel = (attrs['aria-label'] as string | undefined) ??
                 (hasSlot ? undefined : 'Close');
-            const slotKey = props.icon ? 'closeIcon' : 'close';
+            // Slot-presence heuristic: a bare `<VCModalClose />` means
+            // the consumer wants the default `×` glyph in the corner — they
+            // didn't provide content because they want the icon presentation.
+            // Explicit `icon` always wins; a slot with content (e.g. "Cancel")
+            // implies the labelled-button presentation.
+            const slotKey = props.icon || !hasSlot ? 'closeIcon' : 'close';
             return h(
                 DialogClose,
                 {

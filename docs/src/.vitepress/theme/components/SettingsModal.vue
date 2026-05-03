@@ -69,7 +69,7 @@ const cogIconPath = 'M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 
             </svg>
         </VCModalTrigger>
         <VCModalContent>
-            <VCModalClose icon />
+            <VCModalClose />
             <VCModalTitle>Appearance</VCModalTitle>
             <VCModalDescription>
                 Customise the docs preview palette and color mode.

@@ -844,7 +844,7 @@ matching `*Portal` so consumers don't have to compose them manually
         ModalContent.vue    <- DialogPortal + DialogOverlay + DialogContent
         ModalTitle.vue
         ModalDescription.vue
-        ModalClose.vue        <- close trigger; `icon` prop selects theme `close` (neutral) vs `closeIcon` (corner-X)
+        ModalClose.vue        <- close trigger; slotless OR `icon` prop → theme `closeIcon` (corner-X); otherwise neutral `close`
         theme.ts            <- shared modalThemeDefaults (single source for all parts)
         types.ts            <- ModalThemeClasses + ThemeElements augmentation
         use-modal.ts        <- useModal() view-stack composable (issue #1480)
