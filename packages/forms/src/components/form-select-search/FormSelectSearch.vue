@@ -170,14 +170,21 @@ export default defineComponent({
             return props.options.filter((option) => option.label.match(pattern));
         });
 
+        // Clamp pagination knobs to a sane minimum: a 0/negative `maxItems`
+        // would render nothing on open, and a 0/negative `scrollDistance`
+        // would stall infinite-scroll because each load step would advance
+        // by zero (or rewind).
+        const pageSize = computed(() => Math.max(1, props.maxItems));
+        const pageStep = computed(() => Math.max(1, props.scrollDistance));
+
         const itemsDisplayed = ref<FormOption[]>([]);
         const setItemsDisplayed = () => {
-            itemsDisplayed.value = items.value.slice(0, props.maxItems);
+            itemsDisplayed.value = items.value.slice(0, pageSize.value);
         };
 
         const showMoreItemsDisplayed = () => {
             const startIndex = itemsDisplayed.value.length;
-            const endIndex = Math.min(startIndex + props.scrollDistance, items.value.length);
+            const endIndex = Math.min(startIndex + pageStep.value, items.value.length);
             if (startIndex >= endIndex) {
                 return;
             }
