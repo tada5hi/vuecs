@@ -15,7 +15,7 @@ vuecs/
     list/             # @vuecs/list — compound List / Header / Body / Item / ItemText / ItemActions / Footer / Loading / Empty + defineList() / useList() (renamed from @vuecs/list-controls in plan 010; sub-component split + Empty rename + Pinia-rename + meta unification per plan-010 addenda)
     navigation/       # @vuecs/navigation
     nuxt/             # @vuecs/nuxt — Nuxt module: SSR palette + useColorMode()
-    overlays/         # @vuecs/overlays — Modal (+ useModal view-stack) on Reka primitives; popover/tooltip/dropdown follow
+    overlays/         # @vuecs/overlays — Modal (+ useModal view-stack), Popover, Tooltip (+ TooltipProvider), DropdownMenu, ContextMenu — all on Reka primitives
     pagination/       # @vuecs/pagination
     timeago/          # @vuecs/timeago
   themes/             # Theme packages (npm workspaces) — pure data, no Vue runtime deps

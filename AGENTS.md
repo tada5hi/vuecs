@@ -54,7 +54,7 @@ Layer 2': icons (@vuecs/core peer dep only — Iconify-name vocabularies for @vu
 Layer 3 (integration):       nuxt (depends on design + @nuxt/kit)
 ```
 
-`navigation` also depends on `@vuecs/link`. `pagination` and `overlays` also take a runtime dep on `reka-ui` (they wrap Reka's headless primitives — pagination + dialog respectively). `theme-tailwind` is designed to pair with `@vuecs/design` (Tailwind v4 + CSS-variable tokens); `theme-bootstrap` ships an optional bridge that maps Bootstrap's `--bs-*` theme vars onto the design-system tokens.
+`navigation` also depends on `@vuecs/link`. `pagination`, `overlays`, and `forms` take a runtime dep on `reka-ui` (they wrap Reka's headless primitives — pagination, dialog/popover/tooltip/menu, and the form-input families respectively). `theme-tailwind` is designed to pair with `@vuecs/design` (Tailwind v4 + CSS-variable tokens); `theme-bootstrap` ships an optional bridge that maps Bootstrap's `--bs-*` theme vars onto the design-system tokens.
 
 ## Documentation Site
 
@@ -73,7 +73,7 @@ vuecs draws directly from upstream projects. When working on related areas, read
 
 - **[Tailwind CSS](.agents/references/tailwind.md)** — required runtime for `@vuecs/design` and `@vuecs/theme-tailwind`. v4-only; documents our JIT-internals dependency on `@source inline()` palette emission
 - **[Nuxt UI](.agents/references/nuxt-ui.md)** — primary inspiration for the design-token + runtime palette + dark-mode-via-tokens architecture. Useful when watching for upstream patterns to adopt
-- **[Reka UI](.agents/references/reka-ui.md)** — headless Vue 3 primitives (Vue port of Radix UI; the layer Nuxt UI is built on). Source of architectural lessons (compound components, `data-state` styling, headless composables, `ConfigProvider`) and the natural lower-layer dep for a future `@vuecs/overlays` package
+- **[Reka UI](.agents/references/reka-ui.md)** — headless Vue 3 primitives (Vue port of Radix UI; the layer Nuxt UI is built on). Source of architectural lessons (compound components, `data-state` styling, headless composables, `ConfigProvider`) and the lower-layer dep underneath `@vuecs/overlays`, `@vuecs/pagination`, and the Reka-backed `@vuecs/forms` family
 
 ## Commits
 

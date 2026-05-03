@@ -909,3 +909,22 @@ directly — the `<VC*>` parts are the vuecs contract.
 DropdownMenu and ContextMenu ship the **full surface** including
 `CheckboxItem`, `RadioGroup`, `RadioItem`, `ItemIndicator`, `Sub`,
 `SubTrigger`, and `SubContent` parts.
+
+### Close-trigger pattern: `close` + `closeIcon` slots
+
+`<VCModalClose>` and `<VCPopoverClose>` each own two theme slots and pick
+between them per render:
+
+| Call shape | Slot read | Intent |
+|---|---|---|
+| `<VCModalClose />` (slotless) | `closeIcon` | Default `×` glyph in the corner |
+| `<VCModalClose>Cancel</VCModalClose>` | `close` | Labelled close button — neutral baseline so consumer `class=` composes cleanly |
+| `<VCModalClose icon>...</VCModalClose>` | `closeIcon` | Force corner-X even with custom slot content |
+
+The `close` slot ships neutral (just focus ring) so consumer classes don't
+fight absolute positioning; `closeIcon` carries the corner-X positioning
++ sizing (`absolute right-3 top-3 h-7 w-7` in theme-tailwind, `btn-close`
+in theme-bootstrap). Slot-presence as the smart default means bare
+slotless usages — the most common pattern — keep working without an
+explicit prop. The same pattern applies to future overlay families (e.g.
+HoverCard) when they ship.
