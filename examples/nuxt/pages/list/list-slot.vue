@@ -28,7 +28,7 @@ export default defineComponent({
                         class="inline-flex items-center justify-center rounded-md bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-700"
                         @click.prevent="update({ id: data.id, name: 'foo' })"
                     >
-                        <i class="fa fa-refresh" />
+                        <VCIcon name="fa6-solid:arrows-rotate" />
                     </button>
                     <button
                         type="button"
@@ -37,7 +37,7 @@ export default defineComponent({
                         class="inline-flex items-center justify-center rounded-md bg-neutral-800 px-2 py-1 text-xs text-white"
                         @click.prevent="del(data)"
                     >
-                        <i class="fa fa-trash" />
+                        <VCIcon name="fa6-solid:trash" />
                     </button>
                 </VCListItemActions>
             </VCListItem>
@@ -51,7 +51,7 @@ export default defineComponent({
                     name: 'Max'
                 })"
             >
-                Create <i class="fa fa-plus" />
+                Create <VCIcon name="fa6-solid:plus" />
             </button>
         </template>
     </ExampleList>

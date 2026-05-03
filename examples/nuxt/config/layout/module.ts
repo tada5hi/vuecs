@@ -5,13 +5,13 @@ import type {
 
 const primaryItems : NavigationItem[] = [
     {
-        name: 'Home', 
-        icon: 'fa fa-home', 
+        name: 'Home',
+        icon: 'fa6-solid:house',
         url: '/',
     },
     {
-        name: 'Admin', 
-        icon: 'fas fa-cog', 
+        name: 'Admin',
+        icon: 'fa6-solid:gear',
         activeMatch: '/admin/',
     },
 ];
@@ -20,7 +20,7 @@ const secondaryDefaultItems : NavigationItem[] = [
     {
         name: 'Home',
         type: 'link',
-        icon: 'fas fa-home',
+        icon: 'fa6-solid:house',
         url: '/',
     },
 
@@ -31,7 +31,7 @@ const secondaryDefaultItems : NavigationItem[] = [
     {
         name: 'Form Controls',
         type: 'link',
-        icon: 'fa-solid fa-bars',
+        icon: 'fa6-solid:bars',
         children: [
             { name: 'Input Checkbox', url: '/form-controls/input-checkbox' },
             { name: 'Input Text', url: '/form-controls/input-text' },
@@ -45,7 +45,7 @@ const secondaryDefaultItems : NavigationItem[] = [
     {
         name: 'List',
         type: 'link',
-        icon: 'fa-solid fa-bars',
+        icon: 'fa6-solid:list',
         children: [
             { name: 'default', url: '/list/list' },
             { name: 'Slot', url: '/list/list-slot' },
@@ -56,27 +56,27 @@ const secondaryDefaultItems : NavigationItem[] = [
         type: 'separator',
     },
     {
-        name: 'Countdown', 
-        type: 'link', 
-        icon: 'fa-solid fa-clock', 
+        name: 'Countdown',
+        type: 'link',
+        icon: 'fa6-solid:clock',
         url: '/countdown',
     },
     {
-        name: 'Pagination', 
-        type: 'link', 
-        icon: 'fa-solid fa-road', 
+        name: 'Pagination',
+        type: 'link',
+        icon: 'fa6-solid:road',
         url: '/pagination',
     },
     {
         name: 'Overlays',
         type: 'link',
-        icon: 'fa-solid fa-window-restore',
+        icon: 'fa6-solid:window-restore',
         url: '/overlays',
     },
     {
         name: 'Timeago',
         type: 'link',
-        icon: 'fa-solid fa-clock',
+        icon: 'fa6-solid:clock',
         url: '/timeago',
     },
 ];
@@ -86,10 +86,10 @@ const secondaryAdminItems : NavigationItem[] = [
         name: 'Auth',
         children: [
             {
-                name: 'Realms', 
-                type: 'link', 
-                url: '/admin/realms', 
-                icon: 'fas fa-university',
+                name: 'Realms',
+                type: 'link',
+                url: '/admin/realms',
+                icon: 'fa6-solid:university',
             },
         ],
     },

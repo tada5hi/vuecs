@@ -7,6 +7,7 @@ import '../assets/form-input.css';
 import '../assets/form-number.css';
 import '../assets/form-pin.css';
 import '../assets/form-radio.css';
+import '../assets/form-select.css';
 import '../assets/form-select-search.css';
 import '../assets/form-slider.css';
 import '../assets/form-switch.css';

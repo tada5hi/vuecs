@@ -37,7 +37,7 @@ export default defineNuxtComponent({
 <template>
     <div class="mx-auto max-w-5xl space-y-4">
         <h3 class="flex items-center gap-2 text-2xl font-semibold">
-            <i class="fa fa-solid fa-road text-blue-500" /> Pagination
+            <VCIcon name="fa6-solid:road" class="text-blue-500" /> Pagination
         </h3>
         <ul class="list-disc space-y-1 pl-6">
             <li

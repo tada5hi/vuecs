@@ -84,6 +84,18 @@ export const VCNavItem = defineComponent({
             await manager.select(data.value.level, value);
         };
 
+        // Iconify-style icon strings (e.g. `fa6-solid:home`, `lucide:plus`)
+        // contain a colon. Render via the globally-registered <VCIcon> so
+        // they resolve through the Iconify pipeline rather than landing as
+        // raw CSS classes on a literal <i>. Legacy class-string icons
+        // (`fa fa-home`, `material-icons home`) keep their <i class> rendering.
+        const renderIcon = (icon: string): VNodeChild => {
+            if (icon.includes(':')) {
+                return h(resolveComponent('VCIcon'), { name: icon });
+            }
+            return h('i', { class: icon });
+        };
+
         const toggle = async (
             value: NavigationItemNormalized,
         ) => {
@@ -152,7 +164,7 @@ export const VCNavItem = defineComponent({
                         default: () => [
                             ...(data.value.icon ?
                                 [h('div', { class: resolved.linkIcon || undefined }, [
-                                    h('i', { class: data.value.icon }),
+                                    renderIcon(data.value.icon),
                                 ])] :
                                 []),
                             h('div', { class: resolved.linkText || undefined }, [
@@ -182,6 +194,8 @@ export const VCNavItem = defineComponent({
                     title = h('div', {
                         class: resolved.link,
                         'data-vc-collection-item': '',
+                        'data-state': data.value.displayChildren ? 'open' : 'closed',
+                        'data-active': data.value.active ? '' : undefined,
                         tabindex: 0,
                         role: 'button',
                         'aria-expanded': data.value.displayChildren ? 'true' : 'false',
@@ -199,7 +213,7 @@ export const VCNavItem = defineComponent({
                     }, [
                         ...(data.value.icon ?
                             [h('div', { class: resolved.linkIcon || undefined }, [
-                                h('i', { class: data.value.icon }),
+                                renderIcon(data.value.icon),
                             ])] :
                             []),
                         h('div', { class: resolved.linkText || undefined }, [
@@ -235,6 +249,8 @@ export const VCNavItem = defineComponent({
                     ...(hasChildren.value ? [resolved.itemNested] : []),
                     { active: data.value.active || data.value.displayChildren },
                 ],
+                'data-active': data.value.active || data.value.displayChildren ? '' : undefined,
+                ...(hasChildren.value ? { 'data-state': data.value.displayChildren ? 'open' : 'closed' } : {}),
             }, [buildItem()]);
         };
     },

@@ -17,7 +17,7 @@ npm install @vuecs/overlays
 | `VCModalContent` | `DialogPortal` + `DialogOverlay` + `DialogContent` | Backdrop + focused panel. Use `inline` to skip the portal, `hideOverlay` to skip the backdrop. |
 | `VCModalTitle` | `DialogTitle` | aria-labelledby target. |
 | `VCModalDescription` | `DialogDescription` | aria-describedby target. |
-| `VCModalClose` | `DialogClose` | Button that closes. Default content is `×` (auto `aria-label="Close"` when no slot). |
+| `VCModalClose` | `DialogClose` | Button that closes. Slotless `<VCModalClose />` renders the corner-X (default `×` glyph + `closeIcon` theme slot). With slot content (e.g. "Cancel") it renders neutrally so consumer classes compose. Pass `icon` to force the corner-X even with custom content. Auto `aria-label="Close"` when slotless. |
 
 <Demo name="modal" component="VCModal">
   <template #code>
@@ -43,16 +43,21 @@ const open = ref(false);
     <VCModal v-model:open="open">
         <VCModalTrigger>Open dialog</VCModalTrigger>
         <VCModalContent>
-            <!-- Renders the default × in the top-right (the position
-                 styled by the theme-tailwind `close` slot). -->
+            <!-- Slotless = corner-X (theme `closeIcon` slot, absolute
+                 right-3 top-3). -->
             <VCModalClose />
             <VCModalTitle>Confirm action</VCModalTitle>
             <VCModalDescription>
                 This will permanently delete the record.
             </VCModalDescription>
             <div class="flex justify-end gap-2">
-                <button @click="open = false">Cancel</button>
-                <button @click="open = false">Confirm</button>
+                <!-- With slot content, <VCModalClose> uses the neutral
+                     `close` theme slot so consumer classes compose. -->
+                <VCModalClose
+                    class="rounded-md border border-border bg-bg px-3 py-1.5 text-sm font-medium hover:bg-bg-muted"
+                >
+                    Cancel
+                </VCModalClose>
             </div>
         </VCModalContent>
     </VCModal>
@@ -71,15 +76,12 @@ const open = ref(false);
   </template>
 </Demo>
 
-::: tip When to use `<VCModalClose>` vs a plain `<button>`
-The theme-tailwind `close` slot is styled for the **top-right corner ×**
-(`absolute right-3 top-3 h-7 w-7`). Use `<VCModalClose />` (no children) for
-that position. For Cancel/Confirm-style buttons elsewhere in the dialog,
-use plain `<button @click="open = false">` — Vue's `class` attribute merges
-with the theme's classes rather than replacing them, so the corner-positioning
-leaks if you reuse `<VCModalClose>` in the footer. To use `<VCModalClose>`
-outside the corner (e.g. for a labelled Cancel button), pass a full theme
-override via `:theme-class="{ close: 'rounded-md border ...' }"`.
+::: tip Two presentations, one component
+`<VCModalClose>` picks between two theme slots based on slot content and the `icon` prop:
+
+- `<VCModalClose />` (no slot, no `icon`) — pre-styled top-right **corner ×**. Reads the theme's `closeIcon` slot (`absolute right-3 top-3 h-7 w-7` in theme-tailwind, `btn-close` in theme-bootstrap). Drop one inside `<VCModalContent>` for the standard dismiss affordance.
+- `<VCModalClose>Cancel</VCModalClose>` (with slot content) — neutral close trigger that reads the `close` slot. Consumer classes via `class=` or `:theme-class` compose cleanly. Right choice for Cancel/Confirm rows or any labelled close button.
+- `<VCModalClose icon>...</VCModalClose>` — explicit `icon` forces the corner-X presentation even when you supply custom slot content (e.g. a custom icon).
 :::
 
 ## `useModal()` composable
@@ -206,7 +208,8 @@ const showItem = (id: number) => {
 | `body` | `vc-modal-body` | Body layout container (consumer-composed). |
 | `footer` | `vc-modal-footer` | Footer layout container (consumer-composed). |
 | `trigger` | `vc-modal-trigger` | Trigger button. |
-| `close` | `vc-modal-close` | Close button. |
+| `close` | `vc-modal-close` | Generic close trigger (`<VCModalClose>`). Neutral baseline so consumer classes compose cleanly. |
+| `closeIcon` | `vc-modal-close-icon` | Corner-X positioning + sizing for `<VCModalCloseIcon>`. |
 | `back` | `vc-modal-back` | Optional view-stack back button. |
 
 `@vuecs/theme-tailwind` ships pre-built styling for every key with light/dark mode and `data-state="open|closed"` animation hooks.
@@ -301,14 +304,19 @@ Accessible description, linked via `aria-describedby`. Wraps `DialogDescription`
 
 ### `<VCModalClose>`
 
-Button that dismisses the modal. Wraps `DialogClose`. Default slot content is `×` when no children are provided.
+Button that dismisses the modal. Wraps `DialogClose`. Picks between the `closeIcon` slot (pre-styled corner-X) and the `close` slot (neutral) based on slot content + the `icon` prop:
 
-When no slot content is supplied, `<VCModalClose>` auto-applies `aria-label="Close"` so screen readers don't announce the bare `×` glyph as "multiplication sign". Pass an explicit `aria-label` via attrs to override, or supply visible text content (e.g. `<VCModalClose>Close</VCModalClose>`) — visible text takes precedence and the auto-label is dropped.
+- **Slotless** (`<VCModalClose />`) — corner-X via `closeIcon`. Renders the default `×` glyph.
+- **With slot content** (`<VCModalClose>Cancel</VCModalClose>`) — neutral `close` slot, so consumer classes via `class=` or `:theme-class` compose cleanly.
+- **Explicit `icon` prop** — always reads the `closeIcon` slot, regardless of slot content.
+
+Auto-applies `aria-label="Close"` when slotless so screen readers don't announce the bare `×` glyph as "multiplication sign". Pass an explicit `aria-label` via attrs to override, or supply visible text content (which takes precedence and drops the auto-label).
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `as` | `string` | `'button'` | HTML tag to render. |
 | `asChild` | `boolean` | `false` | Render via the default slot's child element. |
+| `icon` | `boolean` | `false` | Force the `closeIcon` (corner-X) slot even when slot content is provided. Not needed for slotless usage — bare `<VCModalClose />` already picks `closeIcon`. |
 | `themeClass` | `Partial<ModalThemeClasses>` | `undefined` | Per-instance theme override. |
 | `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |
 

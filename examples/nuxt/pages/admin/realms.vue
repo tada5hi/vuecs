@@ -8,7 +8,7 @@
 <template>
     <div class="mx-auto max-w-5xl space-y-4">
         <h3 class="flex items-center gap-2 text-2xl font-semibold">
-            <i class="fas fa-university text-blue-500" /> Realms
+            <VCIcon name="fa6-solid:university" class="text-blue-500" /> Realms
         </h3>
         <p class="text-fg">
             Admin realms placeholder page.

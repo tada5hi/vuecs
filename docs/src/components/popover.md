@@ -60,7 +60,7 @@ import {
 | `VCPopoverTrigger` | `PopoverTrigger` | Toggles open. |
 | `VCPopoverContent` | `PopoverPortal` + `PopoverContent` | Floating panel. `inline` skips the portal. Position via `side` / `sideOffset` / `align` / `alignOffset` / `avoidCollisions`. |
 | `VCPopoverArrow` | `PopoverArrow` | Optional pointer arrow. |
-| `VCPopoverClose` | `PopoverClose` | Close button. |
+| `VCPopoverClose` | `PopoverClose` | Close button. Slotless `<VCPopoverClose />` renders the corner-X; with slot content it renders neutrally. Pass `icon` to force the corner-X with custom content. |
 
 ```vue
 <script setup lang="ts">
@@ -92,7 +92,8 @@ import {
 | `trigger` | `vc-popover-trigger` | |
 | `content` | `vc-popover-content` | Floating panel; supports `data-state="open\|closed"` for animation. |
 | `arrow` | `vc-popover-arrow` | |
-| `close` | `vc-popover-close` | |
+| `close` | `vc-popover-close` | Neutral baseline for `<VCPopoverClose>` — composes with consumer classes. |
+| `closeIcon` | `vc-popover-close-icon` | Corner-X positioning + sizing for `<VCPopoverCloseIcon>`. |
 
 ## Accessibility
 
@@ -163,13 +164,18 @@ Optional pointer arrow that follows the panel's position. Wraps `PopoverArrow`.
 
 ### `<VCPopoverClose>`
 
-Button that dismisses the popover. Wraps `PopoverClose`. Default content is `×`.
+Button that dismisses the popover. Wraps `PopoverClose`. Picks between the `closeIcon` slot (pre-styled corner-X) and the `close` slot (neutral) based on slot content + the `icon` prop:
 
-When no slot content is supplied, `<VCPopoverClose>` auto-applies `aria-label="Close"` so screen readers don't announce the bare `×` glyph as "multiplication sign". Pass an explicit `aria-label` via attrs to override, or supply visible text content to drop the auto-label.
+- **Slotless** (`<VCPopoverClose />`) — corner-X via `closeIcon`. Renders the default `×` glyph.
+- **With slot content** — neutral `close` slot, so consumer classes via `class=` or `:theme-class` compose cleanly.
+- **Explicit `icon` prop** — always reads the `closeIcon` slot, regardless of slot content.
+
+Auto-applies `aria-label="Close"` when slotless so screen readers don't announce the bare `×` glyph as "multiplication sign". Pass an explicit `aria-label` via attrs to override, or supply visible text content to drop the auto-label.
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `as` | `string` | `'button'` | HTML tag to render. |
 | `asChild` | `boolean` | `false` | Render via the default slot's child element. |
+| `icon` | `boolean` | `false` | Force the `closeIcon` (corner-X) slot even when slot content is provided. Not needed for slotless usage. |
 | `themeClass` | `Partial<PopoverThemeClasses>` | `undefined` | Per-instance theme override. |
 | `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |

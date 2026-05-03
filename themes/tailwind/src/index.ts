@@ -57,7 +57,34 @@ export default function tailwindTheme(): Theme {
                     group: 'inline-flex items-center gap-2',
                 },
             },
-            formSelect: { classes: { root: 'block w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-fg shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:bg-bg-muted' } },
+            formSelect: {
+                classes: {
+                    trigger: 'flex w-full items-center justify-between gap-2 rounded-md border border-border bg-bg px-3 py-2 text-sm text-fg shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-ring data-[disabled]:cursor-not-allowed data-[disabled]:bg-bg-muted data-[placeholder]:text-fg-muted',
+                    value: 'truncate',
+                    icon: 'inline-flex h-4 w-4 shrink-0 items-center justify-center text-fg-muted',
+                    content: 'z-50 overflow-hidden rounded-md border border-border bg-bg text-sm text-fg shadow-md min-w-[var(--reka-select-trigger-width)] max-h-[var(--reka-select-content-available-height)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
+                    viewport: 'p-1',
+                    item: 'relative flex cursor-pointer select-none items-center gap-2 rounded-sm py-1.5 pl-7 pr-2 outline-none data-[highlighted]:bg-bg-muted data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+                    itemIndicator: 'absolute left-2 inline-flex h-3.5 w-3.5 items-center justify-center text-primary-600',
+                    group: '',
+                    groupLabel: 'px-2 py-1.5 text-xs font-semibold uppercase tracking-wide text-fg-muted',
+                    separator: '-mx-1 my-1 h-px bg-border',
+                },
+            },
+            formSelectSearch: {
+                classes: {
+                    root: 'relative block',
+                    input: 'block w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-fg shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:bg-bg-muted',
+                    content: 'absolute inset-x-0 top-[calc(100%+0.25rem)] z-50 max-h-60 overflow-y-auto rounded-md border border-border bg-bg shadow-md',
+                    item: 'flex cursor-pointer select-none flex-col gap-0.5 px-3 py-2 text-sm text-fg outline-none hover:bg-bg-muted',
+                    itemActive: 'bg-bg-elevated! font-semibold',
+                    itemCurrent: 'bg-bg-muted',
+                    itemDescription: 'text-xs text-fg-muted',
+                    selected: 'mt-2 flex flex-wrap gap-1',
+                    selectedItem: 'inline-flex items-center gap-1 rounded-sm border border-border bg-bg-muted px-2 py-0.5 text-xs text-fg hover:bg-bg-elevated',
+                    selectedItemRemove: 'font-semibold leading-none text-fg-muted',
+                },
+            },
             formRadio: {
                 classes: {
                     root: 'inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-border bg-bg shadow-sm transition-colors hover:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1 data-[state=checked]:border-primary-600 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
@@ -211,7 +238,7 @@ export default function tailwindTheme(): Theme {
                     // `size` variant, bg/border/colors come from the `variant`
                     // variant. Keeping concerns split lets consumers pick a
                     // size and a visual treatment independently.
-                    link: 'inline-flex items-center justify-center rounded-md leading-none focus:outline-none focus:ring-1 focus:ring-ring',
+                    link: 'inline-flex items-center justify-center gap-1.5 rounded-md leading-none focus:outline-none focus:ring-1 focus:ring-ring',
                     linkActive: '!border-primary-600 !bg-primary-600 !text-on-primary hover:!bg-primary-700',
                     // The component composes `link + ellipsis` onto
                     // PaginationEllipsis so it inherits the box styling
@@ -245,14 +272,18 @@ export default function tailwindTheme(): Theme {
             modal: {
                 classes: {
                     overlay: 'fixed inset-0 z-50 bg-neutral-950/60 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
-                    content: 'fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg border border-border bg-bg p-6 shadow-lg outline-none focus:outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
+                    content: 'fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg border border-border bg-bg p-6 text-fg shadow-lg outline-none focus:outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
                     header: 'flex flex-col gap-1.5',
                     title: 'text-lg font-semibold text-fg',
                     description: 'text-sm text-fg-muted',
                     body: 'flex flex-col gap-2 text-sm text-fg',
                     footer: 'flex flex-row items-center justify-end gap-2',
                     trigger: '',
-                    close: 'absolute right-3 top-3 inline-flex h-7 w-7 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
+                    // Generic close trigger — neutral baseline so consumer
+                    // classes (`<VCModalClose class="...">`) compose cleanly.
+                    // The corner-X pattern lives in `closeIcon` below.
+                    close: 'focus:outline-none focus:ring-2 focus:ring-ring',
+                    closeIcon: 'absolute right-3 top-3 inline-flex h-7 w-7 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
                     back: 'inline-flex h-7 w-7 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
                 },
             },
@@ -261,7 +292,10 @@ export default function tailwindTheme(): Theme {
                     trigger: '',
                     content: 'z-50 w-72 rounded-md border border-border bg-bg p-4 text-sm text-fg shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
                     arrow: 'fill-bg',
-                    close: 'absolute right-2 top-2 inline-flex h-6 w-6 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
+                    // Generic close trigger — neutral baseline so consumer
+                    // classes compose cleanly. Corner-X lives in `closeIcon`.
+                    close: 'focus:outline-none focus:ring-2 focus:ring-ring',
+                    closeIcon: 'absolute right-2 top-2 inline-flex h-6 w-6 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
                 },
             },
             tooltip: {

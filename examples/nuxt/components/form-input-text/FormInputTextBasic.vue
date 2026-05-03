@@ -60,7 +60,7 @@ export default defineComponent({
                                 'hover:bg-bg-elevated',
                             ]"
                         >
-                            <i class="fa fa-plus" />
+                            <VCIcon name="fa6-solid:plus" />
                         </button>
                     </template>
                 </VCFormInput>

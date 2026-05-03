@@ -1,6 +1,8 @@
 # FormSelect
 
-Dropdown select with `v-model` binding. Accepts a flat `FormOption[]` or a mixed array of options and `FormOptionGroup`s (rendered as HTML `<optgroup>`). Supports a `placeholder` prop that renders a leading disabled option.
+Dropdown select with `v-model` binding. Accepts a flat `FormOption[]` or a mixed array of options and `FormOptionGroup`s. Supports a `placeholder` prop shown in the trigger when no value is selected.
+
+Built on Reka UI's `Select` compound primitive — renders a real `<button role="combobox">` trigger plus a portal-mounted dropdown panel with full keyboard navigation, type-ahead, and `data-state` hooks. Note: this replaces the native `<select>` element from earlier `@vuecs/forms` versions, so the OS-native mobile picker is no longer used.
 
 ```bash
 npm install @vuecs/forms
@@ -105,7 +107,7 @@ const id = ref<number | undefined>(undefined);
 
 ## Placeholder
 
-`placeholder` renders a leading `<option disabled selected>` whenever `modelValue` is `undefined` or `''`. Falls back to the global `formSelect.placeholder` default; when both are empty no placeholder renders.
+`placeholder` is rendered inside the trigger via Reka's `SelectValue` whenever `modelValue` is unset (no native `<option>` element). The trigger gets a `data-placeholder` attribute so themes can style the empty state (e.g. muted color). Falls back to the global `formSelect.placeholder` default; when both are empty the trigger renders no text.
 
 ```vue
 <VCFormSelect
@@ -131,7 +133,7 @@ app.use(vuecs, {
 
 | Key | Default | Description |
 |-----|---------|-------------|
-| `placeholder` | `''` | Leading disabled option text. Empty disables the placeholder. |
+| `placeholder` | `''` | Trigger text shown while no option is selected. Empty hides the placeholder. |
 
 See [Behavioral Defaults](/guide/behavioral-defaults) for the resolution rules.
 
@@ -141,9 +143,42 @@ See [Behavioral Defaults](/guide/behavioral-defaults) for the resolution rules.
 |------|------|---------|-------------|
 | `modelValue` | `T \| undefined` | `undefined` | Bound value (matches an option's `value`) |
 | `options` | `FormOptionItems<T>` | — | Flat options, groups, or a mix |
-| `placeholder` | `string` | (defaults system) | Leading disabled option text |
+| `placeholder` | `string` | (defaults system) | Trigger placeholder text when no option selected |
+| `disabled` | `boolean` | `false` | Block user interaction with the trigger |
+| `name` | `string` | `undefined` | Native form field name — submitted via Reka's hidden input |
+| `required` | `boolean` | `false` | Native form `required` semantics |
 | `themeClass` | `Partial<FormSelectThemeClasses>` | `undefined` | Per-instance theme override |
 | `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values |
+
+## Theme keys
+
+::: warning Renamed in this release
+The single `root` slot has been **renamed to `trigger`** to reflect the new compound DOM. Per-instance overrides need to migrate:
+
+```vue
+<!-- before -->
+<VCFormSelect :theme-class="{ root: 'my-custom-styles' }" :options="..." />
+<!-- after -->
+<VCFormSelect :theme-class="{ trigger: 'my-custom-styles' }" :options="..." />
+```
+
+Same renaming applies to the `formSelect` entry in `app.use(vuecs, { overrides: { elements: { formSelect: { classes: { ... } } } } })` and to theme packages.
+:::
+
+The compound DOM exposes ten theme slots — target `[data-state=open]`, `[data-highlighted]`, `[data-disabled]`, `[data-placeholder]` for state-driven styling.
+
+| Key | Element |
+|-----|---------|
+| `trigger` | The `<button role="combobox">` |
+| `value` | Inner span showing the selected label or placeholder |
+| `icon` | Chevron icon inside the trigger |
+| `content` | Portal-mounted popover panel |
+| `viewport` | Scrollable container inside content |
+| `item` | A single option row |
+| `itemIndicator` | Checkmark on the currently-selected item |
+| `group` | An option-group wrapper |
+| `groupLabel` | Group heading |
+| `separator` | Optional divider (reserved for future use) |
 
 ## Events
 

@@ -7,5 +7,6 @@ export const popoverThemeDefaults: ComponentThemeDefinition<PopoverThemeClasses>
         trigger: 'vc-popover-trigger',
         arrow: 'vc-popover-arrow',
         close: 'vc-popover-close',
+        closeIcon: 'vc-popover-close-icon',
     },
 };

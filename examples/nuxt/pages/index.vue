@@ -1,7 +1,7 @@
 <template>
     <div class="mx-auto max-w-5xl space-y-4">
         <h3 class="flex items-center gap-2 text-2xl font-semibold">
-            <i class="fa-solid fa-heart text-red-500" /> vuecs
+            <VCIcon name="fa6-solid:heart" class="text-red-500" /> vuecs
             <span class="text-sm font-normal text-fg-muted">Examples</span>
         </h3>
         <p class="text-fg">

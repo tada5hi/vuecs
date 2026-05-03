@@ -183,6 +183,8 @@ export const VCLink = defineComponent({
                     active: props.active,
                     disabled: props.disabled,
                 },
+                'data-active': props.active ? '' : undefined,
+                'data-disabled': props.disabled ? '' : undefined,
                 ...computedAttrs.value,
                 ...computedProps.value,
                 onClick,

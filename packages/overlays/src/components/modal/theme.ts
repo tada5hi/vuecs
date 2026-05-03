@@ -21,6 +21,7 @@ export const modalThemeDefaults: ComponentThemeDefinition<ModalThemeClasses> = {
         footer: 'vc-modal-footer',
         trigger: 'vc-modal-trigger',
         close: 'vc-modal-close',
+        closeIcon: 'vc-modal-close-icon',
         back: 'vc-modal-back',
     },
 };

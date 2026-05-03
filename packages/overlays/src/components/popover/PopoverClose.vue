@@ -10,6 +10,13 @@ import type { PopoverThemeClasses } from './types';
 const popoverCloseProps = {
     as: { type: String, default: 'button' },
     asChild: { type: Boolean, default: false },
+    /**
+     * When true, renders as a pre-styled corner-X (reads the theme's
+     * `closeIcon` slot — absolute positioning + sizing). When false
+     * (default), renders neutrally so consumer classes via `class=` /
+     * `:theme-class` compose cleanly.
+     */
+    icon: { type: Boolean, default: false },
     themeClass: { type: Object as PropType<ThemeClassesOverride<PopoverThemeClasses>>, default: undefined },
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
@@ -30,12 +37,18 @@ export default defineComponent({
             const hasSlot = !!slots.default;
             const ariaLabel = (attrs['aria-label'] as string | undefined) ??
                 (hasSlot ? undefined : 'Close');
+            // Slot-presence heuristic: a bare `<VCPopoverClose />` means
+            // the consumer wants the default `×` glyph in the corner — they
+            // didn't provide content because they want the icon presentation.
+            // Explicit `icon` always wins; a slot with content implies the
+            // labelled-button presentation.
+            const slotKey = props.icon || !hasSlot ? 'closeIcon' : 'close';
             return h(
                 PopoverClose,
                 {
                     as: props.as,
                     asChild: props.asChild,
-                    class: theme.value.close || undefined,
+                    class: theme.value[slotKey] || undefined,
                     'aria-label': ariaLabel,
                 },
                 { default: () => slots.default?.() ?? '×' },

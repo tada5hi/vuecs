@@ -1,12 +1,13 @@
 // @vitest-environment jsdom
 import {
+    afterEach,
     beforeAll,
     describe,
     expect,
     it,
     vi,
 } from 'vitest';
-import { h } from 'vue';
+import { h, nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import { installDefaultsManager, installThemeManager } from '@vuecs/core';
 import { default as VCFormCheckbox } from '../../src/components/form-checkbox/FormCheckbox.vue';
@@ -25,7 +26,10 @@ import { default as VCFormTextarea } from '../../src/components/form-textarea/Fo
 import { default as VCValidationGroup } from '../../src/components/validation-group/ValidationGroup.vue';
 
 // Reka's `useSize` (used by Slider) constructs a `ResizeObserver`. jsdom does
-// not implement it, so install a no-op stub before any component mounts.
+// not implement it. Reka's `SelectTrigger` calls `target.hasPointerCapture`
+// inside its `pointerdown` handler — also missing from jsdom. Both stubs are
+// no-ops; their presence is what matters so the call doesn't throw and abort
+// Reka's open flow.
 beforeAll(() => {
     if (typeof globalThis.ResizeObserver === 'undefined') {
         globalThis.ResizeObserver = class {
@@ -33,6 +37,12 @@ beforeAll(() => {
             unobserve() {}
             disconnect() {}
         } as unknown as typeof globalThis.ResizeObserver;
+    }
+    if (typeof Element !== 'undefined' && !Element.prototype.hasPointerCapture) {
+        Element.prototype.hasPointerCapture = () => false;
+        Element.prototype.setPointerCapture = () => {};
+        Element.prototype.releasePointerCapture = () => {};
+        Element.prototype.scrollIntoView = () => {};
     }
 });
 
@@ -384,49 +394,88 @@ describe('VCFormSwitch', () => {
 });
 
 describe('VCFormSelect', () => {
+    // Reka's Select mounts dropdown contents in a portal under document.body
+    // only after open. We `attachTo: document.body` and click the trigger to
+    // drive the open flow, then query `document.body` for the portal contents.
     const options = [
         { value: '1', label: 'Option 1' },
         { value: '2', label: 'Option 2' },
     ];
 
-    it('should render a select element', () => {
+    let activeWrapper: ReturnType<typeof mount> | null = null;
+    afterEach(async () => {
+        // Reka schedules microtasks (e.g. closing the dropdown after a pick)
+        // that try to insertBefore on the teleport target. Unmount + flush
+        // before nuking the body so those updates resolve cleanly.
+        if (activeWrapper) {
+            activeWrapper.unmount();
+            activeWrapper = null;
+        }
+        await nextTick();
+        document.body.innerHTML = '';
+    });
+
+    const openSelect = async (wrapper: ReturnType<typeof mount>) => {
+        activeWrapper = wrapper;
+        // Reka's SelectTrigger opens on `pointerdown` (not `click`). Triggering
+        // a synthetic `click` doesn't dispatch the pointer events jsdom needs.
+        const trigger = wrapper.find('button[role="combobox"]');
+        await trigger.trigger('pointerdown');
+        await trigger.trigger('pointerup');
+        await nextTick();
+        await nextTick();
+    };
+
+    it('should render a button trigger with role="combobox"', () => {
         const wrapper = mount(VCFormSelect, {
             props: { options },
             global: { plugins: [themePlugin] },
         });
-        expect(wrapper.find('select').exists()).toBe(true);
+        expect(wrapper.find('button[role="combobox"]').exists()).toBe(true);
     });
 
-    it('should render placeholder option when placeholder is set', () => {
+    it('should show placeholder text in the trigger when no value is selected', () => {
         const wrapper = mount(VCFormSelect, {
             props: { options, placeholder: 'Pick one' },
             global: { plugins: [themePlugin] },
         });
-        const opts = wrapper.findAll('option');
-        expect(opts).toHaveLength(3); // placeholder + 2
-        expect(opts[0].text()).toBe('Pick one');
-        expect(opts[0].attributes('disabled')).toBeDefined();
+        expect(wrapper.find('button[role="combobox"]').text()).toContain('Pick one');
     });
 
-    it('should not render placeholder option when placeholder is empty', () => {
+    it('should show the matching option label in the trigger when modelValue is set', async () => {
+        const wrapper = mount(VCFormSelect, {
+            props: { options, modelValue: '2' },
+            global: { plugins: [themePlugin] },
+        });
+        // SelectValue resolves the displayed label asynchronously after
+        // SelectItem registers its text — wait one tick.
+        await nextTick();
+        expect(wrapper.find('button[role="combobox"]').text()).toContain('Option 2');
+    });
+
+    it('should respect the disabled prop on the trigger', () => {
+        const wrapper = mount(VCFormSelect, {
+            props: { options, disabled: true },
+            global: { plugins: [themePlugin] },
+        });
+        const trigger = wrapper.find('button[role="combobox"]');
+        expect(trigger.attributes('disabled')).toBeDefined();
+    });
+
+    it('should render every option as a SelectItem when opened', async () => {
         const wrapper = mount(VCFormSelect, {
             props: { options },
             global: { plugins: [themePlugin] },
+            attachTo: document.body,
         });
-        expect(wrapper.findAll('option')).toHaveLength(2);
+        await openSelect(wrapper);
+        const items = document.body.querySelectorAll('[role="option"]');
+        expect(items.length).toBe(2);
+        expect(items[0].textContent).toContain('Option 1');
+        expect(items[1].textContent).toContain('Option 2');
     });
 
-    it('should render all options with their labels', () => {
-        const wrapper = mount(VCFormSelect, {
-            props: { options },
-            global: { plugins: [themePlugin] },
-        });
-        const opts = wrapper.findAll('option');
-        expect(opts[0].text()).toBe('Option 1');
-        expect(opts[1].text()).toBe('Option 2');
-    });
-
-    it('should render groups as <optgroup>', () => {
+    it('should render groups with their label and options', async () => {
         const grouped = [
             {
                 label: 'Americas',
@@ -445,26 +494,41 @@ describe('VCFormSelect', () => {
         const wrapper = mount(VCFormSelect, {
             props: { options: grouped },
             global: { plugins: [themePlugin] },
+            attachTo: document.body,
         });
-        const groups = wrapper.findAll('optgroup');
-        expect(groups).toHaveLength(2);
-        expect(groups[0].attributes('label')).toBe('Americas');
-        expect(groups[1].attributes('label')).toBe('Europe');
-        // Three options under the two groups.
-        const opts = wrapper.findAll('option');
-        expect(opts).toHaveLength(3);
+        await openSelect(wrapper);
+        const text = document.body.textContent || '';
+        expect(text).toContain('Americas');
+        expect(text).toContain('Europe');
+        const items = document.body.querySelectorAll('[role="option"]');
+        expect(items.length).toBe(3);
     });
 
-    it('should mark the matching option as selected from modelValue', () => {
+    it('should mark options inside a disabled group as disabled', async () => {
+        const grouped = [
+            {
+                label: 'Disabled',
+                disabled: true,
+                options: [
+                    { value: 'a', label: 'A' },
+                    { value: 'b', label: 'B' },
+                ],
+            },
+        ];
         const wrapper = mount(VCFormSelect, {
-            props: { options, modelValue: '2' },
+            props: { options: grouped },
             global: { plugins: [themePlugin] },
+            attachTo: document.body,
         });
-        const opts = wrapper.findAll('option');
-        expect((opts[1].element as HTMLOptionElement).selected).toBe(true);
+        await openSelect(wrapper);
+        const items = document.body.querySelectorAll('[role="option"]');
+        expect(items.length).toBe(2);
+        items.forEach((item) => {
+            expect(item.getAttribute('data-disabled')).not.toBeNull();
+        });
     });
 
-    it('should respect disabled flag on individual options', () => {
+    it('should respect the disabled flag on individual options', async () => {
         const wrapper = mount(VCFormSelect, {
             props: {
                 options: [
@@ -477,9 +541,32 @@ describe('VCFormSelect', () => {
                 ],
             },
             global: { plugins: [themePlugin] },
+            attachTo: document.body,
         });
-        const opts = wrapper.findAll('option');
-        expect(opts[1].attributes('disabled')).toBeDefined();
+        await openSelect(wrapper);
+        const items = document.body.querySelectorAll('[role="option"]');
+        expect(items[0].getAttribute('data-disabled')).toBeNull();
+        expect(items[1].getAttribute('data-disabled')).not.toBeNull();
+    });
+
+    it('should emit update:modelValue when an option is picked', async () => {
+        const wrapper = mount(VCFormSelect, {
+            props: { options },
+            global: { plugins: [themePlugin] },
+            attachTo: document.body,
+        });
+        await openSelect(wrapper);
+        const items = document.body.querySelectorAll<HTMLElement>('[role="option"]');
+        // Reka SelectItem selects on `pointerup` (not `click`). Dispatch a real
+        // PointerEvent so Reka's handler accepts it; selection runs in a
+        // microtask so we need to await a few ticks.
+        items[1].dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+        items[1].dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
+        await nextTick();
+        await nextTick();
+        const emitted = wrapper.emitted('update:modelValue');
+        expect(emitted).toBeTruthy();
+        expect(emitted![0]).toEqual(['2']);
     });
 });
 

@@ -127,7 +127,10 @@ export default defineNuxtComponent({
 <template>
     <div class="mx-auto max-w-5xl space-y-8">
         <h3 class="flex items-center gap-2 text-2xl font-semibold">
-            <i class="fa fa-window-restore text-blue-500" /> Overlays
+            <VCIcon
+                name="fa6-solid:window-restore"
+                class="text-blue-500"
+            /> Overlays
         </h3>
 
         <section class="space-y-2">
@@ -143,6 +146,7 @@ export default defineNuxtComponent({
                         Open dialog
                     </VCModalTrigger>
                     <VCModalContent>
+                        <VCModalClose />
                         <VCModalTitle>Confirm action</VCModalTitle>
                         <VCModalDescription>
                             This will permanently delete the record.
