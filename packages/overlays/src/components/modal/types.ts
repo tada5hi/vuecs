@@ -17,8 +17,17 @@ export type ModalThemeClasses = {
     footer: string;
     /** Trigger button element. */
     trigger: string;
-    /** Close button element. */
+    /**
+     * Generic close-trigger button. Neutral by design (just focus-ring +
+     * button affordances) so consumer classes layered via `class=` compose
+     * cleanly. Used by `<VCModalClose>`.
+     */
     close: string;
+    /**
+     * Corner-X close button. Carries absolute positioning + sizing so it
+     * docks into the dialog's top-right corner. Used by `<VCModalCloseIcon>`.
+     */
+    closeIcon: string;
     /** "Back" button shown when the view stack has history. */
     back: string;
 };

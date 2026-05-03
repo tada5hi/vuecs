@@ -844,12 +844,12 @@ matching `*Portal` so consumers don't have to compose them manually
         ModalContent.vue    <- DialogPortal + DialogOverlay + DialogContent
         ModalTitle.vue
         ModalDescription.vue
-        ModalClose.vue
+        ModalClose.vue        <- close trigger; `icon` prop selects theme `close` (neutral) vs `closeIcon` (corner-X)
         theme.ts            <- shared modalThemeDefaults (single source for all parts)
         types.ts            <- ModalThemeClasses + ThemeElements augmentation
         use-modal.ts        <- useModal() view-stack composable (issue #1480)
         index.ts
-      popover/                <- Popover / Trigger / Content / Arrow / Close
+      popover/                <- Popover / Trigger / Content / Arrow / Close (with `icon` prop)
       tooltip/                <- TooltipProvider / Tooltip / Trigger / Content / Arrow
       dropdown-menu/          <- DropdownMenu / Trigger / Content / Item / Label / Separator / Group / Arrow
       context-menu/           <- ContextMenu / Trigger / Content / Item / Label / Separator / Group

@@ -34,7 +34,7 @@ import {
                 floating-ui flips and shifts to stay on-screen.
             </p>
             <VCPopoverArrow />
-            <VCPopoverClose />
+            <VCPopoverClose icon />
         </VCPopoverContent>
     </VCPopover>
 </template>
@@ -60,7 +60,7 @@ import {
 | `VCPopoverTrigger` | `PopoverTrigger` | Toggles open. |
 | `VCPopoverContent` | `PopoverPortal` + `PopoverContent` | Floating panel. `inline` skips the portal. Position via `side` / `sideOffset` / `align` / `alignOffset` / `avoidCollisions`. |
 | `VCPopoverArrow` | `PopoverArrow` | Optional pointer arrow. |
-| `VCPopoverClose` | `PopoverClose` | Close button. |
+| `VCPopoverClose` | `PopoverClose` | Close button. Neutral by default; pass `icon` for the pre-styled corner-X. |
 
 ```vue
 <script setup lang="ts">
@@ -79,7 +79,7 @@ import {
         <VCPopoverContent side="bottom" :side-offset="8">
             <p class="text-sm">Hello from a popover</p>
             <VCPopoverArrow />
-            <VCPopoverClose />
+            <VCPopoverClose icon />
         </VCPopoverContent>
     </VCPopover>
 </template>
@@ -92,7 +92,8 @@ import {
 | `trigger` | `vc-popover-trigger` | |
 | `content` | `vc-popover-content` | Floating panel; supports `data-state="open\|closed"` for animation. |
 | `arrow` | `vc-popover-arrow` | |
-| `close` | `vc-popover-close` | |
+| `close` | `vc-popover-close` | Neutral baseline for `<VCPopoverClose>` — composes with consumer classes. |
+| `closeIcon` | `vc-popover-close-icon` | Corner-X positioning + sizing for `<VCPopoverCloseIcon>`. |
 
 ## Accessibility
 
@@ -163,13 +164,14 @@ Optional pointer arrow that follows the panel's position. Wraps `PopoverArrow`.
 
 ### `<VCPopoverClose>`
 
-Button that dismisses the popover. Wraps `PopoverClose`. Default content is `×`.
+Button that dismisses the popover. Wraps `PopoverClose`. Reads either the `close` slot (default — neutral so consumer classes compose cleanly) or the `closeIcon` slot (pre-styled corner-X) depending on the `icon` prop.
 
-When no slot content is supplied, `<VCPopoverClose>` auto-applies `aria-label="Close"` so screen readers don't announce the bare `×` glyph as "multiplication sign". Pass an explicit `aria-label` via attrs to override, or supply visible text content to drop the auto-label.
+Default slot content is `×` when no children are provided. Auto-applies `aria-label="Close"` so screen readers don't announce the bare `×` glyph as "multiplication sign". Pass an explicit `aria-label` via attrs to override, or supply visible text content to drop the auto-label.
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `as` | `string` | `'button'` | HTML tag to render. |
 | `asChild` | `boolean` | `false` | Render via the default slot's child element. |
+| `icon` | `boolean` | `false` | When true, reads the theme's `closeIcon` slot (corner-X). When false, reads the neutral `close` slot. |
 | `themeClass` | `Partial<PopoverThemeClasses>` | `undefined` | Per-instance theme override. |
 | `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |

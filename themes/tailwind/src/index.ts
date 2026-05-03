@@ -279,7 +279,11 @@ export default function tailwindTheme(): Theme {
                     body: 'flex flex-col gap-2 text-sm text-fg',
                     footer: 'flex flex-row items-center justify-end gap-2',
                     trigger: '',
-                    close: 'absolute right-3 top-3 inline-flex h-7 w-7 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
+                    // Generic close trigger — neutral baseline so consumer
+                    // classes (`<VCModalClose class="...">`) compose cleanly.
+                    // The corner-X pattern lives in `closeIcon` below.
+                    close: 'focus:outline-none focus:ring-2 focus:ring-ring',
+                    closeIcon: 'absolute right-3 top-3 inline-flex h-7 w-7 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
                     back: 'inline-flex h-7 w-7 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
                 },
             },
@@ -288,7 +292,10 @@ export default function tailwindTheme(): Theme {
                     trigger: '',
                     content: 'z-50 w-72 rounded-md border border-border bg-bg p-4 text-sm text-fg shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
                     arrow: 'fill-bg',
-                    close: 'absolute right-2 top-2 inline-flex h-6 w-6 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
+                    // Generic close trigger — neutral baseline so consumer
+                    // classes compose cleanly. Corner-X lives in `closeIcon`.
+                    close: 'focus:outline-none focus:ring-2 focus:ring-ring',
+                    closeIcon: 'absolute right-2 top-2 inline-flex h-6 w-6 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
                 },
             },
             tooltip: {

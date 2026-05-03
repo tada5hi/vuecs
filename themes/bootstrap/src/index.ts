@@ -280,7 +280,11 @@ export default function bootstrapTheme(): Theme {
                     body: 'modal-body',
                     footer: 'modal-footer',
                     trigger: '',
-                    close: 'btn-close position-absolute top-0 end-0 m-2',
+                    // Generic close trigger — neutral baseline so consumer
+                    // classes (`<VCModalClose class="...">`) compose cleanly.
+                    // The corner-X pattern lives in `closeIcon` below.
+                    close: '',
+                    closeIcon: 'btn-close position-absolute top-0 end-0 m-2',
                     back: 'btn btn-sm btn-link p-1',
                 },
             },
@@ -289,7 +293,10 @@ export default function bootstrapTheme(): Theme {
                     trigger: '',
                     content: 'popover bs-popover-auto show vc-overlay-anim',
                     arrow: 'popover-arrow',
-                    close: 'btn-close position-absolute top-0 end-0 m-1',
+                    // Generic close trigger — neutral baseline so consumer
+                    // classes compose cleanly. Corner-X lives in `closeIcon`.
+                    close: '',
+                    closeIcon: 'btn-close position-absolute top-0 end-0 m-1',
                 },
             },
             tooltip: {
