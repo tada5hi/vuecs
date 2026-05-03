@@ -19,7 +19,7 @@ export default defineNuxtComponent({
 <template>
     <div class="mx-auto max-w-5xl space-y-4">
         <h3 class="flex items-center gap-2 text-2xl font-semibold">
-            <i class="fa fa-solid fa-clock text-blue-500" /> Timeago
+            <VCIcon name="fa6-solid:clock" class="text-blue-500" /> Timeago
         </h3>
         <VCTimeago :datetime="dateTime" />
     </div>

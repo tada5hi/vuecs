@@ -13,7 +13,7 @@ export default defineNuxtComponent({
 <template>
     <div class="mx-auto max-w-5xl space-y-4">
         <h3 class="flex items-center gap-2 text-2xl font-semibold">
-            <i class="fa fa-solid fa-clock text-blue-500" /> Countdown
+            <VCIcon name="fa6-solid:clock" class="text-blue-500" /> Countdown
         </h3>
         <VCCountdown :time="time">
             <template #default="props">
