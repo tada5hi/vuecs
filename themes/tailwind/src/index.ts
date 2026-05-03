@@ -238,7 +238,7 @@ export default function tailwindTheme(): Theme {
                     // `size` variant, bg/border/colors come from the `variant`
                     // variant. Keeping concerns split lets consumers pick a
                     // size and a visual treatment independently.
-                    link: 'inline-flex items-center justify-center rounded-md leading-none focus:outline-none focus:ring-1 focus:ring-ring',
+                    link: 'inline-flex items-center justify-center gap-1.5 rounded-md leading-none focus:outline-none focus:ring-1 focus:ring-ring',
                     linkActive: '!border-primary-600 !bg-primary-600 !text-on-primary hover:!bg-primary-700',
                     // The component composes `link + ellipsis` onto
                     // PaginationEllipsis so it inherits the box styling

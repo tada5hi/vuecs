@@ -230,7 +230,12 @@ export default function bootstrapTheme(): Theme {
                     // Bootstrap's own `.active.page-link` rules; we merge
                     // `active` into linkActive below.
                     item: 'page-item',
-                    link: 'page-link',
+                    // `d-inline-flex align-items-center gap-1` layers on top of
+                    // Bootstrap's `.page-link` so the icon + label pair (e.g.
+                    // <chevron> "Previous") sits on a single baseline with
+                    // breathing room between them. `.page-link` is `display: block`
+                    // by default, which would otherwise stack them.
+                    link: 'page-link d-inline-flex align-items-center gap-1',
                     linkActive: 'active',
                     // Wrapper composes `link + ellipsis` onto PaginationEllipsis
                     // so it inherits the page-link box. Disable interactivity.
