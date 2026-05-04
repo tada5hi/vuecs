@@ -1,14 +1,14 @@
 // @vitest-environment jsdom
 import {
-    afterEach, 
-    describe, 
-    expect, 
+    afterEach,
+    describe,
+    expect,
     it,
 } from 'vitest';
 import {
-    defineComponent, 
-    h, 
-    nextTick, 
+    defineComponent,
+    h,
+    nextTick,
     ref,
 } from 'vue';
 import { mount } from '@vue/test-utils';

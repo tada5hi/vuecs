@@ -49,8 +49,8 @@ import { VCAvatar } from '@vuecs/elements';
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `src` | `string` | `undefined` | Image source. When omitted, the fallback renders immediately. |
-| `alt` | `string` | `''` | Alt text for the image. |
-| `delayMs` | `number` | `0` | Delay before the fallback appears — useful to avoid a flicker on fast connections. |
+| `alt` | `string` | `''` | Alt text for the image. Empty string = decorative; pass a meaningful value when the avatar conveys identity. |
+| `delayMs` | `number` | `undefined` | Delay before the fallback appears — useful to avoid a flicker on fast connections. Only strictly positive values are forwarded to Reka (its `AvatarFallback` treats `0` as "wait forever"); omit to render the fallback immediately. |
 | `themeClass` | `Partial<AvatarThemeClasses>` | `undefined` | Per-instance theme override. |
 | `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |
 

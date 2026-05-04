@@ -15,8 +15,12 @@ export type AvatarFallbackSlotProps = {
 const avatarProps = {
     /** Image source. When omitted, the fallback renders immediately. */
     src: { type: String, default: undefined },
-    /** Image alt text. Forwarded to Reka's `AvatarImage`. */
-    alt: { type: String, default: undefined },
+    /**
+     * Image alt text. Defaults to `''` so the rendered `<img>` always
+     * carries the attribute (decorative-image semantics) — pass a
+     * meaningful string when the avatar conveys identity.
+     */
+    alt: { type: String, default: '' },
     /**
      * Delay (ms) before the fallback appears. Useful to avoid a flicker
      * on fast connections — gives the image a brief window to load before
@@ -59,9 +63,12 @@ export default defineComponent({
             }
             children.push(h(AvatarFallback, {
                 // Reka's AvatarFallback treats `delayMs: 0` as "wait
-                // forever" — only forward when the consumer set a
-                // positive value. Omitted → fallback renders immediately.
-                ...(props.delayMs ? { delayMs: props.delayMs } : {}),
+                // forever" — only forward when the consumer set a strictly
+                // positive value. Omitted (or 0/negative) → fallback
+                // renders immediately.
+                ...(typeof props.delayMs === 'number' && props.delayMs > 0 ?
+                    { delayMs: props.delayMs } :
+                    {}),
                 class: resolved.fallback || undefined,
             }, { default: () => slots.fallback?.({ class: resolved.fallback }) ?? '' }));
             return h(AvatarRoot, mergeProps(attrs, { class: resolved.root || undefined }), { default: () => children });

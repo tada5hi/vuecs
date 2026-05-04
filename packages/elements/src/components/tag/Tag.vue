@@ -15,6 +15,11 @@ export type TagSlotProps = {
     class: string;
 };
 
+export type TagDefaultSlotProps = {
+    /** Resolved label string (`label ?? String(value) ?? ''`). */
+    label: string;
+};
+
 const tagProps = {
     /** Bound value — emitted on remove, also used by `<VCTags>` as the chip key. */
     value: { type: [String, Number] as PropType<string | number>, default: undefined },
@@ -40,7 +45,7 @@ export default defineComponent({
     props: tagProps,
     emits: ['remove'],
     slots: Object as SlotsType<{
-        default: TagSlotProps;
+        default: TagDefaultSlotProps;
         icon: TagSlotProps;
         remove: TagSlotProps;
     }>,
@@ -63,6 +68,7 @@ export default defineComponent({
         const theme = useComponentTheme('tag', themeProps, tagThemeDefaults);
         return () => {
             const resolved = theme.value;
+            const label = props.label ?? (props.value !== undefined ? String(props.value) : '');
             const children = [];
 
             if (props.icon || slots.icon) {
@@ -73,15 +79,15 @@ export default defineComponent({
             }
 
             children.push(slots.default ?
-                slots.default({ class: '' }) :
-                [props.label ?? (props.value !== undefined ? String(props.value) : '')]);
+                slots.default({ label }) :
+                [label]);
 
             if (props.removable) {
                 children.push(slots.remove ?
                     slots.remove({ class: resolved.remove }) :
                     h('button', {
                         type: 'button',
-                        'aria-label': 'Remove',
+                        'aria-label': label ? `Remove ${label}` : 'Remove',
                         class: resolved.remove || undefined,
                         onClick: (event: Event) => {
                             event.stopPropagation();

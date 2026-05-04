@@ -18,7 +18,7 @@ import type {
 const badgeProps = {
     /** Color variant key — resolved by the active theme. */
     color: { type: String as PropType<BadgeColor>, default: undefined },
-    /** Style variant key — resolved by the active theme (e.g. `solid`, `subtle`, `outline`). */
+    /** Style variant key — resolved by the active theme (e.g. `solid`, `soft`, `outline`). */
     variant: { type: String as PropType<BadgeVariant>, default: undefined },
     /** Size variant key — resolved by the active theme. */
     size: { type: String as PropType<BadgeSize>, default: undefined },
