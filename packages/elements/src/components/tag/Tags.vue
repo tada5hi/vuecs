@@ -67,7 +67,7 @@ export default defineComponent({
                     });
                 }
                 return h(VCTag, {
-                    key: String(item.value),
+                    key: item.value,
                     value: item.value,
                     label: item.label,
                     icon: item.icon,

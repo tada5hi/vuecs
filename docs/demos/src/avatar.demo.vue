@@ -9,7 +9,7 @@ import { VCAvatar } from '@vuecs/elements';
             alt="Avatar 1"
         />
         <VCAvatar
-            src="https://invalid.example.com/missing.jpg"
+            src="/missing-avatar.jpg"
             alt="Broken image — fallback wins"
         >
             <template #fallback>

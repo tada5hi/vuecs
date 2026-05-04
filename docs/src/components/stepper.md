@@ -70,7 +70,7 @@ const steps = [
 | Component | Wraps | Notes |
 |---|---|---|
 | `VCStepper` | `StepperRoot` | Holds active-step state. v-models `modelValue` (1-based step number). `linear` blocks navigation past the next incomplete step. |
-| `VCStepperItem` | `StepperItem` | Per-step wrapper. `step` (1-based) is required. Carries `data-state="active|completed|inactive"`. |
+| `VCStepperItem` | `StepperItem` | Per-step wrapper. `step` (1-based) is required. Carries `data-state="active\|completed\|inactive"`. |
 | `VCStepperTrigger` | `StepperTrigger` | Clickable trigger inside a step. Disabled when the step is unreachable in linear mode. |
 | `VCStepperIndicator` | `StepperIndicator` | Circular indicator (number / check / icon). |
 | `VCStepperTitle` | `StepperTitle` | Step title. |

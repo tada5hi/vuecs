@@ -943,7 +943,7 @@ LOC), wraps zero or one Reka primitive, ships its own theme key, and
 has no relationships with other vuecs packages beyond `@vuecs/core` for
 the theme system.
 
-```
+```text
 @vuecs/elements/
   src/
     components/
@@ -995,7 +995,7 @@ is a navigation/progress pattern (wizard, checkout flow, onboarding) —
 the pattern fit, not the manager. The Stepper compound does NOT use
 `NavigationManager`; it owns its own state via Reka's `StepperRoot`.
 
-```
+```text
 @vuecs/navigation/src/components/stepper/
   Stepper.vue              <- StepperRoot (v-model:modelValue, orientation, linear)
   StepperItem.vue          <- StepperItem (step prop required; data-state)
