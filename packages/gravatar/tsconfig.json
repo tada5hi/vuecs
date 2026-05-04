@@ -13,6 +13,12 @@
             ],
             "@vuecs/core/*": [
                 "./packages/core/src/*"
+            ],
+            "@vuecs/elements": [
+                "./packages/elements/src"
+            ],
+            "@vuecs/elements/*": [
+                "./packages/elements/src/*"
             ]
         }
     },
