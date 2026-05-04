@@ -60,16 +60,24 @@ export type FormRadioIndicatorSlotProps = {
 };
 
 const formRadioProps = {
+    /** Form-submission value identifying this radio option. */
     value: {
         type: [String, Number, Boolean, Object, null] as PropType<AcceptableValue>,
         required: true,
     },
+    /** When `true`, prevents the user from interacting with the radio. */
     disabled: { type: Boolean, default: false },
+    /** Marks the underlying form field as required. */
     required: { type: Boolean, default: false },
+    /** Element id; falls back to an SSR-safe generated id. */
     id: { type: String, default: undefined },
+    /** Vuecs convention: render the label by default. Internal control flow, not forwarded to Reka. */
     label: { type: Boolean, default: true },
+    /** Default label text (resolved through DefaultsManager). */
     labelContent: { type: String, default: undefined },
+    /** Theme-class overrides for this component instance. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<FormRadioThemeClasses>>, default: undefined },
+    /** Theme variant values for this component instance. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 

@@ -8,12 +8,19 @@ import { dropdownMenuThemeDefaults } from './theme';
 import type { DropdownMenuThemeClasses } from './types';
 
 const dropdownMenuSubContentProps = {
+    /** Skip the portal and render in-place (testing / custom mounting). Internal — never forwarded to Reka. */
     inline: { type: Boolean, default: false },
+    /** Distance in pixels between sub-trigger and sub-menu. */
     sideOffset: { type: Number, default: 0 },
+    /** Offset in pixels along the alignment axis. */
     alignOffset: { type: Number, default: 0 },
+    /** Flip / shift the sub-menu to stay inside the viewport. */
     avoidCollisions: { type: Boolean, default: true },
+    /** Loop arrow-key focus from last item back to first. Vuecs convention: `true` (Reka default: `false`). */
     loop: { type: Boolean, default: true },
+    /** Per-instance theme override — flat slot key map. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<DropdownMenuThemeClasses>>, default: undefined },
+    /** Per-instance variant values. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 

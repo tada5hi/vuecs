@@ -8,10 +8,17 @@ import { contextMenuThemeDefaults } from './theme';
 import type { ContextMenuThemeClasses } from './types';
 
 const contextMenuContentProps = {
+    /** Skip the portal and render in-place (testing / custom mounting). Internal — never forwarded to Reka. */
     inline: { type: Boolean, default: false },
+    /** Loop arrow-key focus from last item back to first. Vuecs convention: `true` (Reka default: `false`). */
     loop: { type: Boolean, default: true },
+    /** Offset in pixels along the alignment axis. */
+    alignOffset: { type: Number, default: 0 },
+    /** Flip / shift the menu to stay inside the viewport. */
     avoidCollisions: { type: Boolean, default: true },
+    /** Per-instance theme override — flat slot key map. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<ContextMenuThemeClasses>>, default: undefined },
+    /** Per-instance variant values. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 
@@ -28,6 +35,7 @@ export default defineComponent({
             ContextMenuContent,
             mergeProps(attrs, {
                 loop: props.loop,
+                alignOffset: props.alignOffset,
                 avoidCollisions: props.avoidCollisions,
                 class: theme.value.content || undefined,
             }),

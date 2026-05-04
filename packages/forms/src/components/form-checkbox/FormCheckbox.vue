@@ -59,21 +59,28 @@ export type FormCheckboxIndicatorSlotProps = {
 export type FormCheckboxModelValue = boolean | 'indeterminate' | null;
 
 const formCheckboxProps = {
+    /** Controlled checked state. `null` is accepted as the documented "unset" value. */
     modelValue: {
-        // `null` is in the runtime type alongside Boolean/String so consumers
-        // can pass `null` (the documented "unset" value) without tripping
-        // Vue's prop validation warnings.
         type: [Boolean, String, null] as PropType<FormCheckboxModelValue>,
         default: undefined,
     },
-    value: { type: [String, Number, Boolean, Object] as PropType<unknown>, default: undefined },
+    /** Form-submission value when the checkbox is checked. */
+    value: { type: [String, Number, Boolean, Object] as PropType<unknown>, default: 'on' },
+    /** When `true`, prevents the user from interacting with the checkbox. */
     disabled: { type: Boolean, default: false },
+    /** Marks the underlying form field as required. */
     required: { type: Boolean, default: false },
+    /** Form-field name for HTML form submission. */
     name: { type: String, default: undefined },
+    /** Element id; falls back to an SSR-safe generated id. */
     id: { type: String, default: undefined },
+    /** Vuecs convention: render the label by default. Internal control flow, not forwarded to Reka. */
     label: { type: Boolean, default: true },
+    /** Default label text (resolved through DefaultsManager). */
     labelContent: { type: String, default: undefined },
+    /** Theme-class overrides for this component instance. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<FormCheckboxThemeClasses>>, default: undefined },
+    /** Theme variant values for this component instance. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 
@@ -110,17 +117,12 @@ export default defineComponent({
                 mergeProps(attrs, {
                     id,
                     value: props.value,
+                    name: props.name,
+                    modelValue: props.modelValue,
                     disabled: props.disabled,
                     required: props.required,
-                    name: props.name,
                     'onUpdate:modelValue': (value: FormCheckboxModelValue) => emit('update:modelValue', value),
                     class: resolved.root || undefined,
-                    // Only forward `modelValue` when explicitly set —
-                    // `undefined` lets a parent `<VCFormCheckboxGroup>`'s
-                    // context manage the checked state. Forcing `false`
-                    // here would override the group context and break
-                    // group-controlled selection.
-                    ...(props.modelValue !== undefined ? { modelValue: props.modelValue } : {}),
                 }),
                 {
                     default: () => h(

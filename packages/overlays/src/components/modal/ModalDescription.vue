@@ -8,7 +8,9 @@ import { modalThemeDefaults } from './theme';
 import type { ModalThemeClasses } from './types';
 
 const modalDescriptionProps = {
+    /** Per-instance theme override — flat slot key map. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<ModalThemeClasses>>, default: undefined },
+    /** Per-instance variant values. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 

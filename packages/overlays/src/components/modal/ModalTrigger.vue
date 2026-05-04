@@ -8,9 +8,13 @@ import { modalThemeDefaults } from './theme';
 import type { ModalThemeClasses } from './types';
 
 const modalTriggerProps = {
+    /** HTML tag (or component) to render as. Reka default: `'button'`. */
     as: { type: String, default: 'button' },
+    /** Render the slot content as the rendered element instead of wrapping it. */
     asChild: { type: Boolean, default: false },
+    /** Per-instance theme override — flat slot key map. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<ModalThemeClasses>>, default: undefined },
+    /** Per-instance variant values. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 

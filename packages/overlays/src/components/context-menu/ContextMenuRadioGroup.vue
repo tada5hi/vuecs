@@ -8,8 +8,11 @@ import { contextMenuThemeDefaults } from './theme';
 import type { ContextMenuThemeClasses } from './types';
 
 const contextMenuRadioGroupProps = {
-    modelValue: { type: String as PropType<string | undefined>, default: undefined },
+    /** Selected value within the group. Bind via `v-model`. */
+    modelValue: { type: String, default: '' },
+    /** Per-instance theme override — flat slot key map. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<ContextMenuThemeClasses>>, default: undefined },
+    /** Per-instance variant values. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 

@@ -8,9 +8,13 @@ import { popoverThemeDefaults } from './theme';
 import type { PopoverThemeClasses } from './types';
 
 const popoverArrowProps = {
+    /** Arrow width in pixels. */
     width: { type: Number, default: 10 },
+    /** Arrow height in pixels. */
     height: { type: Number, default: 5 },
+    /** Per-instance theme override — flat slot key map. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<PopoverThemeClasses>>, default: undefined },
+    /** Per-instance variant values. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 

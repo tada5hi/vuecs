@@ -8,7 +8,9 @@ import { dropdownMenuThemeDefaults } from './theme';
 import type { DropdownMenuThemeClasses } from './types';
 
 const dropdownMenuSeparatorProps = {
+    /** Per-instance theme override — flat slot key map. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<DropdownMenuThemeClasses>>, default: undefined },
+    /** Per-instance variant values. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 

@@ -8,10 +8,15 @@ import { dropdownMenuThemeDefaults } from './theme';
 import type { DropdownMenuThemeClasses } from './types';
 
 const dropdownMenuRadioItemProps = {
+    /** Identifier matched against the group's `modelValue`. */
     value: { type: String, required: true },
+    /** When true, prevents user interaction with the item. */
     disabled: { type: Boolean, default: false },
+    /** Optional typeahead text override (defaults to the item's `.textContent`). */
     textValue: { type: String, default: undefined },
+    /** Per-instance theme override — flat slot key map. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<DropdownMenuThemeClasses>>, default: undefined },
+    /** Per-instance variant values. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 

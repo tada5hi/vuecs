@@ -44,15 +44,25 @@ export type FormInputGroupSlotProps = {
 };
 
 const formInputProps = {
+    /** Controlled string value (v-model). */
     modelValue: { type: String, default: '' },
+    /** Native `<input type>` attribute. */
     type: { type: String, default: 'text' },
+    /** Force-render the input-group wrapper even without prepend/append content. */
     group: { type: Boolean, default: false },
+    /** When `true`, render a prepended group element using `groupPrependContent` (or the `groupPrepend` slot). */
     groupPrepend: { type: Boolean, default: false },
+    /** Default text/HTML rendered inside the prepend slot. */
     groupPrependContent: { type: String, default: undefined },
+    /** When `true`, render an appended group element using `groupAppendContent` (or the `groupAppend` slot). */
     groupAppend: { type: Boolean, default: false },
+    /** Default text/HTML rendered inside the append slot. */
     groupAppendContent: { type: String, default: undefined },
+    /** Debounce window (ms) for `update:modelValue` emissions. `0` disables debouncing. */
     debounce: { type: Number, default: 0 },
+    /** Theme-class overrides for this component instance. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<FormInputThemeClasses>>, default: undefined },
+    /** Theme variant values for this component instance. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 
