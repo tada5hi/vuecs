@@ -49,7 +49,8 @@
         "test:coverage": "vitest --config test/vitest.config.ts --run --coverage"
     },
     "dependencies": {
-        "@posva/event-emitter": "^1.0.2"
+        "@posva/event-emitter": "^1.0.2",
+        "reka-ui": "^2.9.6"
     },
     "devDependencies": {
         "@vue/test-utils": "^2.4.6",

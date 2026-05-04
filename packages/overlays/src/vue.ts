@@ -27,6 +27,10 @@ import type VCDropdownMenuSub from './components/dropdown-menu/DropdownMenuSub.v
 import type VCDropdownMenuSubContent from './components/dropdown-menu/DropdownMenuSubContent.vue';
 import type VCDropdownMenuSubTrigger from './components/dropdown-menu/DropdownMenuSubTrigger.vue';
 import type VCDropdownMenuTrigger from './components/dropdown-menu/DropdownMenuTrigger.vue';
+import type VCHoverCard from './components/hover-card/HoverCard.vue';
+import type VCHoverCardArrow from './components/hover-card/HoverCardArrow.vue';
+import type VCHoverCardContent from './components/hover-card/HoverCardContent.vue';
+import type VCHoverCardTrigger from './components/hover-card/HoverCardTrigger.vue';
 import type VCModal from './components/modal/Modal.vue';
 import type VCModalClose from './components/modal/ModalClose.vue';
 import type VCModalContent from './components/modal/ModalContent.vue';
@@ -79,6 +83,10 @@ declare module '@vue/runtime-core' {
         VCDropdownMenuSubTrigger: typeof VCDropdownMenuSubTrigger,
         VCDropdownMenuSubContent: typeof VCDropdownMenuSubContent,
         VCDropdownMenuArrow: typeof VCDropdownMenuArrow,
+        VCHoverCard: typeof VCHoverCard,
+        VCHoverCardTrigger: typeof VCHoverCardTrigger,
+        VCHoverCardContent: typeof VCHoverCardContent,
+        VCHoverCardArrow: typeof VCHoverCardArrow,
         VCContextMenu: typeof VCContextMenu,
         VCContextMenuTrigger: typeof VCContextMenuTrigger,
         VCContextMenuContent: typeof VCContextMenuContent,

@@ -1,0 +1,10 @@
+/*
+ * Structural defaults for VCAspectRatio. Reka maintains the ratio via
+ * `padding-bottom` on a wrapper — this just makes any direct child
+ * (img, video, iframe) fill the slot regardless of its intrinsic size.
+ */
+.vc-aspect-ratio > * {
+    width: 100%;
+    height: 100%;
+    display: block;
+}

@@ -1,0 +1,80 @@
+<script lang="ts">
+import { defineComponent, h, mergeProps } from 'vue';
+import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
+import { useComponentTheme } from '@vuecs/core';
+import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
+import { tagThemeDefaults } from './theme';
+import type { TagThemeClasses } from './types';
+
+export type TagSlotProps = {
+    /** Resolved theme class for the matching slot. */
+    class: string;
+};
+
+const tagProps = {
+    /** Bound value — emitted on remove, also used by `<VCTagList>` as the chip key. */
+    value: { type: [String, Number] as PropType<string | number>, default: undefined },
+    /** Display label. Default slot wins if both are passed. */
+    label: { type: String, default: undefined },
+    /** Iconify-style icon name forwarded to the leading `icon` slot. */
+    icon: { type: String, default: undefined },
+    /** When `true`, renders the trailing remove button. */
+    removable: { type: Boolean, default: false },
+    /** Theme-class overrides for this component instance. */
+    themeClass: { type: Object as PropType<ThemeClassesOverride<TagThemeClasses>>, default: undefined },
+    /** Theme-variant values for this component instance. */
+    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
+};
+
+export type TagProps = ExtractPublicPropTypes<typeof tagProps>;
+
+export default defineComponent({
+    name: 'VCTag',
+    inheritAttrs: false,
+    props: tagProps,
+    emits: ['remove'],
+    slots: Object as SlotsType<{
+        default: TagSlotProps;
+        icon: TagSlotProps;
+        remove: TagSlotProps;
+    }>,
+    setup(props, {
+        attrs, 
+        slots, 
+        emit, 
+    }) {
+        const theme = useComponentTheme('tag', props, tagThemeDefaults);
+        return () => {
+            const resolved = theme.value;
+            const children = [];
+
+            if (props.icon || slots.icon) {
+                const iconSlot = slots.icon;
+                children.push(h('span', { class: resolved.icon || undefined }, iconSlot ?
+                    iconSlot({ class: resolved.icon }) :
+                    [props.icon]));
+            }
+
+            children.push(slots.default ?
+                slots.default({ class: '' }) :
+                [props.label ?? (props.value !== undefined ? String(props.value) : '')]);
+
+            if (props.removable) {
+                children.push(slots.remove ?
+                    slots.remove({ class: resolved.remove }) :
+                    h('button', {
+                        type: 'button',
+                        'aria-label': 'Remove',
+                        class: resolved.remove || undefined,
+                        onClick: (event: Event) => {
+                            event.stopPropagation();
+                            emit('remove', props.value);
+                        },
+                    }, '×'));
+            }
+
+            return h('span', mergeProps(attrs, { class: resolved.root || undefined }), children);
+        };
+    },
+});
+</script>

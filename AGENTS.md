@@ -29,14 +29,15 @@ npm run lint:fix       # Auto-fix lint issues
 | `@vuecs/core` | Theme system, global behavioral defaults, utilities, component infrastructure | 2.0.0 |
 | `@vuecs/countdown` | Countdown/timer component | 1.0.1 |
 | `@vuecs/design` | CSS design tokens (color scales, semantic aliases) + motion primitives (vanilla-CSS port of `tw-animate-css`) + runtime palette switcher + `usePalette` / `useColorMode` Vue composables | 0.0.0 |
+| `@vuecs/elements` | Atomic, presentation-only UI elements — `VCSeparator`, `VCTag` / `VCTagList`, `VCAvatar`, `VCAspectRatio`, `VCVisuallyHidden`, `VCBadge`. Pure-CSS or thin Reka wrappers; each ≤150 LOC, owns its own theme key. | 0.0.0 |
 | `@vuecs/forms` | Form components on Reka UI primitives — `VCFormCheckbox` / `VCFormCheckboxGroup`, `VCFormSwitch`, `VCFormRadio` / `VCFormRadioGroup`, `VCFormPin`, `VCFormSlider` (single+range), `VCFormNumber`, `VCFormTags`, `VCFormSelect` / `VCFormSelectSearch` (FormOption shape), `VCFormInput` / `VCFormTextarea` (native), plus the experimental `useSubmitButton()` helper for `@vuecs/button`. Renamed from `@vuecs/form-controls` in 3.0 (clean break — old package removed). | 3.0.0 |
-| `@vuecs/gravatar` | Gravatar avatar component | 1.0.2 |
+| `@vuecs/gravatar` | Gravatar avatar component — composes `<VCAvatar>` from `@vuecs/elements` for fallback support (DOM shape changed; major bump on next release-please run) | 1.0.2 |
 | `@vuecs/icon` | `<VCIcon>` component — thin Iconify wrapper for vuecs's icon-string-prop slots and consumer slot content | 0.0.0 |
 | `@vuecs/link` | Router-aware link component (vue-router/nuxt) | 1.0.1 |
 | `@vuecs/list` | Compound list components (List/Header/Body/Item/ItemText/ItemActions/Footer/Loading/Empty) + `useList()` state composable. Successor to `@vuecs/list-controls` — clean break, compound API. | 0.0.0 |
-| `@vuecs/navigation` | Multi-level navigation with NavigationManager | 2.4.1 |
+| `@vuecs/navigation` | Multi-level navigation with NavigationManager + `<VCStepper>` compound for multi-step wizards | 2.4.1 |
 | `@vuecs/nuxt` | Nuxt module — SSR palette + @vuecs/design auto-import | 0.0.0 |
-| `@vuecs/overlays` | Compound overlays on Reka primitives — Modal (+ `useModal()` view-stack composable), Popover, Tooltip, DropdownMenu, ContextMenu | 0.0.0 |
+| `@vuecs/overlays` | Compound overlays on Reka primitives — Modal (+ `useModal()` view-stack composable), Popover, HoverCard, Tooltip, DropdownMenu, ContextMenu | 0.0.0 |
 | `@vuecs/pagination` | Pagination component | 1.3.1 |
 | `@vuecs/theme-bootstrap` | Bootstrap theme (currently targets v5; renamed from `@vuecs/theme-bootstrap-v5` in 3.0) | 3.0.0 |
 | `@vuecs/theme-tailwind` | Tailwind CSS theme (exports `merge: ClassesMergeFn`) | 0.0.0 |
@@ -47,14 +48,15 @@ npm run lint:fix       # Auto-fix lint issues
 ### Dependency Layers
 
 ```text
-Layer 0 (no internal deps):  core, countdown, design, gravatar, icon, link, timeago
-Layer 1 (depends on core):   button, forms, list, navigation, overlays, pagination
+Layer 0 (no internal deps):  core, countdown, design, icon, link, timeago
+Layer 1 (depends on core):   button, elements, forms, list, navigation, overlays, pagination
+Layer 1' (depends on elements + core):   gravatar (composes VCAvatar)
 Layer 2 (depends on Layer 0): themes (@vuecs/core peer dep only — pure data that targets component packages at runtime)
 Layer 2': icons (@vuecs/core peer dep only — Iconify-name vocabularies for @vuecs/icon's <VCIcon>, registered via `app.use(vuecs, { icons: [...] })`)
 Layer 3 (integration):       nuxt (depends on design + @nuxt/kit)
 ```
 
-`navigation` also depends on `@vuecs/link`. `pagination`, `overlays`, and `forms` take a runtime dep on `reka-ui` (they wrap Reka's headless primitives — pagination, dialog/popover/tooltip/menu, and the form-input families respectively). `theme-tailwind` is designed to pair with `@vuecs/design` (Tailwind v4 + CSS-variable tokens); `theme-bootstrap` ships an optional bridge that maps Bootstrap's `--bs-*` theme vars onto the design-system tokens.
+`navigation` also depends on `@vuecs/link`. `pagination`, `overlays`, `forms`, `elements`, and `navigation` take a runtime dep on `reka-ui` (they wrap Reka's headless primitives — pagination, dialog/popover/hover-card/tooltip/menu, the form-input families, the atomic separator/avatar/aspect-ratio/visually-hidden elements, and the stepper respectively). `theme-tailwind` is designed to pair with `@vuecs/design` (Tailwind v4 + CSS-variable tokens); `theme-bootstrap` ships an optional bridge that maps Bootstrap's `--bs-*` theme vars onto the design-system tokens.
 
 ## Documentation Site
 

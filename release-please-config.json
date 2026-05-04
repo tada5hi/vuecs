@@ -9,6 +9,7 @@
         "packages/core": {"component": "core" },
         "packages/countdown": {"component": "countdown" },
         "packages/design": {"component": "design" },
+        "packages/elements": {"component": "elements" },
         "packages/forms": {"component": "forms" },
         "packages/gravatar": {"component": "gravatar" },
         "packages/icon": {"component": "icon" },

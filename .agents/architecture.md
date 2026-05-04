@@ -850,6 +850,7 @@ matching `*Portal` so consumers don't have to compose them manually
         use-modal.ts        <- useModal() view-stack composable (issue #1480)
         index.ts
       popover/                <- Popover / Trigger / Content / Arrow / Close (with `icon` prop)
+      hover-card/             <- HoverCard / Trigger / Content / Arrow (plan 013) — hover-with-grace-area; trigger defaults to `as="a"`
       tooltip/                <- TooltipProvider / Tooltip / Trigger / Content / Arrow
       dropdown-menu/          <- DropdownMenu / Trigger / Content / Item / Label / Separator / Group / Arrow
       context-menu/           <- ContextMenu / Trigger / Content / Item / Label / Separator / Group
@@ -877,10 +878,11 @@ composables for the other families haven't shipped — most of those don't
 need stateful flows, and consumers can wire `:open`/`@update:open`
 manually when they do.
 
-Theme entries for all five families (`modal`, `popover`, `tooltip`,
-`dropdownMenu`, `contextMenu`) ship in **both** `@vuecs/theme-tailwind` AND
-`@vuecs/theme-bootstrap` with `data-state` animation hooks (`open|closed`
-for modal/popover/menu, `delayed-open|closed` for tooltip). Menu items also
+Theme entries for all six families (`modal`, `popover`, `hoverCard`,
+`tooltip`, `dropdownMenu`, `contextMenu`) ship in **both**
+`@vuecs/theme-tailwind` AND `@vuecs/theme-bootstrap` with `data-state`
+animation hooks (`open|closed` for modal/popover/hover-card/menu,
+`delayed-open|closed` for tooltip). Menu items also
 expose `data-highlighted` (hover/focus) and `data-disabled`. Animation
 classes (`animate-in`, `fade-in-0`, `zoom-in-95`, etc.) come from
 `@vuecs/design`'s `animations.css` (vanilla-CSS port of `tw-animate-css`)
@@ -928,3 +930,93 @@ in theme-bootstrap). Slot-presence as the smart default means bare
 slotless usages — the most common pattern — keep working without an
 explicit prop. The same pattern applies to future overlay families (e.g.
 HoverCard) when they ship.
+
+`<VCHoverCard>` doesn't carry a Close part — the panel auto-dismisses
+when the pointer leaves the trigger + content (Reka manages the
+grace-area travel via `closeDelay`). Click-triggered floating panels
+that need an explicit close button use `<VCPopover>` instead.
+
+## Atomic Elements (@vuecs/elements, plan 013)
+
+Atomic, presentation-only UI elements. Each component is small (≤150
+LOC), wraps zero or one Reka primitive, ships its own theme key, and
+has no relationships with other vuecs packages beyond `@vuecs/core` for
+the theme system.
+
+```
+@vuecs/elements/
+  src/
+    components/
+      separator/        <- VCSeparator (Reka Separator) — horizontal/vertical, `decorative`
+      tag/              <- VCTag (pure CSS) + VCTagList (renders chips per items array)
+      avatar/           <- VCAvatar (Reka AvatarRoot+Image+Fallback) — `src` + #fallback slot
+      aspect-ratio/     <- VCAspectRatio (Reka AspectRatio) — `ratio` prop
+      visually-hidden/  <- VCVisuallyHidden (Reka VisuallyHidden) — a11y label slot
+      badge/            <- VCBadge (pure CSS) — solid/soft/outline × semantic-color matrix
+    vue.ts              <- GlobalComponents augmentation
+    index.ts            <- install() (themes, defaults; registers all VC* components)
+  assets/
+    separator.css       <- structural defaults per element (sizing, layout)
+    tag.css
+    avatar.css
+    aspect-ratio.css
+    badge.css
+```
+
+`<VCTag>` and `<VCBadge>` look similar but have distinct semantics:
+**Tag** is a removable, value-bound chip (paired with `<VCFormTags>`
+for read-only summaries); **Badge** is a static status indicator. They
+deliberately stay separate components even though theme strings could
+overlap.
+
+`<VCFormTags>` does NOT compose `<VCTag>` internally — it's built on
+Reka's `TagsInputItem` / `ItemText` / `ItemDelete` compound (which
+provides keyboard handling + per-chip focus ring). Sharing visual style
+between the two happens at the *theme* level (`formTags.item` and
+`tag.root` in each theme entry), not via cross-package imports.
+
+`TagItem` (the shape `<VCTagList :items>` accepts) is structurally
+compatible with `@vuecs/forms`' `FormOption` — same `value` / `label` /
+`icon` / `disabled` keys — so the same array can drive a select and a
+chip summary. The type is duplicated locally rather than imported to
+keep `@vuecs/elements` free of cross-package deps.
+
+Theme entries ship in **both** `@vuecs/theme-tailwind` and
+`@vuecs/theme-bootstrap`. `badge.root` uses the variant system —
+`size: 'sm'|'md'|'lg'` × `variant: 'solid'|'soft'|'outline'` ×
+`color: <semantic>`. `compoundVariants` cover every cell of the
+3 × 6 matrix in each theme so a `<VCBadge variant="soft" color="error">`
+renders correctly in either ecosystem.
+
+## Stepper (@vuecs/navigation, plan 013)
+
+`<VCStepper>` and friends live in `@vuecs/navigation` because a stepper
+is a navigation/progress pattern (wizard, checkout flow, onboarding) —
+the pattern fit, not the manager. The Stepper compound does NOT use
+`NavigationManager`; it owns its own state via Reka's `StepperRoot`.
+
+```
+@vuecs/navigation/src/components/stepper/
+  Stepper.vue              <- StepperRoot (v-model:modelValue, orientation, linear)
+  StepperItem.vue          <- StepperItem (step prop required; data-state)
+  StepperTrigger.vue       <- StepperTrigger (clickable; disabled in linear mode when unreachable)
+  StepperIndicator.vue     <- StepperIndicator (circle: number / check / icon)
+  StepperTitle.vue
+  StepperDescription.vue
+  StepperSeparator.vue     <- StepperSeparator (carries data-state="completed" when prev step is done)
+  theme.ts                 <- shared stepperThemeDefaults
+  types.ts                 <- StepperThemeClasses + ThemeElements augmentation
+  index.ts
+```
+
+Adding stepper made `Options.items` optional in `@vuecs/navigation`'s
+install — a stepper-only consumer can call `app.use(navigation, {})`
+without wiring any nav items. NavigationManager still constructs (with
+an empty items array) so existing nav code keeps working.
+
+Theme entries ship in both `@vuecs/theme-tailwind` (uses
+`group-data-[state=active]:` / `group-data-[state=completed]:` variant
+prefixes, scoped via the `group` utility on `<VCStepperItem>`) and
+`@vuecs/theme-bootstrap` (uses Bootstrap utility classes — the BS5
+theme is necessarily flatter since theme strings can't carry attribute
+selectors).

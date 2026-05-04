@@ -25,6 +25,8 @@
             "@vuecs/countdown/*": ["./packages/countdown/src/*"],
             "@vuecs/design": ["./packages/design/src"],
             "@vuecs/design/*": ["./packages/design/src/*"],
+            "@vuecs/elements": ["./packages/elements/src"],
+            "@vuecs/elements/*": ["./packages/elements/src/*"],
             "@vuecs/forms": ["./packages/forms/src"],
             "@vuecs/forms/*": ["./packages/forms/src/*"],
             "@vuecs/gravatar": ["./packages/gravatar/src"],
