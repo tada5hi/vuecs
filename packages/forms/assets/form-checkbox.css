@@ -78,9 +78,17 @@
     width: 0.75rem;
     height: 0.75rem;
 }
+.vc-form-checkbox-sm .vc-form-checkbox-indicator::before {
+    width: 0.5rem;
+    height: 0.5rem;
+}
 .vc-form-checkbox-lg {
     width: 1.25rem;
     height: 1.25rem;
+}
+.vc-form-checkbox-lg .vc-form-checkbox-indicator::before {
+    width: 0.875rem;
+    height: 0.875rem;
 }
 
 /* Indicator — Reka mounts this when state ≠ unchecked. We supply a default

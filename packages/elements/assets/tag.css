@@ -45,7 +45,9 @@
 }
 
 .vc-tag-remove:hover {
-    background-color: rgba(0, 0, 0, 0.15);
+    /* Derive the tint from `currentColor` so dark / semantic tag themes
+       (where text isn't black) keep a sensible hover affordance. */
+    background-color: color-mix(in srgb, currentColor 15%, transparent);
 }
 
 .vc-tags {

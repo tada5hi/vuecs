@@ -158,7 +158,10 @@ const postTheme = (): void => {
 
 const onFrameLoad = (): void => {
     // Forward initial color-mode / palette / theme state to the freshly
-    // loaded iframe.
+    // loaded iframe — and re-post the user's current toolbar selections
+    // so the preview matches the toolbar after a same-src iframe reload
+    // (HMR, manual refresh) rather than snapping back to the iframe's
+    // declared defaults.
     //
     // Important: do NOT clear `variantCatalog` / `propCatalog` here. The
     // iframe's `announceVariants` / `announceProps` posts its message
@@ -170,6 +173,8 @@ const onFrameLoad = (): void => {
     postColorMode();
     postPalette();
     postTheme();
+    postVariants();
+    postProps();
 };
 
 const onFrameMessage = (event: MessageEvent): void => {

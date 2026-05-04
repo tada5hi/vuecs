@@ -16,13 +16,15 @@ import { type DemoThemeName, setDemoTheme } from './shared';
  *   iframe → parent { type: 'demo-variants', catalog, defaults }
  *   iframe → parent { type: 'demo-props',    catalog, defaults }
  *
- * The parent (`Demo.vue`) listens for `demo-resize` to size the iframe to
- * its content; for `demo-variants` to render variant dropdowns in the
- * toolbar; for `demo-props` to render rich type-aware controls. The iframe
- * listens for `set-color-mode` to flip the `.dark` class on `<html>`,
- * for `set-variants` to update `variantState`, and for `set-props` to
- * update `propState` — both of which any demo can `import` and bind to
- * its component.
+ * The parents (`Demo.vue` for passive showcases, `Playground.vue` for
+ * interactive sandboxes) both listen for `demo-resize` to size the
+ * iframe to its content. Only `Playground.vue` listens for
+ * `demo-variants` (renders variant dropdowns) and `demo-props` (renders
+ * rich type-aware controls); `Demo.vue` ignores those — passive demos
+ * have no toolbar. The iframe listens for `set-color-mode` to flip the
+ * `.dark` class on `<html>`, for `set-variants` to update
+ * `variantState`, and for `set-props` to update `propState` — both of
+ * which any demo can `import` and bind to its component.
  *
  * Origin handling: outgoing `postMessage` calls use `location.origin` as
  * the targetOrigin (not `'*'`), so the message is delivered only when

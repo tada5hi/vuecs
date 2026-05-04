@@ -99,7 +99,7 @@ the active theme package. The most common axes:
 | `color` | `primary` / `neutral` / `success` / `warning` / `error` / `info` | Button, Badge |
 
 You can flip these live in the docs site demos via the toolbar above
-each `<Demo>` block — open the [pagination
+each `<Playground>` block — open the [pagination
 demo](/components/pagination) for a richer example with boolean and
 number controls in addition to the variant axis.
 

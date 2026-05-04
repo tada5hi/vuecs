@@ -3,7 +3,9 @@
 General-purpose button with semantic `color`, `variant`, and `size` variants. The two themes that ship visual class mappings (`@vuecs/theme-tailwind`, `@vuecs/theme-bootstrap`) provide the full color × variant × size matrix; consumers switch looks by changing variant values, not by re-styling per instance.
 
 ```bash
-npm install @vuecs/button
+# `@vuecs/forms` is only needed for the `useSubmitButton()` helper shown
+# below; the button itself ships standalone in `@vuecs/button`.
+npm install @vuecs/button @vuecs/forms
 ```
 
 ## Basic usage

@@ -170,10 +170,10 @@ in `iframe-bridge.ts`:
   `limit` / `busy` / `hideDisabled` / `themeVariant.{variant,size}`).
 
 Both APIs are additive; pick whichever matches the demo's complexity.
-The parent `Demo.vue` toolbar renders the matching control per type:
-checkbox for boolean, `<select>` for enum, range+number for number,
-text input for string. Sections (`section: 'Variant'`) group related
-controls into a single labeled row.
+The parent `Playground.vue` toolbar renders the matching control per
+type: checkbox for boolean, `<select>` for enum, range+number for
+number, text input for string. Sections (`section: 'Variant'`) group
+related controls into a single labeled row.
 
 ## Adding a New Package
 
