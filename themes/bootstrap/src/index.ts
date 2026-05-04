@@ -221,6 +221,85 @@ export default function bootstrapTheme(): Theme {
                     link: 'nav-link',
                 },
             },
+            // Reka encodes orientation as `data-orientation`; Bootstrap has
+            // `<hr>` styling for horizontal but no built-in vertical rule —
+            // the structural CSS does both. We just remove the default
+            // margins so consumers control spacing via parent flex gaps.
+            separator: { classes: { root: 'm-0' } },
+            tag: {
+                classes: {
+                    // Use `text-bg-primary` so Bootstrap's contrast pair handles
+                    // light/dark text-on-bg automatically. `rounded-pill` matches
+                    // the chip aesthetic of Bootstrap badges.
+                    root: 'badge rounded-pill text-bg-primary d-inline-flex align-items-center gap-1',
+                    icon: 'd-inline-flex align-items-center',
+                    remove: 'btn p-0 d-inline-flex align-items-center justify-content-center bg-transparent border-0 text-white lh-1',
+                },
+                variants: {
+                    size: {
+                        sm: { root: 'fs-7 px-2 py-1' },
+                        md: { root: '' },
+                        lg: { root: 'fs-6 px-3 py-2' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
+            },
+            tags: {
+                classes: {
+                    root: 'd-flex flex-wrap align-items-center gap-2',
+                    item: '',
+                },
+            },
+            avatar: {
+                classes: {
+                    root: 'd-inline-flex align-items-center justify-content-center overflow-hidden rounded-circle bg-secondary-subtle text-secondary-emphasis',
+                    image: 'w-100 h-100 object-fit-cover',
+                    fallback: 'd-inline-flex align-items-center justify-content-center w-100 h-100 fw-medium small lh-1',
+                },
+            },
+            aspectRatio: { classes: { root: 'd-block w-100' } },
+            badge: {
+                classes: { root: 'badge rounded-pill' },
+                variants: {
+                    size: {
+                        sm: { root: 'fs-7 px-2 py-1' },
+                        md: { root: '' },
+                        lg: { root: 'fs-6 px-3 py-2' },
+                    },
+                },
+                // Map (variant, color) onto Bootstrap's `text-bg-*` (solid),
+                // `*-subtle` + `*-emphasis` (soft), and `border *-emphasis`
+                // (outline) families. Same structure as the button matrix
+                // for visual family consistency.
+                compoundVariants: [
+                    // solid — text-bg-* picks the contrast pair
+                    { variants: { variant: 'solid', color: 'primary' }, class: { root: 'text-bg-primary' } },
+                    { variants: { variant: 'solid', color: 'neutral' }, class: { root: 'text-bg-secondary' } },
+                    { variants: { variant: 'solid', color: 'success' }, class: { root: 'text-bg-success' } },
+                    { variants: { variant: 'solid', color: 'warning' }, class: { root: 'text-bg-warning' } },
+                    { variants: { variant: 'solid', color: 'error' }, class: { root: 'text-bg-danger' } },
+                    { variants: { variant: 'solid', color: 'info' }, class: { root: 'text-bg-info' } },
+                    // soft — *-subtle bg + *-emphasis text
+                    { variants: { variant: 'soft', color: 'primary' }, class: { root: 'bg-primary-subtle text-primary-emphasis' } },
+                    { variants: { variant: 'soft', color: 'neutral' }, class: { root: 'bg-secondary-subtle text-secondary-emphasis' } },
+                    { variants: { variant: 'soft', color: 'success' }, class: { root: 'bg-success-subtle text-success-emphasis' } },
+                    { variants: { variant: 'soft', color: 'warning' }, class: { root: 'bg-warning-subtle text-warning-emphasis' } },
+                    { variants: { variant: 'soft', color: 'error' }, class: { root: 'bg-danger-subtle text-danger-emphasis' } },
+                    { variants: { variant: 'soft', color: 'info' }, class: { root: 'bg-info-subtle text-info-emphasis' } },
+                    // outline — border + *-emphasis text on transparent
+                    { variants: { variant: 'outline', color: 'primary' }, class: { root: 'border border-primary text-primary-emphasis' } },
+                    { variants: { variant: 'outline', color: 'neutral' }, class: { root: 'border border-secondary text-secondary-emphasis' } },
+                    { variants: { variant: 'outline', color: 'success' }, class: { root: 'border border-success text-success-emphasis' } },
+                    { variants: { variant: 'outline', color: 'warning' }, class: { root: 'border border-warning text-warning-emphasis' } },
+                    { variants: { variant: 'outline', color: 'error' }, class: { root: 'border border-danger text-danger-emphasis' } },
+                    { variants: { variant: 'outline', color: 'info' }, class: { root: 'border border-info text-info-emphasis' } },
+                ],
+                defaultVariants: {
+                    variant: 'soft',
+                    color: 'neutral',
+                    size: 'md',
+                },
+            },
             pagination: {
                 classes: {
                     root: 'd-flex justify-content-center pagination',
@@ -297,6 +376,28 @@ export default function bootstrapTheme(): Theme {
                     // classes compose cleanly. Corner-X lives in `closeIcon`.
                     close: '',
                     closeIcon: 'btn-close position-absolute top-0 end-0 m-1',
+                },
+            },
+            hoverCard: {
+                classes: {
+                    trigger: '',
+                    content: 'popover bs-popover-auto show vc-overlay-anim',
+                    arrow: 'popover-arrow',
+                },
+            },
+            // Bootstrap doesn't ship a stepper component — we wire the rough
+            // shape with utility classes (gap-* + rounded-circle for the
+            // indicator). data-state="completed" / "active" drives bg-* via
+            // attribute selectors; without those the indicator stays muted.
+            stepper: {
+                classes: {
+                    root: 'd-flex align-items-center gap-2',
+                    item: 'd-flex align-items-center gap-2 flex-grow-1',
+                    trigger: 'btn p-0 border-0 bg-transparent d-inline-flex align-items-center justify-content-center',
+                    indicator: 'rounded-circle border border-secondary-subtle bg-light text-muted d-inline-flex align-items-center justify-content-center fw-semibold',
+                    title: 'small fw-medium',
+                    description: 'small text-muted',
+                    separator: 'flex-grow-1 border-top border-secondary-subtle',
                 },
             },
             tooltip: {

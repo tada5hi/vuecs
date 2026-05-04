@@ -54,5 +54,10 @@ export type NavigationItemsFn<
 ) => Promise<NavigationItem<META>[] | undefined>;
 
 export type Options = CoreOptions & {
-    items: NavigationItemsFn | NavigationItem[];
+    /**
+     * Items for the NavigationManager. Optional so consumers who only
+     * need `<VCStepper>` can install the package without wiring nav
+     * items (`app.use(navigation, {})`).
+     */
+    items?: NavigationItemsFn | NavigationItem[];
 };

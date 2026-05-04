@@ -11,6 +11,7 @@
 @import "@vuecs/design";
 
 @import "@vuecs/button";
+@import "@vuecs/elements";
 @import "@vuecs/forms";
 @import "@vuecs/navigation";
 @import "@vuecs/pagination";

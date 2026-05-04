@@ -14,6 +14,17 @@ vuecs ships its components across separate packages — install only what you us
 |-----------|-------|
 | [Countdown](/components/countdown) | Timer countdown with typed slot props |
 
+## @vuecs/elements
+
+| Component | Notes |
+|-----------|-------|
+| [AspectRatio](/components/aspect-ratio) | Responsive media container that maintains a width / height ratio (Reka primitive) |
+| [Avatar](/components/avatar) | Image with graceful fallback (initials, icon, slot) — Reka primitive |
+| [Badge](/components/badge) | Status pill — `solid` / `soft` / `outline` × semantic color matrix |
+| [Separator](/components/separator) | Horizontal / vertical divider with proper ARIA (Reka primitive) |
+| [Tag](/components/tag) | Removable, value-bound chip + `<VCTags>` list helper |
+| [VisuallyHidden](/components/visually-hidden) | Screen-reader-only content (Reka primitive) |
+
 ## @vuecs/forms
 
 | Component | Notes |
@@ -59,6 +70,7 @@ vuecs ships its components across separate packages — install only what you us
 | Component | Notes |
 |-----------|-------|
 | [Navigation](/components/navigation) | Multi-level nav with router integration |
+| [Stepper](/components/stepper) | Multi-step wizard / checkout / onboarding navigator (Reka primitive) |
 
 ## @vuecs/overlays
 
@@ -66,6 +78,7 @@ vuecs ships its components across separate packages — install only what you us
 |-----------|-------|
 | [Modal](/components/modal) | Compound dialog (`VCModal*` parts) + `useModal()` view-stack composable |
 | [Popover](/components/popover) | Floating panel anchored to a trigger (floating-ui positioning) |
+| [HoverCard](/components/hover-card) | Hover-triggered floating panel with grace-area handling |
 | [Tooltip](/components/tooltip) | Hover/focus text bubble; app-level `<VCTooltipProvider>` for delays |
 | [DropdownMenu](/components/dropdown-menu) | Click-triggered action menu with arrow/typeahead navigation |
 | [ContextMenu](/components/context-menu) | Right-click menu (same shape as DropdownMenu, cursor-anchored) |
