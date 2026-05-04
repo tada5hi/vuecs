@@ -51,6 +51,7 @@ import { VCAvatar } from '@vuecs/elements';
 | `src` | `string` | `undefined` | Image source. When omitted, the fallback renders immediately. |
 | `alt` | `string` | `''` | Alt text for the image. Empty string = decorative; pass a meaningful value when the avatar conveys identity. |
 | `delayMs` | `number` | `undefined` | Delay before the fallback appears — useful to avoid a flicker on fast connections. Only strictly positive values are forwarded to Reka (its `AvatarFallback` treats `0` as "wait forever"); omit to render the fallback immediately. |
+| `size` | `'sm' \| 'md' \| 'lg'` | theme default (`md`) | Size variant. `sm` ≈ 32px, `md` ≈ 40px, `lg` ≈ 56px (theme-defined). For arbitrary pixel sizes, use `:theme-class="{ root: extend('h-12 w-12') }"` instead. Mirrors `<VCBadge>`'s size axis. |
 | `themeClass` | `Partial<AvatarThemeClasses>` | `undefined` | Per-instance theme override. |
 | `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |
 

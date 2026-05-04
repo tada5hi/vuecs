@@ -1,5 +1,7 @@
 import type { ThemeElementDefinition } from '@vuecs/core';
 
+export type AvatarSize = 'sm' | 'md' | 'lg';
+
 export type AvatarThemeClasses = {
     /** The outer wrapper. */
     root: string;

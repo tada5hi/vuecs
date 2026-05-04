@@ -3,9 +3,13 @@ import { defineComponent, h, mergeProps } from 'vue';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import { AvatarFallback, AvatarImage, AvatarRoot } from 'reka-ui';
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
+import type {
+    ThemeClassesOverride,
+    UseComponentThemeProps,
+    VariantValues,
+} from '@vuecs/core';
 import { avatarThemeDefaults } from './theme';
-import type { AvatarThemeClasses } from './types';
+import type { AvatarSize, AvatarThemeClasses } from './types';
 
 export type AvatarFallbackSlotProps = {
     /** Resolved theme class for the fallback wrapper. */
@@ -34,6 +38,12 @@ const avatarProps = {
      * Reka-wrapping convention's natural-forwarding rule is bent.
      */
     delayMs: { type: Number, default: undefined },
+    /**
+     * Size variant — resolved by the active theme. `sm` ≈ 32px, `md` ≈
+     * 40px (default), `lg` ≈ 56px. For arbitrary pixel sizes, use
+     * `themeClass={ root: extend('h-12 w-12') }` instead.
+     */
+    size: { type: String as PropType<AvatarSize>, default: undefined },
     /** Theme-class overrides for this component instance. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<AvatarThemeClasses>>, default: undefined },
     /** Theme-variant values for this component instance. */
@@ -50,7 +60,18 @@ export default defineComponent({
         fallback: AvatarFallbackSlotProps;
     }>,
     setup(props, { attrs, slots }) {
-        const theme = useComponentTheme('avatar', props, avatarThemeDefaults);
+        const themeProps: UseComponentThemeProps<AvatarThemeClasses> = {
+            get themeClass() {
+                return props.themeClass;
+            },
+            get themeVariant() {
+                return {
+                    ...(props.themeVariant ?? {}),
+                    ...(props.size !== undefined ? { size: props.size } : {}),
+                };
+            },
+        };
+        const theme = useComponentTheme('avatar', themeProps, avatarThemeDefaults);
         return () => {
             const resolved = theme.value;
             const children = [];
