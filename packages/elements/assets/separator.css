@@ -1,0 +1,20 @@
+/*
+ * Structural defaults for VCSeparator. Reka renders horizontal vs.
+ * vertical via `data-orientation` — drive both off a single class.
+ */
+.vc-separator {
+    flex-shrink: 0;
+    background-color: var(--vc-color-border, #e5e7eb);
+    border: 0;
+}
+
+.vc-separator[data-orientation="horizontal"] {
+    height: 1px;
+    width: 100%;
+}
+
+.vc-separator[data-orientation="vertical"] {
+    width: 1px;
+    height: 100%;
+    align-self: stretch;
+}

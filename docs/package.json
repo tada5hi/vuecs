@@ -33,6 +33,7 @@
         "@vuecs/core": "*",
         "@vuecs/countdown": "*",
         "@vuecs/design": "*",
+        "@vuecs/elements": "*",
         "@vuecs/forms": "*",
         "@vuecs/gravatar": "*",
         "@vuecs/link": "*",
@@ -45,6 +46,6 @@
         "@vuecs/timeago": "*",
         "tailwindcss": "^4.2.4",
         "vitepress": "^1.6.3",
-        "vue": "^3.5.28"
+        "vue": "^3.5.33"
     }
 }

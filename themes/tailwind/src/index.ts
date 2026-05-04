@@ -268,7 +268,92 @@ export default function tailwindTheme(): Theme {
                 },
                 defaultVariants: { variant: 'outline', size: 'md' },
             },
+            // VCGravatar wraps VCAvatar — sizing comes from the structural
+            // `vc-gravatar` class (5rem default, ships with @vuecs/gravatar).
+            // The `size` prop only drives the Gravatar URL's `?s=` parameter;
+            // override visual size via per-instance `themeClass`.
             gravatar: { classes: { root: 'inline-block overflow-hidden rounded-full' } },
+            separator: {
+                classes: {
+                    // Reka encodes orientation as `data-orientation`; size each
+                    // axis off that so the same class drives horizontal +
+                    // vertical separators.
+                    root: 'shrink-0 bg-border data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px',
+                },
+            },
+            tag: {
+                classes: {
+                    root: 'inline-flex items-center gap-1 rounded-full bg-primary-600 leading-tight text-on-primary',
+                    icon: 'inline-flex shrink-0 items-center',
+                    remove: 'inline-flex items-center justify-center rounded-full bg-transparent text-current hover:bg-black/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-on-primary',
+                },
+                // Size axis mirrors @vuecs/elements badge so a `<VCTag size="lg">`
+                // and `<VCBadge size="lg">` read at the same scale.
+                variants: {
+                    size: {
+                        sm: { root: 'px-1.5 py-px text-[0.625rem] gap-0.5', remove: 'h-3 w-3' },
+                        md: { root: 'px-2 py-0.5 text-xs', remove: 'h-4 w-4' },
+                        lg: { root: 'px-2.5 py-1 text-sm', remove: 'h-5 w-5' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
+            },
+            tags: {
+                classes: {
+                    root: 'flex flex-wrap items-center gap-1.5',
+                    item: '',
+                },
+            },
+            avatar: {
+                classes: {
+                    root: 'inline-flex h-10 w-10 shrink-0 select-none items-center justify-center overflow-hidden rounded-full bg-bg-muted text-fg-muted align-middle',
+                    image: 'h-full w-full object-cover',
+                    fallback: 'inline-flex h-full w-full items-center justify-center text-sm font-medium leading-none',
+                },
+            },
+            aspectRatio: { classes: { root: 'block w-full' } },
+            badge: {
+                classes: { root: 'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium leading-tight' },
+                variants: {
+                    size: {
+                        sm: { root: 'px-1.5 py-px text-[0.625rem]' },
+                        md: { root: 'px-2 py-0.5 text-xs' },
+                        lg: { root: 'px-2.5 py-1 text-sm' },
+                    },
+                },
+                // Color × variant matrix for the `solid` / `soft` / `outline`
+                // treatments. Mirrors the button matrix so a `<VCBadge color="error" />`
+                // and a `<VCButton color="error" variant="soft" />` read as the
+                // same visual family.
+                compoundVariants: [
+                    // solid — colored fill
+                    { variants: { variant: 'solid', color: 'primary' }, class: { root: 'bg-primary-600 text-on-primary' } },
+                    { variants: { variant: 'solid', color: 'neutral' }, class: { root: 'bg-neutral-700 text-on-neutral' } },
+                    { variants: { variant: 'solid', color: 'success' }, class: { root: 'bg-success-600 text-on-success' } },
+                    { variants: { variant: 'solid', color: 'warning' }, class: { root: 'bg-warning-600 text-on-warning' } },
+                    { variants: { variant: 'solid', color: 'error' }, class: { root: 'bg-error-600 text-on-error' } },
+                    { variants: { variant: 'solid', color: 'info' }, class: { root: 'bg-info-600 text-on-info' } },
+                    // soft — tinted bg + colored text
+                    { variants: { variant: 'soft', color: 'primary' }, class: { root: 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300' } },
+                    { variants: { variant: 'soft', color: 'neutral' }, class: { root: 'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-200' } },
+                    { variants: { variant: 'soft', color: 'success' }, class: { root: 'bg-success-100 text-success-700 dark:bg-success-900/30 dark:text-success-300' } },
+                    { variants: { variant: 'soft', color: 'warning' }, class: { root: 'bg-warning-100 text-warning-700 dark:bg-warning-900/30 dark:text-warning-300' } },
+                    { variants: { variant: 'soft', color: 'error' }, class: { root: 'bg-error-100 text-error-700 dark:bg-error-900/30 dark:text-error-300' } },
+                    { variants: { variant: 'soft', color: 'info' }, class: { root: 'bg-info-100 text-info-700 dark:bg-info-900/30 dark:text-info-300' } },
+                    // outline — colored border, transparent fill
+                    { variants: { variant: 'outline', color: 'primary' }, class: { root: 'border border-primary-600 bg-bg text-primary-700 dark:text-primary-400' } },
+                    { variants: { variant: 'outline', color: 'neutral' }, class: { root: 'border border-border bg-bg text-fg' } },
+                    { variants: { variant: 'outline', color: 'success' }, class: { root: 'border border-success-600 bg-bg text-success-700 dark:text-success-400' } },
+                    { variants: { variant: 'outline', color: 'warning' }, class: { root: 'border border-warning-600 bg-bg text-warning-700 dark:text-warning-400' } },
+                    { variants: { variant: 'outline', color: 'error' }, class: { root: 'border border-error-600 bg-bg text-error-700 dark:text-error-400' } },
+                    { variants: { variant: 'outline', color: 'info' }, class: { root: 'border border-info-600 bg-bg text-info-700 dark:text-info-400' } },
+                ],
+                defaultVariants: {
+                    variant: 'soft',
+                    color: 'neutral',
+                    size: 'md',
+                },
+            },
             modal: {
                 classes: {
                     overlay: 'fixed inset-0 z-50 bg-neutral-950/60 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
@@ -296,6 +381,29 @@ export default function tailwindTheme(): Theme {
                     // classes compose cleanly. Corner-X lives in `closeIcon`.
                     close: 'focus:outline-none focus:ring-2 focus:ring-ring',
                     closeIcon: 'absolute right-2 top-2 inline-flex h-6 w-6 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
+                },
+            },
+            hoverCard: {
+                classes: {
+                    trigger: '',
+                    content: 'z-50 w-64 rounded-md border border-border bg-bg p-4 text-sm text-fg shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
+                    arrow: 'fill-bg',
+                },
+            },
+            stepper: {
+                classes: {
+                    root: 'flex items-center gap-2 data-[orientation=vertical]:flex-col data-[orientation=vertical]:items-stretch',
+                    item: 'flex flex-1 items-center gap-2 data-[orientation=vertical]:flex-row',
+                    // The trigger is a circle that swaps colors based on the
+                    // step's `data-state` (active / completed / inactive). It
+                    // also receives `data-disabled` from Reka when the linear
+                    // option blocks navigation; muted styling reads as
+                    // "currently unreachable".
+                    trigger: 'inline-flex shrink-0 items-center justify-center rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-60',
+                    indicator: 'inline-flex h-8 w-8 items-center justify-center rounded-full border border-border bg-bg text-sm font-semibold text-fg-muted group-data-[state=active]:border-primary-600 group-data-[state=active]:bg-primary-600 group-data-[state=active]:text-on-primary group-data-[state=completed]:border-success-600 group-data-[state=completed]:bg-success-600 group-data-[state=completed]:text-on-success',
+                    title: 'text-sm font-medium text-fg',
+                    description: 'text-xs text-fg-muted',
+                    separator: 'h-px flex-1 shrink bg-border data-[state=completed]:bg-success-600 data-[orientation=vertical]:h-8 data-[orientation=vertical]:w-px',
                 },
             },
             tooltip: {

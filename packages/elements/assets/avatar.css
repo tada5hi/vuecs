@@ -1,0 +1,35 @@
+/*
+ * Structural defaults for VCAvatar. Square 2.5rem circle with overflow
+ * clipping so the image and fallback share the same shape. Themes can
+ * resize / restyle via the `avatar.root` slot.
+ */
+.vc-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    width: 2.5rem;
+    height: 2.5rem;
+    background-color: var(--vc-color-bg-muted, #f3f4f6);
+    color: var(--vc-color-fg-muted, #6b7280);
+    border-radius: 9999px;
+    user-select: none;
+    vertical-align: middle;
+}
+
+.vc-avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.vc-avatar-fallback {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1;
+}

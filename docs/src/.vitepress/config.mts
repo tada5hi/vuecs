@@ -99,6 +99,17 @@ export default defineConfig({
                     ],
                 },
                 {
+                    text: '@vuecs/elements',
+                    items: [
+                        { text: 'AspectRatio', link: '/components/aspect-ratio' },
+                        { text: 'Avatar', link: '/components/avatar' },
+                        { text: 'Badge', link: '/components/badge' },
+                        { text: 'Separator', link: '/components/separator' },
+                        { text: 'Tag', link: '/components/tag' },
+                        { text: 'VisuallyHidden', link: '/components/visually-hidden' },
+                    ],
+                },
+                {
                     text: '@vuecs/forms',
                     items: [
                         { text: 'FormInput', link: '/components/form-input' },
@@ -142,6 +153,7 @@ export default defineConfig({
                     text: '@vuecs/navigation',
                     items: [
                         { text: 'Navigation', link: '/components/navigation' },
+                        { text: 'Stepper', link: '/components/stepper' },
                     ],
                 },
                 {
@@ -149,6 +161,7 @@ export default defineConfig({
                     items: [
                         { text: 'Modal', link: '/components/modal' },
                         { text: 'Popover', link: '/components/popover' },
+                        { text: 'HoverCard', link: '/components/hover-card' },
                         { text: 'Tooltip', link: '/components/tooltip' },
                         { text: 'DropdownMenu', link: '/components/dropdown-menu' },
                         { text: 'ContextMenu', link: '/components/context-menu' },

@@ -1,0 +1,48 @@
+/*
+ * Structural defaults for VCTag and VCTags. Both ship a baseline
+ * pill look so consumers see something usable without a theme — themes
+ * layer on top via the `tag` / `tags` keys.
+ */
+.vc-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1.25;
+    color: var(--vc-color-on-primary, #fff);
+    background-color: var(--vc-color-primary-600, #2563eb);
+    border-radius: 9999px;
+}
+
+.vc-tag-icon {
+    display: inline-flex;
+    align-items: center;
+}
+
+.vc-tag-remove {
+    appearance: none;
+    -webkit-appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    height: 1rem;
+    padding: 0;
+    color: inherit;
+    background-color: transparent;
+    border: 0;
+    border-radius: 9999px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.vc-tag-remove:hover {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.vc-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+}

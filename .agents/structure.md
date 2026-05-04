@@ -8,14 +8,15 @@ vuecs/
     core/             # @vuecs/core — theme system, defaults manager, utilities
     countdown/        # @vuecs/countdown
     design/           # @vuecs/design — CSS design tokens + motion primitives (animations.css) + runtime palette switcher
+    elements/         # @vuecs/elements — atomic, presentation-only UI elements (Separator, Tag/Tags, Avatar, AspectRatio, VisuallyHidden, Badge); thin Reka wrappers + pure-CSS chips (plan 013)
     forms/            # @vuecs/forms (renamed from @vuecs/form-controls in 3.0; checkbox/switch on Reka primitives)
-    gravatar/         # @vuecs/gravatar
+    gravatar/         # @vuecs/gravatar — composes <VCAvatar> from @vuecs/elements (2.0.0 breaking change in plan 013)
     icon/             # @vuecs/icon — <VCIcon> component wrapping @iconify/vue
     link/             # @vuecs/link
-    list/             # @vuecs/list — compound List / Header / Body / Item / ItemText / ItemActions / Footer / Loading / Empty + defineList() / useList() (renamed from @vuecs/list-controls; defineList() factory + Pinia-style API + unified meta bag)
-    navigation/       # @vuecs/navigation
+    list/             # @vuecs/list — compound List / Header / Body / Item / ItemText / ItemActions / Footer / Loading / Empty + defineList() / useList() (renamed from @vuecs/list-controls in plan 010; sub-component split + Empty rename + Pinia-rename + meta unification per plan-010 addenda)
+    navigation/       # @vuecs/navigation — multi-level nav with NavigationManager + <VCStepper> compound (Reka StepperRoot/Item/Trigger/Indicator/Title/Description/Separator) (plan 013)
     nuxt/             # @vuecs/nuxt — Nuxt module: SSR palette + useColorMode()
-    overlays/         # @vuecs/overlays — Modal (+ useModal view-stack), Popover, Tooltip (+ TooltipProvider), DropdownMenu, ContextMenu — all on Reka primitives
+    overlays/         # @vuecs/overlays — Modal (+ useModal view-stack), Popover, HoverCard (plan 013), Tooltip (+ TooltipProvider), DropdownMenu, ContextMenu — all on Reka primitives
     pagination/       # @vuecs/pagination
     timeago/          # @vuecs/timeago
   themes/             # Theme packages (npm workspaces) — pure data, no Vue runtime deps
