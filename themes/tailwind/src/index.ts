@@ -268,6 +268,10 @@ export default function tailwindTheme(): Theme {
                 },
                 defaultVariants: { variant: 'outline', size: 'md' },
             },
+            // VCGravatar wraps VCAvatar — sizing comes from the structural
+            // `vc-gravatar` class (5rem default, ships with @vuecs/gravatar).
+            // The `size` prop only drives the Gravatar URL's `?s=` parameter;
+            // override visual size via per-instance `themeClass`.
             gravatar: { classes: { root: 'inline-block overflow-hidden rounded-full' } },
             separator: {
                 classes: {

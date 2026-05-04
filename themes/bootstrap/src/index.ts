@@ -258,6 +258,11 @@ export default function bootstrapTheme(): Theme {
                 },
             },
             aspectRatio: { classes: { root: 'd-block w-100' } },
+            // VCGravatar wraps VCAvatar — sizing comes from the structural
+            // `vc-gravatar` class (5rem default, ships with @vuecs/gravatar).
+            // Theme adds bootstrap aesthetics; override visual size via
+            // per-instance `themeClass`.
+            gravatar: { classes: { root: 'rounded-circle overflow-hidden d-inline-block' } },
             badge: {
                 classes: { root: 'badge rounded-pill' },
                 variants: {
