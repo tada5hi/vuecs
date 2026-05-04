@@ -12,7 +12,7 @@ This package is the successor to `@vuecs/list-controls@2.x`. It's a clean break 
 
 ## Basic usage
 
-<Demo name="list">
+<Playground name="list">
   <template #code>
 
 ::: code-group
@@ -70,7 +70,7 @@ function remove(id: number): void {
 :::
 
   </template>
-</Demo>
+</Playground>
 
 ## Two composition modes
 

@@ -8,6 +8,7 @@ import {
     VCModalTrigger,
 } from '@vuecs/overlays';
 import { ref } from 'vue';
+import { variantState } from './iframe-bridge';
 
 const open = ref(false);
 </script>
@@ -20,7 +21,7 @@ const open = ref(false);
         >
             Open dialog
         </VCModalTrigger>
-        <VCModalContent>
+        <VCModalContent :theme-variant="variantState">
             <!--
               <VCModalClose /> with no children renders the default × in the
               top-right corner — that's the position the theme-tailwind

@@ -4,6 +4,14 @@
  * Reka renders a real <button role="checkbox"> with `data-state="checked|unchecked|indeterminate"`.
  * The indicator is a child element only present (or visible) while checked/indeterminate.
  * Colors reference @vuecs/design tokens with hex fallbacks.
+ *
+ * Unlayered: Bootstrap's reboot resets `button { border-radius: 0 }` (and
+ * other button defaults) — putting our structural CSS in `@layer components`
+ * would lose to that unlayered reboot rule, breaking the box shape. Themes
+ * that need to override sizing (Tailwind: per-size variants) use the
+ * `vc-form-checkbox-{sm,lg}` structural helpers below instead of utility
+ * classes like `h-3 w-3` (which sit in `@layer utilities` and lose to
+ * unlayered structural CSS).
  */
 .vc-form-checkbox-wrapper {
     display: inline-flex;
@@ -60,6 +68,19 @@
 .vc-form-checkbox:disabled {
     cursor: not-allowed;
     opacity: 0.5;
+}
+
+/* Size helpers — themes drive these via `formCheckbox.variants.size.{sm,lg}`.
+   Tailwind v4 utilities (`h-3 w-3`) sit in `@layer utilities` and lose to
+   unlayered structural CSS, so we ship dedicated structural helpers and
+   reference them from both Tailwind and Bootstrap theme entries. */
+.vc-form-checkbox-sm {
+    width: 0.75rem;
+    height: 0.75rem;
+}
+.vc-form-checkbox-lg {
+    width: 1.25rem;
+    height: 1.25rem;
 }
 
 /* Indicator — Reka mounts this when state ≠ unchecked. We supply a default

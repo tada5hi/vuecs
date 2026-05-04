@@ -8,6 +8,7 @@ import {
     VCContextMenuTrigger,
 } from '@vuecs/overlays';
 import { ref } from 'vue';
+import { variantState } from './iframe-bridge';
 
 const lastAction = ref<string>('—');
 </script>
@@ -23,7 +24,7 @@ const lastAction = ref<string>('—');
                     Right-click anywhere in this box
                 </div>
             </VCContextMenuTrigger>
-            <VCContextMenuContent>
+            <VCContextMenuContent :theme-variant="variantState">
                 <VCContextMenuLabel>Item options</VCContextMenuLabel>
                 <VCContextMenuItem @select="lastAction = 'open'">
                     Open

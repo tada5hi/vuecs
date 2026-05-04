@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { VCFormRadio, VCFormRadioGroup } from '@vuecs/forms';
 import { ref } from 'vue';
+import { variantState } from './iframe-bridge';
 
 const size = ref<string>('md');
 const region = ref<string | undefined>(undefined);
@@ -14,14 +15,17 @@ const region = ref<string | undefined>(undefined);
                 <VCFormRadio
                     value="sm"
                     label-content="Small"
+                    :theme-variant="variantState"
                 />
                 <VCFormRadio
                     value="md"
                     label-content="Medium"
+                    :theme-variant="variantState"
                 />
                 <VCFormRadio
                     value="lg"
                     label-content="Large"
+                    :theme-variant="variantState"
                 />
             </VCFormRadioGroup>
         </div>

@@ -19,7 +19,7 @@ npm install @vuecs/overlays
 | `VCModalDescription` | `DialogDescription` | aria-describedby target. |
 | `VCModalClose` | `DialogClose` | Button that closes. Slotless `<VCModalClose />` renders the corner-X (default `×` glyph + `closeIcon` theme slot). With slot content (e.g. "Cancel") it renders neutrally so consumer classes compose. Pass `icon` to force the corner-X even with custom content. Auto `aria-label="Close"` when slotless. |
 
-<Demo name="modal" component="VCModal">
+<Playground name="modal" component="VCModal">
   <template #code>
 
 ::: code-group
@@ -74,7 +74,7 @@ const open = ref(false);
 :::
 
   </template>
-</Demo>
+</Playground>
 
 ::: tip Two presentations, one component
 `<VCModalClose>` picks between two theme slots based on slot content and the `icon` prop:

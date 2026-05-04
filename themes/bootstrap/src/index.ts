@@ -18,6 +18,17 @@ export default function bootstrapTheme(): Theme {
                     groupAppend: 'input-group-text',
                     groupPrepend: 'input-group-text',
                 },
+                // Bootstrap's `.form-control-{sm,lg}` modifies padding +
+                // font-size on top of `.form-control`. There's no `-md`
+                // class — md IS the default.
+                variants: {
+                    size: {
+                        sm: { root: 'form-control-sm', group: 'input-group-sm' },
+                        md: { root: '' },
+                        lg: { root: 'form-control-lg', group: 'input-group-lg' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             // Reka renders the checkbox / radio / switch as `<button role="…">`,
             // not native `<input type="…">`. Bootstrap's `.form-check-input`
@@ -36,6 +47,17 @@ export default function bootstrapTheme(): Theme {
                     label: 'form-check-label',
                     group: '',
                 },
+                // Bootstrap doesn't ship sm/lg form-check sizes, so fall
+                // back to the structural CSS `vc-form-checkbox-{sm,lg}`
+                // helpers (defined in @vuecs/forms styles).
+                variants: {
+                    size: {
+                        sm: { root: 'vc-form-checkbox-sm', label: 'small' },
+                        md: { root: '' },
+                        lg: { root: 'vc-form-checkbox-lg', label: 'fs-5' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             formCheckboxGroup: { classes: { root: 'd-flex flex-column gap-2' } },
             formSwitch: {
@@ -45,6 +67,14 @@ export default function bootstrapTheme(): Theme {
                     label: 'form-check-label',
                     group: '',
                 },
+                variants: {
+                    size: {
+                        sm: { root: 'vc-form-switch-sm', label: 'small' },
+                        md: { root: '' },
+                        lg: { root: 'vc-form-switch-lg', label: 'fs-5' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             formSelect: {
                 classes: {
@@ -63,6 +93,14 @@ export default function bootstrapTheme(): Theme {
                     groupLabel: 'dropdown-header',
                     separator: 'dropdown-divider',
                 },
+                variants: {
+                    size: {
+                        sm: { trigger: 'form-control-sm' },
+                        md: { trigger: '' },
+                        lg: { trigger: 'form-control-lg' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             formSelectSearch: {
                 classes: {
@@ -89,6 +127,14 @@ export default function bootstrapTheme(): Theme {
                     label: 'form-check-label',
                     group: '',
                 },
+                variants: {
+                    size: {
+                        sm: { root: 'vc-form-radio-sm', label: 'small' },
+                        md: { root: '' },
+                        lg: { root: 'vc-form-radio-lg', label: 'fs-5' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             formRadioGroup: { classes: { root: 'd-flex flex-column gap-2' } },
             // PinInputInput DOES render a real <input>, so `.form-control`
@@ -123,6 +169,24 @@ export default function bootstrapTheme(): Theme {
                     decrement: 'btn btn-outline-secondary',
                     increment: 'btn btn-outline-secondary',
                 },
+                variants: {
+                    size: {
+                        sm: {
+                            root: 'input-group-sm', 
+                            input: 'form-control-sm', 
+                            decrement: 'btn-sm', 
+                            increment: 'btn-sm', 
+                        },
+                        md: { root: '' },
+                        lg: {
+                            root: 'input-group-lg', 
+                            input: 'form-control-lg', 
+                            decrement: 'btn-lg', 
+                            increment: 'btn-lg', 
+                        },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             formTags: {
                 classes: {
@@ -136,6 +200,14 @@ export default function bootstrapTheme(): Theme {
                     itemDelete: 'd-inline-flex align-items-center justify-content-center bg-transparent border-0 text-white p-0 ms-1 lh-1',
                     input: 'form-control border-0 flex-grow-1 p-0 shadow-none',
                 },
+                variants: {
+                    size: {
+                        sm: { root: 'form-control-sm p-1', item: 'small' },
+                        md: { root: '' },
+                        lg: { root: 'form-control-lg p-3', item: 'fs-6' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             button: {
                 // `.btn` is `display: inline-block` by default — gives the
@@ -202,24 +274,62 @@ export default function bootstrapTheme(): Theme {
                     size: 'md', 
                 },
             },
-            formTextarea: { classes: { root: 'form-control' } },
-            list: { classes: { root: 'd-flex flex-column gap-1' } },
+            formTextarea: {
+                classes: { root: 'form-control' },
+                variants: {
+                    size: {
+                        sm: { root: 'form-control-sm' },
+                        md: { root: '' },
+                        lg: { root: 'form-control-lg' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
+            },
+            list: {
+                classes: { root: 'd-flex flex-column gap-1' },
+                variants: {
+                    density: {
+                        compact: { root: 'gap-0' },
+                        normal: { root: '' },
+                        spacious: { root: 'gap-3' },
+                    },
+                },
+                defaultVariants: { density: 'normal' },
+            },
             listHeader: { classes: { root: 'd-flex align-items-center' } },
             listBody: { classes: { root: 'list-unstyled m-0' } },
             // `<VCListItem>` owns the row's flex layout. `<VCListItemText>`
             // takes `flex-grow-1` so it consumes available space and pushes
             // any trailing `<VCListItemActions>` clusters to the right edge.
-            listItem: { classes: { root: 'd-flex flex-row align-items-center gap-1' } },
+            listItem: {
+                classes: { root: 'd-flex flex-row align-items-center gap-1' },
+                variants: {
+                    density: {
+                        compact: { root: 'py-0' },
+                        normal: { root: 'py-1' },
+                        spacious: { root: 'py-3' },
+                    },
+                },
+                defaultVariants: { density: 'normal' },
+            },
             listItemText: { classes: { root: 'd-inline-flex flex-column flex-grow-1 text-truncate' } },
             listItemActions: { classes: { root: 'd-inline-flex align-items-center gap-1' } },
             listFooter: { classes: { root: 'd-flex align-items-center' } },
             listLoading: { classes: { root: 'py-2 text-center text-muted small' } },
-            listEmpty: { classes: { root: 'alert alert-warning alert-sm' } },
+            listEmpty: { classes: { root: 'alert alert-warning small p-2' } },
             navigation: {
                 classes: {
                     group: 'nav-items',
                     link: 'nav-link',
                 },
+                variants: {
+                    size: {
+                        sm: { link: 'small py-1 px-2' },
+                        md: { link: '' },
+                        lg: { link: 'fs-6 py-3 px-4' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             // Reka encodes orientation as `data-orientation`; Bootstrap has
             // `<hr>` styling for horizontal but no built-in vertical rule —
@@ -244,7 +354,7 @@ export default function bootstrapTheme(): Theme {
                 },
                 variants: {
                     size: {
-                        sm: { root: 'fs-7 px-2 py-1' },
+                        sm: { root: 'small px-2 py-1' },
                         md: { root: '' },
                         lg: { root: 'fs-6 px-3 py-2' },
                     },
@@ -256,6 +366,14 @@ export default function bootstrapTheme(): Theme {
                     root: 'd-flex flex-wrap align-items-center gap-2',
                     item: '',
                 },
+                variants: {
+                    size: {
+                        sm: { root: 'gap-1' },
+                        md: { root: '' },
+                        lg: { root: 'gap-3' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             avatar: {
                 classes: {
@@ -263,13 +381,14 @@ export default function bootstrapTheme(): Theme {
                     image: 'w-100 h-100 object-fit-cover',
                     fallback: 'd-inline-flex align-items-center justify-content-center w-100 h-100 fw-medium small lh-1',
                 },
-                // Bootstrap doesn't ship h-8/h-10/h-14 utilities, so the
-                // size variants reference the structural `vc-avatar-{sm,md,lg}`
-                // classes shipped in @vuecs/elements/assets/avatar.css.
+                // Bootstrap doesn't ship h-8/h-10/h-14 utilities. `md` is
+                // the no-op default — the structural `.vc-avatar` rule
+                // already sets the medium size. `vc-avatar-{sm,lg}` are
+                // shipped in @vuecs/elements/assets/avatar.css.
                 variants: {
                     size: {
                         sm: { root: 'vc-avatar-sm' },
-                        md: { root: 'vc-avatar-md' },
+                        md: { root: '' },
                         lg: { root: 'vc-avatar-lg' },
                     },
                 },
@@ -285,7 +404,7 @@ export default function bootstrapTheme(): Theme {
                 classes: { root: 'badge rounded-pill' },
                 variants: {
                     size: {
-                        sm: { root: 'fs-7 px-2 py-1' },
+                        sm: { root: 'small px-2 py-1' },
                         md: { root: '' },
                         lg: { root: 'fs-6 px-3 py-2' },
                     },
@@ -389,6 +508,18 @@ export default function bootstrapTheme(): Theme {
                     closeIcon: 'btn-close position-absolute top-0 end-0 m-2',
                     back: 'btn btn-sm btn-link p-1',
                 },
+                // Bootstrap maps modal sizes via `.modal-sm` / `.modal-lg` /
+                // `.modal-xl` on the .modal element. Our content slot stands
+                // in for `.modal-dialog` so we apply the size class there.
+                variants: {
+                    size: {
+                        sm: { content: 'modal-sm' },
+                        md: { content: '' },
+                        lg: { content: 'modal-lg' },
+                        xl: { content: 'modal-xl' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             popover: {
                 classes: {
@@ -400,6 +531,18 @@ export default function bootstrapTheme(): Theme {
                     close: '',
                     closeIcon: 'btn-close position-absolute top-0 end-0 m-1',
                 },
+                // Bootstrap doesn't ship size variants for popovers — adjust
+                // font-size + padding via utility classes; the popover
+                // shrinks/grows to content, so explicit width tuning is left
+                // to consumers via per-instance themeClass.
+                variants: {
+                    size: {
+                        sm: { content: 'small p-2' },
+                        md: { content: '' },
+                        lg: { content: 'fs-6 p-4' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             hoverCard: {
                 classes: {
@@ -407,6 +550,14 @@ export default function bootstrapTheme(): Theme {
                     content: 'popover bs-popover-auto show vc-overlay-anim',
                     arrow: 'popover-arrow',
                 },
+                variants: {
+                    size: {
+                        sm: { content: 'small p-2' },
+                        md: { content: '' },
+                        lg: { content: 'fs-6 p-4' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             // Bootstrap doesn't ship a stepper component — we wire the rough
             // shape with utility classes (gap-* + rounded-circle for the
@@ -422,6 +573,17 @@ export default function bootstrapTheme(): Theme {
                     description: 'small text-muted',
                     separator: 'flex-grow-1 border-top border-secondary-subtle',
                 },
+                // Bootstrap doesn't ship circular size utilities; use the
+                // structural `vc-stepper-indicator-{sm,lg}` helpers added to
+                // @vuecs/navigation's stepper structural CSS.
+                variants: {
+                    size: {
+                        sm: { indicator: 'vc-stepper-indicator-sm', title: 'small' },
+                        md: { indicator: '' },
+                        lg: { indicator: 'vc-stepper-indicator-lg', title: 'fs-6' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             tooltip: {
                 classes: {
@@ -429,6 +591,14 @@ export default function bootstrapTheme(): Theme {
                     content: 'tooltip bs-tooltip-auto show tooltip-inner vc-tooltip-anim',
                     arrow: 'tooltip-arrow',
                 },
+                variants: {
+                    size: {
+                        sm: { content: 'small px-2 py-1' },
+                        md: { content: '' },
+                        lg: { content: 'fs-6 px-3 py-2' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             dropdownMenu: {
                 classes: {
@@ -446,6 +616,27 @@ export default function bootstrapTheme(): Theme {
                     subContent: 'dropdown-menu show vc-overlay-anim',
                     arrow: '',
                 },
+                // Bootstrap doesn't ship dropdown size variants. Layer
+                // utility classes for spacing/font-size; the structural
+                // dropdown chrome stays untouched.
+                variants: {
+                    size: {
+                        sm: {
+                            content: 'small p-1', 
+                            item: 'py-1 px-2', 
+                            subTrigger: 'py-1 px-2', 
+                            subContent: 'small p-1', 
+                        },
+                        md: { content: '' },
+                        lg: {
+                            content: 'fs-6', 
+                            item: 'py-2 px-3', 
+                            subTrigger: 'py-2 px-3', 
+                            subContent: 'fs-6', 
+                        },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             contextMenu: {
                 classes: {
@@ -462,6 +653,24 @@ export default function bootstrapTheme(): Theme {
                     subTrigger: 'dropdown-item dropdown-toggle',
                     subContent: 'dropdown-menu show vc-overlay-anim',
                 },
+                variants: {
+                    size: {
+                        sm: {
+                            content: 'small p-1', 
+                            item: 'py-1 px-2', 
+                            subTrigger: 'py-1 px-2', 
+                            subContent: 'small p-1', 
+                        },
+                        md: { content: '' },
+                        lg: {
+                            content: 'fs-6', 
+                            item: 'py-2 px-3', 
+                            subTrigger: 'py-2 px-3', 
+                            subContent: 'fs-6', 
+                        },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
         },
     };

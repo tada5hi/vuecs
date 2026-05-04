@@ -3,6 +3,10 @@
  *
  * Reka renders a real <button role="switch"> with `data-state="checked|unchecked"`.
  * The thumb slides via translate; transitions are kept short to feel snappy.
+ *
+ * Unlayered: see form-checkbox.css for rationale (Bootstrap reboot
+ * resets `button { border-radius: 0 }`). Size variants are driven via
+ * the `vc-form-switch-{sm,lg}` structural helpers below.
  */
 .vc-form-switch-wrapper {
     display: inline-flex;
@@ -75,4 +79,30 @@
 
 .vc-form-switch[data-state="checked"] .vc-form-switch-thumb {
     translate: 1rem 0;
+}
+
+/* Size helpers — themes drive these via `formSwitch.variants.size.{sm,lg}`.
+   Track and thumb scale together; the `[data-state="checked"]` translate
+   distance matches the new track width minus thumb. */
+.vc-form-switch-sm {
+    width: 1.75rem;
+    height: 1rem;
+}
+.vc-form-switch-sm .vc-form-switch-thumb {
+    width: 0.625rem;
+    height: 0.625rem;
+}
+.vc-form-switch-sm[data-state="checked"] .vc-form-switch-thumb {
+    translate: 0.75rem 0;
+}
+.vc-form-switch-lg {
+    width: 2.75rem;
+    height: 1.5rem;
+}
+.vc-form-switch-lg .vc-form-switch-thumb {
+    width: 1.125rem;
+    height: 1.125rem;
+}
+.vc-form-switch-lg[data-state="checked"] .vc-form-switch-thumb {
+    translate: 1.25rem 0;
 }

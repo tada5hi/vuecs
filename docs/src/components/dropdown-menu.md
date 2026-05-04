@@ -6,7 +6,7 @@ Click-triggered menu of actions. Built on [Reka UI](https://reka-ui.com/)'s Drop
 npm install @vuecs/overlays
 ```
 
-<Demo name="dropdown-menu" component="VCDropdownMenu">
+<Playground name="dropdown-menu" component="VCDropdownMenu">
   <template #code>
 
 ::: code-group
@@ -56,7 +56,7 @@ const lastAction = ref<string>('—');
 :::
 
   </template>
-</Demo>
+</Playground>
 
 ## Compound API
 

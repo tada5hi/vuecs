@@ -6,7 +6,7 @@ Right-click-triggered menu. Same shape as DropdownMenu but anchored to the curso
 npm install @vuecs/overlays
 ```
 
-<Demo name="context-menu" component="VCContextMenu">
+<Playground name="context-menu" component="VCContextMenu">
   <template #code>
 
 ::: code-group
@@ -56,7 +56,7 @@ const lastAction = ref<string>('—');
 :::
 
   </template>
-</Demo>
+</Playground>
 
 ## Compound API
 

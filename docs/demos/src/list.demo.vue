@@ -6,6 +6,7 @@ import {
     VCListItemText,
 } from '@vuecs/list';
 import { ref } from 'vue';
+import { variantState } from './iframe-bridge';
 
 type Fruit = {
     id: number; 
@@ -38,9 +39,15 @@ function remove(id: number): void {
 
 <template>
     <div style="max-width: 28rem;">
-        <VCList :data="data">
+        <VCList
+            :data="data"
+            :theme-variant="variantState"
+        >
             <template #item="{ data: item }">
-                <VCListItem :data="item">
+                <VCListItem
+                    :data="item"
+                    :theme-variant="variantState"
+                >
                     <VCListItemText>
                         <span class="font-medium">{{ item.name }}</span>
                         <span class="text-xs text-fg-muted">

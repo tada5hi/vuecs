@@ -8,7 +8,7 @@ Status pill. Variants (`solid` / `soft` / `outline`) compose with the standard s
 npm install @vuecs/elements
 ```
 
-<Demo name="badge">
+<Playground name="badge">
   <template #code>
 
 ::: code-group
@@ -16,12 +16,23 @@ npm install @vuecs/elements
 ```vue [Vue]
 <script setup lang="ts">
 import { VCBadge } from '@vuecs/elements';
+
+const colors = ['primary', 'neutral', 'success', 'warning', 'error', 'info'] as const;
+const variants = ['solid', 'soft', 'outline'] as const;
 </script>
 
 <template>
-    <VCBadge color="success">Live</VCBadge>
-    <VCBadge color="warning" variant="soft">Beta</VCBadge>
-    <VCBadge color="error" variant="outline">Deprecated</VCBadge>
+    <!-- Color × variant grid: every (color, variant) cell renders. -->
+    <div v-for="variant in variants" :key="variant">
+        <VCBadge
+            v-for="color in colors"
+            :key="`${variant}-${color}`"
+            :variant="variant"
+            :color="color"
+        >
+            {{ color }}
+        </VCBadge>
+    </div>
 </template>
 ```
 
@@ -36,7 +47,7 @@ import { VCBadge } from '@vuecs/elements';
 :::
 
   </template>
-</Demo>
+</Playground>
 
 ## Props
 

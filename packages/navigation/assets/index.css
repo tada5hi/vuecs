@@ -83,6 +83,10 @@
     opacity: 0.6;
 }
 
+/* Indicator owns shape only — color (border, background, text) is theme
+   territory because each step's `data-state` (active/completed/inactive)
+   demands a different color. Themes drive that via `group-data-[state=…]:`
+   utility variants (Tailwind) or attribute selectors (Bootstrap). */
 .vc-stepper-indicator {
     display: inline-flex;
     align-items: center;
@@ -90,9 +94,6 @@
     width: 2rem;
     height: 2rem;
     border-radius: 9999px;
-    border: 1px solid var(--vc-color-border, #e5e7eb);
-    background-color: var(--vc-color-bg, #fff);
-    color: var(--vc-color-fg-muted, #6b7280);
     font-weight: 600;
     font-size: 0.875rem;
     line-height: 1;
@@ -101,10 +102,21 @@
 .vc-stepper-separator {
     flex: 1 1 auto;
     height: 1px;
-    background-color: var(--vc-color-border, #e5e7eb);
 }
 
 .vc-stepper[data-orientation="vertical"] .vc-stepper-separator {
     width: 1px;
     height: 2rem;
+}
+
+/* Size helpers — themes drive these via `stepper.variants.size.{sm,lg}`. */
+.vc-stepper-indicator-sm {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.75rem;
+}
+.vc-stepper-indicator-lg {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1rem;
 }

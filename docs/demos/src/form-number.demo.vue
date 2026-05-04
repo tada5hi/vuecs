@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { VCFormNumber } from '@vuecs/forms';
 import { ref } from 'vue';
+import { variantState } from './iframe-bridge';
 
 const quantity = ref<number>(1);
 const price = ref<number>(19.99);
@@ -15,6 +16,7 @@ const price = ref<number>(19.99);
                 :min="0"
                 :max="99"
                 :step="1"
+                :theme-variant="variantState"
             />
         </div>
 
@@ -25,6 +27,7 @@ const price = ref<number>(19.99);
                 :min="0"
                 :step="0.01"
                 :format-options="{ style: 'currency', currency: 'USD' }"
+                :theme-variant="variantState"
             />
         </div>
 

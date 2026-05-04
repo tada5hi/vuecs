@@ -8,7 +8,7 @@ npm install @vuecs/forms
 
 ## Basic usage
 
-<Demo name="form-textarea">
+<Playground name="form-textarea">
 
   <template #code>
 
@@ -37,7 +37,7 @@ const value = ref('');
 :::
 
   </template>
-</Demo>
+</Playground>
 
 ## Props
 

@@ -8,7 +8,7 @@ npm install @vuecs/pagination
 
 ## Basic usage
 
-<Demo name="pagination">
+<Playground name="pagination">
   <template #code>
 
 ::: code-group
@@ -49,7 +49,7 @@ const load = (next) => {
 :::
 
   </template>
-</Demo>
+</Playground>
 
 ## Icons
 

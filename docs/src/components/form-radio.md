@@ -8,7 +8,7 @@ npm install @vuecs/forms
 
 ## Basic usage
 
-<Demo name="form-radio">
+<Playground name="form-radio">
 
   <template #code>
 
@@ -43,7 +43,7 @@ const size = ref<string>('md');
 :::
 
   </template>
-</Demo>
+</Playground>
 
 ## Options shorthand
 

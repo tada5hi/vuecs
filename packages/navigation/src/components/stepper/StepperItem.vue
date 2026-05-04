@@ -3,7 +3,8 @@ import { defineComponent, h, mergeProps } from 'vue';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import { StepperItem } from 'reka-ui';
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
+import type { ThemeClassesOverride, UseComponentThemeProps, VariantValues } from '@vuecs/core';
+import { useStepperContext } from './context';
 import { stepperThemeDefaults } from './theme';
 import type { StepperThemeClasses } from './types';
 
@@ -34,7 +35,14 @@ export default defineComponent({
         default: StepperItemSlotProps;
     }>,
     setup(props, { attrs, slots }) {
-        const theme = useComponentTheme('stepper', props, stepperThemeDefaults);
+        const ctx = useStepperContext();
+        const themeProps: UseComponentThemeProps<StepperThemeClasses> = {
+            get themeClass() { return { ...(ctx?.themeClass() ?? {}), ...(props.themeClass ?? {}) }; },
+            get themeVariant() {
+                return { ...(ctx?.themeVariant() ?? {}), ...(props.themeVariant ?? {}) };
+            },
+        };
+        const theme = useComponentTheme('stepper', themeProps, stepperThemeDefaults);
         return () => h(
             StepperItem,
             // `step` is required on StepperItem; vue-tsc loses that

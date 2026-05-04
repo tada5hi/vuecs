@@ -2,6 +2,12 @@
  * Structural defaults for VCPagination. Colors and typography live in the
  * theme; this file only handles the geometry (list reset, button grouping,
  * shared borders, shared corner radii).
+ *
+ * Unlayered: themes that apply `rounded-md` (or equivalent) to every
+ * link via the variant class string would otherwise beat layered
+ * radius-zero rules and re-round the inner corners. Keeping the whole
+ * file unlayered preserves the joined-pill identity regardless of theme
+ * source order.
  */
 .vc-pagination {
     display: flex;

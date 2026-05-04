@@ -8,7 +8,7 @@ npm install @vuecs/forms
 
 ## Basic usage
 
-<Demo name="form-number">
+<Playground name="form-number">
 
   <template #code>
 
@@ -47,7 +47,7 @@ const price = ref<number>(19.99);
 :::
 
   </template>
-</Demo>
+</Playground>
 
 ## Locale + currency formatting
 

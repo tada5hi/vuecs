@@ -1,61 +1,55 @@
 /*
- * Structural defaults for VCTag and VCTags. Both ship a baseline
- * pill look so consumers see something usable without a theme — themes
- * layer on top via the `tag` / `tags` keys.
+ * Structural defaults for VCTag and VCTags. Shape only — color is theme
+ * territory. See badge.css for the rationale (themes drive color via
+ * variants; keeping it out of structural avoids cascade conflicts).
  *
- * Wrapped in `@layer components` so Tailwind v4 utility classes (which
- * land in `@layer utilities` — declared after `components` in Tailwind's
- * default order) win when a theme drives `bg-*` / `text-*` per slot.
- * Unlayered structural CSS would otherwise clobber utility classes
- * regardless of source order.
+ * Un-themed `<VCTag>` renders as a transparent pill with inherited text
+ * color. The remove button keeps a hover background so it remains
+ * discoverable on hover regardless of theme color choices.
  */
-@layer components {
-    .vc-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.25rem;
-        padding: 0.125rem 0.5rem;
-        font-size: 0.75rem;
-        line-height: 1.25;
-        color: var(--vc-color-on-primary, #fff);
-        background-color: var(--vc-color-primary-600, #2563eb);
-        border-radius: 9999px;
-    }
+.vc-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1.25;
+    border-radius: 9999px;
+}
 
-    .vc-tag-icon {
-        display: inline-flex;
-        align-items: center;
-    }
+.vc-tag-icon {
+    display: inline-flex;
+    align-items: center;
+}
 
-    .vc-tag-remove {
-        appearance: none;
-        -webkit-appearance: none;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        /* Sized in `em` (not `rem`) so the button tracks the badge's
-           font-size and stays the same height as the surrounding text.
-           A fixed `1rem` was 16px regardless of theme — taller than
-           Bootstrap's 0.75em (~12px) badge text, which stretched the
-           row and made removable tags taller than non-removable ones. */
-        width: 1em;
-        height: 1em;
-        padding: 0;
-        color: inherit;
-        background-color: transparent;
-        border: 0;
-        border-radius: 9999px;
-        cursor: pointer;
-        line-height: 1;
-    }
+.vc-tag-remove {
+    appearance: none;
+    -webkit-appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    /* Sized in `em` (not `rem`) so the button tracks the badge's
+       font-size and stays the same height as the surrounding text.
+       A fixed `1rem` was 16px regardless of theme — taller than
+       Bootstrap's 0.75em (~12px) badge text, which stretched the
+       row and made removable tags taller than non-removable ones. */
+    width: 1em;
+    height: 1em;
+    padding: 0;
+    color: inherit;
+    background-color: transparent;
+    border: 0;
+    border-radius: 9999px;
+    cursor: pointer;
+    line-height: 1;
+}
 
-    .vc-tag-remove:hover {
-        background-color: rgba(0, 0, 0, 0.15);
-    }
+.vc-tag-remove:hover {
+    background-color: rgba(0, 0, 0, 0.15);
+}
 
-    .vc-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.375rem;
-    }
+.vc-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
 }

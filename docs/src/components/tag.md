@@ -8,7 +8,7 @@ A removable, value-bound chip and a list helper that renders one chip per item. 
 npm install @vuecs/elements
 ```
 
-<Demo name="tag">
+<Playground name="tag">
   <template #code>
 
 ::: code-group
@@ -46,7 +46,7 @@ function remove(value: string | number | undefined) {
 :::
 
   </template>
-</Demo>
+</Playground>
 
 ## `<VCTag>`
 

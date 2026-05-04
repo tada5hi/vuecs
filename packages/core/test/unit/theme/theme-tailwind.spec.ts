@@ -42,10 +42,12 @@ describe('tailwindTheme', () => {
         expect(theme.elements.formInputCheckbox).toBeUndefined();
     });
 
-    it('should define pagination with active state using Tailwind `!` modifier to beat base link classes', () => {
+    it('should define pagination with active state using Tailwind v4 `!` suffix to beat base link classes', () => {
+        // Tailwind v4 deprecated the prefix `!class` form (silently no-ops);
+        // the suffix `class!` form is the only working syntax.
         const entry = theme.elements.pagination as ThemeElementDefinition;
-        expect(entry.classes!.linkActive).toContain('!bg-primary-600');
-        expect(entry.classes!.linkActive).toContain('!text-on-primary');
+        expect(entry.classes!.linkActive).toContain('bg-primary-600!');
+        expect(entry.classes!.linkActive).toContain('text-on-primary!');
     });
 
     it('should reference only semantic color tokens (no raw Tailwind palette names)', () => {

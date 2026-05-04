@@ -9,6 +9,7 @@ import {
     VCDropdownMenuTrigger,
 } from '@vuecs/overlays';
 import { ref } from 'vue';
+import { variantState } from './iframe-bridge';
 
 const lastAction = ref<string>('—');
 </script>
@@ -22,7 +23,7 @@ const lastAction = ref<string>('—');
             >
                 Actions ▾
             </VCDropdownMenuTrigger>
-            <VCDropdownMenuContent>
+            <VCDropdownMenuContent :theme-variant="variantState">
                 <VCDropdownMenuLabel>Manage</VCDropdownMenuLabel>
                 <VCDropdownMenuGroup>
                     <VCDropdownMenuItem @select="lastAction = 'edit'">

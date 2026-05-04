@@ -380,3 +380,35 @@
 .vc-list-footer:empty {
     display: none;
 }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * @vuecs/navigation Stepper — Bootstrap utility classes can't carry
+ * `[data-state=…]` attribute selectors, so the theme entry's `bg-light`
+ * / `border-secondary-subtle` / `text-muted` apply uniformly. Add CSS
+ * here to differentiate active + completed steps. Both states use the
+ * primary color so the trail of progress reads as one continuous run
+ * (matches the Tailwind theme).
+ *
+ * `!important` is required because Bootstrap's `.bg-*` / `.border-*` /
+ * `.text-*` utility classes ship with `!important` themselves — without
+ * matching that, the higher-specificity attribute selector still loses
+ * to the `!important` on the utility.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.vc-stepper-item[data-state="active"] .vc-stepper-indicator,
+.vc-stepper-item[data-state="completed"] .vc-stepper-indicator {
+    background-color: var(--vc-color-primary-600) !important;
+    border-color: var(--vc-color-primary-600) !important;
+    color: var(--vc-color-on-primary) !important;
+}
+
+.vc-stepper-item[data-state="active"] .vc-stepper-title,
+.vc-stepper-item[data-state="completed"] .vc-stepper-title {
+    color: var(--vc-color-fg) !important;
+}
+
+/* Bootstrap renders the separator via `border-top` (1px-tall element +
+   border-top edge), so colorize via `border-top-color` not `background`. */
+.vc-stepper-separator[data-state="completed"] {
+    border-top-color: var(--vc-color-primary-600) !important;
+}

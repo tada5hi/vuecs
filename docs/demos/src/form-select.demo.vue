@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { VCFormSelect } from '@vuecs/forms';
 import { ref } from 'vue';
+import { variantState } from './iframe-bridge';
 
 const value = ref<string | undefined>(undefined);
 const region = ref<string | undefined>(undefined);
@@ -40,11 +41,13 @@ const regions = [
             v-model="value"
             :options="sizes"
             placeholder="-- Pick a size --"
+            :theme-variant="variantState"
         />
         <VCFormSelect
             v-model="region"
             :options="regions"
             placeholder="-- Pick a region --"
+            :theme-variant="variantState"
         />
         <p style="font-size: 0.875rem; color: var(--vc-color-fg-muted); margin: 0;">
             Bound: <code>size={{ value }}, region={{ region }}</code>

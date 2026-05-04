@@ -200,6 +200,39 @@ compoundVariants: [
 ]
 ```
 
+**Where variants live.** Variant definitions overwhelmingly live in
+the **theme packages** (`@vuecs/theme-tailwind` / `@vuecs/theme-bootstrap`)
+rather than in component defaults — the component declares the slot
+shape (`ThemeClasses`), the theme decides what each variant value
+adds to each slot. This keeps component code minimal and lets two
+themes ship dramatically different visuals (Tailwind utilities vs
+Bootstrap class names) for the same axis. Components that compose
+into the theme do NOT need their own `variants:` entry in defaults
+unless the variant is structural (e.g. orientation-driven layout).
+
+### Per-component variant catalog
+
+| Component | Axis | Values | Notes |
+|---|---|---|---|
+| Button | `variant` × `color` × `size` | solid/outline/soft/ghost/link × primary/neutral/success/warning/error/info × sm/md/lg | Full matrix via `compoundVariants` |
+| Badge | `variant` × `color` × `size` | solid/soft/outline × six semantic colors × sm/md/lg | Mirrors button |
+| Tag | `size` | sm/md/lg | Matches badge sizing |
+| Avatar | `size` | sm/md/lg | Theme-bootstrap uses `vc-avatar-{sm,lg}` helpers |
+| Pagination | `variant` × `size` | outline/soft/ghost × sm/md/lg | |
+| FormInput / FormTextarea / FormSelect / FormNumber / FormTags | `size` | sm/md/lg | theme-tailwind uses padding+font utilities; theme-bootstrap uses `form-control-{sm,lg}` (and input-group-{sm,lg} for groups) |
+| FormCheckbox / FormSwitch / FormRadio | `size` | sm/md/lg | theme-bootstrap uses `vc-form-{checkbox,switch,radio}-{sm,lg}` helpers from @vuecs/forms structural CSS |
+| Modal | `size` | sm/md/lg/xl | theme-tailwind uses `max-w-*`; theme-bootstrap uses `modal-{sm,lg,xl}` |
+| Popover / HoverCard | `size` | sm/md/lg | Width + padding tier |
+| Tooltip | `size` | sm/md/lg | Padding + font-size only |
+| DropdownMenu / ContextMenu | `size` | sm/md/lg | Item padding + min-width |
+| List / ListItem | `density` | compact/normal/spacious | Gap + per-row padding |
+| Navigation | `size` | sm/md/lg | Link padding + icon size |
+| Stepper | `size` | sm/md/lg | Indicator + title scale; theme-bootstrap uses `vc-stepper-indicator-{sm,lg}` |
+
+Components with NO theme variants today: VCSeparator, VCAspectRatio,
+VCVisuallyHidden, VCFormPin, VCFormSlider, VCGravatar, VCCountdown,
+VCTimeago, VCLink (Link has no theme system at all yet).
+
 ### Type-Safe Theme Slots (ThemeElements)
 
 `ThemeElements` is an empty augmentable interface with no index signature. Each component package extends it via TypeScript declaration merging to register its component name and typed slot keys. `Theme.elements` uses `Partial<ThemeElements>` so each theme only needs to provide a subset of known components. Internal runtime code casts to `Record<string, ThemeElementDefinition>` for dynamic dispatch by component name.
@@ -1004,19 +1037,37 @@ the pattern fit, not the manager. The Stepper compound does NOT use
   StepperTitle.vue
   StepperDescription.vue
   StepperSeparator.vue     <- StepperSeparator (carries data-state="completed" when prev step is done)
+  context.ts               <- provideStepperContext / useStepperContext (theme-class + theme-variant inheritance)
   theme.ts                 <- shared stepperThemeDefaults
   types.ts                 <- StepperThemeClasses + ThemeElements augmentation
   index.ts
 ```
+
+`<VCStepper>` `provideStepperContext`s its `themeClass` + `themeVariant`
+so descendant parts inherit them automatically — a single
+`<VCStepper :theme-variant="{ size: 'sm' }">` resizes every indicator /
+title / description / separator without per-part repetition. Children
+read via `useStepperContext()` and merge with their own per-instance
+props (per-instance values win). The context is optional so children
+render bare for unit tests / Storybook. `provideStepperContext` /
+`useStepperContext` / `StepperContext` are re-exported from
+`@vuecs/navigation` for consumers building custom step parts.
+
+Bootstrap theme strings can't carry `[data-state=…]` attribute
+selectors, so `themes/bootstrap/assets/index.css` ships dedicated
+`[data-state="active|completed"] .vc-stepper-…` rules with `!important`
+(Bootstrap utility classes like `.bg-light` ship `!important`; the
+attribute-selector specificity boost alone isn't enough). Both states
+use the primary color so the trail of progress reads as one
+continuous run; the Tailwind theme matches.
 
 Adding stepper made `Options.items` optional in `@vuecs/navigation`'s
 install — a stepper-only consumer can call `app.use(navigation, {})`
 without wiring any nav items. NavigationManager still constructs (with
 an empty items array) so existing nav code keeps working.
 
-Theme entries ship in both `@vuecs/theme-tailwind` (uses
+Theme entries ship in `@vuecs/theme-tailwind` (uses
 `group-data-[state=active]:` / `group-data-[state=completed]:` variant
-prefixes, scoped via the `group` utility on `<VCStepperItem>`) and
-`@vuecs/theme-bootstrap` (uses Bootstrap utility classes — the BS5
-theme is necessarily flatter since theme strings can't carry attribute
-selectors).
+prefixes, scoped via the `group` utility added by `<VCStepperItem>`) and
+`@vuecs/theme-bootstrap` (Bootstrap utility classes only, with
+data-state visualization handled by the bridge CSS as noted above).

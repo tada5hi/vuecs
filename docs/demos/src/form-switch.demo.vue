@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { VCFormSwitch } from '@vuecs/forms';
 import { ref } from 'vue';
+import { variantState } from './iframe-bridge';
 
 const notifications = ref(true);
 const dnd = ref(false);
@@ -16,10 +17,12 @@ const dnd = ref(false);
         <VCFormSwitch
             v-model="notifications"
             label-content="Enable notifications"
+            :theme-variant="variantState"
         />
         <VCFormSwitch
             v-model="dnd"
             label-content="Do not disturb"
+            :theme-variant="variantState"
         />
         <p style="font-size: 0.875rem; color: var(--vc-color-fg-muted); margin: 0;">
             Bound: <code>notifications={{ notifications }}, dnd={{ dnd }}</code>

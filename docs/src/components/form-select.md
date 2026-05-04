@@ -10,7 +10,7 @@ npm install @vuecs/forms
 
 ## Basic usage
 
-<Demo name="form-select">
+<Playground name="form-select">
 
   <template #code>
 
@@ -64,7 +64,7 @@ const regions = [
 :::
 
   </template>
-</Demo>
+</Playground>
 
 ## The `FormOption` shape
 

@@ -10,7 +10,7 @@ npm install @vuecs/forms
 
 ## Basic usage
 
-<Demo name="form-checkbox">
+<Playground name="form-checkbox">
 
   <template #code>
 
@@ -61,7 +61,7 @@ const selected = ref<string[]>(['a']);
 :::
 
   </template>
-</Demo>
+</Playground>
 
 ## Custom label markup
 

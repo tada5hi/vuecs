@@ -7,6 +7,10 @@
  * target any of these via attribute selectors. Structural CSS below keeps the
  * widget visible and usable out-of-the-box; theme packages add color / hover
  * polish on top.
+ *
+ * Unlayered: see form-checkbox.css for rationale (Bootstrap reboot resets
+ * `button { border-radius: 0 }`). Size variants are driven via the
+ * `vc-form-select-trigger-{sm,lg}` structural helpers below.
  */
 .vc-form-select-trigger {
     display: inline-flex;
@@ -126,4 +130,19 @@
     height: 1px;
     margin: 0.25rem 0;
     background-color: var(--vc-color-border, #d1d5db);
+}
+
+/* Size helpers — themes drive these via `formSelect.variants.size.{sm,lg}`.
+   Bootstrap's `form-control-{sm,lg}` and Tailwind's per-size utilities both
+   sit in CSS layers we'd lose to (Bootstrap unlayered for some rules, Tailwind
+   utilities for others), so we ship dedicated structural helpers. */
+.vc-form-select-trigger-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1rem;
+}
+.vc-form-select-trigger-lg {
+    padding: 0.5rem 0.875rem;
+    font-size: 1rem;
+    line-height: 1.5rem;
 }

@@ -9,6 +9,9 @@
  *   .vc-form-radio-group   → outer container of multiple radios (column)
  *   .vc-form-radio-wrapper → per-single-radio inline wrapper around
  *                            the radio button + its label
+ *
+ * Unlayered: see form-checkbox.css for rationale (Bootstrap reboot resets
+ * `button { border-radius: 0 }`). Size variants drive `vc-form-radio-{sm,lg}`.
  */
 .vc-form-radio-group {
     display: flex;
@@ -95,3 +98,20 @@
     transform: translate(-50%, -50%);
 }
 
+/* Size helpers — themes drive these via `formRadio.variants.size.{sm,lg}`. */
+.vc-form-radio-sm {
+    width: 0.75rem;
+    height: 0.75rem;
+}
+.vc-form-radio-sm .vc-form-radio-indicator {
+    width: 0.375rem;
+    height: 0.375rem;
+}
+.vc-form-radio-lg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+.vc-form-radio-lg .vc-form-radio-indicator {
+    width: 0.625rem;
+    height: 0.625rem;
+}

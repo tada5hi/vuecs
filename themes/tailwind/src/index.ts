@@ -39,6 +39,26 @@ export default function tailwindTheme(): Theme {
                     groupAppend: 'inline-flex items-center rounded-r-md border border-l-0 border-border bg-bg-muted px-3 text-sm text-fg-muted',
                     groupPrepend: 'inline-flex items-center rounded-l-md border border-r-0 border-border bg-bg-muted px-3 text-sm text-fg-muted',
                 },
+                // Size axis mirrors the button family — `sm` shrinks padding
+                // + font-size for dense forms, `lg` scales up for primary
+                // call-to-action inputs. tailwind-merge dedupes the
+                // overlap with the default `px-3 py-2 text-sm` chrome.
+                variants: {
+                    size: {
+                        sm: {
+                            root: 'px-2 py-1 text-xs', 
+                            groupAppend: 'px-2 text-xs', 
+                            groupPrepend: 'px-2 text-xs', 
+                        },
+                        md: { root: '' },
+                        lg: {
+                            root: 'px-4 py-3 text-base', 
+                            groupAppend: 'px-4 text-base', 
+                            groupPrepend: 'px-4 text-base', 
+                        },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             formCheckbox: {
                 classes: {
@@ -47,6 +67,20 @@ export default function tailwindTheme(): Theme {
                     label: 'text-sm text-fg cursor-pointer select-none',
                     group: 'inline-flex items-center gap-2',
                 },
+                // Sizing references the structural `vc-form-checkbox-{sm,lg}` helpers
+                // (defined in @vuecs/forms/assets/form-checkbox.css) — utility-class
+                // sizing like `h-3 w-3` lives in `@layer utilities` which loses to
+                // the unlayered structural `.vc-form-checkbox` rule. Label
+                // font-size uses Tailwind v4's `class!` important suffix to beat
+                // the structural label rule.
+                variants: {
+                    size: {
+                        sm: { root: 'vc-form-checkbox-sm', label: 'text-xs!' },
+                        md: { root: '' },
+                        lg: { root: 'vc-form-checkbox-lg', label: 'text-base!' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             formCheckboxGroup: { classes: { root: 'flex flex-col gap-2 data-[orientation=horizontal]:flex-row data-[orientation=horizontal]:items-center' } },
             formSwitch: {
@@ -56,6 +90,17 @@ export default function tailwindTheme(): Theme {
                     label: 'text-sm text-fg cursor-pointer select-none',
                     group: 'inline-flex items-center gap-2',
                 },
+                // Sizing references the structural `vc-form-switch-{sm,lg}` helpers
+                // (track + thumb + checked-translate scale together via descendant
+                // selectors). See formCheckbox above for rationale.
+                variants: {
+                    size: {
+                        sm: { root: 'vc-form-switch-sm', label: 'text-xs!' },
+                        md: { root: '' },
+                        lg: { root: 'vc-form-switch-lg', label: 'text-base!' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             formSelect: {
                 classes: {
@@ -70,6 +115,16 @@ export default function tailwindTheme(): Theme {
                     groupLabel: 'px-2 py-1.5 text-xs font-semibold uppercase tracking-wide text-fg-muted',
                     separator: '-mx-1 my-1 h-px bg-border',
                 },
+                // Trigger size uses the structural `vc-form-select-trigger-{sm,lg}`
+                // helpers — see formCheckbox above for rationale.
+                variants: {
+                    size: {
+                        sm: { trigger: 'vc-form-select-trigger-sm', item: 'py-1 pl-6 text-xs!' },
+                        md: { trigger: '' },
+                        lg: { trigger: 'vc-form-select-trigger-lg', item: 'py-2 pl-8 text-base!' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             formSelectSearch: {
                 classes: {
@@ -92,6 +147,16 @@ export default function tailwindTheme(): Theme {
                     label: 'text-sm text-fg cursor-pointer select-none',
                     group: 'inline-flex items-center gap-2',
                 },
+                // Sizing references the structural `vc-form-radio-{sm,lg}` helpers
+                // (root + indicator scale together via descendant selectors).
+                variants: {
+                    size: {
+                        sm: { root: 'vc-form-radio-sm', label: 'text-xs!' },
+                        md: { root: '' },
+                        lg: { root: 'vc-form-radio-lg', label: 'text-base!' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             formRadioGroup: { classes: { root: 'flex flex-col gap-2 data-[orientation=horizontal]:flex-row data-[orientation=horizontal]:items-center data-[orientation=horizontal]:gap-4' } },
             formPin: {
@@ -119,6 +184,22 @@ export default function tailwindTheme(): Theme {
                     decrement: 'inline-flex w-8 items-center justify-center bg-bg-muted text-fg hover:bg-bg-elevated focus-visible:outline-2 focus-visible:outline-primary-500 -outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
                     increment: 'inline-flex w-8 items-center justify-center bg-bg-muted text-fg hover:bg-bg-elevated focus-visible:outline-2 focus-visible:outline-primary-500 -outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
                 },
+                variants: {
+                    size: {
+                        sm: {
+                            input: 'px-2 py-1 text-xs', 
+                            decrement: 'w-6 text-xs', 
+                            increment: 'w-6 text-xs', 
+                        },
+                        md: { input: '' },
+                        lg: {
+                            input: 'px-4 py-3 text-base', 
+                            decrement: 'w-10 text-base', 
+                            increment: 'w-10 text-base', 
+                        },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             formTags: {
                 classes: {
@@ -128,6 +209,22 @@ export default function tailwindTheme(): Theme {
                     itemDelete: 'inline-flex h-4 w-4 items-center justify-center rounded-full bg-transparent text-current hover:bg-black/10',
                     input: 'flex-1 min-w-24 bg-transparent border-0 outline-none text-fg px-0 py-0.5 text-sm',
                 },
+                variants: {
+                    size: {
+                        sm: {
+                            root: 'px-1.5! py-1!',
+                            item: 'px-1.5! py-px! text-[0.625rem]!',
+                            input: 'text-xs!',
+                        },
+                        md: { root: '' },
+                        lg: {
+                            root: 'px-3! py-2! text-base!',
+                            item: 'px-2.5! py-1! text-sm!',
+                            input: 'text-base!',
+                        },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             button: {
                 classes: {
@@ -198,9 +295,33 @@ export default function tailwindTheme(): Theme {
                     size: 'md', 
                 },
             },
-            formTextarea: { classes: { root: 'block w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-fg shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:bg-bg-muted' } },
+            formTextarea: {
+                classes: { root: 'block w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-fg shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:bg-bg-muted' },
+                variants: {
+                    size: {
+                        sm: { root: 'px-2 py-1 text-xs' },
+                        md: { root: '' },
+                        lg: { root: 'px-4 py-3 text-base' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
+            },
             validationGroup: { classes: { item: 'text-xs text-error-600' } },
-            list: { classes: { root: 'flex flex-col gap-1' } },
+            list: {
+                classes: { root: 'flex flex-col gap-1' },
+                // Density axis controls the gap between items. `compact`
+                // suits dense data tables, `normal` is the default,
+                // `spacious` reads as breathing room around long-form
+                // entries (e.g. activity feeds).
+                variants: {
+                    density: {
+                        compact: { root: 'gap-0' },
+                        normal: { root: '' },
+                        spacious: { root: 'gap-3' },
+                    },
+                },
+                defaultVariants: { density: 'normal' },
+            },
             // `empty:hidden` — when shorthand mode auto-composes a part
             // and the consumer didn't supply that slot, the resulting
             // empty wrapper collapses out of layout instead of taking
@@ -213,7 +334,19 @@ export default function tailwindTheme(): Theme {
             // truncates cleanly. `<VCListItemActions>` is positionally
             // unopinionated so N clusters compose naturally — the text's
             // `flex-1` is what pushes them to the right edge.
-            listItem: { classes: { root: 'flex flex-row items-center gap-2 py-1' } },
+            listItem: {
+                classes: { root: 'flex flex-row items-center gap-2 py-1' },
+                // Match the parent list's density: tighter vertical padding
+                // for compact rows, generous padding for spacious rows.
+                variants: {
+                    density: {
+                        compact: { root: 'py-0.5' },
+                        normal: { root: '' },
+                        spacious: { root: 'py-3' },
+                    },
+                },
+                defaultVariants: { density: 'normal' },
+            },
             listItemText: { classes: { root: 'inline-flex min-w-0 flex-1 flex-col' } },
             listItemActions: { classes: { root: 'inline-flex items-center gap-1' } },
             listLoading: { classes: { root: 'py-2 text-center text-sm text-fg-muted' } },
@@ -229,6 +362,14 @@ export default function tailwindTheme(): Theme {
                     linkIcon: 'inline-flex h-4 w-4 shrink-0 items-center justify-center',
                     linkText: 'flex-1 truncate',
                 },
+                variants: {
+                    size: {
+                        sm: { link: 'px-2 py-1 text-xs', linkIcon: 'h-3 w-3' },
+                        md: { link: '' },
+                        lg: { link: 'px-4 py-3 text-base', linkIcon: 'h-5 w-5' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             pagination: {
                 classes: {
@@ -239,7 +380,7 @@ export default function tailwindTheme(): Theme {
                     // variant. Keeping concerns split lets consumers pick a
                     // size and a visual treatment independently.
                     link: 'inline-flex items-center justify-center gap-1.5 rounded-md leading-none focus:outline-none focus:ring-1 focus:ring-ring',
-                    linkActive: '!border-primary-600 !bg-primary-600 !text-on-primary hover:!bg-primary-700',
+                    linkActive: 'border-primary-600! bg-primary-600! text-on-primary! hover:bg-primary-700!',
                     // The component composes `link + ellipsis` onto
                     // PaginationEllipsis so it inherits the box styling
                     // (size, border, bg) from the link slot. These overrides
@@ -288,12 +429,16 @@ export default function tailwindTheme(): Theme {
                     remove: 'inline-flex items-center justify-center rounded-full bg-transparent text-current hover:bg-black/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-on-primary',
                 },
                 // Size axis mirrors @vuecs/elements badge so a `<VCTag size="lg">`
-                // and `<VCBadge size="lg">` read at the same scale.
+                // and `<VCBadge size="lg">` read at the same scale. The `!`
+                // suffix is needed because the structural `.vc-tag` rule
+                // (`@vuecs/elements/assets/tag.css`) sits unlayered and beats
+                // utilities in `@layer utilities` — the suffix promotes each
+                // utility above the structural padding/font-size defaults.
                 variants: {
                     size: {
-                        sm: { root: 'px-1.5 py-px text-[0.625rem] gap-0.5', remove: 'h-3 w-3' },
-                        md: { root: 'px-2 py-0.5 text-xs', remove: 'h-4 w-4' },
-                        lg: { root: 'px-2.5 py-1 text-sm', remove: 'h-5 w-5' },
+                        sm: { root: 'px-1.5! py-px! text-[0.625rem]! gap-0.5!', remove: 'h-3! w-3!' },
+                        md: { root: 'px-2! py-0.5! text-xs!', remove: 'h-4! w-4!' },
+                        lg: { root: 'px-2.5! py-1! text-sm!', remove: 'h-5! w-5!' },
                     },
                 },
                 defaultVariants: { size: 'md' },
@@ -303,6 +448,18 @@ export default function tailwindTheme(): Theme {
                     root: 'flex flex-wrap items-center gap-1.5',
                     item: '',
                 },
+                // Gap scales with the chip size so the row reads at a
+                // consistent visual rhythm. The Tags component forwards its
+                // `size` prop to each <VCTag> child so the chips themselves
+                // also resize.
+                variants: {
+                    size: {
+                        sm: { root: 'gap-1' },
+                        md: { root: '' },
+                        lg: { root: 'gap-2' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             avatar: {
                 classes: {
@@ -310,14 +467,19 @@ export default function tailwindTheme(): Theme {
                     image: 'h-full w-full object-cover',
                     fallback: 'inline-flex h-full w-full items-center justify-center font-medium leading-none',
                 },
-                // Mirrors @vuecs/elements badge size axis so a
-                // `<VCAvatar size="lg">` reads at the same scale as a
-                // `<VCBadge size="lg">`.
+                // Sizing references the structural `vc-avatar-{sm,md,lg}` helpers
+                // (defined in @vuecs/elements/assets/avatar.css) — Tailwind
+                // utility-class sizing like `h-8 w-8` lives in `@layer utilities`
+                // which loses to the unlayered structural `.vc-avatar` rule.
+                // `md` is the no-op default — the structural `.vc-avatar` rule
+                // already sets the medium size. `vc-avatar-{sm,lg}` helpers
+                // override at the structural level (utility classes lose to
+                // unlayered structural; see form-checkbox.css rationale).
                 variants: {
                     size: {
-                        sm: { root: 'h-8 w-8', fallback: 'text-xs' },
-                        md: { root: 'h-10 w-10', fallback: 'text-sm' },
-                        lg: { root: 'h-14 w-14', fallback: 'text-base' },
+                        sm: { root: 'vc-avatar-sm', fallback: 'text-xs!' },
+                        md: { fallback: 'text-sm!' },
+                        lg: { root: 'vc-avatar-lg', fallback: 'text-base!' },
                     },
                 },
                 defaultVariants: { size: 'md' },
@@ -325,11 +487,14 @@ export default function tailwindTheme(): Theme {
             aspectRatio: { classes: { root: 'block w-full' } },
             badge: {
                 classes: { root: 'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium leading-tight' },
+                // Size variants use the `!` suffix to override the unlayered
+                // structural `.vc-badge` padding/font-size defaults — see
+                // tag.size above for rationale.
                 variants: {
                     size: {
-                        sm: { root: 'px-1.5 py-px text-[0.625rem]' },
-                        md: { root: 'px-2 py-0.5 text-xs' },
-                        lg: { root: 'px-2.5 py-1 text-sm' },
+                        sm: { root: 'px-1.5! py-px! text-[0.625rem]!' },
+                        md: { root: 'px-2! py-0.5! text-xs!' },
+                        lg: { root: 'px-2.5! py-1! text-sm!' },
                     },
                 },
                 // Color × variant matrix for the `solid` / `soft` / `outline`
@@ -382,6 +547,17 @@ export default function tailwindTheme(): Theme {
                     closeIcon: 'absolute right-3 top-3 inline-flex h-7 w-7 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
                     back: 'inline-flex h-7 w-7 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
                 },
+                // Modal size axis = max-width tier. md (lg) is the default;
+                // sm fits compact confirms, lg fits forms, xl fits dashboards.
+                variants: {
+                    size: {
+                        sm: { content: 'max-w-sm p-4 gap-3' },
+                        md: { content: '' },
+                        lg: { content: 'max-w-2xl' },
+                        xl: { content: 'max-w-4xl' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             popover: {
                 classes: {
@@ -393,6 +569,14 @@ export default function tailwindTheme(): Theme {
                     close: 'focus:outline-none focus:ring-2 focus:ring-ring',
                     closeIcon: 'absolute right-2 top-2 inline-flex h-6 w-6 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
                 },
+                variants: {
+                    size: {
+                        sm: { content: 'w-56 p-3 text-xs' },
+                        md: { content: '' },
+                        lg: { content: 'w-96 p-5 text-base' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             hoverCard: {
                 classes: {
@@ -400,22 +584,59 @@ export default function tailwindTheme(): Theme {
                     content: 'z-50 w-64 rounded-md border border-border bg-bg p-4 text-sm text-fg shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
                     arrow: 'fill-bg',
                 },
+                variants: {
+                    size: {
+                        sm: { content: 'w-48 p-3 text-xs' },
+                        md: { content: '' },
+                        lg: { content: 'w-80 p-5 text-base' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             stepper: {
                 classes: {
                     root: 'flex items-center gap-2 data-[orientation=vertical]:flex-col data-[orientation=vertical]:items-stretch',
-                    item: 'flex flex-1 items-center gap-2 data-[orientation=vertical]:flex-row',
+                    // `group` scopes the indicator's `group-data-[state=active]:`
+                    // / `group-data-[state=completed]:` variants. Without it,
+                    // every step renders identical (the variant prefix has
+                    // nothing to anchor to and never matches).
+                    item: 'group flex flex-1 items-center gap-2 data-[orientation=vertical]:flex-row',
                     // The trigger is a circle that swaps colors based on the
                     // step's `data-state` (active / completed / inactive). It
                     // also receives `data-disabled` from Reka when the linear
                     // option blocks navigation; muted styling reads as
                     // "currently unreachable".
                     trigger: 'inline-flex shrink-0 items-center justify-center rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-60',
-                    indicator: 'inline-flex h-8 w-8 items-center justify-center rounded-full border border-border bg-bg text-sm font-semibold text-fg-muted group-data-[state=active]:border-primary-600 group-data-[state=active]:bg-primary-600 group-data-[state=active]:text-on-primary group-data-[state=completed]:border-success-600 group-data-[state=completed]:bg-success-600 group-data-[state=completed]:text-on-success',
+                    // Active + completed both light up primary so the
+                    // "where you've been" trail reads as one continuous
+                    // progression. Completed-as-success made the row
+                    // visually noisy and broke the linear-progress metaphor.
+                    indicator: 'inline-flex h-8 w-8 items-center justify-center rounded-full border border-border bg-bg text-sm font-semibold text-fg-muted group-data-[state=active]:border-primary-600 group-data-[state=active]:bg-primary-600 group-data-[state=active]:text-on-primary group-data-[state=completed]:border-primary-600 group-data-[state=completed]:bg-primary-600 group-data-[state=completed]:text-on-primary',
                     title: 'text-sm font-medium text-fg',
                     description: 'text-xs text-fg-muted',
-                    separator: 'h-px flex-1 shrink bg-border data-[state=completed]:bg-success-600 data-[orientation=vertical]:h-8 data-[orientation=vertical]:w-px',
+                    separator: 'h-px flex-1 shrink bg-border data-[state=completed]:bg-primary-600 data-[orientation=vertical]:h-8 data-[orientation=vertical]:w-px',
                 },
+                // Indicator sizing references the structural
+                // `vc-stepper-indicator-{sm,lg}` helpers (defined in
+                // @vuecs/navigation/assets/index.css). Title / description
+                // font-sizes use the `!` suffix to override base structural
+                // text-size defaults set on neighboring elements.
+                variants: {
+                    size: {
+                        sm: {
+                            indicator: 'vc-stepper-indicator-sm',
+                            title: 'text-xs!',
+                            description: 'text-[0.625rem]!',
+                        },
+                        md: { indicator: '' },
+                        lg: {
+                            indicator: 'vc-stepper-indicator-lg',
+                            title: 'text-base!',
+                            description: 'text-sm!',
+                        },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             tooltip: {
                 classes: {
@@ -423,6 +644,14 @@ export default function tailwindTheme(): Theme {
                     content: 'z-50 overflow-hidden rounded-md bg-neutral-900 px-3 py-1.5 text-xs text-on-neutral shadow-md data-[state=delayed-open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=delayed-open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=delayed-open]:zoom-in-95 dark:bg-neutral-50 dark:text-neutral-900',
                     arrow: 'fill-neutral-900 dark:fill-neutral-50',
                 },
+                variants: {
+                    size: {
+                        sm: { content: 'px-2 py-1 text-[0.625rem]' },
+                        md: { content: '' },
+                        lg: { content: 'px-4 py-2 text-sm' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             dropdownMenu: {
                 classes: {
@@ -440,6 +669,24 @@ export default function tailwindTheme(): Theme {
                     subContent: 'z-50 min-w-[8rem] overflow-hidden rounded-md border border-border bg-bg p-1 text-sm text-fg shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
                     arrow: 'fill-bg',
                 },
+                variants: {
+                    size: {
+                        sm: {
+                            content: 'min-w-[6rem] text-xs', 
+                            item: 'px-1.5 py-1', 
+                            subTrigger: 'px-1.5 py-1', 
+                            subContent: 'min-w-[6rem] text-xs', 
+                        },
+                        md: { content: '' },
+                        lg: {
+                            content: 'min-w-[12rem] text-base', 
+                            item: 'px-3 py-2', 
+                            subTrigger: 'px-3 py-2', 
+                            subContent: 'min-w-[12rem] text-base', 
+                        },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             contextMenu: {
                 classes: {
@@ -456,6 +703,24 @@ export default function tailwindTheme(): Theme {
                     subTrigger: 'relative flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 outline-none data-[highlighted]:bg-bg-muted data-[state=open]:bg-bg-muted data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
                     subContent: 'z-50 min-w-[8rem] overflow-hidden rounded-md border border-border bg-bg p-1 text-sm text-fg shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
                 },
+                variants: {
+                    size: {
+                        sm: {
+                            content: 'min-w-[6rem] text-xs', 
+                            item: 'px-1.5 py-1', 
+                            subTrigger: 'px-1.5 py-1', 
+                            subContent: 'min-w-[6rem] text-xs', 
+                        },
+                        md: { content: '' },
+                        lg: {
+                            content: 'min-w-[12rem] text-base', 
+                            item: 'px-3 py-2', 
+                            subTrigger: 'px-3 py-2', 
+                            subContent: 'min-w-[12rem] text-base', 
+                        },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
         },
     };
