@@ -28,11 +28,19 @@ export default defineComponent({
         const theme = useComponentTheme('stepper', props, stepperThemeDefaults);
         return () => h(
             StepperTrigger,
-            mergeProps(attrs, {
-                as: props.as,
-                asChild: props.asChild,
-                class: theme.value.trigger || undefined,
-            }),
+            mergeProps(
+                // Default to type="button" only when rendering a real
+                // <button>; otherwise it'd submit any wrapping <form>.
+                // Consumer's `attrs` still wins because mergeProps gives
+                // later objects precedence on `type`.
+                props.as === 'button' ? { type: 'button' } : {},
+                attrs,
+                {
+                    as: props.as,
+                    asChild: props.asChild,
+                    class: theme.value.trigger || undefined,
+                },
+            ),
             { default: () => slots.default?.() },
         );
     },

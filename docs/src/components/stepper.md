@@ -70,7 +70,7 @@ const steps = [
 | Component | Wraps | Notes |
 |---|---|---|
 | `VCStepper` | `StepperRoot` | Holds active-step state. v-models `modelValue` (1-based step number). `linear` blocks navigation past the next incomplete step. |
-| `VCStepperItem` | `StepperItem` | Per-step wrapper. `step` (1-based) is required. Carries `data-state="active|completed|inactive"`. |
+| `VCStepperItem` | `StepperItem` | Per-step wrapper. `step` (1-based) is required. Carries `data-state="active\|completed\|inactive"`. |
 | `VCStepperTrigger` | `StepperTrigger` | Clickable trigger inside a step. Disabled when the step is unreachable in linear mode. |
 | `VCStepperIndicator` | `StepperIndicator` | Circular indicator (number / check / icon). |
 | `VCStepperTitle` | `StepperTitle` | Step title. |
@@ -99,7 +99,7 @@ const steps = [
 | `defaultValue` | `number` | `1` | Initial active step for uncontrolled usage. |
 | `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout direction. |
 | `dir` | `'ltr' \| 'rtl'` | from `ConfigManager` | Reading direction. |
-| `linear` | `boolean` | `false` | Block navigation past the next incomplete step. |
+| `linear` | `boolean` | `true` | Block navigation past the next incomplete step. |
 | `themeClass` | `Partial<StepperThemeClasses>` | `undefined` | Per-instance theme override. |
 | `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |
 
@@ -113,7 +113,7 @@ const steps = [
 |---|---|---|---|
 | `step` | `number` | required | 1-based step index. |
 | `disabled` | `boolean` | `false` | Block interaction with this step. |
-| `completed` | `boolean` | `undefined` | Force completion state (Reka derives this automatically when omitted). |
+| `completed` | `boolean` | `false` | Force completion state. Reka still derives completion from the active step; pass `true` to override. |
 
 | Slot props | Description |
 |---|---|

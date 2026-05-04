@@ -22,7 +22,7 @@ import { VCAspectRatio } from '@vuecs/elements';
     </VCAspectRatio>
 
     <VCAspectRatio :ratio="1">
-        <iframe src="https://example.com" />
+        <img src="/avatar.jpg" alt="Square crop" />
     </VCAspectRatio>
 </template>
 ```

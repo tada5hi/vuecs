@@ -22,7 +22,7 @@ vuecs ships its components across separate packages — install only what you us
 | [Avatar](/components/avatar) | Image with graceful fallback (initials, icon, slot) — Reka primitive |
 | [Badge](/components/badge) | Status pill — `solid` / `soft` / `outline` × semantic color matrix |
 | [Separator](/components/separator) | Horizontal / vertical divider with proper ARIA (Reka primitive) |
-| [Tag](/components/tag) | Removable, value-bound chip + `<VCTagList>` helper |
+| [Tag](/components/tag) | Removable, value-bound chip + `<VCTags>` list helper |
 | [VisuallyHidden](/components/visually-hidden) | Screen-reader-only content (Reka primitive) |
 
 ## @vuecs/forms

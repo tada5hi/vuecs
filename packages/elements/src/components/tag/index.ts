@@ -1,6 +1,11 @@
 export { default as VCTag } from './Tag.vue';
-export { default as VCTagList } from './TagList.vue';
-export type { TagProps, TagSlotProps } from './Tag.vue';
-export type { TagListProps, TagListItem, TagListSlotProps } from './TagList.vue';
+export { default as VCTags } from './Tags.vue';
+export type { 
+    TagProps, 
+    TagSlotProps, 
+    TagRemoveSlotProps, 
+    TagDefaultSlotProps, 
+} from './Tag.vue';
+export type { TagsProps, TagsItem, TagsSlotProps } from './Tags.vue';
 export * from './theme';
 export * from './types';

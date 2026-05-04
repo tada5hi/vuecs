@@ -8,7 +8,7 @@ import {
 } from 'vitest';
 import { defineComponent, h } from 'vue';
 import { mount } from '@vue/test-utils';
-import vuecsElements, { VCTag, VCTagList } from '../../src';
+import vuecsElements, { VCTag, VCTags } from '../../src';
 
 describe('<VCTag>', () => {
     afterEach(() => { document.body.innerHTML = ''; });
@@ -52,14 +52,14 @@ describe('<VCTag>', () => {
     });
 });
 
-describe('<VCTagList>', () => {
+describe('<VCTags>', () => {
     afterEach(() => { document.body.innerHTML = ''; });
 
     it('coerces strings into TagItem objects and forwards remove with value + item', async () => {
         const onRemove = vi.fn();
         const wrapper = mount(defineComponent({
             setup() {
-                return () => h(VCTagList, {
+                return () => h(VCTags, {
                     items: ['alpha', 'beta'],
                     removable: true,
                     onRemove,
@@ -73,10 +73,28 @@ describe('<VCTagList>', () => {
         expect(onRemove).toHaveBeenCalledWith('beta', expect.objectContaining({ value: 'beta' }));
     });
 
+    it('coerces numeric items and emits remove with the numeric value', async () => {
+        const onRemove = vi.fn();
+        const wrapper = mount(defineComponent({
+            setup() {
+                return () => h(VCTags, {
+                    items: [1, 2],
+                    removable: true,
+                    onRemove,
+                });
+            },
+        }), { global: { plugins: [[vuecsElements, {}]] } });
+        const tags = wrapper.findAll('.vc-tag');
+        expect(tags).toHaveLength(2);
+        expect(tags[0].text()).toContain('1');
+        await wrapper.findAll('button.vc-tag-remove')[0].trigger('click');
+        expect(onRemove).toHaveBeenCalledWith(1, expect.objectContaining({ value: 1 }));
+    });
+
     it('respects per-item disabled (no remove button on disabled chips)', () => {
         const wrapper = mount(defineComponent({
             setup() {
-                return () => h(VCTagList, {
+                return () => h(VCTags, {
                     items: [
                         { value: 'a', label: 'A' },
                         {

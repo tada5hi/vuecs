@@ -13,7 +13,9 @@ import {
         <VCHoverCard :open-delay="300">
             <VCHoverCardTrigger
                 as="a"
-                href="#"
+                href="https://github.com/octocat"
+                target="_blank"
+                rel="noopener"
                 style="text-decoration: underline; color: var(--vc-color-primary-700);"
             >
                 @octocat

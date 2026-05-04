@@ -943,12 +943,12 @@ LOC), wraps zero or one Reka primitive, ships its own theme key, and
 has no relationships with other vuecs packages beyond `@vuecs/core` for
 the theme system.
 
-```
+```text
 @vuecs/elements/
   src/
     components/
       separator/        <- VCSeparator (Reka Separator) — horizontal/vertical, `decorative`
-      tag/              <- VCTag (pure CSS) + VCTagList (renders chips per items array)
+      tag/              <- VCTag (pure CSS) + VCTags (renders chips per items array)
       avatar/           <- VCAvatar (Reka AvatarRoot+Image+Fallback) — `src` + #fallback slot
       aspect-ratio/     <- VCAspectRatio (Reka AspectRatio) — `ratio` prop
       visually-hidden/  <- VCVisuallyHidden (Reka VisuallyHidden) — a11y label slot
@@ -975,7 +975,7 @@ provides keyboard handling + per-chip focus ring). Sharing visual style
 between the two happens at the *theme* level (`formTags.item` and
 `tag.root` in each theme entry), not via cross-package imports.
 
-`TagItem` (the shape `<VCTagList :items>` accepts) is structurally
+`TagItem` (the shape `<VCTags :items>` accepts) is structurally
 compatible with `@vuecs/forms`' `FormOption` — same `value` / `label` /
 `icon` / `disabled` keys — so the same array can drive a select and a
 chip summary. The type is duplicated locally rather than imported to
@@ -995,7 +995,7 @@ is a navigation/progress pattern (wizard, checkout flow, onboarding) —
 the pattern fit, not the manager. The Stepper compound does NOT use
 `NavigationManager`; it owns its own state via Reka's `StepperRoot`.
 
-```
+```text
 @vuecs/navigation/src/components/stepper/
   Stepper.vue              <- StepperRoot (v-model:modelValue, orientation, linear)
   StepperItem.vue          <- StepperItem (step prop required; data-state)

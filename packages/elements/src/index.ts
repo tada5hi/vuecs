@@ -15,7 +15,7 @@ import {
     VCBadge,
     VCSeparator,
     VCTag,
-    VCTagList,
+    VCTags,
     VCVisuallyHidden,
 } from './components';
 
@@ -30,7 +30,7 @@ export function install(app: App, options: Options = {}): void {
     Object.entries({
         VCSeparator,
         VCTag,
-        VCTagList,
+        VCTags,
         VCAvatar,
         VCAspectRatio,
         VCVisuallyHidden,

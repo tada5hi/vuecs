@@ -1,5 +1,5 @@
 import type { ComponentThemeDefinition } from '@vuecs/core';
-import type { TagListThemeClasses, TagThemeClasses } from './types';
+import type { TagThemeClasses, TagsThemeClasses } from './types';
 
 export const tagThemeDefaults: ComponentThemeDefinition<TagThemeClasses> = {
     classes: {
@@ -9,9 +9,9 @@ export const tagThemeDefaults: ComponentThemeDefinition<TagThemeClasses> = {
     },
 };
 
-export const tagListThemeDefaults: ComponentThemeDefinition<TagListThemeClasses> = {
+export const tagsThemeDefaults: ComponentThemeDefinition<TagsThemeClasses> = {
     classes: {
-        root: 'vc-tag-list',
-        item: 'vc-tag-list-item',
+        root: 'vc-tags',
+        item: 'vc-tags-item',
     },
 };

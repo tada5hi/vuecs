@@ -1,7 +1,7 @@
 /*
- * Structural defaults for VCTag and VCTagList. Both ship a baseline
+ * Structural defaults for VCTag and VCTags. Both ship a baseline
  * pill look so consumers see something usable without a theme — themes
- * layer on top via the `tag` / `tagList` keys.
+ * layer on top via the `tag` / `tags` keys.
  */
 .vc-tag {
     display: inline-flex;
@@ -41,7 +41,7 @@
     background-color: rgba(0, 0, 0, 0.15);
 }
 
-.vc-tag-list {
+.vc-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.375rem;

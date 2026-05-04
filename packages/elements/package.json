@@ -2,7 +2,7 @@
     "name": "@vuecs/elements",
     "version": "0.0.0",
     "type": "module",
-    "description": "Atomic, presentation-only UI elements for vuecs (Separator, Tag, TagList, Avatar, AspectRatio, VisuallyHidden, Badge).",
+    "description": "Atomic, presentation-only UI elements for vuecs (Separator, Tag, Tags, Avatar, AspectRatio, VisuallyHidden, Badge).",
     "exports": {
         "./package.json": "./package.json",
         ".": {

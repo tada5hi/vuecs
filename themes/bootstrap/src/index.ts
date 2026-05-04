@@ -235,8 +235,16 @@ export default function bootstrapTheme(): Theme {
                     icon: 'd-inline-flex align-items-center',
                     remove: 'btn p-0 d-inline-flex align-items-center justify-content-center bg-transparent border-0 text-white lh-1',
                 },
+                variants: {
+                    size: {
+                        sm: { root: 'fs-7 px-2 py-1' },
+                        md: { root: '' },
+                        lg: { root: 'fs-6 px-3 py-2' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
-            tagList: {
+            tags: {
                 classes: {
                     root: 'd-flex flex-wrap align-items-center gap-2',
                     item: '',

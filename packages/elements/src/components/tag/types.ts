@@ -1,5 +1,7 @@
 import type { ThemeElementDefinition } from '@vuecs/core';
 
+export type TagSize = 'sm' | 'md' | 'lg';
+
 export type TagThemeClasses = {
     /** The chip's outer element. */
     root: string;
@@ -9,7 +11,7 @@ export type TagThemeClasses = {
     remove: string;
 };
 
-export type TagListThemeClasses = {
+export type TagsThemeClasses = {
     /** The flex container that wraps every chip. */
     root: string;
     /** Per-chip wrapper (`<VCTag>`'s root composes onto this). */
@@ -19,12 +21,12 @@ export type TagListThemeClasses = {
 declare module '@vuecs/core' {
     interface ThemeElements {
         tag?: ThemeElementDefinition<TagThemeClasses>;
-        tagList?: ThemeElementDefinition<TagListThemeClasses>;
+        tags?: ThemeElementDefinition<TagsThemeClasses>;
     }
 }
 
 /**
- * Item shape accepted by `<VCTagList>`. Structurally compatible with
+ * Item shape accepted by `<VCTags>`. Structurally compatible with
  * `@vuecs/forms`' `FormOption` so consumers can hand the same array to
  * a select and a chip summary, but defined locally to keep
  * `@vuecs/elements` free of cross-package deps.
@@ -36,6 +38,8 @@ export type TagItem = {
     label?: string;
     /** Optional Iconify-style icon name forwarded to `<VCTag :icon>`. */
     icon?: string;
+    /** Per-chip size override; falls back to the list-level `size`. */
+    size?: TagSize;
     /** When `true`, the chip is rendered without a remove button (overrides list-level `removable`). */
     disabled?: boolean;
 };

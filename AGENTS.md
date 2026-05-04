@@ -29,7 +29,7 @@ npm run lint:fix       # Auto-fix lint issues
 | `@vuecs/core` | Theme system, global behavioral defaults, utilities, component infrastructure | 2.0.0 |
 | `@vuecs/countdown` | Countdown/timer component | 1.0.1 |
 | `@vuecs/design` | CSS design tokens (color scales, semantic aliases) + motion primitives (vanilla-CSS port of `tw-animate-css`) + runtime palette switcher + `usePalette` / `useColorMode` Vue composables | 0.0.0 |
-| `@vuecs/elements` | Atomic, presentation-only UI elements — `VCSeparator`, `VCTag` / `VCTagList`, `VCAvatar`, `VCAspectRatio`, `VCVisuallyHidden`, `VCBadge`. Pure-CSS or thin Reka wrappers; each ≤150 LOC, owns its own theme key. | 0.0.0 |
+| `@vuecs/elements` | Atomic, presentation-only UI elements — `VCSeparator`, `VCTag` / `VCTags`, `VCAvatar`, `VCAspectRatio`, `VCVisuallyHidden`, `VCBadge`. Pure-CSS or thin Reka wrappers; each ≤150 LOC, owns its own theme key. | 0.0.0 |
 | `@vuecs/forms` | Form components on Reka UI primitives — `VCFormCheckbox` / `VCFormCheckboxGroup`, `VCFormSwitch`, `VCFormRadio` / `VCFormRadioGroup`, `VCFormPin`, `VCFormSlider` (single+range), `VCFormNumber`, `VCFormTags`, `VCFormSelect` / `VCFormSelectSearch` (FormOption shape), `VCFormInput` / `VCFormTextarea` (native), plus the experimental `useSubmitButton()` helper for `@vuecs/button`. Renamed from `@vuecs/form-controls` in 3.0 (clean break — old package removed). | 3.0.0 |
 | `@vuecs/gravatar` | Gravatar avatar component — composes `<VCAvatar>` from `@vuecs/elements` for fallback support (DOM shape changed; major bump on next release-please run) | 1.0.2 |
 | `@vuecs/icon` | `<VCIcon>` component — thin Iconify wrapper for vuecs's icon-string-prop slots and consumer slot content | 0.0.0 |
