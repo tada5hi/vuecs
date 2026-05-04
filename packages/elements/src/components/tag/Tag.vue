@@ -2,9 +2,13 @@
 import { defineComponent, h, mergeProps } from 'vue';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
+import type {
+    ThemeClassesOverride,
+    UseComponentThemeProps,
+    VariantValues,
+} from '@vuecs/core';
 import { tagThemeDefaults } from './theme';
-import type { TagThemeClasses } from './types';
+import type { TagSize, TagThemeClasses } from './types';
 
 export type TagSlotProps = {
     /** Resolved theme class for the matching slot. */
@@ -12,7 +16,7 @@ export type TagSlotProps = {
 };
 
 const tagProps = {
-    /** Bound value — emitted on remove, also used by `<VCTagList>` as the chip key. */
+    /** Bound value — emitted on remove, also used by `<VCTags>` as the chip key. */
     value: { type: [String, Number] as PropType<string | number>, default: undefined },
     /** Display label. Default slot wins if both are passed. */
     label: { type: String, default: undefined },
@@ -20,6 +24,8 @@ const tagProps = {
     icon: { type: String, default: undefined },
     /** When `true`, renders the trailing remove button. */
     removable: { type: Boolean, default: false },
+    /** Size variant key — resolved by the active theme. */
+    size: { type: String as PropType<TagSize>, default: undefined },
     /** Theme-class overrides for this component instance. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<TagThemeClasses>>, default: undefined },
     /** Theme-variant values for this component instance. */
@@ -39,11 +45,22 @@ export default defineComponent({
         remove: TagSlotProps;
     }>,
     setup(props, {
-        attrs, 
-        slots, 
-        emit, 
+        attrs,
+        slots,
+        emit,
     }) {
-        const theme = useComponentTheme('tag', props, tagThemeDefaults);
+        const themeProps: UseComponentThemeProps<TagThemeClasses> = {
+            get themeClass() {
+                return props.themeClass;
+            },
+            get themeVariant() {
+                return {
+                    ...(props.themeVariant ?? {}),
+                    ...(props.size !== undefined ? { size: props.size } : {}),
+                };
+            },
+        };
+        const theme = useComponentTheme('tag', themeProps, tagThemeDefaults);
         return () => {
             const resolved = theme.value;
             const children = [];

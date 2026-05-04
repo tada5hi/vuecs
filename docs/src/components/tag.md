@@ -1,4 +1,4 @@
-# Tag & TagList
+# Tag & Tags
 
 A removable, value-bound chip and a list helper that renders one chip per item. Pure-CSS — no Reka primitive.
 
@@ -15,7 +15,7 @@ npm install @vuecs/elements
 
 ```vue [Vue]
 <script setup lang="ts">
-import { VCTag, VCTagList } from '@vuecs/elements';
+import { VCTag, VCTags } from '@vuecs/elements';
 import { ref } from 'vue';
 
 const tags = ref([
@@ -33,7 +33,7 @@ function remove(value: string | number | undefined) {
     <VCTag value="static" label="Static chip" />
     <VCTag value="removable" label="Removable" removable />
 
-    <VCTagList :items="tags" removable @remove="remove" />
+    <VCTags :items="tags" removable @remove="remove" />
 </template>
 ```
 
@@ -56,13 +56,14 @@ function remove(value: string | number | undefined) {
 | `label` | `string` | `undefined` | Display text; default slot wins if both provided. |
 | `icon` | `string` | `undefined` | Iconify-style name forwarded to the leading `icon` slot. |
 | `removable` | `boolean` | `false` | Render the trailing remove button. |
+| `size` | `'sm' \| 'md' \| 'lg'` | theme default (`md`) | Size variant — mirrors `<VCBadge>` sizes for visual consistency. |
 | `themeClass` | `Partial<TagThemeClasses>` | `undefined` | Per-instance theme override. |
 
 | Emit | Payload | Description |
 |---|---|---|
 | `remove` | `value: string \| number \| undefined` | Fired when the remove button is clicked. |
 
-## `<VCTagList>`
+## `<VCTags>`
 
 Flex container that renders `<VCTag>` per entry. Items can be plain strings/numbers (coerced to `{ value, label: String(value) }`) or `TagItem` objects.
 
@@ -71,6 +72,8 @@ type TagItem = {
     value: string | number;
     label?: string;
     icon?: string;
+    /** Per-chip override; falls back to the list-level `size`. */
+    size?: 'sm' | 'md' | 'lg';
     /** Skips the remove button on this chip even when list-level `removable` is true. */
     disabled?: boolean;
 };
@@ -82,7 +85,8 @@ type TagItem = {
 |---|---|---|---|
 | `items` | `(TagItem \| string \| number)[]` | `[]` | Items to render. |
 | `removable` | `boolean` | `false` | Show remove buttons on every chip (per-item `disabled` opts out). |
-| `themeClass` | `Partial<TagListThemeClasses>` | `undefined` | Per-instance theme override. |
+| `size` | `'sm' \| 'md' \| 'lg'` | theme default (`md`) | Default size forwarded to every chip; per-item `size` overrides. |
+| `themeClass` | `Partial<TagsThemeClasses>` | `undefined` | Per-instance theme override. |
 
 | Emit | Payload | Description |
 |---|---|---|
@@ -95,5 +99,5 @@ type TagItem = {
 | `tag` | `root` | `vc-tag` |
 | `tag` | `icon` | `vc-tag-icon` |
 | `tag` | `remove` | `vc-tag-remove` |
-| `tagList` | `root` | `vc-tag-list` |
-| `tagList` | `item` | `vc-tag-list-item` |
+| `tags` | `root` | `vc-tags` |
+| `tags` | `item` | `vc-tags-item` |

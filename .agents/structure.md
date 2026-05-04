@@ -8,7 +8,7 @@ vuecs/
     core/             # @vuecs/core — theme system, defaults manager, utilities
     countdown/        # @vuecs/countdown
     design/           # @vuecs/design — CSS design tokens + motion primitives (animations.css) + runtime palette switcher
-    elements/         # @vuecs/elements — atomic, presentation-only UI elements (Separator, Tag/TagList, Avatar, AspectRatio, VisuallyHidden, Badge); thin Reka wrappers + pure-CSS chips (plan 013)
+    elements/         # @vuecs/elements — atomic, presentation-only UI elements (Separator, Tag/Tags, Avatar, AspectRatio, VisuallyHidden, Badge); thin Reka wrappers + pure-CSS chips (plan 013)
     forms/            # @vuecs/forms (renamed from @vuecs/form-controls in 3.0; checkbox/switch on Reka primitives)
     gravatar/         # @vuecs/gravatar — composes <VCAvatar> from @vuecs/elements (2.0.0 breaking change in plan 013)
     icon/             # @vuecs/icon — <VCIcon> component wrapping @iconify/vue

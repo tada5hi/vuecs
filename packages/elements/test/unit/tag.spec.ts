@@ -8,7 +8,7 @@ import {
 } from 'vitest';
 import { defineComponent, h } from 'vue';
 import { mount } from '@vue/test-utils';
-import vuecsElements, { VCTag, VCTagList } from '../../src';
+import vuecsElements, { VCTag, VCTags } from '../../src';
 
 describe('<VCTag>', () => {
     afterEach(() => { document.body.innerHTML = ''; });
@@ -52,14 +52,14 @@ describe('<VCTag>', () => {
     });
 });
 
-describe('<VCTagList>', () => {
+describe('<VCTags>', () => {
     afterEach(() => { document.body.innerHTML = ''; });
 
     it('coerces strings into TagItem objects and forwards remove with value + item', async () => {
         const onRemove = vi.fn();
         const wrapper = mount(defineComponent({
             setup() {
-                return () => h(VCTagList, {
+                return () => h(VCTags, {
                     items: ['alpha', 'beta'],
                     removable: true,
                     onRemove,
@@ -76,7 +76,7 @@ describe('<VCTagList>', () => {
     it('respects per-item disabled (no remove button on disabled chips)', () => {
         const wrapper = mount(defineComponent({
             setup() {
-                return () => h(VCTagList, {
+                return () => h(VCTags, {
                     items: [
                         { value: 'a', label: 'A' },
                         {

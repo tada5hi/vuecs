@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { VCTag, VCTagList } from '@vuecs/elements';
+import { VCTag, VCTags } from '@vuecs/elements';
 import { ref } from 'vue';
 
 const tags = ref([
@@ -26,7 +26,7 @@ function remove(value: string | number | undefined) {
                 removable
             />
         </div>
-        <VCTagList
+        <VCTags
             :items="tags"
             removable
             @remove="remove"

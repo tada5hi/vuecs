@@ -279,12 +279,22 @@ export default function tailwindTheme(): Theme {
             },
             tag: {
                 classes: {
-                    root: 'inline-flex items-center gap-1 rounded-full bg-primary-600 px-2 py-0.5 text-xs leading-tight text-on-primary',
+                    root: 'inline-flex items-center gap-1 rounded-full bg-primary-600 leading-tight text-on-primary',
                     icon: 'inline-flex shrink-0 items-center',
-                    remove: 'inline-flex h-4 w-4 items-center justify-center rounded-full bg-transparent text-current hover:bg-black/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-on-primary',
+                    remove: 'inline-flex items-center justify-center rounded-full bg-transparent text-current hover:bg-black/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-on-primary',
                 },
+                // Size axis mirrors @vuecs/elements badge so a `<VCTag size="lg">`
+                // and `<VCBadge size="lg">` read at the same scale.
+                variants: {
+                    size: {
+                        sm: { root: 'px-1.5 py-px text-[0.625rem] gap-0.5', remove: 'h-3 w-3' },
+                        md: { root: 'px-2 py-0.5 text-xs', remove: 'h-4 w-4' },
+                        lg: { root: 'px-2.5 py-1 text-sm', remove: 'h-5 w-5' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
-            tagList: {
+            tags: {
                 classes: {
                     root: 'flex flex-wrap items-center gap-1.5',
                     item: '',

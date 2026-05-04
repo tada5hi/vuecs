@@ -4,35 +4,37 @@ import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import VCTag from './Tag.vue';
-import { tagListThemeDefaults } from './theme';
-import type { TagItem, TagListThemeClasses } from './types';
+import { tagsThemeDefaults } from './theme';
+import type { TagItem, TagSize, TagsThemeClasses } from './types';
 
-export type TagListItem = TagItem | string | number;
+export type TagsItem = TagItem | string | number;
 
-export type TagListSlotProps = {
+export type TagsSlotProps = {
     item: TagItem;
     index: number;
     /** Resolved per-item wrapper class. */
     class: string;
 };
 
-const tagListProps = {
+const tagsProps = {
     /**
      * Items to render. Strings/numbers are coerced to `{ value, label: String(value) }`.
      * Objects follow the `TagItem` shape (structurally compatible with `FormOption`).
      */
-    items: { type: Array as PropType<TagListItem[]>, default: () => [] },
+    items: { type: Array as PropType<TagsItem[]>, default: () => [] },
     /** When `true`, every chip renders its remove button (per-item `disabled` opts out). */
     removable: { type: Boolean, default: false },
+    /** Default size forwarded to every chip; per-item `size` overrides. */
+    size: { type: String as PropType<TagSize>, default: undefined },
     /** Theme-class overrides for this component instance. */
-    themeClass: { type: Object as PropType<ThemeClassesOverride<TagListThemeClasses>>, default: undefined },
+    themeClass: { type: Object as PropType<ThemeClassesOverride<TagsThemeClasses>>, default: undefined },
     /** Theme-variant values for this component instance. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 
-export type TagListProps = ExtractPublicPropTypes<typeof tagListProps>;
+export type TagsProps = ExtractPublicPropTypes<typeof tagsProps>;
 
-function normalize(item: TagListItem): TagItem {
+function normalize(item: TagsItem): TagItem {
     if (typeof item === 'string' || typeof item === 'number') {
         return { value: item, label: String(item) };
     }
@@ -40,28 +42,28 @@ function normalize(item: TagListItem): TagItem {
 }
 
 export default defineComponent({
-    name: 'VCTagList',
+    name: 'VCTags',
     inheritAttrs: false,
-    props: tagListProps,
+    props: tagsProps,
     emits: ['remove'],
     slots: Object as SlotsType<{
-        item: TagListSlotProps;
+        item: TagsSlotProps;
     }>,
     setup(props, {
-        attrs, 
-        slots, 
-        emit, 
+        attrs,
+        slots,
+        emit,
     }) {
-        const theme = useComponentTheme('tagList', props, tagListThemeDefaults);
+        const theme = useComponentTheme('tags', props, tagsThemeDefaults);
         return () => {
             const resolved = theme.value;
             const children = props.items.map((raw, index) => {
                 const item = normalize(raw);
                 if (slots.item) {
                     return slots.item({
-                        item, 
-                        index, 
-                        class: resolved.item, 
+                        item,
+                        index,
+                        class: resolved.item,
                     });
                 }
                 return h(VCTag, {
@@ -69,6 +71,7 @@ export default defineComponent({
                     value: item.value,
                     label: item.label,
                     icon: item.icon,
+                    size: item.size ?? props.size,
                     removable: props.removable && !item.disabled,
                     class: resolved.item || undefined,
                     onRemove: (value: string | number | undefined) => emit('remove', value, item),
