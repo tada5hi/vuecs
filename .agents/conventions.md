@@ -132,6 +132,49 @@ After any code changes that affect architecture, APIs, or behavior:
 
 Do this as part of the same commit — documentation should never lag behind the code. The VitePress site is the user-facing reference; treating it as an afterthought breaks the "thin README → docs site" split that the package READMEs depend on.
 
+## Demo authoring (docs/demos/src/)
+
+VitePress pages embed iframe demos via two host components, picked by
+intent:
+
+- **`<Demo name="...">`** — passive showcase. Renders the iframe + the
+  static code block from the markdown's `<template #code>` slot. No
+  toolbar with controls; no `announceVariants` / `announceProps`
+  round-trip. Use for components with no meaningful interactive axis
+  (link, separator, countdown, gravatar, timeago, visually-hidden,
+  aspect-ratio, form-pin, form-slider, form-select-search,
+  modal-view-stack).
+- **`<Playground name="...">`** — interactive sandbox. Same iframe +
+  code block, plus a controls toolbar above the preview that the
+  iframe drives via `announceVariants` / `announceProps`. Use whenever
+  the demo announces a catalog.
+
+Both share the same `iframe-bridge.ts` runtime; they only differ in
+whether the parent renders the controls panel. Two announce APIs live
+in `iframe-bridge.ts`:
+
+- **`announceVariants(catalog, defaults)`** — convenience wrapper for
+  enum-only variant axes. Catalog is `{ <key>: readonly string[] }`,
+  defaults is `{ <key>: <value> }`. Updates flow into a flat
+  `variantState` ref that the demo passes as
+  `:theme-variant="variantState"`. Use this for size/density-only
+  demos (the bulk of the form / overlay / list / stepper family).
+
+- **`announceProps(catalog, defaults)`** — typed catalog supporting
+  `boolean`, `enum`, `number`, `string` per prop. Catalog values can
+  carry `section`, `min`/`max`/`step`, `options`, `placeholder`,
+  `label`. Dot-pathed keys (`themeVariant.size`) auto-build nested
+  objects on the iframe side, so a demo binds `v-bind="propState"` and
+  every announced prop becomes interactive. Use this when the demo has
+  multiple meaningful axes (e.g. `pagination` exposes `total` /
+  `limit` / `busy` / `hideDisabled` / `themeVariant.{variant,size}`).
+
+Both APIs are additive; pick whichever matches the demo's complexity.
+The parent `Playground.vue` toolbar renders the matching control per
+type: checkbox for boolean, `<select>` for enum, range+number for
+number, text input for string. Sections (`section: 'Variant'`) group
+related controls into a single labeled row.
+
 ## Adding a New Package
 
 1. Create `packages/<name>/` with `src/index.ts`, `package.json`, `tsdown.config.ts`, `LICENSE` (Apache 2.0)
@@ -151,6 +194,6 @@ Do this as part of the same commit — documentation should never lag behind the
 External project references live in .agents/references/. When looking up source code in a referenced project (e.g., tsoa), always update the corresponding reference file with:
 
 The source file path / function name in the external project
-The corresponding TRAPI file path / function name
+The corresponding vuecs file path / function name
 Any behavioral differences between the implementations
 This builds a cumulative mapping over time so future work can quickly find corresponding code without re-searching.

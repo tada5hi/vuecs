@@ -6,7 +6,7 @@ Floating panel anchored to a trigger. Built on [Reka UI](https://reka-ui.com/)'s
 npm install @vuecs/overlays
 ```
 
-<Demo name="popover" component="VCPopover">
+<Playground name="popover" component="VCPopover">
   <template #code>
 
 ::: code-group
@@ -50,7 +50,7 @@ import {
 :::
 
   </template>
-</Demo>
+</Playground>
 
 ## Compound API
 

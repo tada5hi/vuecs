@@ -8,7 +8,7 @@ Floating panel that opens on hover, with a built-in grace area for the cursor tr
 npm install @vuecs/overlays
 ```
 
-<Demo name="hover-card" component="VCHoverCard">
+<Playground name="hover-card" component="VCHoverCard">
   <template #code>
 
 ::: code-group
@@ -26,7 +26,7 @@ import {
 <template>
     <p>
         Built by
-        <VCHoverCard>
+        <VCHoverCard :open-delay="300">
             <VCHoverCardTrigger as="a" href="#">@octocat</VCHoverCardTrigger>
             <VCHoverCardContent :side-offset="8">
                 <p class="font-semibold">@octocat</p>
@@ -50,7 +50,7 @@ import {
 :::
 
   </template>
-</Demo>
+</Playground>
 
 ## Compound API
 

@@ -8,7 +8,7 @@ npm install @vuecs/forms
 
 ## Basic usage
 
-<Demo name="form-switch">
+<Playground name="form-switch">
 
   <template #code>
 
@@ -48,7 +48,7 @@ const dnd = ref(false);
 :::
 
   </template>
-</Demo>
+</Playground>
 
 ## Custom label markup
 

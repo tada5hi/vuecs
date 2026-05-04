@@ -6,6 +6,7 @@ import {
     VCPopoverContent,
     VCPopoverTrigger,
 } from '@vuecs/overlays';
+import { variantState } from './iframe-bridge';
 </script>
 
 <template>
@@ -23,6 +24,7 @@ import {
             <VCPopoverContent
                 :side="side"
                 :side-offset="8"
+                :theme-variant="variantState"
             >
                 <div class="flex flex-col gap-1">
                     <p class="text-sm font-semibold">

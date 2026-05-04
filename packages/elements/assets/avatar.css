@@ -1,54 +1,41 @@
 /*
  * Structural defaults for VCAvatar. Square 2.5rem circle with overflow
- * clipping so the image and fallback share the same shape. Themes can
- * resize / restyle via the `avatar.root` slot.
- *
- * Wrapped in `@layer components` so Tailwind v4 utility classes (which
- * land in `@layer utilities` — declared after `components` in Tailwind's
- * default order) win when a theme drives `bg-*` / `text-*` / `h-*` /
- * `w-*` per slot. Unlayered structural CSS would otherwise clobber
- * utility classes regardless of source order.
+ * clipping so the image and fallback share the same shape — color is
+ * theme territory (see badge.css for the broader rationale).
  */
-@layer components {
-    .vc-avatar {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        width: 2.5rem;
-        height: 2.5rem;
-        background-color: var(--vc-color-bg-muted, #f3f4f6);
-        color: var(--vc-color-fg-muted, #6b7280);
-        border-radius: 9999px;
-        user-select: none;
-        vertical-align: middle;
-    }
-
-    .vc-avatar-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .vc-avatar-fallback {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
-        font-size: 0.875rem;
-        font-weight: 500;
-        line-height: 1;
-    }
-
-    /*
-     * Size variant classes — referenced by the `avatar.size.{sm,md,lg}` theme
-     * variant entries. Themes that have utility-class equivalents (Tailwind:
-     * `h-8 w-8`, `h-10 w-10`, `h-14 w-14`) can stack those instead/alongside;
-     * these structural classes give a working baseline for ecosystems
-     * (Bootstrap, custom CSS) where no equivalent utility exists.
-     */
-    .vc-avatar-sm { width: 2rem; height: 2rem; }
-    .vc-avatar-md { width: 2.5rem; height: 2.5rem; }
-    .vc-avatar-lg { width: 3.5rem; height: 3.5rem; }
+.vc-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    user-select: none;
+    vertical-align: middle;
 }
+
+.vc-avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.vc-avatar-fallback {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1;
+}
+
+/*
+ * Size variant classes — referenced by the `avatar.size.{sm,md,lg}` theme
+ * variant entries.
+ */
+.vc-avatar-sm { width: 2rem; height: 2rem; }
+.vc-avatar-md { width: 2.5rem; height: 2.5rem; }
+.vc-avatar-lg { width: 3.5rem; height: 3.5rem; }

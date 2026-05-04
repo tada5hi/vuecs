@@ -10,7 +10,7 @@ npm install @vuecs/forms
 
 ## Basic usage
 
-<Demo name="form-tags">
+<Playground name="form-tags">
 
   <template #code>
 
@@ -25,7 +25,7 @@ const tags = ref<string[]>(['vue', 'reka', 'tailwind']);
 </script>
 
 <template>
-    <VCFormTags v-model="tags" placeholder="Add a tag…" />
+    <VCFormTags v-model="tags" placeholder="Add a tag…" add-on-paste />
 </template>
 ```
 
@@ -41,7 +41,7 @@ const tags = ref<string[]>(['vue', 'reka', 'tailwind']);
 :::
 
   </template>
-</Demo>
+</Playground>
 
 ## Props
 

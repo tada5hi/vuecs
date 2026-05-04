@@ -380,3 +380,51 @@
 .vc-list-footer:empty {
     display: none;
 }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * @vuecs/overlays Modal — Bootstrap's `.modal-sm` / `.modal-lg` /
+ * `.modal-xl` sizing relies on a `.modal-dialog` wrapper to read
+ * `--bs-modal-width` and apply `max-width`. Reka's DialogContent renders
+ * a single positioned element (no `.modal-dialog`), so applying the size
+ * class on `.modal-content` was previously a no-op. Re-implement the
+ * width contract here so the Bootstrap theme's size variants take
+ * effect on our compound shape. Defaults match Bootstrap 5 (sm=300,
+ * lg=800, xl=1140); md keeps the unsized default which centers via
+ * the theme's `position-fixed top-50 start-50 translate-middle`.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.vc-modal-content.modal-sm { max-width: 300px; width: calc(100% - 1rem); }
+.vc-modal-content.modal-lg { max-width: 800px; width: calc(100% - 1rem); }
+.vc-modal-content.modal-xl { max-width: 1140px; width: calc(100% - 1rem); }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * @vuecs/navigation Stepper — Bootstrap utility classes can't carry
+ * `[data-state=…]` attribute selectors, so the theme entry's `bg-light`
+ * / `border-secondary-subtle` / `text-muted` apply uniformly. Add CSS
+ * here to differentiate active + completed steps. Both states use the
+ * primary color so the trail of progress reads as one continuous run
+ * (matches the Tailwind theme).
+ *
+ * `!important` is required because Bootstrap's `.bg-*` / `.border-*` /
+ * `.text-*` utility classes ship with `!important` themselves — without
+ * matching that, the higher-specificity attribute selector still loses
+ * to the `!important` on the utility.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.vc-stepper-item[data-state="active"] .vc-stepper-indicator,
+.vc-stepper-item[data-state="completed"] .vc-stepper-indicator {
+    background-color: var(--vc-color-primary-600) !important;
+    border-color: var(--vc-color-primary-600) !important;
+    color: var(--vc-color-on-primary) !important;
+}
+
+.vc-stepper-item[data-state="active"] .vc-stepper-title,
+.vc-stepper-item[data-state="completed"] .vc-stepper-title {
+    color: var(--vc-color-fg) !important;
+}
+
+/* Bootstrap renders the separator via `border-top` (1px-tall element +
+   border-top edge), so colorize via `border-top-color` not `background`. */
+.vc-stepper-separator[data-state="completed"] {
+    border-top-color: var(--vc-color-primary-600) !important;
+}

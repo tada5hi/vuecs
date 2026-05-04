@@ -6,6 +6,7 @@ import {
     VCTooltipProvider,
     VCTooltipTrigger,
 } from '@vuecs/overlays';
+import { variantState } from './iframe-bridge';
 </script>
 
 <template>
@@ -24,6 +25,7 @@ import {
                 <VCTooltipContent
                     :side="side"
                     :side-offset="6"
+                    :theme-variant="variantState"
                 >
                     Tooltip on the {{ side }}
                     <VCTooltipArrow />

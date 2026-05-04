@@ -5,6 +5,7 @@ import {
     VCHoverCardContent,
     VCHoverCardTrigger,
 } from '@vuecs/overlays';
+import { variantState } from './iframe-bridge';
 </script>
 
 <template>
@@ -20,7 +21,10 @@ import {
             >
                 @octocat
             </VCHoverCardTrigger>
-            <VCHoverCardContent :side-offset="8">
+            <VCHoverCardContent
+                :side-offset="8"
+                :theme-variant="variantState"
+            >
                 <div style="display: flex; flex-direction: column; gap: 0.25rem;">
                     <p style="margin: 0; font-weight: 600;">
                         @octocat

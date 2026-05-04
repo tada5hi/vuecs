@@ -205,8 +205,14 @@ export default defineComponent({
         // return the same number of matches but different items, and the
         // length-only watcher would miss the content swap, leaving the
         // dropdown showing the previous query's results.
+        //
+        // Reset currentIndex to -1 (no item highlighted) instead of 0 — the
+        // visual "current" highlight should only appear after the user
+        // explicitly arrow-keys. The Enter handler still falls back to the
+        // first item when nothing is highlighted (see selected.length === 0
+        // branch), so keyboard-first selection still works.
         watch(items, () => {
-            currentIndex.value = 0;
+            currentIndex.value = -1;
             setItemsDisplayed();
         });
 
@@ -422,7 +428,7 @@ export default defineComponent({
                                 theme.item,
                                 {
                                     [theme.itemActive]: active,
-                                    [theme.itemCurrent]: index === currentIndex || (index === 0 && currentIndex === -1),
+                                    [theme.itemCurrent]: index === currentIndex,
                                 },
                             ]"
                             @mousedown="toggle(entry)"

@@ -6,7 +6,7 @@ Image with graceful fallback (initials, icon, or arbitrary slot). Built on [Reka
 npm install @vuecs/elements
 ```
 
-<Demo name="avatar">
+<Playground name="avatar">
   <template #code>
 
 ::: code-group
@@ -42,7 +42,7 @@ import { VCAvatar } from '@vuecs/elements';
 :::
 
   </template>
-</Demo>
+</Playground>
 
 ## Props
 

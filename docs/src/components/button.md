@@ -3,12 +3,14 @@
 General-purpose button with semantic `color`, `variant`, and `size` variants. The two themes that ship visual class mappings (`@vuecs/theme-tailwind`, `@vuecs/theme-bootstrap`) provide the full color × variant × size matrix; consumers switch looks by changing variant values, not by re-styling per instance.
 
 ```bash
-npm install @vuecs/button
+# `@vuecs/forms` is only needed for the `useSubmitButton()` helper shown
+# below; the button itself ships standalone in `@vuecs/button`.
+npm install @vuecs/button @vuecs/forms
 ```
 
 ## Basic usage
 
-<Demo name="button">
+<Playground name="button">
 
   <template #code>
 
@@ -17,23 +19,43 @@ npm install @vuecs/button
 ```vue [Vue]
 <script setup lang="ts">
 import { VCButton } from '@vuecs/button';
+import { useSubmitButton } from '@vuecs/forms';
+import { ref } from 'vue';
+
+const isEditing = ref(false);
+const submit = useSubmitButton({ isEditing: () => isEditing.value });
 </script>
 
 <template>
-    <!-- Solid (default variant) — color picks the visual treatment. -->
-    <VCButton color="primary" label="Save" />
-    <VCButton color="error" label="Delete" />
+    <!-- Color axis (solid is the default variant). -->
+    <VCButton color="primary" label="Primary" />
+    <VCButton color="success" label="Success" />
+    <VCButton color="warning" label="Warning" />
+    <VCButton color="error" label="Danger" />
+    <VCButton color="neutral" label="Neutral" />
 
-    <!-- Variants control the treatment (solid / soft / outline / ghost / link). -->
-    <VCButton variant="outline" color="primary" label="Cancel" />
-    <VCButton variant="ghost" color="neutral" label="Skip" />
-    <VCButton variant="link" color="primary" label="Read more" />
+    <!-- Variant axis (primary is the default color). -->
+    <VCButton variant="solid" label="Solid" />
+    <VCButton variant="soft" label="Soft" />
+    <VCButton variant="outline" label="Outline" />
+    <VCButton variant="ghost" label="Ghost" />
+    <VCButton variant="link" label="Link" />
 
-    <!-- Loading shows a structural busy state (cursor: wait + opacity pulse). -->
-    <VCButton :loading="true" color="primary" label="Saving…" />
+    <!-- Size + state axes. `loading` shows the structural busy state
+         (cursor: wait + opacity pulse); `disabled` is the inert sibling. -->
+    <VCButton size="sm" label="Small" />
+    <VCButton size="md" label="Medium" />
+    <VCButton size="lg" label="Large" />
+    <VCButton :loading="true" label="Loading…" />
+    <VCButton :disabled="true" label="Disabled" />
 
-    <!-- Icons are Iconify name strings, resolved through <VCIcon> — or pass <template #leading> / #trailing for full control. -->
-    <VCButton icon-left="lucide:plus" color="success" label="Create" />
+    <!-- useSubmitButton() returns a reactive bind-object — label / icon /
+         color swap when `isEditing` flips. The DefaultsManager hook in a
+         real bind site. -->
+    <button @click="isEditing = !isEditing">
+        Toggle isEditing ({{ isEditing ? 'on' : 'off' }})
+    </button>
+    <VCButton v-bind="submit" />
 </template>
 ```
 
@@ -54,7 +76,7 @@ import { VCButton } from '@vuecs/button';
 :::
 
   </template>
-</Demo>
+</Playground>
 
 ## Props
 

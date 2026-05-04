@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { VCFormCheckbox, VCFormCheckboxGroup } from '@vuecs/forms';
 import { ref } from 'vue';
+import { variantState } from './iframe-bridge';
 
 const accepted = ref(false);
 const indeterminateState = ref<boolean | 'indeterminate'>('indeterminate');
@@ -18,10 +19,12 @@ const selected = ref<string[]>(['a']);
         <VCFormCheckbox
             v-model="accepted"
             label-content="I accept the terms"
+            :theme-variant="variantState"
         />
         <VCFormCheckbox
             v-model="indeterminateState"
             label-content="Indeterminate (tri-state)"
+            :theme-variant="variantState"
         />
 
         <!--
@@ -33,14 +36,17 @@ const selected = ref<string[]>(['a']);
             <VCFormCheckbox
                 value="a"
                 label-content="Apples"
+                :theme-variant="variantState"
             />
             <VCFormCheckbox
                 value="b"
                 label-content="Bananas"
+                :theme-variant="variantState"
             />
             <VCFormCheckbox
                 value="c"
                 label-content="Cherries"
+                :theme-variant="variantState"
             />
         </VCFormCheckboxGroup>
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { VCFormTags } from '@vuecs/forms';
 import { ref } from 'vue';
+import { variantState } from './iframe-bridge';
 
 const tags = ref<string[]>(['vue', 'reka', 'tailwind']);
 </script>
@@ -11,6 +12,7 @@ const tags = ref<string[]>(['vue', 'reka', 'tailwind']);
             v-model="tags"
             placeholder="Add a tag…"
             add-on-paste
+            :theme-variant="variantState"
         />
         <p style="font-size: 0.875rem; color: var(--vc-color-fg-muted); margin: 0;">
             Bound: <code>[{{ tags.join(', ') }}]</code>

@@ -86,6 +86,23 @@ Variant resolution is implemented as two pure functions in `@vuecs/core`:
 
 Same pattern as the theme resolver — zero Vue imports, fully unit-testable.
 
+## Built-in variant axes
+
+Most vuecs components ship with at least one variant axis defined by
+the active theme package. The most common axes:
+
+| Axis | Values | Components |
+|---|---|---|
+| `size` | `sm` / `md` / `lg` (modal also `xl`) | Button, Badge, Tag, Avatar, Pagination, FormInput, FormTextarea, FormSelect, FormNumber, FormCheckbox, FormSwitch, FormRadio, FormTags, Modal, Popover, HoverCard, Tooltip, DropdownMenu, ContextMenu, Navigation, Stepper |
+| `density` | `compact` / `normal` / `spacious` | List, ListItem |
+| `variant` | varies — usually `solid` / `outline` / `soft` / `ghost` (+ `link` on Button) | Button, Badge, Pagination |
+| `color` | `primary` / `neutral` / `success` / `warning` / `error` / `info` | Button, Badge |
+
+You can flip these live in the docs site demos via the toolbar above
+each `<Playground>` block — open the [pagination
+demo](/components/pagination) for a richer example with boolean and
+number controls in addition to the variant axis.
+
 ## See also
 
 - [Theme System](/guide/theme-system) — how variants integrate into the four-layer resolution chain

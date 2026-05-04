@@ -30,7 +30,9 @@ import { VCGravatar } from '@vuecs/gravatar';
 <template>
     <!-- displaySize drives the rendered chip; size is the URL `?s=` parameter -->
     <!-- (match it to displaySize × 2 for retina-crisp rendering). -->
-    <VCGravatar email="user@example.com" display-size="md" :size="80" />
+    <VCGravatar email="alice@example.com" display-size="md" :size="80" alt="Alice's avatar" />
+    <VCGravatar email="bob@example.com" display-size="md" :size="80" alt="Bob's avatar" />
+    <VCGravatar email="charlie@example.com" display-size="md" :size="80" alt="Charlie's avatar" />
 </template>
 ```
 

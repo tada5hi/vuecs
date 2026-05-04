@@ -4,11 +4,11 @@ import {
     computed,
     onBeforeUnmount,
     onMounted,
-    reactive,
     ref,
     useTemplateRef,
     watch,
 } from 'vue';
+import { isObject } from '@vuecs/core';
 import { usePalette } from '@vuecs/design';
 import { useDemoTheme } from '../use-demo-theme';
 
@@ -21,14 +21,17 @@ interface Props {
      * `.vp-doc` chrome don't leak in. Files live under
      * `docs/demos/src/<name>.{html,ts,demo.vue}` (built by
      * `docs/demos/vite.config.ts` into `docs/src/public/demos/`).
+     *
+     * `<Demo>` is the passive showcase variant — preview + code, no
+     * controls. For interactive variant/prop toolbars use `<Playground>`,
+     * which speaks the `announceVariants` / `announceProps`
+     * postMessage protocol with the iframe.
      */
     name?: string;
     /**
-     * Component name to show in the live-config snippet (e.g. `VCPagination`).
-     * If omitted, derived from `name` by capitalising and prefixing `VC` —
-     * which works for single-word demos (countdown → VCCountdown). For
-     * multi-word kebab-case names (form-checkbox-group → VCFormCheckboxGroup)
-     * pass it explicitly.
+     * Component name shown in the iframe accessibility title (e.g.
+     * `VCCountdown`). If omitted, derived from `name` by capitalising
+     * and prefixing `VC`.
      */
     component?: string;
 }
@@ -42,31 +45,13 @@ const frameRef = useTemplateRef<globalThis.HTMLIFrameElement>('frame');
 const frameHeight = ref<number>(160);
 let copyTimer: ReturnType<typeof setTimeout> | null = null;
 
-// Variant catalog announced by the iframe via postMessage. Empty until
-// the demo mounts and calls `announceVariants(...)` in iframe-bridge —
-// at that point we render a dropdown per variant key in the toolbar.
-const variantCatalog = ref<Record<string, readonly string[]>>({});
-const variantValues = reactive<Record<string, string>>({});
-
-// Global palette state — lives in the navbar `SettingsModal` component.
-// Demo.vue subscribes and forwards changes to its iframe. Local
-// dropdowns intentionally NOT rendered here (palette is page-wide, not
-// per-component, so it belongs in the navbar).
-//
-// `usePalette()` from `@vuecs/design` is shared (createSharedComposable),
-// so this returns the same `current` ref the navbar's SettingsModal
-// writes to.
+// Global palette / color-mode / theme state. Forwarded to the iframe so
+// the demo's visuals stay in sync with the docs-site preferences (set
+// in the navbar's SettingsModal).
 const { current: palette } = usePalette();
 const { current: demoTheme } = useDemoTheme();
-
 const { isDark } = useData();
 
-// `withBase` prepends VitePress's configured `base` (currently '/' for the
-// vuecs.dev deploy). If the site is ever moved to a subpath (e.g. a
-// project page at `/vuecs/`), the iframe URL follows. The demos' own
-// internal asset paths use Vite's `base` in `docs/demos/vite.config.ts`
-// — that value must be kept in sync with VitePress's `base + 'demos/'`
-// when changing deploy paths.
 const frameSrc = computed(() => (props.name ? withBase(`/demos/${props.name}.html`) : null));
 
 const componentName = computed(() => {
@@ -76,59 +61,16 @@ const componentName = computed(() => {
     return `VC${camel}`;
 });
 
-// Per-iframe accessibility name. Pages with multiple demos (e.g.
-// form-select-search has two) need distinct titles so screen readers
-// can tell them apart.
 const frameTitle = computed(() => {
     if (props.title) return `${props.title} demo`;
     return `${componentName.value} demo`;
 });
 
-const variantSnippet = computed(() => {
-    const keys = Object.keys(variantValues);
-    if (keys.length === 0) return '';
-    const inner = keys.map((k) => `${k}: '${variantValues[k]}'`).join(', ');
-    return `<${componentName.value} :theme-variant="{ ${inner} }" />`;
-});
-
-// Fall back to the design-token defaults from `@vuecs/design/assets/index.css`
-// when no palette has been picked yet. Without these the snippet would
-// render `setPalette({ primary: 'undefined', neutral: 'undefined' })` for
-// fresh visitors with empty localStorage — a misleading copy-paste example.
-const paletteSnippet = computed(() => {
-    const primary = palette.value.primary ?? 'blue';
-    const neutral = palette.value.neutral ?? 'neutral';
-    return `setPalette({ primary: '${primary}', neutral: '${neutral}' });`;
-});
-
-const hasVariants = computed(() => Object.keys(variantCatalog.value).length > 0);
-
-/*
- * postMessage targetOrigin: demos are served same-origin with the docs
- * host (`vuecs.dev/demos/<name>.html` for the deploy, localhost for
- * dev). Pinning the targetOrigin to `globalThis.location.origin`
- * ensures the message is delivered ONLY to a same-origin parent —
- * cross-origin embedders never receive control messages.
- */
 const postColorMode = (): void => {
     const win = frameRef.value?.contentWindow;
     if (!win) return;
     win.postMessage(
         { type: 'set-color-mode', mode: isDark.value ? 'dark' : 'light' },
-        globalThis.location.origin,
-    );
-};
-
-const postVariants = (): void => {
-    const win = frameRef.value?.contentWindow;
-    if (!win) return;
-    // Skip empty payloads — `onFrameLoad` clears `variantValues` before
-    // the iframe announces its catalog, which would otherwise trigger
-    // the deep watcher and post an empty `set-variants` round-trip
-    // that the iframe immediately overwrites with its own announce.
-    if (Object.keys(variantValues).length === 0) return;
-    win.postMessage(
-        { type: 'set-variants', values: { ...variantValues } },
         globalThis.location.origin,
     );
 };
@@ -156,63 +98,24 @@ const postTheme = (): void => {
 };
 
 const onFrameLoad = (): void => {
-    // Reset variant state for the new iframe (in case Demo.vue is reused
-    // across navigations and the previous demo had a different catalog).
-    variantCatalog.value = {};
-    Object.keys(variantValues).forEach((k) => delete variantValues[k]);
     postColorMode();
     postPalette();
     postTheme();
 };
 
 const onFrameMessage = (event: MessageEvent): void => {
-    // Only accept messages from THIS demo's iframe. Both checks together:
-    //  - origin: rejects cross-origin messages (defense if Demo.vue is
-    //    ever embedded in an unexpected context)
-    //  - source: rejects same-origin sibling iframes that aren't ours
     if (event.origin !== globalThis.location.origin) return;
     if (event.source !== frameRef.value?.contentWindow) return;
-    const data = event.data as {
-        type?: string;
-        height?: number;
-        catalog?: Record<string, readonly string[]>;
-        defaults?: Record<string, string>;
-    };
-    if (!data || typeof data !== 'object') return;
+    const { data } = event;
+    if (!isObject(data)) return;
     if (data.type === 'demo-resize' && typeof data.height === 'number') {
         frameHeight.value = data.height;
-        return;
-    }
-    if (data.type === 'demo-variants' && data.catalog && data.defaults) {
-        variantCatalog.value = data.catalog;
-        Object.keys(variantValues).forEach((k) => delete variantValues[k]);
-        Object.assign(variantValues, data.defaults);
     }
 };
 
-watch(isDark, () => {
-    postColorMode();
-});
-
-watch(
-    variantValues,
-    () => {
-        postVariants();
-    },
-    { deep: true },
-);
-
-watch(
-    palette,
-    () => {
-        postPalette();
-    },
-    { deep: true },
-);
-
-watch(demoTheme, () => {
-    postTheme();
-});
+watch(isDark, () => postColorMode());
+watch(palette, () => postPalette(), { deep: true });
+watch(demoTheme, () => postTheme());
 
 onMounted(() => {
     globalThis.window.addEventListener('message', onFrameMessage);
@@ -226,11 +129,7 @@ const copy = async () => {
     if (!codeRoot.value) return;
     // When the slot contains a VitePress code-group (::: code-group), the
     // active tab carries the `.active` class. Run two queries in priority
-    // order — `querySelector('a, b')` returns the FIRST DOM-order match
-    // across both selectors (not the first selector that matches), which
-    // would always pick the inactive first tab's <pre>. The two-step
-    // lookup actually tracks the active tab; falls back to any <pre> for
-    // the single-code-block case.
+    // order so we don't grab the inactive first tab's <pre>.
     const pre = codeRoot.value.querySelector('.vp-code-group .blocks > .active pre') ??
         codeRoot.value.querySelector('pre');
     if (!pre) return;
@@ -239,15 +138,9 @@ const copy = async () => {
     try {
         await navigator.clipboard.writeText(text);
     } catch {
-        // Clipboard API can reject in insecure contexts or permission
-        // denial — swallow and leave `copied` false so the button
-        // doesn't claim success.
         return;
     }
     copied.value = true;
-    // Clear any pending timer so rapid successive clicks restart the
-    // 1.5s "Copied" window from the latest click instead of letting an
-    // older timer flip back early.
     if (copyTimer) clearTimeout(copyTimer);
     copyTimer = setTimeout(() => { copied.value = false; }, 1500);
 };
@@ -260,40 +153,6 @@ const copy = async () => {
             class="vc-demo-title"
         >
             {{ title }}
-        </div>
-
-        <div
-            v-if="hasVariants"
-            class="vc-demo-controls"
-        >
-            <div class="vc-demo-controls-row">
-                <span class="vc-demo-controls-label">Variant</span>
-                <div class="vc-demo-controls-fields">
-                    <label
-                        v-for="(values, key) in variantCatalog"
-                        :key="key"
-                        class="vc-demo-control"
-                    >
-                        <span class="vc-demo-control-name">{{ key }}</span>
-                        <select
-                            v-model="variantValues[key]"
-                            class="vc-demo-control-select"
-                        >
-                            <option
-                                v-for="value in values"
-                                :key="value"
-                                :value="value"
-                            >
-                                {{ value }}
-                            </option>
-                        </select>
-                    </label>
-                </div>
-            </div>
-            <div class="vc-demo-snippet">
-                <code class="vc-demo-snippet-code">{{ variantSnippet }}</code>
-                <code class="vc-demo-snippet-code vc-demo-snippet-code--muted">{{ paletteSnippet }}</code>
-            </div>
         </div>
 
         <div
@@ -357,106 +216,14 @@ const copy = async () => {
     background: var(--vc-color-bg-elevated);
 }
 
-/* Controls panel — sits above the iframe preview, contains the variant
-   dropdowns + the live-config snippet showing how the consumer would
-   write the same call. The palette controls live in the navbar; the
-   snippet here mirrors both the variant and the palette so the user
-   sees the full picture in one place. */
-.vc-demo-controls {
-    padding: 0.5rem 0.75rem;
-    border-bottom: 1px solid var(--vc-color-border);
-    background: var(--vc-color-bg-elevated);
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.vc-demo-controls-row {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-}
-
-.vc-demo-controls-label {
-    font-size: 0.6875rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--vc-color-fg-muted);
-    min-width: 4rem;
-}
-
-.vc-demo-controls-fields {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-}
-
-.vc-demo-control {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.375rem;
-}
-
-.vc-demo-control-name {
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--vc-color-fg-muted);
-    text-transform: capitalize;
-}
-
-.vc-demo-control-select {
-    font-size: 0.75rem;
-    padding: 0.125rem 0.375rem;
-    border: 1px solid var(--vc-color-border);
-    border-radius: 0.25rem;
-    background: var(--vc-color-bg);
-    color: var(--vc-color-fg);
-    cursor: pointer;
-}
-.vc-demo-control-select:focus {
-    outline: none;
-    border-color: var(--vc-color-primary-500);
-    box-shadow: 0 0 0 1px var(--vc-color-primary-500);
-}
-
-/* Live-config snippet — shows the Vue/JS call the user would write
-   to reproduce the current state. Updates reactively. */
-.vc-demo-snippet {
-    display: flex;
-    flex-direction: column;
-    gap: 0.125rem;
-    padding: 0.5rem 0.625rem;
-    border-radius: 0.375rem;
-    background: var(--vc-color-bg);
-    border: 1px dashed var(--vc-color-border);
-    font-family: var(--font-mono);
-}
-
-.vc-demo-snippet-code {
-    font-size: 0.6875rem;
-    color: var(--vc-color-fg);
-    white-space: pre-wrap;
-    word-break: break-word;
-    background: transparent;
-    padding: 0;
-    border: 0;
-}
-
-.vc-demo-snippet-code--muted {
-    color: var(--vc-color-fg-muted);
-}
-
 .vc-demo-preview {
     padding: 1.5rem;
     background: var(--vc-color-bg);
 }
 
-/* Iframe demos own their own document padding (see docs/demos/src/style.css);
-   the host preview just needs to provide the surface and let the iframe
-   span it. */
+/* Iframe demos own their own document padding (see
+   docs/demos/src/style.css); the host preview just needs to provide the
+   surface and let the iframe span it. */
 .vc-demo-preview--iframe {
     padding: 0;
 }
@@ -500,8 +267,6 @@ const copy = async () => {
 .vc-demo-copy { margin-left: auto; }
 .vc-demo-copy:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* The default slot renders VitePress-styled <pre> elements; reset margins so
-   they sit flush in the demo body. */
 .vc-demo-code :deep(div[class*='language-']) {
     margin: 0;
     border-radius: 0;

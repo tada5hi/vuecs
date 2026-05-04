@@ -9,6 +9,7 @@ import {
     VCStepperTrigger,
 } from '@vuecs/navigation';
 import { ref } from 'vue';
+import { variantState } from './iframe-bridge';
 
 const current = ref(2);
 const steps = [
@@ -20,7 +21,10 @@ const steps = [
 
 <template>
     <div style="display: flex; flex-direction: column; gap: 1rem; max-width: 32rem;">
-        <VCStepper v-model="current">
+        <VCStepper
+            v-model="current"
+            :theme-variant="variantState"
+        >
             <template
                 v-for="(step, index) in steps"
                 :key="index"

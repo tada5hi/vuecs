@@ -8,7 +8,7 @@ The compound parts let you assemble the step item exactly the way your design ne
 npm install @vuecs/navigation
 ```
 
-<Demo name="stepper" component="VCStepper">
+<Playground name="stepper" component="VCStepper">
   <template #code>
 
 ::: code-group
@@ -63,7 +63,7 @@ const steps = [
 :::
 
   </template>
-</Demo>
+</Playground>
 
 ## Compound API
 

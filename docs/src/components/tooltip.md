@@ -6,7 +6,7 @@ Hover/focus-triggered text bubble. Built on [Reka UI](https://reka-ui.com/)'s To
 npm install @vuecs/overlays
 ```
 
-<Demo name="tooltip" component="VCTooltip">
+<Playground name="tooltip" component="VCTooltip">
   <template #code>
 
 ::: code-group
@@ -48,7 +48,7 @@ import {
 :::
 
   </template>
-</Demo>
+</Playground>
 
 ## Compound API
 

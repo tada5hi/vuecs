@@ -4,6 +4,7 @@ import tailwindTheme from '@vuecs/theme-tailwind';
 import type { Theme } from 'vitepress';
 import DefaultTheme from 'vitepress/theme';
 import Demo from './components/Demo.vue';
+import Playground from './components/Playground.vue';
 import Layout from './Layout.vue';
 
 import './style.css';
@@ -28,5 +29,6 @@ export default {
         app.use(vuecs, { themes: [tailwindTheme()] });
         app.use(overlays);
         app.component('Demo', Demo);
+        app.component('Playground', Playground);
     },
 } satisfies Theme;

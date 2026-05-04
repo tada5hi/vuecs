@@ -4,6 +4,7 @@ import type { ExtractPublicPropTypes, PropType } from 'vue';
 import { StepperRoot } from 'reka-ui';
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
+import { provideStepperContext } from './context';
 import { stepperThemeDefaults } from './theme';
 import type { StepperThemeClasses } from './types';
 
@@ -36,6 +37,16 @@ export default defineComponent({
         slots,
         emit,
     }) {
+        // Propagate theme-class + theme-variant to descendant indicator /
+        // title / description / separator / item / trigger parts so a single
+        // `<VCStepper :theme-variant="{ size: 'sm' }">` resizes the whole
+        // stepper, and `:theme-class="{ indicator: 'ring-2' }">` skins every
+        // indicator. Children fall back to their own per-instance values
+        // when the consumer wants to override them.
+        provideStepperContext({
+            themeClass: () => props.themeClass,
+            themeVariant: () => props.themeVariant,
+        });
         const theme = useComponentTheme('stepper', props, stepperThemeDefaults);
         return () => h(
             StepperRoot,

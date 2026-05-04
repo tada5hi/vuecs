@@ -3,7 +3,8 @@ import { defineComponent, h, mergeProps } from 'vue';
 import type { ExtractPublicPropTypes, PropType } from 'vue';
 import { StepperIndicator } from 'reka-ui';
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
+import type { ThemeClassesOverride, UseComponentThemeProps, VariantValues } from '@vuecs/core';
+import { useStepperContext } from './context';
 import { stepperThemeDefaults } from './theme';
 import type { StepperThemeClasses } from './types';
 
@@ -25,7 +26,17 @@ export default defineComponent({
     inheritAttrs: false,
     props: stepperIndicatorProps,
     setup(props, { attrs, slots }) {
-        const theme = useComponentTheme('stepper', props, stepperThemeDefaults);
+        // Inherit theme-variant (notably `size`) from the parent <VCStepper>
+        // so the consumer doesn't have to repeat `:theme-variant` on every
+        // indicator. Per-instance `props.themeVariant` still wins.
+        const ctx = useStepperContext();
+        const themeProps: UseComponentThemeProps<StepperThemeClasses> = {
+            get themeClass() { return { ...(ctx?.themeClass() ?? {}), ...(props.themeClass ?? {}) }; },
+            get themeVariant() {
+                return { ...(ctx?.themeVariant() ?? {}), ...(props.themeVariant ?? {}) };
+            },
+        };
+        const theme = useComponentTheme('stepper', themeProps, stepperThemeDefaults);
         return () => h(
             StepperIndicator,
             mergeProps(attrs, {
