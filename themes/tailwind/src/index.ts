@@ -306,10 +306,21 @@ export default function tailwindTheme(): Theme {
             },
             avatar: {
                 classes: {
-                    root: 'inline-flex h-10 w-10 shrink-0 select-none items-center justify-center overflow-hidden rounded-full bg-bg-muted text-fg-muted align-middle',
+                    root: 'inline-flex shrink-0 select-none items-center justify-center overflow-hidden rounded-full bg-bg-muted text-fg-muted align-middle',
                     image: 'h-full w-full object-cover',
-                    fallback: 'inline-flex h-full w-full items-center justify-center text-sm font-medium leading-none',
+                    fallback: 'inline-flex h-full w-full items-center justify-center font-medium leading-none',
                 },
+                // Mirrors @vuecs/elements badge size axis so a
+                // `<VCAvatar size="lg">` reads at the same scale as a
+                // `<VCBadge size="lg">`.
+                variants: {
+                    size: {
+                        sm: { root: 'h-8 w-8', fallback: 'text-xs' },
+                        md: { root: 'h-10 w-10', fallback: 'text-sm' },
+                        lg: { root: 'h-14 w-14', fallback: 'text-base' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             aspectRatio: { classes: { root: 'block w-full' } },
             badge: {

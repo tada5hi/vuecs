@@ -33,3 +33,14 @@
     font-weight: 500;
     line-height: 1;
 }
+
+/*
+ * Size variant classes — referenced by the `avatar.size.{sm,md,lg}` theme
+ * variant entries. Themes that have utility-class equivalents (Tailwind:
+ * `h-8 w-8`, `h-10 w-10`, `h-14 w-14`) can stack those instead/alongside;
+ * these structural classes give a working baseline for ecosystems
+ * (Bootstrap, custom CSS) where no equivalent utility exists.
+ */
+.vc-avatar-sm { width: 2rem; height: 2rem; }
+.vc-avatar-md { width: 2.5rem; height: 2.5rem; }
+.vc-avatar-lg { width: 3.5rem; height: 3.5rem; }

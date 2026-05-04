@@ -256,6 +256,17 @@ export default function bootstrapTheme(): Theme {
                     image: 'w-100 h-100 object-fit-cover',
                     fallback: 'd-inline-flex align-items-center justify-content-center w-100 h-100 fw-medium small lh-1',
                 },
+                // Bootstrap doesn't ship h-8/h-10/h-14 utilities, so the
+                // size variants reference the structural `vc-avatar-{sm,md,lg}`
+                // classes shipped in @vuecs/elements/assets/avatar.css.
+                variants: {
+                    size: {
+                        sm: { root: 'vc-avatar-sm' },
+                        md: { root: 'vc-avatar-md' },
+                        lg: { root: 'vc-avatar-lg' },
+                    },
+                },
+                defaultVariants: { size: 'md' },
             },
             aspectRatio: { classes: { root: 'd-block w-100' } },
             // VCGravatar wraps VCAvatar — sizing comes from the structural

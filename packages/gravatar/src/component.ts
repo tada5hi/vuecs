@@ -5,6 +5,7 @@ import type {
     VariantValues,
 } from '@vuecs/core';
 import { VCAvatar } from '@vuecs/elements';
+import type { AvatarSize } from '@vuecs/elements';
 import md5 from 'md5';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import {
@@ -44,12 +45,20 @@ const gravatarProps = {
     /**
      * Image resolution served by Gravatar (drives the URL's `?s=` parameter,
      * range 1–2048). This controls **only** the served-image quality, not
-     * the rendered size on the page — visual sizing is owned by the theme
-     * system (`gravatar.root` / `avatar.root` theme classes, or per-instance
-     * `themeClass`). Match `size` to your displayed pixel dimensions (or 2×
-     * for retina) to avoid up-/down-scaling.
+     * the rendered size on the page — visual sizing is owned by `displaySize`
+     * (semantic enum) or the theme system (`gravatar.root` / `avatar.root`
+     * theme classes, or per-instance `themeClass`). Match `size` to your
+     * displayed pixel dimensions (or 2× for retina) to avoid up-/down-scaling.
      */
     size: { type: Number, default: 80 },
+    /**
+     * Visual size — forwards to `<VCAvatar :size>`. `sm` ≈ 32px, `md` ≈ 40px,
+     * `lg` ≈ 56px (theme-defined). Omit to fall back to `<VCAvatar>`'s
+     * theme default (`md`) plus the structural `vc-gravatar` class. Pair
+     * with a matching `size` (URL resolution, 2× for retina) for crisp
+     * rendering — e.g. `<VCGravatar :size="80" display-size="md">`.
+     */
+    displaySize: { type: String as PropType<AvatarSize>, default: undefined },
     /** Gravatar `d=` parameter — fallback image style or URL (e.g. `retro`, `mp`, `identicon`). */
     defaultImg: { type: String, default: 'retro' },
     /** Gravatar `r=` parameter — content rating filter (`g`, `pg`, `r`, `x`). */
@@ -108,14 +117,16 @@ export const VCGravatar = defineComponent({
                 src: url.value,
                 alt: props.alt,
                 delayMs: props.delayMs,
+                // Forwards to VCAvatar's size variant. When omitted, falls
+                // back to whatever VCAvatar's theme default is (md), plus
+                // the structural `vc-gravatar` class which sets a 5rem
+                // (80px) baseline to preserve the historical default.
+                size: props.displaySize,
                 // Compose the `gravatar.root` slot onto VCAvatar's root via
                 // the per-instance theme override. `extend()` merges with
                 // the avatar layer instead of replacing it — consumers who
                 // style the `gravatar` theme key see their classes layered
-                // on top of avatar's structural defaults. Visual sizing
-                // lives entirely in `gravatar.root` (themes ship a 5rem /
-                // 80px default to preserve the historical visual default);
-                // the `size` prop only feeds the Gravatar URL.
+                // on top of avatar's structural defaults.
                 themeClass: theme.value.root ? { root: extend(theme.value.root) } : undefined,
             },
             { fallback: (slotProps: { class: string }) => slots.fallback?.(slotProps) ?? '' },

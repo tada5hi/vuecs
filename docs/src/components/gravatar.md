@@ -52,7 +52,8 @@ import { VCGravatar } from '@vuecs/gravatar';
 |------|------|---------|-------------|
 | `email` | `string` | `''` | Email address (hashed client-side via MD5) |
 | `hash` | `string` | `''` | Pre-computed MD5 hash — bypasses `email` if set |
-| `size` | `number` | `80` | Resolution served by Gravatar (URL `?s=` parameter, range 1–2048). **Does not** control rendered size — match it to your displayed dimensions (or 2× for retina) to avoid up/down-scaling. Visual sizing lives in the theme system (default 5rem via the structural `vc-gravatar` class). |
+| `size` | `number` | `80` | Resolution served by Gravatar (URL `?s=` parameter, range 1–2048). **Does not** control rendered size — match it to your displayed dimensions (or 2× for retina) to avoid up/down-scaling. |
+| `displaySize` | `'sm' \| 'md' \| 'lg'` | `undefined` | Visual size — forwards to `<VCAvatar :size>`. `sm` ≈ 32px, `md` ≈ 40px, `lg` ≈ 56px. Omit to fall back to the structural `vc-gravatar` 5rem (80px) baseline. Pair with a matching `size` (URL resolution) for crisp rendering: `<VCGravatar :size="80" display-size="md">`. |
 | `defaultImg` | `string` | `'retro'` | Gravatar's built-in placeholder when the email has no associated avatar (`mp`, `identicon`, `monsterid`, `wavatar`, `retro`, `robohash`, `blank`) |
 | `alt` | `string` | `'Avatar'` | Alt text for the rendered image |
 | `delayMs` | `number` | `undefined` | Delay (ms) before the `#fallback` slot appears on network failure. Only strictly positive values are forwarded to `<VCAvatar>` (its underlying Reka `AvatarFallback` treats `0` as "wait forever"); omit to render the fallback immediately. |
@@ -71,12 +72,11 @@ import { VCGravatar } from '@vuecs/gravatar';
 
 Visual size is decoupled from the served-image resolution:
 
-- **Display** is set in CSS — the structural `vc-gravatar` class ships at 5rem (80px) and composes onto `<VCAvatar>`'s root via the `gravatar.root` theme entry. Override per-instance:
-  ```vue
-  <VCGravatar email="…" :theme-class="{ root: extend('h-12 w-12') }" />
-  ```
-  or globally via the `gravatar` theme key.
-- **Resolution** is set via the `size` prop (drives Gravatar's `?s=` URL parameter). Match it to your display size (or 2× for retina) so Gravatar serves a crisp image without wasted bandwidth.
+- **Display** — `displaySize="sm" | "md" | "lg"` forwards to `<VCAvatar :size>` and resolves to a theme-defined size (`sm` ≈ 32px, `md` ≈ 40px, `lg` ≈ 56px). Mirrors `<VCBadge>`'s size axis. For arbitrary pixel sizes, drop `displaySize` and use `:theme-class="{ root: extend('h-12 w-12') }"` (or any other size class). When neither is set, falls back to the structural `vc-gravatar` 5rem (80px) baseline so a bare `<VCGravatar>` keeps the historical default.
+- **Resolution** — `size` (number, default 80) drives Gravatar's `?s=` URL parameter. Match it to your display size (or 2× for retina) so Gravatar serves a crisp image without wasted bandwidth. Recommended pairings:
+  - `displaySize="sm"` → `:size="64"` (32px × 2)
+  - `displaySize="md"` → `:size="80"` (40px × 2)
+  - `displaySize="lg"` → `:size="112"` (56px × 2)
 
 Don't ship `@vuecs/gravatar`'s structural CSS? Import it explicitly:
 
