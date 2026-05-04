@@ -17,7 +17,7 @@ export type TagSlotProps = {
 
 export type TagRemoveSlotProps = TagSlotProps & {
     /** Invoke to fire the chip's `remove` event with its bound value. */
-    onRemove: () => void;
+    remove: () => void;
 };
 
 export type TagDefaultSlotProps = {
@@ -88,16 +88,16 @@ export default defineComponent({
                 [label]);
 
             if (props.removable) {
-                const onRemove = () => emit('remove', props.value);
+                const remove = () => emit('remove', props.value);
                 children.push(slots.remove ?
-                    slots.remove({ class: resolved.remove, onRemove }) :
+                    slots.remove({ class: resolved.remove, remove }) :
                     h('button', {
                         type: 'button',
                         'aria-label': label ? `Remove ${label}` : 'Remove',
                         class: resolved.remove || undefined,
                         onClick: (event: Event) => {
                             event.stopPropagation();
-                            onRemove();
+                            remove();
                         },
                     }, '×'));
             }

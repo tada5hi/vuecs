@@ -40,6 +40,7 @@ npm run lint:fix      # Auto-fix style issues
 - **`constants.ts` files** contain `const`, `enum`, and other runtime value exports
 - **Object type checks**: Always use the `isObject()` helper from `@vuecs/core/src/utils/object.ts`. Never use inline `typeof x === 'object' && x !== null` checks
 - **Typed slot props**: Every component slot must have an exported slot-prop type (e.g. `ListItemSlotProps`, `NavItemLinkSlotProps`, `CountdownSlotProps`) wired into the component's `SlotsType<...>`. Render-function consumers rely on these exports for type safety (#1488). Use generics (`<T>`, `<META>`) for entity-typed props.
+- **Slot-prop callbacks use the bare action name** — `remove`, `select`, `close`; never `onRemove` / `onSelect` / `onClose`. Slot props are a payload object, not Vue listeners (where the `onXxx` form is meaningful because Vue maps `@xxx` to `onXxx` internally), so they take the same naming style as Reka UI / Headless UI scoped slots. JSDoc the field as `Invoke to …` so the call signature reads obviously at the use site (`<template #remove="{ remove }">…@click="remove"`). When a slot exposes both data and a callback, name the type `<Component><Slot>SlotProps` and put the callback alongside the data fields (see `TagRemoveSlotProps` — `class` + `remove`).
 
 ## Build
 
