@@ -233,7 +233,14 @@ export default function bootstrapTheme(): Theme {
                     // the chip aesthetic of Bootstrap badges.
                     root: 'badge rounded-pill text-bg-primary d-inline-flex align-items-center gap-1',
                     icon: 'd-inline-flex align-items-center',
-                    remove: 'btn p-0 d-inline-flex align-items-center justify-content-center bg-transparent border-0 text-white lh-1',
+                    // Deliberately NOT `.btn`: `.btn` sets an absolute
+                    // `font-size: 1rem` which overrides the badge's
+                    // inherited `0.75em`, stretching the line-box and
+                    // making removable tags taller than non-removable
+                    // ones. Plain utilities + `.focus-ring` keep
+                    // keyboard-focus styling without leaking the .btn
+                    // sizing into the chip.
+                    remove: 'focus-ring p-0 d-inline-flex align-items-center justify-content-center bg-transparent border-0 text-white lh-1',
                 },
                 variants: {
                     size: {
