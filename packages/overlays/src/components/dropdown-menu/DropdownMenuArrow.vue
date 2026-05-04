@@ -8,9 +8,13 @@ import { dropdownMenuThemeDefaults } from './theme';
 import type { DropdownMenuThemeClasses } from './types';
 
 const dropdownMenuArrowProps = {
+    /** Arrow width in pixels. */
     width: { type: Number, default: 10 },
+    /** Arrow height in pixels. */
     height: { type: Number, default: 5 },
+    /** Per-instance theme override — flat slot key map. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<DropdownMenuThemeClasses>>, default: undefined },
+    /** Per-instance variant values. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 

@@ -8,16 +8,22 @@ import { popoverThemeDefaults } from './theme';
 import type { PopoverThemeClasses } from './types';
 
 const popoverCloseProps = {
+    /** HTML tag (or component) to render as. Reka default: `'button'`. */
     as: { type: String, default: 'button' },
+    /** Render the slot content as the rendered element instead of wrapping it. */
     asChild: { type: Boolean, default: false },
     /**
-     * When true, renders as a pre-styled corner-X (reads the theme's
-     * `closeIcon` slot — absolute positioning + sizing). When false
-     * (default), renders neutrally so consumer classes via `class=` /
-     * `:theme-class` compose cleanly.
+     * Force the corner-X presentation (reads the theme's `closeIcon` slot —
+     * absolute positioning + sizing). When false (default), the slot-presence
+     * heuristic decides: slotless renders the corner-X, slotted renders the
+     * neutral `close` styling so consumer classes compose cleanly.
+     *
+     * Internal slot-picker — never forwarded to Reka.
      */
     icon: { type: Boolean, default: false },
+    /** Per-instance theme override — flat slot key map. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<PopoverThemeClasses>>, default: undefined },
+    /** Per-instance variant values. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 

@@ -8,10 +8,15 @@ import { contextMenuThemeDefaults } from './theme';
 import type { ContextMenuThemeClasses } from './types';
 
 const contextMenuCheckboxItemProps = {
-    modelValue: { type: [Boolean, String] as PropType<boolean | 'indeterminate' | undefined>, default: undefined },
+    /** Checked state. Use `'indeterminate'` for tri-state. */
+    modelValue: { type: [Boolean, String] as PropType<boolean | 'indeterminate'>, default: false },
+    /** When true, prevents user interaction with the item. */
     disabled: { type: Boolean, default: false },
+    /** Optional typeahead text override (defaults to the item's `.textContent`). */
     textValue: { type: String, default: undefined },
+    /** Per-instance theme override — flat slot key map. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<ContextMenuThemeClasses>>, default: undefined },
+    /** Per-instance variant values. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 

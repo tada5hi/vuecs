@@ -5,7 +5,9 @@ import { ContextMenuSub } from 'reka-ui';
 import { useForwardPropsEmits } from '@vuecs/core';
 
 const contextMenuSubProps = {
+    /** Controlled open state. Bind via `v-model:open`. */
     open: { type: Boolean as PropType<boolean | undefined>, default: undefined },
+    /** Initial open state for uncontrolled usage. */
     defaultOpen: { type: Boolean, default: false },
 };
 

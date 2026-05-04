@@ -55,19 +55,30 @@ const themeDefaults = {
 const behavioralDefaults: FormGroupDefaults = { validation: true };
 
 const formGroupProps = {
+    /** When `true`/`false`, force-render or hide the label. When `undefined`, label visibility follows slot/content presence. */
     label: { type: Boolean, default: undefined },
+    /** HTML tag used for the label element. */
     labelTag: { type: String, default: 'label' },
+    /** Default text rendered when no `label` slot is provided. */
     labelContent: { type: String, default: undefined },
 
+    /** When `true`/`false`, force-render or hide the hint. When `undefined`, hint visibility follows slot/content presence. */
     hint: { type: Boolean, default: undefined },
+    /** HTML tag used for the hint element. */
     hintTag: { type: String, default: 'div' },
+    /** Default text rendered when no `hint` slot is provided. */
     hintContent: { type: String, default: undefined },
 
+    /** When `true`, render the validation messages section. Falls back to the global `formGroup.validation` default. */
     validation: { type: Boolean, default: undefined },
+    /** Severity used to colour the validation messages (`error` / `warning`). */
     validationSeverity: { type: String as PropType<`${ValidationSeverity}` | undefined>, default: undefined },
+    /** Validation messages — keyed object or ordered array of `{ key, value }`. */
     validationMessages: { type: [Object, Array] as PropType<ValidationMessages>, default: undefined },
 
+    /** Theme-class overrides for this component instance. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<FormGroupThemeClasses>>, default: undefined },
+    /** Theme variant values for this component instance. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 

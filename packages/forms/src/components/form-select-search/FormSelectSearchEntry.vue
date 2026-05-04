@@ -4,10 +4,12 @@ import { computed, defineComponent } from 'vue';
 import type { FormOption } from '../../types/option';
 
 const formSelectSearchEntryProps = {
+    /** The option this row represents. */
     entry: {
         type: Object as PropType<FormOption>,
         required: true,
     },
+    /** The currently-selected options — used to compute `active` state. */
     selected: { type: Array as PropType<FormOption[]> },
 };
 

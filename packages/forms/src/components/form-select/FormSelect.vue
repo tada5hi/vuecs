@@ -117,18 +117,17 @@ const renderGroup = (group: FormOptionGroup, classes: FormSelectThemeClasses): V
 );
 
 const formSelectProps = {
+    /** Controlled selected value. */
     modelValue: {
         type: [String, Number, Boolean, Object, null] as PropType<AcceptableValue | undefined>,
         default: undefined,
     },
+    /** Options rendered inside the dropdown (flat list or grouped). */
     options: {
         type: Array as PropType<FormOptionItems>,
         required: true,
     },
-    /**
-     * Placeholder text rendered inside the trigger when no option is selected.
-     * Falls back to the global `formSelect.placeholder` default.
-     */
+    /** Placeholder text rendered inside the trigger when no option is selected. Falls back to the global `formSelect.placeholder` default. */
     placeholder: { type: String, default: undefined },
     /** When `true`, blocks user interaction with the trigger. */
     disabled: { type: Boolean, default: false },
@@ -136,7 +135,9 @@ const formSelectProps = {
     name: { type: String, default: undefined },
     /** When `true`, the field must be set before the owning form can submit. */
     required: { type: Boolean, default: false },
+    /** Theme-class overrides for this component instance. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<FormSelectThemeClasses>>, default: undefined },
+    /** Theme variant values for this component instance. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 
@@ -165,9 +166,9 @@ export default defineComponent({
             }
 
             return h(SelectRoot, {
+                name: props.name,
                 modelValue: props.modelValue,
                 disabled: props.disabled,
-                name: props.name,
                 required: props.required,
                 'onUpdate:modelValue'(value: AcceptableValue) {
                     emit('update:modelValue', value);

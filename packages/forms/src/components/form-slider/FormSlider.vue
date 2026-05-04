@@ -49,26 +49,35 @@ export type FormSliderOrientation = 'horizontal' | 'vertical';
 export type FormSliderModelValue = number | number[];
 
 const formSliderProps = {
+    /** Controlled value — number for single-thumb, array for range / multi-thumb. `null` is the documented "unset" value. */
     modelValue: {
-        // `null` in the runtime type alongside Number/Array so
-        // consumers can pass `null` (the documented "unset" value)
-        // without tripping Vue's prop validation warnings.
         type: [Number, Array, null] as PropType<FormSliderModelValue | null>,
         default: undefined,
     },
+    /** Minimum value for the range. */
     min: { type: Number, default: 0 },
+    /** Maximum value for the range. */
     max: { type: Number, default: 100 },
+    /** Stepping interval between values. */
     step: { type: Number, default: 1 },
+    /** Slider axis. */
     orientation: {
         type: String as PropType<FormSliderOrientation>,
         default: 'horizontal',
     },
+    /** When `true`, the slider is visually inverted. */
     inverted: { type: Boolean, default: false },
+    /** When `true`, prevents the user from interacting with the slider. */
     disabled: { type: Boolean, default: false },
+    /** Marks the underlying form field as required. */
     required: { type: Boolean, default: false },
+    /** Form-field name for HTML form submission. */
     name: { type: String, default: undefined },
+    /** Minimum permitted steps between adjacent thumbs (multi-thumb mode). */
     minStepsBetweenThumbs: { type: Number, default: 0 },
+    /** Theme-class overrides for this component instance. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<FormSliderThemeClasses>>, default: undefined },
+    /** Theme variant values for this component instance. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 
@@ -114,6 +123,7 @@ export default defineComponent({
             SliderRoot,
             mergeProps(attrs, {
                 modelValue: internalValue.value,
+                name: props.name,
                 min: props.min,
                 max: props.max,
                 step: props.step,
@@ -121,7 +131,6 @@ export default defineComponent({
                 inverted: props.inverted,
                 disabled: props.disabled,
                 required: props.required,
-                name: props.name,
                 minStepsBetweenThumbs: props.minStepsBetweenThumbs,
                 'onUpdate:modelValue': handleUpdate,
                 onValueCommit: handleCommit,

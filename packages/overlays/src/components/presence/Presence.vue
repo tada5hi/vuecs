@@ -15,13 +15,18 @@ export default defineComponent({
     name: 'VCPresence',
     inheritAttrs: false,
     props: {
+        /** Whether the wrapped subtree should be mounted. Toggle to trigger enter/exit animations. */
         present: { type: Boolean, required: true },
+        /** Force the subtree to stay mounted regardless of `present` (debug / programmatic transition control). */
         forceMount: { type: Boolean, default: false },
     } satisfies Record<keyof VCPresenceProps, unknown>,
     setup(props, { slots }) {
         return () => h(
             Presence,
-            { present: props.present, forceMount: props.forceMount },
+            {
+                present: props.present,
+                forceMount: props.forceMount,
+            },
             { default: (scope: { present: boolean }) => slots.default?.(scope) },
         );
     },

@@ -31,25 +31,29 @@ const themeDefaults = { classes: { root: 'vc-form-radio-group' } };
 export type FormRadioGroupOrientation = 'vertical' | 'horizontal';
 
 const formRadioGroupProps = {
+    /** Controlled selected value. */
     modelValue: {
         type: [String, Number, Boolean, Object, null] as PropType<AcceptableValue | undefined>,
         default: undefined,
     },
-    /**
-     * Optional declarative shorthand — when set, renders one `<VCFormRadio>`
-     * per option. Mutually exclusive with the default slot. Use the slot
-     * for full per-item control.
-     */
+    /** Optional declarative shorthand — when set, renders one `<VCFormRadio>` per option. Mutually exclusive with the default slot. */
     options: { type: Array as PropType<FormOption[]>, default: undefined },
+    /** Disables every radio in the group. */
     disabled: { type: Boolean, default: false },
+    /** Marks the group as required for native form validation. */
     required: { type: Boolean, default: false },
+    /** Form-field name for HTML form submission. */
     name: { type: String, default: undefined },
+    /** Vuecs convention: vertical-stacked layout (Reka leaves this unset; vuecs styles the column variant in `vc-form-radio-group`). */
     orientation: {
         type: String as PropType<FormRadioGroupOrientation>,
         default: 'vertical',
     },
+    /** When `true`, arrow-key navigation wraps from last to first item. */
     loop: { type: Boolean, default: true },
+    /** Theme-class overrides for this component instance. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<FormRadioGroupThemeClasses>>, default: undefined },
+    /** Theme variant values for this component instance. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 
@@ -70,11 +74,11 @@ export default defineComponent({
         return () => h(
             RadioGroupRoot,
             mergeProps(attrs, {
+                name: props.name,
+                orientation: props.orientation,
                 modelValue: props.modelValue,
                 disabled: props.disabled,
                 required: props.required,
-                name: props.name,
-                orientation: props.orientation,
                 loop: props.loop,
                 'onUpdate:modelValue': (value: AcceptableValue) => emit('update:modelValue', value),
                 class: theme.value.root || undefined,

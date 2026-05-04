@@ -40,10 +40,15 @@ export type ValidationGroupItemSlotProps = {
 };
 
 const validationGroupProps = {
+    /** Severity used to colour the rendered messages (`error` / `warning`). */
     severity: { type: String as PropType<`${ValidationSeverity}`>, default: ValidationSeverity.ERROR },
+    /** Validation messages — keyed object or ordered array of `{ key, value }`. */
     messages: { type: [Object, Array] as PropType<ValidationMessages>, default: () => ({}) },
+    /** HTML tag used for each rendered message. */
     itemTag: { type: String, default: 'div' },
+    /** Theme-class overrides for this component instance. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<ValidationGroupThemeClasses>>, default: undefined },
+    /** Theme variant values for this component instance. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 

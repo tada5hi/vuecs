@@ -35,16 +35,14 @@ export type FormPinType = 'text' | 'number';
 export type FormPinModelValue = string[] | number[];
 
 const formPinProps = {
+    /** Controlled value (per-cell array). `null` is accepted as the documented "unset" value. */
     modelValue: {
-        // `null` in the runtime type alongside Array so consumers can
-        // pass `null` (the documented "unset" value) without tripping
-        // Vue's prop validation warnings.
         type: [Array, null] as PropType<FormPinModelValue | null>,
         default: undefined,
     },
-    /** Number of input cells rendered. */
+    /** Vuecs internal: number of input cells rendered. Drives the cell-render loop in setup; not forwarded to Reka. */
     length: { type: Number, default: 6 },
-    /** `'text'` (default) or `'number'`. Drives both input mode and modelValue array element type. */
+    /** Input type for each cell. Drives `inputmode` and modelValue array element type. */
     type: { type: String as PropType<FormPinType>, default: 'text' },
     /** Per-cell placeholder character. */
     placeholder: { type: String, default: '' },
@@ -52,11 +50,17 @@ const formPinProps = {
     mask: { type: Boolean, default: false },
     /** Enable mobile OTP autofill (sets `autocomplete="one-time-code"`). */
     otp: { type: Boolean, default: false },
+    /** When `true`, prevents the user from interacting with the pin input. */
     disabled: { type: Boolean, default: false },
+    /** Marks the underlying form field as required. */
     required: { type: Boolean, default: false },
+    /** Form-field name for HTML form submission. */
     name: { type: String, default: undefined },
+    /** Element id for the root pin input. */
     id: { type: String, default: undefined },
+    /** Theme-class overrides for this component instance. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<FormPinThemeClasses>>, default: undefined },
+    /** Theme variant values for this component instance. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 
@@ -73,6 +77,8 @@ export default defineComponent({
         return () => h(
             PinInputRoot,
             mergeProps(attrs, {
+                name: props.name,
+                id: props.id,
                 modelValue: props.modelValue,
                 type: props.type,
                 placeholder: props.placeholder,
@@ -80,8 +86,6 @@ export default defineComponent({
                 otp: props.otp,
                 disabled: props.disabled,
                 required: props.required,
-                name: props.name,
-                id: props.id,
                 'onUpdate:modelValue': (value: FormPinModelValue) => emit('update:modelValue', value),
                 onComplete: (value: FormPinModelValue) => emit('complete', value),
                 class: theme.value.root || undefined,

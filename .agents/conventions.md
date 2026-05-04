@@ -42,6 +42,55 @@ npm run lint:fix      # Auto-fix style issues
 - **Typed slot props**: Every component slot must have an exported slot-prop type (e.g. `ListItemSlotProps`, `NavItemLinkSlotProps`, `CountdownSlotProps`) wired into the component's `SlotsType<...>`. Render-function consumers rely on these exports for type safety (#1488). Use generics (`<T>`, `<META>`) for entity-typed props.
 - **Slot-prop callbacks use the bare action name** — `remove`, `select`, `close`; never `onRemove` / `onSelect` / `onClose`. Slot props are a payload object, not Vue listeners (where the `onXxx` form is meaningful because Vue maps `@xxx` to `onXxx` internally), so they take the same naming style as Reka UI / Headless UI scoped slots. JSDoc the field as `Invoke to …` so the call signature reads obviously at the use site (`<template #remove="{ remove }">…@click="remove"`). When a slot exposes both data and a callback, name the type `<Component><Slot>SlotProps` and put the callback alongside the data fields (see `TagRemoveSlotProps` — `class` + `remove`).
 
+## Wrapping Reka UI primitives — explicit-defaults convention
+
+When a vuecs component (`<VC*>`) wraps a Reka primitive, **declare every
+forwarded prop on the wrapper** with **concrete defaults that mirror
+Reka's defaults** and **forward naturally** (no spread-guard):
+
+```ts
+const fooProps = {
+    /** Preferred side of the trigger to render against. */
+    side: { type: String as PropType<'top' | 'right' | 'bottom' | 'left'>, default: 'bottom' },
+    /** Distance in pixels from the trigger. */
+    sideOffset: { type: Number, default: 0 },
+
+    /** Render inline instead of via portal (testing / custom mount points). */
+    inline: { type: Boolean, default: false },
+    /** Theme-class overrides for this component instance. */
+    themeClass: { type: Object as PropType<...>, default: undefined },
+};
+
+setup(props, { attrs }) {
+    return () => h(RekaPrimitive, mergeProps(attrs, {
+        side: props.side,
+        sideOffset: props.sideOffset,
+    }));
+}
+```
+
+**Rules:**
+
+1. **Every prop gets a JSDoc one-liner** above its declaration — consumers
+   read these in IDE autocomplete + generated `.d.ts`.
+2. **Defaults are concrete and match Reka's `withDefaults(...)` value.**
+   Look up the upstream default in
+   `node_modules/reka-ui/src/<Family>/<Component>.vue` when wrapping a
+   new primitive.
+3. **Forward naturally:** `propX: props.propX`. No
+   `...(props.X !== undefined ? { X: props.X } : {})` spread-guard.
+4. For deliberate vuecs overrides of a Reka default, keep our value and
+   add a `Vuecs convention:` note in the JSDoc explaining why.
+5. Internal-only props (e.g. `inline` for portal opt-out, `themeClass`)
+   keep their concrete defaults and still get JSDoc.
+
+This convention applies to every Reka-wrapping component across
+`@vuecs/overlays`, `@vuecs/forms`, `@vuecs/elements`, `@vuecs/navigation`
+(stepper), and `@vuecs/pagination`. (Earlier docs proposed a
+"lazy-forwarding" `default: undefined` + spread-guard pattern; that
+approach was reverted because it hid the actual default from autocomplete
+and led to subtle prop-shape drift.)
+
 ## Build
 
 - **tsdown** for ESM-only bundling

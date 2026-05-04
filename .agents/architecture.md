@@ -264,7 +264,7 @@ whose prop is resolved via `useComponentDefaults`, the composite's own Vue
 `prop: { default: 'something' }` that forwards `something` to the child will
 always win layer 1 on the child and shadow the child's global defaults.
 
-The plan-010 redesign of `@vuecs/list` eliminated this exact category of
+The compound redesign of `@vuecs/list` eliminated this exact category of
 forwarding (each part now reads from context directly), so there is no
 in-tree example today. Reach for this pattern when wrapping a vuecs
 component in your own composite that opts into the same behavioral-defaults

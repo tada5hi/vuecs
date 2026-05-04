@@ -7,12 +7,14 @@ import { useForwardPropsEmits } from '@vuecs/core';
 const tooltipProviderProps = {
     /** Delay before opening on hover, ms. */
     delayDuration: { type: Number, default: 700 },
-    /** Window after a tooltip closes during which sibling tooltips skip the delay. */
+    /** Window after a tooltip closes during which sibling tooltips skip the delay, ms. */
     skipDelayDuration: { type: Number, default: 300 },
     /** Disable hovering-only opens (focus still works). */
     disableHoverableContent: { type: Boolean, default: false },
     /** Disable closing on pointer-down outside content. */
     disableClosingTrigger: { type: Boolean, default: false },
+    /** Treat non-keyboard focus events as not focusing the trigger. */
+    ignoreNonKeyboardFocus: { type: Boolean, default: false },
 };
 
 export type TooltipProviderProps = ExtractPublicPropTypes<typeof tooltipProviderProps>;

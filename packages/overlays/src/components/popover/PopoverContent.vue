@@ -8,14 +8,21 @@ import { popoverThemeDefaults } from './theme';
 import type { PopoverThemeClasses } from './types';
 
 const popoverContentProps = {
-    /** Render outside `<PopoverPortal>` (testing / custom portal). */
+    /** Skip the portal and render in-place (testing / custom mounting). Internal — never forwarded to Reka. */
     inline: { type: Boolean, default: false },
+    /** Preferred side relative to the trigger. */
     side: { type: String as PropType<'top' | 'right' | 'bottom' | 'left'>, default: 'bottom' },
+    /** Distance in pixels between trigger and panel. Vuecs convention: 4 (Reka default: 0). */
     sideOffset: { type: Number, default: 4 },
+    /** Alignment along the chosen side. */
     align: { type: String as PropType<'start' | 'center' | 'end'>, default: 'center' },
+    /** Offset in pixels along the alignment axis. */
     alignOffset: { type: Number, default: 0 },
+    /** Flip / shift the panel to stay inside the viewport. */
     avoidCollisions: { type: Boolean, default: true },
+    /** Per-instance theme override — flat slot key map. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<PopoverThemeClasses>>, default: undefined },
+    /** Per-instance variant values. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 

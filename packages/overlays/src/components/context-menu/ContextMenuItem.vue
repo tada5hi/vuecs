@@ -8,11 +8,17 @@ import { contextMenuThemeDefaults } from './theme';
 import type { ContextMenuThemeClasses } from './types';
 
 const contextMenuItemProps = {
+    /** HTML tag (or component) to render as. Reka default: `'div'`. */
     as: { type: String, default: 'div' },
+    /** Render the slot content as the rendered element instead of wrapping it. */
     asChild: { type: Boolean, default: false },
+    /** When true, prevents user interaction with the item. */
     disabled: { type: Boolean, default: false },
+    /** Optional typeahead text override (defaults to the item's `.textContent`). */
     textValue: { type: String, default: undefined },
+    /** Per-instance theme override — flat slot key map. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<ContextMenuThemeClasses>>, default: undefined },
+    /** Per-instance variant values. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 

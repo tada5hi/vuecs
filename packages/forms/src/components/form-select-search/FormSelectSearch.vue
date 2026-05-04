@@ -56,31 +56,37 @@ const themeDefaults = {
 };
 
 const formSelectSearchProps = {
+    /** Controlled selected value(s) — single value or array for multi-select. */
     modelValue: {
         type: [String, Number, Boolean, Object, Array, null] as PropType<
             AcceptableValue | AcceptableValue[] | undefined
         >,
         default: undefined,
     },
+    /** Options shown in the dropdown. */
     options: {
         type: Array as PropType<FormOption[]>,
         default: () => [],
     },
+    /** Placeholder shown in the search input when empty. */
     placeholder: {
         type: String,
         required: false,
         default: '...',
     },
+    /** When `true`, blocks user interaction with the input and chips. */
     disabled: {
         type: Boolean,
         required: false,
         default: false,
     },
+    /** Initial page size for the virtualised dropdown list. */
     maxItems: {
         type: Number,
         required: false,
         default: 10,
     },
+    /** Number of items to append per infinite-scroll step. */
     scrollDistance: {
         type: Number,
         required: false,
@@ -97,10 +103,12 @@ const formSelectSearchProps = {
         type: Boolean as PropType<boolean | undefined>,
         default: undefined,
     },
+    /** Theme-class overrides for this component instance. */
     themeClass: {
         type: Object as PropType<ThemeClassesOverride<FormSelectSearchThemeClasses>>,
         default: undefined,
     },
+    /** Theme variant values for this component instance. */
     themeVariant: {
         type: Object as PropType<VariantValues>,
         default: undefined,

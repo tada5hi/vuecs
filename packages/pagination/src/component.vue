@@ -22,36 +22,39 @@ import {
 } from './utils';
 
 const paginationProps = {
+    /** Total number of items to paginate. Forwarded to Reka `total`. */
     total: { type: Number, default: 0 },
+    /** Items per page. Vuecs convention: semantic rename of Reka `itemsPerPage`; mapped via `limit || 1`. */
     limit: { type: Number, default: 0 },
+    /** Current offset (item index). Vuecs internal — drives computed currentPage; not a Reka prop. */
     offset: { type: Number, default: 0 },
+    /** Disable interaction and emission. Vuecs convention: semantic rename of Reka `disabled`. */
     busy: { type: Boolean, default: false },
+    /** Root element tag. Vuecs convention: defaults to `ul` (overrides Reka's `nav`) for list-style markup. */
     tag: { type: String, default: 'ul' },
+    /** Per-item element tag. Vuecs internal — drives `<component :is>`; no Reka equivalent. */
     itemTag: { type: String, default: 'li' },
+    /** Theme slot-class overrides. Vuecs theme concern, never forwarded to Reka. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<PaginationThemeClasses>>, default: undefined },
+    /** Theme variant values. Vuecs theme concern, never forwarded to Reka. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-    // When true, edge controls (First/Prev at page 1, Next/Last at the
-    // last page) are unrendered instead of rendered-disabled. Defaults
-    // false so consumers see a stable button row across pages —
-    // matching modern UI library conventions and Reka's own defaults.
-    // Does NOT apply to the `busy` state (loading should not make
-    // pagination disappear).
+    /** When true, edge controls are unrendered (vs rendered-disabled) at page boundaries. Does not apply to `busy`. */
     hideDisabled: { type: Boolean, default: false },
-    // Icon name strings (Iconify format, e.g. 'lucide:chevron-left'),
-    // resolved through <VCIcon>. Default `undefined` falls through to
-    // the DefaultsManager — install an icon preset (e.g. @vuecs/icons-lucide)
-    // to populate. Pass `''` to suppress the icon for this instance.
+    /** Icon name (Iconify format) for the First button. `undefined` falls through to the DefaultsManager; `''` suppresses. */
     firstIcon: { type: String, default: undefined },
+    /** Icon name (Iconify format) for the Previous button. `undefined` falls through to the DefaultsManager; `''` suppresses. */
     prevIcon: { type: String, default: undefined },
+    /** Icon name (Iconify format) for the Next button. `undefined` falls through to the DefaultsManager; `''` suppresses. */
     nextIcon: { type: String, default: undefined },
+    /** Icon name (Iconify format) for the Last button. `undefined` falls through to the DefaultsManager; `''` suppresses. */
     lastIcon: { type: String, default: undefined },
-    // Text labels — default English fallbacks ship in behavioral defaults.
-    // Override per-instance via these props, or globally via
-    // `app.use(vuecs, { defaults: { pagination: { prevLabel: 'Zurück' } } })`
-    // for i18n. Pass `''` to suppress the label for icon-only buttons.
+    /** Text label for the First button. `undefined` falls through to the DefaultsManager; `''` suppresses. */
     firstLabel: { type: String, default: undefined },
+    /** Text label for the Previous button. `undefined` falls through to the DefaultsManager; `''` suppresses. */
     prevLabel: { type: String, default: undefined },
+    /** Text label for the Next button. `undefined` falls through to the DefaultsManager; `''` suppresses. */
     nextLabel: { type: String, default: undefined },
+    /** Text label for the Last button. `undefined` falls through to the DefaultsManager; `''` suppresses. */
     lastLabel: { type: String, default: undefined },
 };
 
