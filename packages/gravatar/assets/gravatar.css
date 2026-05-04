@@ -1,0 +1,12 @@
+/*
+ * Structural defaults for VCGravatar. Composes onto VCAvatar's root via
+ * the gravatar theme's `extend()` chain. Sizes the wrapper to 5rem (80px)
+ * to preserve the historical visual default when the legacy `size` prop
+ * stopped driving inline width/height. Override via per-instance
+ * `themeClass={ root: extend('h-12 w-12') }` (tailwind) or any other
+ * size class.
+ */
+.vc-gravatar {
+    width: 5rem;
+    height: 5rem;
+}

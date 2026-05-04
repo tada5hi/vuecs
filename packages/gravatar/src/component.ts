@@ -13,6 +13,8 @@ import {
     h,
 } from 'vue';
 
+import '../assets/gravatar.css';
+
 export type GravatarThemeClasses = {
     /** Outer wrapper — composed onto `<VCAvatar>`'s `root` slot. */
     root: string;
@@ -24,7 +26,7 @@ declare module '@vuecs/core' {
     }
 }
 
-const themeDefaults = { classes: { root: '' } };
+const themeDefaults = { classes: { root: 'vc-gravatar' } };
 
 export type GravatarFallbackSlotProps = {
     class: string;
@@ -39,7 +41,14 @@ const gravatarProps = {
     email: { type: String, default: '' },
     /** Pre-computed Gravatar hash. When set, takes precedence over `email`. */
     hash: { type: String, default: '' },
-    /** Image size in pixels (also drives the inline width/height). */
+    /**
+     * Image resolution served by Gravatar (drives the URL's `?s=` parameter,
+     * range 1–2048). This controls **only** the served-image quality, not
+     * the rendered size on the page — visual sizing is owned by the theme
+     * system (`gravatar.root` / `avatar.root` theme classes, or per-instance
+     * `themeClass`). Match `size` to your displayed pixel dimensions (or 2×
+     * for retina) to avoid up-/down-scaling.
+     */
     size: { type: Number, default: 80 },
     /** Gravatar `d=` parameter — fallback image style or URL (e.g. `retro`, `mp`, `identicon`). */
     defaultImg: { type: String, default: 'retro' },
@@ -100,12 +109,11 @@ export const VCGravatar = defineComponent({
                 // the per-instance theme override. `extend()` merges with
                 // the avatar layer instead of replacing it — consumers who
                 // style the `gravatar` theme key see their classes layered
-                // on top of avatar's structural defaults.
+                // on top of avatar's structural defaults. Visual sizing
+                // lives entirely in `gravatar.root` (themes ship a 5rem /
+                // 80px default to preserve the historical visual default);
+                // the `size` prop only feeds the Gravatar URL.
                 themeClass: theme.value.root ? { root: extend(theme.value.root) } : undefined,
-                // Inline width/height honors the `size` prop. VCAvatar's
-                // structural CSS sets a default 2.5rem circle; this lets
-                // consumers keep the previous "size in pixels" knob.
-                style: `width: ${props.size}px; height: ${props.size}px;`,
             },
             { fallback: (slotProps: { class: string }) => slots.fallback?.(slotProps) ?? '' },
         );

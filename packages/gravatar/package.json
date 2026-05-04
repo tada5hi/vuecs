@@ -7,9 +7,13 @@
         "./package.json": "./package.json",
         ".": {
             "types": "./dist/index.d.ts",
+            "style": "./dist/style.css",
             "import": "./dist/index.mjs"
-        }
+        },
+        "./style.css": "./dist/style.css",
+        "./dist/style.css": "./dist/style.css"
     },
+    "style": "./dist/style.css",
     "files": [
         "dist"
     ],
