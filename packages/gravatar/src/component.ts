@@ -61,13 +61,16 @@ const gravatarProps = {
     /** Gravatar service host (override for self-hosted alternatives). */
     hostname: { type: String, default: 'www.gravatar.com' },
     /**
-     * Delay (ms) before the fallback appears if the Gravatar image hasn't
-     * loaded yet. Forwarded to `<VCAvatar>` (Reka's `AvatarFallback`).
-     * Useful to avoid a flicker on fast connections — Gravatar's
-     * `defaultImg` already returns a deterministic placeholder, so the
-     * fallback only fires on network failure. Omit (default) to render
-     * the fallback immediately on failure (see `<VCAvatar>` for the Reka
-     * `delayMs: 0` quirk handled there).
+     * Delay (ms) before the `<VCAvatar>` fallback becomes visible while
+     * the Gravatar image is still loading (and persists if it ultimately
+     * fails). Useful to avoid a flicker on fast connections by giving the
+     * image a brief window to appear before the placeholder shows up.
+     * Forwarded to `<VCAvatar>` (Reka's `AvatarFallback`); omit (default)
+     * to render the fallback immediately. In practice the fallback most
+     * often "sticks" on network failure, since Gravatar's `defaultImg`
+     * usually returns a deterministic placeholder. Only strictly positive
+     * values are forwarded — see `<VCAvatar>` for the Reka `delayMs: 0`
+     * quirk handled there.
      */
     delayMs: { type: Number, default: undefined },
 };
