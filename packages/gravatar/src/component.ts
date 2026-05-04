@@ -27,7 +27,7 @@ declare module '@vuecs/core' {
     }
 }
 
-const themeDefaults = { classes: { root: 'vc-gravatar' } };
+const themeDefaults = { classes: { root: '' } };
 
 export type GravatarFallbackSlotProps = {
     class: string;
@@ -110,26 +110,27 @@ export const VCGravatar = defineComponent({
             return img.join('');
         });
 
-        return () => h(
-            VCAvatar,
-            {
-                ...attrs,
-                src: url.value,
-                alt: props.alt,
-                delayMs: props.delayMs,
-                // Forwards to VCAvatar's size variant. When omitted, falls
-                // back to whatever VCAvatar's theme default is (md), plus
-                // the structural `vc-gravatar` class which sets a 5rem
-                // (80px) baseline to preserve the historical default.
-                size: props.displaySize,
-                // Compose the `gravatar.root` slot onto VCAvatar's root via
-                // the per-instance theme override. `extend()` merges with
-                // the avatar layer instead of replacing it — consumers who
-                // style the `gravatar` theme key see their classes layered
-                // on top of avatar's structural defaults.
-                themeClass: theme.value.root ? { root: extend(theme.value.root) } : undefined,
-            },
-            { fallback: (slotProps: { class: string }) => slots.fallback?.(slotProps) ?? '' },
-        );
+        return () => {
+            // The structural `vc-gravatar` class hardcodes a 5rem baseline
+            // to preserve the historical default for bare `<VCGravatar>`
+            // usages. When `displaySize` is set, skip it — otherwise its
+            // dimensions would win the cascade over the avatar size
+            // variants (gravatar CSS loads after elements CSS in
+            // consumer pipelines).
+            const structuralRoot = props.displaySize === undefined ? 'vc-gravatar' : '';
+            const composedRoot = [structuralRoot, theme.value.root].filter(Boolean).join(' ');
+            return h(
+                VCAvatar,
+                {
+                    ...attrs,
+                    src: url.value,
+                    alt: props.alt,
+                    delayMs: props.delayMs,
+                    size: props.displaySize,
+                    themeClass: composedRoot ? { root: extend(composedRoot) } : undefined,
+                },
+                { fallback: (slotProps: { class: string }) => slots.fallback?.(slotProps) ?? '' },
+            );
+        };
     },
 });
