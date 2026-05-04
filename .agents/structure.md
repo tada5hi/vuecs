@@ -12,7 +12,7 @@ vuecs/
     gravatar/         # @vuecs/gravatar
     icon/             # @vuecs/icon — <VCIcon> component wrapping @iconify/vue
     link/             # @vuecs/link
-    list/             # @vuecs/list — compound List / Header / Body / Item / ItemText / ItemActions / Footer / Loading / Empty + defineList() / useList() (renamed from @vuecs/list-controls in plan 010; sub-component split + Empty rename + Pinia-rename + meta unification per plan-010 addenda)
+    list/             # @vuecs/list — compound List / Header / Body / Item / ItemText / ItemActions / Footer / Loading / Empty + defineList() / useList() (renamed from @vuecs/list-controls; defineList() factory + Pinia-style API + unified meta bag)
     navigation/       # @vuecs/navigation
     nuxt/             # @vuecs/nuxt — Nuxt module: SSR palette + useColorMode()
     overlays/         # @vuecs/overlays — Modal (+ useModal view-stack), Popover, Tooltip (+ TooltipProvider), DropdownMenu, ContextMenu — all on Reka primitives
