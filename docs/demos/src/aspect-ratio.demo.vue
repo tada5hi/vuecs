@@ -8,11 +8,14 @@ import { VCAspectRatio } from '@vuecs/elements';
             <p style="font-size: 0.75rem; color: var(--vc-color-fg-muted); margin: 0 0 0.25rem 0;">
                 16 / 9
             </p>
-            <VCAspectRatio :ratio="16 / 9">
+            <VCAspectRatio
+                :ratio="16 / 9"
+                style="border-radius: 0.5rem; overflow: hidden;"
+            >
                 <img
                     src="https://images.unsplash.com/photo-1535025183041-0991a977e25b?w=400&dpr=2&q=80"
                     alt="Landscape sample"
-                    style="border-radius: 0.5rem; object-fit: cover;"
+                    style="object-fit: cover;"
                 >
             </VCAspectRatio>
         </div>
@@ -20,11 +23,14 @@ import { VCAspectRatio } from '@vuecs/elements';
             <p style="font-size: 0.75rem; color: var(--vc-color-fg-muted); margin: 0 0 0.25rem 0;">
                 1 / 1
             </p>
-            <VCAspectRatio :ratio="1">
+            <VCAspectRatio
+                :ratio="1"
+                style="border-radius: 0.5rem; overflow: hidden;"
+            >
                 <img
                     src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&dpr=2&q=80"
                     alt="Square sample"
-                    style="border-radius: 0.5rem; object-fit: cover;"
+                    style="object-fit: cover;"
                 >
             </VCAspectRatio>
         </div>
