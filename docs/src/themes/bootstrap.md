@@ -24,7 +24,7 @@ app.use(vuecs, { themes: [bootstrap()] });
 /* styles.css */
 @import "bootstrap/dist/css/bootstrap.css";
 @import "@vuecs/theme-bootstrap";  /* optional: design-token bridge */
-@import "@vuecs/design";               /* optional: enable runtime palette switching */
+@import "@vuecs/design";               /* design tokens (concrete OKLCH; no Tailwind needed) */
 ```
 
 The `@import "@vuecs/theme-bootstrap"` resolves to the package's bridge CSS (`assets/index.css`) via the `style` conditional export.
@@ -41,11 +41,15 @@ The bridge file maps Bootstrap's CSS theme variables onto vuecs design tokens:
 }
 ```
 
-Bootstrap 5 components read `--bs-*` at runtime, so calling `setPalette({ primary: 'green' })` re-tints **both** vuecs components and Bootstrap-native components in real time.
+Bootstrap 5 components read `--bs-*` at runtime, so any change to `--vc-color-*` (overriding in CSS, or via the Tailwind theme's `setColorPalette()` if also installed) re-tints **both** vuecs components and Bootstrap-native components in real time.
+
+::: info Runtime palette switching is Tailwind-only
+`@vuecs/theme-bootstrap` does **not** ship a runtime palette switcher. Bootstrap doesn't expose a named-palette catalog the way Tailwind does (`--bs-primary` is one color, not 22 alternatives). To swap palettes at runtime, install `@vuecs/theme-tailwind` alongside this package and use its `setColorPalette()` — the swap rewrites `--vc-color-*` which both bridges read from.
+:::
 
 ## When to drop the bridge
 
-If you don't care about runtime palette switching and want to use Bootstrap's stock colors as-is, skip the `@import "@vuecs/theme-bootstrap"` and `@import "@vuecs/design"` lines. The component classes still resolve through the theme; only the dynamic-color layer is opt-out.
+If you want to use Bootstrap's stock colors as-is and don't need vuecs's `--vc-color-*` tokens to flow into Bootstrap components, skip the `@import "@vuecs/theme-bootstrap"` line. The component classes still resolve through the theme.
 
 ## See also
 

@@ -3,7 +3,7 @@
 `@vuecs/theme-tailwind` is the native pairing for `@vuecs/design`. Components emit Tailwind utility classes that resolve through the design-token chain.
 
 ```bash
-npm install @vuecs/theme-tailwind
+npm install @vuecs/theme-tailwind @vuecs/design
 npm install -D tailwindcss @tailwindcss/vite
 ```
 
@@ -21,11 +21,14 @@ app.use(vuecs, { themes: [tailwindTheme()] });
 /* styles.css */
 @import "tailwindcss";
 @import "@vuecs/design";
+@import "@vuecs/theme-tailwind";
 
 @source "../node_modules/@vuecs/theme-tailwind/dist";
 
 @custom-variant dark (&:where(.dark, .dark *));
 ```
+
+`@vuecs/design` ships the `--vc-color-*` design tokens (concrete OKLCH defaults). `@vuecs/theme-tailwind` rebinds them to Tailwind palette names (so `setColorPalette()` swaps work), exposes them via `@theme` (`bg-primary-600`, `text-fg`, …), and force-includes all 22 Tailwind palettes via `@source inline()`.
 
 The `@source` directive ensures Tailwind v4's JIT picks up the class names baked into the theme's published `dist` files. Tailwind v4 doesn't support bare-package specifiers in `@source` — the path must be a glob relative to the CSS file itself.
 

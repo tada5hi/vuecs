@@ -4,7 +4,7 @@
  * Wires Bootstrap 5.3+'s CSS variables onto vuecs design-system tokens
  * (`--vc-color-*`). Importing this file alongside Bootstrap and
  * `@vuecs/design/index.css` makes Bootstrap's buttons, alerts, badges,
- * background utilities, etc. respond to `setPalette()` / `.dark` just
+ * background utilities, etc. respond to `setColorPalette()` / `.dark` just
  * like the Tailwind theme.
  *
  * Import order:

@@ -4,7 +4,7 @@ vuecs has three layers you can configure independently:
 
 - **Themes** — class-map data passed to `app.use(vuecs, { themes: [...] })`. Pick a CSS framework (Tailwind, Bootstrap, etc.) or stack multiple.
 - **Icons** — Iconify-name vocabularies via `app.use(vuecs, { icons: [...] })`. Pick a preset (`@vuecs/icons-lucide`, `@vuecs/icons-font-awesome`, …) to populate vuecs's semantic icon-prop slots. See [Icons](/getting-started/icons) for the full setup.
-- **Design tokens** — CSS variables shipped by `@vuecs/design`. Switch the primary palette at runtime via `setPalette()` or in CSS via `:root { --vc-color-primary-*: ... }`.
+- **Design tokens** — CSS variables shipped by `@vuecs/design` (concrete OKLCH defaults). Override in CSS via `:root { --vc-color-primary-*: ... }`. Tailwind users additionally get runtime palette switching via `setColorPalette()` from `@vuecs/theme-tailwind`.
 
 The three layers are decoupled: themes resolve **class strings**, icons resolve **icon-name strings**, and tokens define **what those classes look like**.
 
@@ -86,17 +86,21 @@ Components declare structured variants in their defaults:
 
 You set values via `themeVariant`, and themes/overrides can extend variant definitions. See the [Variants guide](/guide/variants) for the full merge rules.
 
-## Switch palette at runtime
+## Switch palette at runtime (Tailwind only)
 
 ```ts
-import { setPalette } from '@vuecs/design';
+import { setColorPalette } from '@vuecs/theme-tailwind';
 
-setPalette({ primary: 'green', neutral: 'zinc' });
+setColorPalette({ primary: 'green', neutral: 'zinc' });
 ```
 
-This rewrites a `<style id="vc-palette">` block in `<head>` mapping `--vc-color-primary-*` to `var(--color-green-*)`. Every component that reads through the design tokens re-tints in real time — no Vue re-render, no class re-resolution.
+This rewrites a `<style id="vc-color-palette">` block in `<head>` mapping `--vc-color-primary-*` to `var(--color-green-*)`. Every component that reads through the design tokens re-tints in real time — no Vue re-render, no class re-resolution.
 
-In Nuxt, use `usePalette()` from `@vuecs/nuxt` for SSR-safe palette switching.
+In Nuxt, install `@vuecs/theme-tailwind-nuxt` alongside `@vuecs/nuxt` and use the auto-imported `useColorPalette()` for SSR-safe cookie-backed palette switching.
+
+Bootstrap and Bulma themes don't ship runtime palette switching today — those frameworks don't expose a named-palette catalog the way Tailwind does. Their bridges still let you override `--vc-color-*` statically in CSS.
+
+For non-Tailwind themes that ship their own palette catalog, compose `@vuecs/design`'s generic `applyColorPaletteCss(css)` and `bindColorPalette<T>(source, render)` with your own renderer — the same primitives the Tailwind theme is built on.
 
 ## Next steps
 

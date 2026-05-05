@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { usePalette } from '@vuecs/design';
+import { useColorPalette } from '@vuecs/theme-tailwind';
 import {
     VCModal,
     VCModalClose,
@@ -20,7 +20,7 @@ import { type DemoThemeName, useDemoTheme } from '../use-demo-theme';
 
 const open = ref(false);
 const { isDark } = useData();
-const { current, extend } = usePalette();
+const { current, extend } = useColorPalette();
 const { current: demoTheme, set: setDemoTheme } = useDemoTheme();
 
 const themeOptions: { value: DemoThemeName; label: string }[] = [

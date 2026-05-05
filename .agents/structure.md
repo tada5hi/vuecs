@@ -7,7 +7,7 @@ vuecs/
   packages/           # Component + infrastructure packages (npm workspaces)
     core/             # @vuecs/core — theme system, defaults manager, utilities
     countdown/        # @vuecs/countdown
-    design/           # @vuecs/design — CSS design tokens + motion primitives (animations.css) + runtime palette switcher
+    design/           # @vuecs/design — CSS design tokens (concrete OKLCH defaults) + motion primitives (animations.css) + useColorMode + generic palette primitives (applyColorPaletteCss / bindColorPalette<T> / COLOR_PALETTE_STYLE_ELEMENT_ID) — theme-agnostic, no Tailwind dep (plan 017)
     elements/         # @vuecs/elements — atomic, presentation-only UI elements (Separator, Tag/Tags, Avatar, AspectRatio, VisuallyHidden, Badge); thin Reka wrappers + pure-CSS chips (plan 013)
     forms/            # @vuecs/forms (renamed from @vuecs/form-controls in 3.0; checkbox/switch on Reka primitives)
     gravatar/         # @vuecs/gravatar — composes <VCAvatar> from @vuecs/elements (2.0.0 breaking change in plan 013)
@@ -15,14 +15,15 @@ vuecs/
     link/             # @vuecs/link
     list/             # @vuecs/list — compound List / Header / Body / Item / ItemText / ItemActions / Footer / Loading / Empty + defineList() / useList() (renamed from @vuecs/list-controls in plan 010; sub-component split + Empty rename + Pinia-rename + meta unification per plan-010 addenda)
     navigation/       # @vuecs/navigation — multi-level nav with NavigationManager + <VCStepper> compound (Reka StepperRoot/Item/Trigger/Indicator/Title/Description/Separator) (plan 013)
-    nuxt/             # @vuecs/nuxt — Nuxt module: SSR palette + useColorMode()
+    nuxt/             # @vuecs/nuxt — theme-agnostic Nuxt module: tokens injection + SSR colorMode plugin + useColorMode auto-import (plan 017 — palette concerns moved to per-theme Nuxt sub-modules like @vuecs/theme-tailwind-nuxt)
     overlays/         # @vuecs/overlays — Modal (+ useModal view-stack), Popover, HoverCard (plan 013), Tooltip (+ TooltipProvider), DropdownMenu, ContextMenu — all on Reka primitives
     pagination/       # @vuecs/pagination
     timeago/          # @vuecs/timeago
   themes/             # Theme packages (npm workspaces) — pure data, no Vue runtime deps
     bootstrap/        # @vuecs/theme-bootstrap — Bootstrap (currently v5) theme + design-token bridge (assets/index.css)
     bulma/            # @vuecs/theme-bulma — Bulma 1.0+ theme + design-token bridge (assets/index.css)
-    tailwind/         # @vuecs/theme-tailwind — Tailwind v4 theme (semantic tokens)
+    tailwind/         # @vuecs/theme-tailwind — Tailwind v4 theme (class strings) + Tailwind palette runtime (setColorPalette/useColorPalette/renderColorPaletteStyles/ColorPaletteConfig) + Tailwind rebind / @theme / @source inline safelist; composes @vuecs/design's generic palette primitives (plan 017)
+    tailwind-nuxt/    # @vuecs/theme-tailwind-nuxt — Nuxt module for Tailwind palette: SSR plugin + cookie-backed useColorPalette auto-import; consumes runtime config under `vuecsTailwind` (plan 017)
   icons/              # Icon-preset packages (npm workspaces) — Iconify-name vocabularies for @vuecs/icon, no runtime icon data
     font-awesome/     # @vuecs/icons-font-awesome — Font Awesome 6 Solid icon names (replaces the removed @vuecs/theme-font-awesome)
     lucide/           # @vuecs/icons-lucide — Lucide icon names (modern default)

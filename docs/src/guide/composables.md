@@ -3,7 +3,7 @@
 vuecs ships two families of Vue composables:
 
 - **`@vuecs/core`** — primitives for building component wrappers (forwarders, focus / typeahead helpers, ID generation, state machines). Zero runtime deps beyond Vue 3.
-- **`@vuecs/design`** — runtime palette and color-mode state for consumers.
+- **`@vuecs/design`** — runtime color-mode state + generic palette primitives. **`@vuecs/theme-tailwind`** ships the Tailwind-catalog-specific `useColorPalette()`.
 
 Both families run in any Vue 3 setup — VitePress, plain Vite, Astro, non-Nuxt SSR. The Nuxt module thin-wraps the design composables with cookie-backed storage for true SSR persistence.
 
@@ -144,28 +144,29 @@ dispatch('OPEN'); // state.value === 'open'
 
 Shipped as a Phase-3 prerequisite for the upcoming `@vuecs/overlays` package (open/closed transitions for modals, popovers, etc.).
 
-## `@vuecs/design`
+## `@vuecs/design` and `@vuecs/theme-tailwind`
 
-Framework-agnostic Vue composables for the two pieces of state that consumers usually want to mutate at runtime: the active palette and the dark/light color mode.
+Framework-agnostic Vue composables for the two pieces of state consumers usually want to mutate at runtime: the active palette and the dark/light color mode. Color mode lives in `@vuecs/design` (theme-agnostic). Palette switching lives in `@vuecs/theme-tailwind` (Tailwind-catalog-specific) — but its building blocks are generic primitives in `@vuecs/design` so other themes can compose their own.
 
 ### Requirements
 
 - **Vue 3** as a peer dep (already required by every component package).
-- **`@vueuse/core`** as a peer dep. The composables import from VueUse at the top level and `@vuecs/design`'s root entry re-exports them, so VueUse must be installed for any consumer of `@vuecs/design` — including those who only import `setPalette` or `renderPaletteStyles`.
+- **`@vueuse/core`** as a peer dep of both packages.
 
 ```bash
-npm install @vuecs/design @vueuse/core
+npm install @vuecs/design @vueuse/core                  # color mode + generic palette primitives
+npm install @vuecs/theme-tailwind                       # adds Tailwind setColorPalette / useColorPalette
 ```
 
-### `usePalette()`
+### `useColorPalette()` (from `@vuecs/theme-tailwind`)
 
 Reactive palette state with localStorage persistence. Wrapped via `createSharedComposable` — every call site shares the same ref + watcher, so picking a palette in one component updates every other consumer instantly.
 
 ```vue
 <script setup lang="ts">
-import { usePalette } from '@vuecs/design';
+import { useColorPalette } from '@vuecs/theme-tailwind';
 
-const { current, set, extend } = usePalette({
+const { current, set, extend } = useColorPalette({
     initial: { primary: 'blue', neutral: 'neutral' },
 });
 </script>
@@ -180,22 +181,22 @@ const { current, set, extend } = usePalette({
 #### API
 
 ```ts
-interface UsePaletteOptions {
+interface UseColorPaletteOptions {
     /** Initial palette when no persisted value exists. Default: {} */
-    initial?: PaletteConfig;
+    initial?: ColorPaletteConfig;
     /** Persist via localStorage. Default: true */
     persist?: boolean;
-    /** Storage key for the default backend. Default: 'vc-palette' */
+    /** Storage key for the default backend. Default: 'vc-color-palette' */
     storageKey?: string;
 }
 
-interface UsePaletteReturn {
+interface UseColorPaletteReturn {
     /** Read-only view of the current palette assignment. */
-    current: ComputedRef<PaletteConfig>;
+    current: ComputedRef<ColorPaletteConfig>;
     /** Replace the entire palette. Pass `{}` to reset. */
-    set(palette: PaletteConfig): void;
+    set(palette: ColorPaletteConfig): void;
     /** Shallow-merge — preserves scales not in `partial`. */
-    extend(partial: PaletteConfig): void;
+    extend(partial: ColorPaletteConfig): void;
 }
 ```
 
@@ -210,15 +211,15 @@ interface UsePaletteReturn {
 
 #### Persistence
 
-Default backend is localStorage at the `vc-palette` key. Sanitization runs on every read — unknown scales and non-Tailwind palette names are dropped silently. To opt out:
+Default backend is localStorage at the `vc-color-palette` key. Sanitization runs on every read — unknown scales and non-Tailwind palette names are dropped silently. To opt out:
 
 ```ts
-const { current, set } = usePalette({ persist: false });
+const { current, set } = useColorPalette({ persist: false });
 ```
 
 For SSR-readable persistence (e.g. Nuxt cookie), see [Custom storage backends](#custom-storage-backends) below.
 
-### `useColorMode()`
+### `useColorMode()` (from `@vuecs/design`)
 
 Reactive light/dark/system mode with `<html>` class sync. Uses VueUse's `usePreferredDark` to resolve `'system'`.
 
@@ -267,16 +268,21 @@ interface UseColorModeReturn {
 
 ### Custom storage backends
 
-For SSR-readable persistence (cookies, request-aware storage), call the lower-level building blocks with any reactive `Ref`:
+For SSR-readable persistence (cookies, request-aware storage), call the lower-level building blocks with any reactive `Ref`. `bindColorPalette` lives in `@vuecs/design` (generic — accepts a renderer); `bindColorMode` also lives there.
 
 ```ts
-import { bindPalette, bindColorMode } from '@vuecs/design';
+import { bindColorPalette, bindColorMode } from '@vuecs/design';
+import { renderColorPaletteStyles } from '@vuecs/theme-tailwind';
 ```
 
 Both accept a `Ref<T>` and return the same shape as the high-level composables:
 
 ```ts
-function bindPalette(source: Ref<PaletteConfig>): UsePaletteReturn;
+// Generic — any palette catalog plugs its own renderer
+function bindColorPalette<T>(
+    source: Ref<T>,
+    render: (value: T) => string,
+): UseColorPaletteReturn<T>;
 
 function bindColorMode(
     source: Ref<ColorMode>,
@@ -284,33 +290,34 @@ function bindColorMode(
 ): UseColorModeReturn;
 ```
 
-The Nuxt module's `usePalette()` / `useColorMode()` use this pattern with `useCookie` from `#imports`:
+The Nuxt module pattern (`@vuecs/theme-tailwind-nuxt`'s `useColorPalette`):
 
 ```ts
-// packages/nuxt/src/runtime/composables/usePalette.ts
-import { bindPalette } from '@vuecs/design';
+// themes/tailwind-nuxt/src/runtime/composables/useColorPalette.ts
+import { bindColorPalette } from '@vuecs/design';
+import { renderColorPaletteStyles } from '@vuecs/theme-tailwind';
 import { useCookie } from '#imports';
 
-export function usePalette() {
-    const cookie = useCookie<PaletteConfig>('vc-palette', {
+export function useColorPalette() {
+    const cookie = useCookie<ColorPaletteConfig>('vc-color-palette', {
         default: () => ({}),
         watch: true,
     });
-    return bindPalette(cookie);
+    return bindColorPalette(cookie, renderColorPaletteStyles);
 }
 ```
 
-Same return shape, SSR-aware persistence. Apply this pattern for any framework with its own reactive storage primitive (Astro, custom Vite plugins, IndexedDB-backed Pinia stores, etc.).
+Same return shape, SSR-aware persistence. The generic `bindColorPalette<T>` lets non-Tailwind themes plug in their own renderer (corporate fork with its own palette catalog, Material-You-style theme, etc.) without reimplementing the apply-on-watch logic.
 
 ### SSR notes
 
-- The composables are **client-side stateful** — on the server, watchers are still installed but `setPalette()` is a DOM-only no-op, and `useStorage` from VueUse reads/writes nothing. The first reactive read on the client triggers the initial paint.
-- For zero-FOUC palette / color mode on first paint, you need an SSR plugin that injects `<style id="vc-palette">` and `class="dark"|"light"` before client JS runs. The `@vuecs/nuxt` module ships both. Other SSR frameworks need to roll their own using `renderPaletteStyles()` from `@vuecs/design`.
+- The composables are **client-side stateful** — on the server, watchers are still installed but `setColorPalette()` / `applyColorPaletteCss()` is a DOM-only no-op, and `useStorage` from VueUse reads/writes nothing. The first reactive read on the client triggers the initial paint.
+- For zero-FOUC palette / color mode on first paint, you need an SSR plugin that injects `<style id="vc-palette">` and `class="dark"|"light"` before client JS runs. `@vuecs/nuxt` ships the color-mode SSR plugin; `@vuecs/theme-tailwind-nuxt` ships the palette SSR plugin. Other SSR frameworks roll their own using `renderColorPaletteStyles()` from `@vuecs/theme-tailwind` (or any theme's renderer composed with `applyColorPaletteCss()` from `@vuecs/design`).
 - VitePress / SSG hosts: there is currently a one-frame flash on first load when localStorage holds a non-default palette, since SSG'd HTML is fixed at build time. An inline pre-paint `<script>` helper is the planned fix; until then, accept the one-frame flash.
 
 ## See also
 
 - [Design Tokens](/guide/design-tokens) — the CSS layer the composables drive
 - [Dark Mode](/getting-started/dark-mode) — `.dark` flip mechanics
-- [Nuxt `usePalette`](/nuxt/use-palette) — SSR-cookie variant
+- [Nuxt `useColorPalette`](/nuxt/use-palette) — SSR-cookie variant
 - [Nuxt `useColorMode`](/nuxt/use-color-mode) — SSR-cookie variant

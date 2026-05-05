@@ -4,9 +4,9 @@
 
 1. **Themeable, layered class resolution.** Every component reads its CSS classes through a four-layer resolution chain (defaults → themes → overrides → instance props), with structured variants and compound variants. You can drop in a Tailwind, Bootstrap v5, or Bootstrap v4 theme — or write your own — without forking the components.
 
-2. **Design tokens, runtime palette switching.** Colors, radii, and semantic aliases live in CSS custom properties in `@vuecs/design`. Switching the primary palette is a one-line call (`setPalette({ primary: 'green' })`) and re-tints every component on the page with no Vue re-render.
+2. **Design tokens, runtime palette switching (Tailwind).** Colors, radii, and semantic aliases live in CSS custom properties in `@vuecs/design` (concrete OKLCH defaults — works with or without Tailwind). For Tailwind users, `@vuecs/theme-tailwind` adds a one-line `setColorPalette({ primary: 'green' })` that re-tints every component on the page with no Vue re-render.
 
-3. **SSR-safe Nuxt integration.** `@vuecs/nuxt` wires the palette and color-mode plumbing into Nuxt's `<head>` on the server, so first paint matches what the client computes — no FOUC, no hydration mismatch.
+3. **SSR-safe Nuxt integration.** `@vuecs/nuxt` wires color-mode plumbing into Nuxt's `<head>` on the server, so first paint matches what the client computes — no FOUC, no hydration mismatch. Tailwind apps add `@vuecs/theme-tailwind-nuxt` for the same SSR guarantees on palette switching.
 
 ## Why another component library?
 
@@ -21,8 +21,9 @@ Most Vue libraries make you pick a CSS framework upfront and bake it in. vuecs t
 - **Components** — form controls, navigation, pagination, list controls, countdown, gravatar, link, timeago, icon.
 - **Themes** — `@vuecs/theme-tailwind`, `@vuecs/theme-bootstrap`, `@vuecs/theme-bulma`.
 - **Icons** — `@vuecs/icon` (`<VCIcon>`, Iconify-backed) plus presets (`@vuecs/icons-lucide`, `@vuecs/icons-font-awesome`) that map vuecs's semantic-slot defaults to specific icon vocabularies.
-- **Design tokens** — `@vuecs/design` ships CSS variables + a runtime palette switcher.
-- **Nuxt module** — `@vuecs/nuxt` ships SSR-safe palette + color-mode composables.
+- **Design tokens** — `@vuecs/design` ships CSS variables + theme-agnostic generic palette primitives.
+- **Tailwind palette runtime** — `@vuecs/theme-tailwind` ships `setColorPalette()` / `useColorPalette()` for Tailwind's catalog.
+- **Nuxt modules** — `@vuecs/nuxt` (color mode + tokens) and `@vuecs/theme-tailwind-nuxt` (SSR-safe palette).
 
 ## Next steps
 

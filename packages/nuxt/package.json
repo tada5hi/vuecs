@@ -2,7 +2,7 @@
     "name": "@vuecs/nuxt",
     "version": "0.0.0",
     "type": "module",
-    "description": "Nuxt module for vuecs — wires @vuecs/design with SSR-safe palette and color-mode support.",
+    "description": "Nuxt module for vuecs — auto-imports @vuecs/design tokens and ships SSR-safe color-mode plugins. Theme-agnostic; palette switching lives in per-theme Nuxt modules (e.g. @vuecs/theme-tailwind-nuxt).",
     "exports": {
         "./package.json": "./package.json",
         ".": {

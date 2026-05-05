@@ -2,21 +2,18 @@
 
 vuecs is published as a set of scoped npm packages. Install only what you use — each component package can be consumed standalone.
 
-## Minimal setup
+vuecs ships **concrete OKLCH design tokens** in `@vuecs/design` (matching Tailwind v4's palette) so the package works with or without Tailwind. The Tailwind theme adds utility classes and runtime palette switching on top; Bootstrap and Bulma users skip Tailwind entirely.
 
-The smallest workable setup is `@vuecs/core` + a theme + the design tokens:
+## Tailwind setup
 
-```bash
-npm install @vuecs/core @vuecs/theme-tailwind @vuecs/design
-```
-
-Add Tailwind v4 (peer dep of `@vuecs/theme-tailwind`):
+The smallest Tailwind-flavored setup is `@vuecs/core` + the design tokens + the Tailwind theme:
 
 ```bash
+npm install @vuecs/core @vuecs/design @vuecs/theme-tailwind
 npm install -D tailwindcss @tailwindcss/vite
 ```
 
-## Wire the plugin
+### Wire the plugin
 
 ```ts
 // main.ts
@@ -30,16 +27,34 @@ createApp(App)
     .mount('#app');
 ```
 
-## Add the design tokens to your CSS
+### Add the CSS imports
 
 In your application stylesheet:
 
 ```css
 @import "tailwindcss";
 @import "@vuecs/design";
+@import "@vuecs/theme-tailwind";
 ```
 
-That's it. The `@vuecs/design` import registers the CSS variables (`--vc-color-primary-*`, `--vc-color-bg`, etc.) and the Tailwind v4 `@theme` block that exposes them as utility classes (`bg-primary-600`, `text-fg`, `border-border`).
+`@vuecs/design` registers the `--vc-color-*` design tokens. `@vuecs/theme-tailwind` rebinds those tokens to Tailwind palette names (so runtime `setColorPalette()` swaps work), exposes them as utility classes via `@theme` (`bg-primary-600`, `text-fg`, `border-border`), and force-includes all 22 Tailwind palettes via `@source inline()`.
+
+## Bootstrap or Bulma setup
+
+Skip Tailwind entirely. Install only the design tokens + your framework's theme bridge:
+
+```bash
+npm install @vuecs/core @vuecs/design @vuecs/theme-bootstrap
+# or: @vuecs/theme-bulma
+```
+
+```css
+@import "bootstrap/dist/css/bootstrap.css";
+@import "@vuecs/design";
+@import "@vuecs/theme-bootstrap";
+```
+
+`@vuecs/design`'s concrete OKLCH tokens render correctly without Tailwind. The theme bridge maps `--bs-*` (or `--bulma-*`) onto `--vc-color-*` so vuecs components blend visually with the framework's chrome. Runtime palette switching is **not available** under these themes — see [Themes](/themes/) for the reasoning.
 
 ## Add component packages
 
@@ -73,7 +88,7 @@ vuecs ships TypeScript declarations in every package. The `ThemeElements` and `C
 
 | Framework | Package | Notes |
 |-----------|---------|-------|
-| Nuxt 4 | [`@vuecs/nuxt`](/nuxt/) | Auto-imports composables, SSR-safe palette + color-mode |
+| Nuxt 4 | [`@vuecs/nuxt`](/nuxt/) (+ [`@vuecs/theme-tailwind-nuxt`](/nuxt/) for palette) | Theme-agnostic Nuxt module + per-theme palette sub-module |
 | Vite + Vue | (no dedicated package) | Use `@vuecs/core` directly as shown above |
 | Vue CLI / webpack | (no dedicated package) | Same as Vite — needs Tailwind v4 |
 

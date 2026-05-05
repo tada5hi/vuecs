@@ -1,5 +1,30 @@
 import type { ClassesMergeFn, Theme } from '@vuecs/core';
 import { twMerge } from 'tailwind-merge';
+import './config';
+
+export { renderColorPaletteStyles, setColorPalette } from './palette';
+export { useColorPalette } from './use-color-palette';
+export type { UseColorPaletteOptions, UseColorPaletteReturn } from './use-color-palette';
+// `applyColorPaletteCss`, `bindColorPalette`, and `COLOR_PALETTE_STYLE_ELEMENT_ID` are
+// theme-agnostic primitives — re-exported from `@vuecs/design`. Consumers
+// can import them from either source; we keep the re-export so downstream
+// code that picked up the imports from theme-tailwind in earlier versions
+// keeps working.
+export {
+    COLOR_PALETTE_STYLE_ELEMENT_ID,
+    applyColorPaletteCss,
+    bindColorPalette,
+} from '@vuecs/design';
+export {
+    COLOR_PALETTE_SHADES,
+    SEMANTIC_SCALES,
+    TAILWIND_COLOR_PALETTES,
+} from './constants';
+export type {
+    ColorPaletteConfig,
+    SemanticScaleName,
+    TailwindColorPaletteName,
+} from './types';
 
 export const merge: ClassesMergeFn = (base, override) => twMerge(base, override);
 
@@ -17,7 +42,7 @@ export const merge: ClassesMergeFn = (base, override) => twMerge(base, override)
  *      stylesheet.
  *
  * Reskinning is done by redefining `--vc-color-*` variables (manually or
- * via `setPalette()` from `@vuecs/design`). No theme override needed.
+ * via `setColorPalette()` from `@vuecs/design`). No theme override needed.
  */
 export default function tailwindTheme(): Theme {
     return {

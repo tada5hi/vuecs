@@ -10,8 +10,8 @@ export type Direction = 'ltr' | 'rtl';
  * Core declares only the truly cross-cutting keys (`dir`, `locale`).
  * Child packages declare the rest:
  *
- *   - `@vuecs/design` augments with `nonce` (CSP nonce for `setPalette`'s
- *     injected `<style id="vc-palette">` block).
+ *   - `@vuecs/theme-tailwind` augments with `nonce` (CSP nonce for
+ *     `setColorPalette`'s injected `<style id="vc-palette">` block).
  *   - `@vuecs/overlays` augments with `scrollLockTarget` (selector / element
  *     that should receive scroll-lock when an overlay opens).
  *

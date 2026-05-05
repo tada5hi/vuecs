@@ -22,6 +22,7 @@
         "themes/bootstrap": {"component": "theme-bootstrap" },
         "themes/bulma": {"component": "theme-bulma" },
         "themes/tailwind": {"component": "theme-tailwind" },
+        "themes/tailwind-nuxt": {"component": "theme-tailwind-nuxt" },
         "icons/font-awesome": {"component": "icons-font-awesome" },
         "icons/lucide": {"component": "icons-lucide" },
         "packages/timeago": {"component": "timeago" },

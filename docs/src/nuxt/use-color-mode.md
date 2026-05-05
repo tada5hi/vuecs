@@ -62,9 +62,9 @@ export default defineNuxtConfig({
             cookieName: 'my-app-color-mode',
             preference: 'dark',  // default for first-time visitors
         },
-        // Optional — applies to BOTH the color-mode and palette
-        // cookies. See the cookie configuration section in the
-        // module overview for the full option list.
+        // Optional — color-mode cookie attributes. Palette cookie
+        // is configured separately under `vuecsTailwind.cookie` in
+        // @vuecs/theme-tailwind-nuxt; each module owns its cookie.
         cookie: {
             sameSite: 'strict',
         },
@@ -86,4 +86,4 @@ The Nuxt-aware composable from `@vuecs/nuxt` is a thin wrapper over `bindColorMo
 ## See also
 
 - [Dark Mode getting-started guide](/getting-started/dark-mode)
-- [`usePalette`](/nuxt/use-palette) — palette switching
+- [`useColorPalette`](/nuxt/use-palette) — palette switching

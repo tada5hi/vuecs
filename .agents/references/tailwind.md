@@ -30,7 +30,7 @@ Every one of these is load-bearing in `@vuecs/design`. Replacing v4 with v3 woul
 |---------|-------------|-------|
 | **Token registration** | `@theme { --color-X: …; }` | `packages/design/assets/index.css` `@theme` block — exposes `--vc-color-*` aliases as `--color-*` so utilities resolve |
 | **Class scanning** | `@source "<path>"` | `themes/tailwind/src` is scanned by every consumer (theme classes are baked into source); `@vuecs/design` ships `@source inline(…)` for the 22-palette safelist |
-| **Inline safelist** | `@source inline("classname1 classname2")` (supports `{a,b,c}` cartesian product) | Used in `@vuecs/design/assets/index.css` to force-emit `bg-{22 palettes}-{50…950}` — without it, `setPalette({ primary: 'emerald' })` fails because emerald gets tree-shaken |
+| **Inline safelist** | `@source inline("classname1 classname2")` (supports `{a,b,c}` cartesian product) | Used in `@vuecs/design/assets/index.css` to force-emit `bg-{22 palettes}-{50…950}` — without it, `setColorPalette({ primary: 'emerald' })` fails because emerald gets tree-shaken |
 | **Default palettes** | `--color-blue-*`, `--color-emerald-*`, …, 22 palettes × 11 shades | Referenced as the **lower layer** in the design-token chain: `--vc-color-primary-* → var(--color-blue-*)` by default |
 | **Dark variant** | `@custom-variant dark (&:where(.dark, .dark *))` (manual config in v4) | Recommended docs setup — pairs with `@vuecs/design`'s `.dark` token flips |
 | **Class merging** | `tailwind-merge` (third-party) | `@vuecs/theme-tailwind` exports `merge: ClassesMergeFn` (twMerge-backed) and pre-wires it as the theme's `classesMergeFn` — used for `extend()` overrides |
@@ -40,12 +40,12 @@ Every one of these is load-bearing in `@vuecs/design`. Replacing v4 with v3 woul
 ```
 1. bg-primary-600          ← Tailwind v4 utility class emitted by theme-tailwind
 2. --color-primary-600     ← @theme mapping in @vuecs/design/assets/index.css
-3. --vc-color-primary-600  ← semantic-scale var (overridden by setPalette)
+3. --vc-color-primary-600  ← semantic-scale var (overridden by setColorPalette)
 4. --color-blue-600        ← Tailwind's built-in palette (default binding)
 5. concrete hex            ← shipped by Tailwind
 ```
 
-`setPalette({ primary: 'green' })` rewrites layer 3 to point at `var(--color-green-600)`. Layers 1, 2, 4, 5 are untouched — that's why palette switching is atomic and doesn't require theme re-resolution.
+`setColorPalette({ primary: 'green' })` rewrites layer 3 to point at `var(--color-green-600)`. Layers 1, 2, 4, 5 are untouched — that's why palette switching is atomic and doesn't require theme re-resolution.
 
 ## JIT internals we depend on
 

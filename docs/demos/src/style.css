@@ -9,6 +9,7 @@
  */
 @import "tailwindcss";
 @import "@vuecs/design";
+@import "@vuecs/theme-tailwind";
 
 @import "@vuecs/button";
 @import "@vuecs/elements";
@@ -20,7 +21,7 @@
 /* Bootstrap design-token bridge — remaps `--bs-*` to reference our
    `--vc-color-*` tokens via `var()` indirection. Loaded unconditionally:
    when the bootstrap theme is active (CDN CSS toggled on by the
-   iframe-bridge), this lets `setPalette()` repaint Bootstrap's btn /
+   iframe-bridge), this lets `setColorPalette()` repaint Bootstrap's btn /
    alert / badge etc. via the `--bs-primary`, `--bs-success` … cascade.
    When the bootstrap CDN is off (tailwind theme), defining `--bs-*` is
    harmless — nothing reads them. */

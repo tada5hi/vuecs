@@ -9,7 +9,7 @@ export type DemoThemeName = 'tailwind' | 'bootstrap' | 'bulma';
  * changes to its iframe via postMessage.
  *
  * `createSharedComposable` makes every call site read/write the same ref —
- * mirrors the `usePalette` / `useColorMode` pattern from `@vuecs/design`.
+ * mirrors the `useColorPalette` / `useColorMode` pattern from `@vuecs/design`.
  */
 export const useDemoTheme = createSharedComposable(() => {
     const current = ref<DemoThemeName>('tailwind');

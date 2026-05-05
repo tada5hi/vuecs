@@ -1,63 +1,89 @@
 // @vitest-environment jsdom
-import { 
-    afterEach, 
-    describe, 
-    expect, 
-    it, 
+import {
+    afterEach,
+    describe,
+    expect,
+    it,
 } from 'vitest';
-import { renderPaletteStyles, setPalette } from '../../src/palette';
-import { PALETTE_STYLE_ELEMENT_ID } from '../../src/constants';
+import { nextTick, ref } from 'vue';
+import {
+    COLOR_PALETTE_STYLE_ELEMENT_ID,
+    applyColorPaletteCss,
+    bindColorPalette,
+} from '../../src/palette';
 
-describe('renderPaletteStyles', () => {
-    it('should return an empty string for an empty palette', () => {
-        expect(renderPaletteStyles({})).toBe('');
+describe('applyColorPaletteCss', () => {
+    afterEach(() => {
+        document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID)?.remove();
     });
 
-    it('should emit all 11 shades for each scale assignment', () => {
-        const css = renderPaletteStyles({ primary: 'green' });
-        expect(css).toContain(':root {');
-        for (const shade of ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950']) {
-            expect(css).toContain(`--vc-color-primary-${shade}: var(--color-green-${shade});`);
-        }
+    it('is a no-op when no document is provided', () => {
+        expect(() => applyColorPaletteCss(':root { --x: 1; }', undefined)).not.toThrow();
     });
 
-    it('should emit declarations for every provided scale', () => {
-        const css = renderPaletteStyles({
-            primary: 'blue',
-            success: 'emerald',
-            error: 'rose',
-        });
-        expect(css).toContain('--vc-color-primary-500: var(--color-blue-500);');
-        expect(css).toContain('--vc-color-success-500: var(--color-emerald-500);');
-        expect(css).toContain('--vc-color-error-500: var(--color-rose-500);');
+    it('inserts a <style id="vc-color-palette"> on first call', () => {
+        applyColorPaletteCss(':root { --x: 1; }');
+        const style = document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID);
+        expect(style).not.toBeNull();
+        expect(style!.tagName).toBe('STYLE');
+        expect(style!.textContent).toBe(':root { --x: 1; }');
+    });
+
+    it('replaces the existing <style> content on subsequent calls', () => {
+        applyColorPaletteCss(':root { --x: 1; }');
+        applyColorPaletteCss(':root { --x: 2; }');
+        const styles = document.querySelectorAll(`style#${COLOR_PALETTE_STYLE_ELEMENT_ID}`);
+        expect(styles.length).toBe(1);
+        expect(styles[0].textContent).toBe(':root { --x: 2; }');
     });
 });
 
-describe('setPalette', () => {
+describe('bindColorPalette (generic)', () => {
     afterEach(() => {
-        const existing = document.getElementById(PALETTE_STYLE_ELEMENT_ID);
-        if (existing) existing.remove();
+        document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID)?.remove();
     });
 
-    it('should be a no-op when no document is provided', () => {
-        expect(() => setPalette({ primary: 'green' }, undefined)).not.toThrow();
+    type FakePalette = { primary?: string };
+    const renderFake = (p: FakePalette) => (
+        p.primary ? `:root { --primary: ${p.primary}; }` : ''
+    );
+
+    it('renders + applies the initial value', () => {
+        const source = ref<FakePalette>({ primary: 'green' });
+        bindColorPalette(source, renderFake);
+        const style = document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID);
+        expect(style?.textContent).toBe(':root { --primary: green; }');
     });
 
-    it('should create a <style id="vc-palette"> element on first call', () => {
-        setPalette({ primary: 'green' });
-        const style = document.getElementById(PALETTE_STYLE_ELEMENT_ID);
-        expect(style).not.toBeNull();
-        expect(style!.tagName).toBe('STYLE');
-        expect(style!.textContent).toContain('--vc-color-primary-500: var(--color-green-500);');
+    it('re-renders on source mutation', async () => {
+        const source = ref<FakePalette>({ primary: 'blue' });
+        bindColorPalette(source, renderFake);
+        source.value = { primary: 'rose' };
+        await nextTick();
+        const style = document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID);
+        expect(style?.textContent).toBe(':root { --primary: rose; }');
     });
 
-    it('should replace the existing <style> content on subsequent calls', () => {
-        setPalette({ primary: 'green' });
-        setPalette({ primary: 'violet' });
+    it('set() replaces the entire value', () => {
+        const source = ref<FakePalette>({ primary: 'blue' });
+        const { current, set } = bindColorPalette(source, renderFake);
+        set({ primary: 'orange' });
+        expect(current.value).toEqual({ primary: 'orange' });
+    });
 
-        const styles = document.querySelectorAll(`style#${PALETTE_STYLE_ELEMENT_ID}`);
-        expect(styles.length).toBe(1);
-        expect(styles[0].textContent).toContain('--vc-color-primary-500: var(--color-violet-500);');
-        expect(styles[0].textContent).not.toContain('--color-green-500');
+    it('extend() shallow-merges partial over object-shaped values', () => {
+        type MultiKey = { primary?: string; neutral?: string };
+        const source = ref<MultiKey>({ primary: 'blue', neutral: 'zinc' });
+        const { current, extend } = bindColorPalette(source, () => '');
+        extend({ primary: 'green' });
+        expect(current.value).toEqual({ primary: 'green', neutral: 'zinc' });
+    });
+
+    it('set({}) resets to an empty object value', () => {
+        type MultiKey = { primary?: string; neutral?: string };
+        const source = ref<MultiKey>({ primary: 'blue', neutral: 'zinc' });
+        const { current, set } = bindColorPalette(source, () => '');
+        set({});
+        expect(current.value).toEqual({});
     });
 });
