@@ -26,6 +26,10 @@
    harmless — nothing reads them. */
 @import "@vuecs/theme-bootstrap";
 
+/* Bulma design-token bridge — same rationale as the Bootstrap bridge,
+   for `--bulma-*` tokens. Harmless when the Bulma CDN is off. */
+@import "@vuecs/theme-bulma";
+
 /* Scan theme-tailwind so JIT keeps the class names it emits. */
 @source "../../../themes/tailwind/src";
 

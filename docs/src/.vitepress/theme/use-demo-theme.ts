@@ -1,7 +1,7 @@
 import { createSharedComposable } from '@vueuse/core';
 import { ref } from 'vue';
 
-export type DemoThemeName = 'tailwind' | 'bootstrap';
+export type DemoThemeName = 'tailwind' | 'bootstrap' | 'bulma';
 
 /**
  * Shared reactive state for the iframe-demo theme picker. Lives outside

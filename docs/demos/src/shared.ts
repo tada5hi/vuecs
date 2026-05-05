@@ -1,5 +1,6 @@
 import vuecs, { injectThemeManager } from '@vuecs/core';
 import bootstrapTheme from '@vuecs/theme-bootstrap';
+import bulmaTheme from '@vuecs/theme-bulma';
 import tailwindTheme from '@vuecs/theme-tailwind';
 import type { App } from 'vue';
 
@@ -7,14 +8,26 @@ import type { App } from 'vue';
  * Shared `@vuecs/core` install for every demo. Each iframe is its own
  * Vue app, so this runs once per demo. The default theme is
  * `@vuecs/theme-tailwind` (mirrors a real consumer who picked Tailwind);
- * the docs `<SettingsModal>` lets a reader flip to `bootstrap` for
- * visual QA via postMessage.
+ * the docs `<SettingsModal>` lets a reader flip to `bootstrap` or `bulma`
+ * for visual QA via postMessage.
  */
-export type DemoThemeName = 'tailwind' | 'bootstrap';
+export type DemoThemeName = 'tailwind' | 'bootstrap' | 'bulma';
 
 export const themeFactories: Record<DemoThemeName, () => ReturnType<typeof tailwindTheme>> = {
     tailwind: tailwindTheme,
     bootstrap: bootstrapTheme,
+    bulma: bulmaTheme,
+};
+
+/**
+ * Maps each non-Tailwind demo theme to the `data-*-css` attribute on the
+ * preloaded-but-disabled framework `<link>` in the demo HTML shell. The
+ * Tailwind theme has no entry — its styles are embedded by Vite, no
+ * framework-CSS toggle needed.
+ */
+const cssLinkAttrByTheme: Partial<Record<DemoThemeName, string>> = {
+    bootstrap: 'data-bootstrap-css',
+    bulma: 'data-bulma-css',
 };
 
 let installedApp: App | null = null;
@@ -29,17 +42,22 @@ export function installVuecs(app: App): void {
  * parent docs page postMessages a `set-theme` event from the
  * SettingsModal. Walks Vue's inject tree to grab the ThemeManager, then
  * calls `setThemes([newTheme()])`.
+ *
+ * Each non-Tailwind theme has a corresponding `<link disabled>` in the
+ * demo HTML shell that loads the framework CSS from a CDN. We toggle
+ * exactly one link enabled at a time so framework styles don't leak
+ * across themes.
  */
 export function setDemoTheme(name: DemoThemeName): void {
     if (!installedApp) return;
-    // Bootstrap CSS for `@vuecs/theme-bootstrap` is preloaded as a disabled
-    // <link> in the demo HTML shell; toggle it on/off so the bootstrap
-    // class names actually have visual effect (and don't leak into the
-    // tailwind preview when switched off).
-    const link = document.querySelector<globalThis.HTMLLinkElement>('link[data-bootstrap-css]');
-    if (link) {
-        link.disabled = name !== 'bootstrap';
+
+    for (const [theme, attr] of Object.entries(cssLinkAttrByTheme)) {
+        const link = document.querySelector<globalThis.HTMLLinkElement>(`link[${attr}]`);
+        if (link) {
+            link.disabled = name !== theme;
+        }
     }
+
     // `runWithContext` lets us call `inject()` outside a setup() — needed
     // because the iframe-bridge calls this from a `message` event handler.
     installedApp.runWithContext(() => {

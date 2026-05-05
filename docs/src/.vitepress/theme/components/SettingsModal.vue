@@ -26,6 +26,7 @@ const { current: demoTheme, set: setDemoTheme } = useDemoTheme();
 const themeOptions: { value: DemoThemeName; label: string }[] = [
     { value: 'tailwind', label: 'Tailwind' },
     { value: 'bootstrap', label: 'Bootstrap' },
+    { value: 'bulma', label: 'Bulma' },
 ];
 
 const primary = computed<PrimaryPalette>({

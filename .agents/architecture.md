@@ -774,6 +774,53 @@ component CSS is Sass-compiled to literal hex, so the design-token
 bridge had no practical effect on Bootstrap-rendered widgets, only on
 consumer-authored CSS that referenced `var(--primary)`.
 
+### Bulma bridge (theme-bulma)
+
+`@vuecs/theme-bulma` ships an optional CSS file at `assets/index.css`
+that wires Bulma 1.0+'s `:root` theme-color variables onto `--vc-color-*`.
+Same shape as the Bootstrap bridge: `style` conditional export so a bare
+`@import "@vuecs/theme-bulma"` resolves to the bridge. Bulma 1.0+
+components read `--bulma-*` at runtime, so runtime palette switches via
+`setPalette()` propagate.
+
+Notable mapping decisions:
+- `--bulma-link → --vc-color-info-500` (preserves Bulma's two-tone
+  palette where `link` is a separate "informational" axis from
+  `primary`; differs from the BS bridge's `--bs-link-color → primary-600`).
+- `ghost` / `link` button-variant mappings are reversed vs. Bootstrap.
+  Bulma's `is-ghost` is the underlined-anchor button (= our `link`);
+  Bulma's `is-text` is the borderless transparent button (= our `ghost`).
+- DropdownMenu / FormSelect content uses `.dropdown-content` (Bulma's
+  inner box-styled element) rather than `.dropdown-menu`, because
+  `.dropdown-menu` is gated by parent `.dropdown.is-active` and Reka's
+  portal-mounted content has no parent.
+- Stepper and Switch are hand-rolled via gap-fill rules in the bridge
+  CSS — neither ships in Bulma core. Same approach as the BS bridge,
+  using design-system tokens for color.
+
+Bulma 1.0 routes per-variant theming through HSL **channel** vars
+(`--bulma-button-h/s/l`), not named color tokens. A `.button.is-primary`
+sets `--bulma-button-h: var(--bulma-primary-h)` etc., and the base
+`.button` rule resolves `background-color: hsl(--bulma-button-h, …)`.
+Pure CSS can't decompose `var(--vc-color-primary-600)` into H/S/L
+channels, so we can't bridge that path — overriding
+`--bulma-button-background-color` is a no-op because Bulma never reads
+it. The bridge instead overrides the **resolved** `background-color` /
+`border-color` / `color` properties directly on each per-variant
+selector. Specificity 0,2,0 beats Bulma's base `.button` (0,1,0); no
+`!important` needed.
+
+Trade-off: Bulma's auto-computed hover/active lightness deltas are
+short-circuited. The bridge re-specifies hover (`-700`) and active
+(`-800`) shades manually per variant — same pattern as the BS bridge's
+explicit `--bs-btn-hover-bg` overrides.
+
+Utility classes that read HSL channels (`.has-background-light`,
+`.has-text-grey`, `.has-background-dark`) keep Bulma's default palette
+— `setPalette()` doesn't reach them. The variant matrix uses these
+utilities sparingly (avatar bg, stepper indicator default state,
+tooltip dark bg) where Bulma's defaults are visually acceptable.
+
 ### Short-form CSS imports
 
 All style-carrying packages use the `style` conditional export so
@@ -782,6 +829,7 @@ consumers can write bare imports:
 ```css
 @import "@vuecs/design";              /* → assets/index.css */
 @import "@vuecs/theme-bootstrap";     /* → assets/index.css (bridge) */
+@import "@vuecs/theme-bulma";         /* → assets/index.css (bridge) */
 @import "@vuecs/forms";       /* → dist/style.css */
 @import "@vuecs/navigation";          /* → dist/style.css */
 @import "@vuecs/pagination";          /* → dist/style.css */

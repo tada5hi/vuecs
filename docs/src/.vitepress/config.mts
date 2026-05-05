@@ -187,6 +187,7 @@ export default defineConfig({
                         { text: 'Overview', link: '/themes/' },
                         { text: 'Tailwind', link: '/themes/tailwind' },
                         { text: 'Bootstrap', link: '/themes/bootstrap' },
+                        { text: 'Bulma', link: '/themes/bulma' },
                     ],
                 },
             ],

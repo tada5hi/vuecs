@@ -19,6 +19,7 @@ Icons used to live as a "theme" entry, but as of vuecs 3.x they are configured s
 |-------|---------|--------------|
 | [Tailwind](/themes/tailwind) | `@vuecs/theme-tailwind` | Tailwind v4 utility classes for every component, paired with the design tokens |
 | [Bootstrap](/themes/bootstrap) | `@vuecs/theme-bootstrap` | Bootstrap 5.x classes + optional `--bs-*` → `--vc-color-*` bridge |
+| [Bulma](/themes/bulma) | `@vuecs/theme-bulma` | Bulma 1.0+ classes + optional `--bulma-*` → `--vc-color-*` bridge |
 
 ## Merge semantics
 
