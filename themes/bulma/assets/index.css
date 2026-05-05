@@ -1,0 +1,445 @@
+/*!
+ * @vuecs/theme-bulma — Design-token bridge + structural gap-fills
+ *
+ * Wires Bulma 1.0+'s CSS variables onto vuecs design-system tokens
+ * (`--vc-color-*`), and adds the structural rules vuecs components
+ * need that core Bulma doesn't ship (overlay panel chrome, stepper
+ * data-state visualization, modal sizing, switch / slider colors).
+ *
+ * Import order:
+ *   1. Bulma CSS (provides the default --bulma-* values).
+ *   2. @vuecs/design/index.css (provides --vc-color-*).
+ *   3. This bridge (overrides --bulma-* to reference --vc-color-*).
+ *
+ * What this covers:
+ *   - The global `--bulma-primary` / `-link` / `-info` / `-success` /
+ *     `-warning` / `-danger` tokens — read directly by anything you
+ *     reference via `var(--bulma-primary)` yourself.
+ *   - Resolved colors on every per-variant selector: `.button.is-X`,
+ *     `.tag.is-X`, `.notification.is-X`, `.pagination-link.is-current`.
+ *
+ * Why direct property overrides (not `--bulma-*-background-color`):
+ *
+ *   Bulma 1.0 routes per-variant theming through HSL **channel** vars,
+ *   not the named `--bulma-button-background-color`-style tokens. A
+ *   `.button.is-primary` does NOT set the bg-color var — it sets
+ *   `--bulma-button-h/s/l` and the base `.button` rule resolves
+ *   `background-color: hsl(--bulma-button-h, …)`. Pure CSS can't
+ *   decompose `var(--vc-color-primary-600)` into H/S/L channels, so
+ *   we can't bridge that path. Instead we override the **resolved**
+ *   `background-color` / `border-color` / `color` properties directly
+ *   on each per-variant selector. Specificity 0,2,0 beats Bulma's base
+ *   `.button` (0,1,0); no `!important` needed.
+ *
+ *   Trade-off: Bulma's auto-computed hover/active lightness deltas are
+ *   short-circuited. We re-specify hover (`-700`) and active (`-800`)
+ *   shades manually per variant.
+ *
+ * Limitations:
+ *   - Utility classes that read HSL channels (`.has-background-light`,
+ *     `.has-text-grey`, `.has-background-dark`) keep Bulma's default
+ *     palette — `setPalette()` doesn't reach them. The matrix uses
+ *     these utilities sparingly (avatar bg, stepper indicator default,
+ *     tooltip dark bg) where Bulma's defaults are visually acceptable.
+ *   - Bulma's built-in `prefers-color-scheme: dark` block toggles
+ *     `[data-theme="dark"]` semantics. This bridge uses the `.dark`
+ *     class (vuecs design-system convention); pick one source of truth.
+ */
+
+:root {
+    --bulma-primary: var(--vc-color-primary-500);
+    --bulma-link: var(--vc-color-info-500);
+    --bulma-info: var(--vc-color-info-500);
+    --bulma-success: var(--vc-color-success-500);
+    --bulma-warning: var(--vc-color-warning-500);
+    --bulma-danger: var(--vc-color-error-500);
+
+    /* Bulma's neutral ramp (named "grey") — map to design-system shades. */
+    --bulma-grey-darker:  var(--vc-color-neutral-800);
+    --bulma-grey-dark:    var(--vc-color-neutral-700);
+    --bulma-grey:         var(--vc-color-neutral-600);
+    --bulma-grey-light:   var(--vc-color-neutral-400);
+    --bulma-grey-lighter: var(--vc-color-neutral-200);
+    --bulma-grey-lightest: var(--vc-color-neutral-100);
+
+    --bulma-light: var(--vc-color-neutral-100);
+    --bulma-dark:  var(--vc-color-neutral-900);
+
+    /* Page chrome */
+    --bulma-scheme-main:     var(--vc-color-bg);
+    --bulma-scheme-main-bis: var(--vc-color-bg-muted);
+    --bulma-scheme-main-ter: var(--vc-color-bg-elevated);
+    --bulma-background:      var(--vc-color-bg-muted);
+    --bulma-text:            var(--vc-color-fg);
+    --bulma-text-strong:     var(--vc-color-fg);
+    --bulma-text-light:      var(--vc-color-fg-muted);
+    --bulma-text-weak:       var(--vc-color-fg-muted);
+    --bulma-border:          var(--vc-color-border);
+    --bulma-border-weak:     var(--vc-color-border-muted);
+    --bulma-body-background-color: var(--vc-color-bg);
+    --bulma-body-color:      var(--vc-color-fg);
+}
+
+.dark {
+    /* Only the per-color shades flip — semantic aliases (`--vc-color-fg`,
+       `--vc-color-bg`, `--vc-color-border`, …) flip themselves in
+       @vuecs/design's `.dark` block, so the scheme/text/border bindings
+       in :root above already track dark mode. We just bump the active
+       color shade to `-400` (matching the design-system's own
+       `--vc-color-ring` dark-mode flip — gives a brighter primary on
+       dark bg). */
+    --bulma-primary: var(--vc-color-primary-400);
+    --bulma-link:    var(--vc-color-info-400);
+    --bulma-info:    var(--vc-color-info-400);
+    --bulma-success: var(--vc-color-success-400);
+    --bulma-warning: var(--vc-color-warning-400);
+    --bulma-danger:  var(--vc-color-error-400);
+
+    --bulma-light: var(--vc-color-neutral-800);
+    --bulma-dark:  var(--vc-color-neutral-100);
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * Per-variant button overrides.
+ *
+ * Critical Bulma 1.0 cascade detail: `.button.is-<color>` does NOT use
+ * `--bulma-button-background-color`. Bulma defines the modifier as
+ *
+ *     .button.is-primary {
+ *         --bulma-button-h: var(--bulma-primary-h);
+ *         --bulma-button-s: var(--bulma-primary-s);
+ *         --bulma-button-l: var(--bulma-primary-l);
+ *     }
+ *
+ * and the base `.button` rule resolves bg/border/color via
+ *     background-color: hsl(var(--bulma-button-h), …, calc(var(--bulma-button-l) + …));
+ *
+ * So overriding `--bulma-button-background-color` is a no-op — Bulma
+ * recomputes the color from HSL channels. The viable approaches are
+ * either (a) override the HSL channel vars (requires per-shade HSL
+ * decomposition that we can't compute in pure CSS), or (b) override the
+ * resolved properties directly. We pick (b): set `background-color` /
+ * `border-color` / `color` on each `.is-<color>` selector. Specificity
+ * 0,2,0 beats Bulma's `.button` (0,1,0) so no `!important` is needed.
+ *
+ * Trade-off: Bulma's auto-computed hover/active lightness deltas no
+ * longer apply; we re-specify them explicitly with `-700`/`-800` shades.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+/* solid */
+.button.is-primary { background-color: var(--vc-color-primary-600); border-color: var(--vc-color-primary-600); color: var(--vc-color-on-primary); }
+.button.is-info    { background-color: var(--vc-color-info-600);    border-color: var(--vc-color-info-600);    color: var(--vc-color-on-info); }
+.button.is-success { background-color: var(--vc-color-success-600); border-color: var(--vc-color-success-600); color: var(--vc-color-on-success); }
+.button.is-warning { background-color: var(--vc-color-warning-600); border-color: var(--vc-color-warning-600); color: var(--vc-color-on-warning); }
+.button.is-danger  { background-color: var(--vc-color-error-600);   border-color: var(--vc-color-error-600);   color: var(--vc-color-on-error); }
+
+.button.is-primary:hover, .button.is-primary.is-hovered { background-color: var(--vc-color-primary-700); border-color: var(--vc-color-primary-700); }
+.button.is-info:hover,    .button.is-info.is-hovered    { background-color: var(--vc-color-info-700);    border-color: var(--vc-color-info-700); }
+.button.is-success:hover, .button.is-success.is-hovered { background-color: var(--vc-color-success-700); border-color: var(--vc-color-success-700); }
+.button.is-warning:hover, .button.is-warning.is-hovered { background-color: var(--vc-color-warning-700); border-color: var(--vc-color-warning-700); }
+.button.is-danger:hover,  .button.is-danger.is-hovered  { background-color: var(--vc-color-error-700);   border-color: var(--vc-color-error-700); }
+
+.button.is-primary:active, .button.is-primary.is-active { background-color: var(--vc-color-primary-800); border-color: var(--vc-color-primary-800); }
+.button.is-info:active,    .button.is-info.is-active    { background-color: var(--vc-color-info-800);    border-color: var(--vc-color-info-800); }
+.button.is-success:active, .button.is-success.is-active { background-color: var(--vc-color-success-800); border-color: var(--vc-color-success-800); }
+.button.is-warning:active, .button.is-warning.is-active { background-color: var(--vc-color-warning-800); border-color: var(--vc-color-warning-800); }
+.button.is-danger:active,  .button.is-danger.is-active  { background-color: var(--vc-color-error-800);   border-color: var(--vc-color-error-800); }
+
+/* `.is-light` shade modifier on a colored button — tinted bg, colored
+   text. Matches BS5's `*-subtle` / `*-emphasis` token pair. The 0,3,0
+   specificity beats both `.button` and `.button.is-<color>`. */
+.button.is-primary.is-light { background-color: var(--vc-color-primary-100); border-color: transparent; color: var(--vc-color-primary-700); }
+.button.is-info.is-light    { background-color: var(--vc-color-info-100);    border-color: transparent; color: var(--vc-color-info-700); }
+.button.is-success.is-light { background-color: var(--vc-color-success-100); border-color: transparent; color: var(--vc-color-success-700); }
+.button.is-warning.is-light { background-color: var(--vc-color-warning-100); border-color: transparent; color: var(--vc-color-warning-700); }
+.button.is-danger.is-light  { background-color: var(--vc-color-error-100);   border-color: transparent; color: var(--vc-color-error-700); }
+
+.button.is-primary.is-light:hover { background-color: var(--vc-color-primary-200); }
+.button.is-info.is-light:hover    { background-color: var(--vc-color-info-200); }
+.button.is-success.is-light:hover { background-color: var(--vc-color-success-200); }
+.button.is-warning.is-light:hover { background-color: var(--vc-color-warning-200); }
+.button.is-danger.is-light:hover  { background-color: var(--vc-color-error-200); }
+
+/* `.is-outlined` — transparent bg, colored text + border, fills on hover. */
+.button.is-primary.is-outlined { background-color: transparent; border-color: var(--vc-color-primary-600); color: var(--vc-color-primary-700); }
+.button.is-info.is-outlined    { background-color: transparent; border-color: var(--vc-color-info-600);    color: var(--vc-color-info-700); }
+.button.is-success.is-outlined { background-color: transparent; border-color: var(--vc-color-success-600); color: var(--vc-color-success-700); }
+.button.is-warning.is-outlined { background-color: transparent; border-color: var(--vc-color-warning-600); color: var(--vc-color-warning-700); }
+.button.is-danger.is-outlined  { background-color: transparent; border-color: var(--vc-color-error-600);   color: var(--vc-color-error-700); }
+
+.button.is-primary.is-outlined:hover { background-color: var(--vc-color-primary-600); color: var(--vc-color-on-primary); }
+.button.is-info.is-outlined:hover    { background-color: var(--vc-color-info-600);    color: var(--vc-color-on-info); }
+.button.is-success.is-outlined:hover { background-color: var(--vc-color-success-600); color: var(--vc-color-on-success); }
+.button.is-warning.is-outlined:hover { background-color: var(--vc-color-warning-600); color: var(--vc-color-on-warning); }
+.button.is-danger.is-outlined:hover  { background-color: var(--vc-color-error-600);   color: var(--vc-color-on-error); }
+
+/* `.is-light` and `.is-dark` as standalone color modifiers — used by
+   our matrix for `<VCButton variant="soft" color="neutral">` and
+   `<VCBadge variant="solid" color="neutral">`. Bulma's defaults
+   compute these via `--bulma-light-*` / `--bulma-dark-*` HSL channels;
+   override with neutral shades so they read consistently in light and
+   dark mode (the design tokens flip themselves). */
+.button.is-light:not(.is-primary):not(.is-info):not(.is-success):not(.is-warning):not(.is-danger):not(.is-dark) {
+    background-color: var(--vc-color-bg-elevated);
+    border-color: var(--vc-color-border);
+    color: var(--vc-color-fg);
+}
+.button.is-light:not(.is-primary):not(.is-info):not(.is-success):not(.is-warning):not(.is-danger):not(.is-dark):hover {
+    background-color: var(--vc-color-bg-muted);
+}
+.button.is-dark {
+    background-color: var(--vc-color-neutral-800);
+    border-color: var(--vc-color-neutral-800);
+    color: var(--vc-color-on-neutral);
+}
+.button.is-dark:hover { background-color: var(--vc-color-neutral-900); border-color: var(--vc-color-neutral-900); }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * Tag + notification per-variant overrides.
+ * Same HSL-channel architecture as `.button` — direct property
+ * overrides are required (the `--bulma-X-background-color` named vars
+ * are unread).
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.tag.is-primary { background-color: var(--vc-color-primary-600); color: var(--vc-color-on-primary); }
+.tag.is-info    { background-color: var(--vc-color-info-600);    color: var(--vc-color-on-info); }
+.tag.is-success { background-color: var(--vc-color-success-600); color: var(--vc-color-on-success); }
+.tag.is-warning { background-color: var(--vc-color-warning-600); color: var(--vc-color-on-warning); }
+.tag.is-danger  { background-color: var(--vc-color-error-600);   color: var(--vc-color-on-error); }
+
+.tag.is-primary.is-light { background-color: var(--vc-color-primary-100); color: var(--vc-color-primary-700); }
+.tag.is-info.is-light    { background-color: var(--vc-color-info-100);    color: var(--vc-color-info-700); }
+.tag.is-success.is-light { background-color: var(--vc-color-success-100); color: var(--vc-color-success-700); }
+.tag.is-warning.is-light { background-color: var(--vc-color-warning-100); color: var(--vc-color-warning-700); }
+.tag.is-danger.is-light  { background-color: var(--vc-color-error-100);   color: var(--vc-color-error-700); }
+
+/* `.is-light` and `.is-dark` standalone — used by `<VCBadge>`'s
+   `(soft, neutral)` and `(solid, neutral)` cells. Bulma's defaults rely
+   on `--bulma-light-h/s/l/invert-l` HSL channels, which we don't
+   re-derive when overriding `--bulma-light` to a hex token at `:root`
+   — so the resolved color is broken. Override the resolved properties
+   directly using the `bg-elevated` / `fg` alias pair so BOTH halves
+   flip together under `.dark` (a `neutral-100` bg + `fg` text would
+   give white-on-white in dark mode because `neutral-100` doesn't flip
+   but `fg` does). */
+.tag.is-light:not(.is-primary):not(.is-info):not(.is-success):not(.is-warning):not(.is-danger):not(.is-dark) {
+    background-color: var(--vc-color-bg-elevated);
+    color: var(--vc-color-fg);
+}
+.tag.is-dark {
+    background-color: var(--vc-color-neutral-800);
+    color: var(--vc-color-on-neutral);
+}
+
+.notification.is-primary { background-color: var(--vc-color-primary-600); color: var(--vc-color-on-primary); }
+.notification.is-info    { background-color: var(--vc-color-info-600);    color: var(--vc-color-on-info); }
+.notification.is-success { background-color: var(--vc-color-success-600); color: var(--vc-color-on-success); }
+.notification.is-warning { background-color: var(--vc-color-warning-600); color: var(--vc-color-on-warning); }
+.notification.is-danger  { background-color: var(--vc-color-error-600);   color: var(--vc-color-on-error); }
+
+.notification.is-primary.is-light { background-color: var(--vc-color-primary-100); color: var(--vc-color-primary-700); }
+.notification.is-info.is-light    { background-color: var(--vc-color-info-100);    color: var(--vc-color-info-700); }
+.notification.is-success.is-light { background-color: var(--vc-color-success-100); color: var(--vc-color-success-700); }
+.notification.is-warning.is-light { background-color: var(--vc-color-warning-100); color: var(--vc-color-warning-800); }
+.notification.is-danger.is-light  { background-color: var(--vc-color-error-100);   color: var(--vc-color-error-700); }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * `has-background-*` / `has-text-*` utilities.
+ * Bulma 1.0 reads these from `var(--bulma-<color>)` directly, so the
+ * :root rebinding above already propagates. We also redeclare here so
+ * the resolved value matches the design palette's `-600` shade
+ * (the :root rebinding uses `-500` for visual consistency with Bulma
+ * default brightness).
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.has-background-primary { background-color: var(--vc-color-primary-600); }
+.has-background-info    { background-color: var(--vc-color-info-600); }
+.has-background-success { background-color: var(--vc-color-success-600); }
+.has-background-warning { background-color: var(--vc-color-warning-600); }
+.has-background-danger  { background-color: var(--vc-color-error-600); }
+
+.has-text-primary { color: var(--vc-color-primary-600); }
+.has-text-info    { color: var(--vc-color-info-600); }
+.has-text-success { color: var(--vc-color-success-600); }
+.has-text-warning { color: var(--vc-color-warning-600); }
+.has-text-danger  { color: var(--vc-color-error-600); }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * Form controls — `.input`, `.textarea`, `.select`.
+ * Bulma's focus state reads `var(--bulma-input-focus-border-color)`,
+ * which defaults to `var(--bulma-link)`. Rebind to primary so vuecs
+ * inputs land on the design-system primary on focus.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.input,
+.textarea,
+.select select {
+    --bulma-input-focus-border-color: var(--vc-color-primary-500);
+    --bulma-input-focus-shadow-alpha: 0.25;
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * Pagination — `.pagination-link.is-current` reads `--bulma-link`;
+ * rebind to primary for visual consistency with the rest of the theme.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.pagination-link.is-current,
+.pagination-link.is-selected {
+    /* Direct property override — Bulma uses HSL channels here too. */
+    background-color: var(--vc-color-primary-600);
+    border-color: var(--vc-color-primary-600);
+    color: var(--vc-color-on-primary);
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * Progress bar — same primary-600 alignment.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.progress {
+    --bulma-progress-value-background-color: var(--vc-color-primary-600);
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * @vuecs/list shorthand-mode wrappers — same as the BS bridge: hide
+ * empty wrappers so the layout doesn't sprout extra rows.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.vc-list-header:empty,
+.vc-list-body:empty,
+.vc-list-footer:empty {
+    display: none;
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * @vuecs/elements Badge — outline variant.
+ * Bulma 1.0 has no `.tag.is-outlined` in core. The variant matrix tags
+ * outline cells with the marker classes `vc-badge-outline` +
+ * `vc-badge-outline-<color>`; this block paints them via design-system
+ * tokens. Borders use `-600` (matches solid bg saturation), text uses
+ * `-700` for emphasis.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.vc-badge-outline {
+    background-color: transparent;
+    border: 1px solid currentcolor;
+}
+.vc-badge-outline-primary { border-color: var(--vc-color-primary-600); color: var(--vc-color-primary-700); }
+.vc-badge-outline-neutral { border-color: var(--vc-color-border);      color: var(--vc-color-fg); }
+.vc-badge-outline-success { border-color: var(--vc-color-success-600); color: var(--vc-color-success-700); }
+.vc-badge-outline-warning { border-color: var(--vc-color-warning-600); color: var(--vc-color-warning-700); }
+.vc-badge-outline-error   { border-color: var(--vc-color-error-600);   color: var(--vc-color-error-700); }
+.vc-badge-outline-info    { border-color: var(--vc-color-info-600);    color: var(--vc-color-info-700); }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * @vuecs/overlays Modal — Bulma's `.modal-content` accepts no native
+ * size modifiers (unlike Bootstrap's `.modal-dialog` family). Re-implement
+ * the width tier so the theme's size variants take effect on our
+ * compound shape. Defaults match Bootstrap's tiers (sm=300, lg=800,
+ * xl=1140) so the same demo content reads consistently across themes;
+ * md keeps the unsized default which centers via the theme's
+ * `.modal-content` base padding.
+ *
+ * Reka renders the overlay (`DialogOverlay`) and panel (`DialogContent`)
+ * as two standalone portal nodes — there is no surrounding `.modal`
+ * wrapper to provide Bulma's flex-centered layout. Re-implement the
+ * fixed-position centering on the structural `vc-modal-content` class
+ * directly, and pin the overlay full-screen.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.modal-background {
+    position: fixed;
+    inset: 0;
+}
+
+.vc-modal-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    /* Bulma's `.modal-content` ships no border-radius (it's intended
+       to be used with `.modal-card`'s rounded chrome instead). Add
+       radius via the design-system token so the modal panel reads as
+       a card. */
+    border-radius: var(--vc-radius-lg);
+}
+
+.vc-modal-content.modal-sm { max-width: 300px;  width: calc(100% - 1rem); }
+.vc-modal-content.modal-lg { max-width: 800px;  width: calc(100% - 1rem); }
+.vc-modal-content.modal-xl { max-width: 1140px; width: calc(100% - 1rem); }
+
+/* Tooltip same border-radius reasoning — Bulma's `[data-tooltip]` is a
+   CSS pseudo-element on a data attribute, not a class-based panel, so
+   our class-based tooltip needs explicit radius. */
+.vc-tooltip-content { border-radius: var(--vc-radius-md); }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * @vuecs/overlays close-icon corner positioning.
+ *
+ * Bulma's `.delete` is `position: relative` by default — fine inline,
+ * wrong for our `closeIcon` slot which is meant to dock the button into
+ * the panel's top-right corner. The structural `vc-modal-close-icon` /
+ * `vc-popover-close-icon` classes (from component defaults) give us a
+ * scoped hook to apply corner-positioning without affecting standalone
+ * `.delete` buttons elsewhere on the page.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.vc-modal-content .vc-modal-close-icon,
+.vc-popover-close-icon {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * @vuecs/navigation Stepper — Bulma class strings can't carry
+ * `[data-state=…]` attribute selectors, so the theme's
+ * `.has-background-light` / `.has-text-grey` apply uniformly to every
+ * step. Differentiate active + completed states here. Both use primary
+ * so the trail-of-progress reads as one continuous run (matches the
+ * Tailwind theme).
+ *
+ * No `!important` needed: Bulma 1.0 dropped most `!important` flooding
+ * from utility classes (unlike Bootstrap's `.bg-light` etc.), so plain
+ * attribute-selector specificity wins against the utility classes the
+ * theme strings emit.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.vc-stepper-item[data-state="active"] .vc-stepper-indicator,
+.vc-stepper-item[data-state="completed"] .vc-stepper-indicator {
+    background-color: var(--vc-color-primary-600);
+    border-color: var(--vc-color-primary-600);
+    color: var(--vc-color-on-primary);
+}
+
+.vc-stepper-item[data-state="active"] .vc-stepper-title,
+.vc-stepper-item[data-state="completed"] .vc-stepper-title {
+    color: var(--vc-color-fg);
+}
+
+.vc-stepper-separator[data-state="completed"] {
+    background-color: var(--vc-color-primary-600);
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * @vuecs/forms FormNumber — Bulma's `.button` class ships with
+ * `border: 1px solid …` and a fixed `height: var(--bulma-control-height)`.
+ * Our `<VCFormNumber>` decrement / increment slots receive `class="button"`
+ * from the theme so the visual reads "buttoned up", but the structural
+ * `.vc-form-number-{decrement,increment}` rules deliberately drop borders
+ * (the parent `.vc-form-number` carries the single outer border + radius
+ * + overflow:hidden). Bulma's per-class border ends up showing as a
+ * vertical hairline against the input — strip it back here. Height also
+ * needs to flex with the input, not lock to control-height.
+ *
+ * Same rationale for `.vc-form-number-input` carrying `.input` — its
+ * border + height fight the structural shell.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.vc-form-number .button,
+.vc-form-number .input {
+    border: 0;
+    box-shadow: none;
+    height: auto;
+    border-radius: 0;
+}

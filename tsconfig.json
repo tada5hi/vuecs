@@ -49,6 +49,8 @@
             "@vuecs/timeago/*": ["./packages/timeago/src/*"],
             "@vuecs/theme-bootstrap": ["./themes/bootstrap/src"],
             "@vuecs/theme-bootstrap/*": ["./themes/bootstrap/src/*"],
+            "@vuecs/theme-bulma": ["./themes/bulma/src"],
+            "@vuecs/theme-bulma/*": ["./themes/bulma/src/*"],
             "@vuecs/theme-tailwind": ["./themes/tailwind/src"],
             "@vuecs/theme-tailwind/*": ["./themes/tailwind/src/*"],
             "@vuecs/icons-font-awesome": ["./icons/font-awesome/src"],

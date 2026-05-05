@@ -40,6 +40,7 @@ npm run lint:fix       # Auto-fix lint issues
 | `@vuecs/overlays` | Compound overlays on Reka primitives — Modal (+ `useModal()` view-stack composable), Popover, HoverCard, Tooltip, DropdownMenu, ContextMenu | 0.0.0 |
 | `@vuecs/pagination` | Pagination component | 1.3.1 |
 | `@vuecs/theme-bootstrap` | Bootstrap theme (currently targets v5; renamed from `@vuecs/theme-bootstrap-v5` in 3.0) | 3.0.0 |
+| `@vuecs/theme-bulma` | Bulma 1.0+ theme + design-token bridge | 0.0.0 |
 | `@vuecs/theme-tailwind` | Tailwind CSS theme (exports `merge: ClassesMergeFn`) | 0.0.0 |
 | `@vuecs/icons-font-awesome` | Font Awesome 6 Solid icon-name preset for vuecs (Iconify-backed; replaces the removed `@vuecs/theme-font-awesome`) | 0.0.0 |
 | `@vuecs/icons-lucide` | Lucide icon-name preset for vuecs (Iconify-backed) | 0.0.0 |
@@ -56,7 +57,7 @@ Layer 2': icons (@vuecs/core peer dep only — Iconify-name vocabularies for @vu
 Layer 3 (integration):       nuxt (depends on design + @nuxt/kit)
 ```
 
-`navigation` also depends on `@vuecs/link`. `pagination`, `overlays`, `forms`, `elements`, and `navigation` take a runtime dep on `reka-ui` (they wrap Reka's headless primitives — pagination, dialog/popover/hover-card/tooltip/menu, the form-input families, the atomic separator/avatar/aspect-ratio/visually-hidden elements, and the stepper respectively). `theme-tailwind` is designed to pair with `@vuecs/design` (Tailwind v4 + CSS-variable tokens); `theme-bootstrap` ships an optional bridge that maps Bootstrap's `--bs-*` theme vars onto the design-system tokens.
+`navigation` also depends on `@vuecs/link`. `pagination`, `overlays`, `forms`, `elements`, and `navigation` take a runtime dep on `reka-ui` (they wrap Reka's headless primitives — pagination, dialog/popover/hover-card/tooltip/menu, the form-input families, the atomic separator/avatar/aspect-ratio/visually-hidden elements, and the stepper respectively). `theme-tailwind` is designed to pair with `@vuecs/design` (Tailwind v4 + CSS-variable tokens); `theme-bootstrap` and `theme-bulma` each ship an optional bridge mapping their framework's runtime CSS variables (`--bs-*`, `--bulma-*`) onto the design-system tokens.
 
 ## Documentation Site
 
