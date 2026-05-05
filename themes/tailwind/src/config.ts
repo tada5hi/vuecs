@@ -17,7 +17,7 @@ declare module '@vuecs/core' {
     interface Config {
         /**
          * CSP nonce written onto inline `<style>` tags created at
-         * runtime — used by `setColorPalette`'s `<style id="vc-palette">`
+         * runtime — used by `setColorPalette`'s `<style id="vc-color-palette">`
          * block. When unset, no `nonce` attribute is added (works in
          * non-CSP environments and in CSP environments that allow
          * unsafe-inline for styles).

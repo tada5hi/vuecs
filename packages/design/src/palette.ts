@@ -44,12 +44,30 @@ export interface UseColorPaletteReturn<T> {
      */
     set(palette: T): void;
     /**
-     * Add or override individual scale assignments — shallow-merges
-     * `partial` over the current value when both are objects. Themes
-     * with non-object palette shapes can override this behavior in
-     * their own composable wrapper.
+     * Merge `partial` over the current value via the theme's `extend`
+     * implementation. Default semantics: shallow object spread. Themes
+     * with non-object palette shapes pass their own via `BindColorPaletteOptions.extend`.
      */
     extend(partial: Partial<T>): void;
+}
+
+export interface BindColorPaletteOptions<T> {
+    /** Render the palette value as a CSS string applied to `<style id="vc-color-palette">`. */
+    render: (value: T) => string;
+    /**
+     * Override the default shallow-merge semantics of `extend()`. The
+     * default works for any `Record`-shaped palette; themes with
+     * structured non-object shapes (deep-merge, replace-on-conflict,
+     * etc.) supply their own here.
+     */
+    extend: (current: T, partial: Partial<T>) => T;
+    /**
+     * Target a non-global Document (iframes, test environments).
+     * Defaults to `globalThis.document`; on the server (`undefined`)
+     * the watcher is still installed but `applyColorPaletteCss` is a
+     * no-op — the first reactive read on the client triggers a re-paint.
+     */
+    document?: Document;
 }
 
 /**
@@ -60,23 +78,25 @@ export interface UseColorPaletteReturn<T> {
  * Generic: each theme defines its own palette shape `T` and renderer.
  * `@vuecs/theme-tailwind` wraps this with its `ColorPaletteConfig` and
  * `renderColorPaletteStyles`; community themes can do the same with their
- * own shapes.
- *
- * Server-side (no `document`): the watcher is still installed but
- * `applyColorPaletteCss` is a no-op. The first reactive read on the client
- * triggers a re-paint.
+ * own shapes — including custom merge semantics via `options.extend`.
  */
 export function bindColorPalette<T>(
     source: Ref<T>,
-    render: (value: T) => string,
+    options: BindColorPaletteOptions<T>,
 ): UseColorPaletteReturn<T> {
-    if (typeof document !== 'undefined') {
-        applyColorPaletteCss(render(source.value));
+    const {
+        render,
+        extend,
+        document = globalThis.document,
+    } = options;
+
+    if (document) {
+        applyColorPaletteCss(render(source.value), document);
     }
     watch(
         source,
         (next) => {
-            applyColorPaletteCss(render(next));
+            applyColorPaletteCss(render(next), document);
         },
         { deep: true },
     );
@@ -87,15 +107,7 @@ export function bindColorPalette<T>(
             source.value = palette;
         },
         extend(partial) {
-            const current = source.value;
-            if (current && typeof current === 'object' && !Array.isArray(current)) {
-                source.value = { ...current, ...partial } as T;
-            } else {
-                // Non-object palettes — extend semantics aren't well-defined,
-                // so fall through to replace. Themes with structured non-
-                // object palettes should override `extend` in their wrapper.
-                source.value = partial as T;
-            }
+            source.value = extend(source.value, partial);
         },
     };
 }

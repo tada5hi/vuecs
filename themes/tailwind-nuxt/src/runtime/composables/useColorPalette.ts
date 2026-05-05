@@ -28,11 +28,17 @@ export function useColorPalette(): UseColorPaletteReturn<ColorPaletteConfig> {
 
     const cookie = useCookie<ColorPaletteConfig>('vc-color-palette', {
         default: () => ({ ...initial }),
-        watch: true,
         ...cookieOptions,
+        // `watch: true` must come last — bindColorPalette depends on the
+        // ref being reactive, and we don't want consumer-supplied
+        // cookieOptions to silently disable that.
+        watch: true,
     });
 
-    return bindColorPalette(cookie, renderColorPaletteStyles);
+    return bindColorPalette(cookie, {
+        render: renderColorPaletteStyles,
+        extend: (current, partial) => ({ ...current, ...partial }),
+    });
 }
 
 export type { UseColorPaletteReturn } from '@vuecs/design';

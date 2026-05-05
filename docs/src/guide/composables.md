@@ -278,10 +278,14 @@ import { renderColorPaletteStyles } from '@vuecs/theme-tailwind';
 Both accept a `Ref<T>` and return the same shape as the high-level composables:
 
 ```ts
-// Generic — any palette catalog plugs its own renderer
+// Generic — any palette catalog plugs its own renderer + merge semantics
 function bindColorPalette<T>(
     source: Ref<T>,
-    render: (value: T) => string,
+    options: {
+        render: (value: T) => string;
+        extend: (current: T, partial: Partial<T>) => T;
+        document?: Document;
+    },
 ): UseColorPaletteReturn<T>;
 
 function bindColorMode(
@@ -303,16 +307,19 @@ export function useColorPalette() {
         default: () => ({}),
         watch: true,
     });
-    return bindColorPalette(cookie, renderColorPaletteStyles);
+    return bindColorPalette(cookie, {
+        render: renderColorPaletteStyles,
+        extend: (current, partial) => ({ ...current, ...partial }),
+    });
 }
 ```
 
-Same return shape, SSR-aware persistence. The generic `bindColorPalette<T>` lets non-Tailwind themes plug in their own renderer (corporate fork with its own palette catalog, Material-You-style theme, etc.) without reimplementing the apply-on-watch logic.
+Same return shape, SSR-aware persistence. The generic `bindColorPalette<T>` lets non-Tailwind themes plug in their own renderer + merge semantics (corporate fork with its own palette catalog, Material-You-style theme with deep-merge semantics, etc.) without reimplementing the apply-on-watch logic.
 
 ### SSR notes
 
 - The composables are **client-side stateful** — on the server, watchers are still installed but `setColorPalette()` / `applyColorPaletteCss()` is a DOM-only no-op, and `useStorage` from VueUse reads/writes nothing. The first reactive read on the client triggers the initial paint.
-- For zero-FOUC palette / color mode on first paint, you need an SSR plugin that injects `<style id="vc-palette">` and `class="dark"|"light"` before client JS runs. `@vuecs/nuxt` ships the color-mode SSR plugin; `@vuecs/theme-tailwind-nuxt` ships the palette SSR plugin. Other SSR frameworks roll their own using `renderColorPaletteStyles()` from `@vuecs/theme-tailwind` (or any theme's renderer composed with `applyColorPaletteCss()` from `@vuecs/design`).
+- For zero-FOUC palette / color mode on first paint, you need an SSR plugin that injects `<style id="vc-color-palette">` and `class="dark"|"light"` before client JS runs. `@vuecs/nuxt` ships the color-mode SSR plugin; `@vuecs/theme-tailwind-nuxt` ships the palette SSR plugin. Other SSR frameworks roll their own using `renderColorPaletteStyles()` from `@vuecs/theme-tailwind` (or any theme's renderer composed with `applyColorPaletteCss()` from `@vuecs/design`).
 - VitePress / SSG hosts: there is currently a one-frame flash on first load when localStorage holds a non-default palette, since SSG'd HTML is fixed at build time. An inline pre-paint `<script>` helper is the planned fix; until then, accept the one-frame flash.
 
 ## See also

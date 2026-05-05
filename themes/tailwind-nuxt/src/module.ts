@@ -82,9 +82,22 @@ export default defineNuxtModule<ModuleOptions>({
         const resolver = createResolver(import.meta.url);
 
         const colorPaletteEnabled = options.colorPalette !== false;
-        const colorPaletteValue: ColorPaletteConfig = colorPaletteEnabled ?
-            (options.colorPalette as ColorPaletteConfig | undefined) || {} :
-            {};
+
+        // The `useColorPalette` auto-import always lands so consumers can
+        // wire their own logic even when SSR + runtimeConfig are bypassed.
+        addImports({
+            name: 'useColorPalette',
+            from: resolver.resolve('./runtime/composables/useColorPalette'),
+        });
+
+        if (!colorPaletteEnabled) {
+            // `colorPalette: false` skips runtimeConfig writes AND the SSR
+            // plugin so the consumer's app stays untouched aside from the
+            // composable auto-import above.
+            return;
+        }
+
+        const colorPaletteValue = (options.colorPalette as ColorPaletteConfig | undefined) || {};
 
         // Documented defaults match `@vuecs/nuxt`'s cookie defaults.
         const cookieOptions: CookieOptions = {
@@ -107,16 +120,9 @@ export default defineNuxtModule<ModuleOptions>({
             },
         };
 
-        if (colorPaletteEnabled) {
-            addPlugin({
-                src: resolver.resolve('./runtime/plugins/color-palette.server'),
-                mode: 'server',
-            });
-        }
-
-        addImports({
-            name: 'useColorPalette',
-            from: resolver.resolve('./runtime/composables/useColorPalette'),
+        addPlugin({
+            src: resolver.resolve('./runtime/plugins/color-palette.server'),
+            mode: 'server',
         });
     },
 });

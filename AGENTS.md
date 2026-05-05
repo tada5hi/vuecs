@@ -28,7 +28,7 @@ npm run lint:fix       # Auto-fix lint issues
 | `@vuecs/button` | General-purpose button (color/variant/size, loading, icon slots) | 0.0.0 |
 | `@vuecs/core` | Theme system, global behavioral defaults, utilities, component infrastructure | 2.0.0 |
 | `@vuecs/countdown` | Countdown/timer component | 1.0.1 |
-| `@vuecs/design` | CSS design tokens (concrete OKLCH defaults from Tailwind v4's palette + semantic aliases) + motion primitives (vanilla-CSS port of `tw-animate-css`) + theme-agnostic `useColorMode` composable + generic palette primitives (`applyPaletteCss`, `bindPalette<T>`, `PALETTE_STYLE_ELEMENT_ID`) for any theme to compose. No Tailwind dep — works standalone with BS/Bulma/no theme. (plan 017) | 0.0.0 |
+| `@vuecs/design` | CSS design tokens (concrete OKLCH defaults from Tailwind v4's palette + semantic aliases) + motion primitives (vanilla-CSS port of `tw-animate-css`) + theme-agnostic `useColorMode` composable + generic palette primitives (`applyColorPaletteCss`, `bindColorPalette<T>`, `COLOR_PALETTE_STYLE_ELEMENT_ID`) for any theme to compose. No Tailwind dep — works standalone with BS/Bulma/no theme. (plan 017) | 0.0.0 |
 | `@vuecs/elements` | Atomic, presentation-only UI elements — `VCSeparator`, `VCTag` / `VCTags`, `VCAvatar`, `VCAspectRatio`, `VCVisuallyHidden`, `VCBadge`. Pure-CSS or thin Reka wrappers; each ≤150 LOC, owns its own theme key. | 0.0.0 |
 | `@vuecs/forms` | Form components on Reka UI primitives — `VCFormCheckbox` / `VCFormCheckboxGroup`, `VCFormSwitch`, `VCFormRadio` / `VCFormRadioGroup`, `VCFormPin`, `VCFormSlider` (single+range), `VCFormNumber`, `VCFormTags`, `VCFormSelect` / `VCFormSelectSearch` (FormOption shape), `VCFormInput` / `VCFormTextarea` (native), plus the experimental `useSubmitButton()` helper for `@vuecs/button`. Renamed from `@vuecs/form-controls` in 3.0 (clean break — old package removed). | 3.0.0 |
 | `@vuecs/gravatar` | Gravatar avatar component — composes `<VCAvatar>` from `@vuecs/elements` for fallback support (DOM shape changed; major bump on next release-please run) | 1.0.2 |
@@ -41,8 +41,8 @@ npm run lint:fix       # Auto-fix lint issues
 | `@vuecs/pagination` | Pagination component | 1.3.1 |
 | `@vuecs/theme-bootstrap` | Bootstrap theme (currently targets v5; renamed from `@vuecs/theme-bootstrap-v5` in 3.0) | 3.0.0 |
 | `@vuecs/theme-bulma` | Bulma 1.0+ theme + design-token bridge | 0.0.0 |
-| `@vuecs/theme-tailwind` | Tailwind v4 theme (class strings + `merge: ClassesMergeFn`) + Tailwind palette runtime (`setPalette`, `usePalette`, `renderPaletteStyles`, `PaletteConfig`) + Tailwind rebind / `@theme` block / `@source inline()` safelist. Composes `@vuecs/design`'s generic palette primitives. (plan 017) | 0.0.0 |
-| `@vuecs/theme-tailwind-nuxt` | Nuxt module that ships SSR-safe runtime palette switching for `@vuecs/theme-tailwind` consumers. Cookie-backed `usePalette` auto-import + `<style id="vc-palette">` SSR plugin. Configured under `vuecsTailwind` in `nuxt.config.ts`. (plan 017) | 0.0.0 |
+| `@vuecs/theme-tailwind` | Tailwind v4 theme (class strings + `merge: ClassesMergeFn`) + Tailwind palette runtime (`setColorPalette`, `useColorPalette`, `renderColorPaletteStyles`, `ColorPaletteConfig`) + Tailwind rebind / `@theme` block / `@source inline()` safelist. Composes `@vuecs/design`'s generic palette primitives. (plan 017) | 0.0.0 |
+| `@vuecs/theme-tailwind-nuxt` | Nuxt module that ships SSR-safe runtime palette switching for `@vuecs/theme-tailwind` consumers. Cookie-backed `useColorPalette` auto-import + `<style id="vc-color-palette">` SSR plugin. Configured under `vuecsTailwind` in `nuxt.config.ts`. (plan 017) | 0.0.0 |
 | `@vuecs/icons-font-awesome` | Font Awesome 6 Solid icon-name preset for vuecs (Iconify-backed; replaces the removed `@vuecs/theme-font-awesome`) | 0.0.0 |
 | `@vuecs/icons-lucide` | Lucide icon-name preset for vuecs (Iconify-backed) | 0.0.0 |
 | `@vuecs/timeago` | Relative time display component | 1.1.2 |

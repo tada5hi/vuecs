@@ -47,17 +47,18 @@ describe('bindColorPalette (generic)', () => {
     const renderFake = (p: FakePalette) => (
         p.primary ? `:root { --primary: ${p.primary}; }` : ''
     );
+    const shallowMerge = <T>(current: T, partial: Partial<T>): T => ({ ...current, ...partial });
 
     it('renders + applies the initial value', () => {
         const source = ref<FakePalette>({ primary: 'green' });
-        bindColorPalette(source, renderFake);
+        bindColorPalette(source, { render: renderFake, extend: shallowMerge });
         const style = document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID);
         expect(style?.textContent).toBe(':root { --primary: green; }');
     });
 
     it('re-renders on source mutation', async () => {
         const source = ref<FakePalette>({ primary: 'blue' });
-        bindColorPalette(source, renderFake);
+        bindColorPalette(source, { render: renderFake, extend: shallowMerge });
         source.value = { primary: 'rose' };
         await nextTick();
         const style = document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID);
@@ -66,23 +67,37 @@ describe('bindColorPalette (generic)', () => {
 
     it('set() replaces the entire value', () => {
         const source = ref<FakePalette>({ primary: 'blue' });
-        const { current, set } = bindColorPalette(source, renderFake);
+        const { current, set } = bindColorPalette(source, { render: renderFake, extend: shallowMerge });
         set({ primary: 'orange' });
         expect(current.value).toEqual({ primary: 'orange' });
     });
 
-    it('extend() shallow-merges partial over object-shaped values', () => {
+    it('extend() applies the supplied merge function', () => {
         type MultiKey = { primary?: string; neutral?: string };
         const source = ref<MultiKey>({ primary: 'blue', neutral: 'zinc' });
-        const { current, extend } = bindColorPalette(source, () => '');
+        const { current, extend } = bindColorPalette(source, {
+            render: () => '',
+            extend: shallowMerge,
+        });
         extend({ primary: 'green' });
         expect(current.value).toEqual({ primary: 'green', neutral: 'zinc' });
+    });
+
+    it('extend() honors a custom (e.g. replace) merge implementation', () => {
+        type MultiKey = { primary?: string; neutral?: string };
+        const source = ref<MultiKey>({ primary: 'blue', neutral: 'zinc' });
+        const { current, extend } = bindColorPalette(source, {
+            render: () => '',
+            extend: (_current, partial) => partial as MultiKey,
+        });
+        extend({ primary: 'green' });
+        expect(current.value).toEqual({ primary: 'green' });
     });
 
     it('set({}) resets to an empty object value', () => {
         type MultiKey = { primary?: string; neutral?: string };
         const source = ref<MultiKey>({ primary: 'blue', neutral: 'zinc' });
-        const { current, set } = bindColorPalette(source, () => '');
+        const { current, set } = bindColorPalette(source, { render: () => '', extend: shallowMerge });
         set({});
         expect(current.value).toEqual({});
     });

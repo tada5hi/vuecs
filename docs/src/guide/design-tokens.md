@@ -323,10 +323,13 @@ const setAcmePalette = (p: AcmePalette) => applyColorPaletteCss(renderAcme(p));
 // Reactive composable (pair with useStorage / useCookie)
 import { ref } from 'vue';
 const source = ref<AcmePalette>({ primary: 'acme-blue' });
-const { current, set, extend } = bindColorPalette(source, renderAcme);
+const { current, set, extend } = bindColorPalette(source, {
+    render: renderAcme,
+    extend: (current, partial) => ({ ...current, ...partial }),
+});
 ```
 
-`@vuecs/theme-tailwind`'s `setColorPalette` and `useColorPalette` are themselves built this way — `setColorPalette = applyColorPaletteCss(renderColorPaletteStyles(...))`, `useColorPalette = bindColorPalette(useStorage(...), renderColorPaletteStyles)`.
+`@vuecs/theme-tailwind`'s `setColorPalette` and `useColorPalette` are themselves built this way — `setColorPalette = applyColorPaletteCss(renderColorPaletteStyles(...))`, and `useColorPalette` calls `bindColorPalette(useStorage(...), { render: renderColorPaletteStyles, extend: shallowMerge })`.
 
 ## Circular reference caveat
 
@@ -365,7 +368,7 @@ Both are reached via the bare `@import "@vuecs/theme-<name>"` form (resolves to 
 
 ## Vue composables
 
-`@vuecs/design` ships `useColorPalette()` and `useColorMode()` for reactive runtime palette / dark-mode state — see the dedicated [Composables](/guide/composables) page for API reference and persistence details.
+`@vuecs/design` ships generic palette primitives (`bindColorPalette`, `applyColorPaletteCss`) plus `useColorMode()`. For Tailwind palette catalogs, use `useColorPalette()` from `@vuecs/theme-tailwind` — see [Composables](/guide/composables) for persistence details.
 
 ## See also
 

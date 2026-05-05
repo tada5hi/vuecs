@@ -11,7 +11,7 @@ export type Direction = 'ltr' | 'rtl';
  * Child packages declare the rest:
  *
  *   - `@vuecs/theme-tailwind` augments with `nonce` (CSP nonce for
- *     `setColorPalette`'s injected `<style id="vc-palette">` block).
+ *     `setColorPalette`'s injected `<style id="vc-color-palette">` block).
  *   - `@vuecs/overlays` augments with `scrollLockTarget` (selector / element
  *     that should receive scroll-lock when an overlay opens).
  *

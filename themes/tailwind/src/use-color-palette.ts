@@ -85,7 +85,10 @@ export const useColorPalette = createSharedComposable(
             }) :
             ref<ColorPaletteConfig>(sanitize(initial));
 
-        return bindColorPalette(storage, renderColorPaletteStyles);
+        return bindColorPalette(storage, {
+            render: renderColorPaletteStyles,
+            extend: (current, partial) => ({ ...current, ...partial }),
+        });
     },
 );
 

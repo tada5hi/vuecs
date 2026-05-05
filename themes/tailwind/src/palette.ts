@@ -1,6 +1,9 @@
 import { applyColorPaletteCss } from '@vuecs/design';
-import { COLOR_PALETTE_SHADES } from './constants';
+import { COLOR_PALETTE_SHADES, SEMANTIC_SCALES, TAILWIND_COLOR_PALETTES } from './constants';
 import type { ColorPaletteConfig, SemanticScaleName, TailwindColorPaletteName } from './types';
+
+const SEMANTIC_SCALE_SET = new Set<string>(SEMANTIC_SCALES);
+const TAILWIND_PALETTE_SET = new Set<string>(TAILWIND_COLOR_PALETTES);
 
 /**
  * Build the CSS string that binds semantic scales to Tailwind palettes.
@@ -9,9 +12,20 @@ import type { ColorPaletteConfig, SemanticScaleName, TailwindColorPaletteName } 
  * `:root { ... }` block; inject it into `<head>` (server) or pass it to
  * `applyColorPaletteCss()` (client) to override the rebind defaults from
  * `@vuecs/theme-tailwind`'s `assets/index.css`.
+ *
+ * Defense-in-depth: filters entries to known semantic scales + Tailwind
+ * palette names so untrusted callers (cookie payloads, hand-edited
+ * localStorage, ad-hoc `setColorPalette({ … })` calls) can't emit broken
+ * `var(--color-undefined-…)` declarations.
  */
 export function renderColorPaletteStyles(palette: ColorPaletteConfig): string {
-    const entries = Object.entries(palette) as [SemanticScaleName, TailwindColorPaletteName][];
+    const entries = Object.entries(palette).filter(
+        (entry): entry is [SemanticScaleName, TailwindColorPaletteName] => (
+            SEMANTIC_SCALE_SET.has(entry[0]) &&
+            typeof entry[1] === 'string' &&
+            TAILWIND_PALETTE_SET.has(entry[1])
+        ),
+    );
     if (entries.length === 0) {
         return '';
     }

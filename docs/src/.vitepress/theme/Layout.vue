@@ -11,7 +11,7 @@ const { Layout } = DefaultTheme;
              side, just after VitePress's social links (GitHub) and before
              the dark-mode toggle. The button opens a `<VCModal>` with
              palette + color-mode controls. Palette state is global
-             (`useColorPalette` from `@vuecs/design`), so changes persist across
+             (`useColorPalette` from `@vuecs/theme-tailwind`), so changes persist across
              navigation; every Demo.vue iframe receives updates via
              postMessage. -->
         <template #nav-bar-content-after>

@@ -4,4 +4,4 @@ export {
     applyColorPaletteCss,
     bindColorPalette,
 } from './palette';
-export type { UseColorPaletteReturn } from './palette';
+export type { BindColorPaletteOptions, UseColorPaletteReturn } from './palette';
