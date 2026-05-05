@@ -236,7 +236,11 @@ export default function bulmaTheme(): Theme {
                 defaultVariants: { size: 'md' },
             },
             button: {
-                classes: { root: 'button is-inline-flex is-align-items-center is-justify-content-center' },
+                // Bulma 1.x ships `is-gap-*` flex/grid spacing utilities;
+                // `is-gap-2` (0.5rem) matches the gap baked into the
+                // Tailwind / Bootstrap themes so leading icon / label /
+                // trailing icon don't sit flush against each other.
+                classes: { root: 'button is-inline-flex is-align-items-center is-justify-content-center is-gap-2' },
                 variants: {
                     size: {
                         sm: { root: 'is-small' },
@@ -450,9 +454,24 @@ export default function bulmaTheme(): Theme {
                 },
             },
             pagination: {
+                // Bulma's pagination canonical structure is
+                // `<nav class="pagination">` containing standalone
+                // `.pagination-previous` / `-next` siblings PLUS a
+                // `<ul class="pagination-list">` wrapping the `.pagination-link`
+                // page items. <VCPagination> only renders one `<ul>` with
+                // uniform `<li>` children for every control (first / prev /
+                // page items / next / last) — there's no mid-render hook to
+                // differentiate item types in the theme today. As a
+                // pragmatic mapping: apply `.pagination-list` to the
+                // outer `<ul>` so its flex layout takes effect, and use
+                // `.pagination-link` uniformly for all controls (Bulma's
+                // edge-control styling — `.pagination-previous`/`-next` —
+                // is very close to `.pagination-link`'s anyway, just
+                // wider on small viewports). Visual parity with the
+                // Tailwind / Bootstrap themes is preserved.
                 classes: {
-                    root: 'pagination is-centered',
-                    item: 'pagination-list',
+                    root: 'pagination-list is-flex is-justify-content-center',
+                    item: '',
                     link: 'pagination-link',
                     linkActive: 'is-current',
                     ellipsis: 'pagination-ellipsis',
@@ -491,6 +510,13 @@ export default function bulmaTheme(): Theme {
                     footer: 'is-flex is-align-items-center is-justify-content-flex-end',
                     trigger: '',
                     close: '',
+                    // `.delete` paints the X glyph (Bulma's pseudo-element +
+                    // `font-size: 0` recipe — the slot's literal "×"
+                    // fallback is collapsed to zero size, so no
+                    // double-render). Bulma's `.delete` is `position:
+                    // relative` by default; the bridge CSS adds
+                    // corner-positioning by targeting the structural
+                    // `vc-modal-close-icon` class (from component defaults).
                     closeIcon: 'delete is-medium',
                     back: 'button is-small is-ghost',
                 },
@@ -512,6 +538,9 @@ export default function bulmaTheme(): Theme {
                     content: 'box vc-overlay-anim',
                     arrow: '',
                     close: '',
+                    // Same `.delete` rationale as `modal.closeIcon` —
+                    // bridge CSS positions the structural
+                    // `vc-popover-close-icon` class in the corner.
                     closeIcon: 'delete',
                 },
                 variants: {

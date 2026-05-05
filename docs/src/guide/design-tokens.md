@@ -303,7 +303,7 @@ Two CSS-variable bridges ship in-tree as concrete worked examples of the pattern
 - `@vuecs/theme-bootstrap` maps Bootstrap 5.3+'s `--bs-*` tokens onto `--vc-color-*`.
 - `@vuecs/theme-bulma` maps Bulma 1.0+'s `--bulma-*` tokens onto `--vc-color-*`.
 
-Both are reached via the bare `@import "@vuecs/theme-<name>"` form (resolves to `assets/index.css` via the `style` conditional export). Both ship with the same RGB/HSL-triplet limitation noted in step 5 above — hover/active lightness deltas keep the framework's default palette.
+Both are reached via the bare `@import "@vuecs/theme-<name>"` form (resolves to `assets/index.css` via the `style` conditional export). Both ship with the same RGB/HSL-triplet limitation noted in step 5 above — they re-specify hover (`-700`) and active (`-800`) lightness deltas explicitly per variant, so the framework's auto-derived hover/active deltas don't apply.
 
 ## Pure / SSR-safe APIs
 

@@ -19,8 +19,8 @@ app.use(vuecs, { themes: [bulma()] });
 ```css
 /* styles.css */
 @import "bulma/css/bulma.css";
-@import "@vuecs/theme-bulma";  /* optional: design-token bridge */
 @import "@vuecs/design";        /* optional: enable runtime palette switching */
+@import "@vuecs/theme-bulma";   /* optional: design-token bridge */
 ```
 
 The `@import "@vuecs/theme-bulma"` resolves to the package's bridge CSS (`assets/index.css`) via the `style` conditional export.

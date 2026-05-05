@@ -321,7 +321,7 @@
 
 .vc-badge-outline {
     background-color: transparent;
-    border: 1px solid currentColor;
+    border: 1px solid currentcolor;
 }
 .vc-badge-outline-primary { border-color: var(--vc-color-primary-600); color: var(--vc-color-primary-700); }
 .vc-badge-outline-neutral { border-color: var(--vc-color-border);      color: var(--vc-color-fg); }
@@ -338,20 +338,58 @@
  * xl=1140) so the same demo content reads consistently across themes;
  * md keeps the unsized default which centers via the theme's
  * `.modal-content` base padding.
+ *
+ * Reka renders the overlay (`DialogOverlay`) and panel (`DialogContent`)
+ * as two standalone portal nodes — there is no surrounding `.modal`
+ * wrapper to provide Bulma's flex-centered layout. Re-implement the
+ * fixed-position centering on the structural `vc-modal-content` class
+ * directly, and pin the overlay full-screen.
  * ──────────────────────────────────────────────────────────────────────── */
+
+.modal-background {
+    position: fixed;
+    inset: 0;
+}
+
+.vc-modal-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    /* Bulma's `.modal-content` ships no border-radius (it's intended
+       to be used with `.modal-card`'s rounded chrome instead). Add
+       radius via the design-system token so the modal panel reads as
+       a card. */
+    border-radius: var(--vc-radius-lg);
+}
 
 .vc-modal-content.modal-sm { max-width: 300px;  width: calc(100% - 1rem); }
 .vc-modal-content.modal-lg { max-width: 800px;  width: calc(100% - 1rem); }
 .vc-modal-content.modal-xl { max-width: 1140px; width: calc(100% - 1rem); }
 
-/* Bulma's `.modal-content` ships no border-radius (it's intended to be
-   used with `.modal-card`'s rounded chrome instead). Add radius via the
-   design-system token so the modal panel reads as a card. Tooltip same
-   reasoning — Bulma's `[data-tooltip]` is a CSS pseudo-element on a
-   data attribute, not a class-based panel, so our class-based tooltip
-   needs explicit radius. */
-.vc-modal-content { border-radius: var(--vc-radius-lg); }
+/* Tooltip same border-radius reasoning — Bulma's `[data-tooltip]` is a
+   CSS pseudo-element on a data attribute, not a class-based panel, so
+   our class-based tooltip needs explicit radius. */
 .vc-tooltip-content { border-radius: var(--vc-radius-md); }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * @vuecs/overlays close-icon corner positioning.
+ *
+ * Bulma's `.delete` is `position: relative` by default — fine inline,
+ * wrong for our `closeIcon` slot which is meant to dock the button into
+ * the panel's top-right corner. The structural `vc-modal-close-icon` /
+ * `vc-popover-close-icon` classes (from component defaults) give us a
+ * scoped hook to apply corner-positioning without affecting standalone
+ * `.delete` buttons elsewhere on the page.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.vc-modal-content .vc-modal-close-icon,
+.vc-popover-close-icon {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+}
 
 /* ────────────────────────────────────────────────────────────────────────────
  * @vuecs/navigation Stepper — Bulma class strings can't carry
