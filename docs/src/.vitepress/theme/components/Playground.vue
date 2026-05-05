@@ -10,7 +10,7 @@ import {
     watch,
 } from 'vue';
 import { isObject } from '@vuecs/core';
-import { usePalette } from '@vuecs/design';
+import { useColorPalette } from '@vuecs/theme-tailwind';
 import type { PropCatalog, PropSpec, PropValues } from '../../../../demos/src/iframe-bridge';
 import { useDemoTheme } from '../use-demo-theme';
 
@@ -60,7 +60,7 @@ const propValues = reactive<PropValues>({});
 // Global palette / color-mode / theme state. Demo and Playground both
 // forward these to their iframes so visuals stay in sync with the
 // docs-site preferences (set in the navbar's SettingsModal).
-const { current: palette } = usePalette();
+const { current: palette } = useColorPalette();
 const { current: demoTheme } = useDemoTheme();
 const { isDark } = useData();
 

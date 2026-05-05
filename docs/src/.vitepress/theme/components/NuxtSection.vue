@@ -1,10 +1,12 @@
 <script setup lang="ts">
 const code = `// nuxt.config.ts
 export default defineNuxtConfig({
-    modules: ['@vuecs/nuxt'],
+    modules: ['@vuecs/nuxt', '@vuecs/theme-tailwind-nuxt'],
     vuecs: {
-        palette: { primary: 'green', neutral: 'zinc' },
         // colorMode: true (default) — set false to opt out
+    },
+    vuecsTailwind: {
+        colorPalette: { primary: 'green', neutral: 'zinc' },
     },
 });`;
 </script>
@@ -24,7 +26,7 @@ export default defineNuxtConfig({
                     the client on first paint, no flash, no hydration mismatch.
                 </p>
                 <ul class="vc-nuxt-list">
-                    <li><strong>usePalette()</strong> — switch palettes at runtime</li>
+                    <li><strong>useColorPalette()</strong> — switch palettes at runtime</li>
                     <li><strong>useColorMode()</strong> — VueUse-backed dark/light/system, cookie-driven</li>
                     <li><strong>Auto-imports</strong> — composables, zero boilerplate</li>
                     <li><strong>SSR plugins</strong> — palette and color-mode injected into &lt;head&gt; before paint</li>

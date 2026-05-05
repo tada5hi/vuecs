@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useData } from 'vitepress';
-import { usePalette } from '@vuecs/design';
+import { useColorPalette } from '@vuecs/theme-tailwind';
 import {
     NEUTRAL_PALETTES,
     type NeutralPalette,
@@ -11,17 +11,17 @@ const { isDark } = useData();
 
 /*
  * Hero swatches share the SAME reactive state as the navbar
- * `SettingsModal` — `usePalette()` from `@vuecs/design` is wrapped
+ * `SettingsModal` — `useColorPalette()` from `@vuecs/theme-tailwind` is wrapped
  * with `createSharedComposable`, so every call site reads/writes the
- * one shared ref. `setPalette()` is invoked inside the composable
+ * one shared ref. `setColorPalette()` is invoked inside the composable
  * (apply on init + apply on change). localStorage persists across
  * reloads.
  */
-// No `initial` — `usePalette()` is wrapped in `createSharedComposable`,
+// No `initial` — `useColorPalette()` is wrapped in `createSharedComposable`,
 // so options are first-call-wins. Demo.vue calls without options, so an
 // `initial` here would be silently dropped. Design-token defaults paint
 // `primary=blue` / `neutral=neutral` for the empty case.
-const { current, extend } = usePalette();
+const { current, extend } = useColorPalette();
 
 // Hero shows a curated 6-color visual swatch grid (constrained
 // horizontally by the hero card). The full enum lives in palette-options.ts.
@@ -141,7 +141,7 @@ const toggleDark = () => {
 
                     <p class="vc-hero-card-hint">
                         Click swatches to recolor every component on the page in real time —
-                        powered by <code>setPalette()</code>.
+                        powered by <code>setColorPalette()</code>.
                     </p>
                 </div>
             </div>

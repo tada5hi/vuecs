@@ -1,23 +1,51 @@
 import type { ClassesMergeFn, Theme } from '@vuecs/core';
 import { twMerge } from 'tailwind-merge';
+import './config';
+
+export { renderColorPaletteStyles, setColorPalette } from './palette';
+export { useColorPalette } from './use-color-palette';
+export type { UseColorPaletteOptions, UseColorPaletteReturn } from './use-color-palette';
+// `applyColorPaletteCss`, `bindColorPalette`, and `COLOR_PALETTE_STYLE_ELEMENT_ID` are
+// theme-agnostic primitives — re-exported from `@vuecs/design`. Consumers
+// can import them from either source; we keep the re-export so downstream
+// code that picked up the imports from theme-tailwind in earlier versions
+// keeps working.
+export {
+    COLOR_PALETTE_STYLE_ELEMENT_ID,
+    applyColorPaletteCss,
+    bindColorPalette,
+} from '@vuecs/design';
+export {
+    COLOR_PALETTE_SHADES,
+    SEMANTIC_SCALES,
+    TAILWIND_COLOR_PALETTES,
+} from './constants';
+export type {
+    ColorPaletteConfig,
+    SemanticScaleName,
+    TailwindColorPaletteName,
+} from './types';
 
 export const merge: ClassesMergeFn = (base, override) => twMerge(base, override);
 
 /**
  * Tailwind theme for vuecs components.
  *
- * Class strings reference **semantic Tailwind colors** that are provided by
- * `@vuecs/design/index.css` — e.g. `bg-primary-600`, `text-fg`,
- * `border-border`. The `@vuecs/design` package wires these names to
- * `--vc-color-*` CSS variables via a Tailwind v4 `@theme` block.
+ * Class strings reference **semantic Tailwind colors** that this package
+ * exposes via a Tailwind v4 `@theme` block in `assets/index.css` — e.g.
+ * `bg-primary-600`, `text-fg`, `border-border`. The `@theme` block maps
+ * Tailwind's `--color-*` names onto `--vc-color-*` CSS variables, which
+ * `@vuecs/design` defines as concrete OKLCH literals.
  *
  * Consumers must:
  *   1. Use Tailwind CSS v4 (v3 is not supported).
- *   2. Import `@vuecs/design/index.css` alongside their Tailwind
- *      stylesheet.
+ *   2. Import `@vuecs/design` (concrete tokens) AND `@vuecs/theme-tailwind`
+ *      (Tailwind rebind + `@theme` block + safelist) alongside their
+ *      Tailwind stylesheet.
  *
  * Reskinning is done by redefining `--vc-color-*` variables (manually or
- * via `setPalette()` from `@vuecs/design`). No theme override needed.
+ * via `setColorPalette()`, exported from this package). No theme override
+ * needed.
  */
 export default function tailwindTheme(): Theme {
     return {

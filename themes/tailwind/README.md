@@ -3,13 +3,27 @@
 [![npm version](https://badge.fury.io/js/@vuecs%2Ftheme-tailwind.svg)](https://badge.fury.io/js/@vuecs%2Ftheme-tailwind)
 [![main](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
 
-Tailwind v4 theme for vuecs components. Native pairing for `@vuecs/design`. Exports a `merge: ClassesMergeFn` backed by `twMerge` for use in `extend()` overrides.
+Tailwind v4 theme for vuecs components. Class-string mappings + `merge: ClassesMergeFn`
+backed by `twMerge` + the Tailwind palette runtime (`setColorPalette`, `useColorPalette`,
+`renderColorPaletteStyles`, `ColorPaletteConfig`). Composes `@vuecs/design`'s generic
+palette primitives — re-binds `--vc-color-*` to Tailwind palette names so
+runtime swaps work, exposes vuecs tokens via `@theme`, and force-includes all
+22 Tailwind palettes via `@source inline()`.
+
+For Nuxt apps using runtime palette switching, install
+[`@vuecs/theme-tailwind-nuxt`](../tailwind-nuxt) alongside `@vuecs/nuxt`.
 
 Full documentation: **[vuecs.dev/themes/tailwind](https://vuecs.dev/themes/tailwind)**
 
 ```bash
-npm install @vuecs/theme-tailwind
+npm install @vuecs/theme-tailwind @vuecs/design
 npm install -D tailwindcss @tailwindcss/vite
+```
+
+```css
+@import "tailwindcss";
+@import "@vuecs/design";
+@import "@vuecs/theme-tailwind";
 ```
 
 Requires Tailwind CSS v4+.

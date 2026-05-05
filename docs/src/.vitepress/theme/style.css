@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "@vuecs/design";
+@import "@vuecs/theme-tailwind";
 
 /* VitePress already sets `.dark` on <html>; align our custom-variant. */
 @custom-variant dark (&:where(.dark, .dark *));
@@ -11,7 +12,7 @@
 
 /*
  * VitePress brand override: route the brand color through the design-system
- * primary scale so palette switching (setPalette({ primary: 'green' })) flips
+ * primary scale so palette switching (setColorPalette({ primary: 'green' })) flips
  * the docs chrome too — sidebar accents, heading underlines, hero buttons.
  */
 :root {

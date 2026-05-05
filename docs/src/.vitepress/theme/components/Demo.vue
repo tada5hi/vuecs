@@ -9,7 +9,7 @@ import {
     watch,
 } from 'vue';
 import { isObject } from '@vuecs/core';
-import { usePalette } from '@vuecs/design';
+import { useColorPalette } from '@vuecs/theme-tailwind';
 import { useDemoTheme } from '../use-demo-theme';
 
 interface Props {
@@ -48,7 +48,7 @@ let copyTimer: ReturnType<typeof setTimeout> | null = null;
 // Global palette / color-mode / theme state. Forwarded to the iframe so
 // the demo's visuals stay in sync with the docs-site preferences (set
 // in the navbar's SettingsModal).
-const { current: palette } = usePalette();
+const { current: palette } = useColorPalette();
 const { current: demoTheme } = useDemoTheme();
 const { isDark } = useData();
 

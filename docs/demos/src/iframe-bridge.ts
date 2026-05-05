@@ -1,5 +1,5 @@
 import { isObject } from '@vuecs/core';
-import { setPalette } from '@vuecs/design';
+import { setColorPalette } from '@vuecs/theme-tailwind';
 import { ref, watch } from 'vue';
 import type { Ref } from 'vue';
 import { type DemoThemeName, setDemoTheme } from './shared';
@@ -182,7 +182,7 @@ const handleParentMessage = (event: MessageEvent<ParentMessage>): void => {
         const palette: Record<string, string> = {};
         if (data.primary) palette.primary = data.primary;
         if (data.neutral) palette.neutral = data.neutral;
-        setPalette(palette as Parameters<typeof setPalette>[0]);
+        setColorPalette(palette as Parameters<typeof setColorPalette>[0]);
         postHeight();
     } else if (data.type === 'set-theme') {
         // Live runtime vuecs-theme swap (tailwind ↔ bootstrap ↔ bulma).

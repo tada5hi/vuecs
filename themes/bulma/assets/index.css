@@ -38,7 +38,7 @@
  * Limitations:
  *   - Utility classes that read HSL channels (`.has-background-light`,
  *     `.has-text-grey`, `.has-background-dark`) keep Bulma's default
- *     palette — `setPalette()` doesn't reach them. The matrix uses
+ *     palette — `setColorPalette()` doesn't reach them. The matrix uses
  *     these utilities sparingly (avatar bg, stepper indicator default,
  *     tooltip dark bg) where Bulma's defaults are visually acceptable.
  *   - Bulma's built-in `prefers-color-scheme: dark` block toggles

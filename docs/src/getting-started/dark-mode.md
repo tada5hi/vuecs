@@ -78,16 +78,16 @@ If you'd rather use [`@nuxtjs/color-mode`](https://github.com/nuxt-modules/color
 
 See [`useColorMode`](/nuxt/use-color-mode) for the full API.
 
-## Custom palettes in dark mode
+## Custom palettes in dark mode (Tailwind only)
 
-The `.dark` flip only changes semantic aliases. To repalette the whole UI in dark mode (e.g. cooler blues, warmer accents), call `setPalette()` after `<html>` gains the `.dark` class:
+The `.dark` flip only changes semantic aliases. To repalette the whole UI in dark mode (e.g. cooler blues, warmer accents), call `setColorPalette()` from `@vuecs/theme-tailwind` after `<html>` gains the `.dark` class:
 
 ```ts
-import { setPalette } from '@vuecs/design';
+import { setColorPalette } from '@vuecs/theme-tailwind';
 import { watch } from 'vue';
 
 watch(isDark, (dark) => {
-    setPalette({
+    setColorPalette({
         primary: dark ? 'cyan' : 'blue',
     });
 });

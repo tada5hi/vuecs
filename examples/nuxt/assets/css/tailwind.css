@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "@vuecs/design";
+@import "@vuecs/theme-tailwind";
 
 /*
  * Scan the theme-tailwind source for the class names it emits so

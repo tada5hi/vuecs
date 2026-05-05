@@ -14,31 +14,88 @@ const submit = useSubmitButton({ isEditing: () => isEditing.value });
              `:theme-variant`, so flipping it reskins this row (and every
              other row except the explicit size grid below). -->
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
-            <VCButton color="primary" label="Primary" :theme-variant="variantState" />
-            <VCButton color="success" label="Success" :theme-variant="variantState" />
-            <VCButton color="warning" label="Warning" :theme-variant="variantState" />
-            <VCButton color="error" label="Danger" :theme-variant="variantState" />
-            <VCButton color="neutral" label="Neutral" :theme-variant="variantState" />
+            <VCButton
+                color="primary"
+                label="Primary"
+                :theme-variant="variantState"
+            />
+            <VCButton
+                color="success"
+                label="Success"
+                :theme-variant="variantState"
+            />
+            <VCButton
+                color="warning"
+                label="Warning"
+                :theme-variant="variantState"
+            />
+            <VCButton
+                color="error"
+                label="Danger"
+                :theme-variant="variantState"
+            />
+            <VCButton
+                color="neutral"
+                label="Neutral"
+                :theme-variant="variantState"
+            />
         </div>
 
         <!-- Variant axis. -->
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
-            <VCButton variant="solid" label="Solid" :theme-variant="variantState" />
-            <VCButton variant="soft" label="Soft" :theme-variant="variantState" />
-            <VCButton variant="outline" label="Outline" :theme-variant="variantState" />
-            <VCButton variant="ghost" label="Ghost" :theme-variant="variantState" />
-            <VCButton variant="link" label="Link" :theme-variant="variantState" />
+            <VCButton
+                variant="solid"
+                label="Solid"
+                :theme-variant="variantState"
+            />
+            <VCButton
+                variant="soft"
+                label="Soft"
+                :theme-variant="variantState"
+            />
+            <VCButton
+                variant="outline"
+                label="Outline"
+                :theme-variant="variantState"
+            />
+            <VCButton
+                variant="ghost"
+                label="Ghost"
+                :theme-variant="variantState"
+            />
+            <VCButton
+                variant="link"
+                label="Link"
+                :theme-variant="variantState"
+            />
         </div>
 
         <!-- Explicit size grid — these buttons keep their `size` prop so
              they remain a stable reference; the explicit prop wins over
              themeVariant.size at the component's merge step. -->
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
-            <VCButton size="sm" label="Small" />
-            <VCButton size="md" label="Medium" />
-            <VCButton size="lg" label="Large" />
-            <VCButton :loading="true" label="Loading…" :theme-variant="variantState" />
-            <VCButton :disabled="true" label="Disabled" :theme-variant="variantState" />
+            <VCButton
+                size="sm"
+                label="Small"
+            />
+            <VCButton
+                size="md"
+                label="Medium"
+            />
+            <VCButton
+                size="lg"
+                label="Large"
+            />
+            <VCButton
+                :loading="true"
+                label="Loading…"
+                :theme-variant="variantState"
+            />
+            <VCButton
+                :disabled="true"
+                label="Disabled"
+                :theme-variant="variantState"
+            />
         </div>
 
         <!-- useSubmitButton() returns a reactive bind-object — label /

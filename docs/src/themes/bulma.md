@@ -19,7 +19,7 @@ app.use(vuecs, { themes: [bulma()] });
 ```css
 /* styles.css */
 @import "bulma/css/bulma.css";
-@import "@vuecs/design";        /* optional: enable runtime palette switching */
+@import "@vuecs/design";        /* design tokens (concrete OKLCH; no Tailwind needed) */
 @import "@vuecs/theme-bulma";   /* optional: design-token bridge */
 ```
 
@@ -37,7 +37,11 @@ The bridge file maps Bulma's CSS theme variables onto vuecs design tokens:
 }
 ```
 
-Bulma 1.0 components read `--bulma-*` at runtime, so calling `setPalette({ primary: 'green' })` re-tints **both** vuecs components and Bulma-native components in real time.
+Bulma 1.0 components read `--bulma-*` at runtime, so any change to `--vc-color-*` (overriding in CSS, or via the Tailwind theme's `setColorPalette()` if also installed) re-tints **both** vuecs components and Bulma-native components in real time.
+
+::: info Runtime palette switching is Tailwind-only
+`@vuecs/theme-bulma` does **not** ship a runtime palette switcher. Bulma doesn't expose a named-palette catalog the way Tailwind does. To swap palettes at runtime, install `@vuecs/theme-tailwind` alongside this package and use its `setColorPalette()` — the swap rewrites `--vc-color-*` which both bridges read from.
+:::
 
 ## Mapping notes
 
@@ -50,13 +54,13 @@ A few places where Bulma's vocabulary diverges from the Bootstrap/Tailwind theme
 
 ## Limitations
 
-- **HSL-channel-derived utility classes don't track palette switches.** Bulma's per-variant components (`.button.is-primary`, `.tag.is-primary`, …) compose colors via HSL channel vars (`--bulma-button-h/s/l`) rather than named `--bulma-X-background-color` tokens. The bridge works around this by overriding the resolved `background-color` / `border-color` / `color` properties directly on each per-variant selector — `setPalette()` re-tints those correctly. But channel-driven utility classes (`has-background-light`, `has-text-grey`, `has-background-dark`) keep Bulma's default palette; the matrix uses them only where the default is visually acceptable (avatar bg, stepper indicator default state, tooltip dark bg).
+- **HSL-channel-derived utility classes don't track `--vc-color-*` overrides.** Bulma's per-variant components (`.button.is-primary`, `.tag.is-primary`, …) compose colors via HSL channel vars (`--bulma-button-h/s/l`) rather than named `--bulma-X-background-color` tokens. The bridge works around this by overriding the resolved `background-color` / `border-color` / `color` properties directly on each per-variant selector — runtime palette swaps re-tint those correctly. But channel-driven utility classes (`has-background-light`, `has-text-grey`, `has-background-dark`) keep Bulma's default palette; the matrix uses them only where the default is visually acceptable (avatar bg, stepper indicator default state, tooltip dark bg).
 - **Hover/active lightness deltas don't auto-derive.** Bulma normally interpolates hover/active states via `calc(var(--bulma-<color>-l) ± 5%)`. Because the bridge overrides the resolved color directly, those deltas are short-circuited; the bridge re-specifies hover (`-700`) and active (`-800`) shades explicitly per variant. Visually equivalent — just a different mechanism.
 - **Switch / stepper extensions target native `<input>` markup; Reka renders `<button role="…">`.** The theme's variant matrix layers Bulma utility classes on top of the structural `vc-form-{checkbox,switch,radio}` rules from `@vuecs/forms` and the structural stepper rules from `@vuecs/navigation` — those packages own shape and `data-state` checked-color visualization for these widgets.
 
 ## When to drop the bridge
 
-If you don't care about runtime palette switching and want Bulma's stock colors as-is, skip the `@import "@vuecs/theme-bulma"` and `@import "@vuecs/design"` lines. The component classes still resolve through the theme; only the dynamic-color layer is opt-out.
+If you want to use Bulma's stock colors as-is and don't need vuecs's `--vc-color-*` tokens to flow into Bulma components, skip the `@import "@vuecs/theme-bulma"` line. The component classes still resolve through the theme.
 
 ## See also
 

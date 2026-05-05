@@ -4,7 +4,6 @@ import {
     createResolver,
     defineNuxtModule,
 } from '@nuxt/kit';
-import type { PaletteConfig } from '@vuecs/design';
 
 /**
  * Subset of Nuxt `useCookie`'s options that we forward verbatim. Kept
@@ -75,16 +74,6 @@ export interface ColorModeOptions {
 
 export interface ModuleOptions {
     /**
-     * Runtime palette override applied before first paint. Values map each
-     * semantic scale (`primary`, `neutral`, `success`, ...) to a Tailwind
-     * v4 palette name. Matches the shape accepted by `setPalette()` from
-     * `@vuecs/design`.
-     *
-     * @example { primary: 'green', neutral: 'zinc' }
-     */
-    palette?: PaletteConfig;
-
-    /**
      * Auto-import `@vuecs/design/index.css` as part of the Nuxt
      * CSS stack. Disable if you want to import it manually (e.g. to
      * control load order relative to your own base CSS).
@@ -109,16 +98,17 @@ export interface ModuleOptions {
     colorMode?: boolean | ColorModeOptions;
 
     /**
-     * Shared cookie attributes applied to BOTH the palette
-     * (`vc-palette` by default) and the color-mode cookie. Useful when
+     * Cookie attributes applied to the color-mode cookie. Useful when
      * deploying across subdomains (`domain: '.example.com'`), behind
      * a same-origin SSO flow (`sameSite: 'none', secure: true`), or
      * with custom retention requirements.
      *
-     * Both cookies use the same options today — splitting per-cookie
-     * is feature creep. Power users can wire their own composables
-     * via `bindPalette()` / `bindColorMode()` from `@vuecs/design` if
-     * they need divergent semantics.
+     * Power users can wire their own composables via `bindColorMode()`
+     * from `@vuecs/design` if they need divergent semantics.
+     *
+     * Palette switching is owned by the per-theme Nuxt module
+     * (`@vuecs/theme-tailwind-nuxt`); its cookie options live under
+     * `vuecsTailwind.cookie` in `nuxt.config.ts`.
      */
     cookie?: CookieOptions;
 }
@@ -129,7 +119,6 @@ export default defineNuxtModule<ModuleOptions>({
         configKey: 'vuecs',
     },
     defaults: {
-        palette: {},
         injectTokens: true,
         colorMode: true,
     },
@@ -170,7 +159,6 @@ export default defineNuxtModule<ModuleOptions>({
             ...existingPublic,
             vuecs: {
                 ...existingVuecs,
-                palette: options.palette || {},
                 colorMode: {
                     enabled: colorModeEnabled,
                     cookieName: colorModeOptions.cookieName,
@@ -179,16 +167,6 @@ export default defineNuxtModule<ModuleOptions>({
                 cookie: cookieOptions,
             },
         };
-
-        addPlugin({
-            src: resolver.resolve('./runtime/plugins/palette.server'),
-            mode: 'server',
-        });
-
-        addImports({
-            name: 'usePalette',
-            from: resolver.resolve('./runtime/composables/usePalette'),
-        });
 
         if (colorModeEnabled) {
             addPlugin({

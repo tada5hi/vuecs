@@ -1,15 +1,7 @@
-import './config';
-
-export { renderPaletteStyles, setPalette } from './palette';
-export {
-    PALETTE_SHADES,
-    PALETTE_STYLE_ELEMENT_ID,
-    SEMANTIC_SCALES,
-    TAILWIND_PALETTES,
-} from './constants';
-export type {
-    PaletteConfig,
-    SemanticScaleName,
-    TailwindPaletteName,
-} from './types';
 export * from './composables';
+export {
+    COLOR_PALETTE_STYLE_ELEMENT_ID,
+    applyColorPaletteCss,
+    bindColorPalette,
+} from './palette';
+export type { BindColorPaletteOptions, UseColorPaletteReturn } from './palette';

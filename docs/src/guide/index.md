@@ -22,7 +22,7 @@ vuecs has three orthogonal systems that you configure independently in `app.use(
 │  layered resolution → unwrapped value   │
 └────────────────────────────────────────┘
 ┌─ design tokens (CSS variables) ────────┐  → concrete colors / radii
-│  flip under .dark, swap via setPalette  │
+│  flip under .dark, swap via setColorPalette  │
 └────────────────────────────────────────┘
         │
         ▼  components reference the first two via composables,
