@@ -1,7 +1,9 @@
 import vuecs, { injectThemeManager } from '@vuecs/core';
 import bootstrapTheme from '@vuecs/theme-bootstrap';
-import bulmaTheme from '@vuecs/theme-bulma';
-import tailwindTheme from '@vuecs/theme-tailwind';
+import bulmaTheme, { setColorPalette as setBulmaColorPalette } from '@vuecs/theme-bulma';
+import type { ColorPaletteConfig as BulmaColorPaletteConfig } from '@vuecs/theme-bulma';
+import tailwindTheme, { setColorPalette as setTailwindColorPalette } from '@vuecs/theme-tailwind';
+import type { ColorPaletteConfig as TailwindColorPaletteConfig } from '@vuecs/theme-tailwind';
 import type { App } from 'vue';
 
 /*
@@ -31,10 +33,33 @@ const cssLinkAttrByTheme: Partial<Record<DemoThemeName, string>> = {
 };
 
 let installedApp: App | null = null;
+let currentTheme: DemoThemeName = 'tailwind';
 
 export function installVuecs(app: App): void {
     app.use(vuecs, { themes: [tailwindTheme()] });
     installedApp = app;
+}
+
+/**
+ * The shared `<style id="vc-color-palette">` element is owned by whichever
+ * theme writes into it last. Tailwind's renderer emits
+ * `var(--color-blue-N)` rebindings (relies on Tailwind's safelisted
+ * palette tokens); Bulma's renderer emits explicit `hsl(...)` values plus
+ * `--bulma-<scale>-h/s/l` channel vars. Dispatch to the renderer matching
+ * the demo's currently-active theme so the latest write is the right
+ * shape for the current visual baseline.
+ *
+ * theme-bootstrap doesn't ship runtime palette switching today — its
+ * branch is a no-op; Bootstrap demos will keep the design-system defaults
+ * regardless of palette pick.
+ */
+export function applyDemoColorPalette(palette: { primary?: string; neutral?: string }): void {
+    if (currentTheme === 'bulma') {
+        setBulmaColorPalette(palette as BulmaColorPaletteConfig);
+    } else if (currentTheme === 'tailwind') {
+        setTailwindColorPalette(palette as TailwindColorPaletteConfig);
+    }
+    // bootstrap: no-op
 }
 
 /**
@@ -57,6 +82,8 @@ export function setDemoTheme(name: DemoThemeName): void {
             link.disabled = name !== theme;
         }
     }
+
+    currentTheme = name;
 
     // `runWithContext` lets us call `inject()` outside a setup() — needed
     // because the iframe-bridge calls this from a `message` event handler.

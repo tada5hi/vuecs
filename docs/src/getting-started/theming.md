@@ -86,21 +86,22 @@ Components declare structured variants in their defaults:
 
 You set values via `themeVariant`, and themes/overrides can extend variant definitions. See the [Variants guide](/guide/variants) for the full merge rules.
 
-## Switch palette at runtime (Tailwind only)
+## Switch palette at runtime
 
 ```ts
 import { setColorPalette } from '@vuecs/theme-tailwind';
+// or: import { setColorPalette } from '@vuecs/theme-bulma';
 
 setColorPalette({ primary: 'green', neutral: 'zinc' });
 ```
 
-This rewrites a `<style id="vc-color-palette">` block in `<head>` mapping `--vc-color-primary-*` to `var(--color-green-*)`. Every component that reads through the design tokens re-tints in real time — no Vue re-render, no class re-resolution.
+Both `@vuecs/theme-tailwind` and `@vuecs/theme-bulma` ship `setColorPalette()` / `useColorPalette()`. Each writes into the shared `<style id="vc-color-palette">` block — Tailwind emits `var(--color-blue-N)` rebindings, Bulma emits explicit `hsl(...)` literals plus `--bulma-<scale>-h/s/l` channel vars (so Bulma's auto-derivation of hover / active / `.is-light` shades follows the catalog). Both share the same `vc-color-palette` storage key, so a single picker UI can drive both themes if you load them side-by-side.
 
-In Nuxt, install `@vuecs/theme-tailwind-nuxt` alongside `@vuecs/nuxt` and use the auto-imported `useColorPalette()` for SSR-safe cookie-backed palette switching.
+In Nuxt, install `@vuecs/theme-tailwind-nuxt` alongside `@vuecs/nuxt` and use the auto-imported `useColorPalette()` for SSR-safe cookie-backed palette switching. (A `@vuecs/theme-bulma-nuxt` sibling is on the roadmap; until then, Bulma SPA usage is the supported path.)
 
-Bootstrap and Bulma themes don't ship runtime palette switching today — those frameworks don't expose a named-palette catalog the way Tailwind does. Their bridges still let you override `--vc-color-*` statically in CSS.
+`@vuecs/theme-bootstrap` doesn't ship runtime palette switching today — Bootstrap's per-variant theming is per-component (`--bs-btn-bg` etc.) rather than channel-decomposable, so the same JS-side approach doesn't apply cleanly.
 
-For non-Tailwind themes that ship their own palette catalog, compose `@vuecs/design`'s generic `applyColorPaletteCss(css)` and `bindColorPalette<T>(source, render)` with your own renderer — the same primitives the Tailwind theme is built on.
+For themes that ship their own palette catalog, compose `@vuecs/design`'s generic `applyColorPaletteCss(css)` and `bindColorPalette<T>(source, options)` with your own renderer + extend semantics — the primitives both shipped themes are built on.
 
 ## Next steps
 

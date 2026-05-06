@@ -1,5 +1,20 @@
 import type { Theme } from '@vuecs/core';
 
+export { renderColorPaletteStyles, setColorPalette } from './palette';
+export { useColorPalette } from './use-color-palette';
+export type { UseColorPaletteOptions, UseColorPaletteReturn } from './use-color-palette';
+export {
+    COLOR_PALETTE_SHADES,
+    SEMANTIC_SCALES,
+    TAILWIND_COLOR_PALETTES,
+} from './constants';
+export type {
+    ColorPaletteConfig,
+    Hsl,
+    SemanticScaleName,
+    TailwindColorPaletteName,
+} from './types';
+
 /**
  * Bulma theme for vuecs components.
  *

@@ -1,8 +1,7 @@
 import { isObject } from '@vuecs/core';
-import { setColorPalette } from '@vuecs/theme-tailwind';
 import { ref, watch } from 'vue';
 import type { Ref } from 'vue';
-import { type DemoThemeName, setDemoTheme } from './shared';
+import { type DemoThemeName, applyDemoColorPalette, setDemoTheme } from './shared';
 
 /*
  * Iframe runtime — runs inside each demo and coordinates with the parent
@@ -176,13 +175,17 @@ const handleParentMessage = (event: MessageEvent<ParentMessage>): void => {
     } else if (data.type === 'set-props') {
         propState.value = buildNestedState(data.values);
     } else if (data.type === 'set-palette') {
-        // Live runtime palette swap — rewrites `--vc-color-<scale>-*`
-        // CSS custom props to point at a different Tailwind palette.
-        // No theme re-resolution; CSS handles it via `var()` indirection.
+        // Live runtime palette swap — rewrites `--vc-color-<scale>-*` (and
+        // theme-specific channel/utility vars) so all currently-mounted
+        // components re-tint without theme re-resolution. The dispatch
+        // picks the renderer matching the active demo theme: Tailwind
+        // emits `var(--color-blue-N)` rebindings, Bulma emits explicit
+        // `hsl(...)` literals plus `--bulma-<scale>-h/s/l` channel vars,
+        // and Bootstrap is a no-op (no runtime palette switching today).
         const palette: Record<string, string> = {};
         if (data.primary) palette.primary = data.primary;
         if (data.neutral) palette.neutral = data.neutral;
-        setColorPalette(palette as Parameters<typeof setColorPalette>[0]);
+        applyDemoColorPalette(palette);
         postHeight();
     } else if (data.type === 'set-theme') {
         // Live runtime vuecs-theme swap (tailwind ↔ bootstrap ↔ bulma).
