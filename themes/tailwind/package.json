@@ -53,7 +53,7 @@
         "@vuecs/design": "^0.0.0",
         "@vueuse/core": "^14.3.0",
         "jsdom": "^29.1.1",
-        "vue": "^3.5.33"
+        "vue": "^3.5.34"
     },
     "peerDependencies": {
         "@vuecs/core": "^2.0.0",
