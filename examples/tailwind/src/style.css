@@ -1,3 +1,21 @@
 @import "tailwindcss";
 @import "@vuecs/design";
 @import "@vuecs/theme-tailwind";
+
+/* Structural CSS — each component package ships its own. Without these,
+   the JS-rendered widgets compile + run but render unstyled (e.g. the
+   select dropdown's structural padding / min-width / z-index). */
+@import "@vuecs/button";
+@import "@vuecs/elements";
+@import "@vuecs/forms";
+@import "@vuecs/gravatar";
+@import "@vuecs/navigation";
+@import "@vuecs/pagination";
+
+/* Scan the theme-tailwind source so Tailwind v4's JIT keeps the class
+   names it emits (variant chrome, hover/focus states, etc.).
+   examples/tailwind/src/ is 3 levels deep — 3 dots reach repo root. */
+@source "../../../themes/tailwind/src";
+
+/* Class-based dark mode — `useColorMode()` toggles `.dark` on <html>. */
+@custom-variant dark (&:where(.dark, .dark *));
