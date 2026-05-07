@@ -5,21 +5,23 @@
                 name="fa6-solid:heart"
                 class="text-red-500"
             /> vuecs
-            <span class="text-sm font-normal text-fg-muted">Examples</span>
+            <span class="text-sm font-normal text-fg-muted">Nuxt example</span>
         </h3>
         <p class="text-fg">
-            Example application demonstrating the vuecs component library with the
-            <code class="rounded bg-bg-muted px-1.5 py-0.5 text-sm">@vuecs/theme-tailwind</code>
-            theme.
+            Flagship Nuxt integration for vuecs — exercises
+            <code class="rounded bg-bg-muted px-1.5 py-0.5 text-sm">@vuecs/nuxt</code> +
+            <code class="rounded bg-bg-muted px-1.5 py-0.5 text-sm">@vuecs/theme-tailwind-nuxt</code>
+            on top of <code class="rounded bg-bg-muted px-1.5 py-0.5 text-sm">@vuecs/theme-tailwind</code>.
         </p>
-        <ul class="list-disc space-y-1 pl-6">
-            <li>
-                <VCLink :to="'/countdown'">
-                    Countdown
-                </VCLink>
-            </li>
-            <li>NavigationComponent(s)</li>
-            <li>Pagination</li>
-        </ul>
+        <p class="text-fg-muted">
+            Pick a component from the sidebar — every page mounts the matching demo from
+            <code class="rounded bg-bg-muted px-1.5 py-0.5 text-sm">@vuecs-examples/shared</code>,
+            the same workspace package consumed by the Tailwind / Bootstrap / Bulma vanilla
+            Vue example apps under <code class="rounded bg-bg-muted px-1.5 py-0.5 text-sm">examples/</code>.
+            The header and sidebar are driven by
+            <code class="rounded bg-bg-muted px-1.5 py-0.5 text-sm">@vuecs/navigation</code>
+            via <code class="rounded bg-bg-muted px-1.5 py-0.5 text-sm">findNavigationItems()</code>
+            in <code class="rounded bg-bg-muted px-1.5 py-0.5 text-sm">config/layout/module.ts</code>.
+        </p>
     </div>
 </template>

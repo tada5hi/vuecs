@@ -1,5 +1,5 @@
 <script lang="ts">
-import DemoView from '@vuecs-examples/shared/views/Countdown.vue';
+import DemoView from '@vuecs-examples/shared/views/FormSelect.vue';
 import { defineNuxtComponent } from '#app';
 
 export default defineNuxtComponent({ components: { DemoView } });

@@ -28,21 +28,24 @@ const steps = [
             v-model="current"
             :theme-variant="themeVariant"
         >
-            <template
+            <VCStepperItem
                 v-for="(step, index) in steps"
                 :key="index"
+                :step="index + 1"
             >
-                <VCStepperItem :step="index + 1">
-                    <VCStepperTrigger>
-                        <VCStepperIndicator>{{ index + 1 }}</VCStepperIndicator>
-                    </VCStepperTrigger>
-                    <div style="display: flex; flex-direction: column; gap: 0.125rem;">
-                        <VCStepperTitle>{{ step.title }}</VCStepperTitle>
-                        <VCStepperDescription>{{ step.description }}</VCStepperDescription>
-                    </div>
-                </VCStepperItem>
+                <VCStepperTrigger>
+                    <VCStepperIndicator>{{ index + 1 }}</VCStepperIndicator>
+                </VCStepperTrigger>
+                <div style="display: flex; flex-direction: column; gap: 0.125rem;">
+                    <VCStepperTitle>{{ step.title }}</VCStepperTitle>
+                    <VCStepperDescription>{{ step.description }}</VCStepperDescription>
+                </div>
+                <!-- Reka requires StepperSeparator to live inside the
+                     preceding StepperItem so it can read the item context
+                     for `data-state="completed"`. Outside of it, SSR
+                     throws an inject() error. -->
                 <VCStepperSeparator v-if="index < steps.length - 1" />
-            </template>
+            </VCStepperItem>
         </VCStepper>
         <p style="font-size: 0.875rem; color: var(--vc-color-fg-muted); margin: 0;">
             Current step: <code>{{ current }}</code>

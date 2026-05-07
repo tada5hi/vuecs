@@ -1,31 +1,12 @@
 <script lang="ts">
-import { VCList, VCListItem, VCListItemText } from '@vuecs/list';
-import { defineComponent, ref } from 'vue';
+import DemoView from '@vuecs-examples/shared/views/List.vue';
+import { defineNuxtComponent } from '#app';
 
-export default defineComponent({
-    components: {
-        VCList, 
-        VCListItem, 
-        VCListItemText, 
-    },
-    setup() {
-        const items = ref<{ id: number; name: string }[]>([
-            { id: 1, name: 'ABC' },
-            { id: 2, name: 'DEF' },
-        ]);
-        return { items };
-    },
-});
+export default defineNuxtComponent({ components: { DemoView } });
 </script>
 
 <template>
-    <VCList :data="items">
-        <template #item="{ data }">
-            <VCListItem :data="data">
-                <VCListItemText>
-                    {{ data.name }}
-                </VCListItemText>
-            </VCListItem>
-        </template>
-    </VCList>
+    <div class="mx-auto max-w-5xl">
+        <DemoView />
+    </div>
 </template>
