@@ -6,7 +6,7 @@ A Vue 3 **theming framework** with shipped components — published as scoped `@
 
 The value proposition is layered:
 
-1. **Theming machinery** (`@vuecs/core`): `useComponentTheme` + `useComponentDefaults` composables, `<VCConfigProvider>`, design-token system (`@vuecs/design`), runtime palette + color-mode switching, and a typed augmentable theme registry (`ThemeElements`, `ComponentDefaults`, `Config`).
+1. **Theming machinery** (`@vuecs/core`): `useComponentTheme` + `useComponentDefaults` composables, `<VCConfigProvider>`, `defineTheme()` for composing themes that build on existing ones, design-token system (`@vuecs/design`), runtime palette + color-mode switching, and a typed augmentable theme registry (`ThemeElements`, `ComponentDefaults`, `Config`).
 2. **A baseline of theme-aware components** (button, navigation, forms, overlays, list, pagination, …) built on that machinery.
 3. **An opt-in path for third-party libraries** to publish their own components on the same machinery, so a downstream consumer reskins **everything** — vuecs primitives + third-party libraries — through a single `app.use(vuecs, { themes, overrides, defaults, config })` call.
 

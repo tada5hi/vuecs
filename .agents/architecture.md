@@ -254,6 +254,58 @@ When consumers install component packages, the augmented `ThemeElements` provide
 - Type checking for slot keys within each component's theme override
 - Typo detection for both component names and slot keys in theme definitions
 
+### Composing themes (`defineTheme`, plan 022)
+
+`@vuecs/core` exposes `defineTheme(config)` for authoring themes that
+inherit from one or more existing themes. Config-object form mirroring
+`tsconfig`'s `extends` and Vue/Vite's `define*()` doctrine:
+
+```ts
+import tailwindTheme from '@vuecs/theme-tailwind';
+import { defineTheme, extend } from '@vuecs/core';
+
+export const acmeTheme = () => defineTheme({
+    extends: tailwindTheme(),                  // single base
+    elements: {
+        button: { classes: { root: extend('shadow-2xl') } },
+        acmeDataTable: { classes: { /* … */ } },
+    },
+});
+```
+
+Multi-base composition is natural — `extends: [a, b, c]` resolves
+left-to-right (rightmost wins), matching `themes: [a, b, c]`
+install-time stacking semantics. The current config's own fields apply
+last (i.e. they win over everything in `extends`).
+
+**Merge semantics** (per-component `elements[name]` entry):
+
+| Field | Merge rule |
+|---|---|
+| `classes` | Per-slot: later plain replaces accumulator; `extend()` marker merges via `classesMergeFn` |
+| `variants` | Deep merge per variant name + value (later wins per slot) |
+| `compoundVariants` | Concatenate from all chain layers |
+| `defaultVariants` | Shallow merge per key (later wins) |
+| `classesMergeFn` | Last-wins across the chain |
+| `colorMode.apply` (plan 021 forward-compat) | Compose: each layer's apply runs in chain order |
+| `palette.render` / `palette.names` (plan 021 forward-compat) | Last-wins (one renderer owns the runtime `<style>` block) |
+
+The `colorMode` and `palette` slots are reserved on `Theme` ahead of
+plan 021's runtime; they type-check today but are no-ops until plan
+021 ships the `useColorMode` / `useColorPalette` runtime that walks
+installed themes and dispatches through them.
+
+`defineTheme` is a thin facade over the lower-level pure reducer
+`mergeThemes(themes: Theme[]): Theme`, which is also exported for
+advanced composition. The reducer is pure (no Vue dependency) and
+tested in `packages/core/test/unit/theme/define.spec.ts`.
+
+The primary unblock is **third-party theme publishing**: a library
+like `@acme/admin-kit` can publish a single self-contained theme that
+builds on `tailwindTheme()` without forcing every consumer to install
+Tailwind separately AND remember to stack the override entry. See
+plans 022, 023, and 024 (step 4) for the full design rationale.
+
 ## Global Behavioral Defaults (#1491)
 
 Alongside the theme system, `@vuecs/core` exposes a parallel `DefaultsManager` for

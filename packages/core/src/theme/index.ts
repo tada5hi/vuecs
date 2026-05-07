@@ -5,15 +5,20 @@ export { installThemeManager, injectThemeManager } from './install';
 export { useComponentTheme } from './composable';
 export type { UseComponentThemeProps } from './composable';
 export { extractVariantConfig, resolveVariantClasses } from './variant';
+export { defineTheme } from './define';
+export { mergeThemes } from './merge-themes';
 export type {
     ExtendValue,
     ClassesMergeFn,
     Theme,
+    ThemeConfig,
     ThemeElements,
     ThemeManagerOptions,
     ThemeClassesOverride,
     ThemeClassesOverrideValue,
     ThemeClasses,
+    ColorModeHook,
+    PaletteHook,
     ComponentThemeDefinition,
     ThemeElementDefinition,
     VariantSlotClasses,
