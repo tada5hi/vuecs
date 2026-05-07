@@ -1,10 +1,14 @@
 import formControls from '@vuecs/forms';
-import { createApp } from 'vue';
-import { announceVariants, installIframeBridge } from './iframe-bridge';
+import FormTextarea from '@vuecs-examples/shared/views/FormTextarea.vue';
+import { createApp, h } from 'vue';
+import { announceVariants, installIframeBridge, variantState } from './iframe-bridge';
 import { installVuecs } from './shared';
-import Demo from './form-textarea.demo.vue';
 
-const app = createApp(Demo);
+const app = createApp({
+    setup() {
+        return () => h(FormTextarea, { themeVariant: variantState.value });
+    },
+});
 installVuecs(app);
 app.use(formControls);
 app.mount('#app');

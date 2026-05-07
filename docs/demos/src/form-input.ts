@@ -1,10 +1,14 @@
 import formControls from '@vuecs/forms';
-import { createApp } from 'vue';
-import { announceProps, installIframeBridge } from './iframe-bridge';
+import FormInput from '@vuecs-examples/shared/views/FormInput.vue';
+import { createApp, h } from 'vue';
+import { announceProps, installIframeBridge, propState } from './iframe-bridge';
 import { installVuecs } from './shared';
-import Demo from './form-input.demo.vue';
 
-const app = createApp(Demo);
+const app = createApp({
+    setup() {
+        return () => h(FormInput, propState.value);
+    },
+});
 installVuecs(app);
 app.use(formControls);
 app.mount('#app');

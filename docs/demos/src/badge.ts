@@ -1,10 +1,14 @@
 import elements from '@vuecs/elements';
-import { createApp } from 'vue';
-import { announceProps, installIframeBridge } from './iframe-bridge';
+import Badge from '@vuecs-examples/shared/views/Badge.vue';
+import { createApp, h } from 'vue';
+import { announceProps, installIframeBridge, propState } from './iframe-bridge';
 import { installVuecs } from './shared';
-import Demo from './badge.demo.vue';
 
-const app = createApp(Demo);
+const app = createApp({
+    setup() {
+        return () => h(Badge, propState.value);
+    },
+});
 installVuecs(app);
 app.use(elements);
 app.mount('#app');

@@ -12,7 +12,6 @@ import {
 import { isObject } from '@vuecs/core';
 import { useColorPalette } from '@vuecs/theme-tailwind';
 import type { PropCatalog, PropSpec, PropValues } from '../../../../demos/src/iframe-bridge';
-import { useDemoTheme } from '../use-demo-theme';
 
 interface Props {
     title?: string;
@@ -57,11 +56,12 @@ const variantValues = reactive<Record<string, string>>({});
 const propCatalog = ref<PropCatalog>({});
 const propValues = reactive<PropValues>({});
 
-// Global palette / color-mode / theme state. Demo and Playground both
-// forward these to their iframes so visuals stay in sync with the
-// docs-site preferences (set in the navbar's SettingsModal).
+// Global palette / color-mode state. Demo and Playground both forward
+// these to their iframes so visuals stay in sync with the docs-site
+// preferences (set in the navbar's SettingsModal). Per-theme proof
+// lives in the runnable example apps under `examples/`; the docs are
+// pinned to Tailwind.
 const { current: palette } = useColorPalette();
-const { current: demoTheme } = useDemoTheme();
 const { isDark } = useData();
 
 const frameSrc = computed(() => withBase(`/demos/${props.name}.html`));
@@ -147,21 +147,12 @@ const postPalette = (): void => {
     );
 };
 
-const postTheme = (): void => {
-    const win = frameRef.value?.contentWindow;
-    if (!win) return;
-    win.postMessage(
-        { type: 'set-theme', theme: demoTheme.value },
-        globalThis.location.origin,
-    );
-};
-
 const onFrameLoad = (): void => {
-    // Forward initial color-mode / palette / theme state to the freshly
-    // loaded iframe — and re-post the user's current toolbar selections
-    // so the preview matches the toolbar after a same-src iframe reload
-    // (HMR, manual refresh) rather than snapping back to the iframe's
-    // declared defaults.
+    // Forward initial color-mode / palette state to the freshly loaded
+    // iframe — and re-post the user's current toolbar selections so the
+    // preview matches the toolbar after a same-src iframe reload (HMR,
+    // manual refresh) rather than snapping back to the iframe's declared
+    // defaults.
     //
     // Important: do NOT clear `variantCatalog` / `propCatalog` here. The
     // iframe's `announceVariants` / `announceProps` posts its message
@@ -172,7 +163,6 @@ const onFrameLoad = (): void => {
     // watcher below (different demo → reset stale catalog).
     postColorMode();
     postPalette();
-    postTheme();
     postVariants();
     postProps();
 };
@@ -206,7 +196,6 @@ watch(isDark, () => {
 watch(variantValues, () => postVariants(), { deep: true });
 watch(propValues, () => postProps(), { deep: true });
 watch(palette, () => postPalette(), { deep: true });
-watch(demoTheme, () => postTheme());
 
 // Reset toolbar state when navigating to a different demo. The iframe
 // will repopulate with its own announce; clearing here just prevents

@@ -1,0 +1,15 @@
+{
+    "extends": "@tada5hi/tsconfig",
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "strict": false,
+        "noEmit": true,
+        "verbatimModuleSyntax": false,
+        "jsx": "preserve",
+        "types": ["vite/client"]
+    },
+    "include": ["src/**/*.ts", "src/**/*.vue"],
+    "exclude": ["node_modules", "dist"]
+}

@@ -1,3 +1,4 @@
+import { sharedRoutes } from '@vuecs-examples/shared/routes';
 import type {
     NavigationItem,
     NavigationItemNormalized,
@@ -10,12 +11,20 @@ const primaryItems : NavigationItem[] = [
         url: '/',
     },
     {
+        name: 'Components',
+        icon: 'fa6-solid:cube',
+        activeMatch: '/components/',
+    },
+    {
         name: 'Admin',
         icon: 'fa6-solid:gear',
         activeMatch: '/admin/',
     },
 ];
 
+// Sidebar list shown under the "Home" group — keeps the rich, custom-flow
+// pages (vuelidate-driven form-controls, bespoke list/overlays demos) that
+// the example app has historically demonstrated.
 const secondaryDefaultItems : NavigationItem[] = [
     {
         name: 'Home',
@@ -81,6 +90,15 @@ const secondaryDefaultItems : NavigationItem[] = [
     },
 ];
 
+// Auto-generated from the shared route list — every shared view appears
+// in the sidebar without per-item wiring. Adding a view to
+// `examples/_shared/src/routes.ts` is the only change needed.
+const sharedComponentItems : NavigationItem[] = sharedRoutes.map((route) => ({
+    name: route.label,
+    type: 'link',
+    url: `/components/${route.name}`,
+}));
+
 const secondaryAdminItems : NavigationItem[] = [
     {
         name: 'Auth',
@@ -108,6 +126,10 @@ export async function findNavigationItems(
         if (level === 1) {
             if (parent.name === 'Admin') {
                 return secondaryAdminItems;
+            }
+
+            if (parent.name === 'Components') {
+                return sharedComponentItems;
             }
 
             return secondaryDefaultItems;

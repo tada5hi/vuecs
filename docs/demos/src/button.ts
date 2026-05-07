@@ -1,11 +1,22 @@
 import button from '@vuecs/button';
+import Button from '@vuecs-examples/shared/views/Button.vue';
 import formControls from '@vuecs/forms';
-import { createApp } from 'vue';
-import { announceVariants, installIframeBridge } from './iframe-bridge';
+import { createApp, h } from 'vue';
+import { announceVariants, installIframeBridge, variantState } from './iframe-bridge';
 import { installVuecs } from './shared';
-import Demo from './button.demo.vue';
 
-const app = createApp(Demo);
+/*
+ * Host shell — the demo body lives in `@vuecs-examples/shared` so the
+ * per-theme example apps can mount the same view. The host's only job
+ * is to bind the iframe-bridge's reactive `variantState` to the view's
+ * `themeVariant` prop; example apps render the view without a host
+ * (no toolbar, no announce contract).
+ */
+const app = createApp({
+    setup() {
+        return () => h(Button, { themeVariant: variantState.value });
+    },
+});
 installVuecs(app);
 app.use(button);
 app.use(formControls);

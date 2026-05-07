@@ -1,7 +1,7 @@
 import { isObject } from '@vuecs/core';
 import { ref, watch } from 'vue';
 import type { Ref } from 'vue';
-import { type DemoThemeName, applyDemoColorPalette, setDemoTheme } from './shared';
+import { applyDemoColorPalette } from './shared';
 
 /*
  * Iframe runtime — runs inside each demo and coordinates with the parent
@@ -78,8 +78,7 @@ type ParentMessage =    | { type: 'set-color-mode', mode: 'light' | 'dark' } |
         type: 'set-palette',
         primary?: string,
         neutral?: string
-    } |
-    { type: 'set-theme', theme: DemoThemeName };
+    };
 
 type VariantCatalog = Record<string, readonly string[]>;
 type VariantValues = Record<string, string>;
@@ -175,25 +174,14 @@ const handleParentMessage = (event: MessageEvent<ParentMessage>): void => {
     } else if (data.type === 'set-props') {
         propState.value = buildNestedState(data.values);
     } else if (data.type === 'set-palette') {
-        // Live runtime palette swap — rewrites `--vc-color-<scale>-*` (and
-        // theme-specific channel/utility vars) so all currently-mounted
-        // components re-tint without theme re-resolution. The dispatch
-        // picks the renderer matching the active demo theme: Tailwind
-        // emits `var(--color-blue-N)` rebindings, Bulma emits explicit
-        // `hsl(...)` literals plus `--bulma-<scale>-h/s/l` channel vars,
-        // and Bootstrap is a no-op (no runtime palette switching today).
+        // Live runtime palette swap — rewrites `--vc-color-<scale>-*` so
+        // all currently-mounted components re-tint without theme
+        // re-resolution. The docs site is Tailwind-pinned; per-theme
+        // proof lives in the runnable apps under `examples/`.
         const palette: Record<string, string> = {};
         if (data.primary) palette.primary = data.primary;
         if (data.neutral) palette.neutral = data.neutral;
         applyDemoColorPalette(palette);
-        postHeight();
-    } else if (data.type === 'set-theme') {
-        // Live runtime vuecs-theme swap (tailwind ↔ bootstrap ↔ bulma).
-        // Calls ThemeManager.setThemes which triggers every
-        // useComponentTheme() computed to recompute. Each non-Tailwind
-        // framework's CSS is preloaded as a disabled <link> in the demo
-        // HTML shell; setDemoTheme toggles the right one on/off.
-        setDemoTheme(data.theme);
         postHeight();
     }
 };

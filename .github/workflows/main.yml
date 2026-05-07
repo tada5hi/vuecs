@@ -84,3 +84,31 @@ jobs:
                 uses: ./.github/actions/build
             -   name: Run tests
                 run: npx nx run-many -t test
+
+    examples:
+        name: Build Example Apps
+        needs: [build]
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                example:
+                    -   workspace: '@vuecs/nuxt-example'
+                        name: nuxt
+                    -   workspace: '@vuecs/example-tailwind'
+                        name: tailwind
+                    -   workspace: '@vuecs/example-bootstrap'
+                        name: bootstrap
+                    -   workspace: '@vuecs/example-bulma'
+                        name: bulma
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v6
+            -   name: Install
+                uses: ./.github/actions/install
+                with:
+                    node-version: ${{ env.NODE_VERSION }}
+            -   name: Build
+                uses: ./.github/actions/build
+            -   name: Build ${{ matrix.example.name }} example
+                run: npm run -w ${{ matrix.example.workspace }} build

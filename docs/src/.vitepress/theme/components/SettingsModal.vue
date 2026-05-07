@@ -16,18 +16,10 @@ import {
     PRIMARY_PALETTES,
     type PrimaryPalette,
 } from '../palette-options';
-import { type DemoThemeName, useDemoTheme } from '../use-demo-theme';
 
 const open = ref(false);
 const { isDark } = useData();
 const { current, extend } = useColorPalette();
-const { current: demoTheme, set: setDemoTheme } = useDemoTheme();
-
-const themeOptions: { value: DemoThemeName; label: string }[] = [
-    { value: 'tailwind', label: 'Tailwind' },
-    { value: 'bootstrap', label: 'Bootstrap' },
-    { value: 'bulma', label: 'Bulma' },
-];
 
 const primary = computed<PrimaryPalette>({
     get: () => (current.value.primary as PrimaryPalette) ?? 'blue',
@@ -134,30 +126,6 @@ const cogIconPath = 'M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 
                         </button>
                     </div>
                 </div>
-                <hr class="vc-settings-divider">
-                <div class="vc-settings-row">
-                    <span class="vc-settings-label">Theme (demos)</span>
-                    <div
-                        class="vc-settings-segment"
-                        role="group"
-                        aria-label="Theme"
-                    >
-                        <button
-                            v-for="opt in themeOptions"
-                            :key="opt.value"
-                            type="button"
-                            class="vc-settings-segment-btn"
-                            :class="{ 'vc-settings-segment-btn--active': demoTheme === opt.value }"
-                            :aria-pressed="demoTheme === opt.value"
-                            @click="setDemoTheme(opt.value)"
-                        >
-                            {{ opt.label }}
-                        </button>
-                    </div>
-                </div>
-                <p class="vc-settings-note">
-                    Affects the iframe demo previews only. Tailwind = vuecs default. Bootstrap v5 = visual QA mode.
-                </p>
             </div>
             <div class="vc-settings-footer">
                 <button

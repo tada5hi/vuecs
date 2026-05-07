@@ -1,0 +1,9 @@
+@import "bootstrap/dist/css/bootstrap.css";
+@import "@vuecs/design";
+@import "@vuecs/theme-bootstrap";
+
+/* Lift body bg/fg into the design tokens so dark mode follows the toggle. */
+body {
+    background-color: var(--vc-color-bg);
+    color: var(--vc-color-fg);
+}

@@ -18,24 +18,11 @@
 @import "@vuecs/navigation";
 @import "@vuecs/pagination";
 
-/* Bootstrap design-token bridge — remaps `--bs-*` to reference our
-   `--vc-color-*` tokens via `var()` indirection. Loaded unconditionally:
-   when the bootstrap theme is active (CDN CSS toggled on by the
-   iframe-bridge), this lets `setColorPalette()` repaint Bootstrap's btn /
-   alert / badge etc. via the `--bs-primary`, `--bs-success` … cascade.
-   When the bootstrap CDN is off (tailwind theme), defining `--bs-*` is
-   harmless — nothing reads them. */
-@import "@vuecs/theme-bootstrap";
-
-/* Bulma design-token bridge — same rationale as the Bootstrap bridge,
-   for `--bulma-*` tokens. Harmless when the Bulma CDN is off. */
-@import "@vuecs/theme-bulma";
-
 /* Scan theme-tailwind so JIT keeps the class names it emits. */
 @source "../../../themes/tailwind/src";
 
 /* Demos use class-based dark mode toggled via the iframe-bridge runtime
-   (parent docs site posts the current theme on load + change). */
+   (parent docs site posts color-mode + palette on load + change). */
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* The iframe body is the demo's "consumer page". Match the visual chrome
