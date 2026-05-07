@@ -51,7 +51,7 @@ export default defineNuxtPlugin((ctx) => {
     ctx.vueApp.use(installList);
     ctx.vueApp.use(installTimeago, { locales: { de } });
 
-    installNavigation(ctx.vueApp, { items: ({ level }) => findNavigationItems(level) });
+    installNavigation(ctx.vueApp, { items: ({ level, parent }) => findNavigationItems(level, parent) });
 
     ctx.vueApp.use(installPagination);
     ctx.vueApp.use(installOverlays);

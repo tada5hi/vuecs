@@ -1,12 +1,17 @@
-import type { NavigationItem } from '@vuecs/navigation';
+import type {
+    NavigationItem,
+    NavigationItemNormalized,
+} from '@vuecs/navigation';
 
 /*
  * Navigation config — drives both the top header (level 0) and the
  * left sidebar (level 1) via a single `<VCNavItems>` instance per
  * level. NavigationManager calls `findNavigationItems(level, parent)`
- * once per level per parent; the sidebar nests one more layer via the
- * `children:` arrays below so we exercise the multi-level rendering
- * path of `@vuecs/navigation`.
+ * once per level per parent; the sidebar's children arrays nest one
+ * more layer so the multi-level rendering path of `<VCNavItems>` is
+ * exercised. Different top-level entries return different sidebar
+ * items via the `parent` arg — Home shows the component catalog,
+ * Admin shows admin links.
  */
 
 const primaryItems: NavigationItem[] = [
@@ -14,6 +19,11 @@ const primaryItems: NavigationItem[] = [
         name: 'Home',
         icon: 'fa6-solid:house',
         url: '/',
+    },
+    {
+        name: 'Admin',
+        icon: 'fa6-solid:gear',
+        activeMatch: '/admin/',
     },
 ];
 
@@ -206,10 +216,11 @@ const overlaysItems: NavigationItem[] = [
     },
 ];
 
-// Sidebar list shown under "Home" (level 1). Mixes flat links (the
-// six standalone components) with nested groups (Elements / Forms /
-// List / Navigation / Overlays — each expands to its own children
-// so `<VCNavItems>`'s multi-level rendering path is exercised).
+// Sidebar list shown under "Home" (level 1, default branch). Mixes
+// flat links (the six standalone components) with nested groups
+// (Elements / Forms / List / Navigation / Overlays — each expands to
+// its own children so `<VCNavItems>`'s multi-level rendering path is
+// exercised).
 const secondaryDefaultItems: NavigationItem[] = [
     {
         name: 'Home',
@@ -258,14 +269,36 @@ const secondaryDefaultItems: NavigationItem[] = [
     },
 ];
 
+// Sidebar list shown under "Admin" (level 1, admin branch).
+// Demonstrates that `<VCNavItems>` returns different items per
+// top-level parent — switching from Home to Admin in the header
+// swaps the entire sidebar.
+const secondaryAdminItems: NavigationItem[] = [
+    {
+        name: 'Admin',
+        type: 'separator',
+    },
+    {
+        name: 'Realms',
+        type: 'link',
+        icon: 'fa6-solid:building-columns',
+        url: '/admin/realms',
+    },
+];
+
 export async function findNavigationItems(
     level: number,
+    parent?: NavigationItemNormalized,
 ): Promise<NavigationItem[]> {
     if (level === 0) {
         return primaryItems;
     }
 
     if (level === 1) {
+        if (parent?.name === 'Admin') {
+            return secondaryAdminItems;
+        }
+
         return secondaryDefaultItems;
     }
 

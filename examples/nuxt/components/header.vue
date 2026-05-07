@@ -1,5 +1,4 @@
 <script lang="ts">
-import { extend } from '@vuecs/core';
 import { VCGravatar } from '@vuecs/gravatar';
 import { VCNavItems } from '@vuecs/navigation';
 import { ref } from 'vue';
@@ -18,17 +17,11 @@ export default defineNuxtComponent({
             displayNav.value = !displayNav.value;
         };
 
-        // extend() so the per-instance sizing merges with the theme's
-        // `inline-block overflow-hidden rounded-full` instead of replacing it
-        // (themeClass is layer 4 and replaces by default — see architecture.md).
-        const gravatarThemeClass = { root: extend('h-8 w-8') };
-
         return {
             toggleNav,
             displayNav,
             colorMode: resolved,
             toggleColorMode,
-            gravatarThemeClass,
         };
     },
 });
@@ -77,7 +70,7 @@ export default defineNuxtComponent({
             >
                 <VCGravatar
                     email="peter.placzek1996@gmail.com"
-                    :theme-class="gravatarThemeClass"
+                    display-size="sm"
                 />
             </a>
         </div>
