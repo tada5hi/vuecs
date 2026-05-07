@@ -48,8 +48,10 @@ const toggleDark = () => {
                     <span class="vc-hero-title-grad">vuecs</span>
                 </h1>
                 <p class="vc-hero-tagline">
-                    Themeable Vue 3 component library with design tokens, runtime palette switching,
-                    and SSR-safe Nuxt integration.
+                    Vue 3 theming framework with shipped components.
+                    Design tokens, runtime palette + color-mode switching, SSR-safe Nuxt integration —
+                    plus an opt-in path for third-party libraries to compose their own
+                    components on the same theme system.
                 </p>
                 <div class="vc-hero-actions">
                     <a

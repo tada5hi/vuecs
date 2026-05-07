@@ -1,7 +1,7 @@
 ---
 layout: page
 title: vuecs
-description: Themeable Vue 3 component library with design tokens, runtime palette switching, and SSR-safe Nuxt integration.
+description: Vue 3 theming framework with shipped components — design tokens, runtime palette + color-mode switching, and an opt-in path for third-party libraries to compose their own components on the same theme system.
 ---
 
 <script setup>

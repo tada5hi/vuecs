@@ -1,29 +1,29 @@
 # Introduction
 
-**vuecs** is a Vue 3 component library focused on three things:
+**vuecs** is a Vue 3 **theming framework with shipped components**. Reframed: the components are the obvious surface, but the theming machinery underneath them is the value. Three layers:
 
-1. **Themeable, layered class resolution.** Every component reads its CSS classes through a four-layer resolution chain (defaults → themes → overrides → instance props), with structured variants and compound variants. You can drop in a Tailwind, Bootstrap v5, or Bootstrap v4 theme — or write your own — without forking the components.
+1. **Theming machinery** (`@vuecs/core`). Every component reads its CSS classes through a four-layer resolution chain (defaults → themes → overrides → instance props) with structured variants and compound variants. The same machinery is exported for **third-party use** — your own `<MyDataTable>` registers a theme slot via `ThemeElements` declaration merging and resolves through the same manager that vuecs's primitives use. Consumers re-skin everything (vuecs + your library) through one `app.use(vuecs, …)` call.
 
-2. **Design tokens, runtime palette switching (Tailwind).** Colors, radii, and semantic aliases live in CSS custom properties in `@vuecs/design` (concrete OKLCH defaults — works with or without Tailwind). For Tailwind users, `@vuecs/theme-tailwind` adds a one-line `setColorPalette({ primary: 'green' })` that re-tints every component on the page with no Vue re-render.
+2. **Design tokens + runtime palette switching.** Colors, radii, and semantic aliases live in CSS custom properties in `@vuecs/design` (concrete OKLCH defaults — works with or without Tailwind). For Tailwind users, `@vuecs/theme-tailwind` adds a one-line `setColorPalette({ primary: 'green' })` that re-tints every component on the page with no Vue re-render. `@vuecs/theme-bulma` ships the same `setColorPalette()` / `useColorPalette()` shape against the **same 22-name palette catalog** — Bulma renders those names as HSL channel vars internally, but the stored payload is interchangeable across themes (so a single picker UI drives both).
 
 3. **SSR-safe Nuxt integration.** `@vuecs/nuxt` wires color-mode plumbing into Nuxt's `<head>` on the server, so first paint matches what the client computes — no FOUC, no hydration mismatch. Tailwind apps add `@vuecs/theme-tailwind-nuxt` for the same SSR guarantees on palette switching.
 
 ## Why another component library?
 
-Most Vue libraries make you pick a CSS framework upfront and bake it in. vuecs treats themes as **data**: a theme is a function returning a class-map, merged in array order against component defaults. That means:
+Because vuecs isn't (just) a component library. Most libraries pick a CSS framework upfront and bake it in. vuecs treats themes as **data**: a theme is a function returning a class-map, merged in array order against component defaults. That has two consequences:
 
-- The same component renders correctly under Bootstrap v5, Bootstrap v4, or Tailwind v4 — pick at consume time.
-- Override individual slot classes from `app.use(vuecs, { overrides: ... })` without touching component source.
-- Per-instance overrides via `themeClass` and `themeVariant` props for one-off variations.
+- The same component renders correctly under Tailwind v4, Bootstrap 5, or Bulma 1.0+ — pick at consume time. Override individual slot classes via `app.use(vuecs, { overrides: ... })` or per-instance via `themeClass` / `themeVariant` props.
+- **You can build on the same theme system.** A library author drops `useComponentTheme` into their own components, and downstream consumers reskin the union (vuecs + that library) with one config call. No fork; no parallel theme system.
 
 ## What's in the box
 
-- **Components** — form controls, navigation, pagination, list controls, countdown, gravatar, link, timeago, icon.
-- **Themes** — `@vuecs/theme-tailwind`, `@vuecs/theme-bootstrap`, `@vuecs/theme-bulma`.
+- **Components** — button, navigation (incl. stepper), pagination, forms (checkbox / switch / input / number / pin / radio / select / select-search / slider / tags / textarea), list, overlays (modal / popover / hover-card / tooltip / dropdown-menu / context-menu), elements (separator / tag / avatar / aspect-ratio / visually-hidden / badge), countdown, gravatar, link, timeago, icon.
+- **Themes** — `@vuecs/theme-tailwind`, `@vuecs/theme-bootstrap`, `@vuecs/theme-bulma`. Cosmetic adapters that compose with the design-token layer.
 - **Icons** — `@vuecs/icon` (`<VCIcon>`, Iconify-backed) plus presets (`@vuecs/icons-lucide`, `@vuecs/icons-font-awesome`) that map vuecs's semantic-slot defaults to specific icon vocabularies.
 - **Design tokens** — `@vuecs/design` ships CSS variables + theme-agnostic generic palette primitives.
-- **Tailwind palette runtime** — `@vuecs/theme-tailwind` ships `setColorPalette()` / `useColorPalette()` for Tailwind's catalog.
+- **Runtime palette** — `@vuecs/theme-tailwind` and `@vuecs/theme-bulma` ship `setColorPalette()` / `useColorPalette()` against the **shared 22-name Tailwind palette catalog** (Bulma reuses Tailwind's catalog, rendered as HSL channel vars internally — payload is interchangeable, so a single picker UI drives both).
 - **Nuxt modules** — `@vuecs/nuxt` (color mode + tokens) and `@vuecs/theme-tailwind-nuxt` (SSR-safe palette).
+- **Example apps** — one Nuxt + three vanilla Vite + Vue 3 (Tailwind, Bootstrap, Bulma), all consuming a shared private workspace package of demo views. See `examples/` in the repo.
 
 ## Next steps
 
