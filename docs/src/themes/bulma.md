@@ -37,11 +37,31 @@ The bridge file maps Bulma's CSS theme variables onto vuecs design tokens:
 }
 ```
 
-Bulma 1.0 components read `--bulma-*` at runtime, so any change to `--vc-color-*` (overriding in CSS, or via the Tailwind theme's `setColorPalette()` if also installed) re-tints **both** vuecs components and Bulma-native components in real time.
+Bulma 1.0 components read `--bulma-*` at runtime, so any change to `--vc-color-*` (overriding in CSS, or via `setColorPalette()` — see below) re-tints **both** vuecs components and Bulma-native components in real time.
 
-::: info Runtime palette switching is Tailwind-only
-`@vuecs/theme-bulma` does **not** ship a runtime palette switcher. Bulma doesn't expose a named-palette catalog the way Tailwind does. To swap palettes at runtime, install `@vuecs/theme-tailwind` alongside this package and use its `setColorPalette()` — the swap rewrites `--vc-color-*` which both bridges read from.
-:::
+## Runtime palette switching
+
+`@vuecs/theme-bulma` ships its own `setColorPalette()` and `useColorPalette()` matching the Tailwind catalog of 22 palette names:
+
+```ts
+import { setColorPalette, useColorPalette } from '@vuecs/theme-bulma';
+
+setColorPalette({ primary: 'green', neutral: 'zinc' });
+
+// Or as a reactive composable (localStorage-backed; SPA-only):
+const { current, set, extend } = useColorPalette();
+extend({ primary: 'rose' });
+```
+
+Each call rewrites the shared `<style id="vc-color-palette">` block in `<head>`. Bulma's renderer emits three things together:
+
+1. **Channel vars** (`--bulma-<scale>-h/s/l`) — Bulma 1.0 derives hover, active, and `.is-light` modifiers from these via `calc()`-driven lightness adjustments, so a single channel write re-tints every state automatically.
+2. **Direct semantic vars** (`--bulma-primary`, `--bulma-info`, `--bulma-link`, …) — read by `has-background-*` / `has-text-*` utility classes.
+3. **vuecs design tokens** (`--vc-color-<scale>-{50…950}`) — keeps the bridge's per-variant `var(--vc-color-primary-600)` overrides AND any consumer-authored CSS that references the design tokens in lockstep with the swap.
+
+The OKLCH→HSL conversion happens once at package build time (see `themes/bulma/scripts/build-palette-catalog.ts`); the runtime cost of `setColorPalette()` is a single string-template + DOM upsert.
+
+The storage key (`vc-color-palette`) is intentionally shared with `@vuecs/theme-tailwind`'s composable, so a docs site or playground that loads both themes can drive a single picker UI from one ref.
 
 ## Mapping notes
 
@@ -54,8 +74,8 @@ A few places where Bulma's vocabulary diverges from the Bootstrap/Tailwind theme
 
 ## Limitations
 
-- **HSL-channel-derived utility classes don't track `--vc-color-*` overrides.** Bulma's per-variant components (`.button.is-primary`, `.tag.is-primary`, …) compose colors via HSL channel vars (`--bulma-button-h/s/l`) rather than named `--bulma-X-background-color` tokens. The bridge works around this by overriding the resolved `background-color` / `border-color` / `color` properties directly on each per-variant selector — runtime palette swaps re-tint those correctly. But channel-driven utility classes (`has-background-light`, `has-text-grey`, `has-background-dark`) keep Bulma's default palette; the matrix uses them only where the default is visually acceptable (avatar bg, stepper indicator default state, tooltip dark bg).
-- **Hover/active lightness deltas don't auto-derive.** Bulma normally interpolates hover/active states via `calc(var(--bulma-<color>-l) ± 5%)`. Because the bridge overrides the resolved color directly, those deltas are short-circuited; the bridge re-specifies hover (`-700`) and active (`-800`) shades explicitly per variant. Visually equivalent — just a different mechanism.
+- **`has-background-light`, `has-text-grey`, `has-background-dark`** — these utility classes still resolve through Bulma's `--bulma-grey-*` / `--bulma-light` / `--bulma-dark` defaults rather than the design-token alias. The matrix uses them only where Bulma's defaults are visually acceptable (avatar bg, stepper indicator default state, tooltip dark bg).
+- **Hover/active lightness deltas don't auto-derive on `.is-<color>` selectors.** Bulma normally interpolates hover/active states via `calc(var(--bulma-<color>-l) ± 5%)`. Because the bridge overrides the resolved color directly on `.button.is-primary`, those deltas are short-circuited; the bridge re-specifies hover (`-700`) and active (`-800`) shades explicitly per variant — these are the design system's tuned shade stops, so the trade-off is intentional. (Bulma's auto-derivation IS active for selectors the bridge doesn't override, so consumer-authored `.button.is-acme` rules pick up `setColorPalette` channel writes correctly.)
 - **Switch / stepper extensions target native `<input>` markup; Reka renders `<button role="…">`.** The theme's variant matrix layers Bulma utility classes on top of the structural `vc-form-{checkbox,switch,radio}` rules from `@vuecs/forms` and the structural stepper rules from `@vuecs/navigation` — those packages own shape and `data-state` checked-color visualization for these widgets.
 
 ## When to drop the bridge

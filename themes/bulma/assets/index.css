@@ -25,22 +25,26 @@
  *   `.button.is-primary` does NOT set the bg-color var — it sets
  *   `--bulma-button-h/s/l` and the base `.button` rule resolves
  *   `background-color: hsl(--bulma-button-h, …)`. Pure CSS can't
- *   decompose `var(--vc-color-primary-600)` into H/S/L channels, so
- *   we can't bridge that path. Instead we override the **resolved**
- *   `background-color` / `border-color` / `color` properties directly
- *   on each per-variant selector. Specificity 0,2,0 beats Bulma's base
- *   `.button` (0,1,0); no `!important` needed.
+ *   decompose `var(--vc-color-primary-600)` into H/S/L channels, so the
+ *   static :root rebinding below cannot reach those channels. Instead we
+ *   override the **resolved** `background-color` / `border-color` /
+ *   `color` properties directly on each per-variant selector. Specificity
+ *   0,2,0 beats Bulma's base `.button` (0,1,0); no `!important` needed.
  *
  *   Trade-off: Bulma's auto-computed hover/active lightness deltas are
- *   short-circuited. We re-specify hover (`-700`) and active (`-800`)
- *   shades manually per variant.
+ *   short-circuited at this static layer. We re-specify hover (`-700`)
+ *   and active (`-800`) shades manually per variant — these are the
+ *   design-system's tuned shade stops, so the trade-off is intentional.
+ *
+ * Runtime palette switching (`setColorPalette()` / `useColorPalette()`)
+ * fills in the channel-decomposition gap that pure CSS can't bridge: at
+ * runtime, JS writes `--bulma-<scale>-h/s/l` channels (sourced from a
+ * pre-decomposed catalog) AND rebinds `--vc-color-<scale>-{50…950}` so
+ * both the per-variant overrides below AND any of Bulma's own
+ * auto-derived rules re-tint together. Static defaults below remain
+ * the design-system blue/green/red/amber/sky baseline.
  *
  * Limitations:
- *   - Utility classes that read HSL channels (`.has-background-light`,
- *     `.has-text-grey`, `.has-background-dark`) keep Bulma's default
- *     palette — `setColorPalette()` doesn't reach them. The matrix uses
- *     these utilities sparingly (avatar bg, stepper indicator default,
- *     tooltip dark bg) where Bulma's defaults are visually acceptable.
  *   - Bulma's built-in `prefers-color-scheme: dark` block toggles
  *     `[data-theme="dark"]` semantics. This bridge uses the `.dark`
  *     class (vuecs design-system convention); pick one source of truth.

@@ -27,8 +27,18 @@ vuecs/
   icons/              # Icon-preset packages (npm workspaces) — Iconify-name vocabularies for @vuecs/icon, no runtime icon data
     font-awesome/     # @vuecs/icons-font-awesome — Font Awesome 6 Solid icon names (replaces the removed @vuecs/theme-font-awesome)
     lucide/           # @vuecs/icons-lucide — Lucide icon names (modern default)
-  examples/
-    nuxt/             # Nuxt demo app showcasing all components
+  examples/           # Runnable example apps — one per theme (plan 019)
+    _shared/          # @vuecs-examples/shared — private workspace package
+                      #   src/views/<Name>.vue — theme-agnostic demo bodies
+                      #     (vanilla CSS only; no Tailwind / BS / Bulma utilities)
+                      #   src/routes.ts — sharedRoutes catalog driving every app's nav
+                      # Source-only; never published. Docs site demos pull from here too.
+    nuxt/             # @vuecs/nuxt-example — flagship Nuxt + Tailwind app
+                      # Mounts shared views via /components/[name] resolver.
+                      # Exercises @vuecs/nuxt + @vuecs/theme-tailwind-nuxt modules.
+    tailwind/         # @vuecs/example-tailwind — vanilla Vite + Vue 3 + Tailwind theme
+    bootstrap/        # @vuecs/example-bootstrap — vanilla Vite + Vue 3 + Bootstrap 5; no Tailwind
+    bulma/            # @vuecs/example-bulma — vanilla Vite + Vue 3 + Bulma 1.0+; no Tailwind
   docs/               # @vuecs/docs — VitePress documentation site (deployed to vuecs.dev)
     src/
       .vitepress/

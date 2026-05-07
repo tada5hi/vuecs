@@ -1,0 +1,54 @@
+<script setup lang="ts">
+import {
+    VCStepper,
+    VCStepperDescription,
+    VCStepperIndicator,
+    VCStepperItem,
+    VCStepperSeparator,
+    VCStepperTitle,
+    VCStepperTrigger,
+} from '@vuecs/navigation';
+import { ref } from 'vue';
+
+defineProps<{
+    themeVariant?: Record<string, string | boolean>;
+}>();
+
+const current = ref(2);
+const steps = [
+    { title: 'Account', description: 'Create your profile' },
+    { title: 'Address', description: 'Where to send things' },
+    { title: 'Payment', description: 'Add a card' },
+];
+</script>
+
+<template>
+    <div style="display: flex; flex-direction: column; gap: 1rem; max-width: 32rem;">
+        <VCStepper
+            v-model="current"
+            :theme-variant="themeVariant"
+        >
+            <VCStepperItem
+                v-for="(step, index) in steps"
+                :key="index"
+                :step="index + 1"
+            >
+                <VCStepperTrigger>
+                    <VCStepperIndicator>{{ index + 1 }}</VCStepperIndicator>
+                </VCStepperTrigger>
+                <div style="display: flex; flex-direction: column; gap: 0.125rem;">
+                    <VCStepperTitle>{{ step.title }}</VCStepperTitle>
+                    <VCStepperDescription>{{ step.description }}</VCStepperDescription>
+                </div>
+                <!-- Reka requires StepperSeparator to live inside the
+                     preceding StepperItem so it can read the item context
+                     for `data-state="completed"`. Outside of it, SSR
+                     throws an inject() error. -->
+                <VCStepperSeparator v-if="index < steps.length - 1" />
+            </VCStepperItem>
+        </VCStepper>
+        <p style="font-size: 0.875rem; color: var(--vc-color-fg-muted); margin: 0;">
+            Current step: <code>{{ current }}</code>
+        </p>
+    </div>
+</template>

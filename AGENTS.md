@@ -66,6 +66,21 @@ Layer 3 (integration):       nuxt (depends on design + @nuxt/kit)
 
 Public docs live in `docs/` (private workspace `@vuecs/docs`, VitePress) and are deployed to **[vuecs.dev](https://vuecs.dev)**. **Update the docs alongside code changes** — the per-package READMEs are intentionally thin pointers that delegate prose to the docs site. See [Conventions → Documentation Updates](.agents/conventions.md#documentation-updates) for which pages map to which kinds of changes.
 
+The docs site iframe demos are pinned to `@vuecs/theme-tailwind`. Per-theme proof lives in the runnable example apps under `examples/` (plan 019).
+
+## Example apps
+
+Four runnable example apps under `examples/` — one Nuxt + three vanilla Vite + Vue 3:
+
+| App | Stack | Purpose |
+|-----|-------|---------|
+| `examples/nuxt/` | Nuxt 4 + Tailwind theme | Flagship Nuxt integration — exercises `@vuecs/nuxt` + `@vuecs/theme-tailwind-nuxt` |
+| `examples/tailwind/` | Vite + Vue 3 + Tailwind theme | Vanilla SPA, Tailwind |
+| `examples/bootstrap/` | Vite + Vue 3 + Bootstrap 5 | vuecs in a Bootstrap-themed app, no Tailwind |
+| `examples/bulma/` | Vite + Vue 3 + Bulma 1.0+ | vuecs in a Bulma-themed app, no Tailwind |
+
+All four mount the same demo views from `examples/_shared/` (private workspace package `@vuecs-examples/shared`). Adding a view to that package's `src/routes.ts` lights it up in every example app's nav automatically.
+
 ## Detailed Guides
 
 - **[Project Structure](.agents/structure.md)** — Monorepo layout, package organization, nested core re-exports, build outputs, and docs site layout

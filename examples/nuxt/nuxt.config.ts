@@ -14,7 +14,9 @@ export default defineNuxtConfig({
         '@vuecs/core': path.join(__dirname, '..', '..', 'packages', 'core', 'src'),
         // design-system is resolved via the workspace symlink so that
         // subpath exports (`@vuecs/design/index.css`) work.
+        '@vuecs/elements': path.join(__dirname, '..', '..', 'packages', 'elements', 'src'),
         '@vuecs/forms': path.join(__dirname, '..', '..', 'packages', 'forms', 'src'),
+        '@vuecs/gravatar': path.join(__dirname, '..', '..', 'packages', 'gravatar', 'src'),
         '@vuecs/icon': path.join(__dirname, '..', '..', 'packages', 'icon', 'src'),
         '@vuecs/list': path.join(__dirname, '..', '..', 'packages', 'list', 'src'),
         '@vuecs/link': path.join(__dirname, '..', '..', 'packages', 'link', 'src'),
@@ -30,7 +32,6 @@ export default defineNuxtConfig({
     modules: [
         path.join(__dirname, '..', '..', 'packages', 'nuxt', 'src', 'module'),
         path.join(__dirname, '..', '..', 'themes', 'tailwind-nuxt', 'src', 'module'),
-        '@pinia/nuxt',
     ],
     vite: { plugins: [tailwindcss()] },
     vuecs: {

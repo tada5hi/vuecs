@@ -1,10 +1,14 @@
 import overlays from '@vuecs/overlays';
-import { createApp } from 'vue';
-import { announceVariants, installIframeBridge } from './iframe-bridge';
+import HoverCard from '@vuecs-examples/shared/views/HoverCard.vue';
+import { createApp, h } from 'vue';
+import { announceVariants, installIframeBridge, variantState } from './iframe-bridge';
 import { installVuecs } from './shared';
-import Demo from './hover-card.demo.vue';
 
-const app = createApp(Demo);
+const app = createApp({
+    setup() {
+        return () => h(HoverCard, { themeVariant: variantState.value });
+    },
+});
 installVuecs(app);
 app.use(overlays);
 app.mount('#app');

@@ -1,32 +1,12 @@
 <script lang="ts">
-import { VCCountdown } from '@vuecs/countdown';
+import DemoView from '@vuecs-examples/shared/views/Countdown.vue';
 import { defineNuxtComponent } from '#app';
 
-export default defineNuxtComponent({
-    components: { VCCountdown },
-    setup() {
-        return { time: 3600 * 1000 };
-    },
-});
+export default defineNuxtComponent({ components: { DemoView } });
 </script>
 
 <template>
-    <div class="mx-auto max-w-5xl space-y-4">
-        <h3 class="flex items-center gap-2 text-2xl font-semibold">
-            <VCIcon
-                name="fa6-solid:clock"
-                class="text-blue-500"
-            /> Countdown
-        </h3>
-        <VCCountdown :time="time">
-            <template #default="props">
-                The countdown is still running for
-                <span class="font-medium text-green-600">
-                    {{ props.hours }} hour(s),
-                    {{ props.minutes }} minute(s),
-                    {{ props.seconds }} second(s)
-                </span>.
-            </template>
-        </VCCountdown>
+    <div class="mx-auto max-w-5xl">
+        <DemoView />
     </div>
 </template>

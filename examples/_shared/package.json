@@ -1,0 +1,49 @@
+{
+    "name": "@vuecs-examples/shared",
+    "private": true,
+    "type": "module",
+    "version": "0.0.0",
+    "description": "Shared theme-agnostic demo views consumed by the vuecs example apps. Source-only — never published.",
+    "author": {
+        "name": "Peter Placzek",
+        "email": "contact@tada5hi.net",
+        "url": "https://github.com/tada5hi"
+    },
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Tada5hi/vuecs.git",
+        "directory": "examples/_shared"
+    },
+    "exports": {
+        ".": {
+            "types": "./src/index.ts",
+            "default": "./src/index.ts"
+        },
+        "./routes": {
+            "types": "./src/routes.ts",
+            "default": "./src/routes.ts"
+        },
+        "./views/*": "./src/views/*"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    },
+    "devDependencies": {
+        "@vuecs/button": "*",
+        "@vuecs/countdown": "*",
+        "@vuecs/elements": "*",
+        "@vuecs/forms": "*",
+        "@vuecs/gravatar": "*",
+        "@vuecs/link": "*",
+        "@vuecs/list": "*",
+        "@vuecs/navigation": "*",
+        "@vuecs/overlays": "*",
+        "@vuecs/pagination": "*",
+        "@vuecs/timeago": "*",
+        "vue": "^3.5.33"
+    },
+    "peerDependencies": {
+        "vue": "^3.x"
+    }
+}

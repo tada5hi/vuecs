@@ -1,0 +1,19 @@
+@import "bootstrap/dist/css/bootstrap.css";
+@import "@vuecs/design";
+@import "@vuecs/theme-bootstrap";
+
+/* Structural CSS — each component package ships its own. Without these,
+   the JS-rendered widgets compile + run but render unstyled (select
+   dropdown padding / min-width / z-index, switch thumb position, etc.). */
+@import "@vuecs/button";
+@import "@vuecs/elements";
+@import "@vuecs/forms";
+@import "@vuecs/gravatar";
+@import "@vuecs/navigation";
+@import "@vuecs/pagination";
+
+/* Lift body bg/fg into the design tokens so dark mode follows the toggle. */
+body {
+    background-color: var(--vc-color-bg);
+    color: var(--vc-color-fg);
+}

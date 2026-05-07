@@ -1,10 +1,10 @@
 import formControls from '@vuecs/forms';
+import FormSelectSearch from '@vuecs-examples/shared/views/FormSelectSearch.vue';
 import { createApp } from 'vue';
 import { installIframeBridge } from './iframe-bridge';
 import { installVuecs } from './shared';
-import Demo from './form-select-search.demo.vue';
 
-const app = createApp(Demo);
+const app = createApp(FormSelectSearch);
 installVuecs(app);
 app.use(formControls);
 app.mount('#app');

@@ -1,10 +1,14 @@
 import formControls from '@vuecs/forms';
-import { createApp } from 'vue';
-import { announceVariants, installIframeBridge } from './iframe-bridge';
+import FormCheckbox from '@vuecs-examples/shared/views/FormCheckbox.vue';
+import { createApp, h } from 'vue';
+import { announceVariants, installIframeBridge, variantState } from './iframe-bridge';
 import { installVuecs } from './shared';
-import Demo from './form-checkbox.demo.vue';
 
-const app = createApp(Demo);
+const app = createApp({
+    setup() {
+        return () => h(FormCheckbox, { themeVariant: variantState.value });
+    },
+});
 installVuecs(app);
 app.use(formControls);
 app.mount('#app');

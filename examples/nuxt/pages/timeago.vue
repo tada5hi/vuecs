@@ -1,29 +1,12 @@
 <script lang="ts">
-import { VCTimeago, injectLocale } from '@vuecs/timeago';
+import DemoView from '@vuecs-examples/shared/views/Timeago.vue';
 import { defineNuxtComponent } from '#app';
 
-export default defineNuxtComponent({
-    components: { VCTimeago },
-    setup() {
-        const locale = injectLocale();
-
-        setTimeout(() => {
-            locale.value = 'de';
-        }, 3600);
-
-        return { dateTime: Date.now() - (1000 * 10) };
-    },
-});
+export default defineNuxtComponent({ components: { DemoView } });
 </script>
 
 <template>
-    <div class="mx-auto max-w-5xl space-y-4">
-        <h3 class="flex items-center gap-2 text-2xl font-semibold">
-            <VCIcon
-                name="fa6-solid:clock"
-                class="text-blue-500"
-            /> Timeago
-        </h3>
-        <VCTimeago :datetime="dateTime" />
+    <div class="mx-auto max-w-5xl">
+        <DemoView />
     </div>
 </template>

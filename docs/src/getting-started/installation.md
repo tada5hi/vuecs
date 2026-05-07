@@ -92,6 +92,19 @@ vuecs ships TypeScript declarations in every package. The `ThemeElements` and `C
 | Vite + Vue | (no dedicated package) | Use `@vuecs/core` directly as shown above |
 | Vue CLI / webpack | (no dedicated package) | Same as Vite — needs Tailwind v4 |
 
+## Runnable example apps
+
+The repository ships four example apps under `examples/` — fork any of them as a starting point:
+
+| App | Stack | What it shows |
+|-----|-------|----------------|
+| `examples/nuxt/` | Nuxt 4 + `@vuecs/theme-tailwind` | Flagship Nuxt integration — `@vuecs/nuxt` + `@vuecs/theme-tailwind-nuxt` modules, SSR-safe palette + color-mode |
+| `examples/tailwind/` | Vite + Vue 3 + Tailwind | Vanilla SPA with the Tailwind theme; closest to a typical consumer setup without Nuxt |
+| `examples/bootstrap/` | Vite + Vue 3 + Bootstrap 5 | vuecs in a Bootstrap-themed app, no Tailwind anywhere |
+| `examples/bulma/` | Vite + Vue 3 + Bulma 1.0+ | vuecs in a Bulma-themed app, no Tailwind anywhere |
+
+All four mount the same demo views from a shared private workspace package (`@vuecs-examples/shared`), so each app proves the same components render correctly under its theme.
+
 ## Next steps
 
 - [Theming](/getting-started/theming) — pick a theme, override slot classes

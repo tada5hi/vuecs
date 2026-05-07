@@ -14,10 +14,12 @@ import faSolid from '@iconify-json/fa6-solid/icons.json';
 
 import installButton from '@vuecs/button';
 import installCountdown from '@vuecs/countdown';
+import installElements from '@vuecs/elements';
 import installFormControl from '@vuecs/forms';
 import installGravatar from '@vuecs/gravatar';
 import installIcon from '@vuecs/icon';
 import installLink from '@vuecs/link';
+import installList from '@vuecs/list';
 import { install as installNavigation } from '@vuecs/navigation';
 import installOverlays from '@vuecs/overlays';
 import installPagination from '@vuecs/pagination';
@@ -42,17 +44,14 @@ export default defineNuxtPlugin((ctx) => {
     ctx.vueApp.use(installIcon);
     ctx.vueApp.use(installButton);
     ctx.vueApp.use(installCountdown);
+    ctx.vueApp.use(installElements);
     ctx.vueApp.use(installFormControl);
     ctx.vueApp.use(installGravatar);
     ctx.vueApp.use(installLink);
+    ctx.vueApp.use(installList);
     ctx.vueApp.use(installTimeago, { locales: { de } });
 
-    installNavigation(ctx.vueApp, {
-        items: ({
-            level,
-            parent,
-        }) => findNavigationItems(level, parent),
-    });
+    installNavigation(ctx.vueApp, { items: ({ level, parent }) => findNavigationItems(level, parent) });
 
     ctx.vueApp.use(installPagination);
     ctx.vueApp.use(installOverlays);

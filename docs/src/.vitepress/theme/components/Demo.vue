@@ -10,7 +10,6 @@ import {
 } from 'vue';
 import { isObject } from '@vuecs/core';
 import { useColorPalette } from '@vuecs/theme-tailwind';
-import { useDemoTheme } from '../use-demo-theme';
 
 interface Props {
     title?: string;
@@ -45,11 +44,11 @@ const frameRef = useTemplateRef<globalThis.HTMLIFrameElement>('frame');
 const frameHeight = ref<number>(160);
 let copyTimer: ReturnType<typeof setTimeout> | null = null;
 
-// Global palette / color-mode / theme state. Forwarded to the iframe so
-// the demo's visuals stay in sync with the docs-site preferences (set
-// in the navbar's SettingsModal).
+// Global palette / color-mode state. Forwarded to the iframe so the
+// demo's visuals stay in sync with the docs-site preferences (set in
+// the navbar's SettingsModal). The docs site is pinned to Tailwind;
+// per-theme proof lives in the runnable example apps under `examples/`.
 const { current: palette } = useColorPalette();
-const { current: demoTheme } = useDemoTheme();
 const { isDark } = useData();
 
 const frameSrc = computed(() => (props.name ? withBase(`/demos/${props.name}.html`) : null));
@@ -88,19 +87,9 @@ const postPalette = (): void => {
     );
 };
 
-const postTheme = (): void => {
-    const win = frameRef.value?.contentWindow;
-    if (!win) return;
-    win.postMessage(
-        { type: 'set-theme', theme: demoTheme.value },
-        globalThis.location.origin,
-    );
-};
-
 const onFrameLoad = (): void => {
     postColorMode();
     postPalette();
-    postTheme();
 };
 
 const onFrameMessage = (event: MessageEvent): void => {
@@ -115,7 +104,6 @@ const onFrameMessage = (event: MessageEvent): void => {
 
 watch(isDark, () => postColorMode());
 watch(palette, () => postPalette(), { deep: true });
-watch(demoTheme, () => postTheme());
 
 onMounted(() => {
     globalThis.window.addEventListener('message', onFrameMessage);
