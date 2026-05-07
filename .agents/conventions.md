@@ -91,6 +91,73 @@ This convention applies to every Reka-wrapping component across
 approach was reverted because it hid the actual default from autocomplete
 and led to subtle prop-shape drift.)
 
+## Theme bridge authoring — bridge what the framework exposes
+
+When writing a theme-bridge CSS file (the `assets/index.css` in
+`@vuecs/theme-bootstrap`, `@vuecs/theme-bulma`, or any future
+`@vuecs/theme-<framework>`), follow this rule:
+
+> **Bridge what the framework exposes; don't re-implement what it
+> doesn't.**
+
+A theme bridge layers onto the framework's *intended* theming API.
+Bootstrap 5 exposes `--bs-btn-bg` etc. — the bridge maps those onto
+`--vc-color-*`. Tailwind v4 exposes `@theme` color names — the
+Tailwind theme writes utility class strings that resolve through
+`--color-primary-*`. Both are within the framework's documented
+contract.
+
+Where a framework **doesn't** expose a hookable theming API for a
+particular surface (Bulma 1.0's HSL-channel decomposition for
+`.is-primary` button variants is the canonical example), accept that
+the surface stays framework-default rather than copying the
+framework's CSS into the bridge. **Document the limitation; don't
+paper over it.**
+
+### Why this matters
+
+Crossing the line from "bridge" to "shadow stylesheet" produces:
+
+- **Maintenance debt that scales with the framework.** Every BS / Bulma
+  patch release becomes a manual diff against your bridge. The framework
+  fixes a button hover regression; your bridge silently inherits the
+  bug because it overrode the resolved property.
+- **Visual drift on framework upgrades.** A 5.3 → 5.4 minor that
+  changes default padding values cascades naturally if you bridge
+  variables; it diverges silently if you reimplemented the rule.
+- **Consumer surprise.** A consumer writes `.btn-primary { --bs-btn-bg:
+  red }` expecting Bootstrap's documented contract to apply. If the
+  bridge has overridden the resolved property directly, that escape
+  hatch is broken.
+
+### What the line looks like in practice
+
+| Pattern | Bridge it | Don't reimplement it |
+|---|---|---|
+| Framework exposes `--bs-primary` / `--bulma-primary` | ✅ map to `--vc-color-primary-500` | |
+| Framework exposes `--bs-btn-bg` / per-variant button vars | ✅ map per variant to `--vc-color-<scale>-600` | |
+| Framework's `.bg-body` resolves through `--bs-body-bg-rgb` (no triplet bridge in pure CSS) | | ❌ don't override `body { background: ... }` directly — accept the limitation; document it; consumers that need it set a CSS var themselves (the `examples/bootstrap/` app does exactly this with `.vc-app-bar { background: var(--vc-color-bg) }`) |
+| Bulma 1.0 routes `.button.is-primary` through `--bulma-button-h/s/l` channels | | ❌ don't redefine `.button.is-primary { background-color: ... }` — accept the limitation OR ship a runtime palette renderer (per plan 018) that writes the channels JS-side |
+| Framework doesn't ship dark-mode for chrome under our `.dark` toggle | ⚠️ mirror the framework's own attribute (`data-bs-theme`, `data-theme`) at app level — the example apps' watchEffect mirror is the doctrinal pattern. (Plan 021 will move this into the theme itself.) | ❌ don't redeclare every navbar / form-control rule under `.dark` |
+
+### Trade-off
+
+Following this rule means some bridges look "incomplete" relative to
+their framework's full feature set. That's correct. The bridge's job is
+to make `--vc-color-*` reach as deep into the framework's tokens as the
+framework permits — no further. Reimplementation is what theme
+*packages* do (and own); a theme-bridge isn't a theme.
+
+### When in doubt
+
+If you're tempted to override a resolved property because the
+framework "doesn't expose" the hook you want — first verify. Read the
+framework's source for the rule you're targeting and confirm there's
+truly no `var()`-aware token. If the only path is direct property
+override, ship it as a documented limitation in the bridge file's
+comment header (with the trade-off explained), not as a silent rule
+that drifts on the next framework upgrade.
+
 ## Build
 
 - **tsdown** for ESM-only bundling
