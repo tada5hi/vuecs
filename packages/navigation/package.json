@@ -50,14 +50,14 @@
     },
     "dependencies": {
         "@posva/event-emitter": "^1.0.2",
-        "reka-ui": "^2.9.6"
+        "reka-ui": "^2.9.7"
     },
     "devDependencies": {
         "@vue/test-utils": "^2.4.10",
         "@vuecs/core": "^2.0.0",
         "@vuecs/link": "^1.0.1",
         "jsdom": "^29.1.1",
-        "vue": "^3.5.33",
+        "vue": "^3.5.34",
         "vue-router": "^5.0.6"
     },
     "peerDependencies": {
