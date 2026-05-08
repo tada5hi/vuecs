@@ -1,9 +1,4 @@
-import { 
-    describe, 
-    expect, 
-    it, 
-    vi, 
-} from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { defineTheme } from '../../../src/theme/define';
 import { extend } from '../../../src/theme/extend';
 import { mergeThemes } from '../../../src/theme/merge-themes';
@@ -95,13 +90,13 @@ describe('defineTheme', () => {
     });
 
     describe('variant merging', () => {
-        it('deep-merges variant definitions across the chain (later wins per slot)', () => {
+        it('deep-merges variants per name; last-wins per (name, value) replacing the whole slot-class map', () => {
             const base: Theme = {
                 elements: {
                     button: {
                         variants: {
                             size: {
-                                sm: { root: 'base-sm' },
+                                sm: { root: 'base-sm', icon: 'base-sm-icon' },
                                 md: { root: 'base-md' },
                             },
                         },
@@ -115,6 +110,8 @@ describe('defineTheme', () => {
             });
 
             const elements = merged.elements as Record<string, { variants?: any }>;
+            // size.md preserved (deep merge per name); size.sm wholesale-replaced
+            // (icon dropped — last-wins per (name, value), not merged per-slot)
             expect(elements.button?.variants?.size).toEqual({
                 sm: { root: 'override-sm' },
                 md: { root: 'base-md' },
@@ -224,7 +221,7 @@ describe('defineTheme', () => {
         });
 
         it('preserves single colorMode hook reference when only one layer declares it', () => {
-            const hook = { apply: vi.fn() };
+            const hook = { apply: () => {} };
             const merged = defineTheme({
                 extends: { elements: {} },
                 colorMode: hook,
@@ -256,9 +253,11 @@ describe('defineTheme', () => {
             expect(mergeThemes([])).toEqual({ elements: {} });
         });
 
-        it('returns the same reference for single-element array', () => {
+        it('returns a defensive shallow clone for single-element array', () => {
             const theme: Theme = { elements: {} };
-            expect(mergeThemes([theme])).toBe(theme);
+            const result = mergeThemes([theme]);
+            expect(result).not.toBe(theme);
+            expect(result).toEqual(theme);
         });
 
         it('produces a result that resolves identically to runtime stacking', () => {

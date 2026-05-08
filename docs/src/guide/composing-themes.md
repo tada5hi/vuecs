@@ -55,7 +55,7 @@ For each component name across the chain:
 | Field | Merge rule |
 |---|---|
 | `classes` | Per-slot: later plain replaces accumulator; `extend()` marker merges via the chain's `classesMergeFn` |
-| `variants` | Deep merge per variant name + value (later wins per slot) |
+| `variants` | Deep merge per variant **name**; last-wins per `(variantName, variantValue)` pair (the slot-class map for that value is replaced wholesale, not merged per-slot) |
 | `compoundVariants` | Concatenate from all chain layers |
 | `defaultVariants` | Shallow merge per key (later wins) |
 | `classesMergeFn` | Last-wins across the chain |

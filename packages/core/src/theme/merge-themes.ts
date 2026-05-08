@@ -58,7 +58,7 @@ export function mergeThemes(themes: Theme[]): Theme {
         return { elements: {} };
     }
     if (themes.length === 1) {
-        return themes[0];
+        return { ...themes[0] };
     }
 
     const classesMergeFn = pickClassesMergeFn(themes);
