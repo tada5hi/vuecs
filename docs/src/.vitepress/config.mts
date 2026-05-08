@@ -71,6 +71,7 @@ export default defineConfig({
                     items: [
                         { text: 'Overview', link: '/guide/' },
                         { text: 'Theme System', link: '/guide/theme-system' },
+                        { text: 'Composing Themes', link: '/guide/composing-themes' },
                         { text: 'Variants', link: '/guide/variants' },
                         { text: 'Behavioral Defaults', link: '/guide/behavioral-defaults' },
                         { text: 'Design Tokens', link: '/guide/design-tokens' },

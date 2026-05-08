@@ -66,9 +66,62 @@ export type ThemeElementDefinition<T extends ThemeClasses = ThemeClasses> = {
 
 export interface ThemeElements {}
 
+/**
+ * Forward-compat hook for plan 021 (theme-configurable runtime hooks).
+ *
+ * A theme can declare an `apply` callback that toggles framework-specific
+ * dark-mode markers (e.g. `data-bs-theme`, `data-theme`) when color mode
+ * changes. Currently a no-op at runtime; reserved here so authoring code
+ * (`defineTheme`) compiles forward when plan 021 ships.
+ */
+export type ColorModeHook = {
+    apply: (doc: Document, mode: 'light' | 'dark') => void;
+};
+
+/**
+ * Forward-compat hook for plan 021 (theme-configurable runtime hooks).
+ *
+ * A theme can declare a palette renderer + the catalog of valid names it
+ * accepts. Currently a no-op at runtime; reserved here so authoring code
+ * (`defineTheme`) compiles forward when plan 021 ships.
+ */
+export type PaletteHook = {
+    render: (palette: Record<string, string>) => string;
+    names?: readonly string[];
+};
+
 export type Theme = {
     elements: Partial<ThemeElements>;
     classesMergeFn?: ClassesMergeFn;
+    colorMode?: ColorModeHook;
+    palette?: PaletteHook;
+};
+
+export type ThemeConfig = {
+    /**
+     * Theme(s) to inherit from. Resolved left-to-right; later entries
+     * override earlier ones. Omit to author a leaf theme from scratch.
+     */
+    extends?: Theme | Theme[];
+
+    /** Per-component slot/variant overrides (same shape as Theme.elements). */
+    elements?: Partial<ThemeElements>;
+
+    /** Optional class-merge function for `extend()` markers. Later wins across the chain. */
+    classesMergeFn?: ClassesMergeFn;
+
+    /**
+     * Plan 021 forward-compat slot. When ≥1 layer in the chain declares
+     * `colorMode.apply`, the merged theme exposes a composed callback that
+     * runs every layer's apply in chain order.
+     */
+    colorMode?: ColorModeHook;
+
+    /**
+     * Plan 021 forward-compat slot. Later wins across the chain — only one
+     * renderer can own the runtime palette `<style>` block.
+     */
+    palette?: PaletteHook;
 };
 
 export type ThemeManagerOptions = {
