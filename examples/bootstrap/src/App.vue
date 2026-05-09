@@ -1,28 +1,14 @@
 <script setup lang="ts">
 import { sharedRoutes } from '@vuecs-examples/shared/routes';
 import { useColorMode } from '@vuecs/design';
-import { onMounted, watchEffect } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
 
-const { resolved, toggle } = useColorMode();
-
 /*
- * The vuecs design-system toggles `.dark` on <html>. The
- * theme-bootstrap bridge uses that class as the source of truth for
- * `--vc-color-*` flips, but Bootstrap 5.3 components (navbar text,
- * dropdown chrome, form-control bg, etc.) read `--bs-*` vars that
- * Bootstrap itself only flips under `[data-bs-theme="dark"]`. Mirror
- * the resolved color mode onto that attribute so Bootstrap's own
- * dark-mode chain fires alongside vuecs's. Note: `useColorMode`
- * exposes the *resolved* mode (so `system` becomes `light` or `dark`).
+ * The `data-bs-theme` attribute is mirrored automatically by
+ * theme-bootstrap's `colorMode.apply` runtime hook (plan 021). No
+ * per-app `watchEffect` mirror is needed.
  */
-const syncBootstrapTheme = () => {
-    if (typeof globalThis.document === 'undefined') return;
-    globalThis.document.documentElement.setAttribute('data-bs-theme', resolved.value);
-};
-
-onMounted(syncBootstrapTheme);
-watchEffect(syncBootstrapTheme);
+const { resolved, toggle } = useColorMode();
 </script>
 
 <template>

@@ -673,5 +673,18 @@ export default function bootstrapTheme(): Theme {
                 defaultVariants: { size: 'md' },
             },
         },
+        /*
+         * Theme-runtime hook (plan 021): mirror the resolved color mode
+         * onto Bootstrap's `data-bs-theme` attribute so framework chrome
+         * (navbar, dropdown, form-control, etc.) follows vuecs's `.dark`
+         * toggle without a per-app `watchEffect` mirror. Bootstrap 5.3+
+         * reads `data-bs-theme` as its own dark-mode source of truth;
+         * the bridge `assets/index.css` keeps `--vc-color-*` aligned.
+         */
+        colorMode: {
+            apply(doc, mode) {
+                doc.documentElement.setAttribute('data-bs-theme', mode);
+            },
+        },
     };
 }

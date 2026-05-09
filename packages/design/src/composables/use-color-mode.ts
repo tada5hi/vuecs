@@ -1,6 +1,7 @@
 import { createSharedComposable, usePreferredDark, useStorage } from '@vueuse/core';
 import { computed, ref, watch } from 'vue';
 import type { ComputedRef, Ref, WritableComputedRef } from 'vue';
+import { useThemeRuntimeManager } from './use-theme-runtime';
 
 export type ColorMode = 'light' | 'dark' | 'system';
 
@@ -90,6 +91,33 @@ export function bindColorMode(
             (value) => {
                 document.documentElement.classList.toggle('dark', value === 'dark');
                 document.documentElement.classList.toggle('light', value === 'light');
+            },
+            { immediate: true },
+        );
+    }
+
+    /*
+     * Theme-configurable dispatch (plan 021): each installed theme that
+     * declares a `colorMode.apply` hook gets called with the resolved
+     * mode. Themes use this to mirror frame-specific dark-mode markers
+     * (theme-bootstrap → `data-bs-theme`, theme-bulma → `data-theme`)
+     * so framework chrome flips alongside vuecs's own `.dark` class
+     * without per-app `watchEffect` mirrors.
+     *
+     * Reading `manager.themes` inside the watcher subscribes to theme
+     * swaps via `ThemeManager.setThemes()` — so re-installing themes at
+     * runtime re-fires the dispatch with the new theme list.
+     */
+    const manager = useThemeRuntimeManager();
+    if (typeof document !== 'undefined') {
+        watch(
+            resolved,
+            (value) => {
+                const themes = manager?.themes;
+                if (!themes) return;
+                for (const theme of themes) {
+                    theme.colorMode?.apply(document, value);
+                }
             },
             { immediate: true },
         );

@@ -364,6 +364,54 @@ overload-based slot/expose/generic-component inference machinery
 (~3 lines per component beyond the helpers) didn't justify the risk
 of `vue-tsc` inference regressions.
 
+### Theme-configurable runtime hooks (`Theme.colorMode` / `Theme.palette`, plan 021)
+
+The `Theme` type carries two optional runtime-hook slots that themes
+use to attach framework-specific side effects to color-mode and
+palette switching. Both slots are no-ops by default — themes opt in
+when they need framework-specific mirroring.
+
+```ts
+type Theme = {
+    elements: Partial<ThemeElements>;
+    classesMergeFn?: ClassesMergeFn;
+    colorMode?: { apply(doc: Document, mode: 'light' | 'dark'): void };
+    palette?: {
+        render(palette: Record<string, string>): string;
+        names?: readonly string[];
+    };
+};
+```
+
+**`colorMode.apply`** fires after `useColorMode` toggles `.dark` /
+`.light` on `<html>`. theme-bootstrap declares it to mirror the
+resolved mode onto `data-bs-theme` (so Bootstrap 5.3+ chrome flips
+alongside vuecs's `--vc-color-*`); theme-bulma declares it for
+`data-theme`. theme-tailwind doesn't declare it — Tailwind reads
+`.dark` directly. Multiple hooks compose: every layer's `apply` runs
+in install order on every change.
+
+**`palette.{render, names}`** is the declarative half of runtime
+palette switching. Each theme exposes its renderer (the function
+that converts a palette config into a CSS string) plus the catalog
+of names it accepts. theme-tailwind and theme-bulma both declare
+this against the shared 22-name Tailwind palette catalog. (The
+generic dispatcher in `@vuecs/design` that consumes these hooks is
+the next slice of plan 021; for now, the per-theme `useColorPalette`
+exports keep wiring rendering directly.)
+
+The hooks bridge across packages without coupling `@vuecs/design` to
+`@vuecs/core`: both packages reference the same
+`Symbol.for('VCThemeManager')` registry key, and `@vuecs/design`'s
+`useThemeRuntimeManager()` looks the manager up via `inject()` with
+a structural projection of the slots it needs. No runtime dep, no
+type dep — just shared symbol convention.
+
+Net effect: BS / Bulma example apps no longer need per-app
+`watchEffect` mirrors for `data-bs-theme` / `data-theme`. The pattern
+that previously repeated for every consumer now lives in the theme
+exactly once.
+
 ## Global Behavioral Defaults (#1491)
 
 Alongside the theme system, `@vuecs/core` exposes a parallel `DefaultsManager` for

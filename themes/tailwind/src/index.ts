@@ -1,6 +1,8 @@
 import type { ClassesMergeFn, Theme } from '@vuecs/core';
 import { twMerge } from 'tailwind-merge';
 import './config';
+import { TAILWIND_COLOR_PALETTES } from './constants';
+import { renderColorPaletteStyles } from './palette';
 
 export { renderColorPaletteStyles, setColorPalette } from './palette';
 export { useColorPalette } from './use-color-palette';
@@ -50,6 +52,19 @@ export const merge: ClassesMergeFn = (base, override) => twMerge(base, override)
 export default function tailwindTheme(): Theme {
     return {
         classesMergeFn: merge,
+        /*
+         * Theme-runtime hook (plan 021): declare the Tailwind palette
+         * renderer + catalog so a generic `@vuecs/design`-driven
+         * dispatcher can render `<style id="vc-color-palette">` based on
+         * the active themes' `palette.render`. The current per-theme
+         * `useColorPalette()` export keeps wiring this directly; the
+         * declaration is forward-compat for the upcoming generic
+         * dispatcher (plan 021 second half).
+         */
+        palette: {
+            render: renderColorPaletteStyles as (palette: Record<string, string>) => string,
+            names: TAILWIND_COLOR_PALETTES,
+        },
         elements: {
             formGroup: {
                 classes: {
