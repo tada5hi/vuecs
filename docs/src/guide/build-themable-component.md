@@ -177,7 +177,7 @@ app.component('MyDataTable', MyDataTable);
 app.mount('#app');
 ```
 
-`extend()` flips replace → merge: `header: extend('bg-muted/50')` keeps both the structural `mdt-header` class AND the theme's contribution AND adds the consumer's class. Without `extend()`, the consumer's value replaces lower layers (preserving structural defaults — see [Theme System](/guide/theme-system) for the full chain).
+`extend()` flips replace → merge: `header: extend('bg-muted/50')` keeps both the structural `mdt-header` class AND the theme's contribution AND adds the consumer's class. Without `extend()`, the consumer's value at the override layer (or the per-instance `themeClass` prop) **fully replaces every lower layer including the structural defaults** — wrap with `extend()` whenever you want the structural classes to survive. Themes (layer 2) are special: they always merge with defaults regardless. See [Theme System](/guide/theme-system) for the full chain.
 
 ### Per-instance override
 
@@ -250,7 +250,7 @@ const brandTheme = () => defineTheme({
 The same declaration-merging pattern extends to two more axes:
 
 - **`ComponentDefaults`** — register non-class behavioral defaults (button text, placeholder strings, icon names) that consumers can override globally for i18n or branding. See [Behavioral Defaults](/guide/behavioral-defaults).
-- **`Config`** — register cross-cutting config keys (CSP nonces, custom direction/locale, etc.) that your component reads via `useConfig()`. See [`<VCConfigProvider>` in architecture.md](/guide/theme-system) for the federated-schema pattern.
+- **`Config`** — register cross-cutting config keys (CSP nonces, custom direction/locale, etc.) that your component reads via `useConfig()`. The federated-schema pattern follows the same `declare module '@vuecs/core' { interface Config { ... } }` shape; subtree-scoped overrides are exposed via `<VCConfigProvider>`.
 
 Both follow the same `declare module '@vuecs/core' { interface ... }` shape as `ThemeElements`.
 
