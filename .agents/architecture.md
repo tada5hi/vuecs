@@ -306,6 +306,64 @@ builds on `tailwindTheme()` without forcing every consumer to install
 Tailwind separately AND remember to stack the override entry. See
 plans 022, 023, and 024 (step 4) for the full design rationale.
 
+### Themable-component helpers (`themableProps` / `useThemeProps`, plan 024 step 5b)
+
+`@vuecs/core` ships two small helpers that collapse most of the
+themable-component boilerplate without wrapping Vue's `defineComponent`
+— so slot typing via `SlotsType<...>`, `expose`, `emits` validators,
+generic component types, and `vue-tsc` inference all keep working
+unchanged:
+
+- **`themableProps<T>()`** — returns the standard `themeClass` /
+  `themeVariant` prop declarations, typed against the slot map `T`.
+  Spread into your component's `props` block.
+- **`useThemeProps(props, ...shorthandKeys)`** — returns the reactive
+  `{ themeClass, themeVariant }` getter pair that `useComponentTheme`
+  expects. Folds shorthand variant props (e.g. `color`, `size`,
+  `density`) into `themeVariant` so consumers can write either
+  `<VCBadge color="primary">` or
+  `<VCBadge :theme-variant="{ color: 'primary' }">`.
+
+```ts
+const badgeProps = {
+    color: { type: String as PropType<BadgeColor>, default: undefined },
+    variant: { type: String as PropType<BadgeVariant>, default: undefined },
+    size: { type: String as PropType<BadgeSize>, default: undefined },
+    tag: { type: String, default: 'span' },
+    ...themableProps<BadgeThemeClasses>(),
+};
+
+export default defineComponent({
+    name: 'VCBadge',
+    inheritAttrs: false,
+    props: badgeProps,
+    setup(props, { attrs, slots }) {
+        const theme = useComponentTheme(
+            'badge',
+            useThemeProps(props, 'color', 'variant', 'size'),
+            badgeThemeDefaults,
+        );
+        return () => h(props.tag, mergeProps(attrs, { class: theme.value.root }), slots.default?.());
+    },
+});
+```
+
+Eliminates ~12 mechanical lines per themable component (duplicated
+prop declarations + the `themeProps` reactive-getter object + manual
+shorthand-variant folding) and removes the easy-to-mis-write
+reactive-getter pattern. Authoring stays inside Vue's standard
+`defineComponent`, so all of Vue's typing machinery applies.
+
+`@vuecs/elements`'s `<VCBadge>` is the canonical dogfood site —
+60 lines collapsed to 44, with no behavioural change.
+
+A higher-level `defineThemableComponent` factory was prototyped and
+rejected: wrapping `defineComponent` would require replicating Vue's
+overload-based slot/expose/generic-component inference machinery
+(brittle vs. future Vue versions), and the marginal additional savings
+(~3 lines per component beyond the helpers) didn't justify the risk
+of `vue-tsc` inference regressions.
+
 ## Global Behavioral Defaults (#1491)
 
 Alongside the theme system, `@vuecs/core` exposes a parallel `DefaultsManager` for

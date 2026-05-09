@@ -7,6 +7,7 @@ export type { UseComponentThemeProps } from './composable';
 export { extractVariantConfig, resolveVariantClasses } from './variant';
 export { defineTheme } from './define';
 export { mergeThemes } from './merge-themes';
+export { themableProps, useThemeProps } from './themable';
 export type {
     ExtendValue,
     ClassesMergeFn,
