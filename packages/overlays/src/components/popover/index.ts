@@ -10,4 +10,5 @@ export type { PopoverContentProps } from './PopoverContent.vue';
 export type { PopoverArrowProps } from './PopoverArrow.vue';
 export type { PopoverCloseProps } from './PopoverClose.vue';
 
+export * from './theme';
 export * from './types';

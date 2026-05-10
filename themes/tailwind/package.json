@@ -51,6 +51,9 @@
     "devDependencies": {
         "@vuecs/core": "^2.0.0",
         "@vuecs/design": "^0.0.0",
+        "@vuecs/elements": "^0.0.0",
+        "@vuecs/navigation": "^2.4.1",
+        "@vuecs/overlays": "^0.0.0",
         "@vueuse/core": "^14.3.0",
         "jsdom": "^29.1.1",
         "vue": "^3.5.33"
