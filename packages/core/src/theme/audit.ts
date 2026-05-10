@@ -6,10 +6,11 @@ import type {
 } from './types';
 
 /**
- * Result of `auditTheme()` — a structured drift report. All four
- * record fields are keyed by component name; the value is the list of
- * slots that drifted. Top-level arrays cover element-level drift
- * (missing or unknown component names).
+ * Result of `auditTheme()` — a structured drift report with five
+ * fields: two top-level string arrays (`missingElements`,
+ * `unknownElements`) for element-level drift, plus three records
+ * (`missingSlots`, `unknownSlots`, `redundantStructural`) keyed by
+ * component name where the value is the list of slots that drifted.
  */
 export type AuditResult = {
     /** Component names present in `expected` but missing from `theme.elements`. */
@@ -67,12 +68,19 @@ export type ExpectedThemeCatalog = Record<string, ComponentThemeDefinition>;
  */
 export function auditTheme(theme: Theme, expected: ExpectedThemeCatalog): AuditResult {
     const themeElements = theme.elements as Record<string, ThemeElementDefinition | undefined>;
+    /*
+     * Prototype-free records: keys come from theme code (potentially
+     * third-party) and assigning into a regular `{}` would trigger the
+     * `__proto__` setter for attacker-controlled keys. `Object.create(null)`
+     * also pairs with the `Object.hasOwn` checks below — both pieces
+     * together close the prototype-chain hole in `in`-based lookups.
+     */
     const result: AuditResult = {
         missingElements: [],
         unknownElements: [],
-        missingSlots: {},
-        unknownSlots: {},
-        redundantStructural: {},
+        missingSlots: Object.create(null) as Record<string, string[]>,
+        unknownSlots: Object.create(null) as Record<string, string[]>,
+        redundantStructural: Object.create(null) as Record<string, string[]>,
     };
 
     const expectedNames = Object.keys(expected);
@@ -85,7 +93,7 @@ export function auditTheme(theme: Theme, expected: ExpectedThemeCatalog): AuditR
     }
 
     for (const name of themeNames) {
-        if (!(name in expected)) {
+        if (!Object.hasOwn(expected, name)) {
             result.unknownElements.push(name);
         }
     }
@@ -129,7 +137,7 @@ export function auditTheme(theme: Theme, expected: ExpectedThemeCatalog): AuditR
         }
 
         for (const slot of themeSlots) {
-            if (!(slot in expectedClasses)) {
+            if (!Object.hasOwn(expectedClasses, slot)) {
                 if (!result.unknownSlots[name]) result.unknownSlots[name] = [];
                 result.unknownSlots[name].push(slot);
             }
@@ -175,16 +183,22 @@ export function formatAuditResult(
     const skipSet = new Set<keyof AuditResult>(skip);
     const lines: string[] = [];
 
+    /*
+     * Sort copies (`[...arr].sort()`), not the inputs. The formatter
+     * is meant to be side-effect-free so callers can re-render the
+     * same `AuditResult` without seeing in-place mutation noise.
+     */
+
     if (!skipSet.has('missingElements') && result.missingElements.length > 0) {
         lines.push(`  Missing elements (${result.missingElements.length}):`);
-        for (const name of result.missingElements.sort()) {
+        for (const name of [...result.missingElements].sort()) {
             lines.push(`    - ${name}`);
         }
     }
 
     if (!skipSet.has('unknownElements') && result.unknownElements.length > 0) {
         lines.push(`  Unknown elements (${result.unknownElements.length}):`);
-        for (const name of result.unknownElements.sort()) {
+        for (const name of [...result.unknownElements].sort()) {
             lines.push(`    - ${name}`);
         }
     }
@@ -194,7 +208,7 @@ export function formatAuditResult(
         if (names.length > 0) {
             lines.push('  Missing slots:');
             for (const name of names) {
-                lines.push(`    - ${name}: ${result.missingSlots[name].sort().join(', ')}`);
+                lines.push(`    - ${name}: ${[...result.missingSlots[name]].sort().join(', ')}`);
             }
         }
     }
@@ -204,7 +218,7 @@ export function formatAuditResult(
         if (names.length > 0) {
             lines.push('  Unknown slots:');
             for (const name of names) {
-                lines.push(`    - ${name}: ${result.unknownSlots[name].sort().join(', ')}`);
+                lines.push(`    - ${name}: ${[...result.unknownSlots[name]].sort().join(', ')}`);
             }
         }
     }
@@ -214,7 +228,7 @@ export function formatAuditResult(
         if (names.length > 0) {
             lines.push('  Redundant structural (theme value === default):');
             for (const name of names) {
-                lines.push(`    - ${name}: ${result.redundantStructural[name].sort().join(', ')}`);
+                lines.push(`    - ${name}: ${[...result.redundantStructural[name]].sort().join(', ')}`);
             }
         }
     }

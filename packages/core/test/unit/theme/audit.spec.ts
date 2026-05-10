@@ -67,15 +67,11 @@ describe('auditTheme', () => {
     });
 
     it('flags unknown slots per element', () => {
+        const buttonClasses: Record<string, string> = { root: 'btn', icon: 'h-4' };
+        buttonClasses.extraSlot = 'mystery';
         const theme: Theme = {
             elements: {
-                button: {
-                    classes: {
-                        root: 'btn', 
-                        icon: 'h-4', 
-                        extraSlot: 'mystery', 
-                    }, 
-                },
+                button: { classes: buttonClasses },
                 badge: { classes: { root: 'tag' } },
             } as Theme['elements'],
         };
@@ -273,5 +269,27 @@ describe('formatAuditResult', () => {
         expect(alpha).toBeGreaterThan(0);
         expect(alpha).toBeLessThan(mike);
         expect(mike).toBeLessThan(zebra);
+    });
+
+    it('does not mutate the input AuditResult arrays', () => {
+        const missingElements = ['zebra', 'alpha'];
+        const slots = ['root', 'icon'];
+        const result: ReturnType<typeof auditTheme> = {
+            missingElements,
+            unknownElements: [],
+            missingSlots: { button: slots },
+            unknownSlots: {},
+            redundantStructural: {},
+        };
+
+        formatAuditResult(result);
+
+        // Inputs preserved in original (unsorted) order — formatter
+        // sorts copies, not the inputs themselves.
+        expect(result.missingElements).toEqual(['zebra', 'alpha']);
+        expect(result.missingSlots.button).toEqual(['root', 'icon']);
+        // Same identities — formatter doesn't reassign.
+        expect(result.missingElements).toBe(missingElements);
+        expect(result.missingSlots.button).toBe(slots);
     });
 });
