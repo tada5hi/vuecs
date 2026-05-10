@@ -1,26 +1,14 @@
 <script setup lang="ts">
 import { sharedRoutes } from '@vuecs-examples/shared/routes';
 import { useColorMode } from '@vuecs/design';
-import { onMounted, watchEffect } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
 
-const { resolved, toggle } = useColorMode();
-
 /*
- * The vuecs design-system toggles `.dark` on <html>; the
- * theme-bulma bridge uses that class as the source of truth for
- * `--vc-color-*` flips. Bulma 1.0 itself flips its own component
- * variables only under `[data-theme="dark"]`, so mirror the resolved
- * mode onto the attribute so Bulma's own dark-mode chain (navbar text,
- * inputs, menu) fires alongside vuecs's.
+ * The `data-theme` attribute is mirrored automatically by theme-bulma's
+ * `colorMode.apply` runtime hook (plan 021). No per-app `watchEffect`
+ * mirror is needed.
  */
-const syncBulmaTheme = () => {
-    if (typeof globalThis.document === 'undefined') return;
-    globalThis.document.documentElement.setAttribute('data-theme', resolved.value);
-};
-
-onMounted(syncBulmaTheme);
-watchEffect(syncBulmaTheme);
+const { resolved, toggle } = useColorMode();
 </script>
 
 <template>

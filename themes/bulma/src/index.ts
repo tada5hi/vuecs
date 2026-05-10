@@ -1,4 +1,6 @@
 import type { Theme } from '@vuecs/core';
+import { TAILWIND_COLOR_PALETTES } from './constants';
+import { renderColorPaletteStyles } from './palette';
 
 export { renderColorPaletteStyles, setColorPalette } from './palette';
 export { useColorPalette } from './use-color-palette';
@@ -687,6 +689,36 @@ export default function bulmaTheme(): Theme {
                 },
                 defaultVariants: { size: 'md' },
             },
+        },
+        /*
+         * Theme-runtime hook (plan 021): mirror the resolved color mode
+         * onto Bulma's `data-theme` attribute so framework chrome (navbar
+         * text, form-control bg, etc.) follows vuecs's `.dark` toggle
+         * without a per-app `watchEffect` mirror. Bulma 1.0+ reads
+         * `data-theme` (alongside `prefers-color-scheme`) as its own
+         * dark-mode source of truth; the bridge `assets/index.css` keeps
+         * `--vc-color-*` aligned.
+         */
+        colorMode: {
+            apply(doc, mode) {
+                doc.documentElement.setAttribute('data-theme', mode);
+            },
+        },
+        /*
+         * Theme-runtime hook (plan 021): declare the Bulma palette
+         * renderer + catalog. `@vuecs/design`'s `useColorPalette()`
+         * walks installed themes and concatenates each
+         * `palette.render` output, so `@vuecs/theme-bulma`'s
+         * `useColorPalette()` wrapper delegates here. When stacked
+         * alongside theme-tailwind (the docs-site case), both renderers
+         * fire on the same payload and emit non-overlapping CSS rules
+         * into the single `<style id="vc-color-palette">` block. Bulma
+         * reuses Tailwind's 22-name palette catalog, rendered as HSL
+         * channel vars internally (plan 018).
+         */
+        palette: {
+            render: renderColorPaletteStyles as (palette: Record<string, string>) => string,
+            names: TAILWIND_COLOR_PALETTES,
         },
     };
 }

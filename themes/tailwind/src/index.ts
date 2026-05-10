@@ -1,6 +1,8 @@
 import type { ClassesMergeFn, Theme } from '@vuecs/core';
 import { twMerge } from 'tailwind-merge';
 import './config';
+import { TAILWIND_COLOR_PALETTES } from './constants';
+import { renderColorPaletteStyles } from './palette';
 
 export { renderColorPaletteStyles, setColorPalette } from './palette';
 export { useColorPalette } from './use-color-palette';
@@ -50,6 +52,17 @@ export const merge: ClassesMergeFn = (base, override) => twMerge(base, override)
 export default function tailwindTheme(): Theme {
     return {
         classesMergeFn: merge,
+        /*
+         * Theme-runtime hook (plan 021): declare the Tailwind palette
+         * renderer + catalog. `@vuecs/design`'s `useColorPalette()`
+         * walks installed themes and routes through `palette.render`,
+         * so `@vuecs/theme-tailwind`'s `useColorPalette()` wrapper now
+         * delegates here rather than wiring the renderer directly.
+         */
+        palette: {
+            render: renderColorPaletteStyles as (palette: Record<string, string>) => string,
+            names: TAILWIND_COLOR_PALETTES,
+        },
         elements: {
             formGroup: {
                 classes: {

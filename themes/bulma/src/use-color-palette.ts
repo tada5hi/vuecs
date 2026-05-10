@@ -1,10 +1,6 @@
-import { bindColorPalette } from '@vuecs/design';
+import { useColorPalette as useColorPaletteCore } from '@vuecs/design';
 import type { UseColorPaletteReturn } from '@vuecs/design';
-import { createSharedComposable, useStorage } from '@vueuse/core';
-import { ref } from 'vue';
-import type { Ref } from 'vue';
 import { SEMANTIC_SCALES, TAILWIND_COLOR_PALETTES } from './constants';
-import { renderColorPaletteStyles } from './palette';
 import type { ColorPaletteConfig, SemanticScaleName, TailwindColorPaletteName } from './types';
 
 /**
@@ -13,12 +9,10 @@ import type { ColorPaletteConfig, SemanticScaleName, TailwindColorPaletteName } 
  * so consumers can swap themes at the docs / playground level without
  * losing state.
  *
- * `useColorPalette` is wrapped with `createSharedComposable`, so options
- * are honored only on the **first call**. Subsequent invocations from
- * anywhere in the app receive the cached instance with the original
- * options — passing a different `storageKey` or `initial` is a silent
- * no-op. For per-call configuration, call `bindColorPalette()` from
- * `@vuecs/design` directly.
+ * The underlying generic dispatcher (in `@vuecs/design`) is wrapped
+ * with `createSharedComposable`, so options are honored only on the
+ * **first call**. For per-call configuration, call
+ * `bindColorPalette()` from `@vuecs/design` directly.
  */
 export interface UseColorPaletteOptions {
     /** Initial palette when no persisted value exists. Default: `{}`. */
@@ -28,8 +22,6 @@ export interface UseColorPaletteOptions {
     /** Storage key for the default backend. Default: `'vc-color-palette'`. */
     storageKey?: string;
 }
-
-const DEFAULT_STORAGE_KEY = 'vc-color-palette';
 
 const TAILWIND_PALETTE_SET = new Set<string>(TAILWIND_COLOR_PALETTES);
 
@@ -55,43 +47,29 @@ const sanitize = (value: unknown): ColorPaletteConfig => {
 
 /**
  * Reactive Bulma-palette state with localStorage persistence (via
- * VueUse's `useStorage`). Wrapped with `createSharedComposable` so every
- * call site shares the same ref, watcher, and applied DOM state.
+ * VueUse's `useStorage`).
+ *
+ * Thin wrapper over `@vuecs/design`'s generic theme-aware
+ * `useColorPalette()` (plan 021 slice 2): the generic dispatcher walks
+ * installed themes and concatenates each theme's `palette.render`
+ * output. theme-bulma declares its renderer at the theme level, so
+ * importing this hook implicitly opts into the theme-runtime contract
+ * — no direct `bindColorPalette` wiring here anymore.
  *
  * Storage key (`vc-color-palette`) is intentionally shared with
  * `@vuecs/theme-tailwind`'s SPA composable: when an app loads both
- * themes (e.g. the vuecs docs site demos), the same payload drives both
- * — Tailwind components get the Tailwind renderer, Bulma components get
- * the Bulma renderer, and a single picker UI controls both.
+ * themes (e.g. the vuecs docs site demos), the same payload drives
+ * both — Tailwind components get the Tailwind renderer's output, Bulma
+ * components get the Bulma renderer's output, both written into the
+ * same `<style id="vc-color-palette">` block (the dispatcher
+ * concatenates).
  */
-export const useColorPalette = createSharedComposable(
-    (options: UseColorPaletteOptions = {}): UseColorPaletteReturn<ColorPaletteConfig> => {
-        const {
-            initial = {},
-            persist = true,
-            storageKey = DEFAULT_STORAGE_KEY,
-        } = options;
-
-        const storage: Ref<ColorPaletteConfig> = persist ?
-            useStorage<ColorPaletteConfig>(storageKey, sanitize(initial), undefined, {
-                serializer: {
-                    read: (raw): ColorPaletteConfig => {
-                        try {
-                            return sanitize(JSON.parse(raw));
-                        } catch {
-                            return {};
-                        }
-                    },
-                    write: (value) => JSON.stringify(value),
-                },
-            }) :
-            ref<ColorPaletteConfig>(sanitize(initial));
-
-        return bindColorPalette(storage, {
-            render: renderColorPaletteStyles,
-            extend: (current, partial) => ({ ...current, ...partial }),
-        });
-    },
-);
+export function useColorPalette(options: UseColorPaletteOptions = {}): UseColorPaletteReturn<ColorPaletteConfig> {
+    return useColorPaletteCore<ColorPaletteConfig>({
+        ...options,
+        sanitize,
+        extend: (current, partial) => ({ ...current, ...partial }),
+    });
+}
 
 export type { UseColorPaletteReturn } from '@vuecs/design';
