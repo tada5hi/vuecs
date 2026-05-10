@@ -395,10 +395,26 @@ in install order on every change.
 palette switching. Each theme exposes its renderer (the function
 that converts a palette config into a CSS string) plus the catalog
 of names it accepts. theme-tailwind and theme-bulma both declare
-this against the shared 22-name Tailwind palette catalog. (The
-generic dispatcher in `@vuecs/design` that consumes these hooks is
-the next slice of plan 021; for now, the per-theme `useColorPalette`
-exports keep wiring rendering directly.)
+this against the shared 22-name Tailwind palette catalog.
+
+`@vuecs/design`'s `useColorPalette()` walks installed themes and
+**concatenates** every theme's `palette.render` output into the
+`<style id="vc-color-palette">` block. The per-theme
+`useColorPalette` exports in `@vuecs/theme-tailwind` and
+`@vuecs/theme-bulma` are now thin wrappers that pass the
+theme-specific sanitizer + types through to the generic dispatcher.
+
+Concat (rather than last-wins) is the doctrinal semantic: when an
+app stacks multiple palette-aware themes (the docs-site case where
+Tailwind and Bulma components share the same picker UI), each
+theme's renderer emits its own non-overlapping CSS rules — Tailwind
+rebinds `--vc-color-*`, Bulma writes per-variant HSL channel vars
++ explicit selectors. The CSS cascade resolves any incidental
+overlap with later-rule-wins semantics, so concat behaves like
+last-wins for overlapping properties AND emits both themes' unique
+properties. Walking `manager.themes` inside the `watchEffect`
+subscribes to `setThemes()`, so runtime theme swaps automatically
+re-render the `<style>` block.
 
 The hooks bridge across packages without coupling `@vuecs/design` to
 `@vuecs/core`: both packages reference the same
