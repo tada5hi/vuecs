@@ -1,3 +1,4 @@
+import { useConfig } from '@vuecs/core';
 import { useColorPalette as useColorPaletteCore } from '@vuecs/design';
 import type { UseColorPaletteReturn } from '@vuecs/design';
 import { SEMANTIC_SCALES, TAILWIND_COLOR_PALETTES } from './constants';
@@ -65,10 +66,19 @@ const sanitize = (value: unknown): ColorPaletteConfig => {
  * concatenates).
  */
 export function useColorPalette(options: UseColorPaletteOptions = {}): UseColorPaletteReturn<ColorPaletteConfig> {
+    /*
+     * CSP nonce: read via the cross-cutting Config registry (augmented
+     * by this package's `config.ts` to expose `nonce?: string`). Passed
+     * as a getter so the dispatcher re-reads on every `<style>` re-apply
+     * — supports reactive `setConfig({ nonce: '...' })` flows.
+     */
+    const nonce = useConfig('nonce');
+
     return useColorPaletteCore<ColorPaletteConfig>({
         ...options,
         sanitize,
         extend: (current, partial) => ({ ...current, ...partial }),
+        nonce: () => nonce.value,
     });
 }
 

@@ -40,6 +40,15 @@ export interface UseColorPaletteOptions<T extends Record<string, unknown>> {
      * shapes supply their own.
      */
     extend?: (current: T, partial: Partial<T>) => T;
+    /**
+     * CSP nonce written to the `<style id="vc-color-palette">` element.
+     * Accepts a string (resolved once) or a getter
+     * `() => string | undefined` (called on every re-render, so reactive
+     * nonce changes propagate). Per-theme wrappers in
+     * `@vuecs/theme-tailwind` / `@vuecs/theme-bulma` read this from
+     * `useConfig('nonce')` automatically.
+     */
+    nonce?: string | (() => string | undefined);
 }
 
 function passthroughSanitize<T>(value: unknown): T {
@@ -92,7 +101,12 @@ export function useColorPaletteUnshared<
         storageKey = DEFAULT_STORAGE_KEY,
         sanitize = passthroughSanitize<T>,
         extend = shallowMerge,
+        nonce,
     } = options;
+
+    const resolveNonce: () => string | undefined = typeof nonce === 'function' ?
+        nonce :
+        () => nonce;
 
     const manager = useThemeRuntimeManager();
 
@@ -133,7 +147,7 @@ export function useColorPaletteUnshared<
          * `<style>` block.
          */
         watchEffect(() => {
-            applyColorPaletteCss(renderConcatenated(storage.value));
+            applyColorPaletteCss(renderConcatenated(storage.value), undefined, resolveNonce());
         });
     }
 

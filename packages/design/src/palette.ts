@@ -19,18 +19,40 @@ export const COLOR_PALETTE_STYLE_ELEMENT_ID = 'vc-color-palette';
  * (e.g. `@vuecs/theme-tailwind`'s `renderColorPaletteStyles()`); other
  * tooling can call it directly with custom CSS.
  *
+ * The optional `nonce` parameter wires CSP nonce attribution: when set,
+ * the created `<style>` element carries `nonce="..."` so it survives a
+ * strict Content-Security-Policy. Subsequent calls update the
+ * attribute when the value changes, and clear it when the new value is
+ * undefined (so consumers can revoke a stale nonce on policy update).
+ * Consumers typically read this via
+ * `useConfig('nonce')` (from `@vuecs/core`, augmented by
+ * `@vuecs/theme-tailwind`); the per-theme `useColorPalette` wrappers
+ * already do this.
+ *
  * On the server (`document` undefined) this is a no-op; SSR pre-render
  * paths should serialize the renderer's output into the response head
- * directly, then let the client take over on hydration.
+ * directly (with the nonce wired through framework-specific head
+ * APIs), then let the client take over on hydration.
  */
-export function applyColorPaletteCss(css: string, doc: Document | undefined = globalThis.document): void {
+export function applyColorPaletteCss(
+    css: string,
+    doc: Document | undefined = globalThis.document,
+    nonce?: string,
+): void {
     if (!doc) return;
 
     let style = doc.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID) as HTMLStyleElement | null;
     if (!style) {
         style = doc.createElement('style');
         style.id = COLOR_PALETTE_STYLE_ELEMENT_ID;
+        if (nonce) style.setAttribute('nonce', nonce);
         doc.head.appendChild(style);
+    } else if (nonce) {
+        if (style.getAttribute('nonce') !== nonce) {
+            style.setAttribute('nonce', nonce);
+        }
+    } else if (style.hasAttribute('nonce')) {
+        style.removeAttribute('nonce');
     }
     style.textContent = css;
 }
@@ -68,6 +90,12 @@ export interface BindColorPaletteOptions<T> {
      * no-op — the first reactive read on the client triggers a re-paint.
      */
     document?: Document;
+    /**
+     * CSP nonce written to the `<style id="vc-color-palette">` element.
+     * Accepts a string (resolved once) or a getter `() => string | undefined`
+     * (called on every re-apply, so reactive nonce changes propagate).
+     */
+    nonce?: string | (() => string | undefined);
 }
 
 /**
@@ -88,15 +116,29 @@ export function bindColorPalette<T>(
         render,
         extend,
         document = globalThis.document,
+        nonce,
     } = options;
 
+    const resolveNonce: () => string | undefined = typeof nonce === 'function' ?
+        nonce :
+        () => nonce;
+
     if (document) {
-        applyColorPaletteCss(render(source.value), document);
+        applyColorPaletteCss(render(source.value), document, resolveNonce());
     }
+    /*
+     * Watch both the palette source AND the resolved nonce. The nonce
+     * getter form (e.g. `() => useConfig('nonce').value`) reads a
+     * reactive ref, so a nonce-only rotation (CSP policy update via
+     * `setConfig({ nonce })`) re-applies the `<style>` element's
+     * attribute without needing a palette mutation. Static nonce
+     * strings return the same primitive on every call → the nonce
+     * lane of the watcher is silently inert.
+     */
     watch(
-        source,
-        (next) => {
-            applyColorPaletteCss(render(next), document);
+        [source, () => resolveNonce()] as const,
+        () => {
+            applyColorPaletteCss(render(source.value), document, resolveNonce());
         },
         { deep: true },
     );
