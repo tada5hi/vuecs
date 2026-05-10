@@ -428,6 +428,41 @@ Net effect: BS / Bulma example apps no longer need per-app
 that previously repeated for every consumer now lives in the theme
 exactly once.
 
+#### SSR dispatch (slice 3)
+
+For Nuxt apps the same hooks need to flow into the rendered head
+before first paint, otherwise BS / Bulma chrome flashes light → dark
+on hydration. `@vuecs/design` exposes two pure utilities the SSR
+plugins consume:
+
+- **`captureColorModeAttrs(themes, mode)`** — runs every theme's
+  `colorMode.apply` against a synthetic `Document` whose
+  `documentElement.setAttribute` writes into a plain record. The
+  record is plumbed into `useHead({ htmlAttrs })` so themes that
+  toggle `data-bs-theme` / `data-theme` flow on first paint, not
+  just after hydration. Errors per theme are caught + warned so a
+  single broken theme can't crash SSR.
+- **`renderColorPaletteFromThemes(themes, palette)`** — concatenates
+  every theme's `palette.render` output into a single CSS string.
+  Mirrors the client-side `useColorPalette` semantic.
+
+`@vuecs/nuxt`'s `colorMode.server.ts` plugin and
+`@vuecs/theme-tailwind-nuxt`'s `color-palette.server.ts` plugin both
+declare `enforce: 'post'` so they run after user-defined plugins
+that install vuecs (`app.use(vuecs, { themes })`). They look up the
+ThemeManager via `nuxtApp.vueApp.runWithContext(() =>
+inject(THEME_MANAGER_SYMBOL))` — same shared-symbol bridge as the
+client side. Without an installed manager, the plugins gracefully
+emit only the design-system-level outputs (`html.dark` class for
+color mode; nothing for palette).
+
+Themes that need DOM operations beyond `setAttribute` /
+`removeAttribute` / `classList` (e.g. inserting child nodes during
+SSR) are not covered by `captureColorModeAttrs`; those themes
+should guard their CSR-only logic with `if (typeof window ===
+'undefined') return;` and split the SSR-flowing bits into
+declarative `setAttribute` calls.
+
 ## Global Behavioral Defaults (#1491)
 
 Alongside the theme system, `@vuecs/core` exposes a parallel `DefaultsManager` for

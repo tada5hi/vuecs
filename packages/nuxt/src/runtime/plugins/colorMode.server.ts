@@ -1,6 +1,11 @@
+import { captureColorModeAttrs } from '@vuecs/design';
+import type { ThemeRuntimeManager } from '@vuecs/design';
+import { inject } from 'vue';
 // @ts-expect-error resolved by Nuxt at build time
 // eslint-disable-next-line @stylistic/exp-list-style
 import { defineNuxtPlugin, useCookie, useHead, useRuntimeConfig } from '#imports';
+
+const THEME_MANAGER_SYMBOL = Symbol.for('VCThemeManager');
 
 /**
  * Server-only plugin that applies `.dark` / `.light` to the `<html>`
@@ -12,29 +17,63 @@ import { defineNuxtPlugin, useCookie, useHead, useRuntimeConfig } from '#imports
  * omits the class; the client then resolves `prefers-color-scheme` and
  * applies the class reactively. A brief flash is possible in that
  * narrow case.
+ *
+ * Plan 021 slice 3: also dispatches each installed theme's
+ * `colorMode.apply` against a synthetic Document and plumbs the captured
+ * attributes (e.g. `data-bs-theme` from theme-bootstrap, `data-theme`
+ * from theme-bulma) into `useHead({ htmlAttrs })` so framework chrome
+ * flips alongside `.dark` on first paint, not just after hydration.
+ *
+ * `enforce: 'post'` ensures this plugin runs after user-defined
+ * plugins that install vuecs (`app.use(vuecs, { themes })`), so the
+ * ThemeManager is already provided when we look it up.
  */
-export default defineNuxtPlugin(() => {
-    const config = useRuntimeConfig();
-    const colorModeConfig = config.public.vuecs?.colorMode;
-    if (!colorModeConfig?.enabled) return;
+type NuxtAppLike = {
+    vueApp: {
+        runWithContext: <T>(fn: () => T) => T;
+    };
+};
 
-    // Default mirrors the composable's fallback (vc-color-mode) so the
-    // two stay in sync if runtimeConfig is incomplete for any reason.
-    const cookieName = colorModeConfig.cookieName || 'vc-color-mode';
-    const cookie = useCookie<'light' | 'dark' | 'system' | undefined>(
-        cookieName,
-        { default: () => undefined },
-    );
+export default defineNuxtPlugin({
+    name: 'vuecs-color-mode-server',
+    enforce: 'post',
+    setup(nuxtApp: NuxtAppLike) {
+        const config = useRuntimeConfig();
+        const colorModeConfig = config.public.vuecs?.colorMode;
+        if (!colorModeConfig?.enabled) return;
 
-    const stored = cookie.value;
-    let effective: string | undefined;
-    if (stored && stored !== 'system') {
-        effective = stored;
-    } else if (colorModeConfig.preference !== 'system') {
-        effective = colorModeConfig.preference;
-    }
+        const cookieName = colorModeConfig.cookieName || 'vc-color-mode';
+        const cookie = useCookie<'light' | 'dark' | 'system' | undefined>(
+            cookieName,
+            { default: () => undefined },
+        );
 
-    if (!effective) return;
+        const stored = cookie.value;
+        let effective: 'light' | 'dark' | undefined;
+        if (stored === 'light' || stored === 'dark') {
+            effective = stored;
+        } else if (colorModeConfig.preference === 'light' || colorModeConfig.preference === 'dark') {
+            effective = colorModeConfig.preference;
+        }
 
-    useHead({ htmlAttrs: { class: effective } });
+        if (!effective) return;
+
+        const htmlAttrs: Record<string, string> = { class: effective };
+
+        /*
+         * Look up the ThemeManager via Vue's inject in the Nuxt app's
+         * context. Themes were registered when the user's plugin called
+         * `app.use(vuecs, { themes })`. With `enforce: 'post'` that
+         * plugin has already run.
+         */
+        const manager = nuxtApp.vueApp
+            .runWithContext(() => inject<ThemeRuntimeManager | undefined>(THEME_MANAGER_SYMBOL, undefined));
+
+        if (manager) {
+            const captured = captureColorModeAttrs(manager.themes, effective);
+            Object.assign(htmlAttrs, captured);
+        }
+
+        useHead({ htmlAttrs });
+    },
 });
