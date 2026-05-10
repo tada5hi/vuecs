@@ -275,4 +275,46 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
         expect(api!.current.value).toEqual({ primary: 'red' });
         unmount();
     });
+
+    it('forwards a static nonce string to the rendered <style>', async () => {
+        const render = (p: Record<string, string>) => `:root { --primary: ${p.primary}; }`;
+        const manager: MockThemeManager = { themes: [{ palette: { render } }] };
+
+        const { unmount } = mountWithManager(manager, () => {
+            useColorPaletteUnshared({
+                initial: { primary: 'blue' },
+                persist: false,
+                storageKey: freshStorageKey(),
+                nonce: 'csp-static',
+            });
+        });
+        await nextTick();
+        const style = document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID);
+        expect(style?.getAttribute('nonce')).toBe('csp-static');
+        unmount();
+    });
+
+    it('invokes a nonce getter on each render — supports reactive nonce', async () => {
+        const render = (p: Record<string, string>) => `:root { --primary: ${p.primary}; }`;
+        const manager: MockThemeManager = { themes: [{ palette: { render } }] };
+        const nonceRef = ref<string | undefined>('initial');
+
+        let api: ReturnType<typeof useColorPaletteUnshared> | undefined;
+        const { unmount } = mountWithManager(manager, () => {
+            api = useColorPaletteUnshared({
+                initial: { primary: 'blue' },
+                persist: false,
+                storageKey: freshStorageKey(),
+                nonce: () => nonceRef.value,
+            });
+        });
+        await nextTick();
+        expect(document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID)?.getAttribute('nonce')).toBe('initial');
+
+        nonceRef.value = 'rotated';
+        api!.set({ primary: 'green' });
+        await nextTick();
+        expect(document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID)?.getAttribute('nonce')).toBe('rotated');
+        unmount();
+    });
 });

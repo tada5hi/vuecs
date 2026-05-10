@@ -36,6 +36,32 @@ describe('applyColorPaletteCss', () => {
         expect(styles.length).toBe(1);
         expect(styles[0].textContent).toBe(':root { --x: 2; }');
     });
+
+    it('writes a nonce attribute when the third arg is set', () => {
+        applyColorPaletteCss(':root { --x: 1; }', document, 'abc123');
+        const style = document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID);
+        expect(style?.getAttribute('nonce')).toBe('abc123');
+    });
+
+    it('updates the nonce attribute when the value changes', () => {
+        applyColorPaletteCss(':root { --x: 1; }', document, 'first');
+        applyColorPaletteCss(':root { --x: 2; }', document, 'second');
+        const style = document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID);
+        expect(style?.getAttribute('nonce')).toBe('second');
+    });
+
+    it('removes the nonce attribute when subsequent calls pass undefined', () => {
+        applyColorPaletteCss(':root { --x: 1; }', document, 'abc');
+        applyColorPaletteCss(':root { --x: 2; }', document);
+        const style = document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID);
+        expect(style?.hasAttribute('nonce')).toBe(false);
+    });
+
+    it('does not set nonce when undefined on initial call', () => {
+        applyColorPaletteCss(':root { --x: 1; }');
+        const style = document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID);
+        expect(style?.hasAttribute('nonce')).toBe(false);
+    });
 });
 
 describe('bindColorPalette (generic)', () => {
@@ -100,5 +126,44 @@ describe('bindColorPalette (generic)', () => {
         const { current, set } = bindColorPalette(source, { render: () => '', extend: shallowMerge });
         set({});
         expect(current.value).toEqual({});
+    });
+
+    it('forwards a static nonce string to the <style> element', () => {
+        const source = ref<FakePalette>({ primary: 'red' });
+        bindColorPalette(source, {
+            render: renderFake,
+            extend: shallowMerge,
+            nonce: 'static-nonce',
+        });
+        const style = document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID);
+        expect(style?.getAttribute('nonce')).toBe('static-nonce');
+    });
+
+    it('invokes the nonce getter on each re-render (reactive nonce support)', async () => {
+        const nonceRef = ref<string | undefined>('first');
+        const source = ref<FakePalette>({ primary: 'red' });
+        bindColorPalette(source, {
+            render: renderFake,
+            extend: shallowMerge,
+            nonce: () => nonceRef.value,
+        });
+        expect(document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID)?.getAttribute('nonce')).toBe('first');
+
+        // Mutate the source — getter is invoked again with the new nonce.
+        nonceRef.value = 'second';
+        source.value = { primary: 'green' };
+        await nextTick();
+        expect(document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID)?.getAttribute('nonce')).toBe('second');
+    });
+
+    it('omits the nonce attribute when the getter returns undefined', () => {
+        const source = ref<FakePalette>({ primary: 'red' });
+        bindColorPalette(source, {
+            render: renderFake,
+            extend: shallowMerge,
+            nonce: () => undefined,
+        });
+        const style = document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID);
+        expect(style?.hasAttribute('nonce')).toBe(false);
     });
 });

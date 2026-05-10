@@ -1,4 +1,5 @@
 import type { Theme } from '@vuecs/core';
+import './config';
 import { TAILWIND_COLOR_PALETTES } from './constants';
 import { renderColorPaletteStyles } from './palette';
 

@@ -521,6 +521,43 @@ that wire vitest into the theme packages are deferred as a follow-up
 slice; the audit function is shipped first so consumers can already
 build their own audits against vuecs's components.
 
+### CSP nonce wiring (plan 017 known gap / plan 024 step 8)
+
+Runtime palette switching writes inline CSS into a
+`<style id="vc-color-palette">` block. Under a strict
+Content-Security-Policy that disallows `style-src 'unsafe-inline'`,
+the browser blocks the block unless it carries a matching `nonce`
+attribute issued by the server per-request.
+
+vuecs threads a CSP nonce end-to-end:
+
+1. **`@vuecs/theme-tailwind` and `@vuecs/theme-bulma`** each augment
+   `Config['nonce']` via TypeScript declaration merging — consumers
+   set it once via `app.use(vuecs, { config: { nonce } })` or
+   subtree-scope via `<VCConfigProvider :config="{ nonce }">`.
+2. **`applyColorPaletteCss(css, doc?, nonce?)`** in `@vuecs/design`
+   takes the nonce as a third positional parameter, writes it to the
+   `<style>` element on creation, updates it on subsequent calls when
+   the value changes, and clears it when the new value is `undefined`
+   (so consumers can revoke a stale nonce on policy update).
+3. **`BindColorPaletteOptions.nonce` and `UseColorPaletteOptions.nonce`**
+   accept `string | (() => string | undefined)`. The getter form is
+   invoked on each `<style>` re-apply so reactive `setConfig({ nonce })`
+   propagates.
+4. **Per-theme `useColorPalette` wrappers** (`@vuecs/theme-tailwind`
+   and `@vuecs/theme-bulma`) read `useConfig('nonce')` and forward as
+   a getter to the generic dispatcher — consumers get nonce
+   attribution automatically with no extra wiring.
+5. **`@vuecs/theme-tailwind-nuxt`'s SSR plugin** resolves the nonce
+   via `nuxtApp.vueApp.runWithContext(() => useConfig('nonce').value)`
+   and emits it via `useHead({ style: [{ ..., nonce }] })` so the
+   server-rendered block matches the per-request CSP header on first
+   paint.
+
+`setColorPalette(palette, doc?, nonce?)` from each theme accepts the
+nonce as a third positional parameter for direct (non-composable)
+callers.
+
 ## Global Behavioral Defaults (#1491)
 
 Alongside the theme system, `@vuecs/core` exposes a parallel `DefaultsManager` for

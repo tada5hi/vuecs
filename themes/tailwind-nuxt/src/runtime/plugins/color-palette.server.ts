@@ -1,3 +1,4 @@
+import { useConfig } from '@vuecs/core';
 import {
     COLOR_PALETTE_STYLE_ELEMENT_ID,
     THEME_RUNTIME_MANAGER_SYMBOL,
@@ -60,6 +61,17 @@ export default defineNuxtPlugin({
             .runWithContext(() => inject(THEME_RUNTIME_MANAGER_SYMBOL, undefined));
 
         /*
+         * Resolve the CSP nonce from the cross-cutting Config registry.
+         * `useConfig` returns a ComputedRef; on the server we read once
+         * at head-emit time. Consumers wire the nonce per-request via
+         * `app.use(vuecs, { config: { nonce } })` or
+         * `<VCConfigProvider :config="{ nonce }">`. When unset, no
+         * `nonce` attribute is added.
+         */
+        const nonce = nuxtApp.vueApp
+            .runWithContext(() => useConfig('nonce').value);
+
+        /*
          * Prefer the theme-runtime dispatch when a manager is
          * installed; fall back to Tailwind's own renderer when not. The
          * fallback preserves the pre-plan-021 behaviour for consumers
@@ -92,6 +104,12 @@ export default defineNuxtPlugin({
          * `</style>` HTML-injection surface entirely. unhead's
          * type-validated `children` field maps to textContent.
          */
-        useHead({ style: [{ id: COLOR_PALETTE_STYLE_ELEMENT_ID, children: css }] });
+        useHead({
+            style: [{
+                id: COLOR_PALETTE_STYLE_ELEMENT_ID,
+                children: css,
+                ...(nonce ? { nonce } : {}),
+            }],
+        });
     },
 });

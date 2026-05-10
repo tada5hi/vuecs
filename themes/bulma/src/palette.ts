@@ -103,6 +103,11 @@ export function renderColorPaletteStyles(palette: ColorPaletteConfig): string {
  * `@vuecs/design`'s `applyColorPaletteCss()` with our
  * `renderColorPaletteStyles()` renderer.
  *
+ * The optional `nonce` parameter wires CSP nonce attribution onto the
+ * `<style id="vc-color-palette">` block. Direct callers pass the value
+ * explicitly; the `useColorPalette` composable reads it from
+ * `useConfig('nonce')` automatically.
+ *
  * On the server this is a no-op; use `renderColorPaletteStyles()` directly
  * and inject the result into the SSR response head (a future
  * `@vuecs/theme-bulma-nuxt` will do that automatically).
@@ -110,6 +115,7 @@ export function renderColorPaletteStyles(palette: ColorPaletteConfig): string {
 export function setColorPalette(
     palette: ColorPaletteConfig,
     doc: Document | undefined = globalThis.document,
+    nonce?: string,
 ): void {
-    applyColorPaletteCss(renderColorPaletteStyles(palette), doc);
+    applyColorPaletteCss(renderColorPaletteStyles(palette), doc, nonce);
 }
