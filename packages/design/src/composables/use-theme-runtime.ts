@@ -1,18 +1,5 @@
 import { inject } from 'vue';
-
-/**
- * Bridge between `@vuecs/design` and `@vuecs/core`'s `ThemeManager`
- * without a hard runtime dep. Both packages reference the same
- * `Symbol.for('VCThemeManager')` so the ThemeManager provided by
- * `installThemeManager(app)` (in `@vuecs/core`) is reachable from
- * design composables that need to walk installed themes' runtime hooks.
- *
- * `inject()` returns `undefined` if no ThemeManager is installed —
- * design composables use that as the "no theme dispatch" fallback so
- * they keep working in standalone apps that import `@vuecs/design`
- * without `@vuecs/core`.
- */
-const THEME_MANAGER_SYMBOL = Symbol.for('VCThemeManager');
+import type { InjectionKey } from 'vue';
 
 /**
  * Minimal structural projection of `@vuecs/core`'s `ThemeManager`.
@@ -43,6 +30,28 @@ export interface ThemeRuntimeManager {
 }
 
 /**
+ * Globally-shared `InjectionKey` for the ThemeManager. SSR plugins
+ * (Nuxt, future frameworks) that need to look up the manager from
+ * outside Vue's component context use this with `app.runWithContext`
+ * (or equivalent) + `inject`.
+ *
+ * Bridge between `@vuecs/design` and `@vuecs/core`'s `ThemeManager`
+ * without a hard runtime dep: both packages reference the same
+ * `Symbol.for('VCThemeManager')` registry key, so the ThemeManager
+ * provided by `installThemeManager(app)` (in `@vuecs/core`) is
+ * reachable here. `Symbol.for(...)` is reference-equal across module
+ * boundaries, and the `InjectionKey<ThemeRuntimeManager>` cast
+ * surfaces the manager type to `inject()` callers without leaking
+ * `@vuecs/core` internals.
+ *
+ * `inject()` returns `undefined` if no ThemeManager is installed —
+ * design composables use that as the "no theme dispatch" fallback so
+ * they keep working in standalone apps that import `@vuecs/design`
+ * without `@vuecs/core`.
+ */
+export const THEME_RUNTIME_MANAGER_SYMBOL = Symbol.for('VCThemeManager') as InjectionKey<ThemeRuntimeManager>;
+
+/**
  * Look up the ThemeManager installed by `app.use(vuecs)` (or
  * `installThemeManager(app)`). Returns `undefined` if no manager is
  * provided in the current setup context — design composables fall back
@@ -52,21 +61,8 @@ export interface ThemeRuntimeManager {
  * (Vue's `inject()` requirement).
  */
 export function useThemeRuntimeManager(): ThemeRuntimeManager | undefined {
-    return inject<ThemeRuntimeManager | undefined>(THEME_MANAGER_SYMBOL, undefined);
+    return inject(THEME_RUNTIME_MANAGER_SYMBOL, undefined);
 }
-
-/**
- * Re-exported globally-shared symbol for the ThemeManager. SSR plugins
- * (Nuxt, future frameworks) that need to look up the manager from
- * outside Vue's component context use this with `app.runWithContext`
- * (or equivalent) + `inject`.
- *
- * `Symbol.for(...)` is reference-equal across module boundaries, so
- * `@vuecs/core`'s `installThemeManager()` and `@vuecs/design`'s
- * `useThemeRuntimeManager()` and any external SSR plumbing can all
- * agree on the same key without a runtime import dance.
- */
-export const THEME_RUNTIME_MANAGER_SYMBOL: unique symbol = THEME_MANAGER_SYMBOL as never;
 
 /*
  * SSR capture utilities (plan 021 slice 3).
@@ -91,12 +87,18 @@ export const THEME_RUNTIME_MANAGER_SYMBOL: unique symbol = THEME_MANAGER_SYMBOL 
  */
 
 /**
- * Build a synthetic Document-like that records `setAttribute` /
- * `removeAttribute` calls on `documentElement` into a record. Other DOM
- * operations are silently no-op'd so themes don't crash during SSR.
+ * Build a synthetic Document-like whose `documentElement` records
+ * `setAttribute` / `removeAttribute` calls into the supplied target
+ * record, plus a no-op `classList`. **No other Document or Element
+ * APIs are stubbed** — themes that call `doc.createElement`,
+ * `doc.head.appendChild`, etc. WILL throw at SSR runtime. Themes
+ * needing richer DOM access from `colorMode.apply` should guard their
+ * CSR-only logic with `if (typeof window === 'undefined') return;`
+ * and split the SSR-flowing bits into declarative `setAttribute` calls.
  *
  * Exposed for advanced consumers; the higher-level
- * `captureColorModeAttrs()` covers the common case.
+ * `captureColorModeAttrs()` covers the common case and catches errors
+ * per theme so a single broken theme can't crash SSR.
  */
 export function createCaptureDocument(target: Record<string, string>): Document {
     const noopClassList = {
@@ -142,7 +144,15 @@ export function captureColorModeAttrs(
     themes: readonly ThemeRuntimeEntry[],
     mode: 'light' | 'dark',
 ): Record<string, string> {
-    const attrs: Record<string, string> = {};
+    /*
+     * Use a prototype-free record: attribute names come from theme
+     * code (potentially third-party), and a key like `__proto__` could
+     * theoretically poison the result if it later gets merged into
+     * another object via `Object.assign` (which uses `[[Set]]` and
+     * triggers the prototype setter). `Object.create(null)` avoids the
+     * concern entirely without any functional downside.
+     */
+    const attrs: Record<string, string> = Object.create(null) as Record<string, string>;
     const fakeDoc = createCaptureDocument(attrs);
 
     for (const theme of themes) {

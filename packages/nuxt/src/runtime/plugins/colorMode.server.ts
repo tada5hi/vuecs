@@ -1,11 +1,8 @@
-import { captureColorModeAttrs } from '@vuecs/design';
-import type { ThemeRuntimeManager } from '@vuecs/design';
+import { THEME_RUNTIME_MANAGER_SYMBOL, captureColorModeAttrs } from '@vuecs/design';
 import { inject } from 'vue';
 // @ts-expect-error resolved by Nuxt at build time
 // eslint-disable-next-line @stylistic/exp-list-style
 import { defineNuxtPlugin, useCookie, useHead, useRuntimeConfig } from '#imports';
-
-const THEME_MANAGER_SYMBOL = Symbol.for('VCThemeManager');
 
 /**
  * Server-only plugin that applies `.dark` / `.light` to the `<html>`
@@ -67,7 +64,7 @@ export default defineNuxtPlugin({
          * plugin has already run.
          */
         const manager = nuxtApp.vueApp
-            .runWithContext(() => inject<ThemeRuntimeManager | undefined>(THEME_MANAGER_SYMBOL, undefined));
+            .runWithContext(() => inject(THEME_RUNTIME_MANAGER_SYMBOL, undefined));
 
         if (manager) {
             const captured = captureColorModeAttrs(manager.themes, effective);
