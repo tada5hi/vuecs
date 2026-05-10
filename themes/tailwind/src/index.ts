@@ -54,12 +54,10 @@ export default function tailwindTheme(): Theme {
         classesMergeFn: merge,
         /*
          * Theme-runtime hook (plan 021): declare the Tailwind palette
-         * renderer + catalog so a generic `@vuecs/design`-driven
-         * dispatcher can render `<style id="vc-color-palette">` based on
-         * the active themes' `palette.render`. The current per-theme
-         * `useColorPalette()` export keeps wiring this directly; the
-         * declaration is forward-compat for the upcoming generic
-         * dispatcher (plan 021 second half).
+         * renderer + catalog. `@vuecs/design`'s `useColorPalette()`
+         * walks installed themes and routes through `palette.render`,
+         * so `@vuecs/theme-tailwind`'s `useColorPalette()` wrapper now
+         * delegates here rather than wiring the renderer directly.
          */
         palette: {
             render: renderColorPaletteStyles as (palette: Record<string, string>) => string,

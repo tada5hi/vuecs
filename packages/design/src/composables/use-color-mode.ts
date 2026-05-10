@@ -99,21 +99,23 @@ export function bindColorMode(
     /*
      * Theme-configurable dispatch (plan 021): each installed theme that
      * declares a `colorMode.apply` hook gets called with the resolved
-     * mode. Themes use this to mirror frame-specific dark-mode markers
-     * (theme-bootstrap → `data-bs-theme`, theme-bulma → `data-theme`)
-     * so framework chrome flips alongside vuecs's own `.dark` class
-     * without per-app `watchEffect` mirrors.
+     * mode. Themes use this to mirror framework-specific dark-mode
+     * markers (theme-bootstrap → `data-bs-theme`, theme-bulma →
+     * `data-theme`) so framework chrome flips alongside vuecs's own
+     * `.dark` class without per-app `watchEffect` mirrors.
      *
-     * Reading `manager.themes` inside the watcher subscribes to theme
-     * swaps via `ThemeManager.setThemes()` — so re-installing themes at
-     * runtime re-fires the dispatch with the new theme list.
+     * The watch source is a tuple `[resolved, () => manager?.themes]`
+     * because Vue's `watch(source, callback)` only tracks reactive
+     * dependencies accessed inside the source — callback reads do NOT
+     * subscribe. Including the themes getter in the source means
+     * `ThemeManager.setThemes()` (which mutates the underlying
+     * `shallowRef`) re-fires the dispatch with the new theme list.
      */
     const manager = useThemeRuntimeManager();
     if (typeof document !== 'undefined') {
         watch(
-            resolved,
-            (value) => {
-                const themes = manager?.themes;
+            [resolved, () => manager?.themes],
+            ([value, themes]) => {
                 if (!themes) return;
                 for (const theme of themes) {
                     theme.colorMode?.apply(document, value);

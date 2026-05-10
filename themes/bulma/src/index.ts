@@ -706,10 +706,15 @@ export default function bulmaTheme(): Theme {
         },
         /*
          * Theme-runtime hook (plan 021): declare the Bulma palette
-         * renderer + catalog. Forward-compat for the upcoming generic
-         * `@vuecs/design`-driven dispatcher (plan 021 second half).
-         * Bulma reuses Tailwind's 22-name palette catalog, rendered as
-         * HSL channel vars internally (plan 018).
+         * renderer + catalog. `@vuecs/design`'s `useColorPalette()`
+         * walks installed themes and concatenates each
+         * `palette.render` output, so `@vuecs/theme-bulma`'s
+         * `useColorPalette()` wrapper delegates here. When stacked
+         * alongside theme-tailwind (the docs-site case), both renderers
+         * fire on the same payload and emit non-overlapping CSS rules
+         * into the single `<style id="vc-color-palette">` block. Bulma
+         * reuses Tailwind's 22-name palette catalog, rendered as HSL
+         * channel vars internally (plan 018).
          */
         palette: {
             render: renderColorPaletteStyles as (palette: Record<string, string>) => string,

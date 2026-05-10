@@ -145,7 +145,7 @@ describe('bindColorMode — theme dispatch (plan 021)', () => {
         unmount();
     });
 
-    it('reactively picks up themes added via setThemes', async () => {
+    it('reactively picks up themes added via setThemes (without mode change)', async () => {
         const apply = vi.fn();
         const themes = ref<ThemeRuntimeEntry[]>([]);
         const manager: MockThemeManager = {
@@ -154,17 +154,18 @@ describe('bindColorMode — theme dispatch (plan 021)', () => {
             },
         } as unknown as MockThemeManager;
 
-        const source = ref<ColorMode>('light');
+        const source = ref<ColorMode>('dark');
         const { unmount } = mountWithManager(manager, () => {
             bindColorMode(source);
         });
         await nextTick();
+        // No themes installed yet → no dispatch.
         expect(apply).not.toHaveBeenCalled();
 
-        // Install a theme at runtime.
+        // Install a theme at runtime; the watch source includes a getter
+        // for `manager.themes`, so the swap alone re-fires the watcher.
+        // No mode change required.
         themes.value = [{ colorMode: { apply } }];
-        // Trigger a mode change so the dispatcher re-walks.
-        source.value = 'dark';
         await nextTick();
 
         expect(apply).toHaveBeenCalledWith(document, 'dark');

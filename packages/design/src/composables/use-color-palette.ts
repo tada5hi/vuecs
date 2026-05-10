@@ -43,7 +43,18 @@ export interface UseColorPaletteOptions<T extends Record<string, unknown>> {
 }
 
 function passthroughSanitize<T>(value: unknown): T {
-    return (value ?? {}) as T;
+    /*
+     * Reject primitives and arrays: `JSON.parse('"blue"')` is valid and
+     * returns a string. Without this guard a corrupted localStorage entry
+     * would forward the primitive to `theme.palette.render`, which
+     * expects an object and would emit broken CSS. Themes that need a
+     * stricter shape pass their own `sanitize` (e.g. theme-tailwind
+     * filters to known palette names).
+     */
+    if (!value || typeof value !== 'object' || Array.isArray(value)) {
+        return {} as T;
+    }
+    return value as T;
 }
 
 const shallowMerge = <T extends Record<string, unknown>>(current: T, partial: Partial<T>): T => ({
