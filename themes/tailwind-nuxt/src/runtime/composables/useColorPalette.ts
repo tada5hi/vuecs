@@ -1,3 +1,4 @@
+import { useConfig } from '@vuecs/core';
 import { bindColorPalette } from '@vuecs/design';
 import type { UseColorPaletteReturn } from '@vuecs/design';
 import { renderColorPaletteStyles } from '@vuecs/theme-tailwind';
@@ -35,9 +36,20 @@ export function useColorPalette(): UseColorPaletteReturn<ColorPaletteConfig> {
         watch: true,
     });
 
+    /*
+     * CSP nonce: read via the cross-cutting Config registry (augmented
+     * by `@vuecs/theme-tailwind` to expose `nonce?: string`). Passed as
+     * a getter so the bound watcher re-reads on every `<style>` re-apply
+     * — matches the per-request nonce that the SSR plugin already wires
+     * via `useHead({ style: [{ ..., nonce }] })` so the client-side bind
+     * doesn't strip the SSR-emitted nonce on hydration.
+     */
+    const nonce = useConfig('nonce');
+
     return bindColorPalette(cookie, {
         render: renderColorPaletteStyles,
         extend: (current, partial) => ({ ...current, ...partial }),
+        nonce: () => nonce.value,
     });
 }
 

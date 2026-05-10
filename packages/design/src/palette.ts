@@ -126,10 +126,19 @@ export function bindColorPalette<T>(
     if (document) {
         applyColorPaletteCss(render(source.value), document, resolveNonce());
     }
+    /*
+     * Watch both the palette source AND the resolved nonce. The nonce
+     * getter form (e.g. `() => useConfig('nonce').value`) reads a
+     * reactive ref, so a nonce-only rotation (CSP policy update via
+     * `setConfig({ nonce })`) re-applies the `<style>` element's
+     * attribute without needing a palette mutation. Static nonce
+     * strings return the same primitive on every call → the nonce
+     * lane of the watcher is silently inert.
+     */
     watch(
-        source,
-        (next) => {
-            applyColorPaletteCss(render(next), document, resolveNonce());
+        [source, () => resolveNonce()] as const,
+        () => {
+            applyColorPaletteCss(render(source.value), document, resolveNonce());
         },
         { deep: true },
     );

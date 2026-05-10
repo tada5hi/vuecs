@@ -156,6 +156,28 @@ describe('bindColorPalette (generic)', () => {
         expect(document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID)?.getAttribute('nonce')).toBe('second');
     });
 
+    it('re-applies the <style> nonce on nonce-only changes (no source mutation)', async () => {
+        const nonceRef = ref<string | undefined>('first');
+        const source = ref<FakePalette>({ primary: 'red' });
+        bindColorPalette(source, {
+            render: renderFake,
+            extend: shallowMerge,
+            nonce: () => nonceRef.value,
+        });
+        expect(document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID)?.getAttribute('nonce')).toBe('first');
+
+        // Rotate only the nonce — palette stays the same. Models a CSP
+        // policy update via `setConfig({ nonce })`.
+        nonceRef.value = 'rotated';
+        await nextTick();
+        expect(document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID)?.getAttribute('nonce')).toBe('rotated');
+
+        // Clearing the nonce removes the attribute on the next nonce-only tick.
+        nonceRef.value = undefined;
+        await nextTick();
+        expect(document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID)?.hasAttribute('nonce')).toBe(false);
+    });
+
     it('omits the nonce attribute when the getter returns undefined', () => {
         const source = ref<FakePalette>({ primary: 'red' });
         bindColorPalette(source, {
