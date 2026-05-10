@@ -8,6 +8,16 @@ export { extractVariantConfig, resolveVariantClasses } from './variant';
 export { defineTheme } from './define';
 export { mergeThemes } from './merge-themes';
 export { themableProps, useThemeProps } from './themable';
+export {
+    auditTheme,
+    formatAuditResult,
+    isAuditClean,
+} from './audit';
+export type {
+    AuditResult,
+    ExpectedThemeCatalog,
+    FormatAuditResultOptions,
+} from './audit';
 export type {
     ExtendValue,
     ClassesMergeFn,
