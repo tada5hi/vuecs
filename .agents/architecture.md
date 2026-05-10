@@ -463,6 +463,64 @@ should guard their CSR-only logic with `if (typeof window ===
 'undefined') return;` and split the SSR-flowing bits into
 declarative `setAttribute` calls.
 
+### Theme audit (`auditTheme`, plan 015 P5 / plan 024 step 7)
+
+`@vuecs/core` exports a pure `auditTheme(theme, expected): AuditResult`
+function that compares a `Theme` against an expected catalog of
+component defaults. Designed for CI use — drift fails loudly so a
+future PR that drops a slot (or adds a typo) doesn't sneak past
+review.
+
+```ts
+type AuditResult = {
+    missingElements: string[];     // expected component names not in theme
+    unknownElements: string[];     // theme component names not in expected
+    missingSlots: Record<string, string[]>;     // per-element drift
+    unknownSlots: Record<string, string[]>;     // per-element typos
+    redundantStructural: Record<string, string[]>;  // theme value === default (no value-add; missed extend())
+};
+```
+
+The expected catalog is `Record<string, ComponentThemeDefinition>` —
+the same shape each component package's `*ThemeDefaults` export
+already has. Tests build the catalog by importing defaults from each
+component package directly:
+
+```ts
+import { auditTheme, isAuditClean, formatAuditResult } from '@vuecs/core';
+import { badgeThemeDefaults } from '@vuecs/elements';
+import { buttonThemeDefaults } from '@vuecs/button';
+import tailwindTheme from '@vuecs/theme-tailwind';
+
+const result = auditTheme(tailwindTheme(), {
+    badge: badgeThemeDefaults,
+    button: buttonThemeDefaults,
+    // …
+});
+if (!isAuditClean(result)) {
+    throw new Error(formatAuditResult(result, { title: 'theme-tailwind audit' }));
+}
+```
+
+Companion APIs:
+- **`isAuditClean(result)`** — predicate; `true` only when every
+  category is empty.
+- **`formatAuditResult(result, { title?, skip? })`** — pretty-prints
+  the report for test assertions and CI logs. Empty string when
+  clean. The `skip` option suppresses categories during in-progress
+  migrations (e.g. accept `redundantStructural` warnings while
+  rolling out a refactor).
+
+The audit checks `theme.elements[name].classes` only — variants and
+compound variants are out of scope for v1. Slots wrapped in
+`extend()` markers are never flagged as `redundantStructural` (the
+marker signals deliberate augmentation, not redefinition).
+
+Per-theme audit tests (`themes/{tailwind,bootstrap,bulma}/test/`)
+that wire vitest into the theme packages are deferred as a follow-up
+slice; the audit function is shipped first so consumers can already
+build their own audits against vuecs's components.
+
 ## Global Behavioral Defaults (#1491)
 
 Alongside the theme system, `@vuecs/core` exposes a parallel `DefaultsManager` for
