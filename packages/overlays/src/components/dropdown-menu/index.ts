@@ -30,4 +30,5 @@ export type { DropdownMenuSubTriggerProps } from './DropdownMenuSubTrigger.vue';
 export type { DropdownMenuSubContentProps } from './DropdownMenuSubContent.vue';
 export type { DropdownMenuArrowProps } from './DropdownMenuArrow.vue';
 
+export * from './theme';
 export * from './types';

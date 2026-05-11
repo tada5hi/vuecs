@@ -41,12 +41,17 @@
         "build:js": "tsdown",
         "build:types": "tsc --emitDeclarationOnly -p tsconfig.build.json",
         "build": "rimraf dist && npm run build:js && npm run build:types",
+        "test": "vitest --config test/vitest.config.ts --run",
+        "test:coverage": "vitest --config test/vitest.config.ts --run --coverage",
         "palette-catalog:build": "tsx scripts/build-palette-catalog.ts",
         "palette-catalog:check": "tsx scripts/build-palette-catalog.ts --check"
     },
     "devDependencies": {
         "@vuecs/core": "^2.0.0",
         "@vuecs/design": "^0.0.0",
+        "@vuecs/elements": "^0.0.0",
+        "@vuecs/navigation": "^2.4.1",
+        "@vuecs/overlays": "^0.0.0",
         "@vueuse/core": "^14.3.0",
         "culori": "^4.0.1",
         "tailwindcss": "^4.0.0",

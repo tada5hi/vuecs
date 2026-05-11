@@ -10,4 +10,5 @@ export type { TooltipTriggerProps } from './TooltipTrigger.vue';
 export type { TooltipContentProps } from './TooltipContent.vue';
 export type { TooltipArrowProps } from './TooltipArrow.vue';
 
+export * from './theme';
 export * from './types';

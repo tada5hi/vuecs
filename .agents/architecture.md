@@ -516,10 +516,20 @@ compound variants are out of scope for v1. Slots wrapped in
 `extend()` markers are never flagged as `redundantStructural` (the
 marker signals deliberate augmentation, not redefinition).
 
-Per-theme audit tests (`themes/{tailwind,bootstrap,bulma}/test/`)
-that wire vitest into the theme packages are deferred as a follow-up
-slice; the audit function is shipped first so consumers can already
-build their own audits against vuecs's components.
+Per-theme audit tests ship in
+`themes/{tailwind,bootstrap,bulma}/test/unit/audit.spec.ts` (plan 024
+slice 7b). Each spec imports the exposed `*ThemeDefaults` from
+`@vuecs/elements`, `@vuecs/navigation`, and `@vuecs/overlays`, builds
+an `expectedCatalog`, and runs `auditTheme()` against the theme.
+`unknownElements` / `unknownSlots` are currently suppressed via the
+`skip` option until the remaining component packages (`button`,
+`countdown`, `forms`, `gravatar`, `list`, `navigation/{item,items}`,
+`pagination`, `timeago`) export their defaults from their top-level
+barrel — once they do, the catalog expands and the suppression
+shrinks. A pinned `isAuditClean(result) === false` assertion in each
+spec doubles as a reminder: when the un-catalogued packages get
+exposed, that assertion starts failing and prompts the catalog
+update.
 
 ### CSP nonce wiring (plan 017 known gap / plan 024 step 8)
 

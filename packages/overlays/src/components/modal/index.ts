@@ -12,5 +12,6 @@ export type { ModalTitleProps } from './ModalTitle.vue';
 export type { ModalDescriptionProps } from './ModalDescription.vue';
 export type { ModalCloseProps } from './ModalClose.vue';
 
+export * from './theme';
 export * from './types';
 export * from './use-modal';
