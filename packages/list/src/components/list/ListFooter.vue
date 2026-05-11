@@ -1,6 +1,6 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
+import type { ComponentThemeDefinition, ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { defineComponent, h } from 'vue';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import { useList } from '../../composables';
@@ -19,6 +19,8 @@ export type ListFooterProps = ExtractPublicPropTypes<typeof listFooterProps>;
 
 type ListFooterSlotProps = ListState<unknown, Record<string, unknown>>;
 
+export const listFooterThemeDefaults: ComponentThemeDefinition<ListFooterThemeClasses> = { classes: { root: 'vc-list-footer' } };
+
 export default defineComponent({
     name: 'VCListFooter',
     props: listFooterProps,
@@ -26,7 +28,7 @@ export default defineComponent({
         default: ListFooterSlotProps;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('listFooter', props, { classes: { root: 'vc-list-footer' } });
+        const theme = useComponentTheme('listFooter', props, listFooterThemeDefaults);
         const ctx = useList('VCListFooter');
 
         return () => {

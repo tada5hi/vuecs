@@ -1,5 +1,6 @@
 import { extend, useComponentTheme } from '@vuecs/core';
 import type {
+    ComponentThemeDefinition,
     ThemeClassesOverride,
     ThemeElementDefinition,
     VariantValues,
@@ -27,7 +28,7 @@ declare module '@vuecs/core' {
     }
 }
 
-const themeDefaults = { classes: { root: '' } };
+export const gravatarThemeDefaults: ComponentThemeDefinition<GravatarThemeClasses> = { classes: { root: '' } };
 
 export type GravatarFallbackSlotProps = {
     class: string;
@@ -94,7 +95,7 @@ export const VCGravatar = defineComponent({
         fallback: GravatarFallbackSlotProps;
     }>,
     setup(props, { attrs, slots }) {
-        const theme = useComponentTheme('gravatar', props, themeDefaults);
+        const theme = useComponentTheme('gravatar', props, gravatarThemeDefaults);
 
         const url = computed(() => {
             const protocol = props.protocol.slice(-1) === ':' ?

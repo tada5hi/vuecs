@@ -1,6 +1,6 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
+import type { ComponentThemeDefinition, ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { defineComponent, h } from 'vue';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import { useList } from '../../composables';
@@ -19,6 +19,8 @@ export type ListLoadingProps = ExtractPublicPropTypes<typeof listLoadingProps>;
 
 type ListLoadingSlotProps = ListState<unknown, Record<string, unknown>>;
 
+export const listLoadingThemeDefaults: ComponentThemeDefinition<ListLoadingThemeClasses> = { classes: { root: 'vc-list-loading' } };
+
 export default defineComponent({
     name: 'VCListLoading',
     props: listLoadingProps,
@@ -26,7 +28,7 @@ export default defineComponent({
         default: ListLoadingSlotProps;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('listLoading', props, { classes: { root: 'vc-list-loading' } });
+        const theme = useComponentTheme('listLoading', props, listLoadingThemeDefaults);
         const ctx = useList('VCListLoading');
 
         return () => {

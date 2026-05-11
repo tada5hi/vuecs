@@ -1,6 +1,7 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
 import type {
+    ComponentThemeDefinition,
     ThemeClassesOverride,
     ThemeElementDefinition,
     VariantValues,
@@ -33,7 +34,7 @@ declare module '@vuecs/core' {
     }
 }
 
-const themeDefaults = {
+export const formTagsThemeDefaults: ComponentThemeDefinition<FormTagsThemeClasses> = {
     classes: {
         root: 'vc-form-tags',
         item: 'vc-form-tags-item',
@@ -87,7 +88,7 @@ export default defineComponent({
     props: formTagsProps,
     emits: ['update:modelValue', 'invalid'],
     setup(props, { attrs, emit }) {
-        const theme = useComponentTheme('formTags', props, themeDefaults);
+        const theme = useComponentTheme('formTags', props, formTagsThemeDefaults);
 
         return () => h(
             TagsInputRoot,

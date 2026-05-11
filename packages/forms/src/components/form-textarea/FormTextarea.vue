@@ -1,6 +1,11 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
+import type {
+    ComponentThemeDefinition,
+    ThemeClassesOverride,
+    ThemeElementDefinition,
+    VariantValues,
+} from '@vuecs/core';
 import { useDebounceFn } from '@vueuse/core';
 import type { ExtractPublicPropTypes, PropType } from 'vue';
 import {
@@ -21,7 +26,7 @@ declare module '@vuecs/core' {
     }
 }
 
-const themeDefaults = { classes: { root: '' } };
+export const formTextareaThemeDefaults: ComponentThemeDefinition<FormTextareaThemeClasses> = { classes: { root: '' } };
 
 const formTextareaProps = {
     /** Controlled string value (v-model). */
@@ -41,7 +46,7 @@ export default defineComponent({
     props: formTextareaProps,
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {
-        const theme = useComponentTheme('formTextarea', props, themeDefaults);
+        const theme = useComponentTheme('formTextarea', props, formTextareaThemeDefaults);
 
         const localValue = ref(props.modelValue);
         watch(() => props.modelValue, (value) => {

@@ -26,19 +26,7 @@ import type { NavigationItemNormalized } from '../../types';
 import type { NavigationThemeClasses } from '../../helpers/component/types';
 import { VCNavItem } from '../item';
 import type { NavItemsItemSlotProps } from '../type';
-
-const themeDefaults = {
-    classes: {
-        group: 'vc-nav-items',
-        item: 'vc-nav-item',
-        itemNested: 'vc-nav-item-nested',
-        separator: 'vc-nav-separator',
-        link: 'vc-nav-link',
-        linkRoot: 'vc-nav-link-root',
-        linkIcon: 'vc-nav-link-icon',
-        linkText: 'vc-nav-link-text',
-    },
-};
+import { navigationThemeDefaults } from './theme';
 
 const navItemsProps = {
     level: { type: Number, default: 0 },
@@ -56,7 +44,7 @@ export const VCNavItems = defineComponent({
         item: NavItemsItemSlotProps;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('navigation', props, themeDefaults);
+        const theme = useComponentTheme('navigation', props, navigationThemeDefaults);
 
         const rootRef = ref<HTMLUListElement | null>(null);
 

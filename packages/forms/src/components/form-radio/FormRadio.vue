@@ -2,6 +2,7 @@
 import { useComponentDefaults, useComponentTheme, useId } from '@vuecs/core';
 import type {
     ComponentDefaultValues,
+    ComponentThemeDefinition,
     ThemeClassesOverride,
     ThemeElementDefinition,
     VariantValues,
@@ -35,7 +36,7 @@ declare module '@vuecs/core' {
     }
 }
 
-const themeDefaults = {
+export const formRadioThemeDefaults: ComponentThemeDefinition<FormRadioThemeClasses> = {
     classes: {
         root: 'vc-form-radio',
         indicator: 'vc-form-radio-indicator',
@@ -92,7 +93,7 @@ export default defineComponent({
         indicator: FormRadioIndicatorSlotProps;
     }>,
     setup(props, { attrs, slots }) {
-        const theme = useComponentTheme('formRadio', props, themeDefaults);
+        const theme = useComponentTheme('formRadio', props, formRadioThemeDefaults);
         const defaults = useComponentDefaults('formRadio', props, behavioralDefaults);
         // SSR-safe stable id (Vue 3.5's native `useId` under the hood) —
         // see FormCheckbox.vue.

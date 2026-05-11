@@ -1,6 +1,6 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
+import type { ComponentThemeDefinition, ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { defineComponent, h } from 'vue';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import { applyAsChild } from '../../utils';
@@ -15,6 +15,8 @@ const listItemActionsProps = {
 
 export type ListItemActionsProps = ExtractPublicPropTypes<typeof listItemActionsProps>;
 
+export const listItemActionsThemeDefaults: ComponentThemeDefinition<ListItemActionsThemeClasses> = { classes: { root: 'vc-list-item-actions' } };
+
 export default defineComponent({
     name: 'VCListItemActions',
     props: listItemActionsProps,
@@ -22,7 +24,7 @@ export default defineComponent({
         default: Record<string, never>;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('listItemActions', props, { classes: { root: 'vc-list-item-actions' } });
+        const theme = useComponentTheme('listItemActions', props, listItemActionsThemeDefaults);
 
         return () => {
             const rootClass = theme.value.root || undefined;

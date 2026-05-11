@@ -1,6 +1,7 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
 import type {
+    ComponentThemeDefinition,
     ThemeClassesOverride,
     ThemeElementDefinition,
     VariantValues,
@@ -23,7 +24,7 @@ declare module '@vuecs/core' {
     }
 }
 
-const themeDefaults = { classes: { root: 'vc-form-checkbox-group' } };
+export const formCheckboxGroupThemeDefaults: ComponentThemeDefinition<FormCheckboxGroupThemeClasses> = { classes: { root: 'vc-form-checkbox-group' } };
 
 export type FormCheckboxGroupOrientation = 'vertical' | 'horizontal';
 
@@ -63,7 +64,7 @@ export default defineComponent({
         emit,
         slots,
     }) {
-        const theme = useComponentTheme('formCheckboxGroup', props, themeDefaults);
+        const theme = useComponentTheme('formCheckboxGroup', props, formCheckboxGroupThemeDefaults);
 
         return () => h(
             CheckboxGroupRoot,

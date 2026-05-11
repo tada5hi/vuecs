@@ -1,6 +1,11 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
+import type {
+    ComponentThemeDefinition,
+    ThemeClassesOverride,
+    ThemeElementDefinition,
+    VariantValues,
+} from '@vuecs/core';
 import { useDebounceFn } from '@vueuse/core';
 import type {
     ExtractPublicPropTypes,
@@ -29,7 +34,7 @@ declare module '@vuecs/core' {
     }
 }
 
-const themeDefaults = {
+export const formInputThemeDefaults: ComponentThemeDefinition<FormInputThemeClasses> = {
     classes: {
         root: 'vc-form-input',
         group: 'vc-form-input-group',
@@ -81,7 +86,7 @@ export default defineComponent({
         emit,
         slots,
     }) {
-        const theme = useComponentTheme('formInput', props, themeDefaults);
+        const theme = useComponentTheme('formInput', props, formInputThemeDefaults);
 
         const localValue = ref(props.modelValue);
         watch(() => props.modelValue, (value) => {

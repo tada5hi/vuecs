@@ -1,6 +1,6 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
+import type { ComponentThemeDefinition, ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { defineComponent, h } from 'vue';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import { applyAsChild } from '../../utils';
@@ -28,6 +28,8 @@ export type ListItemSlotProps<T = unknown> = {
     index: number | undefined;
 };
 
+export const listItemThemeDefaults: ComponentThemeDefinition<ListItemThemeClasses> = { classes: { root: 'vc-list-item' } };
+
 export default defineComponent({
     name: 'VCListItem',
     props: listItemProps,
@@ -35,7 +37,7 @@ export default defineComponent({
         default: ListItemSlotProps;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('listItem', props, { classes: { root: 'vc-list-item' } });
+        const theme = useComponentTheme('listItem', props, listItemThemeDefaults);
 
         return () => {
             const slotProps: ListItemSlotProps = { data: props.data, index: props.index };

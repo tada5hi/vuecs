@@ -2,6 +2,7 @@
 import { useComponentDefaults, useComponentTheme } from '@vuecs/core';
 import type {
     ComponentDefaultValues,
+    ComponentThemeDefinition,
     ThemeClassesOverride,
     ThemeElementDefinition,
     VariantValues,
@@ -42,7 +43,7 @@ declare module '@vuecs/core' {
     }
 }
 
-const themeDefaults = {
+export const formGroupThemeDefaults: ComponentThemeDefinition<FormGroupThemeClasses> = {
     classes: {
         root: '',
         label: '',
@@ -95,7 +96,7 @@ export default defineComponent({
         validationItem: ValidationGroupItemSlotProps;
     }>,
     setup(props, { attrs, slots }) {
-        const theme = useComponentTheme('formGroup', props, themeDefaults);
+        const theme = useComponentTheme('formGroup', props, formGroupThemeDefaults);
         const defaults = useComponentDefaults('formGroup', props, behavioralDefaults);
 
         return () => {

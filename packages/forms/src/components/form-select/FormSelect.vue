@@ -2,6 +2,7 @@
 import { useComponentDefaults, useComponentTheme } from '@vuecs/core';
 import type {
     ComponentDefaultValues,
+    ComponentThemeDefinition,
     ThemeClassesOverride,
     ThemeElementDefinition,
     VariantValues,
@@ -68,7 +69,7 @@ declare module '@vuecs/core' {
     }
 }
 
-const themeDefaults = {
+export const formSelectThemeDefaults: ComponentThemeDefinition<FormSelectThemeClasses> = {
     classes: {
         trigger: 'vc-form-select-trigger',
         value: 'vc-form-select-value',
@@ -149,7 +150,7 @@ export default defineComponent({
     props: formSelectProps,
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {
-        const theme = useComponentTheme('formSelect', props, themeDefaults);
+        const theme = useComponentTheme('formSelect', props, formSelectThemeDefaults);
         const defaults = useComponentDefaults('formSelect', props, behavioralDefaults);
 
         return () => {

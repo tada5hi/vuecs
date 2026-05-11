@@ -1,5 +1,6 @@
 import { useComponentTheme } from '@vuecs/core';
 import type {
+    ComponentThemeDefinition,
     ThemeClassesOverride,
     ThemeElementDefinition,
     UseComponentThemeProps,
@@ -31,7 +32,7 @@ declare module '@vuecs/core' {
     }
 }
 
-const themeDefaults = {
+export const buttonThemeDefaults: ComponentThemeDefinition<ButtonThemeClasses> = {
     classes: {
         root: 'vc-button',
         leading: 'vc-button-leading',
@@ -86,7 +87,7 @@ export const VCButton = defineComponent({
             },
         };
 
-        const theme = useComponentTheme('button', themeProps, themeDefaults);
+        const theme = useComponentTheme('button', themeProps, buttonThemeDefaults);
 
         return () => {
             const resolved = theme.value;

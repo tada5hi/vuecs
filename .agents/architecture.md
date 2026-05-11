@@ -518,18 +518,35 @@ marker signals deliberate augmentation, not redefinition).
 
 Per-theme audit tests ship in
 `themes/{tailwind,bootstrap,bulma}/test/unit/audit.spec.ts` (plan 024
-slice 7b). Each spec imports the exposed `*ThemeDefaults` from
-`@vuecs/elements`, `@vuecs/navigation`, and `@vuecs/overlays`, builds
-an `expectedCatalog`, and runs `auditTheme()` against the theme.
-`unknownElements` / `unknownSlots` are currently suppressed via the
-`skip` option until the remaining component packages (`button`,
-`countdown`, `forms`, `gravatar`, `list`, `navigation/{item,items}`,
-`pagination`, `timeago`) export their defaults from their top-level
-barrel — once they do, the catalog expands and the suppression
-shrinks. A pinned `isAuditClean(result) === false` assertion in each
-spec doubles as a reminder: when the un-catalogued packages get
-exposed, that assertion starts failing and prompts the catalog
-update.
+slice 7b + slice 7b expansion). Each spec imports the exposed
+`*ThemeDefaults` from every component package — `@vuecs/{button,
+countdown, elements, forms, gravatar, list, navigation, overlays,
+pagination, timeago}` — and runs `auditTheme()` against the theme.
+The catalog covers **43 components total**.
+
+The enforced categories (audit fails on these): `redundantStructural`
+(theme passes a no-value-add class string that matches the component
+default — flags missed `extend()` markers), `unknownElements` (theme
+entries for component names that don't exist — typo catch), and
+`unknownSlots` (theme entries with slot names that don't exist —
+typo catch).
+
+The suppressed categories (skip-listed, surface drift but don't fail
+the spec): `missingElements` (theme has no entry for a component —
+many components have empty `vc-*` defaults that themes legitimately
+don't need to override) and `missingSlots` (theme entry exists but
+doesn't override every default slot — themes commonly inherit
+structural slots like `vc-button-leading` without re-styling them).
+
+A pinned `isAuditClean(result) === false` assertion in each spec
+serves as a "drift still exists" marker. When a theme catches up to
+full coverage, that assertion starts failing and prompts the
+suppression to be tightened (or removed) in the same PR.
+
+Every component package's `*ThemeDefaults` is importable from the
+top-level barrel — third-party theme authors can reference vuecs's
+canonical class strings via `extend()` to layer on top without
+duplicating them.
 
 ### CSP nonce wiring (plan 017 known gap / plan 024 step 8)
 
