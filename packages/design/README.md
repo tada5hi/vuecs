@@ -25,11 +25,23 @@ npm install @vuecs/design
 @import "@vuecs/design";
 @import "@vuecs/theme-tailwind";
 
-/* Bootstrap or Bulma app — no Tailwind needed */
+/* Bootstrap or Bulma app — no Tailwind needed.
+   The `/standalone` subpath additionally inlines the full Tailwind v4
+   palette catalog (--color-<palette>-*, 22 palettes × 11 shades) so
+   `setColorPalette()` works without Tailwind being loaded. */
 @import "bootstrap/dist/css/bootstrap.css";
-@import "@vuecs/design";
+@import "@vuecs/design/standalone";
 @import "@vuecs/theme-bootstrap";
 ```
+
+## Subpath exports
+
+| Subpath | Bundle size | Includes |
+|---|---|---|
+| `@vuecs/design` (default) | ~3 KB | `--vc-color-*` semantic scales, light/dark aliases, radius, motion |
+| `@vuecs/design/standalone` | ~18 KB | Default **+** full `--color-<palette>-*` catalog (22 palettes × 11 shades) |
+| `@vuecs/design/palettes.css` | ~14 KB | Standalone-without-defaults — for consumers who want only the palette catalog |
+| `@vuecs/design/animations.css` | ~12 KB | Motion primitives only |
 
 ## License
 

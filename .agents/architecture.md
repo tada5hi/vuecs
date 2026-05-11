@@ -1218,6 +1218,11 @@ also works. Currently targets Bootstrap 5 — remaps `--bs-primary`,
 `--bs-success`, etc. Bootstrap 5 components read `--bs-*` at runtime, so
 runtime palette switches via `setColorPalette()` propagate.
 
+Pair with `@vuecs/design/standalone` (plan 015 P3) to drop the Tailwind
+dependency entirely while keeping `setColorPalette()` functional —
+the standalone subpath inlines the Tailwind palette catalog as plain
+CSS variables.
+
 `@vuecs/theme-bootstrap-v4` was removed in vuecs 3.0 — Bootstrap 4
 component CSS is Sass-compiled to literal hex, so the design-token
 bridge had no practical effect on Bootstrap-rendered widgets, only on
@@ -1231,6 +1236,9 @@ Same shape as the Bootstrap bridge: `style` conditional export so a bare
 `@import "@vuecs/theme-bulma"` resolves to the bridge. Bulma 1.0+
 components read `--bulma-*` at runtime, so runtime palette switches via
 `setColorPalette()` propagate.
+
+Pair with `@vuecs/design/standalone` (plan 015 P3) to drop Tailwind
+entirely from a Bulma-only stack — same rationale as theme-bootstrap.
 
 Notable mapping decisions:
 - `--bulma-link → --vc-color-info-500` (preserves Bulma's two-tone
@@ -1277,6 +1285,7 @@ consumers can write bare imports:
 
 ```css
 @import "@vuecs/design";              /* → assets/index.css */
+@import "@vuecs/design/standalone";   /* → assets/standalone.css (Tailwind-free, plan 015 P3) */
 @import "@vuecs/theme-bootstrap";     /* → assets/index.css (bridge) */
 @import "@vuecs/theme-bulma";         /* → assets/index.css (bridge) */
 @import "@vuecs/forms";       /* → dist/style.css */
@@ -1293,6 +1302,65 @@ range-slider track and thumbs, search-dropdown panel, nav tree-line, etc.
 Explicit subpath forms (`@vuecs/design/index.css`, `@vuecs/forms/style.css`,
 `@vuecs/forms/dist/style.css`) remain supported for clarity when
 mixing multiple CSS entry points.
+
+### `@vuecs/design/standalone` subpath (plan 015 P3)
+
+Tailwind-free entry point for Bootstrap / Bulma consumers (and anyone
+who doesn't want Tailwind v4 in their bundle). Brings two things on
+top of the default entry:
+
+1. **Full Tailwind v4 palette catalog** — `--color-<palette>-<shade>`
+   for the 22 catalogued palettes (`slate`/`gray`/`zinc`/`neutral`/
+   `stone`/`red`/`orange`/`amber`/`yellow`/`lime`/`green`/`emerald`/
+   `teal`/`cyan`/`sky`/`blue`/`indigo`/`violet`/`purple`/`fuchsia`/
+   `pink`/`rose`) × 11 shades (50…950) = 242 OKLCH literals. Lives
+   at `assets/palettes.css`.
+2. **All of `@vuecs/design`'s default content** — `--vc-color-*`
+   semantic scales, light/dark aliases, radius tokens, motion
+   primitives. Inherited via `@import "./index.css"`.
+
+Mutually exclusive with the default entry — never load both. The
+default entry already has the semantic scales; layering standalone on
+top would duplicate them.
+
+```css
+/* Tailwind app — default entry */
+@import "tailwindcss";
+@import "@vuecs/design";
+@import "@vuecs/theme-tailwind";
+
+/* Bootstrap / Bulma app — Tailwind-free */
+@import "bootstrap/dist/css/bootstrap.css";
+@import "@vuecs/design/standalone";
+@import "@vuecs/theme-bootstrap";
+```
+
+**Why this matters.** `setColorPalette()` writes `--vc-color-primary-600:
+var(--color-emerald-600)` (or whichever palette) into the runtime
+`<style>` block. Without `--color-emerald-600` defined somewhere,
+that resolves to the var's fallback (none → invalid). On a
+Tailwind-loaded app the var comes from Tailwind itself; on a
+Tailwind-free app the standalone subpath supplies it.
+
+**Build pipeline.** `packages/design/assets/palettes.css` is generated
+by `packages/design/scripts/build-standalone.ts` which parses
+`node_modules/tailwindcss/theme.css` and emits the 242 OKLCH literals
+as a single `:root { ... }` block. The script ships with two scripts:
+
+| Script | Purpose |
+|---|---|
+| `npm run --workspace=packages/design standalone:build` | Regenerate `assets/palettes.css` from the locally-installed Tailwind |
+| `npm run --workspace=packages/design standalone:check` | CI guard — diff committed file vs freshly regenerated; non-zero exit on drift |
+
+The 22-palette list is hard-coded in the script (intentionally —
+keeps `@vuecs/design` free of theme dependencies). When Tailwind adds
+a new palette and we want to expose it via `setColorPalette()`, both
+this script's list AND `@vuecs/theme-tailwind`'s
+`TAILWIND_COLOR_PALETTES` constant need to be updated together.
+
+Re-run `standalone:build` after bumping the `tailwindcss` devDep and
+commit the regenerated `palettes.css`. The `standalone:check` script
+is suitable for a CI matrix step (catches forgotten regenerations).
 
 ## NavigationManager (@vuecs/navigation)
 

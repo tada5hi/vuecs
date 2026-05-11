@@ -50,11 +50,15 @@ npm install @vuecs/core @vuecs/design @vuecs/theme-bootstrap
 
 ```css
 @import "bootstrap/dist/css/bootstrap.css";
-@import "@vuecs/design";
+@import "@vuecs/design/standalone";
 @import "@vuecs/theme-bootstrap";
 ```
 
-`@vuecs/design`'s concrete OKLCH tokens render correctly without Tailwind. The theme bridge maps `--bs-*` (or `--bulma-*`) onto `--vc-color-*` so vuecs components blend visually with the framework's chrome. Runtime palette switching is **not available** under these themes — see [Themes](/themes/) for the reasoning.
+`@vuecs/design`'s `/standalone` subpath inlines the full Tailwind v4 palette catalog (`--color-<palette>-*`, 22 palettes × 11 shades) on top of the default `--vc-color-*` tokens, so runtime palette switching via `setColorPalette()` works without Tailwind being loaded. The theme bridge maps `--bs-*` (or `--bulma-*`) onto `--vc-color-*` so vuecs components blend visually with the framework's chrome.
+
+::: tip
+The base entry (`@vuecs/design`, ~3 KB) is enough if you only need the semantic-color defaults and don't plan to switch palettes at runtime. Reach for `/standalone` (~18 KB) when you want `setColorPalette()` to work without installing Tailwind.
+:::
 
 ## Add component packages
 

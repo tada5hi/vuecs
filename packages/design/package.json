@@ -13,7 +13,14 @@
         "./index.css": "./assets/index.css",
         "./assets/index.css": "./assets/index.css",
         "./animations.css": "./assets/animations.css",
-        "./assets/animations.css": "./assets/animations.css"
+        "./assets/animations.css": "./assets/animations.css",
+        "./palettes.css": "./assets/palettes.css",
+        "./assets/palettes.css": "./assets/palettes.css",
+        "./standalone": {
+            "style": "./assets/standalone.css"
+        },
+        "./standalone.css": "./assets/standalone.css",
+        "./assets/standalone.css": "./assets/standalone.css"
     },
     "style": "./assets/index.css",
     "files": [
@@ -49,6 +56,8 @@
         "build:js": "tsdown",
         "build:types": "tsc --emitDeclarationOnly -p tsconfig.build.json",
         "build": "rimraf dist && npm run build:js && npm run build:types",
+        "standalone:build": "tsx scripts/build-standalone.ts",
+        "standalone:check": "tsx scripts/build-standalone.ts --check",
         "test": "vitest --config test/vitest.config.ts --run",
         "test:coverage": "vitest --config test/vitest.config.ts --run --coverage"
     },
@@ -56,6 +65,8 @@
         "@vuecs/core": "^2.0.0",
         "@vueuse/core": "^14.3.0",
         "jsdom": "^29.1.1",
+        "tailwindcss": "^4.0.0",
+        "tsx": "^4.20.6",
         "vue": "^3.5.33"
     },
     "peerDependencies": {

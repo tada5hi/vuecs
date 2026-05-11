@@ -1,0 +1,29 @@
+/*!
+ * @vuecs/design — Standalone entry (plan 015 P3)
+ *
+ * Tailwind-free starting point for Bootstrap / Bulma consumers (and
+ * anyone else who doesn't want Tailwind v4 in their bundle). Brings:
+ *
+ *   1. The full 22-palette Tailwind v4 OKLCH catalog
+ *      (`--color-<palette>-<shade>`, 242 vars). This is what
+ *      `setColorPalette()` writes against — without it, runtime palette
+ *      switching silently no-ops on Tailwind-free apps.
+ *   2. All the design tokens from `@vuecs/design`'s default entry
+ *      (`--vc-color-*`, radius, light/dark aliases, motion primitives).
+ *
+ * Consumer paths (mutually exclusive — never import both):
+ *
+ *     // Tailwind user
+ *     @import "tailwindcss";
+ *     @import "@vuecs/design";
+ *
+ *     // Bootstrap / Bulma user — Tailwind-free
+ *     @import "bootstrap/dist/css/bootstrap.css";  (or "bulma/css/bulma.css")
+ *     @import "@vuecs/design/standalone";
+ *     @import "@vuecs/theme-bootstrap";            (or "@vuecs/theme-bulma")
+ *
+ * `palettes.css` ships separately at `@vuecs/design/palettes.css` for
+ * consumers who only want the catalog without the semantic-scale defaults.
+ */
+@import "./palettes.css";
+@import "./index.css";
