@@ -1,6 +1,7 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
 import type {
+    ComponentThemeDefinition,
     ThemeClassesOverride,
     ThemeElementDefinition,
     VariantValues,
@@ -32,7 +33,7 @@ declare module '@vuecs/core' {
     }
 }
 
-const themeDefaults = {
+export const formSliderThemeDefaults: ComponentThemeDefinition<FormSliderThemeClasses> = {
     classes: {
         root: 'vc-form-slider',
         track: 'vc-form-slider-track',
@@ -89,7 +90,7 @@ export default defineComponent({
     props: formSliderProps,
     emits: ['update:modelValue', 'valueCommit'],
     setup(props, { attrs, emit }) {
-        const theme = useComponentTheme('formSlider', props, themeDefaults);
+        const theme = useComponentTheme('formSlider', props, formSliderThemeDefaults);
 
         // Reka's SliderRoot only accepts number[]; we support a scalar for the
         // common single-thumb case and bridge here. The shape we emit on

@@ -1,6 +1,6 @@
 <script lang="ts">
 import { useComponentDefaults, useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
+import type { ComponentThemeDefinition, ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { VCIcon } from '@vuecs/icon';
 import {
     PaginationEllipsis,
@@ -71,6 +71,16 @@ const behavioralDefaults: PaginationDefaults = {
     lastLabel: 'Last',
 };
 
+export const paginationThemeDefaults: ComponentThemeDefinition<PaginationThemeClasses> = {
+    classes: {
+        root: 'vc-pagination',
+        item: 'vc-pagination-item',
+        link: 'vc-pagination-link',
+        linkActive: 'active',
+        ellipsis: 'vc-pagination-ellipsis',
+    },
+};
+
 export default defineComponent({
     name: 'VCPagination',
     components: {
@@ -87,15 +97,7 @@ export default defineComponent({
     props: paginationProps,
     emits: ['load'],
     setup(props, { emit }) {
-        const theme = useComponentTheme('pagination', props, {
-            classes: {
-                root: 'vc-pagination',
-                item: 'vc-pagination-item',
-                link: 'vc-pagination-link',
-                linkActive: 'active',
-                ellipsis: 'vc-pagination-ellipsis',
-            },
-        });
+        const theme = useComponentTheme('pagination', props, paginationThemeDefaults);
 
         const defaults = useComponentDefaults('pagination', props, behavioralDefaults);
 

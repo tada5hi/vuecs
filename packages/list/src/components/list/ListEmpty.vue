@@ -1,6 +1,6 @@
 <script lang="ts">
 import { useComponentDefaults, useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
+import type { ComponentThemeDefinition, ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { defineComponent, h } from 'vue';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import { useList } from '../../composables';
@@ -21,6 +21,8 @@ type ListEmptySlotProps = ListState<unknown, Record<string, unknown>>;
 
 const behavioralDefaults: ListEmptyDefaults = { content: 'No data available...' };
 
+export const listEmptyThemeDefaults: ComponentThemeDefinition<ListEmptyThemeClasses> = { classes: { root: 'vc-list-empty' } };
+
 export default defineComponent({
     name: 'VCListEmpty',
     props: listEmptyProps,
@@ -28,7 +30,7 @@ export default defineComponent({
         default: ListEmptySlotProps;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('listEmpty', props, { classes: { root: 'vc-list-empty' } });
+        const theme = useComponentTheme('listEmpty', props, listEmptyThemeDefaults);
         const defaults = useComponentDefaults('listEmpty', props, behavioralDefaults);
         const ctx = useList('VCListEmpty');
 

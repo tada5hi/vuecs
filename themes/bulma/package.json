@@ -47,11 +47,18 @@
         "palette-catalog:check": "tsx scripts/build-palette-catalog.ts --check"
     },
     "devDependencies": {
+        "@vuecs/button": "^0.0.0",
         "@vuecs/core": "^2.0.0",
+        "@vuecs/countdown": "^1.0.1",
         "@vuecs/design": "^0.0.0",
         "@vuecs/elements": "^0.0.0",
+        "@vuecs/forms": "^3.0.0",
+        "@vuecs/gravatar": "^1.0.2",
+        "@vuecs/list": "^0.0.0",
         "@vuecs/navigation": "^2.4.1",
         "@vuecs/overlays": "^0.0.0",
+        "@vuecs/pagination": "^1.3.1",
+        "@vuecs/timeago": "^1.1.2",
         "@vueuse/core": "^14.3.0",
         "culori": "^4.0.1",
         "tailwindcss": "^4.0.0",

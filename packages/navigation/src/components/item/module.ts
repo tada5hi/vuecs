@@ -27,19 +27,7 @@ import type {
     NavItemSubSlotProps,
     NavItemSubTitleSlotProps,
 } from '../type';
-
-const themeDefaults = {
-    classes: {
-        group: 'vc-nav-items',
-        item: 'vc-nav-item',
-        itemNested: 'vc-nav-item-nested',
-        separator: 'vc-nav-separator',
-        link: 'vc-nav-link',
-        linkRoot: 'vc-nav-link-root',
-        linkIcon: 'vc-nav-link-icon',
-        linkText: 'vc-nav-link-text',
-    },
-};
+import { navigationThemeDefaults } from '../items/theme';
 
 const navItemProps = {
     data: {
@@ -71,7 +59,7 @@ export const VCNavItem = defineComponent({
     setup(props, { slots }) {
         const itemsNode = resolveComponent('VCNavItems');
 
-        const theme = useComponentTheme('navigation', props, themeDefaults);
+        const theme = useComponentTheme('navigation', props, navigationThemeDefaults);
         const manager = injectNavigationManager();
 
         const data = toRef(props, 'data');

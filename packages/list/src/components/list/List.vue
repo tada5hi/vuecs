@@ -1,12 +1,12 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
+import type { ComponentThemeDefinition, ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { defineComponent, h } from 'vue';
-import type { 
-    ExtractPublicPropTypes, 
-    PropType, 
-    SlotsType, 
-    VNode, 
+import type {
+    ExtractPublicPropTypes,
+    PropType,
+    SlotsType,
+    VNode,
 } from 'vue';
 import { defineList, provideList } from '../../composables';
 import type { ListState } from '../../composables';
@@ -47,6 +47,8 @@ const SHORTHAND_SLOT_NAMES = ['header', 'item', 'loading', 'empty', 'footer'] as
 
 const isDev = typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production';
 
+export const listThemeDefaults: ComponentThemeDefinition<ListThemeClasses> = { classes: { root: 'vc-list' } };
+
 export default defineComponent({
     name: 'VCList',
     props: listProps,
@@ -59,7 +61,7 @@ export default defineComponent({
         footer: ListState;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('list', props, { classes: { root: 'vc-list' } });
+        const theme = useComponentTheme('list', props, listThemeDefaults);
 
         // Q7 — `:state` wins over the simple props; both is a usage error.
         // Resolved once at setup. `defineList()` already wraps its inputs in

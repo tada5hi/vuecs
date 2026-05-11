@@ -1,5 +1,10 @@
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
+import type {
+    ComponentThemeDefinition,
+    ThemeClassesOverride,
+    ThemeElementDefinition,
+    VariantValues,
+} from '@vuecs/core';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import {
     computed,
@@ -27,7 +32,7 @@ declare module '@vuecs/core' {
     }
 }
 
-const themeDefaults = { classes: { root: '' } };
+export const countdownThemeDefaults: ComponentThemeDefinition<CountdownThemeClasses> = { classes: { root: '' } };
 
 export type CountdownSlotProps = {
     days: number;
@@ -75,7 +80,7 @@ export const VCCountdown = defineComponent({
         expose,
         slots,
     }) {
-        const theme = useComponentTheme('countdown', props, themeDefaults);
+        const theme = useComponentTheme('countdown', props, countdownThemeDefaults);
 
         const counting = ref(false);
         const totalMilliseconds = ref(0);

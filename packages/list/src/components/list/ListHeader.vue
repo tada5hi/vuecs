@@ -1,6 +1,6 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
+import type { ComponentThemeDefinition, ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { defineComponent, h } from 'vue';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import { useList } from '../../composables';
@@ -25,6 +25,8 @@ export type ListHeaderProps = ExtractPublicPropTypes<typeof listHeaderProps>;
 
 type ListHeaderSlotProps = ListState<unknown, Record<string, unknown>>;
 
+export const listHeaderThemeDefaults: ComponentThemeDefinition<ListHeaderThemeClasses> = { classes: { root: 'vc-list-header' } };
+
 export default defineComponent({
     name: 'VCListHeader',
     props: listHeaderProps,
@@ -32,7 +34,7 @@ export default defineComponent({
         default: ListHeaderSlotProps;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('listHeader', props, { classes: { root: 'vc-list-header' } });
+        const theme = useComponentTheme('listHeader', props, listHeaderThemeDefaults);
         const ctx = useList('VCListHeader');
 
         return () => {

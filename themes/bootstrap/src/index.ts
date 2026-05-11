@@ -112,7 +112,8 @@ export default function bootstrapTheme(): Theme {
                     // upgrades to a custom toggle that relies on the bootstrap class.
                     content: 'dropdown-menu show w-100 mt-1 overflow-auto',
                     item: 'dropdown-item d-flex flex-column gap-1',
-                    itemActive: 'active',
+                    // `itemActive` default is already `'active'` — Bootstrap's
+                    // dropdown active class — so we inherit it.
                     itemCurrent: 'bg-secondary-subtle',
                     itemDescription: 'small text-muted',
                     selected: 'd-flex flex-wrap gap-1 mt-2',
@@ -457,7 +458,8 @@ export default function bootstrapTheme(): Theme {
                     // breathing room between them. `.page-link` is `display: block`
                     // by default, which would otherwise stack them.
                     link: 'page-link d-inline-flex align-items-center gap-1',
-                    linkActive: 'active',
+                    // `linkActive` default is already `'active'` — Bootstrap's
+                    // pagination active class — so we inherit it.
                     // Wrapper composes `link + ellipsis` onto PaginationEllipsis
                     // so it inherits the page-link box. Disable interactivity.
                     ellipsis: 'pe-none text-muted',

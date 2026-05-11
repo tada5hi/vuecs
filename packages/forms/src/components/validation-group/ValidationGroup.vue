@@ -1,6 +1,11 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride, ThemeElementDefinition, VariantValues } from '@vuecs/core';
+import type {
+    ComponentThemeDefinition,
+    ThemeClassesOverride,
+    ThemeElementDefinition,
+    VariantValues,
+} from '@vuecs/core';
 import type {
     ExtractPublicPropTypes,
     PropType,
@@ -22,7 +27,7 @@ declare module '@vuecs/core' {
     }
 }
 
-const themeDefaults = { classes: { item: 'form-group-hint group-required' } };
+export const validationGroupThemeDefaults: ComponentThemeDefinition<ValidationGroupThemeClasses> = { classes: { item: 'form-group-hint group-required' } };
 
 export type ValidationGroupDefaultSlotProps = {
     data: ValidationMessagesArrayStyle;
@@ -62,7 +67,7 @@ export default defineComponent({
         item: ValidationGroupItemSlotProps;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('validationGroup', props, themeDefaults);
+        const theme = useComponentTheme('validationGroup', props, validationGroupThemeDefaults);
 
         return () => {
             const resolved = theme.value;

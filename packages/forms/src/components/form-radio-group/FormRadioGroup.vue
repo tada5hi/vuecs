@@ -1,6 +1,7 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
 import type {
+    ComponentThemeDefinition,
     ThemeClassesOverride,
     ThemeElementDefinition,
     VariantValues,
@@ -26,7 +27,7 @@ declare module '@vuecs/core' {
     }
 }
 
-const themeDefaults = { classes: { root: 'vc-form-radio-group' } };
+export const formRadioGroupThemeDefaults: ComponentThemeDefinition<FormRadioGroupThemeClasses> = { classes: { root: 'vc-form-radio-group' } };
 
 export type FormRadioGroupOrientation = 'vertical' | 'horizontal';
 
@@ -69,7 +70,7 @@ export default defineComponent({
         emit,
         slots,
     }) {
-        const theme = useComponentTheme('formRadioGroup', props, themeDefaults);
+        const theme = useComponentTheme('formRadioGroup', props, formRadioGroupThemeDefaults);
 
         return () => h(
             RadioGroupRoot,

@@ -1,6 +1,6 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
+import type { ComponentThemeDefinition, ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { 
     Fragment, 
     cloneVNode, 
@@ -53,6 +53,8 @@ type ListItemSlotPayload = ListBodyState & { data: unknown; index: number };
  *    virtual scrolling and other escape-hatch scenarios). The default
  *    slot receives the full `defineList()` return as slot props (Q9).
  */
+export const listBodyThemeDefaults: ComponentThemeDefinition<ListBodyThemeClasses> = { classes: { root: 'vc-list-body' } };
+
 export default defineComponent({
     name: 'VCListBody',
     props: listBodyProps,
@@ -61,7 +63,7 @@ export default defineComponent({
         item: ListItemSlotPayload;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('listBody', props, { classes: { root: 'vc-list-body' } });
+        const theme = useComponentTheme('listBody', props, listBodyThemeDefaults);
         const ctx = useList('VCListBody');
 
         return () => {

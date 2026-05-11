@@ -4,6 +4,8 @@ import {
     formatAuditResult,
     isAuditClean,
 } from '@vuecs/core';
+import { buttonThemeDefaults } from '@vuecs/button';
+import { countdownThemeDefaults } from '@vuecs/countdown';
 import {
     aspectRatioThemeDefaults,
     avatarThemeDefaults,
@@ -12,7 +14,39 @@ import {
     tagThemeDefaults,
     tagsThemeDefaults,
 } from '@vuecs/elements';
-import { stepperThemeDefaults } from '@vuecs/navigation';
+import {
+    formCheckboxGroupThemeDefaults,
+    formCheckboxThemeDefaults,
+    formGroupThemeDefaults,
+    formInputThemeDefaults,
+    formNumberThemeDefaults,
+    formPinThemeDefaults,
+    formRadioGroupThemeDefaults,
+    formRadioThemeDefaults,
+    formSelectSearchThemeDefaults,
+    formSelectThemeDefaults,
+    formSliderThemeDefaults,
+    formSwitchThemeDefaults,
+    formTagsThemeDefaults,
+    formTextareaThemeDefaults,
+    validationGroupThemeDefaults,
+} from '@vuecs/forms';
+import { gravatarThemeDefaults } from '@vuecs/gravatar';
+import {
+    listBodyThemeDefaults,
+    listEmptyThemeDefaults,
+    listFooterThemeDefaults,
+    listHeaderThemeDefaults,
+    listItemActionsThemeDefaults,
+    listItemTextThemeDefaults,
+    listItemThemeDefaults,
+    listLoadingThemeDefaults,
+    listThemeDefaults,
+} from '@vuecs/list';
+import {
+    navigationThemeDefaults,
+    stepperThemeDefaults,
+} from '@vuecs/navigation';
 import {
     contextMenuThemeDefaults,
     dropdownMenuThemeDefaults,
@@ -21,56 +55,91 @@ import {
     popoverThemeDefaults,
     tooltipThemeDefaults,
 } from '@vuecs/overlays';
+import { paginationThemeDefaults } from '@vuecs/pagination';
+import { timeagoThemeDefaults } from '@vuecs/timeago';
 import bulmaTheme from '../../src';
 
 /*
- * Per-theme `auditTheme` coverage probe (plan 015 P5 / plan 024 step 7b).
+ * Per-theme `auditTheme` coverage probe (plan 015 P5 / plan 024
+ * slice 7b catalog expansion).
  *
- * The expected catalog covers component packages that export their
- * `*ThemeDefaults`: `@vuecs/elements`, `@vuecs/navigation` (stepper),
- * `@vuecs/overlays`. Packages that still hold their defaults internally
- * (button, countdown, forms, gravatar, list, navigation/{item,items},
- * pagination, timeago) are not yet in the catalog — those theme entries
- * surface as `unknownElements` and are suppressed via `skip` until each
- * package exports its defaults.
+ * The expected catalog now covers every component package that ships
+ * a `*ThemeDefaults` export — 43 components total.
+ *
+ * `missingElements` + `missingSlots` are suppressed via `skip`: many
+ * themes legitimately don't override every component (countdown /
+ * timeago have empty defaults; `validationGroup` ships only in
+ * theme-tailwind today) or every slot (themes inherit structural
+ * `vc-*` defaults for slots they don't visually re-style). The
+ * audit's strict view of those categories produces noise without
+ * matching signal. `redundantStructural`, `unknownElements`, and
+ * `unknownSlots` are enforced — they catch real value-add regressions
+ * and typos in theme entries.
  */
 const expectedCatalog = {
     aspectRatio: aspectRatioThemeDefaults,
     avatar: avatarThemeDefaults,
     badge: badgeThemeDefaults,
+    button: buttonThemeDefaults,
+    contextMenu: contextMenuThemeDefaults,
+    countdown: countdownThemeDefaults,
+    dropdownMenu: dropdownMenuThemeDefaults,
+    formCheckbox: formCheckboxThemeDefaults,
+    formCheckboxGroup: formCheckboxGroupThemeDefaults,
+    formGroup: formGroupThemeDefaults,
+    formInput: formInputThemeDefaults,
+    formNumber: formNumberThemeDefaults,
+    formPin: formPinThemeDefaults,
+    formRadio: formRadioThemeDefaults,
+    formRadioGroup: formRadioGroupThemeDefaults,
+    formSelect: formSelectThemeDefaults,
+    formSelectSearch: formSelectSearchThemeDefaults,
+    formSlider: formSliderThemeDefaults,
+    formSwitch: formSwitchThemeDefaults,
+    formTags: formTagsThemeDefaults,
+    formTextarea: formTextareaThemeDefaults,
+    gravatar: gravatarThemeDefaults,
+    hoverCard: hoverCardThemeDefaults,
+    list: listThemeDefaults,
+    listBody: listBodyThemeDefaults,
+    listEmpty: listEmptyThemeDefaults,
+    listFooter: listFooterThemeDefaults,
+    listHeader: listHeaderThemeDefaults,
+    listItem: listItemThemeDefaults,
+    listItemActions: listItemActionsThemeDefaults,
+    listItemText: listItemTextThemeDefaults,
+    listLoading: listLoadingThemeDefaults,
+    modal: modalThemeDefaults,
+    navigation: navigationThemeDefaults,
+    pagination: paginationThemeDefaults,
+    popover: popoverThemeDefaults,
     separator: separatorThemeDefaults,
+    stepper: stepperThemeDefaults,
     tag: tagThemeDefaults,
     tags: tagsThemeDefaults,
-    stepper: stepperThemeDefaults,
-    modal: modalThemeDefaults,
-    popover: popoverThemeDefaults,
-    hoverCard: hoverCardThemeDefaults,
+    timeago: timeagoThemeDefaults,
     tooltip: tooltipThemeDefaults,
-    dropdownMenu: dropdownMenuThemeDefaults,
-    contextMenu: contextMenuThemeDefaults,
+    validationGroup: validationGroupThemeDefaults,
 };
 
-const AUDIT_SKIP = ['unknownElements', 'unknownSlots'] as const;
+const AUDIT_SKIP = ['missingElements', 'missingSlots'] as const;
 
 describe('theme-bulma — auditTheme()', () => {
-    it('covers every expected component slot without drift', () => {
+    it('emits an empty formatted report under the enforced categories', () => {
         const result = auditTheme(bulmaTheme(), expectedCatalog);
         const report = formatAuditResult(result, {
             title: 'theme-bulma',
             skip: [...AUDIT_SKIP],
         });
-        // formatAuditResult returns '' when all non-skipped categories are clean.
         expect(report).toBe('');
     });
 
-    it('isAuditClean ignores the skip option and only reflects raw drift', () => {
-        // Sanity check: every audited theme will currently fail the strict
-        // `isAuditClean` predicate because `unknownElements` still lists
-        // un-catalogued components. Pin this so the moment those packages
-        // export their defaults, this test starts failing — prompting the
-        // catalog above to be expanded.
+    it('isAuditClean reflects the un-skipped raw drift', () => {
+        // The raw audit may still surface `missingElements` /
+        // `missingSlots`. When a theme catches up to full coverage,
+        // this assertion starts failing and prompts the suppression
+        // to be tightened.
         const result = auditTheme(bulmaTheme(), expectedCatalog);
         expect(isAuditClean(result)).toBe(false);
-        expect(result.unknownElements.length).toBeGreaterThan(0);
     });
 });

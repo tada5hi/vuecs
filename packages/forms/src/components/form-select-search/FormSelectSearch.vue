@@ -1,6 +1,7 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
 import type {
+    ComponentThemeDefinition,
     ThemeClassesOverride,
     ThemeElementDefinition,
     VariantValues,
@@ -40,7 +41,7 @@ declare module '@vuecs/core' {
     }
 }
 
-const themeDefaults = {
+export const formSelectSearchThemeDefaults: ComponentThemeDefinition<FormSelectSearchThemeClasses> = {
     classes: {
         root: 'vc-form-select-search',
         input: 'vc-form-select-search-input',
@@ -122,7 +123,7 @@ export default defineComponent({
     props: formSelectSearchProps,
     emits: ['update:modelValue', 'change'],
     setup(props, { emit }) {
-        const theme = useComponentTheme('formSelectSearch', props, themeDefaults);
+        const theme = useComponentTheme('formSelectSearch', props, formSelectSearchThemeDefaults);
 
         const listElement = ref<globalThis.HTMLElement | null>(null);
         const inputElement = ref<globalThis.HTMLElement | null>(null);

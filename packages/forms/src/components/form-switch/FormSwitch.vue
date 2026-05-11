@@ -2,6 +2,7 @@
 import { useComponentDefaults, useComponentTheme, useId } from '@vuecs/core';
 import type {
     ComponentDefaultValues,
+    ComponentThemeDefinition,
     ThemeClassesOverride,
     ThemeElementDefinition,
     VariantValues,
@@ -34,7 +35,7 @@ declare module '@vuecs/core' {
     }
 }
 
-const themeDefaults = {
+export const formSwitchThemeDefaults: ComponentThemeDefinition<FormSwitchThemeClasses> = {
     classes: {
         root: 'vc-form-switch',
         thumb: 'vc-form-switch-thumb',
@@ -94,7 +95,7 @@ export default defineComponent({
         emit,
         slots,
     }) {
-        const theme = useComponentTheme('formSwitch', props, themeDefaults);
+        const theme = useComponentTheme('formSwitch', props, formSwitchThemeDefaults);
         const defaults = useComponentDefaults('formSwitch', props, behavioralDefaults);
         // SSR-safe stable id (Vue 3.5's native `useId` under the hood) —
         // see FormCheckbox.vue.

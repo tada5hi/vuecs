@@ -1,6 +1,6 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
+import type { ComponentThemeDefinition, ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { defineComponent, h } from 'vue';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import { applyAsChild } from '../../utils';
@@ -15,6 +15,8 @@ const listItemTextProps = {
 
 export type ListItemTextProps = ExtractPublicPropTypes<typeof listItemTextProps>;
 
+export const listItemTextThemeDefaults: ComponentThemeDefinition<ListItemTextThemeClasses> = { classes: { root: 'vc-list-item-text' } };
+
 export default defineComponent({
     name: 'VCListItemText',
     props: listItemTextProps,
@@ -22,7 +24,7 @@ export default defineComponent({
         default: Record<string, never>;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('listItemText', props, { classes: { root: 'vc-list-item-text' } });
+        const theme = useComponentTheme('listItemText', props, listItemTextThemeDefaults);
 
         return () => {
             const rootClass = theme.value.root || undefined;
