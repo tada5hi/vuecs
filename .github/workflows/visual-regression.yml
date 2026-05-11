@@ -44,7 +44,7 @@ jobs:
                 run: npm run -w @vuecs-tests/visual-regression install:browsers
 
             -   name: Run visual regression
-                run: npm run -w @vuecs-tests/visual-regression test
+                run: npm run -w @vuecs-tests/visual-regression test:visual
 
             -   name: Upload diff report
                 if: failure()

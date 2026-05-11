@@ -50,7 +50,7 @@ jobs:
                 run: npm run -w @vuecs-tests/visual-regression install:browsers
 
             -   name: Capture baselines
-                run: npm run -w @vuecs-tests/visual-regression test:update
+                run: npm run -w @vuecs-tests/visual-regression test:visual:update
 
             -   name: Open update PR
                 uses: peter-evans/create-pull-request@v7

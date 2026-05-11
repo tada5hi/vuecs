@@ -17,10 +17,10 @@ The same `sharedRoutes` catalog drives both this matrix and the example apps' na
 npm run -w @vuecs-tests/visual-regression install:browsers
 
 # Run the snapshot comparison
-npm run -w @vuecs-tests/visual-regression test
+npm run -w @vuecs-tests/visual-regression test:visual
 
 # After an intentional visual change — regenerate baselines
-npm run -w @vuecs-tests/visual-regression test:update
+npm run -w @vuecs-tests/visual-regression test:visual:update
 
 # Inspect the HTML report after a failure
 npm run -w @vuecs-tests/visual-regression report
@@ -44,7 +44,7 @@ To bootstrap or update baselines without an Ubuntu host:
    ```bash
    docker run --rm -it -v $(pwd):/work -w /work mcr.microsoft.com/playwright:v1.59.1-jammy bash
    # inside container:
-   npm ci && npm run -w @vuecs-tests/visual-regression test:update
+   npm ci && npm run -w @vuecs-tests/visual-regression test:visual:update
    ```
    Re-pin the tag when bumping `@playwright/test`.
 

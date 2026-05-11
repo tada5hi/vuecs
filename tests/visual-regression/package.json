@@ -17,9 +17,9 @@
     },
     "scripts": {
         "install:browsers": "playwright install --with-deps chromium",
-        "test": "playwright test",
-        "test:update": "playwright test --update-snapshots",
-        "test:ui": "playwright test --ui",
+        "test:visual": "playwright test",
+        "test:visual:update": "playwright test --update-snapshots",
+        "test:visual:ui": "playwright test --ui",
         "report": "playwright show-report"
     },
     "devDependencies": {
