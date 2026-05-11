@@ -14,6 +14,7 @@
         "themes/*",
         "icons/*",
         "examples/*",
+        "tests/*",
         "docs"
     ],
     "keywords": [

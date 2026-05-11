@@ -39,6 +39,14 @@ vuecs/
     tailwind/         # @vuecs/example-tailwind — vanilla Vite + Vue 3 + Tailwind theme
     bootstrap/        # @vuecs/example-bootstrap — vanilla Vite + Vue 3 + Bootstrap 5; no Tailwind
     bulma/            # @vuecs/example-bulma — vanilla Vite + Vue 3 + Bulma 1.0+; no Tailwind
+  tests/              # Test workspaces (npm workspaces) — source-only, never published
+    visual-regression/  # @vuecs-tests/visual-regression — Playwright snapshot
+                        # matrix (3 themes × 33 demo routes = 99 tests). Drives
+                        # the same sharedRoutes catalog the example apps consume.
+                        # CI compares on PR; baselines committed under
+                        # specs/__snapshots__/ (regenerate via the
+                        # visual-regression-update workflow on Ubuntu).
+                        # See plan 015 P2 / .agents/architecture.md.
   docs/               # @vuecs/docs — VitePress documentation site (deployed to vuecs.dev)
     src/
       .vitepress/

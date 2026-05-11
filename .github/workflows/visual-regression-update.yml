@@ -1,0 +1,69 @@
+name: Visual Regression — Update Baselines
+
+# Manually triggered. Captures fresh snapshots on Ubuntu (matching the
+# compare-job environment) and opens a PR with the updated baselines.
+# Use after intentional visual changes — or to bootstrap a theme's
+# baselines for the first time.
+
+on:
+    workflow_dispatch:
+        inputs:
+            branch:
+                description: 'Branch to update baselines against (default: current)'
+                required: false
+                default: ''
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+env:
+    NODE_VERSION: 22
+
+defaults:
+    run:
+        shell: bash
+
+jobs:
+    update:
+        name: Capture and commit baselines
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+            pull-requests: write
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v6
+                with:
+                    ref: ${{ inputs.branch || github.ref }}
+                    token: ${{ secrets.GITHUB_TOKEN }}
+
+            -   name: Install
+                uses: ./.github/actions/install
+                with:
+                    node-version: ${{ env.NODE_VERSION }}
+
+            -   name: Build
+                uses: ./.github/actions/build
+
+            -   name: Install Playwright browsers
+                run: npm run -w @vuecs-tests/visual-regression install:browsers
+
+            -   name: Capture baselines
+                run: npm run -w @vuecs-tests/visual-regression test:update
+
+            -   name: Open update PR
+                uses: peter-evans/create-pull-request@v7
+                with:
+                    commit-message: 'chore(visual-regression): update baselines'
+                    title: 'chore(visual-regression): update baselines'
+                    body: |
+                        Regenerates visual-regression baselines on Ubuntu (CI environment).
+
+                        Triggered by `workflow_dispatch` from ${{ github.actor }}.
+
+                        Review the diffs carefully — every changed PNG corresponds to a visual change in at least one theme.
+                    branch: visual-regression/update-baselines
+                    delete-branch: true
+                    add-paths: |
+                        tests/visual-regression/specs/__snapshots__/

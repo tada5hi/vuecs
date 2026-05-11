@@ -21,3 +21,9 @@ cache
 # predev/prebuild hooks in docs/package.json). Per-build hashed filenames
 # would otherwise churn the diff. Source lives in docs/demos/.
 docs/src/public/demos/
+
+# Playwright HTML report + per-run test artefacts. Baselines under
+# `tests/visual-regression/specs/__snapshots__/` ARE committed; these are
+# transient artefacts from each test run.
+tests/visual-regression/playwright-report/
+tests/visual-regression/test-results/

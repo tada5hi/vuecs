@@ -1,0 +1,33 @@
+{
+    "name": "@vuecs-tests/visual-regression",
+    "private": true,
+    "type": "module",
+    "version": "0.0.0",
+    "description": "Playwright visual-regression snapshots covering each shipping theme × every shared demo view. Source-only — never published.",
+    "author": {
+        "name": "Peter Placzek",
+        "email": "contact@tada5hi.net",
+        "url": "https://github.com/tada5hi"
+    },
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Tada5hi/vuecs.git",
+        "directory": "tests/visual-regression"
+    },
+    "scripts": {
+        "install:browsers": "playwright install --with-deps chromium",
+        "test": "playwright test",
+        "test:update": "playwright test --update-snapshots",
+        "test:ui": "playwright test --ui",
+        "report": "playwright show-report"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.49.0",
+        "@vuecs-examples/shared": "*",
+        "typescript": "^5.9.3"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    }
+}
