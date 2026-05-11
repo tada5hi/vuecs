@@ -1,0 +1,75 @@
+name: Visual Regression
+
+on:
+    pull_request:
+        branches:
+            - master
+        paths:
+            - 'packages/**'
+            - 'themes/**'
+            - 'icons/**'
+            - 'examples/**'
+            - 'tests/visual-regression/**'
+            - '.github/workflows/visual-regression.yml'
+    workflow_dispatch:
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+env:
+    NODE_VERSION: 22
+
+defaults:
+    run:
+        shell: bash
+
+jobs:
+    compare:
+        name: Compare snapshots
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v6
+
+            -   name: Install
+                uses: ./.github/actions/install
+                with:
+                    node-version: ${{ env.NODE_VERSION }}
+
+            -   name: Build
+                uses: ./.github/actions/build
+
+            # Self-bootstrap guard: skip comparison until baselines exist
+            # on master. Without this, the very first run of this workflow
+            # — i.e. the PR that introduces visual-regression itself — would
+            # always fail because no baselines have been captured yet.
+            # After merging this PR, trigger `Visual Regression — Update
+            # Baselines` (workflow_dispatch) to capture the initial 99
+            # baselines on Ubuntu. Once that PR merges, this step's guard
+            # becomes a no-op and real comparisons run on every PR.
+            -   name: Check for baselines
+                id: baselines
+                run: |
+                    if [ -z "$(find tests/visual-regression/specs/__snapshots__ -name '*.png' -print -quit 2>/dev/null)" ]; then
+                        echo "exists=false" >> "$GITHUB_OUTPUT"
+                        echo "::warning::No visual-regression baselines committed yet. Skipping comparison. Trigger the 'Visual Regression — Update Baselines' workflow to capture the initial baselines."
+                    else
+                        echo "exists=true" >> "$GITHUB_OUTPUT"
+                    fi
+
+            -   name: Install Playwright browsers
+                if: steps.baselines.outputs.exists == 'true'
+                run: npm run -w @vuecs-tests/visual-regression install:browsers
+
+            -   name: Run visual regression
+                if: steps.baselines.outputs.exists == 'true'
+                run: npm run -w @vuecs-tests/visual-regression test:visual
+
+            -   name: Upload diff report
+                if: failure()
+                uses: actions/upload-artifact@v4
+                with:
+                    name: playwright-report
+                    path: tests/visual-regression/playwright-report/
+                    retention-days: 14
