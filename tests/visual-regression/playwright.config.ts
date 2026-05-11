@@ -24,9 +24,12 @@ export default defineConfig({
     testDir: './specs',
 
     /*
-     * Snapshots live alongside the specs. The default path template puts
-     * them under `__snapshots__/<spec name>/`. The {arg}-{platform} suffix
-     * keeps a single baseline per arg (we set arg = `<theme>-<route>`).
+     * Snapshots live alongside the specs under
+     * `__snapshots__/<spec>/<arg>.png`. We pass `arg = '<theme>-<route>'`
+     * to `toHaveScreenshot()`, which yields one baseline per
+     * theme × route pair — no `{platform}` segment because the CI
+     * matrix targets a single platform (Ubuntu). If a future job adds
+     * a second platform, append `-{platform}` here.
      */
     snapshotPathTemplate: '{testDir}/__snapshots__/{testFilePath}/{arg}{ext}',
 

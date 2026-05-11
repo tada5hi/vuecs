@@ -37,12 +37,16 @@ Snapshots live under `specs/__snapshots__/themes.spec.ts/<theme>-<route>.png` an
 To bootstrap or update baselines without an Ubuntu host:
 
 1. Trigger the `visual-regression-update` workflow via the GitHub Actions UI (`workflow_dispatch`). It runs Playwright with `--update-snapshots` and commits the generated PNGs back via a PR.
-2. Or run locally in Docker:
+2. Or run locally in Docker — pin the image tag to the **same Playwright
+   version as `@playwright/test` in `package-lock.json`** (currently
+   1.59.1). A mismatched image ships a different Chromium build + font
+   stack and produces baselines that won't match the CI runner:
    ```bash
-   docker run --rm -it -v $(pwd):/work -w /work mcr.microsoft.com/playwright:v1.49.0-jammy bash
+   docker run --rm -it -v $(pwd):/work -w /work mcr.microsoft.com/playwright:v1.59.1-jammy bash
    # inside container:
    npm ci && npm run -w @vuecs-tests/visual-regression test:update
    ```
+   Re-pin the tag when bumping `@playwright/test`.
 
 ## Tolerance
 

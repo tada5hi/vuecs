@@ -1587,9 +1587,12 @@ it up in this matrix on every theme — no separate registration step.
 subpixel rendering differs by OS). Generating them on macOS / Windows
 produces baselines that won't match the Ubuntu CI runner. The update
 workflow runs in the same Ubuntu environment as the compare workflow,
-so the two stay aligned. Local iteration uses Docker
-(`mcr.microsoft.com/playwright:v1.49.0-jammy`) when an Ubuntu-rendered
-diff is needed.
+so the two stay aligned. Local iteration uses Docker — pin the image
+tag to the exact Playwright version locked in `package-lock.json`
+(e.g. `mcr.microsoft.com/playwright:v1.59.1-jammy` while
+`@playwright/test@1.59.1` is locked). A mismatched image ships a
+different Chromium build + font stack, defeating the whole point of
+matching CI.
 
 **Bootstrap status.** Infrastructure is shipped; the actual baseline
 PNGs are not yet committed. Maintainer triggers the update workflow
