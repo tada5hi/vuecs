@@ -1577,7 +1577,11 @@ it up in this matrix on every theme — no separate registration step.
   packages / themes / icons / examples / the visual-regression
   workspace itself. Builds, installs Chromium, runs `playwright test`
   in compare-only mode. Uploads the HTML report as a workflow
-  artefact on failure.
+  artefact on failure. Includes a **self-bootstrap guard**: if
+  `specs/__snapshots__/` contains no `.png` files, the workflow emits
+  a warning and skips comparison (rather than failing on missing
+  baselines). The guard becomes a no-op once the first baseline run
+  lands.
 - `.github/workflows/visual-regression-update.yml` — manually
   triggered (`workflow_dispatch`). Runs `playwright test --update-snapshots`
   on Ubuntu, then opens a PR with the regenerated PNGs via

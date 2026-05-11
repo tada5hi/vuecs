@@ -34,6 +34,8 @@ Snapshots live under `specs/__snapshots__/themes.spec.ts/<theme>-<route>.png` an
 
 **Baselines are platform-specific.** Font hinting + subpixel rendering differs between macOS, Windows, and Linux. CI runs on Ubuntu, so baselines must be generated on Ubuntu to avoid false positives.
 
+**Self-bootstrap.** The `Visual Regression` (compare) workflow detects when `specs/__snapshots__/` contains no `.png` baselines and emits a warning + skips comparison rather than failing. This lets the very first run of the workflow — i.e. the PR that introduces visual-regression itself — land cleanly, then the maintainer triggers the update workflow to seed baselines. Once baselines exist, the guard becomes a no-op and every PR runs the real comparison.
+
 To bootstrap or update baselines without an Ubuntu host:
 
 1. Trigger the `visual-regression-update` workflow via the GitHub Actions UI (`workflow_dispatch`). It runs Playwright with `--update-snapshots` and commits the generated PNGs back via a PR.
