@@ -17,4 +17,5 @@ export type { StepperTitleProps } from './StepperTitle.vue';
 export type { StepperDescriptionProps } from './StepperDescription.vue';
 export type { StepperSeparatorProps } from './StepperSeparator.vue';
 
+export * from './theme';
 export * from './types';

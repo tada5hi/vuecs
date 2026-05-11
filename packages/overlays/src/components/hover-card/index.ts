@@ -8,4 +8,5 @@ export type { HoverCardTriggerProps } from './HoverCardTrigger.vue';
 export type { HoverCardContentProps } from './HoverCardContent.vue';
 export type { HoverCardArrowProps } from './HoverCardArrow.vue';
 
+export * from './theme';
 export * from './types';

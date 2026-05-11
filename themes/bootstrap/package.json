@@ -36,10 +36,15 @@
     "scripts": {
         "build:js": "tsdown",
         "build:types": "tsc --emitDeclarationOnly -p tsconfig.build.json",
-        "build": "rimraf dist && npm run build:js && npm run build:types"
+        "build": "rimraf dist && npm run build:js && npm run build:types",
+        "test": "vitest --config test/vitest.config.ts --run",
+        "test:coverage": "vitest --config test/vitest.config.ts --run --coverage"
     },
     "devDependencies": {
-        "@vuecs/core": "^2.0.0"
+        "@vuecs/core": "^2.0.0",
+        "@vuecs/elements": "^0.0.0",
+        "@vuecs/navigation": "^2.4.1",
+        "@vuecs/overlays": "^0.0.0"
     },
     "peerDependencies": {
         "@vuecs/core": "^2.0.0"

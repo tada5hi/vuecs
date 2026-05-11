@@ -28,4 +28,5 @@ export type { ContextMenuSubProps } from './ContextMenuSub.vue';
 export type { ContextMenuSubTriggerProps } from './ContextMenuSubTrigger.vue';
 export type { ContextMenuSubContentProps } from './ContextMenuSubContent.vue';
 
+export * from './theme';
 export * from './types';
