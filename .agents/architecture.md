@@ -981,7 +981,7 @@ const useAcmePalette = (src: Ref<AcmePalette>) => bindColorPalette(src, renderAc
 
 When `@vuecs/theme-tailwind` is loaded:
 
-```
+```text
 1. bg-primary-600          ← Tailwind v4 utility class
 2. --color-primary-600     ← @theme mapping in theme-tailwind/assets/index.css
 3. --vc-color-primary-600  ← semantic-scale var (overridden by setColorPalette)
@@ -991,7 +991,7 @@ When `@vuecs/theme-tailwind` is loaded:
 
 When `@vuecs/design/standalone` is loaded (BS / Bulma):
 
-```
+```text
 3. --vc-color-primary-600  ← design/assets/index.css
 4. --color-blue-600        ← design/assets/index.css references the palette catalog
 5. oklch(54.6% 0.245 262.881)  ← design/assets/palettes.css supplies the literal

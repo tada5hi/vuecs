@@ -23,7 +23,7 @@
  * Tailwind adds a new palette we want to expose, update the catalog
  * and re-run this script.
  */
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { COLOR_PALETTES, COLOR_PALETTE_SHADES } from '../src/core/color-palette/catalog';
@@ -98,6 +98,12 @@ function main(): void {
     const output = emitCss();
 
     if (checkOnly) {
+        if (!existsSync(OUTPUT_FILE)) {
+            console.error(
+                `${OUTPUT_FILE} is missing. Run \`npm run --workspace=packages/design standalone:build\` and commit the result.`,
+            );
+            process.exit(1);
+        }
         const existing = readFileSync(OUTPUT_FILE, 'utf8');
         if (existing !== output) {
             console.error(
