@@ -16,11 +16,19 @@
  *     // Tailwind user
  *     @import "tailwindcss";
  *     @import "@vuecs/design";
+ *     @import "@vuecs/theme-tailwind";
  *
  *     // Bootstrap / Bulma user — Tailwind-free
  *     @import "bootstrap/dist/css/bootstrap.css";  (or "bulma/css/bulma.css")
  *     @import "@vuecs/design/standalone";
  *     @import "@vuecs/theme-bootstrap";            (or "@vuecs/theme-bulma")
+ *
+ * Note: `setColorPalette()` is exported from theme packages
+ * (`@vuecs/theme-tailwind`, `@vuecs/theme-bulma`), not from
+ * `@vuecs/design`. The `/standalone` subpath provides the
+ * `--color-<palette>-*` source variables those runtimes target;
+ * Bootstrap consumers without a theme-side palette runtime can compose
+ * `applyColorPaletteCss` from `@vuecs/design` directly.
  *
  * `palettes.css` ships separately at `@vuecs/design/palettes.css` for
  * consumers who only want the catalog without the semantic-scale defaults.

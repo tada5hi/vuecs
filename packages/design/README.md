@@ -27,8 +27,12 @@ npm install @vuecs/design
 
 /* Bootstrap or Bulma app — no Tailwind needed.
    The `/standalone` subpath additionally inlines the full Tailwind v4
-   palette catalog (--color-<palette>-*, 22 palettes × 11 shades) so
-   `setColorPalette()` works without Tailwind being loaded. */
+   palette catalog (--color-<palette>-*, 22 palettes × 11 shades) —
+   these are the source variables that `setColorPalette()` writes
+   against. The runtime function itself ships from theme packages
+   (`@vuecs/theme-bulma` exports `setColorPalette` today; for Bootstrap,
+   compose `applyColorPaletteCss` from `@vuecs/design` directly until a
+   theme-bootstrap palette runtime lands). */
 @import "bootstrap/dist/css/bootstrap.css";
 @import "@vuecs/design/standalone";
 @import "@vuecs/theme-bootstrap";

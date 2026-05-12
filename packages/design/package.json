@@ -17,7 +17,8 @@
         "./palettes.css": "./assets/palettes.css",
         "./assets/palettes.css": "./assets/palettes.css",
         "./standalone": {
-            "style": "./assets/standalone.css"
+            "style": "./assets/standalone.css",
+            "default": "./assets/standalone.css"
         },
         "./standalone.css": "./assets/standalone.css",
         "./assets/standalone.css": "./assets/standalone.css"
