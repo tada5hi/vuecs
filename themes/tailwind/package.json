@@ -46,7 +46,7 @@
         "test:coverage": "vitest --config test/vitest.config.ts --run --coverage"
     },
     "dependencies": {
-        "tailwind-merge": "^3.3.1"
+        "tailwind-merge": "^3.6.0"
     },
     "devDependencies": {
         "@vuecs/button": "^0.0.0",
@@ -63,13 +63,13 @@
         "@vuecs/timeago": "^1.1.2",
         "@vueuse/core": "^14.3.0",
         "jsdom": "^29.1.1",
-        "vue": "^3.5.33"
+        "vue": "^3.5.34"
     },
     "peerDependencies": {
         "@vuecs/core": "^2.0.0",
         "@vuecs/design": "^0.0.0",
         "@vueuse/core": "^13.0.0 || ^14.0.0",
-        "tailwindcss": "^4.0.0",
+        "tailwindcss": "^4.3.0",
         "vue": "^3.x"
     },
     "engines": {

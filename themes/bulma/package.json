@@ -61,9 +61,9 @@
         "@vuecs/timeago": "^1.1.2",
         "@vueuse/core": "^14.3.0",
         "culori": "^4.0.1",
-        "tailwindcss": "^4.0.0",
+        "tailwindcss": "^4.3.0",
         "tsx": "^4.20.6",
-        "vue": "^3.5.33"
+        "vue": "^3.5.34"
     },
     "peerDependencies": {
         "@vuecs/core": "^2.0.0",
