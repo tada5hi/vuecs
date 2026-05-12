@@ -301,7 +301,7 @@ setColorPalette({ primary: 'green', neutral: 'zinc' });
 
 Inserts or updates a `<style id="vc-color-palette">` element in `<head>`. Idempotent — calling it again replaces the previous block.
 
-For SSR (Nuxt), install `@vuecs/theme-tailwind-nuxt` alongside `@vuecs/nuxt`. Its SSR plugin uses `renderColorPaletteStyles(palette)` (pure function) to emit the same `<style>` block into the head before first paint.
+For SSR (Nuxt), install `@vuecs/nuxt` — its theme-agnostic SSR plugin walks every installed theme's `palette.handle` hook via `renderColorPaletteFromThemes()` to emit the same `<style>` block into the head before first paint. No per-theme Nuxt module needed.
 
 ### Custom palette catalogs
 

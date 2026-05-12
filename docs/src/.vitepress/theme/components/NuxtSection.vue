@@ -1,12 +1,11 @@
 <script setup lang="ts">
 const code = `// nuxt.config.ts
 export default defineNuxtConfig({
-    modules: ['@vuecs/nuxt', '@vuecs/theme-tailwind-nuxt'],
+    modules: ['@vuecs/nuxt'],
     vuecs: {
-        // colorMode: true (default) — set false to opt out
-    },
-    vuecsTailwind: {
-        colorPalette: { primary: 'green', neutral: 'zinc' },
+        themes: ['@vuecs/theme-tailwind'],
+        colorMode: { value: 'system' },
+        colorPalette: { value: { primary: 'green', neutral: 'zinc' } },
     },
 });`;
 </script>

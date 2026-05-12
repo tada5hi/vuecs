@@ -24,14 +24,12 @@ export default defineNuxtConfig({
         '@vuecs/overlays': path.join(__dirname, '..', '..', 'packages', 'overlays', 'src'),
         '@vuecs/pagination': path.join(__dirname, '..', '..', 'packages', 'pagination', 'src'),
         '@vuecs/theme-tailwind': path.join(__dirname, '..', '..', 'themes', 'tailwind', 'src'),
-        '@vuecs/theme-tailwind-nuxt': path.join(__dirname, '..', '..', 'themes', 'tailwind-nuxt', 'src'),
         '@vuecs/icons-font-awesome': path.join(__dirname, '..', '..', 'icons', 'font-awesome', 'src'),
         '@vuecs/icons-lucide': path.join(__dirname, '..', '..', 'icons', 'lucide', 'src'),
         '@vuecs/timeago': path.join(__dirname, '..', '..', 'packages', 'timeago', 'src'),
     },
     modules: [
         path.join(__dirname, '..', '..', 'packages', 'nuxt', 'src', 'module'),
-        path.join(__dirname, '..', '..', 'themes', 'tailwind-nuxt', 'src', 'module'),
     ],
     vite: { plugins: [tailwindcss()] },
     vuecs: {

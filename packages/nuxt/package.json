@@ -2,7 +2,7 @@
     "name": "@vuecs/nuxt",
     "version": "0.0.0",
     "type": "module",
-    "description": "Nuxt module for vuecs — auto-imports @vuecs/design tokens and ships SSR-safe color-mode plugins. Theme-agnostic; palette switching lives in per-theme Nuxt modules (e.g. @vuecs/theme-tailwind-nuxt).",
+    "description": "Nuxt module for vuecs — auto-imports @vuecs/design tokens and ships SSR-safe color-mode + palette plugins. Theme-agnostic; dispatches palette/colorMode runtime hooks through whichever themes the consumer installs.",
     "exports": {
         "./package.json": "./package.json",
         ".": {
@@ -40,6 +40,7 @@
     "dependencies": {
         "@nuxt/kit": "^4.4.5",
         "@vueuse/core": "^14.3.0",
+        "@vuecs/core": "^2.0.0",
         "@vuecs/design": "^0.0.0"
     },
     "devDependencies": {

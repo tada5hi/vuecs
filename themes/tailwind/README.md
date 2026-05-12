@@ -10,8 +10,9 @@ palette primitives — re-binds `--vc-color-*` to Tailwind palette names so
 runtime swaps work, exposes vuecs tokens via `@theme`, and force-includes all
 22 Tailwind palettes via `@source inline()`.
 
-For Nuxt apps using runtime palette switching, install
-[`@vuecs/theme-tailwind-nuxt`](../tailwind-nuxt) alongside `@vuecs/nuxt`.
+For Nuxt apps, the cookie-backed `useColorPalette` ships from
+[`@vuecs/nuxt`](../../packages/nuxt) — one theme-agnostic Nuxt module
+handles palette switching for every theme.
 
 Full documentation: **[vuecs.dev/themes/tailwind](https://vuecs.dev/themes/tailwind)**
 

@@ -1,110 +1,148 @@
 # Nuxt integration
 
-vuecs ships **two sibling Nuxt modules** by concern (plan 017):
+vuecs ships **one theme-agnostic Nuxt module** — `@vuecs/nuxt` — that
+handles tokens, color mode, and palette switching for every theme.
+Plan 025 collapsed the previous per-theme split (`@vuecs/theme-tailwind-nuxt`)
+once the runtime dispatch became fully theme-agnostic.
 
-- **`@vuecs/nuxt`** — theme-agnostic. Auto-injects design tokens, ships SSR-safe color-mode handling. Install for every vuecs Nuxt app.
-- **`@vuecs/theme-tailwind-nuxt`** — Tailwind-specific. Ships SSR-safe runtime palette switching. Install only when using `@vuecs/theme-tailwind`.
-
-Bootstrap- and Bulma-only Nuxt apps install **only** `@vuecs/nuxt`; they don't need (or get) palette switching.
+- Auto-injects design tokens from `@vuecs/design`.
+- Ships SSR-safe color-mode handling (`useColorMode()` auto-import).
+- Ships SSR-safe palette handling (`useColorPalette()` auto-import).
+- Optional `themes: string[]` config auto-generates a plugin that
+  installs listed theme packages — no user-plugin needed for the
+  common case.
 
 ```bash
 # Tailwind app
-npm install @vuecs/nuxt @vuecs/design @vuecs/theme-tailwind @vuecs/theme-tailwind-nuxt
+npm install @vuecs/nuxt @vuecs/design @vuecs/theme-tailwind
 
 # Bootstrap app
 npm install @vuecs/nuxt @vuecs/design @vuecs/theme-bootstrap
+
+# Bulma app
+npm install @vuecs/nuxt @vuecs/design @vuecs/theme-bulma
 ```
 
-## Setup (Tailwind app)
+## Setup
 
 ```ts
-// nuxt.config.ts
-export default defineNuxtConfig({
-    modules: [
-        '@vuecs/nuxt',
-        '@vuecs/theme-tailwind-nuxt',
-    ],
-    vuecs: {
-        // Theme-agnostic options live here
-        // colorMode: true (default) ships the in-house useColorMode().
-        // Set false to disable and use @nuxtjs/color-mode yourself.
-    },
-    vuecsTailwind: {
-        // Initial palette (applied via SSR <style>)
-        colorPalette: { primary: 'green', neutral: 'zinc' },
-    },
-});
-```
-
-## Setup (Bootstrap / Bulma app)
-
-```ts
-// nuxt.config.ts
+// nuxt.config.ts — same shape regardless of theme
 export default defineNuxtConfig({
     modules: ['@vuecs/nuxt'],
     vuecs: {
-        // tokens injection + color mode
+        // Auto-install themes via generated plugin (no user-plugin needed).
+        // Themes are imported as default-export no-arg factories.
+        // For factory args (e.g. acmeTheme({ variant: 'dark' })), skip
+        // this option and install via a user-authored plugin file.
+        themes: ['@vuecs/theme-tailwind'],
+
+        // Initial color mode for first-time visitors
+        colorMode: { value: 'system' },
+
+        // Initial palette (applied via SSR <style>)
+        colorPalette: { value: { primary: 'green', neutral: 'zinc' } },
     },
 });
 ```
 
-No palette config — those frameworks don't ship runtime palette switching.
-
 ## What you get
 
-- **Auto-imported composables** — `useColorMode()` from `@vuecs/nuxt`; `useColorPalette()` from `@vuecs/theme-tailwind-nuxt` (when installed). No explicit imports.
-- **SSR plugins** — emit the palette `<style>` block and `<html class="dark">` before first paint.
-- **Auto CSS injection** — `@vuecs/design`'s `assets/index.css` is registered as a Nuxt CSS source by `@vuecs/nuxt`.
+- **Auto-imported composables** — `useColorMode()` and `useColorPalette()`. No explicit imports needed.
+- **SSR plugins** — emit the palette `<style>` block + `<html class="dark">` + any per-theme `data-*` attributes (e.g. `data-bs-theme` from theme-bootstrap) before first paint.
+- **Auto CSS injection** — `@vuecs/design`'s `assets/index.css` is registered as a Nuxt CSS source.
 - **Cookie-backed state** — `vc-color-mode` and `vc-color-palette` cookies persist user choices; the server reads them for SSR.
+- **Theme-agnostic dispatch** — the palette + color-mode runtime walks installed themes' `palette.handle` / `colorMode.handle` hooks. Same module, every theme.
 
 ## `@vuecs/nuxt` module options
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `injectTokens` | `boolean` | `true` | Auto-import `@vuecs/design`'s `assets/index.css` |
+| `themes` | `string[]` | `undefined` | Module names to auto-install via a generated plugin. Each is imported as a default no-arg factory. |
 | `colorMode` | `boolean \| object` | `true` | Enable the bundled color-mode composable + SSR plugin |
 | `colorMode.cookieName` | `string` | `'vc-color-mode'` | Cookie name used to persist the mode |
-| `colorMode.preference` | `'light' \| 'dark' \| 'system'` | `'system'` | Default mode for first-time visitors |
-| `cookie` | `CookieOptions` | `{ maxAge: 1y, sameSite: 'lax', path: '/' }` | Cookie attributes for the color-mode cookie |
-
-## `@vuecs/theme-tailwind-nuxt` module options
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `colorPalette` | `ColorPaletteConfig \| false` | `{}` | Initial palette assignment, applied via SSR. Set `false` to skip the SSR plugin while keeping the auto-import. |
-| `cookie` | `CookieOptions` | `{ maxAge: 1y, sameSite: 'lax', path: '/' }` | Cookie attributes for the `vc-color-palette` cookie |
+| `colorMode.value` | `'light' \| 'dark' \| 'system'` | `'system'` | Default mode for first-time visitors |
+| `colorPalette` | `boolean \| object` | `true` | Enable the bundled palette composable + SSR plugin |
+| `colorPalette.cookieName` | `string` | `'vc-color-palette'` | Cookie name used to persist the palette |
+| `colorPalette.value` | `Partial<Record<SemanticScaleName, ColorPaletteName>>` | `{}` | Initial palette assignment, applied via SSR |
+| `cookie` | `CookieOptions` | `{ maxAge: 1y, sameSite: 'lax', path: '/' }` | Cookie attributes for the **color-mode** cookie |
+| `paletteCookie` | `CookieOptions` | inherits `cookie` | Cookie attributes for the **palette** cookie (defaults to `cookie` per-key) |
 
 ### Cookie configuration
 
-Each module owns its own cookie configuration (color-mode under `vuecs.cookie`, palette under `vuecsTailwind.cookie`). Configure `domain`, `secure`, `sameSite`, etc. for cross-subdomain or strict-SSO setups:
+Most apps want the same retention / domain / SameSite for both UI-state
+cookies — the palette cookie inherits attributes from `cookie` by
+default. Override per-key via `paletteCookie` if you need divergent
+retention:
 
 ```ts
 vuecs: {
     cookie: {
-        maxAge: 60 * 60 * 24 * 30,   // 30 days
+        maxAge: 60 * 60 * 24 * 30,   // 30 days — color mode
         sameSite: 'strict',
         domain: '.example.com',
         secure: true,
     },
-},
-vuecsTailwind: {
-    cookie: {
+    paletteCookie: {
         maxAge: 60 * 60 * 24 * 365,  // 1 year — palette changes less often
-        domain: '.example.com',
     },
 },
 ```
 
-For divergent semantics, wire the cookies yourself with `bindColorPalette()` from `@vuecs/design` (composed with `renderColorPaletteStyles()` from `@vuecs/theme-tailwind`) and `bindColorMode()` from `@vuecs/design` plus a custom `useCookie` call.
+For totally custom semantics, wire the cookies yourself with
+`bindColorPalette()` from `@vuecs/design` (composed with your
+theme's renderer) and `bindColorMode()` from `@vuecs/design` plus a
+custom `useCookie` call.
+
+## Theme installation: `themes` config vs. user plugin
+
+Two ways to install themes in a Nuxt app:
+
+**Option A — `themes` config (recommended for the common case)**
+
+```ts
+vuecs: {
+    themes: ['@vuecs/theme-tailwind'],
+}
+```
+
+The module generates a plugin that imports each listed package's
+default factory and calls `app.use(vuecs, { themes: [tailwindTheme()] })`.
+Limited to factories that take no arguments.
+
+**Option B — user plugin (for factory args or extra installs)**
+
+```ts
+// plugins/vuecs.ts
+import vuecs from '@vuecs/core';
+import tailwindTheme from '@vuecs/theme-tailwind';
+import lucideIcons from '@vuecs/icons-lucide';
+import { defineNuxtPlugin } from '#app';
+
+export default defineNuxtPlugin((nuxtApp) => {
+    nuxtApp.vueApp.use(vuecs, {
+        themes: [tailwindTheme()],
+        icons: [lucideIcons()],
+    });
+});
+```
+
+Use this form for icon presets, `app.use(vuecs, { config: { nonce } })`,
+or any factory that needs arguments.
 
 ## Composables
 
-- [`useColorPalette`](/nuxt/use-palette) — runtime palette switching (from `@vuecs/theme-tailwind-nuxt`)
-- [`useColorMode`](/nuxt/use-color-mode) — SSR-safe dark/light/system toggle (from `@vuecs/nuxt`)
+- [`useColorPalette`](/nuxt/use-palette) — runtime palette switching
+- [`useColorMode`](/nuxt/use-color-mode) — SSR-safe dark/light/system toggle
 
 ## Why not @nuxtjs/color-mode?
 
-`@nuxtjs/color-mode` is great but optional. The bundled `useColorMode()` is built on `@vueuse/core`'s `usePreferredDark` plus a Nuxt cookie — fewer dependencies, simpler API surface, same SSR guarantees. If you'd rather use `@nuxtjs/color-mode` for its richer features (separate `system` resolution helpers, etc.), set `vuecs: { colorMode: false }` and add it yourself. The two don't conflict.
+`@nuxtjs/color-mode` is great but optional. The bundled `useColorMode()`
+is built on `@vueuse/core`'s `usePreferredDark` plus a Nuxt cookie —
+fewer dependencies, simpler API surface, same SSR guarantees. If you'd
+rather use `@nuxtjs/color-mode` for its richer features (separate
+`system` resolution helpers, etc.), set `vuecs: { colorMode: false }`
+and add it yourself. The two don't conflict.
 
 ## See also
 

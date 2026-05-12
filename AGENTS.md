@@ -44,13 +44,12 @@ npm run lint:fix       # Auto-fix lint issues
 | `@vuecs/link` | Router-aware link component (vue-router/nuxt) | 1.0.1 |
 | `@vuecs/list` | Compound list components (List/Header/Body/Item/ItemText/ItemActions/Footer/Loading/Empty) + `useList()` state composable. Successor to `@vuecs/list-controls` — clean break, compound API. | 0.0.0 |
 | `@vuecs/navigation` | Multi-level navigation with NavigationManager + `<VCStepper>` compound for multi-step wizards | 2.4.1 |
-| `@vuecs/nuxt` | Theme-agnostic Nuxt module — auto-imports `@vuecs/design` tokens, ships SSR-safe color-mode plugin + `useColorMode` auto-import. No palette concerns (those live in per-theme Nuxt modules like `@vuecs/theme-tailwind-nuxt`). | 0.0.0 |
+| `@vuecs/nuxt` | Theme-agnostic Nuxt module — auto-imports `@vuecs/design` tokens, ships SSR-safe color-mode + palette plugins (`useColorMode` / `useColorPalette` auto-imports). Dispatches palette + colorMode runtime hooks through whichever themes the consumer installs (plan 025). Optional `themes: string[]` config auto-generates a plugin that installs listed theme packages. | 0.0.0 |
 | `@vuecs/overlays` | Compound overlays on Reka primitives — Modal (+ `useModal()` view-stack composable), Popover, HoverCard, Tooltip, DropdownMenu, ContextMenu | 0.0.0 |
 | `@vuecs/pagination` | Pagination component | 1.3.1 |
 | `@vuecs/theme-bootstrap` | Bootstrap theme (currently targets v5; renamed from `@vuecs/theme-bootstrap-v5` in 3.0) | 3.0.0 |
 | `@vuecs/theme-bulma` | Bulma 1.0+ theme + design-token bridge | 0.0.0 |
 | `@vuecs/theme-tailwind` | Tailwind v4 theme (class strings + `merge: ClassesMergeFn`) + Tailwind palette runtime (`setColorPalette`, `useColorPalette`, `renderColorPaletteStyles`, `ColorPaletteConfig`) + Tailwind rebind / `@theme` block / `@source inline()` safelist. Composes `@vuecs/design`'s generic palette primitives. (plan 017) | 0.0.0 |
-| `@vuecs/theme-tailwind-nuxt` | Nuxt module that ships SSR-safe runtime palette switching for `@vuecs/theme-tailwind` consumers. Cookie-backed `useColorPalette` auto-import + `<style id="vc-color-palette">` SSR plugin. Configured under `vuecsTailwind` in `nuxt.config.ts`. (plan 017) | 0.0.0 |
 | `@vuecs/icons-font-awesome` | Font Awesome 6 Solid icon-name preset for vuecs (Iconify-backed; replaces the removed `@vuecs/theme-font-awesome`) | 0.0.0 |
 | `@vuecs/icons-lucide` | Lucide icon-name preset for vuecs (Iconify-backed) | 0.0.0 |
 | `@vuecs/timeago` | Relative time display component | 1.1.2 |
@@ -64,11 +63,10 @@ Layer 1' (depends on elements + core):   gravatar (composes VCAvatar)
 Layer 2 (depends on Layer 0): themes (@vuecs/core peer dep only — pure data that targets component packages at runtime)
                               theme-tailwind also depends on @vuecs/design (composes its generic palette primitives)
 Layer 2': icons (@vuecs/core peer dep only — Iconify-name vocabularies for @vuecs/icon's <VCIcon>, registered via `app.use(vuecs, { icons: [...] })`)
-Layer 3 (integration):       nuxt (depends on design + @nuxt/kit)
-                              theme-tailwind-nuxt (depends on theme-tailwind + design + @nuxt/kit) — sibling to nuxt, theme-specific
+Layer 3 (integration):       nuxt (depends on core + design + @nuxt/kit) — theme-agnostic
 ```
 
-`navigation` also depends on `@vuecs/link`. `pagination`, `overlays`, `forms`, `elements`, and `navigation` take a runtime dep on `reka-ui` (they wrap Reka's headless primitives — pagination, dialog/popover/hover-card/tooltip/menu, the form-input families, the atomic separator/avatar/aspect-ratio/visually-hidden elements, and the stepper respectively). `theme-tailwind` is designed to pair with `@vuecs/design` (Tailwind v4 + CSS-variable tokens); `theme-bootstrap` and `theme-bulma` each ship an optional bridge mapping their framework's runtime CSS variables (`--bs-*`, `--bulma-*`) onto the design-system tokens. Tailwind users on Nuxt install both `@vuecs/nuxt` (theme-agnostic) and `@vuecs/theme-tailwind-nuxt` (palette); BS / Bulma users install only `@vuecs/nuxt`.
+`navigation` also depends on `@vuecs/link`. `pagination`, `overlays`, `forms`, `elements`, and `navigation` take a runtime dep on `reka-ui` (they wrap Reka's headless primitives — pagination, dialog/popover/hover-card/tooltip/menu, the form-input families, the atomic separator/avatar/aspect-ratio/visually-hidden elements, and the stepper respectively). `theme-tailwind` is designed to pair with `@vuecs/design` (Tailwind v4 + CSS-variable tokens); `theme-bootstrap` and `theme-bulma` each ship an optional bridge mapping their framework's runtime CSS variables (`--bs-*`, `--bulma-*`) onto the design-system tokens. Nuxt consumers install `@vuecs/nuxt` regardless of theme; the module's palette / color-mode SSR plugins dispatch through whatever themes the user installs (plan 025 collapsed the previous per-theme Nuxt sub-module split).
 
 ## Documentation Site
 
@@ -82,7 +80,7 @@ Four runnable example apps under `examples/` — one Nuxt + three vanilla Vite +
 
 | App | Stack | Purpose |
 |-----|-------|---------|
-| `examples/nuxt/` | Nuxt 4 + Tailwind theme | Flagship Nuxt integration — exercises `@vuecs/nuxt` + `@vuecs/theme-tailwind-nuxt` |
+| `examples/nuxt/` | Nuxt 4 + Tailwind theme | Flagship Nuxt integration — exercises `@vuecs/nuxt`'s SSR color-mode + palette plugins |
 | `examples/tailwind/` | Vite + Vue 3 + Tailwind theme | Vanilla SPA, Tailwind |
 | `examples/bootstrap/` | Vite + Vue 3 + Bootstrap 5 | vuecs in a Bootstrap-themed app, no Tailwind |
 | `examples/bulma/` | Vite + Vue 3 + Bulma 1.0+ | vuecs in a Bulma-themed app, no Tailwind |

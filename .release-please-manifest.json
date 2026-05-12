@@ -16,7 +16,6 @@
     "themes/bootstrap": "3.0.0",
     "themes/bulma": "0.0.0",
     "themes/tailwind": "0.0.0",
-    "themes/tailwind-nuxt": "0.0.0",
     "icons/font-awesome": "0.0.0",
     "icons/lucide": "0.0.0",
     "packages/timeago": "1.1.2",

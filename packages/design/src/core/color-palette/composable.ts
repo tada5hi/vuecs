@@ -56,6 +56,7 @@ export function useColorPaletteUnshared<
 >(options: UseColorPaletteOptions<T> = {}): UseColorPaletteReturn<T> {
     const {
         initial = {} as T,
+        source,
         persist = true,
         storageKey = DEFAULT_STORAGE_KEY,
         sanitize = passthroughSanitize<T>,
@@ -69,20 +70,28 @@ export function useColorPaletteUnshared<
 
     const manager = useThemeRuntimeManager();
 
-    const storage: Ref<T> = persist ?
-        useStorage<T>(storageKey, sanitize(initial), undefined, {
-            serializer: {
-                read: (raw): T => {
-                    try {
-                        return sanitize(JSON.parse(raw));
-                    } catch {
-                        return sanitize({});
-                    }
+    /*
+     * `source` lets external persistence layers (Nuxt's `useCookie`,
+     * custom IndexedDB-backed refs, etc.) replace the default storage
+     * without forking the dispatch logic. When provided, `persist` /
+     * `storageKey` / `initial` are ignored — the caller is responsible
+     * for the initial value and any persistence semantics.
+     */
+    const storage: Ref<T> = source ??
+        (persist ?
+            useStorage<T>(storageKey, sanitize(initial), undefined, {
+                serializer: {
+                    read: (raw): T => {
+                        try {
+                            return sanitize(JSON.parse(raw));
+                        } catch {
+                            return sanitize({});
+                        }
+                    },
+                    write: (value) => JSON.stringify(value),
                 },
-                write: (value) => JSON.stringify(value),
-            },
-        }) :
-        ref<T>(sanitize(initial)) as Ref<T>;
+            }) :
+            ref<T>(sanitize(initial)) as Ref<T>);
 
     const renderConcatenated = (palette: T): string => {
         const themes = manager?.themes;
@@ -90,7 +99,18 @@ export function useColorPaletteUnshared<
             return '';
         }
 
-        return renderColorPaletteFromThemes(themes, palette as Record<string, string>);
+        /*
+         * Sanitize at the render boundary so the `source`-provided path
+         * (Nuxt cookie, custom IndexedDB, etc.) gets the same defensive
+         * filter as the default `useStorage` path (which sanitizes at
+         * `serializer.read` time). Theme `palette.handle` hooks should
+         * never see primitives, arrays, or other malformed payloads —
+         * downstream theme renderers each filter their own input, but
+         * applying `sanitize` here keeps the per-theme filter as a
+         * second line of defense rather than the only one.
+         */
+        const sanitized = sanitize(palette);
+        return renderColorPaletteFromThemes(themes, sanitized as Record<string, string>);
     };
 
     if (typeof document !== 'undefined') {

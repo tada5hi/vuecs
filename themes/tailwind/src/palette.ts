@@ -58,8 +58,9 @@ export function renderColorPaletteStyles(palette: ColorPaletteConfig): string {
  * `useConfig('nonce')` automatically.
  *
  * On the server this is a no-op; use `renderColorPaletteStyles()` directly
- * and inject the result into the SSR response head (see
- * `@vuecs/theme-tailwind-nuxt`).
+ * and inject the result into the SSR response head (or rely on
+ * `@vuecs/nuxt`'s palette server plugin, which dispatches through the
+ * theme runtime).
  */
 export function setColorPalette(
     palette: ColorPaletteConfig,

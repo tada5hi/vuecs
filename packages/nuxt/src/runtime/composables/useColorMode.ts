@@ -21,7 +21,7 @@ export function useColorMode(): UseColorModeReturn {
     const colorModeConfig = config.public.vuecs?.colorMode;
 
     const cookieName = colorModeConfig?.cookieName || 'vc-color-mode';
-    const defaultPreference = (colorModeConfig?.preference || 'system') as ColorMode;
+    const defaultValue = (colorModeConfig?.value || 'system') as ColorMode;
 
     // Shared cookie options come from the Nuxt module (set in
     // `nuxt.config.ts` under `vuecs.cookie`); documented defaults
@@ -29,9 +29,12 @@ export function useColorMode(): UseColorModeReturn {
     const cookieOptions = (config.public.vuecs?.cookie || {}) as Record<string, unknown>;
 
     const cookie = useCookie<ColorMode>(cookieName, {
-        default: () => defaultPreference,
-        watch: true,
+        default: () => defaultValue,
         ...cookieOptions,
+        // `watch: true` must come last — bindColorMode depends on the
+        // ref being reactive, and we don't want consumer-supplied
+        // cookieOptions to silently disable that.
+        watch: true,
     });
 
     return bindColorMode(cookie);
