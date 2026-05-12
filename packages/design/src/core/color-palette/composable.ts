@@ -99,7 +99,18 @@ export function useColorPaletteUnshared<
             return '';
         }
 
-        return renderColorPaletteFromThemes(themes, palette as Record<string, string>);
+        /*
+         * Sanitize at the render boundary so the `source`-provided path
+         * (Nuxt cookie, custom IndexedDB, etc.) gets the same defensive
+         * filter as the default `useStorage` path (which sanitizes at
+         * `serializer.read` time). Theme `palette.handle` hooks should
+         * never see primitives, arrays, or other malformed payloads —
+         * downstream theme renderers each filter their own input, but
+         * applying `sanitize` here keeps the per-theme filter as a
+         * second line of defense rather than the only one.
+         */
+        const sanitized = sanitize(palette);
+        return renderColorPaletteFromThemes(themes, sanitized as Record<string, string>);
     };
 
     if (typeof document !== 'undefined') {

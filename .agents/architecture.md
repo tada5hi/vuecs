@@ -1132,7 +1132,7 @@ collapsed the previous per-theme Nuxt sub-module split (formerly
 theme-agnostic via plan 021's `palette.handle` / `colorMode.handle`
 hooks.
 
-```
+```text
 @vuecs/nuxt/                                    (theme-agnostic)
   src/
     module.ts                                  <- defineNuxtModule (configKey: 'vuecs')

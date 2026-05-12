@@ -1,4 +1,4 @@
-import { useConfig } from '@vuecs/core';
+import { isObject, useConfig } from '@vuecs/core';
 import {
     COLOR_PALETTE_STYLE_ELEMENT_ID,
     THEME_RUNTIME_MANAGER_SYMBOL,
@@ -55,9 +55,31 @@ export default defineNuxtPlugin({
             { default: () => undefined },
         );
 
-        const palette = cookie.value || fallback;
+        const rawPalette = cookie.value || fallback;
 
-        if (!palette || Object.keys(palette).length === 0) {
+        /*
+         * Cookie content is client-controlled. Copy own string-valued
+         * properties into a prototype-free record before dispatching to
+         * theme handlers — defends against `__proto__` / `constructor`
+         * keys in a malformed cookie and prevents non-string values
+         * (arrays, objects, numbers from a corrupted JSON payload) from
+         * reaching `palette.handle`. Each theme renderer already filters
+         * unknown names; this is defense-in-depth at the SSR boundary.
+         */
+        const palette: Record<string, string> = Object.create(null);
+        if (isObject(rawPalette)) {
+            for (const key of Object.keys(rawPalette)) {
+                if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                    continue;
+                }
+                const value = (rawPalette as Record<string, unknown>)[key];
+                if (typeof value === 'string') {
+                    palette[key] = value;
+                }
+            }
+        }
+
+        if (Object.keys(palette).length === 0) {
             return;
         }
 
