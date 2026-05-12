@@ -684,7 +684,7 @@ export default function bootstrapTheme(): Theme {
          * the bridge `assets/index.css` keeps `--vc-color-*` aligned.
          */
         colorMode: {
-            apply(doc, mode) {
+            handle(doc, mode) {
                 doc.documentElement.setAttribute('data-bs-theme', mode);
             },
         },

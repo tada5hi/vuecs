@@ -1,5 +1,10 @@
 @import "bootstrap/dist/css/bootstrap.css";
-@import "@vuecs/design";
+/* The /standalone subpath inlines the Tailwind v4 palette catalog as
+   plain CSS vars. theme-bootstrap doesn't ship a setColorPalette
+   runtime today, but the source variables are in place for future
+   palette tooling (or for hand-rolling via applyColorPaletteCss from
+   @vuecs/design). See plan 015 P3. */
+@import "@vuecs/design/standalone";
 @import "@vuecs/theme-bootstrap";
 
 /* Structural CSS — each component package ships its own. Without these,

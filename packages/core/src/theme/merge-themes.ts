@@ -29,9 +29,9 @@ function mergeColorMode(themes: Theme[]): ColorModeHook | undefined {
     if (hooks.length === 1) return hooks[0];
 
     return {
-        apply(doc, mode) {
+        handle(doc, mode) {
             for (const hook of hooks) {
-                hook.apply(doc, mode);
+                hook.handle(doc, mode);
             }
         },
     };

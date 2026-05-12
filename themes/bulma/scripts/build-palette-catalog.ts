@@ -26,8 +26,8 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { converter } from 'culori';
-import { COLOR_PALETTE_SHADES, TAILWIND_COLOR_PALETTES } from '../src/constants';
-import type { TailwindColorPaletteName } from '../src/types';
+import { COLOR_PALETTES, COLOR_PALETTE_SHADES } from '@vuecs/design';
+import type { ColorPaletteName } from '@vuecs/design';
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const PACKAGE_DIR = resolve(SCRIPT_DIR, '..');
@@ -35,7 +35,7 @@ const REPO_ROOT = resolve(PACKAGE_DIR, '..', '..');
 const TAILWIND_THEME_CSS = resolve(REPO_ROOT, 'node_modules', 'tailwindcss', 'theme.css');
 const OUTPUT_FILE = resolve(PACKAGE_DIR, 'src', 'palette-catalog.ts');
 
-type PaletteName = TailwindColorPaletteName;
+type PaletteName = ColorPaletteName;
 type Shade = typeof COLOR_PALETTE_SHADES[number];
 
 type Hsl = {
@@ -85,7 +85,7 @@ function buildCatalog(): Record<PaletteName, Record<Shade, Hsl>> {
     const tokens = parseTailwindTheme();
     const catalog = {} as Record<PaletteName, Record<Shade, Hsl>>;
 
-    for (const palette of TAILWIND_COLOR_PALETTES) {
+    for (const palette of COLOR_PALETTES) {
         const shades = {} as Record<Shade, Hsl>;
         for (const shade of COLOR_PALETTE_SHADES) {
             const oklch = tokens.get(`${palette}-${shade}`);
@@ -107,7 +107,7 @@ function emitTypeScript(catalog: Record<PaletteName, Record<Shade, Hsl>>): strin
     const tailwindVersion = readPackageVersion('tailwindcss');
     const culoriVersion = readPackageVersion('culori');
 
-    const palettes = TAILWIND_COLOR_PALETTES.map((palette) => {
+    const palettes = COLOR_PALETTES.map((palette) => {
         const shades = COLOR_PALETTE_SHADES.map((shade) => {
             const {
                 h, 
@@ -132,10 +132,11 @@ function emitTypeScript(catalog: Record<PaletteName, Record<Shade, Hsl>>): strin
  * Validate (CI):
  *     npm run --workspace=themes/bulma palette-catalog:check
  */
-import type { Hsl, TailwindColorPaletteName } from './types';
+import type { ColorPaletteName } from '@vuecs/design';
+import type { Hsl } from './types';
 
-export const TAILWIND_COLOR_PALETTE_HSL: Record<
-    TailwindColorPaletteName,
+export const COLOR_PALETTE_HSL: Record<
+    ColorPaletteName,
     Record<'50' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900' | '950', Hsl>
 > = {
 ${palettes}

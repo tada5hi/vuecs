@@ -13,9 +13,9 @@ import {
     nextTick,
     ref,
 } from 'vue';
-import { bindColorMode } from '../../../src/composables/use-color-mode';
-import type { ColorMode } from '../../../src/composables/use-color-mode';
-import type { ThemeRuntimeEntry } from '../../../src/composables/use-theme-runtime';
+import { bindColorMode } from '../../../../src/core/color-mode/bind';
+import type { ColorMode } from '../../../../src/core/color-mode/types';
+import type { ThemeRuntimeEntry } from '../../../../src/core/theme-runtime/types';
 
 const THEME_MANAGER_SYMBOL = Symbol.for('VCThemeManager');
 
@@ -53,13 +53,13 @@ describe('bindColorMode — theme dispatch (plan 021)', () => {
         document.documentElement.removeAttribute('data-theme');
     });
 
-    it('fires every installed theme\'s colorMode.apply on the initial mount', async () => {
+    it('fires every installed theme\'s colorMode.handle on the initial mount', async () => {
         const bsApply = vi.fn();
         const bulmaApply = vi.fn();
         const manager: MockThemeManager = {
             themes: [
-                { colorMode: { apply: bsApply } },
-                { colorMode: { apply: bulmaApply } },
+                { colorMode: { handle: bsApply } },
+                { colorMode: { handle: bulmaApply } },
             ],
         };
 
@@ -75,19 +75,19 @@ describe('bindColorMode — theme dispatch (plan 021)', () => {
     });
 
     it('re-dispatches on mode change', async () => {
-        const apply = vi.fn();
-        const manager: MockThemeManager = { themes: [{ colorMode: { apply } }] };
+        const handle = vi.fn();
+        const manager: MockThemeManager = { themes: [{ colorMode: { handle } }] };
 
         const source = ref<ColorMode>('light');
         const { unmount } = mountWithManager(manager, () => {
             bindColorMode(source);
         });
         await nextTick();
-        expect(apply).toHaveBeenLastCalledWith(document, 'light');
+        expect(handle).toHaveBeenLastCalledWith(document, 'light');
 
         source.value = 'dark';
         await nextTick();
-        expect(apply).toHaveBeenLastCalledWith(document, 'dark');
+        expect(handle).toHaveBeenLastCalledWith(document, 'dark');
         unmount();
     });
 
@@ -95,9 +95,9 @@ describe('bindColorMode — theme dispatch (plan 021)', () => {
         const calls: string[] = [];
         const manager: MockThemeManager = {
             themes: [
-                { colorMode: { apply: () => calls.push('A') } },
-                { colorMode: { apply: () => calls.push('B') } },
-                { colorMode: { apply: () => calls.push('C') } },
+                { colorMode: { handle: () => calls.push('A') } },
+                { colorMode: { handle: () => calls.push('B') } },
+                { colorMode: { handle: () => calls.push('C') } },
             ],
         };
 
@@ -112,11 +112,11 @@ describe('bindColorMode — theme dispatch (plan 021)', () => {
     });
 
     it('skips themes without a colorMode hook', async () => {
-        const apply = vi.fn();
+        const handle = vi.fn();
         const manager: MockThemeManager = {
             themes: [
                 {}, // no colorMode
-                { colorMode: { apply } },
+                { colorMode: { handle } },
                 {}, // no colorMode
             ],
         };
@@ -127,8 +127,8 @@ describe('bindColorMode — theme dispatch (plan 021)', () => {
         });
         await nextTick();
 
-        expect(apply).toHaveBeenCalledTimes(1);
-        expect(apply).toHaveBeenCalledWith(document, 'dark');
+        expect(handle).toHaveBeenCalledTimes(1);
+        expect(handle).toHaveBeenCalledWith(document, 'dark');
         unmount();
     });
 
@@ -146,7 +146,7 @@ describe('bindColorMode — theme dispatch (plan 021)', () => {
     });
 
     it('reactively picks up themes added via setThemes (without mode change)', async () => {
-        const apply = vi.fn();
+        const handle = vi.fn();
         const themes = ref<ThemeRuntimeEntry[]>([]);
         const manager: MockThemeManager = {
             get themes() {
@@ -160,15 +160,15 @@ describe('bindColorMode — theme dispatch (plan 021)', () => {
         });
         await nextTick();
         // No themes installed yet → no dispatch.
-        expect(apply).not.toHaveBeenCalled();
+        expect(handle).not.toHaveBeenCalled();
 
         // Install a theme at runtime; the watch source includes a getter
         // for `manager.themes`, so the swap alone re-fires the watcher.
         // No mode change required.
-        themes.value = [{ colorMode: { apply } }];
+        themes.value = [{ colorMode: { handle } }];
         await nextTick();
 
-        expect(apply).toHaveBeenCalledWith(document, 'dark');
+        expect(handle).toHaveBeenCalledWith(document, 'dark');
         unmount();
     });
 
@@ -177,7 +177,7 @@ describe('bindColorMode — theme dispatch (plan 021)', () => {
             themes: [
                 {
                     colorMode: {
-                        apply(doc, mode) {
+                        handle(doc, mode) {
                             doc.documentElement.setAttribute('data-bs-theme', mode);
                         },
                     },

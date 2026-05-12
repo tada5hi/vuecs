@@ -8,9 +8,8 @@ import {
 import {
     captureColorModeAttrs,
     createCaptureDocument,
-    renderColorPaletteFromThemes,
-} from '../../../src/composables/use-theme-runtime';
-import type { ThemeRuntimeEntry } from '../../../src/composables/use-theme-runtime';
+} from '../../../../src/core/theme-runtime/capture';
+import type { ThemeRuntimeEntry } from '../../../../src/core/theme-runtime/types';
 
 describe('createCaptureDocument', () => {
     it('captures setAttribute calls on documentElement', () => {
@@ -47,14 +46,14 @@ describe('captureColorModeAttrs', () => {
         const themes: ThemeRuntimeEntry[] = [
             {
                 colorMode: {
-                    apply(doc, mode) {
+                    handle(doc, mode) {
                         doc.documentElement.setAttribute('data-bs-theme', mode);
                     },
                 },
             },
             {
                 colorMode: {
-                    apply(doc, mode) {
+                    handle(doc, mode) {
                         doc.documentElement.setAttribute('data-theme', mode);
                     },
                 },
@@ -68,8 +67,8 @@ describe('captureColorModeAttrs', () => {
         });
     });
 
-    it('returns an empty object when no theme declares colorMode.apply', () => {
-        const themes: ThemeRuntimeEntry[] = [{}, { palette: { render: () => '' } }];
+    it('returns an empty object when no theme declares colorMode.handle', () => {
+        const themes: ThemeRuntimeEntry[] = [{}, { palette: { handle: () => '' } }];
         expect(captureColorModeAttrs(themes, 'light')).toEqual({});
     });
 
@@ -77,14 +76,14 @@ describe('captureColorModeAttrs', () => {
         const themes: ThemeRuntimeEntry[] = [
             {
                 colorMode: {
-                    apply(doc) {
+                    handle(doc) {
                         doc.documentElement.setAttribute('shared', 'first');
                     },
                 },
             },
             {
                 colorMode: {
-                    apply(doc) {
+                    handle(doc) {
                         doc.documentElement.setAttribute('shared', 'second');
                     },
                 },
@@ -98,14 +97,14 @@ describe('captureColorModeAttrs', () => {
         const themes: ThemeRuntimeEntry[] = [
             {
                 colorMode: {
-                    apply() {
+                    handle() {
                         throw new Error('boom');
                     },
                 },
             },
             {
                 colorMode: {
-                    apply(doc, mode) {
+                    handle(doc, mode) {
                         doc.documentElement.setAttribute('data-theme', mode);
                     },
                 },
@@ -117,55 +116,8 @@ describe('captureColorModeAttrs', () => {
     });
 
     it('passes the resolved mode through unchanged', () => {
-        const apply = vi.fn();
-        captureColorModeAttrs([{ colorMode: { apply } }], 'light');
-        expect(apply).toHaveBeenCalledWith(expect.any(Object), 'light');
-    });
-});
-
-describe('renderColorPaletteFromThemes', () => {
-    afterEach(() => {
-        vi.restoreAllMocks();
-    });
-
-    it('concatenates outputs from every palette-aware theme', () => {
-        const themes: ThemeRuntimeEntry[] = [
-            { palette: { render: (p) => `/* tailwind */ --primary: ${p.primary};` } },
-            { palette: { render: (p) => `/* bulma */ --bulma-primary: ${p.primary};` } },
-        ];
-        const css = renderColorPaletteFromThemes(themes, { primary: 'green' });
-        expect(css).toContain('--primary: green');
-        expect(css).toContain('--bulma-primary: green');
-        expect(css.indexOf('--primary')).toBeLessThan(css.indexOf('--bulma-primary'));
-    });
-
-    it('returns empty string when no theme declares palette.render', () => {
-        const themes: ThemeRuntimeEntry[] = [{ colorMode: { apply: () => {} } }, {}];
-        expect(renderColorPaletteFromThemes(themes, { primary: 'red' })).toBe('');
-    });
-
-    it('skips themes whose render returns empty', () => {
-        const themes: ThemeRuntimeEntry[] = [
-            { palette: { render: () => '' } },
-            { palette: { render: (p) => `--primary: ${p.primary};` } },
-        ];
-        expect(renderColorPaletteFromThemes(themes, { primary: 'red' })).toBe('--primary: red;');
-    });
-
-    it('isolates errors per theme', () => {
-        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-        const themes: ThemeRuntimeEntry[] = [
-            {
-                palette: {
-                    render() {
-                        throw new Error('boom');
-                    },
-                },
-            },
-            { palette: { render: (p) => `--primary: ${p.primary};` } },
-        ];
-        const css = renderColorPaletteFromThemes(themes, { primary: 'red' });
-        expect(css).toBe('--primary: red;');
-        expect(warn).toHaveBeenCalled();
+        const handle = vi.fn();
+        captureColorModeAttrs([{ colorMode: { handle } }], 'light');
+        expect(handle).toHaveBeenCalledWith(expect.any(Object), 'light');
     });
 });

@@ -1,7 +1,7 @@
 import type { ClassesMergeFn, Theme } from '@vuecs/core';
+import { COLOR_PALETTES } from '@vuecs/design';
 import { twMerge } from 'tailwind-merge';
 import './config';
-import { TAILWIND_COLOR_PALETTES } from './constants';
 import { renderColorPaletteStyles } from './palette';
 
 export { renderColorPaletteStyles, setColorPalette } from './palette';
@@ -17,15 +17,8 @@ export {
     applyColorPaletteCss,
     bindColorPalette,
 } from '@vuecs/design';
-export {
-    COLOR_PALETTE_SHADES,
-    SEMANTIC_SCALES,
-    TAILWIND_COLOR_PALETTES,
-} from './constants';
 export type {
     ColorPaletteConfig,
-    SemanticScaleName,
-    TailwindColorPaletteName,
 } from './types';
 
 export const merge: ClassesMergeFn = (base, override) => twMerge(base, override);
@@ -55,13 +48,13 @@ export default function tailwindTheme(): Theme {
         /*
          * Theme-runtime hook (plan 021): declare the Tailwind palette
          * renderer + catalog. `@vuecs/design`'s `useColorPalette()`
-         * walks installed themes and routes through `palette.render`,
+         * walks installed themes and routes through `palette.handle`,
          * so `@vuecs/theme-tailwind`'s `useColorPalette()` wrapper now
          * delegates here rather than wiring the renderer directly.
          */
         palette: {
-            render: renderColorPaletteStyles as (palette: Record<string, string>) => string,
-            names: TAILWIND_COLOR_PALETTES,
+            handle: renderColorPaletteStyles as (palette: Record<string, string>) => string,
+            names: COLOR_PALETTES,
         },
         elements: {
             formGroup: {
@@ -87,15 +80,15 @@ export default function tailwindTheme(): Theme {
                 variants: {
                     size: {
                         sm: {
-                            root: 'px-2 py-1 text-xs', 
-                            groupAppend: 'px-2 text-xs', 
-                            groupPrepend: 'px-2 text-xs', 
+                            root: 'px-2 py-1 text-xs',
+                            groupAppend: 'px-2 text-xs',
+                            groupPrepend: 'px-2 text-xs',
                         },
                         md: { root: '' },
                         lg: {
-                            root: 'px-4 py-3 text-base', 
-                            groupAppend: 'px-4 text-base', 
-                            groupPrepend: 'px-4 text-base', 
+                            root: 'px-4 py-3 text-base',
+                            groupAppend: 'px-4 text-base',
+                            groupPrepend: 'px-4 text-base',
                         },
                     },
                 },
@@ -228,15 +221,15 @@ export default function tailwindTheme(): Theme {
                 variants: {
                     size: {
                         sm: {
-                            input: 'px-2 py-1 text-xs', 
-                            decrement: 'w-6 text-xs', 
-                            increment: 'w-6 text-xs', 
+                            input: 'px-2 py-1 text-xs',
+                            decrement: 'w-6 text-xs',
+                            increment: 'w-6 text-xs',
                         },
                         md: { input: '' },
                         lg: {
-                            input: 'px-4 py-3 text-base', 
-                            decrement: 'w-10 text-base', 
-                            increment: 'w-10 text-base', 
+                            input: 'px-4 py-3 text-base',
+                            decrement: 'w-10 text-base',
+                            increment: 'w-10 text-base',
                         },
                     },
                 },
@@ -331,9 +324,9 @@ export default function tailwindTheme(): Theme {
                     { variants: { variant: 'link', color: 'info' }, class: { root: 'bg-transparent p-0 text-info-700 shadow-none underline underline-offset-4 hover:text-info-800 focus:ring-info-500 dark:text-info-400' } },
                 ],
                 defaultVariants: {
-                    variant: 'solid', 
-                    color: 'primary', 
-                    size: 'md', 
+                    variant: 'solid',
+                    color: 'primary',
+                    size: 'md',
                 },
             },
             formTextarea: {
@@ -713,17 +706,17 @@ export default function tailwindTheme(): Theme {
                 variants: {
                     size: {
                         sm: {
-                            content: 'min-w-[6rem] text-xs', 
-                            item: 'px-1.5 py-1', 
-                            subTrigger: 'px-1.5 py-1', 
-                            subContent: 'min-w-[6rem] text-xs', 
+                            content: 'min-w-[6rem] text-xs',
+                            item: 'px-1.5 py-1',
+                            subTrigger: 'px-1.5 py-1',
+                            subContent: 'min-w-[6rem] text-xs',
                         },
                         md: { content: '' },
                         lg: {
-                            content: 'min-w-[12rem] text-base', 
-                            item: 'px-3 py-2', 
-                            subTrigger: 'px-3 py-2', 
-                            subContent: 'min-w-[12rem] text-base', 
+                            content: 'min-w-[12rem] text-base',
+                            item: 'px-3 py-2',
+                            subTrigger: 'px-3 py-2',
+                            subContent: 'min-w-[12rem] text-base',
                         },
                     },
                 },
@@ -747,17 +740,17 @@ export default function tailwindTheme(): Theme {
                 variants: {
                     size: {
                         sm: {
-                            content: 'min-w-[6rem] text-xs', 
-                            item: 'px-1.5 py-1', 
-                            subTrigger: 'px-1.5 py-1', 
-                            subContent: 'min-w-[6rem] text-xs', 
+                            content: 'min-w-[6rem] text-xs',
+                            item: 'px-1.5 py-1',
+                            subTrigger: 'px-1.5 py-1',
+                            subContent: 'min-w-[6rem] text-xs',
                         },
                         md: { content: '' },
                         lg: {
-                            content: 'min-w-[12rem] text-base', 
-                            item: 'px-3 py-2', 
-                            subTrigger: 'px-3 py-2', 
-                            subContent: 'min-w-[12rem] text-base', 
+                            content: 'min-w-[12rem] text-base',
+                            item: 'px-3 py-2',
+                            subTrigger: 'px-3 py-2',
+                            subContent: 'min-w-[12rem] text-base',
                         },
                     },
                 },
