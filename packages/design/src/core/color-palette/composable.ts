@@ -1,68 +1,27 @@
 import { createSharedComposable, useStorage } from '@vueuse/core';
-import {
-    computed,
-    ref,
-    watchEffect,
-} from 'vue';
 import type { ComputedRef, Ref } from 'vue';
-import { applyColorPaletteCss } from '../palette';
-import type { UseColorPaletteReturn } from '../palette';
-import { useThemeRuntimeManager } from './use-theme-runtime';
+import { computed, ref, watchEffect } from 'vue';
+import { isObject } from '../../utils/object';
+import { useThemeRuntimeManager } from '../theme-runtime/composable';
+import { applyColorPaletteCss } from './apply';
+import { renderColorPaletteFromThemes } from './render';
+import type { UseColorPaletteOptions, UseColorPaletteReturn } from './types';
 
 const DEFAULT_STORAGE_KEY = 'vc-color-palette';
-
-/**
- * Options for the generic theme-aware `useColorPalette()` dispatcher.
- *
- * `useColorPalette` is wrapped with `createSharedComposable`, so these
- * options are honored **only on the first call**. Subsequent invocations
- * from anywhere in the app receive the cached instance with the original
- * options — passing a different `storageKey`, `sanitize`, or `extend` is
- * a silent no-op. For per-call configuration with custom storage,
- * compose `bindColorPalette()` directly with your own ref.
- */
-export interface UseColorPaletteOptions<T extends Record<string, unknown>> {
-    /** Initial palette when no persisted value exists. Default: `{}` (cast to `T`). */
-    initial?: T;
-    /** Persist via localStorage (`useStorage` from `@vueuse/core`). Default: `true`. */
-    persist?: boolean;
-    /** Storage key for the default backend. Default: `'vc-color-palette'`. */
-    storageKey?: string;
-    /**
-     * Theme-aware sanitizer for serialized values. Themes pass their own
-     * (e.g. `@vuecs/theme-tailwind` filters to known semantic scales +
-     * Tailwind palette names). Default: pass-through cast.
-     */
-    sanitize?: (raw: unknown) => T;
-    /**
-     * Override the default shallow-merge semantics of `extend()`. Default:
-     * `{ ...current, ...partial }`. Themes with structured non-object
-     * shapes supply their own.
-     */
-    extend?: (current: T, partial: Partial<T>) => T;
-    /**
-     * CSP nonce written to the `<style id="vc-color-palette">` element.
-     * Accepts a string (resolved once) or a getter
-     * `() => string | undefined` (called on every re-render, so reactive
-     * nonce changes propagate). Per-theme wrappers in
-     * `@vuecs/theme-tailwind` / `@vuecs/theme-bulma` read this from
-     * `useConfig('nonce')` automatically.
-     */
-    nonce?: string | (() => string | undefined);
-}
 
 function passthroughSanitize<T>(value: unknown): T {
     /*
      * Reject primitives and arrays: `JSON.parse('"blue"')` is valid and
      * returns a string. Without this guard a corrupted localStorage entry
-     * would forward the primitive to `theme.palette.render`, which
+     * would forward the primitive to `theme.palette.handle`, which
      * expects an object and would emit broken CSS. Themes that need a
      * stricter shape pass their own `sanitize` (e.g. theme-tailwind
      * filters to known palette names).
      */
-    if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    if (!isObject(value)) {
         return {} as T;
     }
+
     return value as T;
 }
 
@@ -74,7 +33,7 @@ const shallowMerge = <T extends Record<string, unknown>>(current: T, partial: Pa
 /**
  * Theme-aware reactive palette state — un-shared variant.
  *
- * Concatenates every installed theme's `palette.render` output into the
+ * Concatenates every installed theme's `palette.handle` output into the
  * `<style id="vc-color-palette">` element. Walking the installed themes
  * each render means runtime theme swaps via `setThemes()` automatically
  * pick up the new renderer chain.
@@ -127,15 +86,11 @@ export function useColorPaletteUnshared<
 
     const renderConcatenated = (palette: T): string => {
         const themes = manager?.themes;
-        if (!themes || themes.length === 0) return '';
-        const parts: string[] = [];
-        for (const theme of themes) {
-            const render = theme.palette?.render;
-            if (!render) continue;
-            const out = render(palette as Record<string, string>);
-            if (out) parts.push(out);
+        if (!themes || themes.length === 0) {
+            return '';
         }
-        return parts.join('\n');
+
+        return renderColorPaletteFromThemes(themes, palette as Record<string, string>);
     };
 
     if (typeof document !== 'undefined') {
@@ -172,5 +127,3 @@ export function useColorPaletteUnshared<
  * `bindColorPalette()` directly with a cookie-backed ref.
  */
 export const useColorPalette = createSharedComposable(useColorPaletteUnshared);
-
-export type { UseColorPaletteReturn } from '../palette';

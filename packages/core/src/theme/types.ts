@@ -75,7 +75,17 @@ export interface ThemeElements {}
  * (`defineTheme`) compiles forward when plan 021 ships.
  */
 export type ColorModeHook = {
-    apply: (doc: Document, mode: 'light' | 'dark') => void;
+    /**
+     * Called when the resolved color mode changes (or on first mount).
+     * Side-effecting — theme implementations typically set framework-
+     * specific attributes on `doc.documentElement` (e.g. `data-bs-theme`,
+     * `data-theme`).
+     *
+     * Named `handle` (not `apply`) to avoid collision with
+     * `Function.prototype.apply` and to align with
+     * `PaletteHook.handle`.
+     */
+    handle: (doc: Document, mode: 'light' | 'dark') => void;
 };
 
 /**
@@ -86,7 +96,13 @@ export type ColorModeHook = {
  * (`defineTheme`) compiles forward when plan 021 ships.
  */
 export type PaletteHook = {
-    render: (palette: Record<string, string>) => string;
+    /**
+     * Pure function — receives the resolved palette config and returns
+     * a CSS string. The caller (`useColorPalette`) writes the result to
+     * the `<style id="vc-color-palette">` block. Named `handle` to
+     * align with `ColorModeHook.handle`.
+     */
+    handle: (palette: Record<string, string>) => string;
     names?: readonly string[];
 };
 
@@ -112,8 +128,8 @@ export type ThemeConfig = {
 
     /**
      * Plan 021 forward-compat slot. When ≥1 layer in the chain declares
-     * `colorMode.apply`, the merged theme exposes a composed callback that
-     * runs every layer's apply in chain order.
+     * `colorMode.handle`, the merged theme exposes a composed callback that
+     * runs every layer's handler in chain order.
      */
     colorMode?: ColorModeHook;
 

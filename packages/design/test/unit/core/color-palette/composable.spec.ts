@@ -13,9 +13,9 @@ import {
     nextTick,
     ref,
 } from 'vue';
-import { COLOR_PALETTE_STYLE_ELEMENT_ID } from '../../../src/palette';
-import { useColorPaletteUnshared } from '../../../src/composables/use-color-palette';
-import type { ThemeRuntimeEntry } from '../../../src/composables/use-theme-runtime';
+import { COLOR_PALETTE_STYLE_ELEMENT_ID } from '../../../../src/core/color-palette/apply';
+import { useColorPaletteUnshared } from '../../../../src/core/color-palette/composable';
+import type { ThemeRuntimeEntry } from '../../../../src/core/theme-runtime/types';
 
 const THEME_MANAGER_SYMBOL = Symbol.for('VCThemeManager');
 
@@ -62,7 +62,7 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
         document.documentElement.removeAttribute('data-bs-theme');
     });
 
-    it('writes nothing when no theme declares palette.render', async () => {
+    it('writes nothing when no theme declares palette.handle', async () => {
         const manager: MockThemeManager = { themes: [{}, {}] };
         const { unmount } = mountWithManager(manager, () => {
             useColorPaletteUnshared({
@@ -76,9 +76,9 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
         unmount();
     });
 
-    it('writes the renderer output when a theme declares palette.render', async () => {
-        const render = vi.fn((palette: Record<string, string>) => `:root { --primary: ${palette.primary}; }`);
-        const manager: MockThemeManager = { themes: [{ palette: { render } }] };
+    it('writes the renderer output when a theme declares palette.handle', async () => {
+        const handle = vi.fn((palette: Record<string, string>) => `:root { --primary: ${palette.primary}; }`);
+        const manager: MockThemeManager = { themes: [{ palette: { handle } }] };
 
         const { unmount } = mountWithManager(manager, () => {
             useColorPaletteUnshared({
@@ -88,18 +88,18 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
             });
         });
         await nextTick();
-        expect(render).toHaveBeenCalledWith({ primary: 'blue' });
+        expect(handle).toHaveBeenCalledWith({ primary: 'blue' });
         expect(readPaletteStyle()).toContain('--primary: blue');
         unmount();
     });
 
-    it('concatenates outputs from every theme that declares palette.render', async () => {
+    it('concatenates outputs from every theme that declares palette.handle', async () => {
         const tailwindRender = (p: Record<string, string>) => `/* tailwind */ :root { --tw-primary: ${p.primary}; }`;
         const bulmaRender = (p: Record<string, string>) => `/* bulma */ :root { --bulma-primary: ${p.primary}; }`;
         const manager: MockThemeManager = {
             themes: [
-                { palette: { render: tailwindRender } },
-                { palette: { render: bulmaRender } },
+                { palette: { handle: tailwindRender } },
+                { palette: { handle: bulmaRender } },
             ],
         };
 
@@ -119,12 +119,12 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
         unmount();
     });
 
-    it('skips themes that omit palette.render but include other hooks', async () => {
-        const render = vi.fn((p: Record<string, string>) => `:root { --primary: ${p.primary}; }`);
+    it('skips themes that omit palette.handle but include other hooks', async () => {
+        const handle = vi.fn((p: Record<string, string>) => `:root { --primary: ${p.primary}; }`);
         const manager: MockThemeManager = {
             themes: [
-                { colorMode: { apply: () => {} } }, // colorMode-only, no palette
-                { palette: { render } },
+                { colorMode: { handle: () => {} } }, // colorMode-only, no palette
+                { palette: { handle } },
                 {}, // empty
             ],
         };
@@ -137,14 +137,14 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
             });
         });
         await nextTick();
-        expect(render).toHaveBeenCalledTimes(1);
+        expect(handle).toHaveBeenCalledTimes(1);
         expect(readPaletteStyle()).toBe(':root { --primary: red; }');
         unmount();
     });
 
     it('re-renders when the palette changes via set()', async () => {
-        const render = (p: Record<string, string>) => `:root { --primary: ${p.primary}; }`;
-        const manager: MockThemeManager = { themes: [{ palette: { render } }] };
+        const handle = (p: Record<string, string>) => `:root { --primary: ${p.primary}; }`;
+        const manager: MockThemeManager = { themes: [{ palette: { handle } }] };
 
         let api: ReturnType<typeof useColorPaletteUnshared> | undefined;
         const { unmount } = mountWithManager(manager, () => {
@@ -164,8 +164,8 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
     });
 
     it('re-renders when extend() is used to merge a partial', async () => {
-        const render = (p: Record<string, string>) => `:root { --primary: ${p.primary}; --neutral: ${p.neutral}; }`;
-        const manager: MockThemeManager = { themes: [{ palette: { render } }] };
+        const handle = (p: Record<string, string>) => `:root { --primary: ${p.primary}; --neutral: ${p.neutral}; }`;
+        const manager: MockThemeManager = { themes: [{ palette: { handle } }] };
 
         let api: ReturnType<typeof useColorPaletteUnshared> | undefined;
         const { unmount } = mountWithManager(manager, () => {
@@ -188,7 +188,7 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
     });
 
     it('reactively picks up themes added via setThemes', async () => {
-        const render = vi.fn((p: Record<string, string>) => `:root { --primary: ${p.primary}; }`);
+        const handle = vi.fn((p: Record<string, string>) => `:root { --primary: ${p.primary}; }`);
         const themesRef = ref<ThemeRuntimeEntry[]>([]);
         const manager = {
             get themes() {
@@ -206,11 +206,11 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
         await nextTick();
         // No theme installed initially → empty.
         expect(readPaletteStyle()).toBe('');
-        expect(render).not.toHaveBeenCalled();
+        expect(handle).not.toHaveBeenCalled();
 
-        themesRef.value = [{ palette: { render } }];
+        themesRef.value = [{ palette: { handle } }];
         await nextTick();
-        expect(render).toHaveBeenCalledWith({ primary: 'blue' });
+        expect(handle).toHaveBeenCalledWith({ primary: 'blue' });
         expect(readPaletteStyle()).toContain('--primary: blue');
         unmount();
     });
@@ -229,7 +229,7 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
     });
 
     it('applies sanitize to the initial palette', async () => {
-        const render = (p: Record<string, string>) => `:root { --primary: ${p.primary ?? 'unset'}; }`;
+        const handle = (p: Record<string, string>) => `:root { --primary: ${p.primary ?? 'unset'}; }`;
         const sanitize = (raw: unknown): { primary?: string } => {
             if (!raw || typeof raw !== 'object') return {};
             const input = raw as Record<string, unknown>;
@@ -239,7 +239,7 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
             }
             return {};
         };
-        const manager: MockThemeManager = { themes: [{ palette: { render } }] };
+        const manager: MockThemeManager = { themes: [{ palette: { handle } }] };
 
         const { unmount } = mountWithManager(manager, () => {
             useColorPaletteUnshared<{ primary?: string }>({
@@ -256,8 +256,8 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
     });
 
     it('exposes current() reactively', async () => {
-        const render = (p: Record<string, string>) => `:root { --primary: ${p.primary}; }`;
-        const manager: MockThemeManager = { themes: [{ palette: { render } }] };
+        const handle = (p: Record<string, string>) => `:root { --primary: ${p.primary}; }`;
+        const manager: MockThemeManager = { themes: [{ palette: { handle } }] };
 
         let api: ReturnType<typeof useColorPaletteUnshared> | undefined;
         const { unmount } = mountWithManager(manager, () => {
@@ -277,8 +277,8 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
     });
 
     it('forwards a static nonce string to the rendered <style>', async () => {
-        const render = (p: Record<string, string>) => `:root { --primary: ${p.primary}; }`;
-        const manager: MockThemeManager = { themes: [{ palette: { render } }] };
+        const handle = (p: Record<string, string>) => `:root { --primary: ${p.primary}; }`;
+        const manager: MockThemeManager = { themes: [{ palette: { handle } }] };
 
         const { unmount } = mountWithManager(manager, () => {
             useColorPaletteUnshared({
@@ -295,8 +295,8 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
     });
 
     it('invokes a nonce getter on each render — supports reactive nonce', async () => {
-        const render = (p: Record<string, string>) => `:root { --primary: ${p.primary}; }`;
-        const manager: MockThemeManager = { themes: [{ palette: { render } }] };
+        const handle = (p: Record<string, string>) => `:root { --primary: ${p.primary}; }`;
+        const manager: MockThemeManager = { themes: [{ palette: { handle } }] };
         const nonceRef = ref<string | undefined>('initial');
 
         let api: ReturnType<typeof useColorPaletteUnshared> | undefined;

@@ -55,12 +55,12 @@ export default function tailwindTheme(): Theme {
         /*
          * Theme-runtime hook (plan 021): declare the Tailwind palette
          * renderer + catalog. `@vuecs/design`'s `useColorPalette()`
-         * walks installed themes and routes through `palette.render`,
+         * walks installed themes and routes through `palette.handle`,
          * so `@vuecs/theme-tailwind`'s `useColorPalette()` wrapper now
          * delegates here rather than wiring the renderer directly.
          */
         palette: {
-            render: renderColorPaletteStyles as (palette: Record<string, string>) => string,
+            handle: renderColorPaletteStyles as (palette: Record<string, string>) => string,
             names: TAILWIND_COLOR_PALETTES,
         },
         elements: {

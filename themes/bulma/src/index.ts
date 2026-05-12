@@ -701,7 +701,7 @@ export default function bulmaTheme(): Theme {
          * `--vc-color-*` aligned.
          */
         colorMode: {
-            apply(doc, mode) {
+            handle(doc, mode) {
                 doc.documentElement.setAttribute('data-theme', mode);
             },
         },
@@ -709,7 +709,7 @@ export default function bulmaTheme(): Theme {
          * Theme-runtime hook (plan 021): declare the Bulma palette
          * renderer + catalog. `@vuecs/design`'s `useColorPalette()`
          * walks installed themes and concatenates each
-         * `palette.render` output, so `@vuecs/theme-bulma`'s
+         * `palette.handle` output, so `@vuecs/theme-bulma`'s
          * `useColorPalette()` wrapper delegates here. When stacked
          * alongside theme-tailwind (the docs-site case), both renderers
          * fire on the same payload and emit non-overlapping CSS rules
@@ -718,7 +718,7 @@ export default function bulmaTheme(): Theme {
          * channel vars internally (plan 018).
          */
         palette: {
-            render: renderColorPaletteStyles as (palette: Record<string, string>) => string,
+            handle: renderColorPaletteStyles as (palette: Record<string, string>) => string,
             names: TAILWIND_COLOR_PALETTES,
         },
     };

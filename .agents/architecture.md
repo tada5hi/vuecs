@@ -287,8 +287,8 @@ last (i.e. they win over everything in `extends`).
 | `compoundVariants` | Concatenate from all chain layers |
 | `defaultVariants` | Shallow merge per key (later wins) |
 | `classesMergeFn` | Last-wins across the chain |
-| `colorMode.apply` (plan 021 forward-compat) | Compose: each layer's apply runs in chain order |
-| `palette.render` / `palette.names` (plan 021 forward-compat) | Last-wins (one renderer owns the runtime `<style>` block) |
+| `colorMode.handle` (plan 021 forward-compat) | Compose: each layer's handler runs in chain order |
+| `palette.handle` / `palette.names` (plan 021 forward-compat) | Last-wins (one renderer owns the runtime `<style>` block) |
 
 The `colorMode` and `palette` slots are reserved on `Theme` ahead of
 plan 021's runtime; they type-check today but are no-ops until plan
@@ -375,20 +375,25 @@ when they need framework-specific mirroring.
 type Theme = {
     elements: Partial<ThemeElements>;
     classesMergeFn?: ClassesMergeFn;
-    colorMode?: { apply(doc: Document, mode: 'light' | 'dark'): void };
+    colorMode?: { handle(doc: Document, mode: 'light' | 'dark'): void };
     palette?: {
-        render(palette: Record<string, string>): string;
+        handle(palette: Record<string, string>): string;
         names?: readonly string[];
     };
 };
 ```
 
-**`colorMode.apply`** fires after `useColorMode` toggles `.dark` /
+Both hooks are named `handle` (not `apply` / `render`): `apply` would
+collide with `Function.prototype.apply` on every object method, and a
+symmetric verb across the two slots makes the contract easier to
+discover for third-party theme authors.
+
+**`colorMode.handle`** fires after `useColorMode` toggles `.dark` /
 `.light` on `<html>`. theme-bootstrap declares it to mirror the
 resolved mode onto `data-bs-theme` (so Bootstrap 5.3+ chrome flips
 alongside vuecs's `--vc-color-*`); theme-bulma declares it for
 `data-theme`. theme-tailwind doesn't declare it — Tailwind reads
-`.dark` directly. Multiple hooks compose: every layer's `apply` runs
+`.dark` directly. Multiple hooks compose: every layer's `handle` runs
 in install order on every change.
 
 **`palette.{render, names}`** is the declarative half of runtime
@@ -398,7 +403,7 @@ of names it accepts. theme-tailwind and theme-bulma both declare
 this against the shared 22-name Tailwind palette catalog.
 
 `@vuecs/design`'s `useColorPalette()` walks installed themes and
-**concatenates** every theme's `palette.render` output into the
+**concatenates** every theme's `palette.handle` output into the
 `<style id="vc-color-palette">` block. The per-theme
 `useColorPalette` exports in `@vuecs/theme-tailwind` and
 `@vuecs/theme-bulma` are now thin wrappers that pass the
@@ -436,14 +441,14 @@ on hydration. `@vuecs/design` exposes two pure utilities the SSR
 plugins consume:
 
 - **`captureColorModeAttrs(themes, mode)`** — runs every theme's
-  `colorMode.apply` against a synthetic `Document` whose
+  `colorMode.handle` against a synthetic `Document` whose
   `documentElement.setAttribute` writes into a plain record. The
   record is plumbed into `useHead({ htmlAttrs })` so themes that
   toggle `data-bs-theme` / `data-theme` flow on first paint, not
   just after hydration. Errors per theme are caught + warned so a
   single broken theme can't crash SSR.
 - **`renderColorPaletteFromThemes(themes, palette)`** — concatenates
-  every theme's `palette.render` output into a single CSS string.
+  every theme's `palette.handle` output into a single CSS string.
   Mirrors the client-side `useColorPalette` semantic.
 
 `@vuecs/nuxt`'s `colorMode.server.ts` plugin and

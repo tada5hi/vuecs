@@ -21,7 +21,7 @@ type NuxtAppLike = {
  * SSR-only plugin that emits the palette `<style>` block into the
  * document head before first paint.
  *
- * Plan 021 slice 3: walks every installed theme's `palette.render`
+ * Plan 021 slice 3: walks every installed theme's `palette.handle`
  * hook (via `renderColorPaletteFromThemes()` in `@vuecs/design`) and
  * concatenates the outputs — same theme-agnostic semantic as the
  * client-side `useColorPalette()` dispatcher. When no ThemeManager is

@@ -52,7 +52,7 @@ const sanitize = (value: unknown): ColorPaletteConfig => {
  *
  * Thin wrapper over `@vuecs/design`'s generic theme-aware
  * `useColorPalette()` (plan 021 slice 2): the generic dispatcher walks
- * installed themes and concatenates each theme's `palette.render`
+ * installed themes and concatenates each theme's `palette.handle`
  * output. theme-bulma declares its renderer at the theme level, so
  * importing this hook implicitly opts into the theme-runtime contract
  * — no direct `bindColorPalette` wiring here anymore.
