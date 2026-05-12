@@ -451,15 +451,16 @@ plugins consume:
   every theme's `palette.handle` output into a single CSS string.
   Mirrors the client-side `useColorPalette` semantic.
 
-`@vuecs/nuxt`'s `colorMode.server.ts` plugin and
-`@vuecs/theme-tailwind-nuxt`'s `color-palette.server.ts` plugin both
-declare `enforce: 'post'` so they run after user-defined plugins
-that install vuecs (`app.use(vuecs, { themes })`). They look up the
-ThemeManager via `nuxtApp.vueApp.runWithContext(() =>
-inject(THEME_MANAGER_SYMBOL))` — same shared-symbol bridge as the
-client side. Without an installed manager, the plugins gracefully
-emit only the design-system-level outputs (`html.dark` class for
-color mode; nothing for palette).
+`@vuecs/nuxt`'s `colorMode.server.ts` and `colorPalette.server.ts`
+plugins both declare `enforce: 'post'` so they run after user-defined
+plugins that install vuecs (`app.use(vuecs, { themes })`) — or after
+the module's own auto-generated `vuecs-themes` plugin when
+`vuecs: { themes: [...] }` is set. They look up the ThemeManager via
+`nuxtApp.vueApp.runWithContext(() => inject(THEME_MANAGER_SYMBOL))`
+— same shared-symbol bridge as the client side. Without an installed
+manager, both plugins gracefully no-op (color mode still emits
+`html.dark`; palette emits no `<style>` block — same semantic as the
+client-side dispatcher).
 
 Themes that need DOM operations beyond `setAttribute` /
 `removeAttribute` / `classList` (e.g. inserting child nodes during
@@ -580,9 +581,9 @@ vuecs threads a CSP nonce end-to-end:
    and `@vuecs/theme-bulma`) read `useConfig('nonce')` and forward as
    a getter to the generic dispatcher — consumers get nonce
    attribution automatically with no extra wiring.
-5. **`@vuecs/theme-tailwind-nuxt`'s SSR plugin** resolves the nonce
-   via `nuxtApp.vueApp.runWithContext(() => useConfig('nonce').value)`
-   and emits it via `useHead({ style: [{ ..., nonce }] })` so the
+5. **`@vuecs/nuxt`'s palette SSR plugin** resolves the nonce via
+   `nuxtApp.vueApp.runWithContext(() => useConfig('nonce').value)` and
+   emits it via `useHead({ style: [{ ..., nonce }] })` so the
    server-rendered block matches the per-request CSP header on first
    paint.
 
@@ -953,16 +954,12 @@ The system splits across packages by concern (plan 017):
   that used to live here moved into `@vuecs/design/assets/index.css`
   (single source of truth). Required only when consumers want Tailwind
   utility classes AND/OR Tailwind-catalog palette switching.
-- **`@vuecs/theme-tailwind-nuxt`** — Nuxt module that ships SSR-safe
-  cookie-backed palette switching for `@vuecs/theme-tailwind`
-  consumers. Owns its own `runtime/plugins/palette.server.ts` and
-  `runtime/composables/useColorPalette.ts`. Reads its own runtime config
-  under `vuecsTailwind`. Sibling to `@vuecs/nuxt`, not a sub-module.
-
-  This is the precedent for any future per-theme Nuxt integration —
-  a community `@vuecs/theme-acme` with its own palette catalog ships
-  `@vuecs/theme-acme-nuxt` the same way. `@vuecs/nuxt` stays
-  theme-agnostic.
+  Nuxt integration for palette switching is handled by `@vuecs/nuxt`
+  itself — the per-theme Nuxt sub-module split (originally introduced
+  in plan 017 Phase 2.5) collapsed in plan 025 once the runtime
+  dispatch became fully theme-agnostic. The SSR plugin walks installed
+  themes' `palette.handle` hooks; the auto-imported `useColorPalette()`
+  composable is cookie-backed and shape-identical to the SPA variant.
 
 Future themes with their own palette catalogs (corporate fork,
 community preset, Material-You-style theme) compose design's generic
@@ -1029,12 +1026,6 @@ via a `<style id="vc-color-palette">` block, leaving layers 1-2 and 4-5 untouche
                              (re-exports applyColorPaletteCss / bindColorPalette / COLOR_PALETTE_STYLE_ELEMENT_ID
                               from @vuecs/design for backward compat)
 
-@vuecs/theme-tailwind-nuxt/
-  src/
-    module.ts                                  <- defineNuxtModule (configKey: 'vuecsTailwind')
-    runtime/
-      plugins/color-palette.server.ts          <- SSR <style id="vc-color-palette"> emit via useHead
-      composables/useColorPalette.ts           <- cookie-backed bindColorPalette wrapper
 ```
 
 ### Motion primitives (animations.css)
@@ -1109,8 +1100,9 @@ data-[state=closed]:animate-out fade-out-0 zoom-out-95` composition.
 - **`ColorPaletteConfig`** — `Partial<Record<SemanticScaleName, ColorPaletteName>>`. Both keys come from `@vuecs/design`'s canonical catalog.
 - Also re-exports `applyColorPaletteCss` / `bindColorPalette` / `COLOR_PALETTE_STYLE_ELEMENT_ID` from `@vuecs/design` for backward compat with code that picked them up from theme-tailwind in earlier versions.
 
-**`@vuecs/theme-tailwind-nuxt` (Nuxt integration for theme-tailwind):**
-- **`useColorPalette()`** — auto-imported in Nuxt apps. Cookie-backed (SSR-safe) variant; same `{ current, set, extend }` shape as the SPA `useColorPalette` from `@vuecs/theme-tailwind`. Composes `bindColorPalette<ColorPaletteConfig>` from design + `renderColorPaletteStyles` from theme-tailwind.
+**`@vuecs/nuxt` (theme-agnostic Nuxt integration):**
+- **`useColorPalette()`** — auto-imported in Nuxt apps. Cookie-backed (SSR-safe) variant; same `{ current, set, extend }` shape as the SPA `useColorPalette` from `@vuecs/theme-tailwind`. Composes the generic `useColorPaletteUnshared` from `@vuecs/design` with a cookie-backed `Ref<T>` passed as `source`. Dispatches through whichever themes the consumer installs — Tailwind, Bulma, and any future palette-aware theme all share the same composable (plan 025).
+- **`useColorMode()`** — auto-imported. SSR-safe color-mode composable backed by a Nuxt cookie. Reads the cookie name + initial value from `runtimeConfig.public.vuecs.colorMode`.
 
 All packages require **Vue 3** as a peer dep. `@vuecs/design` and `@vuecs/theme-tailwind` additionally require **`@vueuse/core`**. The composables sub-area is intentionally kept on each package's root export (no subpath) — flat surface area matches `@vuecs/core`'s convention.
 
@@ -1133,92 +1125,87 @@ The directive depends on Tailwind v4's documented behavior of emitting `--color-
 
 ### Nuxt integration
 
-Two sibling Nuxt modules, separated by concern (plan 017 Phase 2.5).
-Tailwind users install both; BS / Bulma-only users install just
-`@vuecs/nuxt`.
+One theme-agnostic Nuxt module (`@vuecs/nuxt`) handles both color-mode
+and palette runtime — same module regardless of theme. Plan 025
+collapsed the previous per-theme Nuxt sub-module split (formerly
+`@vuecs/theme-tailwind-nuxt`) once the runtime dispatch became fully
+theme-agnostic via plan 021's `palette.handle` / `colorMode.handle`
+hooks.
 
 ```
 @vuecs/nuxt/                                    (theme-agnostic)
   src/
     module.ts                                  <- defineNuxtModule (configKey: 'vuecs')
-                                                  Options: injectTokens, colorMode, cookie
+                                                  Options: injectTokens, colorMode, colorPalette,
+                                                           cookie, paletteCookie, themes
                                                   Auto-imports @vuecs/design/index.css
+                                                  Generates a `vuecs-themes` plugin when
+                                                  `themes: string[]` is set (auto-loads listed
+                                                  theme packages via no-arg default factories)
     runtime/
-      plugins/colorMode.server.ts              <- emits class="dark"|"light" on <html>
+      plugins/colorMode.server.ts              <- emits class="dark"|"light" + per-theme
+                                                  data-* attrs via captureColorModeAttrs
+      plugins/colorPalette.server.ts           <- emits <style id="vc-color-palette"> via
+                                                  renderColorPaletteFromThemes + useHead
       composables/useColorMode.ts              <- bindColorMode(useCookie<ColorMode>(...))
-
-@vuecs/theme-tailwind-nuxt/                     (Tailwind palette only)
-  src/
-    module.ts                                  <- defineNuxtModule (configKey: 'vuecsTailwind')
-                                                  Options: colorPalette (ColorPaletteConfig | false), cookie
-    runtime/
-      plugins/color-palette.server.ts          <- emits <style id="vc-color-palette"> via useHead
-      composables/useColorPalette.ts           <- bindColorPalette(useCookie<ColorPaletteConfig>(...), renderColorPaletteStyles)
+      composables/useColorPalette.ts           <- useColorPaletteUnshared({
+                                                      source: useCookie<NuxtColorPaletteConfig>(...),
+                                                      nonce: () => useConfig('nonce').value,
+                                                  })
 ```
 
 Consumer usage:
 
 ```ts
-// nuxt.config.ts — Tailwind app
-export default defineNuxtConfig({
-    modules: [
-        '@vuecs/nuxt',
-        '@vuecs/theme-tailwind-nuxt',
-    ],
-    vuecs: {
-        // Theme-agnostic — tokens + color mode
-        // colorMode: true (default) ships the in-house useColorMode().
-        // Set to false to disable and wire @nuxtjs/color-mode yourself.
-    },
-    vuecsTailwind: {
-        colorPalette: { primary: 'green', neutral: 'zinc' },
-        // colorPalette: false  ← skip the SSR palette plugin entirely; useful
-        //                        when you want only the auto-import without
-        //                        server-rendered overrides.
-    },
-});
-
-// nuxt.config.ts — Bootstrap / Bulma app
+// nuxt.config.ts — same shape for every theme
 export default defineNuxtConfig({
     modules: ['@vuecs/nuxt'],
-    vuecs: { /* tokens + color mode */ },
-    // No theme-tailwind-nuxt; no dep on @vuecs/theme-tailwind.
+    vuecs: {
+        // Optional: auto-install themes via a generated plugin.
+        // Themes that need factory args skip this and install via
+        // a user-authored plugin file under `plugins/`.
+        themes: ['@vuecs/theme-tailwind'],
+
+        colorMode: { value: 'system' },                       // 'light' | 'dark' | 'system'
+        colorPalette: { value: { primary: 'green' } },        // initial palette
+        cookie: { maxAge: 31536000, sameSite: 'lax' },        // color-mode cookie attrs
+        paletteCookie: { /* attrs; falls back to `cookie` */ },
+    },
 });
 ```
 
 ```vue
-<!-- in a component (Tailwind app) -->
+<!-- in a component (any theme) -->
 <script setup>
-const { current, set, extend } = useColorPalette();   // from @vuecs/theme-tailwind-nuxt
-const { resolved, toggle } = useColorMode();     // from @vuecs/nuxt
+const { current, set, extend } = useColorPalette();   // from @vuecs/nuxt
+const { resolved, toggle } = useColorMode();          // from @vuecs/nuxt
 </script>
 ```
 
-Each Nuxt module auto-imports a thin wrapper that swaps the storage
-layer for `useCookie` (so the SSR plugin can read the same cookie at
-request time), then delegates to `bindColorPalette()` / `bindColorMode()`
-from `@vuecs/design`. The return shape matches the SPA composables
-exactly, so Nuxt and non-Nuxt consumers see the same
-`{ current, set, extend }` / `{ mode, resolved, isDark, toggle }` API.
+The auto-imported `useColorPalette` thin-wraps `useColorPaletteUnshared`
+from `@vuecs/design` with a cookie-backed `Ref<T>` passed as `source`.
+The dispatch walks installed themes' `palette.handle` hooks and
+concatenates outputs — same semantic as the SPA composables in
+`@vuecs/theme-tailwind` / `@vuecs/theme-bulma`. The return shape is
+shape-identical so consumers move between SPA + Nuxt without API drift.
 
-On the server, both plugins render their state into the head before first
-paint (palette `<style>` block + `html.dark`/`html.light` class). The client
+On the server, both plugins render their state into the head before
+first paint (palette `<style>` block + `html.dark`/`html.light` class +
+per-theme data-* attributes from `colorMode.handle`). The client
 hydrates against the same DOM and continues to manage them reactively —
 effectively zero-cost palette switching and zero-FOUC dark mode (except
-first visits with `preference: 'system'` and no cookie, where the OS
-preference can't be read on the server).
+first visits with `colorMode.value: 'system'` and no cookie, where the
+OS preference can't be read on the server).
 
 The dark-mode integration is built on `@vueuse/core`'s `usePreferredDark`
 plus a Nuxt cookie (`vc-color-mode` by default). It's NOT
 `@nuxtjs/color-mode` under the hood — that module remains an alternative
 for consumers who prefer it (set `vuecs: { colorMode: false }` to opt out).
 
-The `vuecs.cookie` option on `@vuecs/nuxt` controls the color-mode cookie.
-The `vuecsTailwind.cookie` option on `@vuecs/theme-tailwind-nuxt` controls
-the palette cookie. Splitting per-module mirrors how each module owns
-its own cookie state, and lets consumers set divergent attributes
-(e.g. shorter retention for palette than color mode) without a shared
-cookie config that conflates the two.
+`vuecs.cookie` governs color-mode cookie attributes; `vuecs.paletteCookie`
+governs palette cookie attributes. The palette cookie inherits from
+`cookie` when `paletteCookie` is unset — most apps want consistent
+retention across UI-state cookies.
 
 ### Bootstrap bridge (theme-bootstrap)
 

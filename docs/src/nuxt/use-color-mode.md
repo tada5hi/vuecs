@@ -60,11 +60,10 @@ export default defineNuxtConfig({
     vuecs: {
         colorMode: {
             cookieName: 'my-app-color-mode',
-            preference: 'dark',  // default for first-time visitors
+            value: 'dark',  // default for first-time visitors
         },
-        // Optional — color-mode cookie attributes. Palette cookie
-        // is configured separately under `vuecsTailwind.cookie` in
-        // @vuecs/theme-tailwind-nuxt; each module owns its cookie.
+        // Color-mode cookie attributes. The palette cookie inherits
+        // these unless `paletteCookie` is set explicitly.
         cookie: {
             sameSite: 'strict',
         },

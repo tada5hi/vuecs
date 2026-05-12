@@ -22,7 +22,7 @@ Repo: <https://github.com/nuxt/ui>
 | **Dark mode** | `.dark` class + token flips | `.dark` class + token flips (identical pattern, `@vuecs/design/assets/index.css`) |
 | **Theme definition** | TypeScript factory → `{ slots, variants, compoundVariants, defaultVariants }` (consumed via `tv()` from `tailwind-variants`) | Same shape: `{ classes, variants, compoundVariants, defaultVariants }`. Resolution is custom (`@vuecs/core/src/theme/resolve.ts`) — no `tailwind-variants` dep |
 | **Runtime palette switch** | Mutate `appConfig.ui.colors.primary` (Vue reactivity flushes new tokens) | `setColorPalette({ primary: 'green' })` writes/updates `<style id="vc-color-palette">` (idempotent, framework-agnostic) |
-| **SSR safety** | Nuxt-native — palette comes from `appConfig` already SSR'd | `@vuecs/theme-tailwind-nuxt`'s `color-palette.server.ts` plugin reads the `vc-color-palette` cookie (or `nuxt.config.ts` default) and emits the `<style>` block via `useHead` before first paint |
+| **SSR safety** | Nuxt-native — palette comes from `appConfig` already SSR'd | `@vuecs/nuxt`'s `colorPalette.server.ts` plugin reads the `vc-color-palette` cookie (or `nuxt.config.ts` default) and emits the `<style>` block via `useHead` before first paint — dispatch is theme-agnostic via `renderColorPaletteFromThemes()` |
 | **Color mode** | `@nuxtjs/color-mode` (separate module) | Bundled `useColorMode()` (`@vueuse/core` + Nuxt cookie); opt-out via `vuecs: { colorMode: false }` |
 
 ## Code Mapping

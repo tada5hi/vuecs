@@ -9,8 +9,7 @@
         </h3>
         <p class="text-fg">
             Flagship Nuxt integration for vuecs — exercises
-            <code class="rounded bg-bg-muted px-1.5 py-0.5 text-sm">@vuecs/nuxt</code> +
-            <code class="rounded bg-bg-muted px-1.5 py-0.5 text-sm">@vuecs/theme-tailwind-nuxt</code>
+            <code class="rounded bg-bg-muted px-1.5 py-0.5 text-sm">@vuecs/nuxt</code>
             on top of <code class="rounded bg-bg-muted px-1.5 py-0.5 text-sm">@vuecs/theme-tailwind</code>.
         </p>
         <p class="text-fg-muted">

@@ -7,12 +7,12 @@ import { defineNuxtPlugin, useCookie, useHead, useRuntimeConfig } from '#imports
 /**
  * Server-only plugin that applies `.dark` / `.light` to the `<html>`
  * element during SSR based on the persisted cookie (or the configured
- * fallback `preference`). This ensures first paint matches the user's
- * selected mode — no flash during hydration.
+ * `colorMode.value` fallback). This ensures first paint matches the
+ * user's selected mode — no flash during hydration.
  *
- * On first visit with `preference: 'system'` and no cookie, the server
- * omits the class; the client then resolves `prefers-color-scheme` and
- * applies the class reactively. A brief flash is possible in that
+ * On first visit with `colorMode.value: 'system'` and no cookie, the
+ * server omits the class; the client then resolves `prefers-color-scheme`
+ * and applies the class reactively. A brief flash is possible in that
  * narrow case.
  *
  * Plan 021 slice 3: also dispatches each installed theme's
@@ -49,8 +49,8 @@ export default defineNuxtPlugin({
         let effective: 'light' | 'dark' | undefined;
         if (stored === 'light' || stored === 'dark') {
             effective = stored;
-        } else if (colorModeConfig.preference === 'light' || colorModeConfig.preference === 'dark') {
-            effective = colorModeConfig.preference;
+        } else if (colorModeConfig.value === 'light' || colorModeConfig.value === 'dark') {
+            effective = colorModeConfig.value;
         }
 
         if (!effective) return;

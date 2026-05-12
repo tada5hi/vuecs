@@ -6,7 +6,7 @@
 
 2. **Design tokens + runtime palette switching.** Colors, radii, and semantic aliases live in CSS custom properties in `@vuecs/design` (concrete OKLCH defaults — works with or without Tailwind). For Tailwind users, `@vuecs/theme-tailwind` adds a one-line `setColorPalette({ primary: 'green' })` that re-tints every component on the page with no Vue re-render. `@vuecs/theme-bulma` ships the same `setColorPalette()` / `useColorPalette()` shape against the **same 22-name palette catalog** — Bulma renders those names as HSL channel vars internally, but the stored payload is interchangeable across themes (so a single picker UI drives both).
 
-3. **SSR-safe Nuxt integration.** `@vuecs/nuxt` wires color-mode plumbing into Nuxt's `<head>` on the server, so first paint matches what the client computes — no FOUC, no hydration mismatch. Tailwind apps add `@vuecs/theme-tailwind-nuxt` for the same SSR guarantees on palette switching.
+3. **SSR-safe Nuxt integration.** `@vuecs/nuxt` wires color-mode + palette plumbing into Nuxt's `<head>` on the server, so first paint matches what the client computes — no FOUC, no hydration mismatch. One theme-agnostic module covers every theme; the runtime dispatches through whichever themes you install.
 
 ## Why another component library?
 
@@ -22,7 +22,7 @@ Because vuecs isn't (just) a component library. Most libraries pick a CSS framew
 - **Icons** — `@vuecs/icon` (`<VCIcon>`, Iconify-backed) plus presets (`@vuecs/icons-lucide`, `@vuecs/icons-font-awesome`) that map vuecs's semantic-slot defaults to specific icon vocabularies.
 - **Design tokens** — `@vuecs/design` ships CSS variables + theme-agnostic generic palette primitives.
 - **Runtime palette** — `@vuecs/theme-tailwind` and `@vuecs/theme-bulma` ship `setColorPalette()` / `useColorPalette()` against the **shared 22-name Tailwind palette catalog** (Bulma reuses Tailwind's catalog, rendered as HSL channel vars internally — payload is interchangeable, so a single picker UI drives both).
-- **Nuxt modules** — `@vuecs/nuxt` (color mode + tokens) and `@vuecs/theme-tailwind-nuxt` (SSR-safe palette).
+- **Nuxt module** — `@vuecs/nuxt` ships tokens + SSR-safe color mode + SSR-safe palette in one theme-agnostic module.
 - **Example apps** — one Nuxt + three vanilla Vite + Vue 3 (Tailwind, Bootstrap, Bulma), all consuming a shared private workspace package of demo views. See `examples/` in the repo.
 
 ## Next steps

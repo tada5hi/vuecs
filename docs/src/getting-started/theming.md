@@ -97,7 +97,7 @@ setColorPalette({ primary: 'green', neutral: 'zinc' });
 
 Both `@vuecs/theme-tailwind` and `@vuecs/theme-bulma` ship `setColorPalette()` / `useColorPalette()`. Each writes into the shared `<style id="vc-color-palette">` block — Tailwind emits `var(--color-blue-N)` rebindings, Bulma emits explicit `hsl(...)` literals plus `--bulma-<scale>-h/s/l` channel vars (so Bulma's auto-derivation of hover / active / `.is-light` shades follows the catalog). Both share the same `vc-color-palette` storage key, so a single picker UI can drive both themes if you load them side-by-side.
 
-In Nuxt, install `@vuecs/theme-tailwind-nuxt` alongside `@vuecs/nuxt` and use the auto-imported `useColorPalette()` for SSR-safe cookie-backed palette switching. (A `@vuecs/theme-bulma-nuxt` sibling is on the roadmap; until then, Bulma SPA usage is the supported path.)
+In Nuxt, install just `@vuecs/nuxt` — the auto-imported `useColorPalette()` is theme-agnostic and dispatches through whichever themes you install. Works for Tailwind, Bulma, and any future palette-aware theme without a per-theme Nuxt module.
 
 `@vuecs/theme-bootstrap` doesn't ship runtime palette switching today — Bootstrap's per-variant theming is per-component (`--bs-btn-bg` etc.) rather than channel-decomposable, so the same JS-side approach doesn't apply cleanly.
 
