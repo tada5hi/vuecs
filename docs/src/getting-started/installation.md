@@ -100,7 +100,7 @@ vuecs ships TypeScript declarations in every package. The `ThemeElements` and `C
 
 | Framework | Package | Notes |
 |-----------|---------|-------|
-| Nuxt 4 | [`@vuecs/nuxt`](/nuxt/) (+ [`@vuecs/theme-tailwind-nuxt`](/nuxt/) for palette) | Theme-agnostic Nuxt module + per-theme palette sub-module |
+| Nuxt 4 | [`@vuecs/nuxt`](/nuxt/) | Theme-agnostic Nuxt module — SSR color-mode + palette + tokens. Same module for every theme. |
 | Vite + Vue | (no dedicated package) | Use `@vuecs/core` directly as shown above |
 | Vue CLI / webpack | (no dedicated package) | Same as Vite — needs Tailwind v4 |
 
@@ -110,7 +110,7 @@ The repository ships four example apps under `examples/` — fork any of them as
 
 | App | Stack | What it shows |
 |-----|-------|----------------|
-| `examples/nuxt/` | Nuxt 4 + `@vuecs/theme-tailwind` | Flagship Nuxt integration — `@vuecs/nuxt` + `@vuecs/theme-tailwind-nuxt` modules, SSR-safe palette + color-mode |
+| `examples/nuxt/` | Nuxt 4 + `@vuecs/theme-tailwind` | Flagship Nuxt integration — single `@vuecs/nuxt` module, SSR-safe palette + color-mode |
 | `examples/tailwind/` | Vite + Vue 3 + Tailwind | Vanilla SPA with the Tailwind theme; closest to a typical consumer setup without Nuxt |
 | `examples/bootstrap/` | Vite + Vue 3 + Bootstrap 5 | vuecs in a Bootstrap-themed app, no Tailwind anywhere |
 | `examples/bulma/` | Vite + Vue 3 + Bulma 1.0+ | vuecs in a Bulma-themed app, no Tailwind anywhere |

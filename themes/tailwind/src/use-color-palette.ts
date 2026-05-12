@@ -63,8 +63,9 @@ const sanitize = (value: unknown): ColorPaletteConfig => {
  * importing this hook implicitly opts into the theme-runtime contract
  * — no direct `bindColorPalette` wiring here anymore.
  *
- * For SSR-aware cookie-backed storage (Nuxt), the
- * `@vuecs/theme-tailwind-nuxt` module ships its own `useColorPalette()`.
+ * For SSR-aware cookie-backed storage (Nuxt), `@vuecs/nuxt`'s
+ * auto-imported `useColorPalette()` provides the equivalent shape
+ * backed by a cookie instead of localStorage.
  */
 export function useColorPalette(options: UseColorPaletteOptions = {}): UseColorPaletteReturn<ColorPaletteConfig> {
     /*

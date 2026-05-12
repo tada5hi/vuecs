@@ -1,4 +1,4 @@
-import type { ComputedRef } from 'vue';
+import type { ComputedRef, Ref } from 'vue';
 
 export interface UseColorPaletteReturn<T> {
     /** Read-only view of the current palette. */
@@ -54,9 +54,28 @@ export interface BindColorPaletteOptions<T> {
 export interface UseColorPaletteOptions<T extends Record<string, unknown>> {
     /** Initial palette when no persisted value exists. Default: `{}` (cast to `T`). */
     initial?: T;
-    /** Persist via localStorage (`useStorage` from `@vueuse/core`). Default: `true`. */
+    /**
+     * Reactive backing store for the palette state. When provided,
+     * overrides the default `useStorage` / `ref` backing — useful for
+     * SSR-aware persistence (e.g. `@vuecs/nuxt`'s cookie-backed
+     * composable passes `useCookie<T>(name)` here). When omitted, the
+     * composable falls back to localStorage (`persist: true`) or an
+     * in-memory `ref` (`persist: false`).
+     *
+     * The composable still walks installed themes' `palette.handle`
+     * hooks and re-applies the rendered CSS on every change to `source`
+     * — only the persistence layer is replaced.
+     */
+    source?: Ref<T>;
+    /**
+     * Persist via localStorage (`useStorage` from `@vueuse/core`).
+     * Ignored when `source` is provided. Default: `true`.
+     */
     persist?: boolean;
-    /** Storage key for the default backend. Default: `'vc-color-palette'`. */
+    /**
+     * Storage key for the default backend. Ignored when `source` is
+     * provided. Default: `'vc-color-palette'`.
+     */
     storageKey?: string;
     /**
      * Theme-aware sanitizer for serialized values. Themes pass their own

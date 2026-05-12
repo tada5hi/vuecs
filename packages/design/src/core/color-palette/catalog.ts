@@ -65,7 +65,26 @@ export const COLOR_PALETTES = [
     'rose',
 ] as const;
 
-export type ColorPaletteName = typeof COLOR_PALETTES[number];
+/**
+ * Augmentation hook for community themes that extend the catalog with
+ * their own palette names. Defaults to empty — `ColorPaletteName` is just
+ * the 22-name Tailwind-derived catalog. A theme that ships extra palettes
+ * widens the union via declaration merging:
+ *
+ *     declare module '@vuecs/design' {
+ *         interface ExtraColorPaletteNames {
+ *             'acme-blue': true;
+ *             'acme-orange': true;
+ *         }
+ *     }
+ *
+ * Both the SPA composables (`@vuecs/theme-tailwind`'s `useColorPalette`,
+ * etc.) and `@vuecs/nuxt`'s `colorPalette.value` option pick up the
+ * extension automatically because both type against `ColorPaletteName`.
+ */
+export interface ExtraColorPaletteNames {}
+
+export type ColorPaletteName = typeof COLOR_PALETTES[number] | keyof ExtraColorPaletteNames;
 
 /**
  * Tailwind-style 11-stop shade ladder. The same ladder appears in
