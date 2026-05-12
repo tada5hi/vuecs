@@ -1,10 +1,15 @@
-import { applyColorPaletteCss } from '@vuecs/design';
-import { COLOR_PALETTE_SHADES, SEMANTIC_SCALES, TAILWIND_COLOR_PALETTES } from './constants';
-import { TAILWIND_COLOR_PALETTE_HSL } from './palette-catalog';
-import type { ColorPaletteConfig, SemanticScaleName, TailwindColorPaletteName } from './types';
+import {
+    COLOR_PALETTES,
+    COLOR_PALETTE_SHADES,
+    SEMANTIC_SCALES,
+    applyColorPaletteCss,
+} from '@vuecs/design';
+import type { ColorPaletteName, SemanticScaleName } from '@vuecs/design';
+import { COLOR_PALETTE_HSL } from './palette-catalog';
+import type { ColorPaletteConfig } from './types';
 
 const SEMANTIC_SCALE_SET = new Set<string>(SEMANTIC_SCALES);
-const TAILWIND_PALETTE_SET = new Set<string>(TAILWIND_COLOR_PALETTES);
+const PALETTE_NAME_SET = new Set<string>(COLOR_PALETTES);
 
 /**
  * Build the CSS string that rebinds Bulma's per-variant theming onto the
@@ -37,10 +42,10 @@ const TAILWIND_PALETTE_SET = new Set<string>(TAILWIND_COLOR_PALETTES);
  */
 export function renderColorPaletteStyles(palette: ColorPaletteConfig): string {
     const entries = Object.entries(palette).filter(
-        (entry): entry is [SemanticScaleName, TailwindColorPaletteName] => (
+        (entry): entry is [SemanticScaleName, ColorPaletteName] => (
             SEMANTIC_SCALE_SET.has(entry[0]) &&
             typeof entry[1] === 'string' &&
-            TAILWIND_PALETTE_SET.has(entry[1])
+            PALETTE_NAME_SET.has(entry[1])
         ),
     );
     if (entries.length === 0) {
@@ -53,7 +58,7 @@ export function renderColorPaletteStyles(palette: ColorPaletteConfig): string {
     // `link` too. Other axes don't have a Bulma-side alias to chase.
     const declarations: string[] = [];
     for (const [scale, paletteName] of entries) {
-        const shades = TAILWIND_COLOR_PALETTE_HSL[paletteName];
+        const shades = COLOR_PALETTE_HSL[paletteName];
         const base = shades['500'];
 
         // (1) HSL channel vars — drive Bulma's auto-derivation on

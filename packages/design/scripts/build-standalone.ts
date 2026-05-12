@@ -18,59 +18,21 @@
  *   npm run --workspace=packages/design standalone:check  (CI guard)
  *
  * Re-run on Tailwind v4 patch / minor bumps that touch palette values.
- * The 22 palettes are hard-coded here (not imported from
- * `@vuecs/theme-tailwind`) so the design package stays free of theme
- * dependencies; if Tailwind adds a new palette and we want to expose
- * it, update both this list and `theme-tailwind`'s `TAILWIND_COLOR_PALETTES`.
+ * Palette + shade names come from `src/core/color-palette/catalog.ts`
+ * — the single source of truth for the catalog vocabulary. When
+ * Tailwind adds a new palette we want to expose, update the catalog
+ * and re-run this script.
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { COLOR_PALETTES, COLOR_PALETTE_SHADES } from '../src/core/color-palette/catalog';
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const PACKAGE_DIR = resolve(SCRIPT_DIR, '..');
 const REPO_ROOT = resolve(PACKAGE_DIR, '..', '..');
 const TAILWIND_THEME_CSS = resolve(REPO_ROOT, 'node_modules', 'tailwindcss', 'theme.css');
 const OUTPUT_FILE = resolve(PACKAGE_DIR, 'assets', 'palettes.css');
-
-const TAILWIND_COLOR_PALETTES = [
-    'slate',
-    'gray',
-    'zinc',
-    'neutral',
-    'stone',
-    'red',
-    'orange',
-    'amber',
-    'yellow',
-    'lime',
-    'green',
-    'emerald',
-    'teal',
-    'cyan',
-    'sky',
-    'blue',
-    'indigo',
-    'violet',
-    'purple',
-    'fuchsia',
-    'pink',
-    'rose',
-] as const;
-
-const COLOR_PALETTE_SHADES = [
-    '50',
-    '100',
-    '200',
-    '300',
-    '400',
-    '500',
-    '600',
-    '700',
-    '800',
-    '900',
-    '950',
-] as const;
 
 function parseTailwindTheme(): Map<string, string> {
     const css = readFileSync(TAILWIND_THEME_CSS, 'utf8');
@@ -95,7 +57,7 @@ function emitCss(): string {
     const tokens = parseTailwindTheme();
     const tailwindVersion = readPackageVersion('tailwindcss');
 
-    const blocks = TAILWIND_COLOR_PALETTES.map((palette) => {
+    const blocks = COLOR_PALETTES.map((palette) => {
         const shadeLines = COLOR_PALETTE_SHADES.map((shade) => {
             const value = tokens.get(`${palette}-${shade}`);
             if (!value) {

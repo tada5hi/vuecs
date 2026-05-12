@@ -941,11 +941,13 @@ The system splits across packages by concern (plan 017):
   015 P3) — works with BS / Bulma without requiring Tailwind v4.
 - **`@vuecs/theme-tailwind`** — exposes vuecs tokens as Tailwind names
   via an `@theme` block (`bg-primary-600`, `text-fg`, …), force-includes
-  all 22 Tailwind palettes via `@source inline()`, and ships the
+  all 22 catalog palettes via `@source inline()`, and ships the
   Tailwind-specific palette runtime (`setColorPalette`, `useColorPalette`,
-  `renderColorPaletteStyles` + the `ColorPaletteConfig` /
-  `SemanticScaleName` / `TailwindColorPaletteName` types). Composes
-  design's generic helpers (`applyColorPaletteCss`,
+  `renderColorPaletteStyles`, and the `ColorPaletteConfig` value-shape
+  type). The catalog vocabulary itself — `SEMANTIC_SCALES`,
+  `COLOR_PALETTES`, `COLOR_PALETTE_SHADES` and their companion types —
+  lives in `@vuecs/design` and is imported here, not redeclared.
+  Composes design's generic helpers (`applyColorPaletteCss`,
   `bindColorPalette<ColorPaletteConfig>`) rather than reimplementing
   them. The `--vc-color-<scale>-*: var(--color-<palette>-*)` rebind
   that used to live here moved into `@vuecs/design/assets/index.css`
@@ -1016,12 +1018,10 @@ via a `<style id="vc-color-palette">` block, leaving layers 1-2 and 4-5 untouche
     index.ts                     <- top-level barrel (re-exports composables + palette primitives)
 
 @vuecs/theme-tailwind/
-  assets/index.css       <- Tailwind rebind (--vc-color-* → var(--color-blue-*) etc.)
-                             + @theme { --color-primary-*: var(--vc-color-primary-*) }
+  assets/index.css       <- @theme { --color-primary-*: var(--vc-color-primary-*) }
                              + @source inline("bg-{...}-{...}") safelist
   src/
-    types.ts             <- ColorPaletteConfig, SemanticScaleName, TailwindColorPaletteName
-    constants.ts         <- SEMANTIC_SCALES, TAILWIND_COLOR_PALETTES, COLOR_PALETTE_SHADES
+    types.ts             <- ColorPaletteConfig (catalog vocabulary itself lives in @vuecs/design)
     palette.ts           <- renderColorPaletteStyles() (pure), setColorPalette() (composes applyColorPaletteCss)
     use-color-palette.ts <- useColorPalette() — composes bindColorPalette + useStorage
     config.ts            <- Config['nonce'] augmentation (CSP nonce for setColorPalette's <style>)
@@ -1093,19 +1093,20 @@ data-[state=closed]:animate-out fade-out-0 zoom-out-95` composition.
 ### Key exports
 
 **`@vuecs/design` (theme-agnostic):**
-- **`applyColorPaletteCss(css: string, doc?: Document)`** — DOM helper. Inserts or updates a `<style id="vc-color-palette">` element in `<head>` with the given CSS string. Theme-agnostic; accepts whatever the caller wants to render.
+- **`applyColorPaletteCss(css: string, doc?: Document, nonce?: string)`** — DOM helper. Inserts or updates a `<style id="vc-color-palette">` element in `<head>` with the given CSS string. Theme-agnostic; accepts whatever the caller wants to render.
 - **`bindColorPalette<T>(source: Ref<T>, render: (T) => string): UseColorPaletteReturn<T>`** — generic reactive wiring. Apply on init, re-apply on watch. Themes compose this with their own renderer.
 - **`COLOR_PALETTE_STYLE_ELEMENT_ID`** — constant `'vc-color-palette'`. SSR plugins emit a matching id so client hydration replaces atomically.
+- **`SEMANTIC_SCALES` / `SemanticScaleName`** — the six semantic scale names (`primary`, `neutral`, `success`, `warning`, `error`, `info`) that `--vc-color-<scale>-*` is keyed on. Themes import these — they're not redeclared per-theme.
+- **`COLOR_PALETTES` / `ColorPaletteName`** — the 22 catalog palette names (sourced from Tailwind v4). Both supported palette sources — `@import "tailwindcss"` AND `@vuecs/design/standalone` — define `--color-<palette>-*` for each one, so `setColorPalette()` resolves regardless of whether Tailwind is loaded.
+- **`COLOR_PALETTE_SHADES` / `ColorPaletteShade`** — the 11-stop shade ladder (`'50' | '100' | … | '950'`).
 - **`useColorMode(options?)`** — reactive light/dark/system mode with localStorage persistence + `<html>` class sync. Returns `{ mode, resolved, isDark, toggle }`. Uses `usePreferredDark` from VueUse to resolve `'system'`.
 - **`bindColorMode(source: Ref<ColorMode>, options?)`** — building block; same pattern as `bindColorPalette`.
 
 **`@vuecs/theme-tailwind` (Tailwind-specific palette + class strings):**
 - **`renderColorPaletteStyles(palette): string`** — pure function. Returns a `:root { … }` block that remaps `--vc-color-<scale>-*` onto `var(--color-<palette>-*)` for every scale set in `palette`. Safe on server and client.
-- **`setColorPalette(palette, doc?)`** — one-line composition: `applyColorPaletteCss(renderColorPaletteStyles(palette), doc)`.
+- **`setColorPalette(palette, doc?, nonce?)`** — one-line composition: `applyColorPaletteCss(renderColorPaletteStyles(palette), doc, nonce)`.
 - **`useColorPalette(options?)`** — reactive palette state with localStorage persistence. Wrapped via `createSharedComposable`, so every call site shares the same ref + watcher. Composes `bindColorPalette<ColorPaletteConfig>` + `useStorage` + `renderColorPaletteStyles`. Returns `{ current: ComputedRef<ColorPaletteConfig>, set(palette), extend(partial) }`.
-- **`ColorPaletteConfig`** — `Partial<Record<SemanticScaleName, TailwindColorPaletteName>>`.
-- **`SemanticScaleName`** — `'primary' | 'neutral' | 'success' | 'warning' | 'error' | 'info'`.
-- **`TailwindColorPaletteName`** — union of all 22 Tailwind v4 palettes.
+- **`ColorPaletteConfig`** — `Partial<Record<SemanticScaleName, ColorPaletteName>>`. Both keys come from `@vuecs/design`'s canonical catalog.
 - Also re-exports `applyColorPaletteCss` / `bindColorPalette` / `COLOR_PALETTE_STYLE_ELEMENT_ID` from `@vuecs/design` for backward compat with code that picked them up from theme-tailwind in earlier versions.
 
 **`@vuecs/theme-tailwind-nuxt` (Nuxt integration for theme-tailwind):**
@@ -1364,11 +1365,13 @@ as a single `:root { ... }` block. The script ships with two scripts:
 | `npm run --workspace=packages/design standalone:build` | Regenerate `assets/palettes.css` from the locally-installed Tailwind |
 | `npm run --workspace=packages/design standalone:check` | CI guard — diff committed file vs freshly regenerated; non-zero exit on drift |
 
-The 22-palette list is hard-coded in the script (intentionally —
-keeps `@vuecs/design` free of theme dependencies). When Tailwind adds
-a new palette and we want to expose it via `setColorPalette()`, both
-this script's list AND `@vuecs/theme-tailwind`'s
-`TAILWIND_COLOR_PALETTES` constant need to be updated together.
+The 22-palette list lives in `src/core/color-palette/catalog.ts`
+(`COLOR_PALETTES`) and is imported by both this script and the
+runtime renderers in `@vuecs/theme-tailwind` / `@vuecs/theme-bulma`.
+Single source of truth — when Tailwind adds a new palette and we
+want to expose it via `setColorPalette()`, update the catalog and
+re-run `standalone:build` (plus `palette-catalog:build` in
+`@vuecs/theme-bulma` to refresh the HSL table).
 
 Re-run `standalone:build` after bumping the `tailwindcss` devDep and
 commit the regenerated `palettes.css`. The `standalone:check` script

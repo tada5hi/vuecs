@@ -352,19 +352,20 @@ Both are reached via the bare `@import "@vuecs/theme-<name>"` form (resolves to 
 
 | Export | Pure | Notes |
 |--------|------|-------|
-| `applyColorPaletteCss(css, doc?)` | ❌ | DOM-only; upserts `<style id="vc-color-palette">` |
+| `applyColorPaletteCss(css, doc?, nonce?)` | ❌ | DOM-only; upserts `<style id="vc-color-palette">` |
 | `bindColorPalette<T>(source, render)` | ❌ | Vue reactive — apply on init + watch source |
 | `COLOR_PALETTE_STYLE_ELEMENT_ID` | const | `'vc-color-palette'` |
+| `SEMANTIC_SCALES` / `SemanticScaleName` | const + type | The 6 semantic scale names |
+| `COLOR_PALETTES` / `ColorPaletteName` | const + type | The 22 catalog palette names (sourced from Tailwind v4) |
+| `COLOR_PALETTE_SHADES` / `ColorPaletteShade` | const + type | The 11-stop shade ladder |
 
 **`@vuecs/theme-tailwind` (Tailwind-specific):**
 
 | Export | Pure | Notes |
 |--------|------|-------|
 | `renderColorPaletteStyles(palette)` | ✅ | Returns `:root { ... }` block as a string |
-| `setColorPalette(palette, doc?)` | ❌ | DOM-only; idempotent. Composes `applyColorPaletteCss(renderColorPaletteStyles(palette))` |
-| `ColorPaletteConfig` | type | `Partial<Record<SemanticScaleName, TailwindColorPaletteName>>` |
-| `SEMANTIC_SCALES` | const | Array of the 6 scale names |
-| `TAILWIND_COLOR_PALETTES` | const | Array of all 22 Tailwind palette names |
+| `setColorPalette(palette, doc?, nonce?)` | ❌ | DOM-only; idempotent. Composes `applyColorPaletteCss(renderColorPaletteStyles(palette))` |
+| `ColorPaletteConfig` | type | `Partial<Record<SemanticScaleName, ColorPaletteName>>` (both come from `@vuecs/design`) |
 
 ## Vue composables
 

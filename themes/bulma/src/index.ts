@@ -1,21 +1,14 @@
 import type { Theme } from '@vuecs/core';
+import { COLOR_PALETTES } from '@vuecs/design';
 import './config';
-import { TAILWIND_COLOR_PALETTES } from './constants';
 import { renderColorPaletteStyles } from './palette';
 
 export { renderColorPaletteStyles, setColorPalette } from './palette';
 export { useColorPalette } from './use-color-palette';
 export type { UseColorPaletteOptions, UseColorPaletteReturn } from './use-color-palette';
-export {
-    COLOR_PALETTE_SHADES,
-    SEMANTIC_SCALES,
-    TAILWIND_COLOR_PALETTES,
-} from './constants';
 export type {
     ColorPaletteConfig,
     Hsl,
-    SemanticScaleName,
-    TailwindColorPaletteName,
 } from './types';
 
 /**
@@ -719,7 +712,7 @@ export default function bulmaTheme(): Theme {
          */
         palette: {
             handle: renderColorPaletteStyles as (palette: Record<string, string>) => string,
-            names: TAILWIND_COLOR_PALETTES,
+            names: COLOR_PALETTES,
         },
     };
 }

@@ -1,8 +1,15 @@
 import { useConfig } from '@vuecs/core';
-import { useColorPalette as useColorPaletteCore } from '@vuecs/design';
-import type { UseColorPaletteReturn } from '@vuecs/design';
-import { SEMANTIC_SCALES, TAILWIND_COLOR_PALETTES } from './constants';
-import type { ColorPaletteConfig, SemanticScaleName, TailwindColorPaletteName } from './types';
+import {
+    COLOR_PALETTES,
+    SEMANTIC_SCALES,
+    useColorPalette as useColorPaletteCore,
+} from '@vuecs/design';
+import type {
+    ColorPaletteName,
+    SemanticScaleName,
+    UseColorPaletteReturn,
+} from '@vuecs/design';
+import type { ColorPaletteConfig } from './types';
 
 /**
  * Options for `useColorPalette()`. Note that the underlying
@@ -25,12 +32,12 @@ export interface UseColorPaletteOptions {
     storageKey?: string;
 }
 
-const TAILWIND_PALETTE_SET = new Set<string>(TAILWIND_COLOR_PALETTES);
+const PALETTE_NAME_SET = new Set<string>(COLOR_PALETTES);
 
 /*
  * Defensive sanitizer: localStorage / cookies can hold anything (older
  * library version, hand-edited DevTools value). Drop unknown keys and
- * non-Tailwind palette names rather than passing junk to the renderer.
+ * non-catalog palette names rather than passing junk to the renderer.
  */
 const sanitize = (value: unknown): ColorPaletteConfig => {
     if (!value || typeof value !== 'object') return {};
@@ -38,8 +45,8 @@ const sanitize = (value: unknown): ColorPaletteConfig => {
     const out: ColorPaletteConfig = {};
     for (const scale of SEMANTIC_SCALES) {
         const candidate = input[scale];
-        if (typeof candidate === 'string' && TAILWIND_PALETTE_SET.has(candidate)) {
-            out[scale as SemanticScaleName] = candidate as TailwindColorPaletteName;
+        if (typeof candidate === 'string' && PALETTE_NAME_SET.has(candidate)) {
+            out[scale as SemanticScaleName] = candidate as ColorPaletteName;
         }
     }
     return out;
