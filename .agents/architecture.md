@@ -917,10 +917,14 @@ palette switching without re-resolving theme classes.
 
 The system splits across packages by concern (plan 017):
 
-- **`@vuecs/design`** — concrete `--vc-color-*` defaults (OKLCH literals
-  copied from Tailwind v4's palette so the visual baseline is identical
-  with or without Tailwind), light/dark `.dark` flips, radius tokens,
-  motion primitives, and theme-agnostic helpers. JS surface:
+- **`@vuecs/design`** — `--vc-color-<scale>-*` semantic defaults
+  referencing the Tailwind palette catalog (primary→blue, neutral→
+  neutral, success→green, warning→amber, error→red, info→sky),
+  light/dark `.dark` flips, radius tokens, motion primitives, and
+  theme-agnostic helpers. The right-hand `--color-<palette>-*` source
+  comes from EITHER Tailwind (`@import "tailwindcss"`) OR
+  `@vuecs/design/standalone` — single-source for the OKLCH literals,
+  no duplication between design and theme-tailwind. JS surface:
   - `useColorMode` / `bindColorMode` — light/dark/system mode
   - `applyColorPaletteCss(css, doc?)` — DOM upsert for the
     `<style id="vc-color-palette">` block
@@ -928,18 +932,20 @@ The system splits across packages by concern (plan 017):
     reactive wiring for any theme's palette config
   - `COLOR_PALETTE_STYLE_ELEMENT_ID` — DOM id constant
 
-  No Tailwind dependency; works standalone with BS / Bulma / no theme.
-- **`@vuecs/theme-tailwind`** — re-binds `--vc-color-*` to
-  `var(--color-blue-*)` etc. so runtime palette swaps have leverage,
-  exposes vuecs tokens as Tailwind names via an `@theme` block
-  (`bg-primary-600`, `text-fg`, …), force-includes all 22 Tailwind
-  palettes via `@source inline()`, and ships the Tailwind-specific
-  palette runtime (`setColorPalette`, `useColorPalette`, `renderColorPaletteStyles` +
-  the `ColorPaletteConfig` / `SemanticScaleName` / `TailwindColorPaletteName`
-  types). Composes design's generic helpers (`applyColorPaletteCss`,
-  `bindColorPalette<ColorPaletteConfig>`) rather than reimplementing them.
-  Required only when consumers want Tailwind utility classes AND/OR
-  Tailwind-catalog palette switching.
+  Tailwind-free path supported via `@vuecs/design/standalone` (plan
+  015 P3) — works with BS / Bulma without requiring Tailwind v4.
+- **`@vuecs/theme-tailwind`** — exposes vuecs tokens as Tailwind names
+  via an `@theme` block (`bg-primary-600`, `text-fg`, …), force-includes
+  all 22 Tailwind palettes via `@source inline()`, and ships the
+  Tailwind-specific palette runtime (`setColorPalette`, `useColorPalette`,
+  `renderColorPaletteStyles` + the `ColorPaletteConfig` /
+  `SemanticScaleName` / `TailwindColorPaletteName` types). Composes
+  design's generic helpers (`applyColorPaletteCss`,
+  `bindColorPalette<ColorPaletteConfig>`) rather than reimplementing
+  them. The `--vc-color-<scale>-*: var(--color-<palette>-*)` rebind
+  that used to live here moved into `@vuecs/design/assets/index.css`
+  (single source of truth). Required only when consumers want Tailwind
+  utility classes AND/OR Tailwind-catalog palette switching.
 - **`@vuecs/theme-tailwind-nuxt`** — Nuxt module that ships SSR-safe
   cookie-backed palette switching for `@vuecs/theme-tailwind`
   consumers. Owns its own `runtime/plugins/palette.server.ts` and
@@ -972,15 +978,16 @@ When `@vuecs/theme-tailwind` is loaded:
 1. bg-primary-600          ← Tailwind v4 utility class
 2. --color-primary-600     ← @theme mapping in theme-tailwind/assets/index.css
 3. --vc-color-primary-600  ← semantic-scale var (overridden by setColorPalette)
-4. --color-blue-600        ← theme-tailwind rebind to Tailwind palette
+4. --color-blue-600        ← design/assets/index.css references the palette catalog
 5. oklch(...)              ← concrete OKLCH literal (Tailwind palette source)
 ```
 
-When only `@vuecs/design` is loaded (BS / Bulma / no theme):
+When `@vuecs/design/standalone` is loaded (BS / Bulma):
 
 ```
-3. --vc-color-primary-600  ← resolves directly to the concrete OKLCH below
-5. oklch(54.6% 0.245 262.881)
+3. --vc-color-primary-600  ← design/assets/index.css
+4. --color-blue-600        ← design/assets/index.css references the palette catalog
+5. oklch(54.6% 0.245 262.881)  ← design/assets/palettes.css supplies the literal
 ```
 
 `.dark` flips the semantic aliases (`--vc-color-bg`, `--vc-color-fg`,

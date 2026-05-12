@@ -1,23 +1,24 @@
 /*!
  * @vuecs/theme-tailwind — Tailwind v4 bridge
  *
- * Three jobs, all Tailwind-specific:
+ * Two jobs, all Tailwind-specific:
  *
- *   1. Re-bind `--vc-color-*` to `var(--color-<palette>-*)` so that
- *      runtime palette swaps via `setColorPalette()` work — the swap
- *      rewrites the right-hand `--color-<palette>-*` reference.
- *      Without this rebind, the design layer's concrete OKLCH values
- *      would be "frozen" and `setColorPalette()` would have no leverage.
- *
- *   2. Expose vuecs tokens as Tailwind v4 color/radius names via
- *      an `@theme` block, so component class strings can use
+ *   1. Expose vuecs tokens as Tailwind v4 color/radius names via an
+ *      `@theme` block, so component class strings can use
  *      `bg-primary-600`, `text-fg`, `rounded-md`, etc.
  *
- *   3. Force-include all 22 Tailwind palettes × 11 shades via
+ *   2. Force-include all 22 Tailwind palettes × 11 shades via
  *      `@source inline()`, so any `setColorPalette({ primary: 'emerald' })`
  *      call resolves to a real `--color-emerald-*` value (Tailwind
  *      v4's JIT only emits palettes referenced by used classes
  *      otherwise).
+ *
+ * The `--vc-color-<scale>-*: var(--color-<palette>-*)` rebind that
+ * used to live here moved into `@vuecs/design/assets/index.css`
+ * (single source of truth) — design's semantic scales now reference
+ * the Tailwind palette catalog directly, and `setColorPalette()`
+ * works against the same `--color-<palette>-*` source variables
+ * whether Tailwind or `@vuecs/design/standalone` provides them.
  *
  * Consumers (when using the Tailwind theme):
  *   @import "tailwindcss";
@@ -25,84 +26,10 @@
  *   @import "@vuecs/theme-tailwind";
  *
  * Consumers using @vuecs/theme-bootstrap or @vuecs/theme-bulma do NOT
- * need this file — `@vuecs/design`'s concrete OKLCH defaults render
- * correctly on their own.
+ * need this file — `@vuecs/design/standalone` carries the palette
+ * catalog those themes need.
  */
 
-:root {
-    /* primary → blue */
-    --vc-color-primary-50:  var(--color-blue-50);
-    --vc-color-primary-100: var(--color-blue-100);
-    --vc-color-primary-200: var(--color-blue-200);
-    --vc-color-primary-300: var(--color-blue-300);
-    --vc-color-primary-400: var(--color-blue-400);
-    --vc-color-primary-500: var(--color-blue-500);
-    --vc-color-primary-600: var(--color-blue-600);
-    --vc-color-primary-700: var(--color-blue-700);
-    --vc-color-primary-800: var(--color-blue-800);
-    --vc-color-primary-900: var(--color-blue-900);
-    --vc-color-primary-950: var(--color-blue-950);
-
-    --vc-color-neutral-50:  var(--color-neutral-50);
-    --vc-color-neutral-100: var(--color-neutral-100);
-    --vc-color-neutral-200: var(--color-neutral-200);
-    --vc-color-neutral-300: var(--color-neutral-300);
-    --vc-color-neutral-400: var(--color-neutral-400);
-    --vc-color-neutral-500: var(--color-neutral-500);
-    --vc-color-neutral-600: var(--color-neutral-600);
-    --vc-color-neutral-700: var(--color-neutral-700);
-    --vc-color-neutral-800: var(--color-neutral-800);
-    --vc-color-neutral-900: var(--color-neutral-900);
-    --vc-color-neutral-950: var(--color-neutral-950);
-
-    --vc-color-success-50:  var(--color-green-50);
-    --vc-color-success-100: var(--color-green-100);
-    --vc-color-success-200: var(--color-green-200);
-    --vc-color-success-300: var(--color-green-300);
-    --vc-color-success-400: var(--color-green-400);
-    --vc-color-success-500: var(--color-green-500);
-    --vc-color-success-600: var(--color-green-600);
-    --vc-color-success-700: var(--color-green-700);
-    --vc-color-success-800: var(--color-green-800);
-    --vc-color-success-900: var(--color-green-900);
-    --vc-color-success-950: var(--color-green-950);
-
-    --vc-color-warning-50:  var(--color-amber-50);
-    --vc-color-warning-100: var(--color-amber-100);
-    --vc-color-warning-200: var(--color-amber-200);
-    --vc-color-warning-300: var(--color-amber-300);
-    --vc-color-warning-400: var(--color-amber-400);
-    --vc-color-warning-500: var(--color-amber-500);
-    --vc-color-warning-600: var(--color-amber-600);
-    --vc-color-warning-700: var(--color-amber-700);
-    --vc-color-warning-800: var(--color-amber-800);
-    --vc-color-warning-900: var(--color-amber-900);
-    --vc-color-warning-950: var(--color-amber-950);
-
-    --vc-color-error-50:  var(--color-red-50);
-    --vc-color-error-100: var(--color-red-100);
-    --vc-color-error-200: var(--color-red-200);
-    --vc-color-error-300: var(--color-red-300);
-    --vc-color-error-400: var(--color-red-400);
-    --vc-color-error-500: var(--color-red-500);
-    --vc-color-error-600: var(--color-red-600);
-    --vc-color-error-700: var(--color-red-700);
-    --vc-color-error-800: var(--color-red-800);
-    --vc-color-error-900: var(--color-red-900);
-    --vc-color-error-950: var(--color-red-950);
-
-    --vc-color-info-50:  var(--color-sky-50);
-    --vc-color-info-100: var(--color-sky-100);
-    --vc-color-info-200: var(--color-sky-200);
-    --vc-color-info-300: var(--color-sky-300);
-    --vc-color-info-400: var(--color-sky-400);
-    --vc-color-info-500: var(--color-sky-500);
-    --vc-color-info-600: var(--color-sky-600);
-    --vc-color-info-700: var(--color-sky-700);
-    --vc-color-info-800: var(--color-sky-800);
-    --vc-color-info-900: var(--color-sky-900);
-    --vc-color-info-950: var(--color-sky-950);
-}
 
 /* -----------------------------------------------------------------
    Tailwind v4 @theme block — expose vuecs tokens as Tailwind
