@@ -203,25 +203,25 @@ describe('defineTheme', () => {
     });
 
     describe('plan-021 forward-compat hooks', () => {
-        it('composes colorMode.apply across the chain in order', () => {
+        it('composes colorMode.handle across the chain in order', () => {
             const calls: string[] = [];
             const a: Theme = {
                 elements: {},
-                colorMode: { apply: () => { calls.push('A'); } },
+                colorMode: { handle: () => { calls.push('A'); } },
             };
             const b: Theme = {
                 elements: {},
-                colorMode: { apply: () => { calls.push('B'); } },
+                colorMode: { handle: () => { calls.push('B'); } },
             };
 
             const merged = defineTheme({ extends: [a, b] });
 
-            merged.colorMode!.apply({} as Document, 'dark');
+            merged.colorMode!.handle({} as Document, 'dark');
             expect(calls).toEqual(['A', 'B']);
         });
 
         it('preserves single colorMode hook reference when only one layer declares it', () => {
-            const hook = { apply: () => {} };
+            const hook = { handle: () => {} };
             const merged = defineTheme({
                 extends: { elements: {} },
                 colorMode: hook,
@@ -234,11 +234,11 @@ describe('defineTheme', () => {
             const renderB = () => 'b';
             const merged = defineTheme({
                 extends: [
-                    { elements: {}, palette: { render: renderA } },
-                    { elements: {}, palette: { render: renderB } },
+                    { elements: {}, palette: { handle: renderA } },
+                    { elements: {}, palette: { handle: renderB } },
                 ],
             });
-            expect(merged.palette?.render).toBe(renderB);
+            expect(merged.palette?.handle).toBe(renderB);
         });
 
         it('omits hooks when no layer declares them', () => {

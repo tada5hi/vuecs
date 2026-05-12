@@ -11,10 +11,11 @@
  * Validate (CI):
  *     npm run --workspace=themes/bulma palette-catalog:check
  */
-import type { Hsl, TailwindColorPaletteName } from './types';
+import type { ColorPaletteName } from '@vuecs/design';
+import type { Hsl } from './types';
 
-export const TAILWIND_COLOR_PALETTE_HSL: Record<
-    TailwindColorPaletteName,
+export const COLOR_PALETTE_HSL: Record<
+    ColorPaletteName,
     Record<'50' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900' | '950', Hsl>
 > = {
     slate: {

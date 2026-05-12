@@ -1,8 +1,15 @@
 import { useConfig } from '@vuecs/core';
-import { useColorPalette as useColorPaletteCore } from '@vuecs/design';
-import type { UseColorPaletteReturn } from '@vuecs/design';
-import { SEMANTIC_SCALES, TAILWIND_COLOR_PALETTES } from './constants';
-import type { ColorPaletteConfig, SemanticScaleName, TailwindColorPaletteName } from './types';
+import {
+    COLOR_PALETTES,
+    SEMANTIC_SCALES,
+    useColorPalette as useColorPaletteCore,
+} from '@vuecs/design';
+import type {
+    ColorPaletteName,
+    SemanticScaleName,
+    UseColorPaletteReturn,
+} from '@vuecs/design';
+import type { ColorPaletteConfig } from './types';
 
 /**
  * Options for `useColorPalette()`. Mirrors `@vuecs/theme-tailwind`'s
@@ -24,13 +31,13 @@ export interface UseColorPaletteOptions {
     storageKey?: string;
 }
 
-const TAILWIND_PALETTE_SET = new Set<string>(TAILWIND_COLOR_PALETTES);
+const PALETTE_NAME_SET = new Set<string>(COLOR_PALETTES);
 
 /*
  * Defensive sanitizer: localStorage / cookies can hold anything (older
  * library version, hand-edited DevTools value, payload written by
  * theme-tailwind under the same key). Drop unknown semantic scales and
- * non-Tailwind palette names rather than passing junk to the renderer,
+ * non-catalog palette names rather than passing junk to the renderer,
  * which would emit invalid HSL channels.
  */
 const sanitize = (value: unknown): ColorPaletteConfig => {
@@ -39,8 +46,8 @@ const sanitize = (value: unknown): ColorPaletteConfig => {
     const out: ColorPaletteConfig = {};
     for (const scale of SEMANTIC_SCALES) {
         const candidate = input[scale];
-        if (typeof candidate === 'string' && TAILWIND_PALETTE_SET.has(candidate)) {
-            out[scale as SemanticScaleName] = candidate as TailwindColorPaletteName;
+        if (typeof candidate === 'string' && PALETTE_NAME_SET.has(candidate)) {
+            out[scale as SemanticScaleName] = candidate as ColorPaletteName;
         }
     }
     return out;
@@ -52,7 +59,7 @@ const sanitize = (value: unknown): ColorPaletteConfig => {
  *
  * Thin wrapper over `@vuecs/design`'s generic theme-aware
  * `useColorPalette()` (plan 021 slice 2): the generic dispatcher walks
- * installed themes and concatenates each theme's `palette.render`
+ * installed themes and concatenates each theme's `palette.handle`
  * output. theme-bulma declares its renderer at the theme level, so
  * importing this hook implicitly opts into the theme-runtime contract
  * — no direct `bindColorPalette` wiring here anymore.

@@ -16,7 +16,7 @@ import { defineNuxtPlugin, useCookie, useHead, useRuntimeConfig } from '#imports
  * narrow case.
  *
  * Plan 021 slice 3: also dispatches each installed theme's
- * `colorMode.apply` against a synthetic Document and plumbs the captured
+ * `colorMode.handle` against a synthetic Document and plumbs the captured
  * attributes (e.g. `data-bs-theme` from theme-bootstrap, `data-theme`
  * from theme-bulma) into `useHead({ htmlAttrs })` so framework chrome
  * flips alongside `.dark` on first paint, not just after hydration.
