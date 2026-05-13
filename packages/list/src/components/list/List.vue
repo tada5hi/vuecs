@@ -45,7 +45,10 @@ export type ListProps = ExtractPublicPropTypes<typeof listProps>;
 
 const SHORTHAND_SLOT_NAMES = ['header', 'item', 'loading', 'empty', 'footer'] as const;
 
-const isDev = typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production';
+const isDev = (() => {
+    const p = (globalThis as { process?: { env?: { NODE_ENV?: string } } }).process;
+    return p !== undefined && p.env?.NODE_ENV !== 'production';
+})();
 
 export const listThemeDefaults: ComponentThemeDefinition<ListThemeClasses> = { classes: { root: 'vc-list' } };
 
