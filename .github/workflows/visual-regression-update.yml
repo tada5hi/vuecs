@@ -53,7 +53,7 @@ jobs:
                 run: npm run -w @vuecs-tests/visual-regression test:visual:update
 
             -   name: Open update PR
-                uses: peter-evans/create-pull-request@v7
+                uses: peter-evans/create-pull-request@v8
                 with:
                     commit-message: 'chore(visual-regression): update baselines'
                     title: 'chore(visual-regression): update baselines'
