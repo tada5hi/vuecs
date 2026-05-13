@@ -3,10 +3,11 @@
     "compilerOptions": {
         "lib": ["ESNext", "DOM"],
         "outDir": "./dist",
+        "rootDir": "./src",
         "declarationDir": "./dist",
         "jsx": "preserve",
         "skipLibCheck": true
     },
     "exclude": ["node_modules", "dist"],
-    "include": ["src/**/*.ts", "src/**/*.vue"]
+    "include": ["src/**/*.ts", "src/**/*.vue", "../../types/**/*.d.ts"]
 }
