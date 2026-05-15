@@ -116,16 +116,17 @@ packages/core/src/
 
 ```
 packages/list/src/
-  composables/         # State container + child-side context
+  composables/         # State container + child-side context + selection machine
     define-list.ts     # defineList() factory — Pinia-style; returns ListState (+ ListMutators when a writer is derivable)
-    context.ts         # provideList() / useList() — strict Vue inject
+    context.ts         # provideListContext / useList + provideListItemContext / useListItem — strict Vue inject
+    selection.ts       # useSelectionMachine — single/multi toggle, range select, focusedIndex, rangeAnchor
     index.ts
   components/
     list/              # Shell parts that read context — wrap `<VCList>`'s state
-      List.vue ListHeader.vue ListBody.vue ListFooter.vue ListLoading.vue ListEmpty.vue
+      List.vue ListBody.vue ListLoading.vue ListEmpty.vue
       index.ts
-    list-item/         # Per-row layout — no context dependency
-      ListItem.vue ListItemText.vue ListItemActions.vue
+    list-item/         # Per-row layout — provides item-scope context
+      ListItem.vue
       index.ts
     index.ts
   utils/               # Render-time helpers (asChild cloning, vnode filtering, slot-prop merge)
@@ -135,6 +136,17 @@ packages/list/src/
   index.ts             # Plugin install + barrel re-exports
   vue.ts               # GlobalComponents augmentation
 ```
+
+The compound shape is five components (plan 027): `<VCList>` (outer
+container + state + selection coordinator), `<VCListBody>` (the
+`<ul>`), `<VCListItem>` (the `<li>`), `<VCListEmpty>`,
+`<VCListLoading>`. Header / footer chrome and the per-row text /
+actions clusters are **consumer markup** — `<VCList>`'s default slot
+exposes `{ classes }` (with `classes.header` / `classes.footer`) and
+`<VCListItem>`'s default slot exposes `{ classes }` (with
+`classes.text` / `classes.actions`). The previous
+`<VCListHeader>` / `<VCListFooter>` / `<VCListItemText>` /
+`<VCListItemActions>` components were removed in the plan 027 rewrite.
 
 ## Build Outputs
 

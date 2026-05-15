@@ -1,13 +1,24 @@
 # List
 
-Compound list components: a stateful root (`VCList`) plus thin part components (`VCListHeader`, `VCListBody`, `VCListItem`, `VCListItemText`, `VCListItemActions`, `VCListFooter`, `VCListLoading`, `VCListEmpty`) that read shared state from a context provider. Plus a `defineList()` composable that holds the state container and lets consumers extend it with arbitrary helpers (per-row mutation, pagination callbacks, refresh, …).
+Compound list components for Vue 3. Five parts compose a list:
+`VCList` (state owner + selection coordinator), `VCListBody` (`<ul>`),
+`VCListItem` (`<li>`), `VCListEmpty`, `VCListLoading`. Theme classes
+flow through slot props — consumers render their own `<header>` /
+`<footer>` / `<span>` markup with the resolved class strings.
+
+Plus a `defineList()` composable that holds state + mutators, a
+`useList()` injector for shared-state access from child components, and
+a `useListItem()` injector for row-content children.
 
 ```bash
 npm install @vuecs/list
 ```
 
-::: warning Renamed from `@vuecs/list-controls`
-This package is the successor to `@vuecs/list-controls@2.x`. It's a clean break — no shim, no compat layer. The old prop-drilled `<VCList>` with embedded `created`/`updated`/`deleted` slot helpers is gone; the compound API + `defineList()` replace it. See [Migration from `@vuecs/list-controls`](#migration-from-vuecs-list-controls) below.
+::: warning Successor to `@vuecs/list-controls`
+This package is the successor to `@vuecs/list-controls@2.x`. The
+compound rewrite is a clean break — see
+[Migration from `@vuecs/list-controls`](#migration-from-vuecs-list-controls)
+at the bottom of this page.
 :::
 
 ## Basic usage
@@ -21,9 +32,10 @@ This package is the successor to `@vuecs/list-controls@2.x`. It's a clean break 
 <script setup lang="ts">
 import {
     VCList,
+    VCListBody,
+    VCListEmpty,
     VCListItem,
-    VCListItemActions,
-    VCListItemText,
+    VCListLoading,
 } from '@vuecs/list';
 import { ref } from 'vue';
 
@@ -35,27 +47,53 @@ const data = ref<Fruit[]>([
     { id: 3, name: 'Pears', stock: 8 },
 ]);
 
+const selected = ref<Array<string | number>>([]);
+
 function remove(id: number): void {
     data.value = data.value.filter((row) => row.id !== id);
+    selected.value = selected.value.filter((k) => k !== id);
 }
 </script>
 
 <template>
-    <VCList :data="data">
-        <template #item="{ data: item }">
-            <VCListItem :data="item">
-                <VCListItemText>
-                    <span class="font-medium">{{ item.name }}</span>
-                    <span class="text-xs text-fg-muted">
-                        {{ item.stock }} in stock
-                    </span>
-                </VCListItemText>
-                <VCListItemActions>
-                    <button type="button" @click="remove(item.id)">Remove</button>
-                </VCListItemActions>
-            </VCListItem>
+    <VCList
+        v-model:selection="selected"
+        :data="data"
+        selection-mode="multi"
+    >
+        <template #default="{ classes }">
+            <header :class="classes.header">
+                <strong>Fruit basket</strong>
+            </header>
+
+            <VCListBody>
+                <template #item="{ data: item }">
+                    <VCListItem :data="item" :selectable="true">
+                        <template #default="{ classes: itemClasses }">
+                            <span :class="itemClasses.text">
+                                {{ item.name }}
+                                <small>{{ item.stock }} in stock</small>
+                            </span>
+                            <span :class="itemClasses.actions">
+                                <button type="button" @click="remove(item.id)">
+                                    Remove
+                                </button>
+                            </span>
+                        </template>
+                    </VCListItem>
+                </template>
+            </VCListBody>
+
+            <VCListEmpty>Nothing left — add some fruit.</VCListEmpty>
+            <VCListLoading>Loading…</VCListLoading>
+
+            <footer :class="classes.footer">
+                {{ data.length }} item{{ data.length === 1 ? '' : 's' }}
+                <template v-if="selected.length">
+                    · {{ selected.length }} selected
+                </template>
+            </footer>
         </template>
-        <template #empty>Nothing left — add some fruit.</template>
     </VCList>
 </template>
 ```
@@ -72,79 +110,152 @@ function remove(id: number): void {
   </template>
 </Playground>
 
-## Two composition modes
+## Anatomy
 
-`<VCList>` accepts either named-slot **shorthand** or explicit **compound** children — never both. Detected automatically from your slot usage; mixing the two emits `console.warn` in dev.
+The five parts each own a slice of the list:
 
-### Shorthand mode
+| Part | Element (default) | Role | Render condition |
+|---|---|---|---|
+| `<VCList>` | `<div>` | State + selection coordinator. Default slot exposes `{ classes }` for chrome markup. | Always |
+| `<VCListBody>` | `<ul>` | Iterates `state.data` via the `#item` slot. Upgrades to `role="listbox"` when `selection-mode` is set. | `data.length > 0` (decoupled from `busy`) |
+| `<VCListItem>` | `<li>` | Per-row container. Exposes `{ classes, isSelected, isFocused, isDisabled, isActive, isSelectable, toggle }` via its default slot. | Always (inside `<VCListBody>`) |
+| `<VCListEmpty>` | `<div role="status">` | Empty-state placeholder. | `!busy && data.length === 0` |
+| `<VCListLoading>` | `<div role="status" aria-live="polite">` | Loading placeholder. | `busy && data.length === 0` (or `busy` when `:overlay`) |
 
-Pick this when you want the default skeleton (`Header → Body → Loading → Empty → Footer`). Set any of `#header` / `#item` / `#loading` / `#empty` / `#footer`; `<VCList>` auto-composes the parts.
+Header and footer chrome is **consumer markup** — there are no
+`<VCListHeader>` / `<VCListFooter>` components. Read
+`classes.header` / `classes.footer` off `<VCList>`'s default slot prop
+and apply them to your own `<header>` / `<footer>` (or any element).
 
 ```vue
-<VCList :data="users" :busy="loading" :total="total">
-    <template #header>Users</template>
-    <template #item="{ data }">
-        <VCListItem :data="data">
-            <VCListItemText>{{ data.email }}</VCListItemText>
-        </VCListItem>
+<VCList :data="users">
+    <template #default="{ classes }">
+        <header :class="classes.header">Users</header>
+        <VCListBody>…</VCListBody>
+        <footer :class="classes.footer">{{ users.length }} users</footer>
     </template>
-    <template #footer>{{ users.length }} of {{ total }}</template>
 </VCList>
 ```
 
-### Compound mode
-
-Pick this when you want explicit control — skip a section, reorder, wrap a part in extra markup, swap `<VCListBody>` for a virtual-scrolling iterator, …
+The same applies inside `<VCListItem>` — the slot exposes per-row
+`classes.text` / `classes.actions` for the row's content + action
+clusters:
 
 ```vue
-<VCList :data="users" :busy="loading" :total="total">
-    <VCListHeader>Users</VCListHeader>
-    <VCListBody>
-        <template #item="{ data }">
-            <VCListItem :data="data">
-                <VCListItemText>{{ data.email }}</VCListItemText>
-                <VCListItemActions>
-                    <button @click="edit(data)">Edit</button>
-                </VCListItemActions>
-            </VCListItem>
+<VCListItem :data="item">
+    <template #default="{ classes }">
+        <span :class="classes.text">{{ item.name }}</span>
+        <span :class="classes.actions">
+            <button @click="edit(item)">Edit</button>
+            <button @click="remove(item)">Delete</button>
+        </span>
+    </template>
+</VCListItem>
+```
+
+## Selection
+
+Set `selection-mode="single"` or `selection-mode="multi"` on
+`<VCList>` to opt into selection. The list upgrades to ARIA
+`role="listbox"` semantics, rows with `:selectable` participate, and
+`v-model:selection` carries the bound keys.
+
+```vue
+<script setup lang="ts">
+const selected = ref<Array<number>>([]);
+</script>
+
+<template>
+    <VCList
+        v-model:selection="selected"
+        :data="users"
+        selection-mode="multi"
+    >
+        <template #default>
+            <VCListBody>
+                <template #item="{ data }">
+                    <VCListItem :data="data" :selectable="true">
+                        {{ data.name }}
+                    </VCListItem>
+                </template>
+            </VCListBody>
         </template>
-    </VCListBody>
-    <VCListFooter>{{ users.length }} of {{ total }}</VCListFooter>
-</VCList>
+    </VCList>
+</template>
 ```
 
-### Row layout
+Activation:
 
-`<VCListItem>` is a flex row. `<VCListItemText>` takes `flex-1` so it consumes available space; any number of `<VCListItemActions>` clusters trail it without fighting for position.
+- **Click anywhere on the row** toggles selection. Native interactive
+  elements (`button`, `a[href]`, `input`, `select`, `textarea`,
+  `[contenteditable]`, `[role="button|link|checkbox|switch"]`, plus
+  anything tagged `[data-vc-noselect]`) auto-exclude — their clicks
+  pass through unaffected.
+- **Shift+click** selects a contiguous range from the last activated
+  row (the range anchor).
+- **Ctrl/Cmd+click** toggles a single row without affecting others.
+- **Space / Enter** on a focused row activates selection.
+
+Keys are derived via `defineList()`'s `itemKey` configuration
+(`itemKey: 'id'` for an `id` field, or a function for custom logic).
+
+::: warning Phase 1 keyboard nav
+Arrow / Home / End navigation across selectable rows is not yet
+wired — Click and Space/Enter activation work today. Full WAI-ARIA
+listbox keyboard support is planned for a follow-up. Set
+`selection-mode` to opt into the listbox semantics that are in place
+(roles, `aria-selected`, roving `tabindex`).
+:::
+
+## Row state
+
+`<VCListItem>` carries four row-state props:
+
+| Prop | Default | Effect |
+|---|---|---|
+| `:selectable` | `false` | Row participates in selection (`role="option"`, click delegation, theme `selected` variant when active). |
+| `:disabled` | `false` | Sets `aria-disabled="true"` + `data-disabled`. Disabled rows skip selection toggle and theme `disabled` variant activates. |
+| `:active` | `false` | Sets `aria-current` (`'true'` when boolean, or the passed string like `'page'`) + `data-active`. Theme `active` variant activates. Independent of selection — purely visual / route-style highlight. |
+| `:index` | `-1` | Position in the iteration order. Forwarded as a slot prop and used for roving-tabindex coordination. `<VCListBody>` supplies this automatically inside its `#item` slot. |
+
+Each maps to a theme variant axis (`disabled.true`, `active.true`,
+`selected.true`) which the bundled themes (tailwind / bootstrap /
+bulma) all wire to a distinct visual treatment.
+
+## Loading modes
+
+`<VCListLoading>` has two render modes:
 
 ```vue
-<VCListItem :data="user">
-    <VCListItemText>{{ user.email }}</VCListItemText>
+<!-- Default: shows only on first-load (busy ∧ data empty) -->
+<VCListLoading>Loading…</VCListLoading>
 
-    <!-- Primary actions cluster -->
-    <VCListItemActions>
-        <button @click="edit(user)">Edit</button>
-        <button @click="remove(user)">Delete</button>
-    </VCListItemActions>
-
-    <!-- Overflow cluster — sits next to primary, no `ml-auto` race -->
-    <VCListItemActions>
-        <button @click="openMenu(user)">⋯</button>
-    </VCListItemActions>
-</VCListItem>
+<!-- Overlay: shows whenever busy. Pair with theme overlay positioning. -->
+<VCListLoading :overlay="true">Refreshing…</VCListLoading>
 ```
 
-For full custom rendering, drop sub-components and use the default slot directly:
+`<VCListBody>` is **data-driven** — it renders the `<ul>` whenever
+`data.length > 0`, regardless of `busy`. That decoupling lets you
+compose three load-state patterns:
 
-```vue
-<VCListItem :data="data" asChild>
-    <article class="my-card">{{ data.name }}</article>
-</VCListItem>
-```
+- **Default sibling** — Loading next to the body. Body hides when
+  empty + busy (the default render condition); Loading fills the slot.
+- **Inline footer** — keep `<VCListBody>` visible while loading; place
+  a separate `<li>` (or pagination loader) inside the iteration.
+- **Skeleton rows** — render placeholder `<li>`s alongside real rows
+  when `busy` is true. The body's render condition (data-presence) is
+  what makes this possible.
 
-## `defineList()` composable
+When `:overlay` is set, the loading variant in each theme uses
+absolute positioning to float over the existing rows. `<VCList>`'s
+root carries `relative` / `position-relative` / `is-relative` so the
+overlay anchors to the list container.
 
-The state container. `<VCList>` constructs a minimal one internally when only `data` / `busy` / `total` / `meta` are passed; for shared state across views or extensible helpers, build your own and pass via `:state`.
+## State container: `defineList()`
+
+`<VCList>` constructs a minimal state container internally when you
+pass `data` / `busy` / `total` / `meta`. For shared state across
+views or extensible helpers, build your own and pass via `:state`:
 
 ```ts
 import { defineList } from '@vuecs/list';
@@ -152,18 +263,15 @@ import { defineList } from '@vuecs/list';
 const users = ref<User[]>([]);
 
 const list = defineList({
-    data: users,                              // ref / getter / plain
-    setData: (next) => { users.value = next; },  // OPTIONAL — see below
+    data: users,                                  // ref / getter / plain
+    setData: (next) => { users.value = next; },   // OPTIONAL — see below
     busy: loading,
     total,
-    itemId: (u) => u.id,                      // identity hint for findIndex / applyUpdate
+    itemKey: 'id',                                // identity hint
 
-    mergeOnUpdated: true,                     // apply { ...existing, ...patch } on update
-
-    // Anything that's not first-class state goes into the typed `meta` bag —
-    // pagination cursors, filter state, callbacks (`refresh`, `load`),
-    // helper flags. Forwarded verbatim to `list.meta`; nested Refs / closures
-    // stay as-is so consumers manage reactivity inside the bag themselves.
+    // Anything that's not first-class state goes in the typed `meta`
+    // bag — pagination cursors, filter state, callbacks (`refresh`,
+    // `load`), helper flags. Forwarded verbatim to `list.meta`.
     meta: {
         refresh: () => fetch('/users'),
         cursor,
@@ -175,61 +283,99 @@ const list = defineList({
 // list.total          — ComputedRef<number>            (data.length fallback)
 // list.meta           — Meta (verbatim; defaults to `{}`)
 // list.isEmpty        — ComputedRef<boolean>           (!busy && total === 0)
+// list.getItemKey(row) — resolve the row's identity key
 // list.findIndex(item)
-// list.applyCreate(arr, item) / applyUpdate / applyDelete  — pure helpers honoring flags
-// list.create(item) / update / delete                — bound mutators (when a writer is derivable)
+// list.applyCreate(arr, item) / applyUpdate / applyDelete  — pure helpers
+// list.create(item) / update / delete                — bound mutators (when writer is derivable)
 ```
 
 ```vue
-<VCList :state="list">
-    <template #item="{ data, meta }">         <!-- slot props are list.* -->
-        <button @click="meta.refresh()">Reload</button>
-        ...
+<VCList :state="list" v-model:selection="selected" selection-mode="multi">
+    <template #default="{ classes }">
+        <VCListBody>
+            <template #item="{ data: row }">
+                <VCListItem :data="row" :selectable="true">
+                    {{ row.name }}
+                </VCListItem>
+            </template>
+        </VCListBody>
     </template>
 </VCList>
 ```
 
 ### Mutation: pure helpers vs. bound mutators
 
-`defineList()` exposes ergonomic `create` / `update` / `delete` mutators whenever a writer can be derived from the input:
+`defineList()` exposes `create` / `update` / `delete` mutators
+whenever a writer can be derived from the input:
 
 ```ts
-// data is a Ref → mutators are wired automatically:
+// data is a Ref → mutators wire automatically
 const users = ref<User[]>([]);
 const list = defineList({ data: users });
-list.create(item);   // ≡ users.value = applyCreate(users.value, item)
+list.create(item);
 list.update(item);
 list.delete(item);
 
-// data is a getter or plain array → no auto-write path; pass setData to opt in:
+// data is a getter or plain array → pass setData to opt in
 const list = defineList({
     data: () => store.users,
     setData: (next) => store.replaceUsers(next),
 });
-list.create(item);   // routes through the store action
-
-// Explicit setData also overrides the auto-derived setter on a Ref source —
-// useful for hooking side effects (logging, optimistic UI, etc.):
-const list = defineList({
-    data: users,
-    setData: (next) => { logChange(next); users.value = next; },
-});
+list.create(item);  // routes through the store
 ```
 
-The pure `applyCreate` / `applyUpdate` / `applyDelete` helpers are always exposed — when you want full control, the explicit-write path stays available:
+The pure `applyCreate` / `applyUpdate` / `applyDelete` helpers stay
+exposed for full manual control:
 
 ```ts
 const list = defineList({ data: users });
 users.value = list.applyCreate(users.value, item);
 ```
 
-All three flag-honoring forms share the same semantics; the difference is whether the composable does the assignment for you.
-
-**Resolution order for the writer:**
+Writer resolution order:
 
 1. Explicit `setData` — wins unconditionally
-2. `data` is a `Ref<T[]>` — auto-derived setter (`(next) => { ref.value = next }`)
-3. Otherwise (getter / plain array, no `setData`) — no mutators; only the pure helpers
+2. `data` is a `Ref<T[]>` — auto-derived setter
+3. Otherwise — no mutators; only the pure helpers
+
+## Composables
+
+### `useList<T>()`
+
+Inside any descendant of `<VCList>`:
+
+```ts
+import { useList } from '@vuecs/list';
+
+const { state, classes, selection } = useList<User>();
+
+// state.data.value      — Ref<User[]>
+// state.busy.value      — boolean
+// classes.value         — resolved list-level theme classes
+// selection.mode.value  — 'single' | 'multi' | undefined
+// selection.isSelected(key)
+// selection.toggle(key, opts?)
+```
+
+Throws if called outside a `<VCList>`.
+
+### `useListItem<T>()`
+
+Inside any descendant of `<VCListItem>` — useful in row-content child
+SFCs that need per-row state without slot-prop drilling:
+
+```ts
+import { useListItem } from '@vuecs/list';
+
+const {
+    data, index, key, classes,
+    isSelected, isFocused, isDisabled, isActive, isSelectable,
+    toggle,
+} = useListItem<User>();
+```
+
+All fields are `ComputedRef`s; `toggle` invokes the selection machine
+for this row.
 
 ## Props
 
@@ -237,53 +383,90 @@ All three flag-honoring forms share the same semantics; the difference is whethe
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `state` | `ListState` | — | Pre-built state from `defineList()`. When set, the simple props are ignored. |
-| `data` | `T[]` | `[]` | Items (used when `state` is omitted) |
-| `busy` | `boolean` | `false` | Loading flag (used when `state` is omitted) |
-| `total` | `number` | `data.length` | Server-side total (used when `state` is omitted) |
-| `meta` | `Record<string, unknown>` | — | Verbatim metadata bag (used when `state` is omitted; snapshotted at setup) |
-| `tag` | `string` | `'div'` | Root element tag |
-| `asChild` | `boolean` | `false` | Reka-style: clone the default slot's first vnode instead of emitting a wrapper |
-| `themeClass` | `Partial<ListThemeClasses>` | — | Slot class overrides |
-| `themeVariant` | `Record<string, string \| boolean>` | — | Variant overrides |
+| `state` | `ListState` | — | Pre-built state from `defineList()`. When set, the convenience props are ignored. |
+| `data` | `T[]` | `[]` | Items (used when `state` is omitted). |
+| `busy` | `boolean` | `false` | Loading flag (used when `state` is omitted). |
+| `total` | `number` | `data.length` | Server-side total (used when `state` is omitted). |
+| `meta` | `Record<string, unknown>` | — | Verbatim metadata bag (used when `state` is omitted; snapshot at setup). |
+| `tag` | `string` | `'div'` | Outer container element. |
+| `selectionMode` | `'single' \| 'multi' \| undefined` | `undefined` | Opt into listbox semantics + selection. |
+| `selection` (v-model) | `SelectionKey[] \| SelectionKey \| null` | `null` | Selected keys; bound via `v-model:selection`. |
+| `themeClass` | `ThemeClassesOverride<ListThemeClasses>` | — | Slot class overrides. |
+| `themeVariant` | `VariantValues` | — | Variant overrides. |
+
+### `<VCListBody>`
+
+| Prop | Type | Default |
+|------|------|---------|
+| `tag` | `string` | `'ul'` |
+| `asChild` | `boolean` | `false` |
+| `themeClass` | `ThemeClassesOverride<ListBodyThemeClasses>` | — |
+| `themeVariant` | `VariantValues` | — |
 
 ### `<VCListItem>`
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `data` | `T` | The item record (forwarded to slot props) |
-| `index` | `number` | Position in the iterating body |
-| `tag` | `string` | Default `'div'` |
-| `asChild` | `boolean` | Default `false` — clone the default slot's first vnode instead of wrapping |
-| `themeClass` | `Partial<ListItemThemeClasses>` | Override `root` |
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `data` | `T` | — | The row record (forwarded as a slot prop + into the item-scope context). |
+| `index` | `number` | `-1` | Position within iteration. Supplied automatically by `<VCListBody>`'s `#item` slot. |
+| `selectable` | `boolean` | `false` | Row participates in selection. |
+| `disabled` | `boolean` | `false` | Disable interaction. |
+| `active` | `boolean \| 'page' \| 'step' \| 'location' \| 'date' \| 'time'` | `false` | Mark row as current (`aria-current`). |
+| `tag` | `string` | `'li'` | Row element. |
+| `asChild` | `boolean` | `false` | Clone the default slot's single vnode instead of emitting a wrapper. |
+| `themeClass` | `ThemeClassesOverride<ListItemThemeClasses>` | — | |
+| `themeVariant` | `VariantValues` | — | |
 
-The remaining parts (`Header`, `Body`, `Item`, `ItemText`, `ItemActions`, `Footer`, `Loading`, `Empty`) all take `tag`, `asChild`, `themeClass`, `themeVariant`.
+### `<VCListEmpty>`
+
+| Prop | Type | Default |
+|------|------|---------|
+| `tag` | `string` | `'div'` |
+| `asChild` | `boolean` | `false` |
+| `themeClass` | `ThemeClassesOverride<ListEmptyThemeClasses>` | — |
+| `themeVariant` | `VariantValues` | — |
+
+### `<VCListLoading>`
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `tag` | `string` | `'div'` | |
+| `overlay` | `boolean` | `false` | Refresh-feedback mode — shows whenever `busy`, regardless of data presence. Theme overlay variant activates. |
+| `asChild` | `boolean` | `false` | |
+| `themeClass` | `ThemeClassesOverride<ListLoadingThemeClasses>` | — | |
+| `themeVariant` | `VariantValues` | — | |
 
 ## Slots
 
-| Component | Slot | Slot props | Notes |
-|-----------|------|------------|-------|
-| `VCList` (shorthand) | `header` / `item` / `loading` / `empty` / `footer` | `defineList()` state (+ `data` / `index` for `item`) | Triggers shorthand mode |
-| `VCList` (compound) | `default` | `defineList()` state | Compound child rendering |
-| `VCListBody` | `item` | `{ data, index, …state }` | Auto-iterates `state.data` per row |
-| `VCListBody` | `default` | `defineList()` state | Bypasses iteration — escape hatch for virtual scrolling, etc. |
-| `VCListItem` | `default` | `{ data, index }` | Row contents (compose `VCListItemText` / `VCListItemActions` here) |
-| `VCListItemText` | `default` | — | The text/content area of a row |
-| `VCListItemActions` | `default` | — | A right-trailing action cluster (render multiple for multi-cluster layouts) |
+| Component | Slot | Slot props |
+|-----------|------|------------|
+| `<VCList>` | `default` | `{ classes: ListThemeClasses }` |
+| `<VCListBody>` | `item` | `{ data, index }` — fires once per row |
+| `<VCListBody>` | `default` | `{ data: unknown[] }` — escape hatch (virtual scrolling, ad-hoc layouts); bypasses iteration |
+| `<VCListItem>` | `default` | `{ data, index, classes, isSelected, isFocused, isDisabled, isActive, isSelectable, toggle }` |
+| `<VCListEmpty>` | `default` | `{ data, busy }` |
+| `<VCListLoading>` | `default` | `{ busy, overlay }` |
 
 ## Theme keys
 
-| Component | Keys |
-|-----------|------|
-| `list` | `root` |
-| `listHeader` | `root` |
+Five entries on `ThemeElements`:
+
+| Component | Slot keys |
+|-----------|-----------|
+| `list` | `root`, `header`, `footer` |
 | `listBody` | `root` |
-| `listItem` | `root` |
-| `listItemText` | `root` |
-| `listItemActions` | `root` |
-| `listFooter` | `root` |
-| `listLoading` | `root` |
+| `listItem` | `root`, `text`, `actions` |
 | `listEmpty` | `root` |
+| `listLoading` | `root` |
+
+Variant axes registered by the bundled themes:
+
+| Component | Axis | Values |
+|---|---|---|
+| `list` | `density` | `compact` / `normal` / `spacious` |
+| `listItem` | `density` | (same) |
+| `listItem` | `disabled` / `active` / `selected` | boolean — auto-folded from `<VCListItem>`'s props + the row's selection state |
+| `listLoading` | `overlay` | boolean — auto-folded from `<VCListLoading :overlay>` |
 
 ## Behavioral defaults
 
@@ -308,36 +491,35 @@ app.use(vuecs, {
 <VCList
     :data="users"
     :busy="loading"
-    :total="total"
     item-text-prop-name="email"
     :item-theme-class="{ root: 'border-b' }"
-    @updated="onUpdate"
 />
 
 <!-- After (@vuecs/list) -->
-<VCList :data="users" :busy="loading" :total="total">
-    <template #item="{ data }">
-        <VCListItem :data="data" :theme-class="{ root: 'border-b' }">
-            <VCListItemText>{{ data.email }}</VCListItemText>
-        </VCListItem>
+<VCList :data="users" :busy="loading">
+    <template #default="{ classes }">
+        <VCListBody>
+            <template #item="{ data }">
+                <VCListItem :data="data" :theme-class="{ root: 'border-b' }">
+                    <template #default="{ classes: itemClasses }">
+                        <span :class="itemClasses.text">{{ data.email }}</span>
+                    </template>
+                </VCListItem>
+            </template>
+        </VCListBody>
     </template>
 </VCList>
-
-<!-- Wire onUpdate to the consumer's button handler — the package no longer
-     emits create/update/delete events. Use list.applyUpdate() if you want
-     the merge semantics.  -->
 ```
 
 | Before | After |
 |--------|-------|
 | `headerThemeClass` / `bodyThemeClass` / `itemThemeClass` / … on `<VCList>` | each part owns its own `themeClass` |
-| `header` / `footer` / `body` / `loading` / `noMore` boolean props on `<VCList>` | omit the part to skip it |
-| `itemTag` / `itemIcon` / `itemText` / `itemTextPropName` / `itemActions` on `<VCList>` | move to `<VCListItem>` + `<VCListItemText>` / `<VCListItemActions>` children |
-| `<VCListItem>` `text` / `actions` / `actionsExtra` slots | dedicated `<VCListItemText>` / `<VCListItemActions>` sub-components (compose multiple for what was `actionsExtra`) |
-| `noMoreContent` prop on `<VCList>` | put text inside `<VCListEmpty>` or use `defaults.listEmpty.content` |
+| `header` / `footer` / `body` / `loading` / `noMore` boolean props | omit the part to skip it; render header / footer via consumer markup using slot-prop `classes` |
+| `<VCListHeader>` / `<VCListFooter>` | gone — render your own `<header>` / `<footer>` with `classes.header` / `classes.footer` from the default slot prop |
+| `<VCListItemText>` / `<VCListItemActions>` | gone — render your own `<span>` with `itemClasses.text` / `itemClasses.actions` from `<VCListItem>`'s default slot prop |
 | `<VCListNoMore>` | `<VCListEmpty>` (same self-conditioning, accurate name) |
-| `slotProps` prop threaded through every sub-component | gone — children read context |
-| `created` / `updated` / `deleted` slot helpers | gone — consumers handle their own list mutation (use `list.apply*()`) |
+| `slotProps` prop threaded through every sub-component | gone — use `useList()` / `useListItem()` from child components |
+| `created` / `updated` / `deleted` slot helpers | gone — consumers handle their own mutation (use `list.apply*()` or `list.create/update/delete`) |
 | `load: ListLoadFn` + `meta` props | gone — put callbacks / cursor / filter state in `defineList({ meta: { … } })` |
 | `@vuecs/list-controls` package name | `@vuecs/list` |
 

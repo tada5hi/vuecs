@@ -42,7 +42,7 @@ npm run lint:fix       # Auto-fix lint issues
 | `@vuecs/gravatar` | Gravatar avatar component — composes `<VCAvatar>` from `@vuecs/elements` for fallback support (DOM shape changed; major bump on next release-please run) | 1.0.2 |
 | `@vuecs/icon` | `<VCIcon>` component — thin Iconify wrapper for vuecs's icon-string-prop slots and consumer slot content | 0.0.0 |
 | `@vuecs/link` | Router-aware link component (vue-router/nuxt) | 1.0.1 |
-| `@vuecs/list` | Compound list components (List/Header/Body/Item/ItemText/ItemActions/Footer/Loading/Empty) + `useList()` state composable. Successor to `@vuecs/list-controls` — clean break, compound API. | 0.0.0 |
+| `@vuecs/list` | Compound list (List / Body / Item / Empty / Loading) + `defineList()` factory + `useList()` / `useListItem()` injectors + built-in `v-model:selection` (single / multi, ARIA listbox). Header / footer / item-text / item-actions are consumer markup driven by slot-prop class strings. Successor to `@vuecs/list-controls` — clean break (plan 027). | 0.0.0 |
 | `@vuecs/navigation` | Multi-level navigation with NavigationManager + `<VCStepper>` compound for multi-step wizards | 2.4.1 |
 | `@vuecs/nuxt` | Theme-agnostic Nuxt module — auto-imports `@vuecs/design` tokens, ships SSR-safe color-mode + palette plugins (`useColorMode` / `useColorPalette` auto-imports). Dispatches palette + colorMode runtime hooks through whichever themes the consumer installs (plan 025). Optional `themes: string[]` config auto-generates a plugin that installs listed theme packages. | 0.0.0 |
 | `@vuecs/overlays` | Compound overlays on Reka primitives — Modal (+ `useModal()` view-stack composable), Popover, HoverCard, Tooltip, DropdownMenu, ContextMenu | 0.0.0 |
