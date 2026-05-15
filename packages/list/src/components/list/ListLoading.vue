@@ -1,5 +1,5 @@
 <script lang="ts">
-import { useComponentTheme, useThemeProps } from '@vuecs/core';
+import { useComponentTheme } from '@vuecs/core';
 import type { ComponentThemeDefinition, ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { defineComponent, h } from 'vue';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
@@ -53,11 +53,21 @@ export default defineComponent({
         default: ListLoadingSlotProps;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme(
-            'listLoading',
-            useThemeProps(props, 'overlay'),
-            listLoadingThemeDefaults,
-        );
+        // Fold `:overlay` into themeVariant only when truthy — matches
+        // the ListItem pattern. Folding the default `false` would write
+        // `overlay: false` into every render and accidentally activate
+        // any future `overlay.false` variant rule.
+        const themedProps = {
+            get themeClass() {
+                return props.themeClass;
+            },
+            get themeVariant() {
+                const base = { ...(props.themeVariant ?? {}) };
+                if (props.overlay) base.overlay = true;
+                return base;
+            },
+        };
+        const theme = useComponentTheme('listLoading', themedProps, listLoadingThemeDefaults);
         const { state } = useList('VCListLoading');
 
         return () => {

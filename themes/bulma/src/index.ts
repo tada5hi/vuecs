@@ -325,7 +325,10 @@ export default function bulmaTheme(): Theme {
             },
             list: {
                 classes: {
-                    root: 'is-flex is-flex-direction-column',
+                    // `is-relative` anchors `<VCListLoading :overlay>`'s
+                    // `is-overlay` (absolute) positioning to the list
+                    // container itself.
+                    root: 'is-flex is-flex-direction-column is-relative',
                     header: 'is-flex is-align-items-center',
                     footer: 'is-flex is-align-items-center',
                 },

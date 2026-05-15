@@ -288,7 +288,9 @@ export default function bootstrapTheme(): Theme {
             },
             list: {
                 classes: {
-                    root: 'd-flex flex-column gap-1',
+                    // `position-relative` anchors `<VCListLoading :overlay>`'s
+                    // absolute positioning to the list container.
+                    root: 'd-flex flex-column gap-1 position-relative',
                     header: 'd-flex align-items-center',
                     footer: 'd-flex align-items-center',
                 },
@@ -322,7 +324,10 @@ export default function bootstrapTheme(): Theme {
             },
             listLoading: {
                 classes: { root: 'py-2 text-center text-muted small' },
-                variants: { overlay: { true: { root: 'position-absolute top-0 start-0 end-0 bottom-0 d-flex align-items-center justify-content-center bg-body-tertiary' } } },
+                // Translucent veil (`bg-body bg-opacity-75`) so underlying
+                // rows stay partly visible during refresh — matches the
+                // tailwind theme's `bg-bg/75 backdrop-blur-sm`.
+                variants: { overlay: { true: { root: 'position-absolute top-0 start-0 end-0 bottom-0 d-flex align-items-center justify-content-center bg-body bg-opacity-75' } } },
             },
             listEmpty: { classes: { root: 'alert alert-warning small p-2' } },
             navigation: {

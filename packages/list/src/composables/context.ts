@@ -20,6 +20,14 @@ type ListContext = {
 
 const LIST_CONTEXT_KEY = Symbol('VCListContext') as InjectionKey<ListContext>;
 
+/**
+ * Publish the list-scope context. Used internally by `<VCList>` only —
+ * the supported consumer-facing API is `<VCList>` + `useList()`. Build
+ * a custom provider on top of this only when wrapping `<VCList>` in
+ * your own composite.
+ *
+ * @internal
+ */
 export function provideListContext(ctx: ListContext): void {
     provide(LIST_CONTEXT_KEY, ctx);
 }
@@ -89,6 +97,12 @@ type ListItemContext = {
 
 const LIST_ITEM_CONTEXT_KEY = Symbol('VCListItemContext') as InjectionKey<ListItemContext>;
 
+/**
+ * Publish the row-scope context. Used internally by `<VCListItem>` —
+ * the supported consumer-facing API is `<VCListItem>` + `useListItem()`.
+ *
+ * @internal
+ */
 export function provideListItemContext(ctx: ListItemContext): void {
     provide(LIST_ITEM_CONTEXT_KEY, ctx);
 }

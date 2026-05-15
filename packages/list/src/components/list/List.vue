@@ -43,15 +43,20 @@ const listProps = {
     selectionMode: {
         type: String as PropType<SelectionMode>,
         default: undefined,
+        validator: (value: unknown): boolean => value === undefined || value === 'single' || value === 'multi',
     },
 
     /**
      * `v-model:selection` — bound by parent. `SelectionKey[]` for multi,
      * `SelectionKey | null` for single. Items are identified via the
      * `getItemKey()` configured on the underlying `defineList()`.
+     *
+     * `null` is accepted at runtime even though it's not listed in
+     * `type` — Vue only enforces `type` for the listed constructors and
+     * allows `null` regardless (unless `required: true`).
      */
     selection: {
-        type: [Array, String, Number, null] as PropType<SelectionKey[] | SelectionKey | null>,
+        type: [Array, String, Number] as PropType<SelectionKey[] | SelectionKey | null>,
         default: null,
     },
 

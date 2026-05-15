@@ -86,20 +86,27 @@ export function useSelectionMachine(args: {
             const anchor = rangeAnchor.value;
             const anchorIdx = indexOfKey(args.keyAt, anchor);
             const targetIdx = indexOfKey(args.keyAt, key);
-            if (anchorIdx >= 0 && targetIdx >= 0) {
-                const [from, to] = anchorIdx <= targetIdx ?
-                    [anchorIdx, targetIdx] :
-                    [targetIdx, anchorIdx];
-                const span: SelectionKey[] = [];
-                for (let i = from; i <= to; i += 1) {
-                    const k = args.keyAt(i);
-                    if (k !== undefined) span.push(k);
-                }
-                const set = new Set<SelectionKey>(current);
-                for (const k of span) set.add(k);
-                args.emit(Array.from(set));
+            if (anchorIdx < 0 || targetIdx < 0) {
+                // Anchor key no longer in `data` (was removed). Refresh
+                // the anchor to the current target so the next Shift+click
+                // works, and no-op this one — falling through to plain
+                // toggle would silently downgrade Shift+click into a
+                // single-row toggle, which reads as a bug to the user.
+                rangeAnchor.value = key;
                 return;
             }
+            const [from, to] = anchorIdx <= targetIdx ?
+                [anchorIdx, targetIdx] :
+                [targetIdx, anchorIdx];
+            const span: SelectionKey[] = [];
+            for (let i = from; i <= to; i += 1) {
+                const k = args.keyAt(i);
+                if (k !== undefined) span.push(k);
+            }
+            const set = new Set<SelectionKey>(current);
+            for (const k of span) set.add(k);
+            args.emit(Array.from(set));
+            return;
         }
 
         if (opts.toggle) {
@@ -152,11 +159,13 @@ function indexOfKey(
     keyAt: (index: number) => SelectionKey | undefined,
     target: SelectionKey,
 ): number {
-    for (let i = 0; i < 10_000; i += 1) {
+    // `keyAt` returns undefined past the end of `data`, so the natural
+    // sentinel terminates the loop. No arbitrary cap — range select
+    // must work on lists of any size.
+    for (let i = 0; ; i += 1) {
         const k = keyAt(i);
         if (k === undefined) return -1;
         if (k === target) return i;
     }
-    return -1;
 }
 

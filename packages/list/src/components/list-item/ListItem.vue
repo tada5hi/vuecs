@@ -133,6 +133,13 @@ export default defineComponent({
             return selection.isSelected(key.value);
         });
 
+        const isDisabled = computed(() => props.disabled);
+        // Truthy on `true`, `'page'`, `'step'`, … Falsy on `false`. Single
+        // source of truth for the row's "active" axis — read by both the
+        // theme-variant fold + the aria-current / data-active render.
+        const isActive = computed(() => Boolean(props.active));
+        const isSelectable = computed(() => props.selectable);
+
         // Fold row-state props + derived `selected` into `themeVariant`
         // so theme entries' `variants.{disabled,active,selected}.true`
         // activate without consumers having to repeat the values on
@@ -145,8 +152,8 @@ export default defineComponent({
             },
             get themeVariant() {
                 const base = { ...(props.themeVariant ?? {}) };
-                if (props.disabled) base.disabled = true;
-                if (props.active !== false) base.active = true;
+                if (isDisabled.value) base.disabled = true;
+                if (isActive.value) base.active = true;
                 if (isSelected.value) base.selected = true;
                 return base;
             },
@@ -155,14 +162,12 @@ export default defineComponent({
 
         const isFocused = computed(() => {
             // Roving tabindex: compare item's index against the focused
-            // selectable index. -1 when no item is focused yet.
+            // selectable index. Known Phase 1 limitation: when item 0
+            // isn't selectable, no row is keyboard-reachable. Tracked
+            // alongside the broader arrow-key navigation work.
             if (!props.selectable) return false;
             return selection.focusedIndex.value === props.index;
         });
-
-        const isDisabled = computed(() => props.disabled);
-        const isActive = computed(() => props.active !== false);
-        const isSelectable = computed(() => props.selectable);
 
         const toggle = (opts: { range?: boolean; toggle?: boolean } = {}): void => {
             if (props.disabled || !props.selectable || key.value === undefined) return;
@@ -237,7 +242,7 @@ export default defineComponent({
                 elementAttrs['aria-disabled'] = 'true';
                 elementAttrs['data-disabled'] = '';
             }
-            if (props.active !== false) {
+            if (isActive.value) {
                 elementAttrs['aria-current'] = props.active === true ? 'true' : props.active;
                 elementAttrs['data-active'] = '';
             }
@@ -247,22 +252,34 @@ export default defineComponent({
                 elementAttrs.tabindex = isFocused.value ? 0 : -1;
                 elementAttrs['data-selected'] = isSelected.value ? '' : undefined;
                 elementAttrs.onClick = onClick;
+                // Keyboard activation only when listbox semantics are on.
+                // In the "selectable but no mode" branch below we wire
+                // click for item-owned event flow but NOT keydown — a
+                // `preventDefault()` on Space/Enter inside a row without
+                // listbox semantics would swallow keypresses for inner
+                // content (form inputs, links, etc.).
                 elementAttrs.onKeydown = onKeydown;
             } else if (props.selectable) {
                 // Selectable but no selection-mode set on parent — still
                 // wire click delegation so consumers using item-owned
                 // event flow can listen via @click on the item. ARIA
-                // listbox semantics stay off.
+                // listbox semantics stay off; keydown stays unwired.
                 elementAttrs.onClick = onClick;
-                elementAttrs.onKeydown = onKeydown;
             }
 
             const children = slots.default?.(slotProps);
+            // mergeProps order: vuecs-owned attrs (class, ARIA, listeners)
+            // win over consumer attrs only for keys it actually controls —
+            // mergeProps concatenates class + listener handlers so
+            // consumer-supplied class / @click flow through. asChild does
+            // the same merge into the cloned vnode so both render paths
+            // honour `attrs` consistently.
+            const mergedAttrs = mergeProps(attrs, elementAttrs);
             if (props.asChild) {
-                const cloned = applyAsChild(children, elementAttrs);
+                const cloned = applyAsChild(children, mergedAttrs);
                 if (cloned) return cloned;
             }
-            return h(props.tag, mergeProps(attrs, elementAttrs), children);
+            return h(props.tag, mergedAttrs, children);
         };
     },
 });

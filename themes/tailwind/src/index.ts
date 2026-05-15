@@ -358,7 +358,11 @@ export default function tailwindTheme(): Theme {
             validationGroup: { classes: { item: 'text-xs text-error-600' } },
             list: {
                 classes: {
-                    root: 'flex flex-col gap-1',
+                    // `relative` anchors `<VCListLoading :overlay>`'s
+                    // `absolute inset-0` to the list container itself.
+                    // Without it the overlay escapes to the nearest
+                    // positioned ancestor (often the viewport).
+                    root: 'relative flex flex-col gap-1',
                     // Header / footer chrome — consumer applies these to
                     // their own `<header>` / `<footer>` markup inside the
                     // `<VCList>` default slot. `empty:hidden` collapses
