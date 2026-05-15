@@ -7,11 +7,7 @@ import {
     VCList,
     VCListBody,
     VCListEmpty,
-    VCListFooter,
-    VCListHeader,
     VCListItem,
-    VCListItemActions,
-    VCListItemText,
     VCListLoading,
 } from './components';
 
@@ -28,12 +24,8 @@ export function install(app: App, options: Options = {}): void {
 
     Object.entries({
         VCList,
-        VCListHeader,
         VCListBody,
         VCListItem,
-        VCListItemText,
-        VCListItemActions,
-        VCListFooter,
         VCListLoading,
         VCListEmpty,
     }).forEach(([name, component]) => {

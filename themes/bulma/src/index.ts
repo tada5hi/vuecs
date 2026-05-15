@@ -324,7 +324,14 @@ export default function bulmaTheme(): Theme {
                 },
             },
             list: {
-                classes: { root: 'is-flex is-flex-direction-column' },
+                classes: {
+                    // `is-relative` anchors `<VCListLoading :overlay>`'s
+                    // `is-overlay` (absolute) positioning to the list
+                    // container itself.
+                    root: 'is-flex is-flex-direction-column is-relative',
+                    header: 'is-flex is-align-items-center',
+                    footer: 'is-flex is-align-items-center',
+                },
                 variants: {
                     density: {
                         compact: { root: '' },
@@ -334,26 +341,29 @@ export default function bulmaTheme(): Theme {
                 },
                 defaultVariants: { density: 'normal' },
             },
-            listHeader: { classes: { root: 'is-flex is-align-items-center' } },
             listBody: { classes: { root: 'm-0 p-0' } },
-            // <VCListItem> owns the row's flex layout. <VCListItemText> takes
-            // `is-flex-grow-1` so it consumes available space and pushes
-            // trailing <VCListItemActions> to the right edge.
             listItem: {
-                classes: { root: 'is-flex is-flex-direction-row is-align-items-center' },
+                classes: {
+                    root: 'is-flex is-flex-direction-row is-align-items-center',
+                    text: 'is-inline-flex is-flex-direction-column is-flex-grow-1',
+                    actions: 'is-inline-flex is-align-items-center',
+                },
                 variants: {
                     density: {
                         compact: { root: 'py-0' },
                         normal: { root: 'py-1' },
                         spacious: { root: 'py-3' },
                     },
+                    disabled: { true: { root: 'has-text-grey-light' } },
+                    active: { true: { root: 'has-background-primary-light has-text-primary' } },
+                    selected: { true: { root: 'has-background-grey-lighter' } },
                 },
                 defaultVariants: { density: 'normal' },
             },
-            listItemText: { classes: { root: 'is-inline-flex is-flex-direction-column is-flex-grow-1' } },
-            listItemActions: { classes: { root: 'is-inline-flex is-align-items-center' } },
-            listFooter: { classes: { root: 'is-flex is-align-items-center' } },
-            listLoading: { classes: { root: 'py-2 has-text-centered has-text-grey is-size-7' } },
+            listLoading: {
+                classes: { root: 'py-2 has-text-centered has-text-grey is-size-7' },
+                variants: { overlay: { true: { root: 'is-overlay is-flex is-align-items-center is-justify-content-center has-background-white-bis' } } },
+            },
             // Bulma `.notification.is-warning.is-light` matches the BS theme's
             // `.alert.alert-warning` look.
             listEmpty: { classes: { root: 'notification is-warning is-light is-size-7 p-2' } },

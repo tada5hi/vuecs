@@ -226,6 +226,8 @@ unless the variant is structural (e.g. orientation-driven layout).
 | Tooltip | `size` | sm/md/lg | Padding + font-size only |
 | DropdownMenu / ContextMenu | `size` | sm/md/lg | Item padding + min-width |
 | List / ListItem | `density` | compact/normal/spacious | Gap + per-row padding |
+| ListItem | `disabled` / `active` / `selected` | boolean | Folded into `themeVariant` from `<VCListItem>`'s props + derived selection state |
+| ListLoading | `overlay` | boolean | Refresh-feedback mode — absolute-positioned overlay |
 | Navigation | `size` | sm/md/lg | Link padding + icon size |
 | Stepper | `size` | sm/md/lg | Indicator + title scale; theme-bootstrap uses `vc-stepper-indicator-{sm,lg}` |
 

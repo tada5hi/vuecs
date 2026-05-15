@@ -63,7 +63,7 @@ export function hasMeaningfulVNodes(nodes: VNode[] | undefined): boolean {
  */
 export function applyAsChild(
     nodes: VNode[] | undefined,
-    extra: { class?: unknown } = {},
+    extra: Record<string, unknown> = {},
 ): VNode | null {
     const meaningful = meaningfulVNodes(nodes);
     if (meaningful.length !== 1) return null;

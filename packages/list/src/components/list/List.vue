@@ -1,91 +1,135 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
 import type { ComponentThemeDefinition, ThemeClassesOverride, VariantValues } from '@vuecs/core';
-import { defineComponent, h } from 'vue';
+import { computed, defineComponent, h } from 'vue';
 import type {
     ExtractPublicPropTypes,
     PropType,
     SlotsType,
-    VNode,
 } from 'vue';
-import { defineList, provideList } from '../../composables';
-import type { ListState } from '../../composables';
-import ListHeader from './ListHeader.vue';
-import ListBody from './ListBody.vue';
-import ListLoading from './ListLoading.vue';
-import ListEmpty from './ListEmpty.vue';
-import ListFooter from './ListFooter.vue';
-import { applyAsChild, hasMeaningfulVNodes, mergeSlotProps } from '../../utils';
+import {
+    defineList,
+    provideListContext,
+    useSelectionMachine,
+} from '../../composables';
+import type { ListState, SelectionKey, SelectionMode } from '../../composables';
 import type { ListThemeClasses } from '../../types';
 
 const listProps = {
-    /** Pre-built `defineList()` return value. When set, the simple `data`/`busy`/`total`/`meta` props are ignored (Q7). */
-    state: { type: Object as PropType<ListState<unknown, Record<string, unknown>>>, default: undefined },
+    /** Pre-built `defineList()` return value. When set, the convenience props are ignored. */
+    state: {
+        type: Object as PropType<ListState<unknown, Record<string, unknown>>>,
+        default: undefined,
+    },
 
-    // Convenience props for the no-state case. Internally constructed
-    // into a minimal defineList() invocation if `state` is omitted.
+    /** Convenience props for the no-state case. Internally constructed via `defineList()`. */
     data: { type: Array as PropType<unknown[]>, default: undefined },
     busy: { type: Boolean, default: undefined },
     total: { type: Number, default: undefined },
     meta: { type: Object as PropType<Record<string, unknown>>, default: undefined },
 
-    tag: { type: String, default: 'div' },
     /**
-     * Reka-style as-child: render by cloning the default slot's first
-     * vnode (compound mode) instead of emitting a wrapper. Has no
-     * effect in shorthand mode — the auto-composed parts always need
-     * a real wrapper to host them.
+     * Outer container element. Default `'div'`. Set `'section'` (+
+     * `aria-labelledby`) for landmark semantics; otherwise leave it as
+     * a generic container.
      */
-    asChild: { type: Boolean, default: false },
+    tag: { type: String, default: 'div' },
+
+    /**
+     * Selection cardinality. Setting this opts into listbox ARIA
+     * semantics, keyboard navigation, and selectable rows. Omit to
+     * disable selection entirely.
+     */
+    selectionMode: {
+        type: String as PropType<SelectionMode>,
+        default: undefined,
+        validator: (value: unknown): boolean => value === undefined || value === 'single' || value === 'multi',
+    },
+
+    /**
+     * `v-model:selection` — bound by parent. `SelectionKey[]` for multi,
+     * `SelectionKey | null` for single. Items are identified via the
+     * `getItemKey()` configured on the underlying `defineList()`.
+     *
+     * `null` is accepted at runtime even though it's not listed in
+     * `type` — Vue only enforces `type` for the listed constructors and
+     * allows `null` regardless (unless `required: true`).
+     */
+    selection: {
+        type: [Array, String, Number] as PropType<SelectionKey[] | SelectionKey | null>,
+        default: null,
+    },
+
     themeClass: { type: Object as PropType<ThemeClassesOverride<ListThemeClasses>>, default: undefined },
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
 
 export type ListProps = ExtractPublicPropTypes<typeof listProps>;
 
-const SHORTHAND_SLOT_NAMES = ['header', 'item', 'loading', 'empty', 'footer'] as const;
-
 const isDev = (() => {
     const p = (globalThis as { process?: { env?: { NODE_ENV?: string } } }).process;
     return p !== undefined && p.env?.NODE_ENV !== 'production';
 })();
 
-export const listThemeDefaults: ComponentThemeDefinition<ListThemeClasses> = { classes: { root: 'vc-list' } };
+export const listThemeDefaults: ComponentThemeDefinition<ListThemeClasses> = {
+    classes: {
+        root: 'vc-list',
+        header: 'vc-list-header',
+        footer: 'vc-list-footer',
+    },
+};
 
+/**
+ * `<VCList>` — outer container + state + selection coordinator.
+ *
+ * Owns:
+ *  - The `defineList()` state (data / busy / total / meta + mutators)
+ *  - Theme-class resolution for the list-level slot map (root / header / footer)
+ *  - Selection state machine (single / multi v-model)
+ *
+ * Renders a generic `<div>` (configurable via `tag`) with the default
+ * slot's children. The default slot is given resolved theme classes as
+ * a slot prop; descendants read state + selection via `useList()`.
+ *
+ * Header / footer chrome is consumer-authored markup with classes from
+ * the slot prop:
+ *
+ * ```vue
+ * <VCList :data="items">
+ *   <template v-slot="{ classes }">
+ *     <header :class="classes.header">…</header>
+ *     <VCListBody>…</VCListBody>
+ *     <footer :class="classes.footer">…</footer>
+ *   </template>
+ * </VCList>
+ * ```
+ */
 export default defineComponent({
     name: 'VCList',
     props: listProps,
+    emits: {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        'update:selection': (value: SelectionKey[] | SelectionKey | null) => true,
+    },
     slots: Object as SlotsType<{
-        default: ListState;
-        header: ListState;
-        item: ListState & { data: unknown; index: number };
-        loading: ListState;
-        empty: ListState;
-        footer: ListState;
+        default: { classes: ListThemeClasses };
     }>,
-    setup(props, { slots }) {
+    setup(props, { slots, emit }) {
         const theme = useComponentTheme('list', props, listThemeDefaults);
 
-        // Q7 — `:state` wins over the simple props; both is a usage error.
-        // Resolved once at setup. `defineList()` already wraps its inputs in
-        // `computed`, so the simple-prop path stays reactive without a
-        // `computed` wrapper out here.
         if (isDev && props.state && (
             props.data !== undefined ||
             props.busy !== undefined ||
             props.total !== undefined ||
             props.meta !== undefined
         )) {
+            // eslint-disable-next-line no-console
             console.warn(
                 '[VCList] Both `:state` and one of `:data` / `:busy` / `:total` / `:meta` were provided. ' +
                 '`:state` wins; the convenience props are ignored.',
             );
         }
 
-        // `meta` is forwarded verbatim by `defineList()` (no longer a
-        // MaybeRefOrGetter under the unified contract), so the convenience
-        // path snapshots `props.meta` at setup time. Consumers needing
-        // reactive meta should construct their own state and pass `:state`.
         const state: ListState = props.state ?? defineList({
             data: () => props.data ?? [],
             busy: () => !!props.busy,
@@ -93,64 +137,37 @@ export default defineComponent({
             meta: props.meta,
         });
 
-        provideList(state);
-
-        return () => {
-            // Pass state into the default slot so compound consumers can
-            // bind it: `<VCList v-slot="{ data, busy, ... }">`. Children
-            // also have it via context injection — slot props are an
-            // ergonomic shortcut.
-            const defaultVNodes = slots.default?.(state);
-            const isCompound = hasMeaningfulVNodes(defaultVNodes);
-            const usesShorthand = SHORTHAND_SLOT_NAMES.some((name) => slots[name]);
-
-            // Q10 — warn in dev if both modes are used at once.
-            if (isDev && isCompound && usesShorthand) {
-                console.warn(
-                    '[VCList] Detected both compound children and named shorthand slots. Pick one mode per `<VCList>` instance — ' +
-                    'either compose children (`<VCListBody>`, `<VCListHeader>`, …) explicitly OR use the named slots ' +
-                    '(`#header`, `#item`, …) to let `<VCList>` auto-compose. Falling back to compound mode for this render.',
-                );
-            }
-
-            const rootClass = theme.value.root || undefined;
-
-            if (isCompound) {
-                if (props.asChild) {
-                    const cloned = applyAsChild(defaultVNodes, { class: rootClass });
-                    if (cloned) return cloned;
-                }
-                return h(props.tag, { class: rootClass }, defaultVNodes);
-            }
-
-            // Shorthand mode: auto-compose all five sections, threading
-            // each named slot to the matching part. Empty slots fall through
-            // to the part's own default rendering (e.g. <VCListEmpty>'s
-            // behavioral-defaults content).
-            const children: VNode[] = [
-                h(ListHeader, {}, slots.header ?
-                    { default: (ctx: ListState) => slots.header!(ctx) } :
-                    {}),
-                h(ListBody, {}, slots.item ?
-                    {
-                        item: (ctx: ListState & { data: unknown; index: number }) => slots.item!(
-                            mergeSlotProps(ctx, {}),
-                        ),
-                    } :
-                    {}),
-                h(ListLoading, {}, slots.loading ?
-                    { default: (ctx: ListState) => slots.loading!(ctx) } :
-                    {}),
-                h(ListEmpty, {}, slots.empty ?
-                    { default: (ctx: ListState) => slots.empty!(ctx) } :
-                    {}),
-                h(ListFooter, {}, slots.footer ?
-                    { default: (ctx: ListState) => slots.footer!(ctx) } :
-                    {}),
-            ];
-
-            return h(props.tag, { class: rootClass }, children);
+        // Selection state machine. Always present in the context bag;
+        // when `selectionMode` is undefined, the machine reports
+        // `isSelected: () => false` and `toggle` is a no-op — so
+        // descendants don't need to null-check before calling.
+        const selectionMode = computed(() => props.selectionMode);
+        const selectionValue = computed(() => props.selection);
+        const keyAt = (index: number): SelectionKey | undefined => {
+            const item = state.data.value[index];
+            if (item === undefined) return undefined;
+            return state.getItemKey(item);
         };
+        const selection = useSelectionMachine({
+            mode: selectionMode,
+            value: selectionValue,
+            emit: (next) => emit('update:selection', next),
+            keyAt,
+        });
+
+        const classes = computed(() => theme.value);
+
+        provideListContext({
+            state: state as ListState<unknown, Record<string, unknown>>,
+            classes,
+            selection,
+        });
+
+        return () => h(
+            props.tag,
+            { class: theme.value.root || undefined },
+            slots.default?.({ classes: theme.value }),
+        );
     },
 });
 </script>
