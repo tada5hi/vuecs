@@ -45,19 +45,19 @@
         "@tada5hi/eslint-config": "^2.3.0",
         "@tada5hi/tsconfig": "^0.7.2",
         "@tsdown/css": "^0.22.0",
-        "@vitejs/plugin-vue": "^6.0.6",
+        "@vitejs/plugin-vue": "^6.0.7",
         "@vitest/coverage-v8": "^4.1.6",
-        "eslint": "^10.3.0",
+        "eslint": "^10.4.0",
         "eslint-plugin-vue": "^10.9.1",
         "husky": "^9.1.7",
-        "nx": "^22.7.1",
+        "nx": "^22.7.2",
         "rimraf": "^6.1.3",
         "tsdown": "^0.22.0",
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.59.3",
         "unbuild": "^3.6.1",
         "vitest": "^4.1.2",
-        "vue-tsc": "^3.2.8"
+        "vue-tsc": "^3.2.9"
     },
     "scripts": {
         "build": "npx nx run-many -t build",

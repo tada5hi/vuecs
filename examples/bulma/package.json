@@ -24,7 +24,7 @@
         "node": ">=22.0.0"
     },
     "devDependencies": {
-        "@vitejs/plugin-vue": "^6.0.6",
+        "@vitejs/plugin-vue": "^6.0.7",
         "@vuecs-examples/shared": "*",
         "@vuecs/button": "*",
         "@vuecs/core": "*",
@@ -44,9 +44,9 @@
         "@vuecs/timeago": "*",
         "bulma": "^1.0.4",
         "typescript": "^5.9.3",
-        "vite": "^8.0.12",
+        "vite": "^8.0.13",
         "vue": "^3.5.34",
         "vue-router": "^5.0.6",
-        "vue-tsc": "^3.2.8"
+        "vue-tsc": "^3.2.9"
     }
 }
