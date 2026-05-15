@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useColorPalette } from '@vuecs/theme-tailwind';
+import { useColorPalette } from '@vuecs/design';
 import {
     VCModal,
     VCModalClose,

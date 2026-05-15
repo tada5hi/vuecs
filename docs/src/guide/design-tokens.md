@@ -329,7 +329,7 @@ const { current, set, extend } = bindColorPalette(source, {
 });
 ```
 
-`@vuecs/theme-tailwind`'s `setColorPalette` and `useColorPalette` are themselves built this way — `setColorPalette = applyColorPaletteCss(renderColorPaletteStyles(...))`, and `useColorPalette` calls `bindColorPalette(useStorage(...), { render: renderColorPaletteStyles, extend: shallowMerge })`.
+`@vuecs/theme-tailwind`'s `setColorPalette` is built this way — `setColorPalette = applyColorPaletteCss(renderColorPaletteStyles(...))`. `useColorPalette` itself lives in `@vuecs/design`; it walks installed themes' `palette.handle` hooks via `renderColorPaletteFromThemes()` and feeds the concatenated CSS into `applyColorPaletteCss`. The Tailwind theme just declares its `palette.handle` (the `renderColorPaletteStyles` function above) at the theme level — no per-theme composable wrapper.
 
 ## Circular reference caveat
 
@@ -354,10 +354,13 @@ Both are reached via the bare `@import "@vuecs/theme-<name>"` form (resolves to 
 |--------|------|-------|
 | `applyColorPaletteCss(css, doc?, nonce?)` | ❌ | DOM-only; upserts `<style id="vc-color-palette">` |
 | `bindColorPalette<T>(source, render)` | ❌ | Vue reactive — apply on init + watch source |
+| `useColorPalette(options?)` | ❌ | Theme-aware shared composable — dispatches through installed themes' `palette.handle` |
+| `useColorPaletteUnshared(options?)` | ❌ | Un-shared variant (one watcher per call) — accepts a custom `source` ref for SSR-aware persistence |
 | `COLOR_PALETTE_STYLE_ELEMENT_ID` | const | `'vc-color-palette'` |
 | `SEMANTIC_SCALES` / `SemanticScaleName` | const + type | The 6 semantic scale names |
 | `COLOR_PALETTES` / `ColorPaletteName` | const + type | The 22 catalog palette names (sourced from Tailwind v4) |
 | `COLOR_PALETTE_SHADES` / `ColorPaletteShade` | const + type | The 11-stop shade ladder |
+| `ColorPaletteConfig` | type | `Partial<Record<SemanticScaleName, ColorPaletteName>>` — the canonical runtime palette config |
 
 **`@vuecs/theme-tailwind` (Tailwind-specific):**
 
@@ -365,11 +368,10 @@ Both are reached via the bare `@import "@vuecs/theme-<name>"` form (resolves to 
 |--------|------|-------|
 | `renderColorPaletteStyles(palette)` | ✅ | Returns `:root { ... }` block as a string |
 | `setColorPalette(palette, doc?, nonce?)` | ❌ | DOM-only; idempotent. Composes `applyColorPaletteCss(renderColorPaletteStyles(palette))` |
-| `ColorPaletteConfig` | type | `Partial<Record<SemanticScaleName, ColorPaletteName>>` (both come from `@vuecs/design`) |
 
 ## Vue composables
 
-`@vuecs/design` ships generic palette primitives (`bindColorPalette`, `applyColorPaletteCss`) plus `useColorMode()`. For Tailwind palette catalogs, use `useColorPalette()` from `@vuecs/theme-tailwind` — see [Composables](/guide/composables) for persistence details.
+`@vuecs/design` ships theme-aware `useColorPalette()` and `useColorMode()`. The palette composable dispatches through whichever themes the app installs — Tailwind, Bulma, and any future palette-aware theme — so the same import works regardless of theme. See [Composables](/guide/composables) for persistence details.
 
 ## See also
 

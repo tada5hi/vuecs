@@ -246,6 +246,32 @@ describe('defineTheme', () => {
             expect(merged.colorMode).toBeUndefined();
             expect(merged.palette).toBeUndefined();
         });
+
+        it('palette.scaleAliases follows last-wins along with the rest of the slot (plan 026)', () => {
+            const handleA = () => 'a';
+            const handleB = () => 'b';
+            const merged = defineTheme({
+                extends: [
+                    { elements: {}, palette: { handle: handleA, scaleAliases: { primary: 'brand' } } },
+                    { elements: {}, palette: { handle: handleB } },
+                ],
+            });
+            // palette is single-owner; the later layer wholly replaces
+            // the earlier one — so scaleAliases from the first layer
+            // does NOT bleed into the merged palette.
+            expect(merged.palette?.handle).toBe(handleB);
+            expect(merged.palette?.scaleAliases).toBeUndefined();
+        });
+
+        it('carries scaleAliases through when only the last layer declares them (plan 026)', () => {
+            const handle = () => '';
+            const aliases = { primary: 'brand', error: 'danger' };
+            const merged = defineTheme({
+                extends: { elements: {} },
+                palette: { handle, scaleAliases: aliases },
+            });
+            expect(merged.palette?.scaleAliases).toBe(aliases);
+        });
     });
 
     describe('mergeThemes (standalone reducer)', () => {

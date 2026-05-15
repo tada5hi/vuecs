@@ -22,7 +22,7 @@ vuecs/
   themes/             # Theme packages (npm workspaces) — pure data, no Vue runtime deps
     bootstrap/        # @vuecs/theme-bootstrap — Bootstrap (currently v5) theme + design-token bridge (assets/index.css)
     bulma/            # @vuecs/theme-bulma — Bulma 1.0+ theme + design-token bridge (assets/index.css)
-    tailwind/         # @vuecs/theme-tailwind — Tailwind v4 theme (class strings) + Tailwind palette runtime (setColorPalette/useColorPalette/renderColorPaletteStyles/ColorPaletteConfig) + Tailwind rebind / @theme / @source inline safelist; composes @vuecs/design's generic palette primitives (plan 017)
+    tailwind/         # @vuecs/theme-tailwind — Tailwind v4 theme (class strings) + Tailwind palette runtime (setColorPalette / renderColorPaletteStyles) + Tailwind rebind / @theme / @source inline safelist; contributes its palette.handle to @vuecs/design's theme-aware useColorPalette (plan 026 collapsed the per-theme useColorPalette + ColorPaletteConfig into @vuecs/design)
   icons/              # Icon-preset packages (npm workspaces) — Iconify-name vocabularies for @vuecs/icon, no runtime icon data
     font-awesome/     # @vuecs/icons-font-awesome — Font Awesome 6 Solid icon names (replaces the removed @vuecs/theme-font-awesome)
     lucide/           # @vuecs/icons-lucide — Lucide icon names (modern default)

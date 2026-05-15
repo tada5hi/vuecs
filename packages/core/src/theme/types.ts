@@ -104,6 +104,22 @@ export type PaletteHook = {
      */
     handle: (palette: Record<string, string>) => string;
     names?: readonly string[];
+    /**
+     * Optional canonical-scale → theme-scale rename map. When set, the
+     * dispatcher translates input keys before calling `handle`, so the
+     * theme can author its renderer against its own naming.
+     *
+     * Example — a community theme using `brand` / `danger` instead of
+     * the canonical `primary` / `error`:
+     *
+     *     scaleAliases: { primary: 'brand', error: 'danger' }
+     *
+     * The public-facing palette config still uses canonical
+     * `SemanticScaleName` keys; aliases stay an internal-to-theme
+     * concern. Last-wins across the `defineTheme` chain (palette is a
+     * single-owner slot — only one renderer owns the `<style>` block).
+     */
+    scaleAliases?: Record<string, string>;
 };
 
 export type Theme = {

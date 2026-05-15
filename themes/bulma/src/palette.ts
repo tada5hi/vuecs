@@ -4,9 +4,8 @@ import {
     SEMANTIC_SCALES,
     applyColorPaletteCss,
 } from '@vuecs/design';
-import type { ColorPaletteName, SemanticScaleName } from '@vuecs/design';
+import type { ColorPaletteConfig, ColorPaletteName, SemanticScaleName } from '@vuecs/design';
 import { COLOR_PALETTE_HSL } from './palette-catalog';
-import type { ColorPaletteConfig } from './types';
 
 const SEMANTIC_SCALE_SET = new Set<string>(SEMANTIC_SCALES);
 const PALETTE_NAME_SET = new Set<string>(COLOR_PALETTES);
@@ -109,13 +108,14 @@ export function renderColorPaletteStyles(palette: ColorPaletteConfig): string {
  * `renderColorPaletteStyles()` renderer.
  *
  * The optional `nonce` parameter wires CSP nonce attribution onto the
- * `<style id="vc-color-palette">` block. Direct callers pass the value
- * explicitly; the `useColorPalette` composable reads it from
- * `useConfig('nonce')` automatically.
+ * `<style id="vc-color-palette">` block. CSP-strict consumers using
+ * `useColorPalette` from `@vuecs/design` pass nonce via
+ * `nonce: () => useConfig('nonce').value`.
  *
  * On the server this is a no-op; use `renderColorPaletteStyles()` directly
- * and inject the result into the SSR response head (a future
- * `@vuecs/theme-bulma-nuxt` will do that automatically).
+ * and inject the result into the SSR response head (or rely on
+ * `@vuecs/nuxt`'s palette server plugin, which dispatches through the
+ * theme runtime).
  */
 export function setColorPalette(
     palette: ColorPaletteConfig,

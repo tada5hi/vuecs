@@ -56,13 +56,13 @@ npm install @vuecs/core @vuecs/design @vuecs/theme-bootstrap
 
 `@vuecs/design`'s `/standalone` subpath inlines the full Tailwind v4 palette catalog (`--color-<palette>-*`, 22 palettes × 11 shades) on top of the default `--vc-color-*` tokens. These are the **source variables** that runtime palette renderers write against — without them, a `setColorPalette()` call would target undefined variables and silently no-op. The theme bridge maps `--bs-*` (or `--bulma-*`) onto `--vc-color-*` so vuecs components blend visually with the framework's chrome.
 
-`setColorPalette()` itself ships from theme packages, not from `@vuecs/design`:
+`useColorPalette()` lives in `@vuecs/design` and dispatches through whichever themes are installed. `setColorPalette()` (the pure-DOM API) ships per-theme — it composes the theme's renderer with `applyColorPaletteCss`:
 
 | Theme | Runtime palette API |
 |---|---|
-| `@vuecs/theme-tailwind` | `setColorPalette()` + `useColorPalette()` exported |
-| `@vuecs/theme-bulma` | `setColorPalette()` + `useColorPalette()` exported |
-| `@vuecs/theme-bootstrap` | No palette runtime ships today — compose `applyColorPaletteCss` from `@vuecs/design` directly, or install one of the above theme packages alongside |
+| `@vuecs/theme-tailwind` | `setColorPalette()` exported; contributes `palette.handle` so `useColorPalette()` (from `@vuecs/design`) picks it up |
+| `@vuecs/theme-bulma` | `setColorPalette()` exported; contributes `palette.handle` so `useColorPalette()` (from `@vuecs/design`) picks it up |
+| `@vuecs/theme-bootstrap` | No palette runtime ships today — Bootstrap 5 reads `--bs-*` directly; bridge `--vc-color-*` via consumer CSS, or install one of the above theme packages alongside |
 
 ::: tip
 The base entry (`@vuecs/design`, ~3 KB) is enough if you only need the semantic-color defaults and don't plan to switch palettes at runtime. Reach for `/standalone` (~18 KB) when you want runtime palette switching to work without installing Tailwind.

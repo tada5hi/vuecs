@@ -228,6 +228,35 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
         unmount();
     });
 
+    it('default sanitize filters input to the canonical catalog (plan 026)', async () => {
+        const handle = (p: Record<string, string>) => `:root { --primary: ${p.primary ?? 'unset'}; --neutral: ${p.neutral ?? 'unset'}; }`;
+        const manager: MockThemeManager = { themes: [{ palette: { handle } }] };
+
+        const { unmount } = mountWithManager(manager, () => {
+            useColorPaletteUnshared({
+                /*
+                 * `bogus` is not a SemanticScaleName; `not-a-palette` is
+                 * not in COLOR_PALETTES. Both should be dropped by the
+                 * default sanitizer the dispatcher now ships (lifted
+                 * from the per-theme wrappers in plan 026).
+                 */
+                initial: {
+                    primary: 'green',
+                    bogus: 'totally-fake',
+                    neutral: 'not-a-palette',
+                } as Record<string, string>,
+                persist: false,
+                storageKey: freshStorageKey(),
+            });
+        });
+        await nextTick();
+        const css = readPaletteStyle();
+        expect(css).toContain('--primary: green');
+        expect(css).toContain('--neutral: unset');
+        expect(css).not.toContain('bogus');
+        unmount();
+    });
+
     it('applies sanitize to the initial palette', async () => {
         const handle = (p: Record<string, string>) => `:root { --primary: ${p.primary ?? 'unset'}; }`;
         const sanitize = (raw: unknown): { primary?: string } => {

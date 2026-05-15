@@ -107,3 +107,20 @@ export const COLOR_PALETTE_SHADES = [
 ] as const;
 
 export type ColorPaletteShade = typeof COLOR_PALETTE_SHADES[number];
+
+/**
+ * Canonical runtime palette config — a partial mapping of every
+ * semantic scale to a catalog palette name. Used by every theme that
+ * opts into runtime palette switching (`theme-tailwind`, `theme-bulma`,
+ * and any future palette-aware theme).
+ *
+ * Both keys (`SemanticScaleName`) and values (`ColorPaletteName`)
+ * widen automatically via declaration merging: `ExtraColorPaletteNames`
+ * adds value-side names; the canonical scale list is fixed at six.
+ *
+ * Themes whose internal scale names diverge from the canonical six
+ * declare a `scaleAliases` map on their `Theme.palette` slot — the
+ * dispatcher translates input keys before calling `palette.handle`,
+ * so the public-facing config still uses canonical names.
+ */
+export type ColorPaletteConfig = Partial<Record<SemanticScaleName, ColorPaletteName>>;

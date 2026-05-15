@@ -100,5 +100,5 @@ from `@vuecs/design` directly with your own `useCookie` call as the
 ## See also
 
 - [`useColorMode`](/nuxt/use-color-mode) — the SSR pattern is identical
-- [Design Tokens — Vue composables](/guide/design-tokens#vue-composables) — the SPA `useColorPalette()` from `@vuecs/theme-tailwind` / `@vuecs/theme-bulma` (localStorage-backed)
+- [Design Tokens — Vue composables](/guide/design-tokens#vue-composables) — the SPA `useColorPalette()` from `@vuecs/design` (localStorage-backed)
 - [`setColorPalette()`](/guide/design-tokens#runtime-palette-switching) — pure DOM API

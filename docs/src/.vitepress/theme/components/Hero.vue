@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useData } from 'vitepress';
-import { useColorPalette } from '@vuecs/theme-tailwind';
+import { useColorPalette } from '@vuecs/design';
 import {
     NEUTRAL_PALETTES,
     type NeutralPalette,
@@ -11,11 +11,11 @@ const { isDark } = useData();
 
 /*
  * Hero swatches share the SAME reactive state as the navbar
- * `SettingsModal` — `useColorPalette()` from `@vuecs/theme-tailwind` is wrapped
+ * `SettingsModal` — `useColorPalette()` from `@vuecs/design` is wrapped
  * with `createSharedComposable`, so every call site reads/writes the
- * one shared ref. `setColorPalette()` is invoked inside the composable
- * (apply on init + apply on change). localStorage persists across
- * reloads.
+ * one shared ref. The composable dispatches through whichever themes
+ * are installed; theme-tailwind contributes its renderer via
+ * `palette.handle`. localStorage persists across reloads.
  */
 // No `initial` — `useColorPalette()` is wrapped in `createSharedComposable`,
 // so options are first-call-wins. Demo.vue calls without options, so an
