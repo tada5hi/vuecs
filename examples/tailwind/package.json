@@ -25,7 +25,7 @@
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.3.0",
-        "@vitejs/plugin-vue": "^6.0.6",
+        "@vitejs/plugin-vue": "^6.0.7",
         "@vuecs-examples/shared": "*",
         "@vuecs/button": "*",
         "@vuecs/core": "*",
@@ -45,9 +45,9 @@
         "@vuecs/timeago": "*",
         "tailwindcss": "^4.3.0",
         "typescript": "^5.9.3",
-        "vite": "^8.0.12",
+        "vite": "^8.0.13",
         "vue": "^3.5.34",
         "vue-router": "^5.0.6",
-        "vue-tsc": "^3.2.8"
+        "vue-tsc": "^3.2.9"
     }
 }

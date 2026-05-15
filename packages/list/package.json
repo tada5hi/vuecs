@@ -38,7 +38,7 @@
         "test:coverage": "vitest --config test/vitest.config.ts --run --coverage"
     },
     "dependencies": {
-        "smob": "^1.6.1"
+        "smob": "^1.6.2"
     },
     "devDependencies": {
         "@vue/test-utils": "^2.4.10",
