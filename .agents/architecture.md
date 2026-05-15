@@ -379,6 +379,7 @@ type Theme = {
     palette?: {
         handle(palette: Record<string, string>): string;
         names?: readonly string[];
+        scaleAliases?: Record<string, string>;
     };
 };
 ```

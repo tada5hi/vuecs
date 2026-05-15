@@ -217,7 +217,17 @@ interface UseColorPaletteReturn<T> {
 }
 ```
 
-The default `T` is `ColorPaletteConfig` (`Partial<Record<SemanticScaleName, ColorPaletteName>>`) — the canonical catalog from `@vuecs/design`. Themes that widen the palette-name union via `ExtraColorPaletteNames` (declaration merging) pick up the wider type automatically.
+The generic `T` defaults to `Record<string, string>` so calls without explicit typing accept any palette shape. Pass `ColorPaletteConfig` (= `Partial<Record<SemanticScaleName, ColorPaletteName>>`) explicitly to get autocomplete + type-checking against the canonical six scales × 22 catalog palette names:
+
+```ts
+import { useColorPalette } from '@vuecs/design';
+import type { ColorPaletteConfig } from '@vuecs/design';
+
+const { current, set, extend } = useColorPalette<ColorPaletteConfig>();
+// current.value.primary autocompletes the 22 catalog names
+```
+
+Themes that widen the palette-name union via `ExtraColorPaletteNames` (declaration merging) widen `ColorPaletteConfig` automatically.
 
 #### `set` vs `extend`
 

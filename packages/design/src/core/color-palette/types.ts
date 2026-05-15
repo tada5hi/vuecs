@@ -82,7 +82,10 @@ export interface UseColorPaletteOptions<T extends Record<string, unknown>> {
      * input keys to `SEMANTIC_SCALES` and input values to `COLOR_PALETTES`
      * (the canonical catalog) — sufficient for both shipping themes.
      * Pass your own to widen acceptance for themes that use
-     * `ExtraColorPaletteNames` or `Theme.palette.scaleAliases`.
+     * `ExtraColorPaletteNames`. (`Theme.palette.scaleAliases` doesn't
+     * affect this layer — aliases translate canonical keys inside the
+     * dispatcher AFTER sanitize runs, so the sanitizer still keys on
+     * canonical names.)
      */
     sanitize?: (raw: unknown) => T;
     /**

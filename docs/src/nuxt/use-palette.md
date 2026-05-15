@@ -29,8 +29,8 @@ const goGreen = () => {
 
 ## API
 
-Same return shape as the SPA composables in `@vuecs/theme-tailwind` /
-`@vuecs/theme-bulma`. Quick recap:
+Same return shape as the SPA `useColorPalette()` from `@vuecs/design`.
+Quick recap:
 
 ```ts
 interface UseColorPaletteReturn<NuxtColorPaletteConfig> {

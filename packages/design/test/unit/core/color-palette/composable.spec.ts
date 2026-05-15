@@ -229,7 +229,7 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
     });
 
     it('default sanitize filters input to the canonical catalog (plan 026)', async () => {
-        const handle = (p: Record<string, string>) => `:root { --primary: ${p.primary ?? 'unset'}; --neutral: ${p.neutral ?? 'unset'}; }`;
+        const handle = vi.fn((p: Record<string, string>) => `:root { --primary: ${p.primary ?? 'unset'}; --neutral: ${p.neutral ?? 'unset'}; }`);
         const manager: MockThemeManager = { themes: [{ palette: { handle } }] };
 
         const { unmount } = mountWithManager(manager, () => {
@@ -253,7 +253,14 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
         const css = readPaletteStyle();
         expect(css).toContain('--primary: green');
         expect(css).toContain('--neutral: unset');
-        expect(css).not.toContain('bogus');
+        // Verify the dispatcher dropped invalid entries BEFORE forwarding
+        // to handle — the css assertion alone is ambiguous (handle ignores
+        // unknown keys), so inspect the actual payload it received.
+        expect(handle).toHaveBeenCalled();
+        const forwarded = handle.mock.calls.at(-1)?.[0] ?? {};
+        expect(forwarded).not.toHaveProperty('bogus');
+        expect(forwarded).not.toHaveProperty('neutral');
+        expect(forwarded).toEqual({ primary: 'green' });
         unmount();
     });
 
