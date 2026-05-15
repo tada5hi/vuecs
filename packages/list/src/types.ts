@@ -1,18 +1,27 @@
 import type { ComponentDefaultValues, ThemeElementDefinition } from '@vuecs/core';
 
-// Each part owns the theme keys it uses. After the layout-slot split
-// (plan 010 follow-up) every part — including `<VCListItem>` — exposes
-// only `root`. Per-cluster styling lives on the new sub-components
-// `<VCListItemText>` and `<VCListItemActions>`.
-export type ListThemeClasses = { root: string };
-export type ListHeaderThemeClasses = { root: string };
+// Five theme entries (was nine). `<VCListItemText>` / `<VCListItemActions>`
+// / `<VCListHeader>` / `<VCListFooter>` were deleted in plan 027 — their
+// theme keys consolidated:
+//   * `text` + `actions` slot keys live on `listItem` now
+//   * `header` + `footer` slot keys live on `list` now
+// Consumers apply these classes to their own markup (header / footer /
+// inner spans). Themes still target named slot keys; the components
+// just don't exist as DOM emitters anymore.
+
+export type ListThemeClasses = {
+    root: string;
+    header: string;
+    footer: string;
+};
 export type ListBodyThemeClasses = { root: string };
-export type ListFooterThemeClasses = { root: string };
 export type ListLoadingThemeClasses = { root: string };
 export type ListEmptyThemeClasses = { root: string };
-export type ListItemThemeClasses = { root: string };
-export type ListItemTextThemeClasses = { root: string };
-export type ListItemActionsThemeClasses = { root: string };
+export type ListItemThemeClasses = {
+    root: string;
+    text: string;
+    actions: string;
+};
 
 /**
  * Resolved-default shape for `<VCListEmpty>`. Mirrors the old
@@ -26,12 +35,8 @@ export type ListEmptyDefaults = {
 declare module '@vuecs/core' {
     interface ThemeElements {
         list?: ThemeElementDefinition<ListThemeClasses>;
-        listHeader?: ThemeElementDefinition<ListHeaderThemeClasses>;
         listBody?: ThemeElementDefinition<ListBodyThemeClasses>;
         listItem?: ThemeElementDefinition<ListItemThemeClasses>;
-        listItemText?: ThemeElementDefinition<ListItemTextThemeClasses>;
-        listItemActions?: ThemeElementDefinition<ListItemActionsThemeClasses>;
-        listFooter?: ThemeElementDefinition<ListFooterThemeClasses>;
         listLoading?: ThemeElementDefinition<ListLoadingThemeClasses>;
         listEmpty?: ThemeElementDefinition<ListEmptyThemeClasses>;
     }

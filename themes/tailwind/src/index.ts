@@ -357,7 +357,15 @@ export default function tailwindTheme(): Theme {
             },
             validationGroup: { classes: { item: 'text-xs text-error-600' } },
             list: {
-                classes: { root: 'flex flex-col gap-1' },
+                classes: {
+                    root: 'flex flex-col gap-1',
+                    // Header / footer chrome — consumer applies these to
+                    // their own `<header>` / `<footer>` markup inside the
+                    // `<VCList>` default slot. `empty:hidden` collapses
+                    // out of layout when no content provided.
+                    header: 'flex items-center empty:hidden',
+                    footer: 'flex items-center empty:hidden',
+                },
                 // Density axis controls the gap between items. `compact`
                 // suits dense data tables, `normal` is the default,
                 // `spacious` reads as breathing room around long-form
@@ -371,34 +379,34 @@ export default function tailwindTheme(): Theme {
                 },
                 defaultVariants: { density: 'normal' },
             },
-            // `empty:hidden` — when shorthand mode auto-composes a part
-            // and the consumer didn't supply that slot, the resulting
-            // empty wrapper collapses out of layout instead of taking
-            // its own row.
-            listHeader: { classes: { root: 'flex items-center empty:hidden' } },
-            listFooter: { classes: { root: 'flex items-center empty:hidden' } },
-            listBody: { classes: { root: 'm-0 list-none p-0 empty:hidden' } },
-            // `<VCListItem>` owns the row's flex layout. `<VCListItemText>`
-            // takes `flex-1 min-w-0` so it consumes available space and
-            // truncates cleanly. `<VCListItemActions>` is positionally
-            // unopinionated so N clusters compose naturally — the text's
-            // `flex-1` is what pushes them to the right edge.
+            listBody: { classes: { root: 'm-0 list-none p-0' } },
+            // `<VCListItem>` owns the row's flex layout. The `text` slot
+            // (consumer's `<span :class="classes.text">`) takes `flex-1
+            // min-w-0` so it consumes available space and truncates
+            // cleanly. The `actions` slot is positionally unopinionated
+            // so N clusters compose naturally.
             listItem: {
-                classes: { root: 'flex flex-row items-center gap-2 py-1' },
-                // Match the parent list's density: tighter vertical padding
-                // for compact rows, generous padding for spacious rows.
+                classes: {
+                    root: 'flex flex-row items-center gap-2 py-1',
+                    text: 'inline-flex min-w-0 flex-1 flex-col',
+                    actions: 'inline-flex items-center gap-1',
+                },
                 variants: {
                     density: {
                         compact: { root: 'py-0.5' },
                         normal: { root: '' },
                         spacious: { root: 'py-3' },
                     },
+                    disabled: { true: { root: 'cursor-not-allowed opacity-50' } },
+                    active: { true: { root: 'bg-primary-50 text-primary-900 dark:bg-primary-950 dark:text-primary-100' } },
+                    selected: { true: { root: 'bg-bg-muted' } },
                 },
                 defaultVariants: { density: 'normal' },
             },
-            listItemText: { classes: { root: 'inline-flex min-w-0 flex-1 flex-col' } },
-            listItemActions: { classes: { root: 'inline-flex items-center gap-1' } },
-            listLoading: { classes: { root: 'py-2 text-center text-sm text-fg-muted' } },
+            listLoading: {
+                classes: { root: 'py-2 text-center text-sm text-fg-muted' },
+                variants: { overlay: { true: { root: 'absolute inset-0 z-10 flex items-center justify-center bg-bg/75 backdrop-blur-sm' } } },
+            },
             listEmpty: { classes: { root: 'rounded-md border border-warning-200 bg-warning-50 p-2 text-sm text-warning-800' } },
             navigation: {
                 classes: {

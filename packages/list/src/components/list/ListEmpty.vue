@@ -4,11 +4,14 @@ import type { ComponentThemeDefinition, ThemeClassesOverride, VariantValues } fr
 import { defineComponent, h } from 'vue';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import { useList } from '../../composables';
-import type { ListState } from '../../composables';
 import { applyAsChild, hasMeaningfulVNodes } from '../../utils';
 import type { ListEmptyDefaults, ListEmptyThemeClasses } from '../../types';
 
 const listEmptyProps = {
+    /**
+     * Wrapper element. Default `'div'` with `role="status"` so screen
+     * readers announce the empty state when it appears.
+     */
     tag: { type: String, default: 'div' },
     asChild: { type: Boolean, default: false },
     themeClass: { type: Object as PropType<ThemeClassesOverride<ListEmptyThemeClasses>>, default: undefined },
@@ -17,12 +20,20 @@ const listEmptyProps = {
 
 export type ListEmptyProps = ExtractPublicPropTypes<typeof listEmptyProps>;
 
-type ListEmptySlotProps = ListState<unknown, Record<string, unknown>>;
+type ListEmptySlotProps = { data: unknown[]; busy: boolean };
 
 const behavioralDefaults: ListEmptyDefaults = { content: 'No data available...' };
 
 export const listEmptyThemeDefaults: ComponentThemeDefinition<ListEmptyThemeClasses> = { classes: { root: 'vc-list-empty' } };
 
+/**
+ * `<VCListEmpty>` — empty-state placeholder. Renders as a sibling to
+ * `<VCListBody>` (NOT inside the `<ul>`) when `data.length === 0 &&
+ * !busy`. Reads `useList()` for state.
+ *
+ * Behavioral default for content text is configurable via
+ * `app.use(vuecs, { defaults: { listEmpty: { content: t('list.empty') } } })`.
+ */
 export default defineComponent({
     name: 'VCListEmpty',
     props: listEmptyProps,
@@ -32,27 +43,34 @@ export default defineComponent({
     setup(props, { slots }) {
         const theme = useComponentTheme('listEmpty', props, listEmptyThemeDefaults);
         const defaults = useComponentDefaults('listEmpty', props, behavioralDefaults);
-        const ctx = useList('VCListEmpty');
+        const { state } = useList('VCListEmpty');
 
         return () => {
-            // Self-condition on `isEmpty` — Empty appears only when the
-            // list has settled with zero rows (`!busy && total === 0`).
-            if (!ctx.isEmpty.value) return null;
+            // Render condition: data empty AND not busy. The `!busy` guard
+            // makes Default-Sibling loading (sibling spinner) the
+            // exclusive state during first-load instead of stacking with
+            // Empty.
+            if (state.busy.value || state.data.value.length > 0) return null;
+
             const rootClass = theme.value.root || undefined;
-            const slotChildren = slots.default?.(ctx);
-            // Empty arrays / comment-only / whitespace-only slot output
-            // count as "no content" — a `<template #default><!-- --></template>`
-            // shouldn't suppress the configurable fallback string.
+            const slotProps: ListEmptySlotProps = {
+                data: state.data.value,
+                busy: state.busy.value,
+            };
+            const slotChildren = slots.default?.(slotProps);
             const hasSlotContent = hasMeaningfulVNodes(slotChildren);
-            // asChild can only clone vnodes — only honor it when the
-            // consumer supplies a real default slot. The string fallback
-            // is not a vnode, so it falls through to the wrapper element.
+
+            const attrs: Record<string, unknown> = {
+                class: rootClass,
+                role: 'status',
+            };
+
             if (props.asChild && hasSlotContent) {
-                const cloned = applyAsChild(slotChildren, { class: rootClass });
+                const cloned = applyAsChild(slotChildren, attrs);
                 if (cloned) return cloned;
             }
             const children = hasSlotContent ? slotChildren : [defaults.value.content];
-            return h(props.tag, { class: rootClass }, children);
+            return h(props.tag, attrs, children);
         };
     },
 });

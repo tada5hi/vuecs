@@ -287,7 +287,11 @@ export default function bootstrapTheme(): Theme {
                 defaultVariants: { size: 'md' },
             },
             list: {
-                classes: { root: 'd-flex flex-column gap-1' },
+                classes: {
+                    root: 'd-flex flex-column gap-1',
+                    header: 'd-flex align-items-center',
+                    footer: 'd-flex align-items-center',
+                },
                 variants: {
                     density: {
                         compact: { root: 'gap-0' },
@@ -297,26 +301,29 @@ export default function bootstrapTheme(): Theme {
                 },
                 defaultVariants: { density: 'normal' },
             },
-            listHeader: { classes: { root: 'd-flex align-items-center' } },
             listBody: { classes: { root: 'list-unstyled m-0' } },
-            // `<VCListItem>` owns the row's flex layout. `<VCListItemText>`
-            // takes `flex-grow-1` so it consumes available space and pushes
-            // any trailing `<VCListItemActions>` clusters to the right edge.
             listItem: {
-                classes: { root: 'd-flex flex-row align-items-center gap-1' },
+                classes: {
+                    root: 'd-flex flex-row align-items-center gap-1',
+                    text: 'd-inline-flex flex-column flex-grow-1 text-truncate',
+                    actions: 'd-inline-flex align-items-center gap-1',
+                },
                 variants: {
                     density: {
                         compact: { root: 'py-0' },
                         normal: { root: 'py-1' },
                         spacious: { root: 'py-3' },
                     },
+                    disabled: { true: { root: 'opacity-50 pe-none' } },
+                    active: { true: { root: 'bg-primary-subtle text-primary-emphasis' } },
+                    selected: { true: { root: 'bg-body-secondary' } },
                 },
                 defaultVariants: { density: 'normal' },
             },
-            listItemText: { classes: { root: 'd-inline-flex flex-column flex-grow-1 text-truncate' } },
-            listItemActions: { classes: { root: 'd-inline-flex align-items-center gap-1' } },
-            listFooter: { classes: { root: 'd-flex align-items-center' } },
-            listLoading: { classes: { root: 'py-2 text-center text-muted small' } },
+            listLoading: {
+                classes: { root: 'py-2 text-center text-muted small' },
+                variants: { overlay: { true: { root: 'position-absolute top-0 start-0 end-0 bottom-0 d-flex align-items-center justify-content-center bg-body-tertiary' } } },
+            },
             listEmpty: { classes: { root: 'alert alert-warning small p-2' } },
             navigation: {
                 classes: {

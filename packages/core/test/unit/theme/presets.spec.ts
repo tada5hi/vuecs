@@ -33,13 +33,12 @@ describe('bootstrapTheme', () => {
         expect(entry.classes!.root).toContain('pagination');
     });
 
-    it('should define list, listItem, and listItemActions classes', () => {
+    it('should define list and listItem classes (with text + actions slots)', () => {
         const list = preset.elements.list as ThemeElementDefinition;
         const listItem = preset.elements.listItem as ThemeElementDefinition;
-        const listItemActions = preset.elements.listItemActions as ThemeElementDefinition;
         expect(list.classes!.root).toContain('d-flex');
         expect(listItem.classes!.root).toContain('d-flex');
-        expect(listItemActions.classes!.root).toContain('d-inline-flex');
+        expect(listItem.classes!.actions).toContain('d-inline-flex');
     });
 
     it('should define navigation group and link', () => {

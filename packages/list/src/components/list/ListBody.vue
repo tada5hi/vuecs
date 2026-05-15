@@ -1,34 +1,36 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
 import type { ComponentThemeDefinition, ThemeClassesOverride, VariantValues } from '@vuecs/core';
-import { 
-    Fragment, 
-    cloneVNode, 
-    defineComponent, 
-    h, 
+import {
+    Fragment,
+    cloneVNode,
+    defineComponent,
+    h,
 } from 'vue';
-import type { 
-    ExtractPublicPropTypes, 
-    PropType, 
-    SlotsType, 
-    VNode, 
+import type {
+    ExtractPublicPropTypes,
+    PropType,
+    SlotsType,
+    VNode,
 } from 'vue';
 import { useList } from '../../composables';
-import type { ListState } from '../../composables';
 import {
     applyAsChild,
     hasMeaningfulVNodes,
     meaningfulVNodes,
-    mergeSlotProps,
 } from '../../utils';
 import type { ListBodyThemeClasses } from '../../types';
 
 const listBodyProps = {
-    tag: { type: String, default: 'div' },
     /**
-     * Reka-style as-child: only honored in **manual mode** (when the
-     * default slot supplies content directly). Auto-iterate mode emits
-     * one vnode per row, which is structurally not a single-vnode case.
+     * Inner list element. Default `'ul'` — emits semantic HTML so screen
+     * readers announce "list, N items". Set `'ol'` for ordered lists.
+     */
+    tag: { type: String, default: 'ul' },
+    /**
+     * Reka-style as-child: render by cloning the slot's single root vnode
+     * instead of emitting a wrapper. Only honored in manual mode (default
+     * slot with content); auto-iterate mode always emits the wrapper.
      */
     asChild: { type: Boolean, default: false },
     themeClass: { type: Object as PropType<ThemeClassesOverride<ListBodyThemeClasses>>, default: undefined },
@@ -37,21 +39,29 @@ const listBodyProps = {
 
 export type ListBodyProps = ExtractPublicPropTypes<typeof listBodyProps>;
 
-type ListBodyState = ListState<unknown, Record<string, unknown>>;
-type ListItemSlotPayload = ListBodyState & { data: unknown; index: number };
+type ListBodyItemSlotProps = {
+    data: unknown;
+    index: number;
+};
 
 /**
- * `<VCListBody>` has two modes (Q4):
- *  - **Auto-iterate** when only an `#item` slot is given (and no
- *    default-slot vnodes). Body iterates `data` from context, renders
- *    `#item` per row with the full `defineList()` state plus per-row
- *    `{ data, index }` slot props (per-row keys win — see
- *    `mergeSlotProps`). Stable `:key` resolution via
- *    `useList().getItemKey()`, falling back to the row index.
- *  - **Manual** when default-slot vnodes are present. Body renders the
- *    children as-written; iteration is the consumer's job (used for
- *    virtual scrolling and other escape-hatch scenarios). The default
- *    slot receives the full `defineList()` return as slot props (Q9).
+ * `<VCListBody>` — the inner `<ul>` element. Render condition is **data
+ * presence only**: emits when `data.length > 0`. Does NOT auto-hide on
+ * `busy` — that decoupling is what makes Loading-Inline and
+ * Loading-Skeleton patterns possible (consumer can render extra `<li>`s
+ * inside while loading).
+ *
+ * Two render modes:
+ *  - **Auto-iterate** (default): supply an `#item` slot; the body iterates
+ *    `data` from context and renders `#item` per row inside a single
+ *    `<ul>` wrapper. `:key` resolution via `useList().state.getItemKey()`,
+ *    falling back to iteration index.
+ *  - **Manual** (escape hatch): supply default-slot vnodes directly. The
+ *    body renders them as-written; iteration is the consumer's job
+ *    (virtual scrolling, ad-hoc layouts).
+ *
+ * When the parent `<VCList>` has `selection-mode` set, the body upgrades
+ * its ARIA role to `listbox` (+ `aria-multiselectable` for multi).
  */
 export const listBodyThemeDefaults: ComponentThemeDefinition<ListBodyThemeClasses> = { classes: { root: 'vc-list-body' } };
 
@@ -59,48 +69,63 @@ export default defineComponent({
     name: 'VCListBody',
     props: listBodyProps,
     slots: Object as SlotsType<{
-        default: ListBodyState;
-        item: ListItemSlotPayload;
+        default: { data: unknown[] };
+        item: ListBodyItemSlotProps;
     }>,
     setup(props, { slots }) {
         const theme = useComponentTheme('listBody', props, listBodyThemeDefaults);
-        const ctx = useList('VCListBody');
+        const { state, selection } = useList<unknown>('VCListBody');
 
         return () => {
+            // Render condition: data presence only, NOT busy. This is the
+            // load-bearing decoupling that lets Loading-Inline /
+            // Loading-Skeleton patterns coexist with default sibling
+            // loading. When data is empty, sibling `<VCListEmpty>` /
+            // `<VCListLoading>` cover the state.
+            if (state.data.value.length === 0) return null;
+
             const rootClass = theme.value.root || undefined;
 
-            // Manual mode: invoke default once, decide based on what came back.
-            const defaultVNodes = slots.default?.(ctx);
+            // ARIA role transition when selection is active. Listbox
+            // semantics override the implicit `role="list"` of `<ul>`.
+            const ariaAttrs: Record<string, string | boolean> = {};
+            if (selection.mode.value !== undefined) {
+                ariaAttrs.role = 'listbox';
+                if (selection.mode.value === 'multi') {
+                    ariaAttrs['aria-multiselectable'] = 'true';
+                }
+            }
+
+            // Manual mode: invoke default once, dispatch based on result.
+            const defaultVNodes = slots.default?.({ data: state.data.value });
             if (hasMeaningfulVNodes(defaultVNodes)) {
                 if (props.asChild) {
-                    const cloned = applyAsChild(defaultVNodes, { class: rootClass });
+                    const cloned = applyAsChild(defaultVNodes, { class: rootClass, ...ariaAttrs });
                     if (cloned) return cloned;
                 }
-                return h(props.tag, { class: rootClass }, defaultVNodes);
+                return h(props.tag, { class: rootClass, ...ariaAttrs }, defaultVNodes);
             }
 
             // Auto-iterate mode: render each row through `#item`.
-            // Optimisation (#2): when the slot returns exactly one
-            // meaningful vnode, key it directly via cloneVNode instead
-            // of wrapping in a keyed Fragment — saves one vnode per row.
             if (slots.item) {
-                const rows: VNode[] = ctx.data.value.map((item, index) => {
-                    const id = ctx.getItemKey(item as never);
+                const rows: VNode[] = state.data.value.map((item, index) => {
+                    const id = state.getItemKey(item);
                     const key = id ?? index;
-                    const slotProps = mergeSlotProps(ctx, { data: item, index });
-                    const result = slots.item!(slotProps as ListItemSlotPayload);
+                    const slotProps: ListBodyItemSlotProps = { data: item, index };
+                    const result = slots.item!(slotProps);
                     const meaningful = meaningfulVNodes(result);
                     if (meaningful.length === 1) {
-                        return cloneVNode(meaningful[0], { key });
+                        return cloneVNode(meaningful[0]!, { key });
                     }
                     return h(Fragment, { key }, result);
                 });
-                return h(props.tag, { class: rootClass }, rows);
+                return h(props.tag, { class: rootClass, ...ariaAttrs }, rows);
             }
 
-            // No slot, no children — render the wrapper anyway so themes
-            // can target it (or hide it via `:empty`).
-            return h(props.tag, { class: rootClass });
+            // No slot, no children — render empty wrapper so themes can
+            // still target it. Edge case (consumer wrote `<VCListBody />`
+            // with no slots).
+            return h(props.tag, { class: rootClass, ...ariaAttrs });
         };
     },
 });

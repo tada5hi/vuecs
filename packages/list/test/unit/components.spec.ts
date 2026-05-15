@@ -8,23 +8,23 @@ import {
     VCList,
     VCListBody,
     VCListEmpty,
-    VCListHeader,
     VCListItem,
-    VCListItemActions,
-    VCListItemText,
     VCListLoading,
     defineList,
 } from '../../src';
 
 type User = { id: number; name: string };
 
-function withVuecs(setup: () => unknown) {
+function withVuecs(
+    setup: () => unknown,
+    themeOptions: Parameters<typeof installThemeManager>[1] = {},
+) {
     const App = defineComponent({ setup: () => setup });
     return mount(App, {
         global: {
             plugins: [{
                 install(app: App) {
-                    installThemeManager(app, {});
+                    installThemeManager(app, themeOptions);
                     installDefaultsManager(app, {});
                     installConfigManager(app, {});
                 },
@@ -33,267 +33,307 @@ function withVuecs(setup: () => unknown) {
     });
 }
 
-describe('VCList — mode dispatch', () => {
-    it('renders shorthand mode when no compound children are present', () => {
-        const wrapper = withVuecs(() => h(VCList, { data: [{ id: 1, name: 'a' }] as User[] }, { item: ({ data }: { data: User }) => h('div', { class: 'row' }, data.name) }));
-
-        expect(wrapper.findAll('.row').length).toBe(1);
-        expect(wrapper.find('.row').text()).toBe('a');
-        expect(wrapper.find('.vc-list').exists()).toBe(true);
-        expect(wrapper.find('.vc-list-body').exists()).toBe(true);
+describe('VCList — outer container + slot prop', () => {
+    it('renders a <div> outer container with the default theme class', () => {
+        const wrapper = withVuecs(() => h(VCList, { data: [] }, { default: () => undefined }));
+        const root = wrapper.find('.vc-list');
+        expect(root.exists()).toBe(true);
+        expect(root.element.tagName).toBe('DIV');
     });
 
-    it('renders compound mode when default-slot vnodes are present', () => {
-        const wrapper = withVuecs(() => h(VCList, { data: [{ id: 1, name: 'a' }, { id: 2, name: 'b' }] as User[] }, {
-            default: () => [
-                h(VCListBody, {}, { item: ({ data }: { data: User }) => h('div', { class: 'compound-row' }, data.name) }),
+    it('exposes resolved theme classes via the default slot prop', () => {
+        // Consumer destructures { classes } and applies classes.header /
+        // classes.footer to their own <header> / <footer> markup.
+        const wrapper = withVuecs(() => h(VCList, { data: [] }, {
+            default: ({ classes }: { classes: { header: string; footer: string } }) => [
+                h('header', { class: [classes.header, 'consumer-header'] }, 'H'),
+                h('footer', { class: [classes.footer, 'consumer-footer'] }, 'F'),
             ],
         }));
 
-        expect(wrapper.findAll('.compound-row').length).toBe(2);
-        expect(wrapper.find('.vc-list').exists()).toBe(true);
-        expect(wrapper.find('.vc-list-header').exists()).toBe(false);
-        expect(wrapper.find('.vc-list-footer').exists()).toBe(false);
+        const header = wrapper.find('.consumer-header');
+        expect(header.exists()).toBe(true);
+        expect(header.classes()).toContain('vc-list-header');
+        expect(wrapper.find('.consumer-footer').classes()).toContain('vc-list-footer');
     });
 
-    it('emits the auto-composed parts in shorthand mode (header, body, footer)', () => {
-        const wrapper = withVuecs(() => h(VCList, { data: [{ id: 1, name: 'a' }] as User[] }, {
-            header: () => h('span', { class: 'h' }, 'H'),
-            item: ({ data }: { data: User }) => h('div', { class: 'row' }, data.name),
-            footer: () => h('span', { class: 'f' }, 'F'),
-        }));
-
-        expect(wrapper.find('.vc-list-header').exists()).toBe(true);
-        expect(wrapper.find('.vc-list-header .h').text()).toBe('H');
-        expect(wrapper.find('.vc-list-footer .f').text()).toBe('F');
-        expect(wrapper.findAll('.row').length).toBe(1);
-    });
-
-    it('routes the shorthand `empty` slot through <VCListEmpty>', () => {
-        const wrapper = withVuecs(() => h(VCList, { data: [] as User[] }, { empty: () => h('span', { class: 'e' }, 'no rows') }));
-
-        expect(wrapper.find('.vc-list-empty .e').text()).toBe('no rows');
-    });
-
-    it('honors the asChild prop in compound mode by cloning the single child', () => {
-        const wrapper = withVuecs(() => h(VCList, {
-            asChild: true,
-            data: [] as User[],
-        }, { default: () => [h('section', { class: 'as-child-root' }, 'X')] }));
-
-        const root = wrapper.element as HTMLElement;
-        expect(root.tagName).toBe('SECTION');
-        expect(root.className).toContain('as-child-root');
-        expect(root.className).toContain('vc-list');
+    it('honors the `tag` prop for the outer container', () => {
+        const wrapper = withVuecs(() => h(VCList, { data: [], tag: 'section' }, { default: () => undefined }));
+        expect(wrapper.element.tagName).toBe('SECTION');
     });
 });
 
-describe('VCListBody — iteration modes', () => {
-    it('auto-iterates `data` and provides per-row slot props', () => {
+describe('VCListBody — render condition + iteration', () => {
+    it('renders the <ul> only when data is present', () => {
+        const empty = withVuecs(() => h(VCList, { data: [] }, { default: () => [h(VCListBody)] }));
+        expect(empty.find('.vc-list-body').exists()).toBe(false);
+
+        const populated = withVuecs(() => h(VCList, { data: [{ id: 1, name: 'a' }] as User[] }, { default: () => [h(VCListBody, {}, { item: ({ data }: { data: User }) => h(VCListItem, { data }, { default: () => data.name }) })] }));
+        expect(populated.find('.vc-list-body').exists()).toBe(true);
+        expect(populated.find('.vc-list-body').element.tagName).toBe('UL');
+    });
+
+    it('keeps the <ul> rendered while busy (decouples body from busy)', () => {
+        // Loading-Inline / Loading-Skeleton patterns need <ul> visible
+        // during loading — the render condition is data-presence only.
+        const wrapper = withVuecs(() => h(VCList, { data: [{ id: 1, name: 'a' }] as User[], busy: true }, { default: () => [h(VCListBody, {}, { item: ({ data }: { data: User }) => h(VCListItem, { data }, { default: () => data.name }) })] }));
+
+        expect(wrapper.find('.vc-list-body').exists()).toBe(true);
+        expect(wrapper.findAll('.vc-list-item').length).toBe(1);
+    });
+
+    it('auto-iterates `#item` slot to <li>s with per-row slot props', () => {
         const wrapper = withVuecs(() => h(VCList, {
             data: [
                 { id: 1, name: 'a' },
                 { id: 2, name: 'b' },
-                { id: 3, name: 'c' },
             ] as User[],
         }, {
-            default: () => [
-                h(VCListBody, {}, {
-                    item: ({ data, index }: { data: User; index: number }) =>
-                        h('div', { class: 'row', 'data-index': index }, data.name),
-                }),
-            ],
+            default: () => [h(VCListBody, {}, {
+                item: ({ data, index }: { data: User; index: number }) =>
+                    h(VCListItem, { data }, { default: () => `${index}:${data.name}` }),
+            })],
         }));
 
-        const rows = wrapper.findAll('.row');
-        expect(rows.length).toBe(3);
-        expect(rows[0].text()).toBe('a');
-        expect(rows[2].attributes('data-index')).toBe('2');
+        const items = wrapper.findAll('.vc-list-item');
+        expect(items.length).toBe(2);
+        expect(items[0]!.element.tagName).toBe('LI');
+        expect(items[0]!.text()).toBe('0:a');
+        expect(items[1]!.text()).toBe('1:b');
     });
 
-    it('keys rows by `itemKey` so DOM identity follows the record on reorder', async () => {
+    it('reuses DOM identity across reorders via `itemKey`', async () => {
         const data = ref<User[]>([
             { id: 1, name: 'a' },
             { id: 2, name: 'b' },
         ]);
-        // `itemKey` is on `defineList()`, not `<VCList>`. Build state
-        // explicitly and pass via `:state` so the keyed-iteration path
-        // in `<VCListBody>` actually consults `state.getItemKey()`.
         const state = defineList<User>({ data, itemKey: 'id' });
-        const wrapper = withVuecs(() => h(VCList, { state }, {
-            default: () => [
-                h(VCListBody, {}, {
-                    item: ({ data: row }: { data: User }) => h(
-                        'div',
-                        { class: 'row', 'data-name': row.name },
-                        row.name,
-                    ),
-                }),
-            ],
-        }));
+        const wrapper = withVuecs(() => h(VCList, { state }, { default: () => [h(VCListBody, {}, { item: ({ data: row }: { data: User }) => h(VCListItem, { data: row }, { default: () => h('span', { class: 'name', 'data-name': row.name }, row.name) }) })] }));
 
-        const initial = wrapper.findAll('.row').map((r) => r.element);
+        const initial = wrapper.findAll('.name').map((r) => r.element);
         expect(initial.map((el) => (el as HTMLElement).dataset.name)).toEqual(['a', 'b']);
 
-        // Reverse the array — keyed reconciliation should reuse the same
-        // DOM nodes (just shuffled) instead of recreating them.
-        data.value = [data.value[1], data.value[0]];
+        data.value = [data.value[1]!, data.value[0]!];
         await wrapper.vm.$nextTick();
 
-        const reordered = wrapper.findAll('.row').map((r) => r.element);
+        const reordered = wrapper.findAll('.name').map((r) => r.element);
         expect(reordered.map((el) => (el as HTMLElement).dataset.name)).toEqual(['b', 'a']);
-        // Node-identity check: the element that previously rendered "b" is now first.
         expect(reordered[0]).toBe(initial[1]);
         expect(reordered[1]).toBe(initial[0]);
     });
-
-    it('renders manual mode when default slot supplies content', () => {
-        const wrapper = withVuecs(() => h(VCList, { data: [{ id: 1, name: 'a' }] as User[] }, {
-            default: () => [
-                h(VCListBody, {}, { default: () => [h('div', { class: 'manual' }, 'custom')] }),
-            ],
-        }));
-
-        expect(wrapper.find('.manual').exists()).toBe(true);
-        expect(wrapper.find('.manual').text()).toBe('custom');
-    });
-
-    it('renders an empty wrapper when no item slot and no default slot are given', () => {
-        const wrapper = withVuecs(() => h(VCList, { data: [{ id: 1, name: 'a' }] as User[] }, { default: () => [h(VCListBody)] }));
-
-        const body = wrapper.find('.vc-list-body');
-        expect(body.exists()).toBe(true);
-        expect(body.element.children.length).toBe(0);
-    });
 });
 
-describe('VCListLoading / VCListEmpty — self-conditioning', () => {
-    it('renders Loading only while busy is true', async () => {
-        const busy = ref(true);
-        const wrapper = withVuecs(() => h(VCList, {
-            data: [],
-            busy: busy.value,
-        }, {
-            default: () => [
-                h(VCListLoading, {}, { default: () => 'loading…' }),
-            ],
-        }));
-
-        expect(wrapper.find('.vc-list-loading').exists()).toBe(true);
-        expect(wrapper.text()).toContain('loading…');
-
-        busy.value = false;
-        await wrapper.setProps({ busy: false });
-        expect(wrapper.find('.vc-list-loading').exists()).toBe(false);
-    });
-
-    it('renders Empty only when the list has settled with zero rows', () => {
-        const empty = withVuecs(() => h(VCList, {
-            data: [],
-            busy: false,
-        }, { default: () => [h(VCListEmpty, {}, { default: () => 'no data' })] }));
-        expect(empty.find('.vc-list-empty').exists()).toBe(true);
-        expect(empty.text()).toContain('no data');
-
-        const populated = withVuecs(() => h(VCList, { data: [{ id: 1, name: 'a' }] as User[] }, { default: () => [h(VCListEmpty, {}, { default: () => 'no data' })] }));
-        expect(populated.find('.vc-list-empty').exists()).toBe(false);
-    });
-
-    it('falls back to the global default content when Empty has no slot', () => {
-        const wrapper = withVuecs(() => h(VCList, { data: [] }, { default: () => [h(VCListEmpty)] }));
-
-        const emptyEl = wrapper.find('.vc-list-empty');
-        expect(emptyEl.exists()).toBe(true);
-        expect(emptyEl.text().length).toBeGreaterThan(0);
-    });
-
-    it('falls back to the default content when Empty\'s slot resolves to no meaningful vnodes', () => {
-        // A slot returning only comments / empty fragments / whitespace
-        // would leave `slotChildren` truthy (non-null array) but produce
-        // no visible output — the configurable fallback string should
-        // still render.
-        const wrapper = withVuecs(() => h(VCList, { data: [] }, { default: () => [h(VCListEmpty, {}, { default: () => [] })] }));
-
-        const emptyEl = wrapper.find('.vc-list-empty');
-        expect(emptyEl.exists()).toBe(true);
-        expect(emptyEl.text().length).toBeGreaterThan(0);
-    });
-});
-
-describe('VCListItem + sub-components', () => {
-    it('VCListItem default slot renders consumer-supplied content', () => {
+describe('VCListItem — slot props + row state', () => {
+    it('exposes resolved item-level classes via the default slot', () => {
         const wrapper = withVuecs(() => h(VCList, { data: [{ id: 1, name: 'a' }] as User[] }, {
-            default: () => [
-                h(VCListBody, {}, { item: ({ data }: { data: User }) => h(VCListItem, { data }, { default: ({ data: row }: { data: User }) => h('span', { class: 'custom' }, row.name) }) }),
-            ],
-        }));
-
-        expect(wrapper.find('.vc-list-item .custom').text()).toBe('a');
-    });
-
-    it('composes Text + Actions inside ListItem', () => {
-        const wrapper = withVuecs(() => h(VCList, { data: [{ id: 1, name: 'a' }] as User[] }, {
-            default: () => [
-                h(VCListBody, {}, {
-                    item: ({ data }: { data: User }) => h(VCListItem, { data }, {
-                        default: () => [
-                            h(VCListItemText, {}, { default: () => data.name }),
-                            h(VCListItemActions, {}, { default: () => h('button', { class: 'edit-btn' }, 'edit') }),
-                        ],
-                    }),
+            default: () => [h(VCListBody, {}, {
+                item: ({ data }: { data: User }) => h(VCListItem, { data }, {
+                    default: ({ classes }: { classes: { text: string; actions: string } }) => [
+                        h('span', { class: classes.text }, data.name),
+                        h('span', { class: classes.actions }, h('button', null, 'edit')),
+                    ],
                 }),
-            ],
+            })],
         }));
 
         const item = wrapper.find('.vc-list-item');
         expect(item.exists()).toBe(true);
         expect(item.find('.vc-list-item-text').text()).toBe('a');
-        expect(item.find('.vc-list-item-actions .edit-btn').exists()).toBe(true);
+        expect(item.find('.vc-list-item-actions button').text()).toBe('edit');
     });
 
-    it('supports multiple Actions clusters trailing the text', () => {
-        const wrapper = withVuecs(() => h(VCList, { data: [{ id: 1, name: 'a' }] as User[] }, {
-            default: () => [
-                h(VCListBody, {}, {
-                    item: ({ data }: { data: User }) => h(VCListItem, { data }, {
-                        default: () => [
-                            h(VCListItemText, {}, { default: () => data.name }),
-                            h(VCListItemActions, {}, { default: () => h('button', { class: 'a1' }, 'A1') }),
-                            h(VCListItemActions, {}, { default: () => h('button', { class: 'a2' }, 'A2') }),
-                        ],
-                    }),
+    it('applies aria-disabled and data-disabled when :disabled is set', () => {
+        const wrapper = withVuecs(() => h(VCList, { data: [{ id: 1, name: 'a' }] as User[] }, { default: () => [h(VCListBody, {}, { item: ({ data }: { data: User }) => h(VCListItem, { data, disabled: true }, { default: () => data.name }) })] }));
+
+        const li = wrapper.find('.vc-list-item');
+        expect(li.attributes('aria-disabled')).toBe('true');
+        expect(li.attributes('data-disabled')).toBe('');
+    });
+
+    it('applies aria-current and data-active when :active is set', () => {
+        const wrapper = withVuecs(() => h(VCList, { data: [{ id: 1, name: 'a' }] as User[] }, { default: () => [h(VCListBody, {}, { item: ({ data }: { data: User }) => h(VCListItem, { data, active: 'page' }, { default: () => data.name }) })] }));
+
+        const li = wrapper.find('.vc-list-item');
+        expect(li.attributes('aria-current')).toBe('page');
+        expect(li.attributes('data-active')).toBe('');
+    });
+
+    it('folds row-state props + derived selection into themeVariant', () => {
+        // Regression guard: disabled/active/selected must drive theme
+        // variant resolution. Without folding, theme entries like
+        // `listItem.variants.disabled.true = { root: 'X' }` never fire.
+        const wrapper = withVuecs(() => h(VCList, {
+            data: [{ id: 1, name: 'a' }, { id: 2, name: 'b' }] as User[],
+            selectionMode: 'multi',
+            selection: [1],
+        }, {
+            default: () => [h(VCListBody, {}, {
+                item: ({ data }: { data: User }) => h(VCListItem, {
+                    data,
+                    selectable: true,
+                    disabled: data.id === 2,
+                }, { default: () => data.name }),
+            })],
+        }), {
+            themes: [{
+                elements: {
+                    listItem: {
+                        variants: {
+                            disabled: { true: { root: 'cls-disabled' } },
+                            selected: { true: { root: 'cls-selected' } },
+                        },
+                    },
+                },
+            }],
+        });
+
+        const items = wrapper.findAll('.vc-list-item');
+        // First row is selected (id=1 in selection), second row is disabled.
+        expect(items[0]!.classes()).toContain('cls-selected');
+        expect(items[0]!.classes()).not.toContain('cls-disabled');
+        expect(items[1]!.classes()).toContain('cls-disabled');
+        expect(items[1]!.classes()).not.toContain('cls-selected');
+    });
+});
+
+describe('VCListEmpty / VCListLoading — render conditions', () => {
+    it('renders Empty only when !busy && data.length === 0', async () => {
+        const data = ref<User[]>([]);
+        const busy = ref(false);
+        const wrapper = withVuecs(() => h(VCList, {
+            data: data.value,
+            busy: busy.value,
+        }, { default: () => [h(VCListEmpty, {}, { default: () => 'no rows' })] }));
+
+        expect(wrapper.find('.vc-list-empty').exists()).toBe(true);
+        expect(wrapper.find('.vc-list-empty').attributes('role')).toBe('status');
+        expect(wrapper.text()).toContain('no rows');
+
+        // Suppressed while busy
+        await wrapper.setProps({ busy: true });
+        expect(wrapper.find('.vc-list-empty').exists()).toBe(false);
+
+        // Suppressed when data is present
+        await wrapper.setProps({ busy: false, data: [{ id: 1, name: 'a' }] as User[] });
+        expect(wrapper.find('.vc-list-empty').exists()).toBe(false);
+    });
+
+    it('falls back to global default content when Empty has no slot', () => {
+        const wrapper = withVuecs(() => h(VCList, { data: [] }, { default: () => [h(VCListEmpty)] }));
+        const emptyEl = wrapper.find('.vc-list-empty');
+        expect(emptyEl.exists()).toBe(true);
+        expect(emptyEl.text().length).toBeGreaterThan(0);
+    });
+
+    it('renders Loading only when busy && data.length === 0 by default', async () => {
+        const data = ref<User[]>([]);
+        const busy = ref(true);
+        const wrapper = withVuecs(() => h(VCList, {
+            data: data.value,
+            busy: busy.value,
+        }, { default: () => [h(VCListLoading, {}, { default: () => 'loading…' })] }));
+
+        expect(wrapper.find('.vc-list-loading').exists()).toBe(true);
+        expect(wrapper.find('.vc-list-loading').attributes('role')).toBe('status');
+        expect(wrapper.find('.vc-list-loading').attributes('aria-live')).toBe('polite');
+
+        // Busy but data present → loading hides (default mode is first-load only)
+        await wrapper.setProps({ data: [{ id: 1, name: 'a' }] as User[] });
+        expect(wrapper.find('.vc-list-loading').exists()).toBe(false);
+
+        // Not busy → loading hides
+        await wrapper.setProps({ busy: false });
+        expect(wrapper.find('.vc-list-loading').exists()).toBe(false);
+    });
+
+    it('renders Loading whenever busy when :overlay is set', async () => {
+        const wrapper = withVuecs(() => h(VCList, {
+            data: [{ id: 1, name: 'a' }] as User[],
+            busy: true,
+        }, { default: () => [h(VCListLoading, { overlay: true }, { default: () => '…' })] }));
+
+        // Overlay mode shows even when data is present
+        expect(wrapper.find('.vc-list-loading').exists()).toBe(true);
+
+        await wrapper.setProps({ busy: false });
+        expect(wrapper.find('.vc-list-loading').exists()).toBe(false);
+    });
+
+    it('folds :overlay into themeVariant so theme overlay variant activates', () => {
+        const wrapper = withVuecs(() => h(VCList, {
+            data: [{ id: 1, name: 'a' }] as User[],
+            busy: true,
+        }, { default: () => [h(VCListLoading, { overlay: true }, { default: () => '…' })] }), { themes: [{ elements: { listLoading: { variants: { overlay: { true: { root: 'cls-overlay' } } } } } }] });
+
+        expect(wrapper.find('.vc-list-loading').classes()).toContain('cls-overlay');
+    });
+});
+
+describe('Selection — v-model + ARIA', () => {
+    const renderSelectableBody = (slotName: 'item' = 'item') => ({
+        [slotName]: ({ data }: { data: User }) => h(
+            VCListItem,
+            { data, selectable: true },
+            { default: () => data.name },
+        ),
+    });
+
+    it('applies role="listbox" to VCListBody when selectionMode is set', () => {
+        const wrapper = withVuecs(() => h(VCList, {
+            data: [{ id: 1, name: 'a' }] as User[],
+            selectionMode: 'multi',
+        }, { default: () => [h(VCListBody, {}, renderSelectableBody())] }));
+
+        const body = wrapper.find('.vc-list-body');
+        expect(body.attributes('role')).toBe('listbox');
+        expect(body.attributes('aria-multiselectable')).toBe('true');
+    });
+
+    it('applies role="option" + aria-selected to selectable items', () => {
+        const wrapper = withVuecs(() => h(VCList, {
+            data: [{ id: 1, name: 'a' }] as User[],
+            selectionMode: 'single',
+            selection: 1,
+        }, { default: () => [h(VCListBody, {}, renderSelectableBody())] }));
+
+        const item = wrapper.find('.vc-list-item');
+        expect(item.attributes('role')).toBe('option');
+        expect(item.attributes('aria-selected')).toBe('true');
+    });
+
+    it('emits update:selection on click (multi mode toggles in/out)', async () => {
+        const wrapper = withVuecs(() => h(VCList, {
+            data: [{ id: 1, name: 'a' }, { id: 2, name: 'b' }] as User[],
+            selectionMode: 'multi',
+            selection: [],
+        }, { default: () => [h(VCListBody, {}, renderSelectableBody())] }));
+
+        await wrapper.findAll('.vc-list-item')[0]!.trigger('click');
+        const list = wrapper.findComponent(VCList);
+        const events = list.emitted('update:selection');
+        expect(events).toBeTruthy();
+        expect(events![0]).toEqual([[1]]);
+    });
+
+    it('skips selection toggle when click originates from a native interactive descendant', async () => {
+        const wrapper = withVuecs(() => h(VCList, {
+            data: [{ id: 1, name: 'a' }] as User[],
+            selectionMode: 'multi',
+            selection: [],
+        }, {
+            default: () => [h(VCListBody, {}, {
+                item: ({ data }: { data: User }) => h(VCListItem, { data, selectable: true }, {
+                    default: ({ classes }: { classes: { actions: string } }) => [
+                        data.name,
+                        h('span', { class: classes.actions }, h('button', { class: 'inner-btn' }, 'edit')),
+                    ],
                 }),
-            ],
+            })],
         }));
 
-        const clusters = wrapper.findAll('.vc-list-item-actions');
-        expect(clusters.length).toBe(2);
-        expect(clusters[0].find('.a1').exists()).toBe(true);
-        expect(clusters[1].find('.a2').exists()).toBe(true);
-    });
-
-    it('honors asChild on ListItemText / ListItemActions', () => {
-        const wrapper = withVuecs(() => h(VCListItemText, { asChild: true }, { default: () => h('h3', { class: 'custom-text' }, 'hi') }));
-        const root = wrapper.element as HTMLElement;
-        expect(root.tagName).toBe('H3');
-        expect(root.className).toContain('vc-list-item-text');
-        expect(root.className).toContain('custom-text');
-
-        const aw = withVuecs(() => h(VCListItemActions, { asChild: true }, { default: () => h('nav', { class: 'custom-nav' }, 'x') }));
-        const nav = aw.element as HTMLElement;
-        expect(nav.tagName).toBe('NAV');
-        expect(nav.className).toContain('vc-list-item-actions');
-        expect(nav.className).toContain('custom-nav');
-    });
-
-    it('VCListHeader renders only when its default slot is provided', () => {
-        const a = withVuecs(() => h(VCList, { data: [] }, { default: () => [h(VCListHeader)] }));
-        // empty wrapper still renders — themes hide it via :empty
-        expect(a.find('.vc-list-header').exists()).toBe(true);
-        expect(a.find('.vc-list-header').element.children.length).toBe(0);
-
-        const b = withVuecs(() => h(VCList, { data: [] }, { default: () => [h(VCListHeader, {}, { default: () => h('span', { class: 'hh' }, 'H') })] }));
-        expect(b.find('.vc-list-header .hh').text()).toBe('H');
+        await wrapper.find('.inner-btn').trigger('click');
+        const list = wrapper.findComponent(VCList);
+        expect(list.emitted('update:selection')).toBeFalsy();
     });
 });
 
