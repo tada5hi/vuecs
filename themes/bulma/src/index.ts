@@ -4,12 +4,27 @@ import './config';
 import { renderColorPaletteStyles } from './palette';
 
 export { renderColorPaletteStyles, setColorPalette } from './palette';
-export { useColorPalette } from './use-color-palette';
-export type { UseColorPaletteOptions, UseColorPaletteReturn } from './use-color-palette';
-export type {
-    ColorPaletteConfig,
-    Hsl,
-} from './types';
+/**
+ * @deprecated Import `useColorPalette` from `@vuecs/design` instead.
+ *
+ * The per-theme wrapper previously auto-wired the CSP nonce via
+ * `useConfig('nonce')` from `@vuecs/core`. The design-level composable
+ * does not. If you rely on CSP nonces, pass `nonce` explicitly:
+ *
+ *     import { useColorPalette } from '@vuecs/design';
+ *     import { useConfig } from '@vuecs/core';
+ *     const { current, set } = useColorPalette({
+ *         nonce: () => useConfig('nonce').value,
+ *     });
+ *
+ * Will be removed in the next major version of `@vuecs/theme-bulma`.
+ */
+export { useColorPalette } from '@vuecs/design';
+/** @deprecated Import from `@vuecs/design` instead. */
+export type { UseColorPaletteOptions, UseColorPaletteReturn } from '@vuecs/design';
+/** @deprecated Import from `@vuecs/design` instead — the canonical `ColorPaletteConfig` lives there since plan 026. */
+export type { ColorPaletteConfig } from '@vuecs/design';
+export type { Hsl } from './types';
 
 /**
  * Bulma theme for vuecs components.

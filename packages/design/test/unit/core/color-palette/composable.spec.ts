@@ -228,6 +228,42 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
         unmount();
     });
 
+    it('default sanitize filters input to the canonical catalog (plan 026)', async () => {
+        const handle = vi.fn((p: Record<string, string>) => `:root { --primary: ${p.primary ?? 'unset'}; --neutral: ${p.neutral ?? 'unset'}; }`);
+        const manager: MockThemeManager = { themes: [{ palette: { handle } }] };
+
+        const { unmount } = mountWithManager(manager, () => {
+            useColorPaletteUnshared({
+                /*
+                 * `bogus` is not a SemanticScaleName; `not-a-palette` is
+                 * not in COLOR_PALETTES. Both should be dropped by the
+                 * default sanitizer the dispatcher now ships (lifted
+                 * from the per-theme wrappers in plan 026).
+                 */
+                initial: {
+                    primary: 'green',
+                    bogus: 'totally-fake',
+                    neutral: 'not-a-palette',
+                } as Record<string, string>,
+                persist: false,
+                storageKey: freshStorageKey(),
+            });
+        });
+        await nextTick();
+        const css = readPaletteStyle();
+        expect(css).toContain('--primary: green');
+        expect(css).toContain('--neutral: unset');
+        // Verify the dispatcher dropped invalid entries BEFORE forwarding
+        // to handle — the css assertion alone is ambiguous (handle ignores
+        // unknown keys), so inspect the actual payload it received.
+        expect(handle).toHaveBeenCalled();
+        const forwarded = handle.mock.calls.at(-1)?.[0] ?? {};
+        expect(forwarded).not.toHaveProperty('bogus');
+        expect(forwarded).not.toHaveProperty('neutral');
+        expect(forwarded).toEqual({ primary: 'green' });
+        unmount();
+    });
+
     it('applies sanitize to the initial palette', async () => {
         const handle = (p: Record<string, string>) => `:root { --primary: ${p.primary ?? 'unset'}; }`;
         const sanitize = (raw: unknown): { primary?: string } => {

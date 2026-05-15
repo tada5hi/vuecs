@@ -78,9 +78,14 @@ export interface UseColorPaletteOptions<T extends Record<string, unknown>> {
      */
     storageKey?: string;
     /**
-     * Theme-aware sanitizer for serialized values. Themes pass their own
-     * (e.g. `@vuecs/theme-tailwind` filters to known semantic scales +
-     * Tailwind palette names). Default: pass-through cast.
+     * Theme-aware sanitizer for serialized values. The default filters
+     * input keys to `SEMANTIC_SCALES` and input values to `COLOR_PALETTES`
+     * (the canonical catalog) — sufficient for both shipping themes.
+     * Pass your own to widen acceptance for themes that use
+     * `ExtraColorPaletteNames`. (`Theme.palette.scaleAliases` doesn't
+     * affect this layer — aliases translate canonical keys inside the
+     * dispatcher AFTER sanitize runs, so the sanitizer still keys on
+     * canonical names.)
      */
     sanitize?: (raw: unknown) => T;
     /**
@@ -93,9 +98,12 @@ export interface UseColorPaletteOptions<T extends Record<string, unknown>> {
      * CSP nonce written to the `<style id="vc-color-palette">` element.
      * Accepts a string (resolved once) or a getter
      * `() => string | undefined` (called on every re-render, so reactive
-     * nonce changes propagate). Per-theme wrappers in
-     * `@vuecs/theme-tailwind` / `@vuecs/theme-bulma` read this from
-     * `useConfig('nonce')` automatically.
+     * nonce changes propagate). CSP-strict consumers wire this from
+     * `@vuecs/core`'s `useConfig('nonce')`:
+     *
+     *     useColorPalette({ nonce: () => useConfig('nonce').value })
+     *
+     * Left unset, no nonce attribute is emitted.
      */
     nonce?: string | (() => string | undefined);
 }

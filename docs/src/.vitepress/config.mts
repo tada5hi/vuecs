@@ -214,11 +214,6 @@ export default defineConfig({
                     text: '@vuecs/nuxt',
                     items: [
                         { text: 'useColorMode', link: '/nuxt/use-color-mode' },
-                    ],
-                },
-                {
-                    text: '@vuecs/theme-tailwind-nuxt',
-                    items: [
                         { text: 'useColorPalette', link: '/nuxt/use-palette' },
                     ],
                 },

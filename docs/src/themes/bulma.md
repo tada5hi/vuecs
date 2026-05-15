@@ -41,10 +41,11 @@ Bulma 1.0 components read `--bulma-*` at runtime, so any change to `--vc-color-*
 
 ## Runtime palette switching
 
-`@vuecs/theme-bulma` ships its own `setColorPalette()` and `useColorPalette()` matching the Tailwind catalog of 22 palette names:
+`@vuecs/theme-bulma` ships `setColorPalette()` (pure-DOM API) and contributes its renderer via `palette.handle` so `useColorPalette()` from `@vuecs/design` dispatches through it. The renderer matches the Tailwind catalog of 22 palette names:
 
 ```ts
-import { setColorPalette, useColorPalette } from '@vuecs/theme-bulma';
+import { setColorPalette } from '@vuecs/theme-bulma';
+import { useColorPalette } from '@vuecs/design';
 
 setColorPalette({ primary: 'green', neutral: 'zinc' });
 
@@ -61,7 +62,7 @@ Each call rewrites the shared `<style id="vc-color-palette">` block in `<head>`.
 
 The OKLCH→HSL conversion happens once at package build time (see `themes/bulma/scripts/build-palette-catalog.ts`); the runtime cost of `setColorPalette()` is a single string-template + DOM upsert.
 
-The storage key (`vc-color-palette`) is intentionally shared with `@vuecs/theme-tailwind`'s composable, so a docs site or playground that loads both themes can drive a single picker UI from one ref.
+The storage key (`vc-color-palette`) is the default for `useColorPalette()` from `@vuecs/design`, so when both themes are installed, a docs site or playground drives a single picker UI from one shared ref and both themes' renderers fire on the same payload.
 
 ## Mapping notes
 

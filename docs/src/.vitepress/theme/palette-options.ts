@@ -1,6 +1,6 @@
 /*
  * Curated palette lists for the docs-site palette switcher. The
- * underlying `useColorPalette()` from `@vuecs/theme-tailwind` accepts every
+ * underlying `useColorPalette()` from `@vuecs/design` accepts every
  * Tailwind v4 palette — these subsets are just what the navbar
  * dropdown and the Hero swatches expose to readers.
  */

@@ -21,6 +21,12 @@ export interface ThemeRuntimePaletteHook {
      */
     handle(palette: Record<string, string>): string;
     names?: readonly string[];
+    /**
+     * Optional canonical-scale → theme-scale rename map. The dispatcher
+     * translates input keys before calling `handle`. See `PaletteHook`
+     * in `@vuecs/core` for the authoring-side contract.
+     */
+    scaleAliases?: Record<string, string>;
 }
 
 export interface ThemeRuntimeEntry {

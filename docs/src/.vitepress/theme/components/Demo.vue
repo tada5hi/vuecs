@@ -9,7 +9,7 @@ import {
     watch,
 } from 'vue';
 import { isObject } from '@vuecs/core';
-import { useColorPalette } from '@vuecs/theme-tailwind';
+import { useColorPalette } from '@vuecs/design';
 
 interface Props {
     title?: string;

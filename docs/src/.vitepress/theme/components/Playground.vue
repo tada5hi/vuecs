@@ -10,7 +10,7 @@ import {
     watch,
 } from 'vue';
 import { isObject } from '@vuecs/core';
-import { useColorPalette } from '@vuecs/theme-tailwind';
+import { useColorPalette } from '@vuecs/design';
 import type { PropCatalog, PropSpec, PropValues } from '../../../../demos/src/iframe-bridge';
 
 interface Props {

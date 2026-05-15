@@ -4,25 +4,45 @@ import { computed, ref, watchEffect } from 'vue';
 import { isObject } from '../../utils/object';
 import { useThemeRuntimeManager } from '../theme-runtime/composable';
 import { applyColorPaletteCss } from './apply';
+import { COLOR_PALETTES, SEMANTIC_SCALES } from './catalog';
 import { renderColorPaletteFromThemes } from './render';
 import type { UseColorPaletteOptions, UseColorPaletteReturn } from './types';
 
 const DEFAULT_STORAGE_KEY = 'vc-color-palette';
 
-function passthroughSanitize<T>(value: unknown): T {
+const SEMANTIC_SCALE_SET = new Set<string>(SEMANTIC_SCALES);
+const PALETTE_NAME_SET = new Set<string>(COLOR_PALETTES);
+
+function defaultSanitize<T>(value: unknown): T {
     /*
-     * Reject primitives and arrays: `JSON.parse('"blue"')` is valid and
-     * returns a string. Without this guard a corrupted localStorage entry
-     * would forward the primitive to `theme.palette.handle`, which
-     * expects an object and would emit broken CSS. Themes that need a
-     * stricter shape pass their own `sanitize` (e.g. theme-tailwind
-     * filters to known palette names).
+     * Defensive default: reject primitives + arrays, then filter to the
+     * canonical catalog (six semantic scales × 22 palette names). Cookies
+     * and localStorage can hold anything (older library version,
+     * hand-edited DevTools value, payload written under the same key by
+     * a different theme). Dropping unknown keys prevents broken CSS
+     * downstream — the renderers each defend their inputs as a second
+     * line of defense, but applying the filter at the dispatcher means
+     * theme `palette.handle` hooks never see junk on the happy path.
+     *
+     * Themes whose palette config widens past the canonical catalog
+     * (`ExtraColorPaletteNames` or a divergent scale set via
+     * `scaleAliases`) pass their own `sanitize` to override.
      */
     if (!isObject(value)) {
         return {} as T;
     }
 
-    return value as T;
+    const out: Record<string, string> = {};
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+        if (
+            SEMANTIC_SCALE_SET.has(k) &&
+            typeof v === 'string' &&
+            PALETTE_NAME_SET.has(v)
+        ) {
+            out[k] = v;
+        }
+    }
+    return out as T;
 }
 
 const shallowMerge = <T extends Record<string, unknown>>(current: T, partial: Partial<T>): T => ({
@@ -59,7 +79,7 @@ export function useColorPaletteUnshared<
         source,
         persist = true,
         storageKey = DEFAULT_STORAGE_KEY,
-        sanitize = passthroughSanitize<T>,
+        sanitize = defaultSanitize<T>,
         extend = shallowMerge,
         nonce,
     } = options;

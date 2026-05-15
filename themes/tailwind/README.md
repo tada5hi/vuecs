@@ -4,11 +4,15 @@
 [![main](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
 
 Tailwind v4 theme for vuecs components. Class-string mappings + `merge: ClassesMergeFn`
-backed by `twMerge` + the Tailwind palette runtime (`setColorPalette`, `useColorPalette`,
-`renderColorPaletteStyles`, `ColorPaletteConfig`). Composes `@vuecs/design`'s generic
-palette primitives — re-binds `--vc-color-*` to Tailwind palette names so
-runtime swaps work, exposes vuecs tokens via `@theme`, and force-includes all
-22 Tailwind palettes via `@source inline()`.
+backed by `twMerge` + the Tailwind palette runtime (`setColorPalette`,
+`renderColorPaletteStyles`). Contributes its renderer via `palette.handle` so
+`useColorPalette()` from `@vuecs/design` dispatches through it. Re-binds
+`--vc-color-*` to Tailwind palette names so runtime swaps work, exposes vuecs
+tokens via `@theme`, and force-includes all 22 Tailwind palettes via
+`@source inline()`.
+
+`useColorPalette` / `ColorPaletteConfig` live in `@vuecs/design` since plan 026.
+Deprecated re-exports remain in this package for one release cycle.
 
 For Nuxt apps, the cookie-backed `useColorPalette` ships from
 [`@vuecs/nuxt`](../../packages/nuxt) — one theme-agnostic Nuxt module

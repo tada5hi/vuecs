@@ -5,8 +5,24 @@ import './config';
 import { renderColorPaletteStyles } from './palette';
 
 export { renderColorPaletteStyles, setColorPalette } from './palette';
-export { useColorPalette } from './use-color-palette';
-export type { UseColorPaletteOptions, UseColorPaletteReturn } from './use-color-palette';
+/**
+ * @deprecated Import `useColorPalette` from `@vuecs/design` instead.
+ *
+ * The per-theme wrapper previously auto-wired the CSP nonce via
+ * `useConfig('nonce')` from `@vuecs/core`. The design-level composable
+ * does not. If you rely on CSP nonces, pass `nonce` explicitly:
+ *
+ *     import { useColorPalette } from '@vuecs/design';
+ *     import { useConfig } from '@vuecs/core';
+ *     const { current, set } = useColorPalette({
+ *         nonce: () => useConfig('nonce').value,
+ *     });
+ *
+ * Will be removed in the next major version of `@vuecs/theme-tailwind`.
+ */
+export { useColorPalette } from '@vuecs/design';
+/** @deprecated Import from `@vuecs/design` instead. */
+export type { UseColorPaletteOptions, UseColorPaletteReturn } from '@vuecs/design';
 // `applyColorPaletteCss`, `bindColorPalette`, and `COLOR_PALETTE_STYLE_ELEMENT_ID` are
 // theme-agnostic primitives — re-exported from `@vuecs/design`. Consumers
 // can import them from either source; we keep the re-export so downstream
@@ -17,9 +33,8 @@ export {
     applyColorPaletteCss,
     bindColorPalette,
 } from '@vuecs/design';
-export type {
-    ColorPaletteConfig,
-} from './types';
+/** @deprecated Import from `@vuecs/design` instead — the canonical `ColorPaletteConfig` lives there since plan 026. */
+export type { ColorPaletteConfig } from '@vuecs/design';
 
 export const merge: ClassesMergeFn = (base, override) => twMerge(base, override);
 

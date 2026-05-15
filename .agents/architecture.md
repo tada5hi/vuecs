@@ -379,6 +379,7 @@ type Theme = {
     palette?: {
         handle(palette: Record<string, string>): string;
         names?: readonly string[];
+        scaleAliases?: Record<string, string>;
     };
 };
 ```
@@ -396,18 +397,44 @@ alongside vuecs's `--vc-color-*`); theme-bulma declares it for
 `.dark` directly. Multiple hooks compose: every layer's `handle` runs
 in install order on every change.
 
-**`palette.{render, names}`** is the declarative half of runtime
-palette switching. Each theme exposes its renderer (the function
-that converts a palette config into a CSS string) plus the catalog
-of names it accepts. theme-tailwind and theme-bulma both declare
-this against the shared 22-name Tailwind palette catalog.
+**`palette.{handle, names, scaleAliases}`** is the declarative half
+of runtime palette switching. Each theme exposes its renderer (the
+function that converts a palette config into a CSS string) plus the
+catalog of names it accepts. theme-tailwind and theme-bulma both
+declare this against the shared 22-name Tailwind palette catalog.
+Themes whose internal scale naming diverges from the canonical six
+(community themes using e.g. `brand` instead of `primary`) declare a
+`scaleAliases` rename map; the dispatcher translates input keys
+before calling `handle` so the public-facing palette config stays
+canonical (plan 026).
 
 `@vuecs/design`'s `useColorPalette()` walks installed themes and
 **concatenates** every theme's `palette.handle` output into the
-`<style id="vc-color-palette">` block. The per-theme
+`<style id="vc-color-palette">` block. Since plan 026 the per-theme
 `useColorPalette` exports in `@vuecs/theme-tailwind` and
-`@vuecs/theme-bulma` are now thin wrappers that pass the
-theme-specific sanitizer + types through to the generic dispatcher.
+`@vuecs/theme-bulma` are deprecated re-exports from `@vuecs/design`
+— consumers import from `@vuecs/design` directly. The CSP nonce
+that the deprecated wrappers used to auto-wire via
+`useConfig('nonce')` is now opt-in:
+
+```ts
+import { useColorPalette } from '@vuecs/design';
+import { useConfig } from '@vuecs/core';
+
+const { current, set } = useColorPalette({
+    nonce: () => useConfig('nonce').value,
+});
+```
+
+The default sanitizer in `@vuecs/design`'s `useColorPalette` filters
+to the canonical catalog (six semantic scales × 22 palette names) —
+sufficient for the shipping themes. Themes that widen the palette-
+name union via `ExtraColorPaletteNames` pass their own `sanitize`.
+The canonical type lives at `@vuecs/design`:
+
+```ts
+type ColorPaletteConfig = Partial<Record<SemanticScaleName, ColorPaletteName>>;
+```
 
 Concat (rather than last-wins) is the doctrinal semantic: when an
 app stacks multiple palette-aware themes (the docs-site case where
@@ -577,10 +604,15 @@ vuecs threads a CSP nonce end-to-end:
    accept `string | (() => string | undefined)`. The getter form is
    invoked on each `<style>` re-apply so reactive `setConfig({ nonce })`
    propagates.
-4. **Per-theme `useColorPalette` wrappers** (`@vuecs/theme-tailwind`
-   and `@vuecs/theme-bulma`) read `useConfig('nonce')` and forward as
-   a getter to the generic dispatcher — consumers get nonce
-   attribution automatically with no extra wiring.
+4. **CSP-strict consumers pass `nonce` explicitly** to
+   `useColorPalette` from `@vuecs/design`:
+   ```ts
+   useColorPalette({ nonce: () => useConfig('nonce').value })
+   ```
+   (Plan 026 collapsed the per-theme `useColorPalette` wrappers that
+   previously auto-wired this — see the SPA composables section
+   above. The trade-off: ~80 LOC of wrapper duplication removed in
+   exchange for opt-in nonce wiring at CSP-relevant call sites.)
 5. **`@vuecs/nuxt`'s palette SSR plugin** resolves the nonce via
    `nuxtApp.vueApp.runWithContext(() => useConfig('nonce').value)` and
    emits it via `useHead({ style: [{ ..., nonce }] })` so the
@@ -1018,9 +1050,10 @@ via a `<style id="vc-color-palette">` block, leaving layers 1-2 and 4-5 untouche
   assets/index.css       <- @theme { --color-primary-*: var(--vc-color-primary-*) }
                              + @source inline("bg-{...}-{...}") safelist
   src/
-    types.ts             <- ColorPaletteConfig (catalog vocabulary itself lives in @vuecs/design)
+    types.ts             <- deprecated `ColorPaletteConfig` re-export from @vuecs/design (plan 026)
     palette.ts           <- renderColorPaletteStyles() (pure), setColorPalette() (composes applyColorPaletteCss)
-    use-color-palette.ts <- useColorPalette() — composes bindColorPalette + useStorage
+                          (plan 026 removed the per-theme useColorPalette wrapper —
+                           consumers import useColorPalette from @vuecs/design)
     config.ts            <- Config['nonce'] augmentation (CSP nonce for setColorPalette's <style>)
     index.ts             <- top-level barrel + tailwindTheme() default export
                              (re-exports applyColorPaletteCss / bindColorPalette / COLOR_PALETTE_STYLE_ELEMENT_ID
@@ -1090,18 +1123,21 @@ data-[state=closed]:animate-out fade-out-0 zoom-out-95` composition.
 - **`SEMANTIC_SCALES` / `SemanticScaleName`** — the six semantic scale names (`primary`, `neutral`, `success`, `warning`, `error`, `info`) that `--vc-color-<scale>-*` is keyed on. Themes import these — they're not redeclared per-theme.
 - **`COLOR_PALETTES` / `ColorPaletteName`** — the 22 catalog palette names (sourced from Tailwind v4). Both supported palette sources — `@import "tailwindcss"` AND `@vuecs/design/standalone` — define `--color-<palette>-*` for each one, so `setColorPalette()` resolves regardless of whether Tailwind is loaded.
 - **`COLOR_PALETTE_SHADES` / `ColorPaletteShade`** — the 11-stop shade ladder (`'50' | '100' | … | '950'`).
+- **`ColorPaletteConfig`** — `Partial<Record<SemanticScaleName, ColorPaletteName>>`. Canonical palette-config type since plan 026; both keys come from this package's catalog.
+- **`useColorPalette(options?)`** — theme-aware reactive palette state with localStorage persistence. Wrapped via `createSharedComposable`, so every call site shares the same ref + watcher. Walks installed themes' `palette.handle` hooks and concatenates the rendered CSS into the `<style id="vc-color-palette">` block. Default sanitizer filters input to the canonical catalog; default `extend` is shallow merge. CSP-strict consumers pass `nonce: () => useConfig('nonce').value` explicitly (no auto-wiring — see [SSR dispatch (slice 3)](#ssr-dispatch-slice-3) and the deprecation note on theme `useColorPalette` re-exports below).
+- **`useColorPaletteUnshared(options?)`** — un-shared variant. Same surface; one watcher per call. Accepts a custom `source: Ref<T>` for SSR-aware persistence (Nuxt cookie, IndexedDB, etc.). Used internally by `@vuecs/nuxt`'s cookie-backed wrapper.
 - **`useColorMode(options?)`** — reactive light/dark/system mode with localStorage persistence + `<html>` class sync. Returns `{ mode, resolved, isDark, toggle }`. Uses `usePreferredDark` from VueUse to resolve `'system'`.
 - **`bindColorMode(source: Ref<ColorMode>, options?)`** — building block; same pattern as `bindColorPalette`.
 
 **`@vuecs/theme-tailwind` (Tailwind-specific palette + class strings):**
 - **`renderColorPaletteStyles(palette): string`** — pure function. Returns a `:root { … }` block that remaps `--vc-color-<scale>-*` onto `var(--color-<palette>-*)` for every scale set in `palette`. Safe on server and client.
 - **`setColorPalette(palette, doc?, nonce?)`** — one-line composition: `applyColorPaletteCss(renderColorPaletteStyles(palette), doc, nonce)`.
-- **`useColorPalette(options?)`** — reactive palette state with localStorage persistence. Wrapped via `createSharedComposable`, so every call site shares the same ref + watcher. Composes `bindColorPalette<ColorPaletteConfig>` + `useStorage` + `renderColorPaletteStyles`. Returns `{ current: ComputedRef<ColorPaletteConfig>, set(palette), extend(partial) }`.
-- **`ColorPaletteConfig`** — `Partial<Record<SemanticScaleName, ColorPaletteName>>`. Both keys come from `@vuecs/design`'s canonical catalog.
+- ⚠ **`useColorPalette` (deprecated)** — re-exports from `@vuecs/design` for backwards compat. The per-theme wrapper that previously auto-wired `useConfig('nonce')` was removed in plan 026; consumers import from `@vuecs/design` and pass `nonce` explicitly when needed.
+- **`ColorPaletteConfig` (deprecated re-export)** — re-exports the canonical type from `@vuecs/design`. Will be removed in the next major.
 - Also re-exports `applyColorPaletteCss` / `bindColorPalette` / `COLOR_PALETTE_STYLE_ELEMENT_ID` from `@vuecs/design` for backward compat with code that picked them up from theme-tailwind in earlier versions.
 
 **`@vuecs/nuxt` (theme-agnostic Nuxt integration):**
-- **`useColorPalette()`** — auto-imported in Nuxt apps. Cookie-backed (SSR-safe) variant; same `{ current, set, extend }` shape as the SPA `useColorPalette` from `@vuecs/theme-tailwind`. Composes the generic `useColorPaletteUnshared` from `@vuecs/design` with a cookie-backed `Ref<T>` passed as `source`. Dispatches through whichever themes the consumer installs — Tailwind, Bulma, and any future palette-aware theme all share the same composable (plan 025).
+- **`useColorPalette()`** — auto-imported in Nuxt apps. Cookie-backed (SSR-safe) variant; same `{ current, set, extend }` shape as the SPA `useColorPalette` from `@vuecs/design`. Composes the generic `useColorPaletteUnshared` from `@vuecs/design` with a cookie-backed `Ref<T>` passed as `source`. Dispatches through whichever themes the consumer installs — Tailwind, Bulma, and any future palette-aware theme all share the same composable (plan 025).
 - **`useColorMode()`** — auto-imported. SSR-safe color-mode composable backed by a Nuxt cookie. Reads the cookie name + initial value from `runtimeConfig.public.vuecs.colorMode`.
 
 All packages require **Vue 3** as a peer dep. `@vuecs/design` and `@vuecs/theme-tailwind` additionally require **`@vueuse/core`**. The composables sub-area is intentionally kept on each package's root export (no subpath) — flat surface area matches `@vuecs/core`'s convention.

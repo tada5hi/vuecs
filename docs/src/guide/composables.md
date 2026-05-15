@@ -3,7 +3,7 @@
 vuecs ships two families of Vue composables:
 
 - **`@vuecs/core`** — primitives for building component wrappers (forwarders, focus / typeahead helpers, ID generation, state machines). Zero runtime deps beyond Vue 3.
-- **`@vuecs/design`** — runtime color-mode state + generic palette primitives. **`@vuecs/theme-tailwind`** ships the Tailwind-catalog-specific `useColorPalette()`.
+- **`@vuecs/design`** — runtime color-mode state + theme-aware `useColorPalette()` (dispatches through whichever themes the app installs).
 
 Both families run in any Vue 3 setup — VitePress, plain Vite, Astro, non-Nuxt SSR. The Nuxt module thin-wraps the design composables with cookie-backed storage for true SSR persistence.
 
@@ -144,27 +144,27 @@ dispatch('OPEN'); // state.value === 'open'
 
 Shipped as a Phase-3 prerequisite for the upcoming `@vuecs/overlays` package (open/closed transitions for modals, popovers, etc.).
 
-## `@vuecs/design` and `@vuecs/theme-tailwind`
+## `@vuecs/design`
 
-Framework-agnostic Vue composables for the two pieces of state consumers usually want to mutate at runtime: the active palette and the dark/light color mode. Color mode lives in `@vuecs/design` (theme-agnostic). Palette switching lives in `@vuecs/theme-tailwind` (Tailwind-catalog-specific) — but its building blocks are generic primitives in `@vuecs/design` so other themes can compose their own.
+Framework-agnostic Vue composables for the two pieces of state consumers usually want to mutate at runtime: the active palette and the dark/light color mode. Both live in `@vuecs/design` and are theme-aware — `useColorPalette()` walks installed themes' `palette.handle` hooks and concatenates the rendered CSS into the runtime `<style id="vc-color-palette">` block. The same composable serves every theme (Tailwind, Bulma, community palette-aware themes); a palette-only theme just declares its `palette.handle` and the composable picks it up.
 
 ### Requirements
 
 - **Vue 3** as a peer dep (already required by every component package).
-- **`@vueuse/core`** as a peer dep of both packages.
+- **`@vueuse/core`** as a peer dep of `@vuecs/design`.
 
 ```bash
-npm install @vuecs/design @vueuse/core                  # color mode + generic palette primitives
-npm install @vuecs/theme-tailwind                       # adds Tailwind setColorPalette / useColorPalette
+npm install @vuecs/design @vueuse/core                  # color mode + theme-aware palette
+npm install @vuecs/theme-tailwind                       # adds Tailwind class strings + palette.handle renderer
 ```
 
-### `useColorPalette()` (from `@vuecs/theme-tailwind`)
+### `useColorPalette()` (from `@vuecs/design`)
 
 Reactive palette state with localStorage persistence. Wrapped via `createSharedComposable` — every call site shares the same ref + watcher, so picking a palette in one component updates every other consumer instantly.
 
 ```vue
 <script setup lang="ts">
-import { useColorPalette } from '@vuecs/theme-tailwind';
+import { useColorPalette } from '@vuecs/design';
 
 const { current, set, extend } = useColorPalette({
     initial: { primary: 'blue', neutral: 'neutral' },
@@ -178,27 +178,56 @@ const { current, set, extend } = useColorPalette({
 </template>
 ```
 
+::: tip CSP nonce
+The composable does not auto-wire a CSP nonce onto the inline `<style>` block. CSP-strict consumers pass it explicitly:
+
+```ts
+import { useConfig } from '@vuecs/core';
+const { current, set } = useColorPalette({
+    nonce: () => useConfig('nonce').value,
+});
+```
+
+Previously (≤ vuecs 2.x) the per-theme `useColorPalette` wrappers in `@vuecs/theme-tailwind` / `@vuecs/theme-bulma` auto-wired this — those wrappers are deprecated since plan 026 and re-export from `@vuecs/design` without the nonce hook. Code that depended on the silent auto-wiring needs to opt in explicitly.
+:::
+
 #### API
 
 ```ts
-interface UseColorPaletteOptions {
+interface UseColorPaletteOptions<T> {
     /** Initial palette when no persisted value exists. Default: {} */
-    initial?: ColorPaletteConfig;
+    initial?: T;
     /** Persist via localStorage. Default: true */
     persist?: boolean;
     /** Storage key for the default backend. Default: 'vc-color-palette' */
     storageKey?: string;
+    /** Sanitize stored values — defaults to filtering the canonical catalog. */
+    sanitize?: (raw: unknown) => T;
+    /** CSP nonce for the runtime <style> block. String or getter. */
+    nonce?: string | (() => string | undefined);
 }
 
-interface UseColorPaletteReturn {
+interface UseColorPaletteReturn<T> {
     /** Read-only view of the current palette assignment. */
-    current: ComputedRef<ColorPaletteConfig>;
+    current: ComputedRef<T>;
     /** Replace the entire palette. Pass `{}` to reset. */
-    set(palette: ColorPaletteConfig): void;
+    set(palette: T): void;
     /** Shallow-merge — preserves scales not in `partial`. */
-    extend(partial: ColorPaletteConfig): void;
+    extend(partial: Partial<T>): void;
 }
 ```
+
+The generic `T` defaults to `Record<string, string>` so calls without explicit typing accept any palette shape. Pass `ColorPaletteConfig` (= `Partial<Record<SemanticScaleName, ColorPaletteName>>`) explicitly to get autocomplete + type-checking against the canonical six scales × 22 catalog palette names:
+
+```ts
+import { useColorPalette } from '@vuecs/design';
+import type { ColorPaletteConfig } from '@vuecs/design';
+
+const { current, set, extend } = useColorPalette<ColorPaletteConfig>();
+// current.value.primary autocompletes the 22 catalog names
+```
+
+Themes that widen the palette-name union via `ExtraColorPaletteNames` (declaration merging) widen `ColorPaletteConfig` automatically.
 
 #### `set` vs `extend`
 
@@ -211,13 +240,33 @@ interface UseColorPaletteReturn {
 
 #### Persistence
 
-Default backend is localStorage at the `vc-color-palette` key. Sanitization runs on every read — unknown scales and non-Tailwind palette names are dropped silently. To opt out:
+Default backend is localStorage at the `vc-color-palette` key. The default sanitizer filters input to the canonical catalog (six semantic scales × 22 catalog palette names) — unknown scales and non-catalog palette names are dropped silently. To opt out:
 
 ```ts
 const { current, set } = useColorPalette({ persist: false });
 ```
 
 For SSR-readable persistence (e.g. Nuxt cookie), see [Custom storage backends](#custom-storage-backends) below.
+
+#### Themes with diverging scale names
+
+A theme whose internal naming differs from the canonical six (e.g. `brand` instead of `primary`) declares a `scaleAliases` map on its `Theme.palette` slot:
+
+```ts
+import type { Theme } from '@vuecs/core';
+
+export default function acmeTheme(): Theme {
+    return {
+        elements: { /* ... */ },
+        palette: {
+            handle: (p) => `:root { --acme-brand: ${p.brand}; }`,
+            scaleAliases: { primary: 'brand', error: 'danger' },
+        },
+    };
+}
+```
+
+The dispatcher translates canonical input keys (`primary`, `error`) to the theme's local names (`brand`, `danger`) before calling `handle`. The public-facing palette config stays canonical — `useColorPalette().set({ primary: 'green' })` works regardless of which themes are installed.
 
 ### `useColorMode()` (from `@vuecs/design`)
 
