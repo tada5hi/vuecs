@@ -56,7 +56,18 @@ const time = 3600 * 1000;
 
 | Slot | Props | Description |
 |------|-------|-------------|
-| `default` | `CountdownSlotProps` | `{ days, hours, minutes, seconds }` |
+| `default` | `CountdownSlotProps` | `{ isCounting, days, hours, minutes, seconds, milliseconds, totalDays, totalHours, totalMinutes, totalSeconds, totalMilliseconds }` |
+
+## Exposed
+
+Attach a template ref to inspect running state and drive the timer imperatively.
+
+| Member | Type | Description |
+|--------|------|-------------|
+| `isCounting` | `Readonly<Ref<boolean>>` | `true` while the countdown is running. Flips to `false` after `abort()` or natural completion (`end`) |
+| `start()` | `() => void` | Begin (or restart) the countdown |
+| `abort()` | `() => void` | Stop and emit `abort` |
+| `end()` | `() => void` | Stop, zero the remaining time, and emit `end` |
 
 ## See also
 

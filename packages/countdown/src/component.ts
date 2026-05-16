@@ -35,6 +35,7 @@ declare module '@vuecs/core' {
 export const countdownThemeDefaults: ComponentThemeDefinition<CountdownThemeClasses> = { classes: { root: '' } };
 
 export type CountdownSlotProps = {
+    isCounting: boolean;
     days: number;
     hours: number;
     minutes: number;
@@ -83,6 +84,7 @@ export const VCCountdown = defineComponent({
         const theme = useComponentTheme('countdown', props, countdownThemeDefaults);
 
         const counting = ref(false);
+        const isCounting = computed(() => counting.value);
         const totalMilliseconds = ref(0);
         const endTime = ref(0);
         let requestId: number | undefined;
@@ -229,10 +231,12 @@ export const VCCountdown = defineComponent({
             start,
             abort,
             end,
+            isCounting,
         });
 
         return () => {
             const slotProps: CountdownSlotProps = {
+                isCounting: counting.value,
                 days: days.value,
                 hours: hours.value,
                 minutes: minutes.value,
