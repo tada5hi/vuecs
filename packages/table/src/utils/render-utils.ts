@@ -21,9 +21,12 @@ export function startCase(input: string): string {
 /**
  * Normalize the `:columns` prop into a uniform `TableColumn[]`.
  *
- * - **Explicit array**: pass through, fill `label` from `startCase(key)`.
+ * - **Explicit array** (including empty `[]`): pass through, fill `label`
+ *   from `startCase(key)`. Treating `[]` as authoritative lets consumers
+ *   deliberately render a header-less table during loading without the
+ *   auto-derive kicking in the moment data arrives.
  * - **Bare-string shorthand**: `['id', 'name']` → `[{ key, label }, ...]`.
- * - **Auto-derive**: when `columns` is undefined/empty AND `data[0]` is an
+ * - **Auto-derive**: only when `columns` is `undefined` AND `data[0]` is an
  *   object, derive the columns from `Object.keys(data[0])`, skipping
  *   underscore-prefixed row-meta keys (`_rowVariant` / `_cellVariants`).
  */
@@ -35,10 +38,12 @@ export function normalizeColumns<Row>(
         if (typeof col === 'string') {
             return { key: col, label: startCase(col) };
         }
-        return { label: startCase(col.key), ...col };
+        // Spread first, then fold in `label` so a consumer-passed
+        // `label: undefined` doesn't clobber the computed default.
+        return { ...col, label: col.label ?? startCase(col.key) };
     };
 
-    if (columns && columns.length > 0) {
+    if (columns !== undefined) {
         return columns.map(fromRaw);
     }
 
@@ -126,11 +131,21 @@ const INTERACTIVE_SELECTOR = [
  * portal'd overlay rendered into the document body (e.g. a
  * `<VCDropdownMenu>` action menu inside the row).
  *
- * Use at the row click handler: `if (filterRowClickEvent(event)) return;`.
+ * Pass the `<tr>` element as `rowEl` so the helper can disambiguate
+ * legitimate row clicks (where the `closest()` ancestor walk reaches the
+ * `<tr>` itself, which carries `tabindex="0"` when the row is clickable)
+ * from clicks on a genuine interactive descendant.
+ *
+ * Use at the row click handler: `if (filterRowClickEvent(event, tr)) return;`.
  */
-export function filterRowClickEvent(event: Event): boolean {
+export function filterRowClickEvent(event: Event, rowEl?: Element | null): boolean {
     const { target } = event;
     if (!(target instanceof Element)) return false;
     const hit = target.closest(INTERACTIVE_SELECTOR);
-    return hit !== null;
+    if (hit === null) return false;
+    // If the only match is the row itself (which carries `tabindex="0"`
+    // when clickable), this is a real row click, not a click on an
+    // interactive descendant — let it through.
+    if (rowEl && hit === rowEl) return false;
+    return true;
 }
