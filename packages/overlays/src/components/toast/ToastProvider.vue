@@ -2,7 +2,7 @@
 import { defineComponent, h } from 'vue';
 import type { ExtractPublicPropTypes, PropType } from 'vue';
 import { ToastProvider } from 'reka-ui';
-import { useForwardPropsEmits } from '@vuecs/core';
+import { useForwardProps } from '@vuecs/core';
 
 const toastProviderProps = {
     /** Default auto-dismiss timeout (ms). Reka default: `5000`. Per-toast `duration` overrides. */
@@ -29,8 +29,10 @@ export default defineComponent({
     name: 'VCToastProvider',
     inheritAttrs: false,
     props: toastProviderProps,
-    setup(props, { slots, emit }) {
-        const forwarded = useForwardPropsEmits(props, emit);
+    setup(props, { slots }) {
+        // `useForwardProps` (not `useForwardPropsEmits`) — `ToastProvider`
+        // exposes no events, and `useEmitAsProps` warns about empty `emits`.
+        const forwarded = useForwardProps(props);
         return () => h(
             ToastProvider,
             forwarded.value,

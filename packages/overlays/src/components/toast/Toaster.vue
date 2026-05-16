@@ -1,11 +1,17 @@
 <script lang="ts">
-import { 
-    computed, 
-    defineComponent, 
-    h, 
-    mergeProps, 
+import {
+    Fragment,
+    computed,
+    defineComponent,
+    h,
+    mergeProps,
 } from 'vue';
-import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
+import type { 
+    ExtractPublicPropTypes, 
+    PropType, 
+    SlotsType, 
+    VNode, 
+} from 'vue';
 import { ToastViewport } from 'reka-ui';
 import { themableProps, useComponentTheme, useThemeProps } from '@vuecs/core';
 import VCToast from './Toast.vue';
@@ -14,9 +20,10 @@ import VCToastDescription from './ToastDescription.vue';
 import VCToastAction from './ToastAction.vue';
 import VCToastClose from './ToastClose.vue';
 import { useToast } from './use-toast';
-import { toastViewportThemeDefaults } from './theme';
+import { toastThemeDefaults, toastViewportThemeDefaults } from './theme';
 import type {
     ToastEntry,
+    ToastThemeClasses,
     ToastViewportPosition,
     ToastViewportThemeClasses,
 } from './types';
@@ -47,6 +54,8 @@ export type ToasterSlotProps = {
     entry: ToastEntry;
     /** Call to dismiss this entry from the queue. */
     dismiss: () => void;
+    /** Resolved `toast` theme classes — pass straight to a custom layout. */
+    classes: ToastThemeClasses;
 };
 
 export default defineComponent({
@@ -59,6 +68,9 @@ export default defineComponent({
     setup(props, { attrs, slots }) {
         const themeProps = useThemeProps(props, 'position');
         const theme = useComponentTheme('toastViewport', themeProps, toastViewportThemeDefaults);
+        // Resolved canonical-layout classes — also passed to the consumer
+        // slot so custom layouts can reuse the active theme's class strings.
+        const toastTheme = useComponentTheme('toast', {}, toastThemeDefaults);
 
         const { entries, dismiss } = useToast();
 
@@ -76,10 +88,20 @@ export default defineComponent({
             const onClose = () => dismiss(entry.id);
 
             if (slots.default) {
-                return slots.default({ entry, dismiss: onClose });
+                // Wrap in a keyed Fragment so Vue diffs by entry id, not by
+                // position — preserves vnode state when the queue shifts.
+                // Cast through `VNode[]` because `SlotsType` types the slot
+                // return as `unknown`, which trips Vue's `h()` overload
+                // resolution against the `Fragment` symbol type.
+                const children = slots.default({
+                    entry, 
+                    dismiss: onClose, 
+                    classes: toastTheme.value, 
+                }) as VNode[];
+                return h(Fragment, { key: entry.id }, children);
             }
 
-            const body = h('div', { class: 'vc-toast-body' }, [
+            const body = h('div', { class: toastTheme.value.body || undefined }, [
                 entry.title ? h(VCToastTitle, null, () => entry.title) : null,
                 entry.description ? h(VCToastDescription, null, () => entry.description) : null,
                 entry.action ?

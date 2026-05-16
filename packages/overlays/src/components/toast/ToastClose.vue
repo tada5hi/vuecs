@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, h } from 'vue';
+import { defineComponent, h, mergeProps } from 'vue';
 import type { ExtractPublicPropTypes, PropType } from 'vue';
 import { ToastClose } from 'reka-ui';
 import { useComponentTheme } from '@vuecs/core';
@@ -31,6 +31,7 @@ export type ToastCloseProps = ExtractPublicPropTypes<typeof toastCloseProps>;
 
 export default defineComponent({
     name: 'VCToastClose',
+    inheritAttrs: false,
     props: toastCloseProps,
     setup(props, { slots, attrs }) {
         const theme = useComponentTheme('toast', props, toastThemeDefaults);
@@ -41,12 +42,12 @@ export default defineComponent({
             const slotKey = props.icon || !hasSlot ? 'closeIcon' : 'close';
             return h(
                 ToastClose,
-                {
+                mergeProps(attrs, {
                     as: props.as,
                     asChild: props.asChild,
                     class: theme.value[slotKey] || undefined,
                     'aria-label': ariaLabel,
-                },
+                }),
                 { default: () => slots.default?.() ?? '×' },
             );
         };

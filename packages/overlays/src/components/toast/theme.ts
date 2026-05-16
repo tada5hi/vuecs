@@ -12,7 +12,6 @@ export const toastViewportThemeDefaults: ComponentThemeDefinition<ToastViewportT
 export const toastThemeDefaults: ComponentThemeDefinition<ToastThemeClasses> = {
     classes: {
         root: 'vc-toast',
-        icon: 'vc-toast-icon',
         body: 'vc-toast-body',
         close: 'vc-toast-close',
         closeIcon: 'vc-toast-close-icon',

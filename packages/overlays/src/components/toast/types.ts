@@ -24,8 +24,6 @@ export interface ToastEntry {
     title?: string;
     /** Optional body text — rendered into `<VCToastDescription>` when present. */
     description?: string;
-    /** Iconify name (e.g. `'lucide:check'`) — resolved via `<VCIcon>` when present. */
-    icon?: string;
     /** Semantic color — drives the `color` theme variant. */
     color?: ToastColor;
     /** Style variant — `solid` / `soft` / `outline`. Defaults from the theme entry. */
@@ -33,7 +31,8 @@ export interface ToastEntry {
     /**
      * Auto-dismiss timeout in milliseconds.
      * - `undefined` (default): use the `<VCToastProvider>` duration.
-     * - `0`: persistent — never auto-dismiss.
+     * - `0` or `Infinity`: persistent — never auto-dismiss (both are
+     *   honored by Reka's timer, use whichever reads better at the call site).
      */
     duration?: number;
     /** Inline action button — rendered as `<VCToastAction>`. */
@@ -62,9 +61,7 @@ export type ToastViewportThemeClasses = {
 export type ToastThemeClasses = {
     /** The toast `<li>` root. */
     root: string;
-    /** Optional icon wrapper inside the toast (when `entry.icon` is set in default layout). */
-    icon: string;
-    /** Default-layout body column wrapper holding title + description + action. */
+    /** Canonical-layout body column wrapper holding title + description + action. */
     body: string;
     /** Default-layout close button neutral slot. */
     close: string;

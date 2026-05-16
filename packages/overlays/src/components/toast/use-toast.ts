@@ -54,7 +54,15 @@ export type UseToastReturn = {
  */
 export function useToast(): UseToastReturn {
     function add(entry: ToastEntryInput): string {
-        const id = entry.id ?? generateId();
+        // Caller-provided `entry.id` is a hint, not a guarantee — if it
+        // collides with an existing queue entry we regenerate so the
+        // queue's id invariant stays unique. Caller receives the actual
+        // id back. Keeps `dismiss(id)` / `update(id)` deterministic
+        // without throwing on duplicate-id submissions.
+        const suggested = entry.id;
+        const id = (suggested === undefined || entries.value.some((e) => e.id === suggested)) ?
+            generateId() :
+            suggested;
         entries.value = [...entries.value, { ...entry, id }];
         return id;
     }

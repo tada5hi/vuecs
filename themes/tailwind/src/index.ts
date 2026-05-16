@@ -857,8 +857,7 @@ export default function tailwindTheme(): Theme {
             },
             toast: {
                 classes: {
-                    root: 'relative pointer-events-auto flex w-full items-start gap-3 overflow-hidden rounded-md border border-border bg-bg p-4 pr-8 text-sm text-fg shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:slide-in-from-top-full data-[swipe=move]:translate-x-[var(--reka-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--reka-toast-swipe-end-x)] data-[swipe=end]:animate-out data-[swipe=end]:fade-out-80',
-                    icon: 'inline-flex shrink-0 items-center justify-center self-start mt-0.5',
+                    root: 'relative pointer-events-auto flex w-full items-start gap-3 overflow-hidden rounded-md border border-border bg-bg p-4 pr-8 text-sm text-fg shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:slide-in-from-right-full data-[state=closed]:slide-out-to-right-full data-[swipe=move]:translate-x-[var(--reka-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--reka-toast-swipe-end-x)] data-[swipe=end]:animate-out data-[swipe=end]:fade-out-80',
                     body: 'flex flex-col gap-1 flex-1 min-w-0',
                     close: 'inline-flex items-center justify-center rounded-md px-2 py-1 text-xs font-medium text-fg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
                     closeIcon: 'absolute right-2 top-2 inline-flex h-6 w-6 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',

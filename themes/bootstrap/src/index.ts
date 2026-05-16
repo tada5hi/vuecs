@@ -749,7 +749,7 @@ export default function bootstrapTheme(): Theme {
             // helper in the bridge CSS (BS theme strings can't carry
             // `data-[state=]:` attribute selectors).
             toastViewport: {
-                classes: { root: 'toast-container position-fixed p-3 list-unstyled m-0' },
+                classes: { root: 'toast-container position-fixed d-flex flex-column p-3 list-unstyled m-0' },
                 variants: {
                     position: {
                         'top-left': { root: 'top-0 start-0' },
@@ -765,7 +765,6 @@ export default function bootstrapTheme(): Theme {
             toast: {
                 classes: {
                     root: 'toast show vc-toast-anim d-flex align-items-start gap-3 position-relative pe-5',
-                    icon: 'flex-shrink-0',
                     body: 'flex-grow-1 min-w-0',
                     close: 'btn-close-white btn btn-sm align-self-start',
                     closeIcon: 'btn-close position-absolute top-0 end-0 m-2',

@@ -79,7 +79,7 @@ toast.clear();
 |---|---|---|
 | `add(entry)` | `(entry: ToastEntryInput) => string` | Returns the toast's id. Auto-generated when not provided. |
 | `dismiss(id)` | `(id: string) => void` | Removes the toast from the queue and fires its `onDismiss`. |
-| `update(id, patch)` | `(id: string, patch: Partial<ToastEntry>) => void` | Immutable patch — replaces the entry with `{ ...entry, ...patch }`. |
+| `update(id, patch)` | `(id: string, patch: Partial<Omit<ToastEntry, 'id'>>) => void` | Immutable patch — replaces the entry with `{ ...entry, ...patch }`. `id` is excluded from the patch shape (use `dismiss` + `add` to re-key an entry). |
 | `clear()` | `() => void` | Dismisses every queued entry. |
 
 ```ts
@@ -89,7 +89,7 @@ type ToastEntryInput = {
     description?: string;
     color?: 'primary' | 'neutral' | 'success' | 'warning' | 'error' | 'info';
     variant?: 'solid' | 'soft' | 'outline';
-    /** Auto-dismiss timeout (ms). `Infinity` disables auto-dismiss. */
+    /** Auto-dismiss timeout (ms). `0` or `Infinity` disables auto-dismiss (persistent toast). */
     duration?: number;
     /** Action button rendered alongside the title/description. */
     action?: { label: string; onClick: () => void };
@@ -120,18 +120,15 @@ import {
 <template>
     <VCToastProvider>
         <VCToaster position="top-right">
-            <template #default="{ entry, dismiss }">
+            <template #default="{ entry, dismiss, classes }">
                 <VCToast :color="entry.color" :duration="entry.duration">
-                    <div class="flex items-start gap-2">
-                        <VCIcon v-if="entry.color === 'success'" name="lucide:check-circle" />
-                        <div class="flex-1">
-                            <VCToastTitle v-if="entry.title">{{ entry.title }}</VCToastTitle>
-                            <VCToastDescription v-if="entry.description">
-                                {{ entry.description }}
-                            </VCToastDescription>
-                        </div>
-                        <VCToastClose />
+                    <div :class="classes.body">
+                        <VCToastTitle v-if="entry.title">{{ entry.title }}</VCToastTitle>
+                        <VCToastDescription v-if="entry.description">
+                            {{ entry.description }}
+                        </VCToastDescription>
                     </div>
+                    <VCToastClose />
                 </VCToast>
             </template>
         </VCToaster>
@@ -197,7 +194,7 @@ The toast viewport — renders the shared `useToast()` queue. Wraps `ToastViewpo
 | `themeClass` | `Partial<ToastViewportThemeClasses>` | `undefined` | Per-instance theme override. |
 | `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |
 
-Default slot receives `{ entry, dismiss }` for per-toast custom rendering. When omitted, `<VCToaster>` renders the canonical layout (title + description + action + close).
+Default slot receives `{ entry, dismiss, classes }` for per-toast custom rendering — `classes` is the resolved `toast` theme so custom layouts can reuse the active theme's class strings. When the slot is omitted, `<VCToaster>` renders the canonical layout (title + description + action + close).
 
 ### `<VCToast>`
 
@@ -205,9 +202,9 @@ A single toast. Wraps `ToastRoot`.
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `open` | `boolean` | `true` | Controlled open state. |
-| `defaultOpen` | `boolean` | `true` | Initial open state. |
-| `duration` | `number \| undefined` | `undefined` | Per-toast auto-dismiss; overrides the provider. `Infinity` disables. |
+| `open` | `boolean \| undefined` | `undefined` | Controlled open state. Leave undefined to let Reka manage open/close lifecycle from `defaultOpen` + the auto-dismiss timer. |
+| `defaultOpen` | `boolean` | `true` | Initial open state when `open` is undefined. |
+| `duration` | `number \| undefined` | `undefined` | Per-toast auto-dismiss; overrides the provider. `0` or `Infinity` disables (persistent). |
 | `type` | `'foreground' \| 'background'` | `'background'` | `foreground` reserves announcements (use sparingly for time-critical alerts). |
 | `color` | `'primary' \| 'neutral' \| 'success' \| 'warning' \| 'error' \| 'info'` | `undefined` | Folded into `themeVariant`. |
 | `variant` | `'solid' \| 'soft' \| 'outline'` | `undefined` | Folded into `themeVariant`. |

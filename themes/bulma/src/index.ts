@@ -779,7 +779,6 @@ export default function bulmaTheme(): Theme {
             toast: {
                 classes: {
                     root: 'notification is-flex is-align-items-flex-start vc-toast-anim',
-                    icon: 'mr-2',
                     body: 'is-flex-grow-1',
                     close: 'button is-small is-text',
                     closeIcon: 'delete is-small',
