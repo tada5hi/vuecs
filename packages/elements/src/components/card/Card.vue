@@ -14,7 +14,7 @@ const cardProps = {
     padding: { type: String as PropType<CardPadding>, default: undefined },
     /** Adds hover / focus styling — useful for link-cards. */
     interactive: { type: Boolean, default: undefined },
-    /** HTML tag (or component) to render. Reka default: `'div'`. */
+    /** HTML tag to render. Use `:as-child` to compose onto an existing component. */
     as: { type: String, default: 'div' },
     /** Render the consumer's slot child as the card root (Reka `asChild` pattern). */
     asChild: { type: Boolean, default: false },

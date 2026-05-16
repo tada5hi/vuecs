@@ -499,11 +499,11 @@
     margin: 0 -1.25rem -1.25rem;
 }
 
-/* When all three bands stack, drop the per-band side padding-cancellation
- * since the bands already reach the edges. */
-.box .vc-card-header:first-child {
-    margin-top: -1.25rem;
-}
-.box .vc-card-footer:last-child {
-    margin-bottom: -1.25rem;
+/* Soft variant — paint with our design-token muted background instead
+ * of Bulma's `.has-background-light`, which resolves through the
+ * unbridged `--bulma-light-h/s/l` channels and ignores runtime
+ * palette / color-mode flips (and ships `!important`, so layered
+ * overrides can't fix it). */
+.box.vc-card-soft {
+    background-color: var(--vc-color-bg-muted);
 }

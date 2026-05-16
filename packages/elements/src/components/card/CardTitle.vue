@@ -13,7 +13,7 @@ import { cardTitleThemeDefaults } from './theme';
 import type { CardTitleThemeClasses } from './types';
 
 const cardTitleProps = {
-    /** HTML tag (or component) to render. */
+    /** HTML tag to render. Use `:as-child` to compose onto an existing component. */
     as: { type: String, default: 'h3' },
     /** Render the consumer's slot child as the root (Reka `asChild` pattern). */
     asChild: { type: Boolean, default: false },

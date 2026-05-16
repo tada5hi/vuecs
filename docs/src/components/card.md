@@ -1,11 +1,11 @@
 # Card
 
-Compound surface for grouping related content into a bounded panel. Six parts — `<VCCard>` outer + optional `<VCCardHeader>` / `<VCCardTitle>` / `<VCCardDescription>` / `<VCCardBody>` / `<VCCardFooter>`. Pure-CSS; no Reka primitive.
+Compound surface for grouping related content into a bounded panel. Six parts — `<VCCard>` outer + optional `<VCCardHeader>` / `<VCCardTitle>` / `<VCCardDescription>` / `<VCCardBody>` / `<VCCardFooter>`. Pure-CSS surface; each part wraps `reka-ui`'s `Primitive` so `:as-child` works on every part for render-as-link cases.
 
 Padding lives on the outer `<VCCard>` and propagates to every band via card context — set `padding="compact"` once, every part resizes consistently. Variants (`outline` / `soft` / `elevated`) cover the typical visual ladder.
 
 ```bash
-npm install @vuecs/elements
+npm install @vuecs/elements @vuecs/button
 ```
 
 <Playground name="card">

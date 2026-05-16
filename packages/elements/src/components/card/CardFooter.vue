@@ -13,7 +13,7 @@ import { cardFooterThemeDefaults } from './theme';
 import type { CardFooterThemeClasses } from './types';
 
 const cardFooterProps = {
-    /** HTML tag (or component) to render. */
+    /** HTML tag to render. Use `:as-child` to compose onto an existing component. */
     as: { type: String, default: 'footer' },
     /** Render the consumer's slot child as the root (Reka `asChild` pattern). */
     asChild: { type: Boolean, default: false },

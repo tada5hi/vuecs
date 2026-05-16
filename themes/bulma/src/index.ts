@@ -456,8 +456,13 @@ export default function bulmaTheme(): Theme {
                         // outline variant flattens it and adds a border to
                         // distinguish it from the elevated variant.
                         outline: { root: 'has-shadow-none vc-card-outline' },
-                        // Soft = neutral light background, no shadow.
-                        soft: { root: 'has-background-light has-shadow-none' },
+                        // Soft = neutral muted background, no shadow. The
+                        // `vc-card-soft` helper in the bridge paints
+                        // `background-color` from `--vc-color-bg-muted`
+                        // so runtime palette / color-mode flips propagate
+                        // (Bulma's `.has-background-light` resolves
+                        // through the unbridged `--bulma-light-*` channels).
+                        soft: { root: 'vc-card-soft has-shadow-none' },
                         // Elevated = keep Bulma's default `.box` shadow.
                         elevated: { root: '' },
                     },

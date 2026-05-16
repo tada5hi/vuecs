@@ -13,7 +13,7 @@ import { cardDescriptionThemeDefaults } from './theme';
 import type { CardDescriptionThemeClasses } from './types';
 
 const cardDescriptionProps = {
-    /** HTML tag (or component) to render. */
+    /** HTML tag to render. Use `:as-child` to compose onto an existing component. */
     as: { type: String, default: 'p' },
     /** Render the consumer's slot child as the root (Reka `asChild` pattern). */
     asChild: { type: Boolean, default: false },

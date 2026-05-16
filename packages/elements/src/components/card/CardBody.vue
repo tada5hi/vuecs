@@ -13,7 +13,7 @@ import { cardBodyThemeDefaults } from './theme';
 import type { CardBodyThemeClasses } from './types';
 
 const cardBodyProps = {
-    /** HTML tag (or component) to render. */
+    /** HTML tag to render. Use `:as-child` to compose onto an existing component. */
     as: { type: String, default: 'div' },
     /** Render the consumer's slot child as the root (Reka `asChild` pattern). */
     asChild: { type: Boolean, default: false },

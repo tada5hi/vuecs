@@ -13,7 +13,7 @@ import { cardHeaderThemeDefaults } from './theme';
 import type { CardHeaderThemeClasses } from './types';
 
 const cardHeaderProps = {
-    /** HTML tag (or component) to render. */
+    /** HTML tag to render. Use `:as-child` to compose onto an existing component. */
     as: { type: String, default: 'header' },
     /** Render the consumer's slot child as the root (Reka `asChild` pattern). */
     asChild: { type: Boolean, default: false },
