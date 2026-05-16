@@ -444,6 +444,75 @@ export default function bulmaTheme(): Theme {
             // `vc-gravatar` class. Theme adds Bulma aesthetics; override
             // visual size via per-instance `themeClass`.
             gravatar: { classes: { root: 'is-inline-block' } },
+            // Bulma's native `.box` is the closest match to a Card. It
+            // ships radius + bg + shadow by default. The bridge CSS
+            // (`assets/index.css`) wires Bulma's box bg to `--vc-color-bg`
+            // so runtime palette / color-mode flips propagate.
+            card: {
+                classes: { root: 'box' },
+                variants: {
+                    variant: {
+                        // Bulma `.box` already carries a shadow; the
+                        // outline variant flattens it and adds a border to
+                        // distinguish it from the elevated variant.
+                        outline: { root: 'has-shadow-none vc-card-outline' },
+                        // Soft = neutral muted background, no shadow. The
+                        // `vc-card-soft` helper in the bridge paints
+                        // `background-color` from `--vc-color-bg-muted`
+                        // so runtime palette / color-mode flips propagate
+                        // (Bulma's `.has-background-light` resolves
+                        // through the unbridged `--bulma-light-*` channels).
+                        soft: { root: 'vc-card-soft has-shadow-none' },
+                        // Elevated = keep Bulma's default `.box` shadow.
+                        elevated: { root: '' },
+                    },
+                    interactive: { true: { root: 'vc-card-interactive' } },
+                },
+                defaultVariants: { variant: 'outline' },
+            },
+            // Bulma has no card-header / card-body / card-footer ladder
+            // (its `.card` is differently structured), so we paint these
+            // with utility classes from Bulma's spacing helpers + a couple
+            // of vc-* helpers in the bridge for the separator borders.
+            //
+            // Header + body inherit their structural `vc-card-*` classes
+            // from the component default — we only contribute the
+            // `padding` variant axis. The footer overrides `root` with a
+            // flex-row layout helper because Bulma has no native equivalent
+            // for "right-aligned action band".
+            cardHeader: {
+                variants: {
+                    padding: {
+                        compact: { root: 'py-2 px-3' },
+                        normal: { root: 'py-3 px-4' },
+                        spacious: { root: 'py-4 px-5' },
+                    },
+                },
+                defaultVariants: { padding: 'normal' },
+            },
+            cardTitle: { classes: { root: 'title is-5 mb-0' } },
+            cardDescription: { classes: { root: 'subtitle is-6 has-text-grey mb-0' } },
+            cardBody: {
+                variants: {
+                    padding: {
+                        compact: { root: 'py-3 px-3' },
+                        normal: { root: 'py-4 px-4' },
+                        spacious: { root: 'py-5 px-5' },
+                    },
+                },
+                defaultVariants: { padding: 'normal' },
+            },
+            cardFooter: {
+                classes: { root: 'vc-card-footer is-flex is-justify-content-flex-end' },
+                variants: {
+                    padding: {
+                        compact: { root: 'py-2 px-3' },
+                        normal: { root: 'py-3 px-4' },
+                        spacious: { root: 'py-4 px-5' },
+                    },
+                },
+                defaultVariants: { padding: 'normal' },
+            },
             // Bulma has NO core `.badge` class. Use `.tag` as the host
             // (consistent with how Bulma docs recommend chip-style badges)
             // plus the same color × variant matrix structure as button.

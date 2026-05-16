@@ -5,6 +5,7 @@ import type { CoreOptions } from '@vuecs/core';
 import '../assets/aspect-ratio.css';
 import '../assets/avatar.css';
 import '../assets/badge.css';
+import '../assets/card.css';
 import '../assets/separator.css';
 import '../assets/tag.css';
 import './vue';
@@ -13,6 +14,12 @@ import {
     VCAspectRatio,
     VCAvatar,
     VCBadge,
+    VCCard,
+    VCCardBody,
+    VCCardDescription,
+    VCCardFooter,
+    VCCardHeader,
+    VCCardTitle,
     VCSeparator,
     VCTag,
     VCTags,
@@ -35,6 +42,12 @@ export function install(app: App, options: Options = {}): void {
         VCAspectRatio,
         VCVisuallyHidden,
         VCBadge,
+        VCCard,
+        VCCardHeader,
+        VCCardTitle,
+        VCCardDescription,
+        VCCardBody,
+        VCCardFooter,
     }).forEach(([name, component]) => {
         app.component(name, component);
     });

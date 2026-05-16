@@ -41,6 +41,12 @@ export const sharedRoutes: SharedRoute[] = [
         view: () => import('./views/Button.vue').then((m) => m.default),
     },
     {
+        path: '/card',
+        name: 'card',
+        label: 'Card',
+        view: () => import('./views/Card.vue').then((m) => m.default),
+    },
+    {
         path: '/context-menu',
         name: 'context-menu',
         label: 'Context Menu',

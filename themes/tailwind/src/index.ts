@@ -546,6 +546,53 @@ export default function tailwindTheme(): Theme {
                 defaultVariants: { size: 'md' },
             },
             aspectRatio: { classes: { root: 'block w-full' } },
+            card: {
+                classes: { root: 'rounded-lg' },
+                variants: {
+                    variant: {
+                        outline: { root: 'border border-border bg-bg text-fg' },
+                        soft: { root: 'bg-bg-muted text-fg' },
+                        elevated: { root: 'border border-border bg-bg text-fg shadow-md' },
+                    },
+                    interactive: { true: { root: 'transition-shadow hover:shadow-lg focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-bg cursor-pointer' } },
+                },
+                defaultVariants: { variant: 'outline' },
+            },
+            cardHeader: {
+                classes: { root: 'flex flex-col gap-1 border-b border-border' },
+                variants: {
+                    padding: {
+                        compact: { root: 'px-3 py-2' },
+                        normal: { root: 'px-4 py-3' },
+                        spacious: { root: 'px-6 py-4' },
+                    },
+                },
+                defaultVariants: { padding: 'normal' },
+            },
+            cardTitle: { classes: { root: 'text-base font-semibold leading-tight text-fg' } },
+            cardDescription: { classes: { root: 'text-sm text-fg-muted' } },
+            cardBody: {
+                classes: { root: 'text-sm text-fg' },
+                variants: {
+                    padding: {
+                        compact: { root: 'px-3 py-3' },
+                        normal: { root: 'px-4 py-4' },
+                        spacious: { root: 'px-6 py-6' },
+                    },
+                },
+                defaultVariants: { padding: 'normal' },
+            },
+            cardFooter: {
+                classes: { root: 'flex items-center justify-end gap-2 border-t border-border' },
+                variants: {
+                    padding: {
+                        compact: { root: 'px-3 py-2' },
+                        normal: { root: 'px-4 py-3' },
+                        spacious: { root: 'px-6 py-4' },
+                    },
+                },
+                defaultVariants: { padding: 'normal' },
+            },
             badge: {
                 classes: { root: 'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium leading-tight' },
                 // Size variants use the `!` suffix to override the unlayered

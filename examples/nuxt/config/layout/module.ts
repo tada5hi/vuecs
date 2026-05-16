@@ -78,14 +78,19 @@ const elementsItems: NavigationItem[] = [
         url: '/elements/avatar', 
     },
     {
-        name: 'Badge', 
-        type: 'link', 
-        url: '/elements/badge', 
+        name: 'Badge',
+        type: 'link',
+        url: '/elements/badge',
     },
     {
-        name: 'Separator', 
-        type: 'link', 
-        url: '/elements/separator', 
+        name: 'Card',
+        type: 'link',
+        url: '/elements/card',
+    },
+    {
+        name: 'Separator',
+        type: 'link',
+        url: '/elements/separator',
     },
     {
         name: 'Tag', 

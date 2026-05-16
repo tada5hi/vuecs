@@ -447,3 +447,63 @@
     height: auto;
     border-radius: 0;
 }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * @vuecs/elements Card — Bulma's `.card` ladder doesn't match the
+ * <VCCard*> compound (Bulma's `.card-content` only has one content band),
+ * so the theme entry uses `.box` as the host and these gap-fill helpers
+ * paint the separator borders + flex layout that Bootstrap gets for free
+ * from its `.card-header` / `.card-footer` ladder.
+ *
+ * The `vc-card-outline` modifier flattens Bulma's default `.box` shadow
+ * and adds a single border so the outline variant reads as the "stripped
+ * down" style. `vc-card-interactive` adds hover + focus lift.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.vc-card-outline {
+    border: 1px solid var(--vc-color-border);
+}
+
+.vc-card-interactive {
+    cursor: pointer;
+    transition: box-shadow 150ms ease, transform 150ms ease;
+}
+.vc-card-interactive:hover {
+    box-shadow: var(--bulma-shadow, 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1));
+}
+.vc-card-interactive:focus-within {
+    box-shadow: 0 0 0 2px var(--vc-color-primary-500);
+    outline: none;
+}
+
+.vc-card-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    border-bottom: 1px solid var(--vc-color-border);
+    /* Cancel `.box`'s inner padding so the header sits flush against
+     * the outer edge of the card. */
+    margin: -1.25rem -1.25rem 0;
+}
+
+.vc-card-body {
+    /* Cancel `.box`'s inner padding so the body's own padding variant
+     * controls spacing. */
+    margin: 0 -1.25rem;
+}
+
+.vc-card-footer {
+    border-top: 1px solid var(--vc-color-border);
+    /* Cancel `.box`'s inner padding so the footer sits flush against
+     * the outer edge of the card. */
+    margin: 0 -1.25rem -1.25rem;
+}
+
+/* Soft variant — paint with our design-token muted background instead
+ * of Bulma's `.has-background-light`, which resolves through the
+ * unbridged `--bulma-light-h/s/l` channels and ignores runtime
+ * palette / color-mode flips (and ships `!important`, so layered
+ * overrides can't fix it). */
+.box.vc-card-soft {
+    background-color: var(--vc-color-bg-muted);
+}
