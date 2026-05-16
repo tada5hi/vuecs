@@ -17,10 +17,13 @@ A Vue 3 component library providing reusable UI components with TypeScript suppo
 
 ## Overview
 
-Vuecs splits into two kinds of packages:
+Vuecs is organized into five kinds of packages:
 
-- **Components** — render logic, props, slots, and structural `vc-*` classes. Visually unstyled by default.
-- **Themes** — pure data objects mapping component slots (e.g. `listItem.root`, `pagination.link`) to CSS class strings. Swap, compose, or override themes without touching component code.
+- **Components** (`@vuecs/button`, `@vuecs/forms`, `@vuecs/list`, `@vuecs/overlays`, …) — render logic, props, slots, and structural `vc-*` classes. Visually unstyled by default.
+- **Themes** (`@vuecs/theme-tailwind`, `@vuecs/theme-bootstrap`, `@vuecs/theme-bulma`) — pure data objects mapping component slots (e.g. `listItem.root`, `pagination.link`) to CSS class strings. Swap, compose, or override themes without touching component code.
+- **Icon presets** (`@vuecs/icons-lucide`, `@vuecs/icons-font-awesome`) — Iconify-name vocabularies that populate the semantic icon-prop slots on components like `VCPagination` and `VCButton`. Configured separately from themes via `icons: [...]`.
+- **Design tokens** (`@vuecs/design`) — CSS custom properties (`--vc-color-*`, `--vc-radius-*`, motion primitives) plus theme-agnostic `useColorMode` / `useColorPalette` composables. Drives runtime palette switching across every theme.
+- **Framework integrations** (`@vuecs/nuxt`) — SSR-safe color-mode + palette plugins, auto-imports, and module-level configuration for Nuxt apps.
 
 Themes are resolved at runtime by `@vuecs/core`'s theme manager through four layers: component defaults → themes (in array order) → global overrides → per-instance `themeClass` prop.
 
@@ -56,18 +59,63 @@ Theme resolution engine and component infrastructure. Exports `installThemeManag
 
 [Full documentation](./packages/core/README.md)
 
+### `@vuecs/design`
+
+[![npm version](https://badge.fury.io/js/@vuecs%2Fdesign.svg)](https://badge.fury.io/js/@vuecs%2Fdesign)
+
+CSS design tokens (`--vc-color-*`, `--vc-radius-*`), motion primitives (vanilla-CSS port of `tw-animate-css`), and theme-agnostic `useColorMode` / `useColorPalette` composables. Pair with `@vuecs/design/standalone` for Bootstrap or Bulma stacks that don't load Tailwind.
+
+[Full documentation](./packages/design/README.md)
+
+### `@vuecs/button`
+
+[![npm version](https://badge.fury.io/js/@vuecs%2Fbutton.svg)](https://badge.fury.io/js/@vuecs%2Fbutton)
+
+General-purpose `<VCButton>` with `variant` / `color` / `size` axes, loading state, and leading/trailing icon slots.
+
+[Full documentation](./packages/button/README.md)
+
+### `@vuecs/elements`
+
+[![npm version](https://badge.fury.io/js/@vuecs%2Felements.svg)](https://badge.fury.io/js/@vuecs%2Felements)
+
+Atomic, presentation-only UI elements — `VCSeparator`, `VCTag` / `VCTags`, `VCAvatar`, `VCAspectRatio`, `VCVisuallyHidden`, `VCBadge`. Pure-CSS or thin Reka wrappers.
+
+[Full documentation](./packages/elements/README.md)
+
+### `@vuecs/overlays`
+
+[![npm version](https://badge.fury.io/js/@vuecs%2Foverlays.svg)](https://badge.fury.io/js/@vuecs%2Foverlays)
+
+Compound overlays on Reka primitives — Modal (with `useModal()` view-stack composable), Popover, HoverCard, Tooltip, DropdownMenu, ContextMenu.
+
+[Full documentation](./packages/overlays/README.md)
+
+### `@vuecs/icon`
+
+[![npm version](https://badge.fury.io/js/@vuecs%2Ficon.svg)](https://badge.fury.io/js/@vuecs%2Ficon)
+
+`<VCIcon>` — thin Iconify wrapper for vuecs's icon-string-prop slots and consumer slot content.
+
+[Full documentation](./packages/icon/README.md)
+
 ### `@vuecs/list`
 
 [![npm version](https://badge.fury.io/js/@vuecs%2Flist.svg)](https://badge.fury.io/js/@vuecs%2Flist)
 
-Compound list (`VCList` / `VCListHeader` / `VCListBody` / `VCListItem` / `VCListFooter` / `VCListLoading` / `VCListNoMore`) plus the `useList()` state composable. Successor to `@vuecs/list-controls` — clean break, compound API.
+Compound list (`VCList` / `VCListBody` / `VCListItem` / `VCListEmpty` / `VCListLoading`) with the `defineList()` factory, `useList()` / `useListItem()` injectors, and built-in `v-model:selection` (single / multi, ARIA listbox). Header / footer / item-text / item-actions are consumer markup driven by slot-prop class strings.
 
 ```vue
-<VCList :data="items" :busy="loading" :total="total">
-    <template #item="{ data }">
-        <VCListItem :data="data">
-            <template #text>{{ data.name }}</template>
-        </VCListItem>
+<VCList :data="items" :busy="loading" v-model:selection="selected">
+    <template #default="{ classes }">
+        <header :class="classes.header">…</header>
+        <VCListBody>
+            <VCListItem v-for="item in items" :key="item.id" :value="item">
+                <template #default="{ classes }">
+                    <span :class="classes.text">{{ item.name }}</span>
+                </template>
+            </VCListItem>
+        </VCListBody>
     </template>
 </VCList>
 ```
@@ -140,6 +188,14 @@ Relative time display with locale support and auto-update.
 
 [Full documentation](./packages/timeago/README.md)
 
+### `@vuecs/nuxt`
+
+[![npm version](https://badge.fury.io/js/@vuecs%2Fnuxt.svg)](https://badge.fury.io/js/@vuecs%2Fnuxt)
+
+Theme-agnostic Nuxt module — auto-imports `@vuecs/design` tokens, ships SSR-safe color-mode + palette plugins (`useColorMode` / `useColorPalette` auto-imports), and optionally auto-installs themes listed under `vuecs: { themes: [...] }`.
+
+[Full documentation](./packages/nuxt/README.md)
+
 ## Themes
 
 Themes are functions returning `{ elements, classesMergeFn? }`. Multiple themes compose in array order. Themes resolve **CSS class strings only** — icon glyphs are provided separately by [icon presets](#icons) (`@vuecs/icons-lucide`, `@vuecs/icons-font-awesome`, …) configured under `icons:`. Themes only depend on `@vuecs/core`; the class strings they provide target whichever component packages the consumer has installed.
@@ -169,6 +225,18 @@ app.use(vuecs, {
     themes: [tailwind()],
     overrides: { classesMergeFn: merge },
 });
+```
+
+### `@vuecs/theme-bulma`
+
+[![npm version](https://badge.fury.io/js/@vuecs%2Ftheme-bulma.svg)](https://badge.fury.io/js/@vuecs%2Ftheme-bulma)
+
+Bulma 1.0+ theme — class strings (`button is-primary`, `input`, `dropdown-content`, …) for every component, plus an optional design-token bridge (`@import "@vuecs/theme-bulma"`) that wires `--bulma-*` onto `--vc-color-*`.
+
+```typescript
+import bulma from '@vuecs/theme-bulma';
+
+app.use(vuecs, { themes: [bulma()] });
 ```
 
 ## Icons

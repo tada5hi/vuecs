@@ -5,10 +5,13 @@
 
 Theme-agnostic CSS design tokens for vuecs components — concrete OKLCH defaults
 matching Tailwind v4's palette, light/dark `.dark` flips, motion primitives
-(vanilla-CSS port of `tw-animate-css`), and the theme-agnostic `useColorMode`
-composable. Also ships generic palette primitives (`applyColorPaletteCss`,
-`bindColorPalette<T>`, `COLOR_PALETTE_STYLE_ELEMENT_ID`) that any theme can compose to
-implement runtime palette switching.
+(vanilla-CSS port of `tw-animate-css`), and the theme-agnostic `useColorMode` /
+`useColorPalette` composables. The canonical home (since plan 026) for the
+palette-config type (`ColorPaletteConfig`), the catalog vocabulary
+(`SEMANTIC_SCALES`, `COLOR_PALETTES`, `COLOR_PALETTE_SHADES`), and the generic
+palette primitives (`applyColorPaletteCss`, `bindColorPalette<T>`,
+`COLOR_PALETTE_STYLE_ELEMENT_ID`) that any theme can compose to implement
+runtime palette switching via the `Theme['palette'].handle` hook.
 
 No Tailwind dependency — works standalone with `@vuecs/theme-bootstrap`,
 `@vuecs/theme-bulma`, or no theme at all.
@@ -28,11 +31,11 @@ npm install @vuecs/design
 /* Bootstrap or Bulma app — no Tailwind needed.
    The `/standalone` subpath additionally inlines the full Tailwind v4
    palette catalog (--color-<palette>-*, 22 palettes × 11 shades) —
-   these are the source variables that `setColorPalette()` writes
-   against. The runtime function itself ships from theme packages
-   (`@vuecs/theme-bulma` exports `setColorPalette` today; for Bootstrap,
-   compose `applyColorPaletteCss` from `@vuecs/design` directly until a
-   theme-bootstrap palette runtime lands). */
+   these are the source variables that runtime palette switching writes
+   against. Use `useColorPalette()` from `@vuecs/design`; it dispatches
+   through whichever themes the consumer installs via each theme's
+   `Theme['palette'].handle` hook (theme-tailwind and theme-bulma both
+   declare one today). */
 @import "bootstrap/dist/css/bootstrap.css";
 @import "@vuecs/design/standalone";
 @import "@vuecs/theme-bootstrap";
