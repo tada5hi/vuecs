@@ -18,7 +18,7 @@ vuecs/
     nuxt/             # @vuecs/nuxt — theme-agnostic Nuxt module: tokens injection + SSR colorMode + palette plugins + useColorMode / useColorPalette auto-imports + optional themes: string[] auto-load plugin (plan 025 collapsed the per-theme Nuxt sub-module split)
     overlays/         # @vuecs/overlays — Modal (+ useModal view-stack), Popover, HoverCard (plan 013), Tooltip (+ TooltipProvider), DropdownMenu, ContextMenu — all on Reka primitives
     pagination/       # @vuecs/pagination
-    table/            # @vuecs/table — compound table (Table / Header / Body / Footer / Row / Cell / HeadCell / Empty / Loading) + :columns :data driver, controlled sort, row-meta variants, row keyboard nav (plan 028)
+    table/            # @vuecs/table — compound table (Table / Header / Body / Footer / Row / Cell / HeadCell / Empty / Loading) + :columns :data driver, controlled sort, row-meta variants, row keyboard nav
     timeago/          # @vuecs/timeago
   themes/             # Theme packages (npm workspaces) — pure data, no Vue runtime deps
     bootstrap/        # @vuecs/theme-bootstrap — Bootstrap (currently v5) theme + design-token bridge (assets/index.css)

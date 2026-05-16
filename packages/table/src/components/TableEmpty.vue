@@ -78,7 +78,16 @@ export default defineComponent({
             // accessibility tree.
             return h(
                 'tbody',
-                mergeProps(attrs, { class: theme.value.root || undefined }),
+                mergeProps(attrs, {
+                    class: theme.value.root || undefined,
+                    // `role="status"` is the informational variant —
+                    // matches `<VCTableLoading>` and is correct for an
+                    // empty state. `role="alert"` would be assertive
+                    // (interrupts the current AT announcement), which
+                    // is overkill for "no rows."
+                    role: 'status',
+                    'aria-live': 'polite',
+                }),
                 [
                     h('tr', null, [
                         h('td', { colspan: resolvedColspan.value }, [

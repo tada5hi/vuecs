@@ -11,6 +11,10 @@
     width: 100%;
     border-collapse: collapse;
     box-sizing: border-box;
+    /* Establish a positioning context so `<VCTableLoading :overlay>`
+     * (rendered as a `<div>` child with position: absolute; inset: 0)
+     * sizes against the table, not the nearest positioned ancestor. */
+    position: relative;
 }
 
 .vc-table-scroll-container {

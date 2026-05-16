@@ -119,8 +119,11 @@ export default defineComponent({
         });
         watch(
             () => columns.value.length > 0,
-            (hasColumns) => {
-                if (hasColumns) childCellCount.value = 0;
+            () => {
+                // Reset the count on BOTH transitions (A → B and B → A) so
+                // a stale tally from the previous mode doesn't leak into
+                // colspan resolution after a runtime mode flip.
+                childCellCount.value = 0;
             },
         );
 
