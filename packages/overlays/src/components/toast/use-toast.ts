@@ -72,7 +72,10 @@ export function useToast(): UseToastReturn {
         if (idx === -1) return;
         const removed = entries.value[idx];
         entries.value = entries.value.filter((e) => e.id !== id);
-        removed?.onDismiss?.();
+        // `toastApi` is initialised below; the closure resolves at call
+        // time so by the time any user-triggered `dismiss` runs, it's
+        // fully wired up.
+        removed?.onDismiss?.(id, toastApi);
     }
 
     function update(id: string, patch: Partial<Omit<ToastEntry, 'id'>>): void {
@@ -86,14 +89,15 @@ export function useToast(): UseToastReturn {
     function clear(): void {
         const toFire = entries.value;
         entries.value = [];
-        for (const e of toFire) e.onDismiss?.();
+        for (const e of toFire) e.onDismiss?.(e.id, toastApi);
     }
 
-    return {
+    const toastApi: UseToastReturn = {
         entries: readonly(entries) as Readonly<Ref<ReadonlyArray<ToastEntry>>>,
         add,
         dismiss,
         update,
         clear,
     };
+    return toastApi;
 }

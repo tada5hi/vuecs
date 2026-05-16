@@ -4,6 +4,7 @@ import {
     VCToaster,
     useToast,
 } from '@vuecs/overlays';
+import { defineComponent, h } from 'vue';
 
 defineProps<{
     themeVariant?: Record<string, string | boolean>;
@@ -38,16 +39,17 @@ function showInfo() {
 }
 
 function showWithAction() {
-    const id = toast.add({
+    // `onClick` receives the toast's id + queue API — no closure capture.
+    toast.add({
         title: 'Item moved to trash',
         description: 'You can still restore it for a few seconds.',
         color: 'neutral',
         duration: 10000,
         action: {
             label: 'Undo',
-            onClick: () => {
-                toast.dismiss(id);
-                toast.add({
+            onClick: (id, t) => {
+                t.dismiss(id);
+                t.add({
                     title: 'Restored',
                     color: 'success',
                 });
@@ -63,6 +65,75 @@ function showPersistent() {
         color: 'primary',
         duration: Infinity,
     });
+}
+
+function showRichInline() {
+    // `title` and `description` accept () => h(...) for inline rich
+    // content — no need to override the canonical layout via the global
+    // <VCToaster> slot.
+    toast.add({
+        title: () => h('span', [
+            'Released ',
+            h('code', { style: 'font-family: monospace;' }, 'v2.1.0'),
+        ]),
+        description: () => h('span', [
+            'See the ',
+            h('a', { href: '#', style: 'text-decoration: underline;' }, 'changelog'),
+            ' for details.',
+        ]),
+        color: 'info',
+        variant: 'soft',
+    });
+}
+
+// Per-entry custom layout — replaces the canonical title+desc+action
+// for THIS toast only. Other toasts in the same queue still use the
+// default canonical layout.
+const ProgressToast = defineComponent({
+    name: 'DemoProgressToast',
+    props: {
+        entry: { type: Object, required: true },
+        dismiss: { type: Function, required: true },
+        progress: { type: Number, default: 0 },
+    },
+    setup(props) {
+        return () => h('div', { style: 'display: flex; flex-direction: column; gap: 0.5rem; min-width: 14rem;' }, [
+            h('strong', 'Uploading roadmap.pdf'),
+            h('div', { style: 'height: 0.25rem; border-radius: 9999px; background: var(--vc-color-bg-muted); overflow: hidden;' }, [
+                h('div', { style: `height: 100%; width: ${props.progress}%; background: var(--vc-color-primary-600); transition: width 200ms ease;` }),
+            ]),
+            h('span', { style: 'font-size: 0.75rem; color: var(--vc-color-fg-muted);' }, `${props.progress}% complete`),
+        ]);
+    },
+});
+
+function showCustomComponent() {
+    const id = toast.add({
+        component: ProgressToast,
+        componentProps: { progress: 0 },
+        duration: Infinity,
+        color: 'primary',
+        variant: 'soft',
+        closable: false,
+    });
+    // Mutate progress in place via `update()`.
+    let pct = 0;
+    const timer = setInterval(() => {
+        pct += 20;
+        if (pct >= 100) {
+            clearInterval(timer);
+            toast.update(id, {
+                component: undefined,
+                title: 'Upload complete',
+                description: 'roadmap.pdf is now available.',
+                color: 'success',
+                duration: 4000,
+                closable: true,
+            });
+            return;
+        }
+        toast.update(id, { componentProps: { progress: pct } });
+    }, 400);
 }
 
 function clearAll() {
@@ -107,6 +178,20 @@ function clearAll() {
                 @click="showPersistent"
             >
                 Show persistent
+            </button>
+            <button
+                type="button"
+                class="vc-demo-toast-btn vc-demo-toast-btn-info"
+                @click="showRichInline"
+            >
+                Show with inline link
+            </button>
+            <button
+                type="button"
+                class="vc-demo-toast-btn vc-demo-toast-btn-primary"
+                @click="showCustomComponent"
+            >
+                Show custom component
             </button>
             <button
                 type="button"

@@ -83,22 +83,133 @@ toast.clear();
 | `clear()` | `() => void` | Dismisses every queued entry. |
 
 ```ts
+type ToastRenderFn = () => VNode | VNode[] | string;
+
 type ToastEntryInput = {
     id?: string;
-    title?: string;
-    description?: string;
+    /** Heading text — accepts a string OR `() => h(...)` for inline rich content. */
+    title?: string | ToastRenderFn;
+    /** Body text — accepts a string OR `() => h(...)` for inline rich content. */
+    description?: string | ToastRenderFn;
     color?: 'primary' | 'neutral' | 'success' | 'warning' | 'error' | 'info';
     variant?: 'solid' | 'soft' | 'outline';
     /** Auto-dismiss timeout (ms). `0` or `Infinity` disables auto-dismiss (persistent toast). */
     duration?: number;
-    /** Action button rendered alongside the title/description. */
-    action?: { label: string; onClick: () => void };
+    /**
+     * Action button(s). Either the structured `{ label, onClick }` shape
+     * (renders one `<VCToastAction>` button) OR a render fn for fully-custom
+     * action UI (multiple buttons, inline link, styled component). The
+     * render fn receives `(id, toast)` so custom buttons can dismiss /
+     * update / chain without closure capture.
+     */
+    action?:
+        | { label: string; onClick: (id: string, toast: UseToastReturn) => void }
+        | ((id: string, toast: UseToastReturn) => VNode | VNode[] | string);
     /** When `false`, hides the close button. Defaults to `true`. */
     closable?: boolean;
+    /**
+     * Per-entry full custom render. Replaces the canonical layout for THIS
+     * toast only. Receives `{ entry, dismiss }` as props plus any extra
+     * `componentProps`. Prefer plain `title` / `description` (with render-fn
+     * flavour) when the canonical layout fits — `component` is the escape hatch.
+     */
+    component?: Component;
+    componentProps?: Record<string, unknown>;
     /** Fires when the toast is removed for any reason. */
-    onDismiss?: () => void;
+    onDismiss?: (id: string, toast: UseToastReturn) => void;
 };
 ```
+
+### Action / dismiss callbacks receive `(id, toast)`
+
+Both `action.onClick` and `onDismiss` are called with the toast's `id`
+plus the shared queue API — no closure capture needed:
+
+```ts
+toast.add({
+    title: 'Item moved to trash',
+    action: {
+        label: 'Undo',
+        onClick: (id, t) => {
+            t.dismiss(id);
+            t.add({ title: 'Restored', color: 'success' });
+        },
+    },
+});
+```
+
+### Render-fn title / description (inline rich content)
+
+For inline links, formatted text, or icons inside the title or body,
+pass a render fn instead of a string:
+
+```ts
+import { h } from 'vue';
+
+toast.add({
+    title: () => h('span', [
+        'Released ', h('code', 'v2.1.0'),
+    ]),
+    description: () => h('span', [
+        'See the ',
+        h('a', { href: '/changelog' }, 'changelog'),
+        ' for details.',
+    ]),
+});
+```
+
+### Custom action UI (multiple buttons, links, …)
+
+When the single `{ label, onClick }` shape isn't enough — e.g. "Retry"
++ "Dismiss" side-by-side on a network-error toast — pass a render fn
+to `action`. It receives the same `(id, toast)` payload as the
+structured `onClick`:
+
+```ts
+import { h } from 'vue';
+
+toast.add({
+    title: 'Network error',
+    description: 'Failed to fetch /api/users.',
+    color: 'error',
+    duration: Infinity,
+    action: (id, t) => h('div', { style: 'display: flex; gap: 0.5rem;' }, [
+        h('button', { onClick: () => retry() }, 'Retry'),
+        h('button', { onClick: () => t.dismiss(id) }, 'Dismiss'),
+    ]),
+});
+```
+
+### Per-entry custom component
+
+When the canonical layout doesn't fit (e.g. a progress toast with a
+`<VCProgress>` bar), pass a component that receives `entry` + `dismiss`
+as props:
+
+```ts
+const ProgressToast = defineComponent({
+    props: { entry: Object, dismiss: Function, progress: Number },
+    setup(props) {
+        return () => h('div', [
+            h('strong', 'Uploading...'),
+            h('progress', { value: props.progress, max: 100 }),
+        ]);
+    },
+});
+
+const id = toast.add({
+    component: ProgressToast,
+    componentProps: { progress: 0 },
+    duration: Infinity,
+    closable: false,
+});
+// Later — mutate progress via update():
+toast.update(id, { componentProps: { progress: 50 } });
+```
+
+The component renders inside the standard `<VCToast>` wrapper, so it
+inherits theme variants (`color`, `variant`), animation hooks, and
+auto-dismiss timing.
 
 ## Compound API
 
