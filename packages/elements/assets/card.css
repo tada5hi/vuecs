@@ -1,0 +1,37 @@
+/*
+ * Structural defaults for <VCCard> and its parts.
+ *
+ * Themes layer visual styling on top (background, borders, shadow, hover/focus).
+ * These rules cover element-level baselines that don't depend on a theme:
+ * box-sizing, default block flow, and a header layout helper.
+ */
+
+.vc-card {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.vc-card-header,
+.vc-card-body,
+.vc-card-footer {
+    box-sizing: border-box;
+    display: block;
+}
+
+.vc-card-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.vc-card-title {
+    margin: 0;
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+.vc-card-description {
+    margin: 0;
+    line-height: 1.4;
+}

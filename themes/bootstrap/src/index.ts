@@ -413,6 +413,59 @@ export default function bootstrapTheme(): Theme {
             // Theme adds bootstrap aesthetics; override visual size via
             // per-instance `themeClass`.
             gravatar: { classes: { root: 'rounded-circle overflow-hidden d-inline-block' } },
+            card: {
+                // Bootstrap `.card` brings the border + radius + bg-body.
+                // Theme bridge (`assets/index.css`) maps `--bs-card-*` onto
+                // `--vc-color-*` so runtime palette switches propagate.
+                classes: { root: 'card' },
+                variants: {
+                    variant: {
+                        // Bootstrap's default `.card` is already the outline look.
+                        outline: { root: '' },
+                        // Soft = subtle muted bg; we drop the border for visual lift.
+                        soft: { root: 'bg-body-tertiary border-0' },
+                        // Elevated = drop a shadow on the default `.card`.
+                        elevated: { root: 'shadow' },
+                    },
+                    interactive: { true: { root: 'shadow-sm' } },
+                },
+                defaultVariants: { variant: 'outline' },
+            },
+            cardHeader: {
+                classes: { root: 'card-header' },
+                variants: {
+                    padding: {
+                        compact: { root: 'py-2 px-3' },
+                        normal: { root: '' },
+                        spacious: { root: 'py-3 px-4' },
+                    },
+                },
+                defaultVariants: { padding: 'normal' },
+            },
+            cardTitle: { classes: { root: 'card-title mb-0' } },
+            cardDescription: { classes: { root: 'card-subtitle text-body-secondary mb-0' } },
+            cardBody: {
+                classes: { root: 'card-body' },
+                variants: {
+                    padding: {
+                        compact: { root: 'p-2' },
+                        normal: { root: '' },
+                        spacious: { root: 'p-4' },
+                    },
+                },
+                defaultVariants: { padding: 'normal' },
+            },
+            cardFooter: {
+                classes: { root: 'card-footer d-flex justify-content-end gap-2' },
+                variants: {
+                    padding: {
+                        compact: { root: 'py-2 px-3' },
+                        normal: { root: '' },
+                        spacious: { root: 'py-3 px-4' },
+                    },
+                },
+                defaultVariants: { padding: 'normal' },
+            },
             badge: {
                 classes: { root: 'badge rounded-pill' },
                 variants: {

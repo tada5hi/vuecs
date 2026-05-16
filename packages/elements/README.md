@@ -1,6 +1,6 @@
 # @vuecs/elements
 
-Atomic, presentation-only UI elements for vuecs — Separator, Tag, Tags, Avatar, AspectRatio, VisuallyHidden, Badge. Each component is small, themeable via the `@vuecs/core` theme system, and composable.
+Atomic, presentation-only UI elements for vuecs — Separator, Tag, Tags, Avatar, AspectRatio, VisuallyHidden, Badge, and the Card compound (Card / CardHeader / CardTitle / CardDescription / CardBody / CardFooter). Each component is small, themeable via the `@vuecs/core` theme system, and composable.
 
 ## Installation
 
@@ -18,3 +18,4 @@ See the [vuecs.dev documentation](https://vuecs.dev) — one page per element:
 - [AspectRatio](https://vuecs.dev/components/aspect-ratio)
 - [VisuallyHidden](https://vuecs.dev/components/visually-hidden)
 - [Badge](https://vuecs.dev/components/badge)
+- [Card](https://vuecs.dev/components/card)

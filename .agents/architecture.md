@@ -216,6 +216,8 @@ unless the variant is structural (e.g. orientation-driven layout).
 |---|---|---|---|
 | Button | `variant` × `color` × `size` | solid/outline/soft/ghost/link × primary/neutral/success/warning/error/info × sm/md/lg | Full matrix via `compoundVariants` |
 | Badge | `variant` × `color` × `size` | solid/soft/outline × six semantic colors × sm/md/lg | Mirrors button |
+| Card | `variant` × `interactive` | outline/soft/elevated × boolean | theme-tailwind uses `border + bg-bg` / `bg-bg-muted` / `shadow-md`; theme-bootstrap composes `.card` + `shadow` / `bg-body-tertiary`; theme-bulma uses `.box` + `vc-card-outline` gap-fill |
+| CardHeader / CardBody / CardFooter | `padding` | compact/normal/spacious | Set once on `<VCCard padding="…">` and propagated to bands via `provideCardContext()`; per-band props win over the inherited value |
 | Tag | `size` | sm/md/lg | Matches badge sizing |
 | Avatar | `size` | sm/md/lg | Theme-bootstrap uses `vc-avatar-{sm,lg}` helpers |
 | Pagination | `variant` × `size` | outline/soft/ghost × sm/md/lg | |
@@ -1591,6 +1593,8 @@ the theme system.
       aspect-ratio/     <- VCAspectRatio (Reka AspectRatio) — `ratio` prop
       visually-hidden/  <- VCVisuallyHidden (Reka VisuallyHidden) — a11y label slot
       badge/            <- VCBadge (pure CSS) — solid/soft/outline × semantic-color matrix
+      card/             <- VCCard + VCCardHeader / Title / Description / Body / Footer
+                           Compound surface with provideCardContext() for padding inheritance (plan 030)
     vue.ts              <- GlobalComponents augmentation
     index.ts            <- install() (themes, defaults; registers all VC* components)
   assets/
@@ -1599,7 +1603,44 @@ the theme system.
     avatar.css
     aspect-ratio.css
     badge.css
+    card.css            <- structural defaults for card + bands + title / description
 ```
+
+### Card compound (plan 030)
+
+A six-part compound for grouping related content into a bounded
+panel: `<VCCard>` outer + optional `<VCCardHeader>` /
+`<VCCardTitle>` / `<VCCardDescription>` / `<VCCardBody>` /
+`<VCCardFooter>`. Pure-CSS, no Reka primitive needed — each part
+is a thin themed wrapper over `reka-ui`'s `Primitive` (so the
+`asChild` pattern works on every part for render-as-link cases).
+
+Padding is set ONCE on `<VCCard padding="compact|normal|spacious">`
+and propagates to every band via `provideCardContext()`. Children
+read context via `useCardContext()` and merge it with their
+per-instance `themeVariant` (per-instance wins). Per-band padding
+overrides are still possible by passing `:theme-variant="{ padding:
+'spacious' }"` on the specific band. The context bridge is
+optional — children render bare when mounted outside `<VCCard>`
+for unit tests / ad-hoc composition.
+
+Theme entries ship in **all three** shipping themes
+(`tailwind` / `bootstrap` / `bulma`). Variant axes:
+
+- `card.variant`: `outline` / `soft` / `elevated` — border vs
+  tinted bg vs shadow.
+- `card.interactive`: hover + focus-within ring; pairs with
+  `:as-child` + `<NuxtLink>` for whole-card link rows.
+- `cardHeader.padding` / `cardBody.padding` / `cardFooter.padding`:
+  `compact` / `normal` / `spacious`.
+
+theme-bulma uses Bulma's `.box` as the host since Bulma's native
+`.card` has a different structural ladder; gap-fill helpers in
+`themes/bulma/assets/index.css` (`vc-card-outline`,
+`vc-card-interactive`, header / body / footer separator borders)
+paint the bands. theme-bootstrap maps directly onto `.card` /
+`.card-header` / `.card-body` / `.card-footer`. theme-tailwind
+emits design-token utilities (`bg-bg`, `border-border`, `text-fg`).
 
 `<VCTag>` and `<VCBadge>` look similar but have distinct semantics:
 **Tag** is a removable, value-bound chip (paired with `<VCFormTags>`
