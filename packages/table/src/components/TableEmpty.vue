@@ -73,7 +73,12 @@ export default defineComponent({
                 'tbody',
                 mergeProps(attrs, {
                     class: theme.value.root || undefined,
-                    role: 'alert',
+                    // `role="status"` is the informational variant —
+                    // matches `<VCTableLoading>` and is correct for an
+                    // empty state. `role="alert"` would be assertive
+                    // (interrupts the current AT announcement), which
+                    // is overkill for "no rows."
+                    role: 'status',
                     'aria-live': 'polite',
                 }),
                 [

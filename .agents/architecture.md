@@ -222,7 +222,7 @@ unless the variant is structural (e.g. orientation-driven layout).
 | Avatar | `size` | sm/md/lg | Theme-bootstrap uses `vc-avatar-{sm,lg}` helpers |
 | Pagination | `variant` × `size` | outline/soft/ghost × sm/md/lg | |
 | Table | `density` × `striped` × `bordered` × `hover` × `stickyHeader` | compact/normal/spacious × boolean × boolean × boolean × boolean | Whole-table chrome; sortable headers driven by per-column `:sortable` |
-| TableRow | `disabled` / `selected` / `focused` / `rowVariant` | boolean × boolean × boolean × success/warning/error/info/neutral/primary | `rowVariant` resolved from `row._rowVariant` (plan 028) |
+| TableRow | `disabled` / `selected` / `focused` / `rowVariant` | boolean × boolean × boolean × success/warning/error/info/neutral/primary | `rowVariant` resolved from `row._rowVariant` |
 | TableCell | `align` / `stickyColumn` / `cellVariant` | left/center/right × boolean × six semantic colors | `cellVariant` resolved from `row._cellVariants[columnKey]` |
 | TableHeadCell | `align` / `stickyColumn` / `sorted` | left/center/right × boolean × asc/desc/none | `sorted` drives the indicator span + `aria-sort` |
 | TableEmpty | `filtered` | boolean | Distinct copy / style for empty-after-filter vs empty-no-data |
@@ -1724,7 +1724,7 @@ prefixes, scoped via the `group` utility added by `<VCStepperItem>`) and
 `@vuecs/theme-bootstrap` (Bootstrap utility classes only, with
 data-state visualization handled by the bridge CSS as noted above).
 
-## Table compound (@vuecs/table, plan 028)
+## Table compound (@vuecs/table)
 
 Semantic-HTML compound for entity-list pages. Outer `<VCTable>` + eight
 parts (`<VCTableHeader>` / `<VCTableBody>` / `<VCTableFooter>` /
@@ -1801,7 +1801,7 @@ Per-column `initialSortDirection` (`'asc'` default) sets the first
 direction on activation. Defer to v1.x: client-side sort, multi-column,
 custom comparators.
 
-### Row click + keyboard navigation (D5 + plan 028 row-nav adoption)
+### Row click + keyboard navigation
 
 `:row-clickable` opt-in adds `tabindex="0"` + `cursor-pointer` per row
 and wires the keyboard ladder (`↓` / `↑` / `Home` / `End` + Shift, plus
@@ -1817,7 +1817,7 @@ so `<VCListItem>`'s selection click can share it.
 `useTable().focusedRow` tracks the current focus index — forward-compat
 hook for future selection v1.x.
 
-### Colspan resolution (D3 reversal)
+### Colspan resolution
 
 `<VCTableEmpty>` and the default-mode `<VCTableLoading>` resolve their
 `<td colspan="N">` from two parallel paths:
@@ -1832,7 +1832,7 @@ proposed sentinel `9999` fallback was reversed during the bvnext research
 pass — Firefox honors literal `colspan` values (no clamping), so
 auto-counting + explicit prop covers every case correctly.
 
-### Sortable header role (D4 reversal)
+### Sortable header role
 
 Sortable `<VCTableHeadCell>` renders as
 `<th tabindex="0" role="columnheader" aria-sort="…">` — native

@@ -14,8 +14,23 @@ import {
     useThemeProps, 
 } from '@vuecs/core';
 import { provideTableRowContext, useTable } from '../composables/context';
-import type { TableRowThemeClasses } from '../types';
+import type { RowVariant, TableRowThemeClasses } from '../types';
 import { filterRowClickEvent } from '../utils/render-utils';
+
+const ROW_VARIANTS: ReadonlySet<RowVariant> = new Set<RowVariant>([
+    'success', 
+    'warning', 
+    'error', 
+    'info', 
+    'neutral', 
+    'primary',
+]);
+
+function asRowVariant(value: unknown): RowVariant | null {
+    return typeof value === 'string' && ROW_VARIANTS.has(value as RowVariant) ?
+        (value as RowVariant) :
+        null;
+}
 
 const tableRowThemeDefaults = { classes: { root: 'vc-table-row' } };
 
@@ -40,11 +55,13 @@ export default defineComponent({
     setup(props, { attrs, slots }) {
         const ctx = useTable();
 
-        // Resolve row-meta variants from the row payload.
+        // Resolve row-meta variants from the row payload. We only accept
+        // the canonical RowVariant union — bad payloads (typos, stale
+        // data) produce `null` instead of an invalid themeVariant value
+        // that the theme would silently drop.
         const rowVariant = computed<string | null>(() => {
             if (!isObject(props.row)) return null;
-            const v = (props.row as Record<string, unknown>)._rowVariant;
-            return typeof v === 'string' ? v : null;
+            return asRowVariant((props.row as Record<string, unknown>)._rowVariant);
         });
         const cellVariants = computed<Record<string, string>>(() => {
             if (!isObject(props.row)) return {};
@@ -70,16 +87,16 @@ export default defineComponent({
         };
         const theme = useComponentTheme('tableRow', mergedThemeProps, tableRowThemeDefaults);
 
-        // Provide row context for child cells (needed for cellVariants resolution).
-        if (props.index !== undefined) {
-            provideTableRowContext({
-                row: toRef(props, 'row'),
-                index: toRef(props, 'index') as unknown as import('vue').Ref<number>,
-                rowVariant,
-                cellVariants,
-                focused,
-            });
-        }
+        // Provide row context unconditionally — downstream consumers
+        // (`<VCTableCell>` for `_cellVariants`, future selection) gate on
+        // `index.value` themselves, not on the context's presence.
+        provideTableRowContext({
+            row: toRef(props, 'row'),
+            index: toRef(props, 'index') as unknown as import('vue').Ref<number>,
+            rowVariant,
+            cellVariants,
+            focused,
+        });
 
         const isClickable = computed(() => ctx?.rowClickable.value && props.index !== undefined && !props.disabled);
 
