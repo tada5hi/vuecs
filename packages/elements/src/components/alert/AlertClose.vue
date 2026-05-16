@@ -3,7 +3,6 @@ import { defineComponent, h, mergeProps } from 'vue';
 import type { ExtractPublicPropTypes, PropType } from 'vue';
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
-import { useAlertContext } from './context';
 import { alertThemeDefaults } from './theme';
 import type { AlertThemeClasses } from './types';
 
@@ -27,18 +26,22 @@ const alertCloseProps = {
 
 export type AlertCloseProps = ExtractPublicPropTypes<typeof alertCloseProps>;
 
+/**
+ * Styled close button. Emits `click` — the consumer wires the click to
+ * whichever ref controls Alert visibility (a `v-if` for instant unmount
+ * or a `<VCCollapse v-model:open>` for an animated dismiss). Unlike
+ * `<VCModalClose>` / `<VCToastClose>` — which dispatch into Reka's
+ * primitive context — `<VCAlertClose>` doesn't auto-set any state. That
+ * keeps Alert presentational and lets `<VCCollapse>` compositions own
+ * the unmount cascade (mount-time content is needed for the height
+ * animation to play).
+ */
 export default defineComponent({
     name: 'VCAlertClose',
     inheritAttrs: false,
     props: alertCloseProps,
-    emits: ['click'],
-    setup(props, {
-        slots, 
-        attrs, 
-        emit, 
-    }) {
+    setup(props, { slots, attrs }) {
         const theme = useComponentTheme('alert', props, alertThemeDefaults);
-        const ctx = useAlertContext();
 
         return () => {
             const hasSlot = !!slots.default;
@@ -46,18 +49,12 @@ export default defineComponent({
                 (hasSlot ? undefined : 'Close');
             const slotKey = props.icon || !hasSlot ? 'closeIcon' : 'close';
 
-            function onClick(event: globalThis.MouseEvent): void {
-                emit('click', event);
-                if (!event.defaultPrevented) ctx?.setOpen(false);
-            }
-
             return h(
                 props.as,
                 mergeProps(attrs, {
                     type: props.as === 'button' ? 'button' : undefined,
                     class: theme.value[slotKey] || undefined,
                     'aria-label': ariaLabel,
-                    onClick,
                 }),
                 { default: () => slots.default?.() ?? '×' },
             );

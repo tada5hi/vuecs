@@ -77,7 +77,7 @@ function reset() {
                 Dismissible (with corner-X)
             </h3>
             <VCAlert
-                v-model:open="dismissibleOpen"
+                v-if="dismissibleOpen"
                 color="error"
                 :theme-variant="themeVariant"
             >
@@ -85,7 +85,7 @@ function reset() {
                 <VCAlertDescription>
                     Unlock the policy in the admin console to retry.
                 </VCAlertDescription>
-                <VCAlertClose />
+                <VCAlertClose @click="dismissibleOpen = false" />
             </VCAlert>
             <button
                 v-if="!dismissibleOpen"

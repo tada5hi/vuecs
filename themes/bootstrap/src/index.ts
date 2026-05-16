@@ -495,10 +495,15 @@ export default function bootstrapTheme(): Theme {
                     close: 'btn btn-sm',
                 },
                 variants: {
+                    // Size variants only adjust vertical padding + font-size.
+                    // Right-padding (reserved for the absolute corner-close
+                    // button) comes from the base `.pe-5` class; overriding
+                    // with `px-*` here would let text overlap the close icon
+                    // because BS `.px-*` utilities clobber both sides.
                     size: {
-                        sm: { root: 'py-2 px-3 small' },
+                        sm: { root: 'py-2 small' },
                         md: { root: '' },
-                        lg: { root: 'py-3 px-4 fs-6' },
+                        lg: { root: 'py-3 fs-6' },
                     },
                 },
                 compoundVariants: [

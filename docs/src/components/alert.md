@@ -25,12 +25,12 @@ const open = ref(true);
 </script>
 
 <template>
-    <VCAlert v-model:open="open" color="error">
+    <VCAlert v-if="open" color="error">
         <VCAlertTitle>Submission failed</VCAlertTitle>
         <VCAlertDescription>
             The server rejected the form. Check the highlighted fields and try again.
         </VCAlertDescription>
-        <VCAlertClose />
+        <VCAlertClose @click="open = false" />
     </VCAlert>
 </template>
 ```
@@ -73,7 +73,7 @@ For multi-line alerts use the structured parts:
 
 ### Dismissible
 
-`<VCAlertClose>` reads the parent `<VCAlert v-model:open>` context and flips `open` to `false` on click. Slot-presence smart default mirrors `<VCModalClose>`:
+`<VCAlertClose>` is presentational — it emits `click` only. Wire the click to whichever ref controls visibility. For instant dismissal use `v-if`:
 
 ```vue
 <script setup lang="ts">
@@ -81,13 +81,15 @@ const visible = ref(true);
 </script>
 
 <template>
-    <VCAlert v-model:open="visible" color="error">
+    <VCAlert v-if="visible" color="error">
         <VCAlertTitle>Cannot save</VCAlertTitle>
-        <!-- slotless → corner-X icon -->
-        <VCAlertClose />
+        <!-- slotless → corner-X icon via the theme's `closeIcon` slot -->
+        <VCAlertClose @click="visible = false" />
     </VCAlert>
 </template>
 ```
+
+For an animated dismiss, wrap with [`<VCCollapse>`](/components/collapse) (see the next section).
 
 ### Custom icon
 
@@ -122,7 +124,7 @@ const open = ref(true);
 </template>
 ```
 
-The click handler flips `open` on `<VCCollapse>` (one frame ahead of `<VCAlert>`'s internal state), Reka's `Presence` then plays the `accordion-up` animation, and the alert unmounts after `animationend`.
+The click handler flips `open` on `<VCCollapse>`, Reka's `Presence` plays the `accordion-up` animation, and the alert unmounts after `animationend`. Because `<VCAlert>` is purely presentational it stays mounted (and rendered) throughout the close animation — Collapse owns the unmount cascade.
 
 ## Compound API
 
@@ -131,7 +133,7 @@ The click handler flips `open` on `<VCCollapse>` (one frame ahead of `<VCAlert>`
 | `VCAlert` | `<div role="alert\|status">` | Outer container; provides theme + color context |
 | `VCAlertTitle` | `<h4>` (configurable `as`) | Heading text |
 | `VCAlertDescription` | `<div>` | Body text |
-| `VCAlertClose` | `<button>` | Dismiss button — reads parent context to toggle `v-model:open` |
+| `VCAlertClose` | `<button>` | Styled close button — emits `click` only (consumer owns visibility) |
 
 ## Theme keys
 
@@ -193,13 +195,9 @@ Override via `<VCAlert role="log">` for custom interaction patterns (e.g. chat l
 | `size` | `'sm' \| 'md' \| 'lg'` | `undefined` | Folded into `themeVariant`. |
 | `icon` | `string` | `undefined` (preset default for `color`) | Iconify name. Pass `''` to suppress. |
 | `role` | `string` | derived from `color` | ARIA role override. |
-| `open` | `boolean \| undefined` | `undefined` | Controlled visibility; bind via `v-model:open`. |
-| `defaultOpen` | `boolean` | `true` | Initial visibility when `open` is undefined. |
 | `as` | `string` | `'div'` | HTML tag to render. |
 
-| Emit | Payload | Description |
-|---|---|---|
-| `update:open` | `boolean` | Fired when `<VCAlertClose>` dismisses. |
+`<VCAlert>` is presentational — wrap with `v-if` (instant dismissal) or `<VCCollapse v-model:open>` (animated). No `v-model:open` on the alert itself.
 
 ### `<VCAlertClose>`
 
@@ -208,6 +206,4 @@ Override via `<VCAlert role="log">` for custom interaction patterns (e.g. chat l
 | `icon` | `boolean` | `false` | Force corner-X presentation. Slot-presence smart default decides otherwise. |
 | `as` | `string` | `'button'` | HTML tag to render. |
 
-| Emit | Payload | Description |
-|---|---|---|
-| `click` | `MouseEvent` | Fired on click. Call `event.preventDefault()` to suppress the auto-`setOpen(false)` behavior. |
+Emits a native `click` event on the underlying button — no extra side effects. Wire `@click` to your visibility ref.

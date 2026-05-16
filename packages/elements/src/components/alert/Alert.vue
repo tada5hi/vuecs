@@ -1,12 +1,10 @@
 <script lang="ts">
-import { 
-    computed, 
-    defineComponent, 
-    h, 
-    mergeProps, 
-    ref, 
-    resolveComponent, 
-    watch, 
+import {
+    computed,
+    defineComponent,
+    h,
+    mergeProps,
+    resolveComponent,
 } from 'vue';
 import type { Component, ExtractPublicPropTypes, PropType } from 'vue';
 import {
@@ -15,7 +13,6 @@ import {
     useComponentTheme,
     useThemeProps,
 } from '@vuecs/core';
-import { provideAlertContext } from './context';
 import { alertThemeDefaults } from './theme';
 import type {
     AlertColor,
@@ -46,10 +43,6 @@ const alertProps = {
      * patterns (e.g. `role="log"` for chat-style toasts).
      */
     role: { type: String, default: undefined },
-    /** Controlled visibility. Two-way bindable via `v-model:open`. */
-    open: { type: Boolean as PropType<boolean | undefined>, default: undefined },
-    /** Initial visibility when `open` is undefined. */
-    defaultOpen: { type: Boolean, default: true },
     /** HTML tag to render. */
     as: { type: String, default: 'div' },
     ...themableProps<AlertThemeClasses>(),
@@ -64,36 +57,25 @@ const alertBehavioralDefaults: AlertDefaults = {
     errorIcon: '',
 };
 
+/**
+ * `<VCAlert>` is presentational — it does NOT own visibility state. Wrap
+ * with `v-if` for instant dismissal, or compose with `<VCCollapse v-model:open>`
+ * for an animated height-collapse on dismiss. `<VCAlertClose>` emits `click`;
+ * the consumer wires the click to whichever visibility ref drives the wrap.
+ *
+ * This intentionally diverges from the overlay families (Modal / Popover)
+ * which own their open state through Reka primitives — Alert has no portal
+ * or unmount-cascade machinery, so coupling visibility to internal state
+ * breaks composition with outer animation parents (the Collapse case).
+ */
 export default defineComponent({
     name: 'VCAlert',
     inheritAttrs: false,
     props: alertProps,
-    emits: ['update:open'],
-    setup(props, {
-        attrs, 
-        slots, 
-        emit, 
-    }) {
+    setup(props, { attrs, slots }) {
         const themeProps = useThemeProps(props, 'color', 'variant', 'size');
         const theme = useComponentTheme('alert', themeProps, alertThemeDefaults);
         const defaults = useComponentDefaults('alert', {}, alertBehavioralDefaults);
-
-        // Local open state when uncontrolled. The consumer-supplied `open`
-        // prop (when not undefined) takes precedence — Vue's reactivity
-        // re-runs the computed below as it changes.
-        const internalOpen = ref(props.defaultOpen);
-        watch(() => props.open, (next) => {
-            if (typeof next === 'boolean') internalOpen.value = next;
-        }, { immediate: true });
-
-        const isOpen = computed(() => (typeof props.open === 'boolean' ? props.open : internalOpen.value));
-
-        function setOpen(next: boolean): void {
-            internalOpen.value = next;
-            emit('update:open', next);
-        }
-
-        provideAlertContext({ setOpen });
 
         // Resolved icon name — explicit `:icon` wins over color-derived preset default.
         const iconName = computed(() => {
@@ -114,8 +96,6 @@ export default defineComponent({
         });
 
         return () => {
-            if (!isOpen.value) return null;
-
             const iconValue = iconName.value;
             const VCIcon = iconValue ? resolveComponent('VCIcon') : null;
             const showIcon = !!iconValue && typeof VCIcon !== 'string';

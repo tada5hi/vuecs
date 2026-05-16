@@ -542,10 +542,15 @@ export default function bulmaTheme(): Theme {
                     close: 'button is-small is-text',
                 },
                 variants: {
+                    // Size variants only adjust font-size. Bulma's
+                    // `.notification` already reserves right-padding for the
+                    // built-in `.delete` button; overriding with `.p-*` here
+                    // would shrink that reserved space and let text overlap
+                    // the close icon.
                     size: {
-                        sm: { root: 'p-2 is-size-7' },
+                        sm: { root: 'is-size-7' },
                         md: { root: '' },
-                        lg: { root: 'p-5 is-size-5' },
+                        lg: { root: 'is-size-5' },
                     },
                 },
                 compoundVariants: [

@@ -8,6 +8,5 @@ export type { AlertTitleProps } from './AlertTitle.vue';
 export type { AlertDescriptionProps } from './AlertDescription.vue';
 export type { AlertCloseProps } from './AlertClose.vue';
 
-export * from './context';
 export * from './theme';
 export * from './types';
