@@ -18,10 +18,12 @@ vuecs ships its components across separate packages — install only what you us
 
 | Component | Notes |
 |-----------|-------|
+| [Alert](/components/alert) | Persistent banner — color × variant × size matrix; severity-derived ARIA role; auto-resolved leading icon |
 | [AspectRatio](/components/aspect-ratio) | Responsive media container that maintains a width / height ratio (Reka primitive) |
 | [Avatar](/components/avatar) | Image with graceful fallback (initials, icon, slot) — Reka primitive |
 | [Badge](/components/badge) | Status pill — `solid` / `soft` / `outline` × semantic color matrix |
 | [Card](/components/card) | Compound surface — `<VCCard>` outer + Header / Title / Description / Body / Footer parts; variant + padding via context |
+| [Collapse](/components/collapse) | Reka `Collapsible` wrapper — `v-model:open`, auto-chevron, height transition; composes with Alert for dismiss animation |
 | [Separator](/components/separator) | Horizontal / vertical divider with proper ARIA (Reka primitive) |
 | [Tag](/components/tag) | Removable, value-bound chip + `<VCTags>` list helper |
 | [VisuallyHidden](/components/visually-hidden) | Screen-reader-only content (Reka primitive) |

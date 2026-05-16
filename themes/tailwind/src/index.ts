@@ -683,6 +683,72 @@ export default function tailwindTheme(): Theme {
                 },
                 defaultVariants: { padding: 'normal' },
             },
+            collapse: { classes: { root: '' } },
+            collapseTrigger: {
+                // Chevron rotation lives in structural CSS
+                // (`[data-state="open"] .vc-collapse-chevron`) so themes can
+                // skip a `group data-[state=open]:` rewire. Both Tailwind
+                // and BS/Bulma get rotate-on-open for free via the
+                // `.vc-collapse-chevron` structural class.
+                classes: {
+                    root: 'inline-flex items-center justify-between gap-2 cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md',
+                    chevron: 'h-4 w-4 shrink-0 text-fg-muted',
+                },
+                variants: {
+                    chevron: {
+                        auto: { chevron: 'inline-flex' },
+                        none: { chevron: 'hidden' },
+                    },
+                },
+                defaultVariants: { chevron: 'auto' },
+            },
+            collapseContent: { classes: { root: 'overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up' } },
+            alert: {
+                classes: {
+                    root: 'relative flex items-start gap-3 rounded-md border text-sm',
+                    icon: 'inline-flex shrink-0 items-center justify-center mt-0.5',
+                    content: 'flex flex-1 flex-col gap-1 min-w-0',
+                    closeIcon: 'absolute right-2 top-2 inline-flex h-6 w-6 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
+                    close: 'inline-flex items-center justify-center rounded-md px-2 py-1 text-xs font-medium hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-ring',
+                },
+                variants: {
+                    size: {
+                        sm: { root: 'p-2 pr-8 text-xs' },
+                        md: { root: 'p-3 pr-9 text-sm' },
+                        lg: { root: 'p-4 pr-10 text-sm' },
+                    },
+                },
+                compoundVariants: [
+                    // solid
+                    { variants: { variant: 'solid', color: 'primary' }, class: { root: 'bg-primary-600 text-on-primary border-primary-700' } },
+                    { variants: { variant: 'solid', color: 'neutral' }, class: { root: 'bg-neutral-600 text-on-neutral border-neutral-700' } },
+                    { variants: { variant: 'solid', color: 'success' }, class: { root: 'bg-success-600 text-on-success border-success-700' } },
+                    { variants: { variant: 'solid', color: 'warning' }, class: { root: 'bg-warning-600 text-on-warning border-warning-700' } },
+                    { variants: { variant: 'solid', color: 'error' }, class: { root: 'bg-error-600 text-on-error border-error-700' } },
+                    { variants: { variant: 'solid', color: 'info' }, class: { root: 'bg-info-600 text-on-info border-info-700' } },
+                    // soft
+                    { variants: { variant: 'soft', color: 'primary' }, class: { root: 'bg-primary-50 text-primary-800 border-primary-200 dark:bg-primary-950 dark:text-primary-200 dark:border-primary-800' } },
+                    { variants: { variant: 'soft', color: 'neutral' }, class: { root: 'bg-neutral-50 text-fg border-border dark:bg-neutral-900' } },
+                    { variants: { variant: 'soft', color: 'success' }, class: { root: 'bg-success-50 text-success-800 border-success-200 dark:bg-success-950 dark:text-success-200 dark:border-success-800' } },
+                    { variants: { variant: 'soft', color: 'warning' }, class: { root: 'bg-warning-50 text-warning-800 border-warning-200 dark:bg-warning-950 dark:text-warning-200 dark:border-warning-800' } },
+                    { variants: { variant: 'soft', color: 'error' }, class: { root: 'bg-error-50 text-error-800 border-error-200 dark:bg-error-950 dark:text-error-200 dark:border-error-800' } },
+                    { variants: { variant: 'soft', color: 'info' }, class: { root: 'bg-info-50 text-info-800 border-info-200 dark:bg-info-950 dark:text-info-200 dark:border-info-800' } },
+                    // outline
+                    { variants: { variant: 'outline', color: 'primary' }, class: { root: 'border-primary-600 text-primary-700 bg-transparent dark:text-primary-200' } },
+                    { variants: { variant: 'outline', color: 'neutral' }, class: { root: 'border-border text-fg bg-transparent' } },
+                    { variants: { variant: 'outline', color: 'success' }, class: { root: 'border-success-600 text-success-700 bg-transparent dark:text-success-200' } },
+                    { variants: { variant: 'outline', color: 'warning' }, class: { root: 'border-warning-600 text-warning-700 bg-transparent dark:text-warning-200' } },
+                    { variants: { variant: 'outline', color: 'error' }, class: { root: 'border-error-600 text-error-700 bg-transparent dark:text-error-200' } },
+                    { variants: { variant: 'outline', color: 'info' }, class: { root: 'border-info-600 text-info-700 bg-transparent dark:text-info-200' } },
+                ],
+                defaultVariants: {
+                    variant: 'soft', 
+                    color: 'neutral', 
+                    size: 'md', 
+                },
+            },
+            alertTitle: { classes: { root: 'font-semibold leading-tight' } },
+            alertDescription: { classes: { root: 'leading-snug opacity-90' } },
             badge: {
                 classes: { root: 'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium leading-tight' },
                 // Size variants use the `!` suffix to override the unlayered

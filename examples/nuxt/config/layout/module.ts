@@ -74,14 +74,19 @@ const generalItems: NavigationItem[] = [
 
 const elementsItems: NavigationItem[] = [
     {
-        name: 'Aspect Ratio', 
-        type: 'link', 
-        url: '/elements/aspect-ratio', 
+        name: 'Alert',
+        type: 'link',
+        url: '/elements/alert',
     },
     {
-        name: 'Avatar', 
-        type: 'link', 
-        url: '/elements/avatar', 
+        name: 'Aspect Ratio',
+        type: 'link',
+        url: '/elements/aspect-ratio',
+    },
+    {
+        name: 'Avatar',
+        type: 'link',
+        url: '/elements/avatar',
     },
     {
         name: 'Badge',
@@ -94,19 +99,24 @@ const elementsItems: NavigationItem[] = [
         url: '/elements/card',
     },
     {
+        name: 'Collapse',
+        type: 'link',
+        url: '/elements/collapse',
+    },
+    {
         name: 'Separator',
         type: 'link',
         url: '/elements/separator',
     },
     {
-        name: 'Tag', 
-        type: 'link', 
-        url: '/elements/tag', 
+        name: 'Tag',
+        type: 'link',
+        url: '/elements/tag',
     },
     {
-        name: 'Visually Hidden', 
-        type: 'link', 
-        url: '/elements/visually-hidden', 
+        name: 'Visually Hidden',
+        type: 'link',
+        url: '/elements/visually-hidden',
     },
 ];
 

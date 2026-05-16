@@ -30,6 +30,13 @@ export default function lucideIcons(): Icon {
                 createIcon: 'lucide:plus',
                 updateIcon: 'lucide:save',
             },
+            collapseTrigger: { chevronIcon: 'lucide:chevron-down' },
+            alert: {
+                infoIcon: 'lucide:info',
+                successIcon: 'lucide:circle-check',
+                warningIcon: 'lucide:triangle-alert',
+                errorIcon: 'lucide:circle-x',
+            },
         },
     };
 }
