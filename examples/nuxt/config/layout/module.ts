@@ -216,14 +216,19 @@ const overlaysItems: NavigationItem[] = [
         url: '/overlays/modal-view-stack', 
     },
     {
-        name: 'Popover', 
-        type: 'link', 
-        url: '/overlays/popover', 
+        name: 'Popover',
+        type: 'link',
+        url: '/overlays/popover',
     },
     {
-        name: 'Tooltip', 
-        type: 'link', 
-        url: '/overlays/tooltip', 
+        name: 'Toast',
+        type: 'link',
+        url: '/overlays/toast',
+    },
+    {
+        name: 'Tooltip',
+        type: 'link',
+        url: '/overlays/tooltip',
     },
 ];
 

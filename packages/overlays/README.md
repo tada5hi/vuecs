@@ -1,6 +1,6 @@
 # @vuecs/overlays
 
-Overlay components for vuecs — Modal, Popover, HoverCard, Tooltip, DropdownMenu, ContextMenu — built as thin wrappers over [Reka UI](https://reka-ui.com/) primitives. Includes a `useModal()` view-stack composable for "list → push detail → pop back" flows in one modal instance.
+Overlay components for vuecs — Modal, Popover, HoverCard, Tooltip, DropdownMenu, ContextMenu, Toast — built as thin wrappers over [Reka UI](https://reka-ui.com/) primitives. Includes a `useModal()` view-stack composable for "list → push detail → pop back" flows in one modal instance, and a `useToast()` shared queue composable for firing transient notifications from anywhere in your app.
 
 ## Installation
 
@@ -18,6 +18,7 @@ See the [vuecs.dev documentation](https://vuecs.dev) — one page per family:
 - [Tooltip](https://vuecs.dev/components/tooltip)
 - [DropdownMenu](https://vuecs.dev/components/dropdown-menu)
 - [ContextMenu](https://vuecs.dev/components/context-menu)
+- [Toast](https://vuecs.dev/components/toast)
 
 ## Bundle size
 

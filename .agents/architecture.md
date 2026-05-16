@@ -233,6 +233,8 @@ unless the variant is structural (e.g. orientation-driven layout).
 | Popover / HoverCard | `size` | sm/md/lg | Width + padding tier |
 | Tooltip | `size` | sm/md/lg | Padding + font-size only |
 | DropdownMenu / ContextMenu | `size` | sm/md/lg | Item padding + min-width |
+| Toast | `color` × `variant` | six semantic colors × solid/soft/outline | Mirrors Badge color × variant matrix |
+| ToastViewport | `position` | top-{left,right,center}/bottom-{left,right,center} | Six positions; default `top-right` |
 | List / ListItem | `density` | compact/normal/spacious | Gap + per-row padding |
 | ListItem | `disabled` / `active` / `selected` | boolean | Folded into `themeVariant` from `<VCListItem>`'s props + derived selection state |
 | ListLoading | `overlay` | boolean | Refresh-feedback mode — absolute-positioned overlay |
@@ -1500,6 +1502,8 @@ matching `*Portal` so consumers don't have to compose them manually
       tooltip/                <- TooltipProvider / Tooltip / Trigger / Content / Arrow
       dropdown-menu/          <- DropdownMenu / Trigger / Content / Item / Label / Separator / Group / Arrow
       context-menu/           <- ContextMenu / Trigger / Content / Item / Label / Separator / Group
+      toast/                  <- ToastProvider / Toaster / Toast / Title / Description / Action / Close
+                                   + useToast() shared queue composable (plan 029)
     vue.ts                  <- GlobalComponents augmentation (every VC* part)
     index.ts                <- install() (themes, defaults, config; registers all VC* components)
 ```
@@ -1507,9 +1511,10 @@ matching `*Portal` so consumers don't have to compose them manually
 Every overlay family follows the same per-folder layout: each component is a
 small SFC, plus `theme.ts` (single shared defaults), `types.ts`
 (`<Family>ThemeClasses` + `ThemeElements` augmentation), and `index.ts`
-re-export barrel. Tooltip additionally exposes `<VCTooltipProvider>` for
-app-level `delayDuration` / `skipDelayDuration` config; the other families
-read state from their own root (`v-model:open` on Modal/Popover/Dropdown,
+re-export barrel. Tooltip and Toast additionally expose
+`<VCTooltipProvider>` / `<VCToastProvider>` for app-level config
+(delays, default duration, swipe direction); the other families read
+state from their own root (`v-model:open` on Modal/Popover/Dropdown,
 right-click on ContextMenu).
 
 The `useModal()` composable is the vuecs-specific value-add on top of
@@ -1519,16 +1524,31 @@ Reka's Dialog. It exposes a **view stack** (`pushView` / `popView` /
 fighting z-index. Originally proposed in
 [issue #1480](https://github.com/tada5hi/vuecs/issues/1480); the
 roadmap-scoped Reka-wrapped compound API is layered on top of it (the
-composable owns the state, `<VCModal>` v-binds to it). Equivalent
-composables for the other families haven't shipped — most of those don't
-need stateful flows, and consumers can wire `:open`/`@update:open`
-manually when they do.
+composable owns the state, `<VCModal>` v-binds to it).
 
-Theme entries for all six families (`modal`, `popover`, `hoverCard`,
-`tooltip`, `dropdownMenu`, `contextMenu`) ship in **both**
-`@vuecs/theme-tailwind` AND `@vuecs/theme-bootstrap` with `data-state`
-animation hooks (`open|closed` for modal/popover/hover-card/menu,
-`delayed-open|closed` for tooltip). Menu items also
+The `useToast()` composable (plan 029) plays the same role for the Toast
+family: a **shared, module-level queue** with `add` / `dismiss` / `update`
+/ `clear` methods. Every call site reads from the same `entries` ref, so
+a notification fired from a Pinia store, an axios interceptor, or a deep
+component lands in the same `<VCToaster>` viewport. Unlike `useModal()`
+(per-call instance), `useToast()` is a module singleton — the queue is
+app-wide on purpose. The `<VCToaster>` component reads the queue and
+renders one `<VCToast>` per entry, with the canonical
+title/description/action/close layout as the default slot fallback and a
+`{ entry, dismiss }` slot prop for per-toast customization.
+
+Equivalent composables for the other families haven't shipped — most of
+those don't need stateful flows, and consumers can wire `:open` /
+`@update:open` manually when they do.
+
+Theme entries for all seven families (`modal`, `popover`, `hoverCard`,
+`tooltip`, `dropdownMenu`, `contextMenu`, `toast` + the four `toast*`
+sub-keys) ship across `@vuecs/theme-tailwind`,
+`@vuecs/theme-bootstrap`, and `@vuecs/theme-bulma` with `data-state`
+animation hooks (`open|closed` for modal/popover/hover-card/menu/toast,
+`delayed-open|closed` for tooltip). Toast additionally exposes
+`data-swipe="move|cancel|end"` for swipe gestures, gated via the
+`vc-toast-anim` dual-state helper in `animations.css`. Menu items also
 expose `data-highlighted` (hover/focus) and `data-disabled`. Animation
 classes (`animate-in`, `fade-in-0`, `zoom-in-95`, etc.) come from
 `@vuecs/design`'s `animations.css` (vanilla-CSS port of `tw-animate-css`)

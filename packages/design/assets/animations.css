@@ -71,6 +71,14 @@
 @property --reka-accordion-content-height { syntax: "*"; inherits: false; initial-value: auto; }
 @property --reka-collapsible-content-height { syntax: "*"; inherits: false; initial-value: auto; }
 
+/* Reka-injected vars for toast swipe gesture. Reka's `<ToastRoot>` writes
+   `--reka-toast-swipe-move-x` while the user drags and
+   `--reka-toast-swipe-end-x` when the swipe completes; we read them from
+   `.vc-toast-anim[data-swipe=…]` rules. Declared with a `0px` fallback so
+   the rules render correctly even before Reka mounts the toast. */
+@property --reka-toast-swipe-move-x { syntax: "*"; inherits: false; initial-value: 0px; }
+@property --reka-toast-swipe-end-x { syntax: "*"; inherits: false; initial-value: 0px; }
+
 /* ---------- Master keyframes ------------------------------------------- */
 
 @keyframes enter {
@@ -421,6 +429,35 @@
     --tw-exit-scale: 0.95;
 }
 
+/* Toast — slide-in from the right on open; slide-out to the right on close.
+   Matches the default `swipeDirection: 'right'` on `<VCToastProvider>`. The
+   `swipe-end` data-state is also used by Reka when the user swipes the toast
+   off-screen; we mirror it to the close animation so the swipe completes
+   visually. */
+.vc-toast-anim[data-state="open"] {
+    animation: enter var(--tw-animation-duration, 200ms) ease-out;
+    --tw-enter-opacity: 0;
+    --tw-enter-translate-x: 100%;
+}
+.vc-toast-anim[data-state="closed"] {
+    animation: exit var(--tw-animation-duration, 150ms) ease-in;
+    --tw-exit-opacity: 0;
+    --tw-exit-translate-x: 100%;
+}
+.vc-toast-anim[data-swipe="move"] {
+    transform: translateX(var(--reka-toast-swipe-move-x));
+    transition: none;
+}
+.vc-toast-anim[data-swipe="cancel"] {
+    transform: translateX(0);
+    transition: transform 200ms ease-out;
+}
+.vc-toast-anim[data-swipe="end"] {
+    animation: exit var(--tw-animation-duration, 100ms) ease-out;
+    --tw-exit-opacity: 0;
+    --tw-exit-translate-x: var(--reka-toast-swipe-end-x);
+}
+
 /* ---------- Reduced motion ------------------------------------------- */
 
 /* Honour OS-level "reduce motion" preferences — kill animations entirely. */
@@ -434,7 +471,10 @@
     .animate-caret-blink,
     .vc-overlay-anim[data-state],
     .vc-overlay-fade-anim[data-state],
-    .vc-tooltip-anim[data-state] {
+    .vc-tooltip-anim[data-state],
+    .vc-toast-anim[data-state],
+    .vc-toast-anim[data-swipe] {
         animation: none !important;
+        transition: none !important;
     }
 }

@@ -215,6 +215,12 @@ export const sharedRoutes: SharedRoute[] = [
         view: () => import('./views/Timeago.vue').then((m) => m.default),
     },
     {
+        path: '/toast',
+        name: 'toast',
+        label: 'Toast',
+        view: () => import('./views/Toast.vue').then((m) => m.default),
+    },
+    {
         path: '/tooltip',
         name: 'tooltip',
         label: 'Tooltip',

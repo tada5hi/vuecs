@@ -16,7 +16,7 @@ vuecs/
     list/             # @vuecs/list — compound List / Header / Body / Item / ItemText / ItemActions / Footer / Loading / Empty + defineList() / useList() (renamed from @vuecs/list-controls in plan 010; sub-component split + Empty rename + Pinia-rename + meta unification per plan-010 addenda)
     navigation/       # @vuecs/navigation — multi-level nav with NavigationManager + <VCStepper> compound (Reka StepperRoot/Item/Trigger/Indicator/Title/Description/Separator) (plan 013)
     nuxt/             # @vuecs/nuxt — theme-agnostic Nuxt module: tokens injection + SSR colorMode + palette plugins + useColorMode / useColorPalette auto-imports + optional themes: string[] auto-load plugin (plan 025 collapsed the per-theme Nuxt sub-module split)
-    overlays/         # @vuecs/overlays — Modal (+ useModal view-stack), Popover, HoverCard (plan 013), Tooltip (+ TooltipProvider), DropdownMenu, ContextMenu — all on Reka primitives
+    overlays/         # @vuecs/overlays — Modal (+ useModal view-stack), Popover, HoverCard (plan 013), Tooltip (+ TooltipProvider), DropdownMenu, ContextMenu, Toast (+ useToast shared queue, plan 029) — all on Reka primitives
     pagination/       # @vuecs/pagination
     table/            # @vuecs/table — compound table (Table / Header / Body / Footer / Row / Cell / HeadCell / Empty / Loading) + :columns :data driver, controlled sort, row-meta variants, row keyboard nav (plan 028)
     timeago/          # @vuecs/timeago

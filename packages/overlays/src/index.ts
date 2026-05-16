@@ -50,6 +50,13 @@ import {
     VCPopoverContent,
     VCPopoverTrigger,
     VCPresence,
+    VCToast,
+    VCToastAction,
+    VCToastClose,
+    VCToastDescription,
+    VCToastProvider,
+    VCToastTitle,
+    VCToaster,
     VCTooltip,
     VCTooltipArrow,
     VCTooltipContent,
@@ -118,6 +125,13 @@ export function install(app: App, options: Options = {}): void {
         VCContextMenuSub,
         VCContextMenuSubTrigger,
         VCContextMenuSubContent,
+        VCToastProvider,
+        VCToaster,
+        VCToast,
+        VCToastTitle,
+        VCToastDescription,
+        VCToastAction,
+        VCToastClose,
     }).forEach(([name, component]) => {
         app.component(name, component);
     });
