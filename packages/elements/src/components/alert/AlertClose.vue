@@ -45,9 +45,13 @@ export default defineComponent({
 
         return () => {
             const hasSlot = !!slots.default;
-            const ariaLabel = (attrs['aria-label'] as string | undefined) ??
-                (hasSlot ? undefined : 'Close');
             const slotKey = props.icon || !hasSlot ? 'closeIcon' : 'close';
+            // Provide a default aria-label whenever we're in icon-mode
+            // (slotless OR explicit `:icon` with custom icon-only slot
+            // content like an `<svg>`). In labelled-text mode the slot
+            // content already serves as the accessible name.
+            const ariaLabel = (attrs['aria-label'] as string | undefined) ??
+                (slotKey === 'closeIcon' ? 'Close' : undefined);
 
             return h(
                 props.as,

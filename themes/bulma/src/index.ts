@@ -535,7 +535,7 @@ export default function bulmaTheme(): Theme {
                 // Outline variant uses the existing `vc-toast-outline-*`
                 // helpers (same color palette, same intent).
                 classes: {
-                    root: 'notification is-flex is-align-items-flex-start mb-0 position-relative',
+                    root: 'notification is-flex is-align-items-flex-start mb-0 is-relative',
                     icon: 'is-flex is-flex-shrink-0 is-align-items-center is-justify-content-center mr-3',
                     content: 'is-flex-grow-1 is-flex is-flex-direction-column',
                     closeIcon: 'delete is-small',

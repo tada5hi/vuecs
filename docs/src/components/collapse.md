@@ -77,8 +77,9 @@ Hide the chevron via `:theme-variant`:
     <VCCard>
         <VCCardHeader>
             <VCCollapseTrigger as-child>
-                <button class="w-full text-left">
+                <button class="w-full flex items-center justify-between">
                     <VCCardTitle>How do I install vuecs?</VCCardTitle>
+                    <VCIcon name="lucide:chevron-down" class="vc-collapse-chevron" />
                 </button>
             </VCCollapseTrigger>
         </VCCardHeader>
@@ -89,7 +90,7 @@ Hide the chevron via `:theme-variant`:
 </VCCollapse>
 ```
 
-`as-child` on `<VCCollapseTrigger>` passes the trigger behavior to your own child element — useful when the trigger needs custom layout (card header, table row, etc.).
+`as-child` on `<VCCollapseTrigger>` passes the trigger behavior to your own child element — useful when the trigger needs custom layout (card header, table row, etc.). The component **suppresses the auto-chevron** in `as-child` mode because Reka's `asChild` merges trigger props onto the slot's *first* child only — an injected chevron would render as a sibling outside the interactive element. Render your own chevron inside the custom child (use the `vc-collapse-chevron` class to inherit the rotate-on-open behavior).
 
 ### Alert dismiss-with-collapse animation
 

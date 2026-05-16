@@ -57,16 +57,28 @@ function reset() {
                 Severity matrix
             </h3>
             <div class="vc-demo-grid">
-                <VCAlert color="success">
+                <VCAlert
+                    color="success"
+                    :theme-variant="themeVariant"
+                >
                     Saved successfully.
                 </VCAlert>
-                <VCAlert color="info">
+                <VCAlert
+                    color="info"
+                    :theme-variant="themeVariant"
+                >
                     Background sync started.
                 </VCAlert>
-                <VCAlert color="warning">
+                <VCAlert
+                    color="warning"
+                    :theme-variant="themeVariant"
+                >
                     Disk usage at 87%.
                 </VCAlert>
-                <VCAlert color="error">
+                <VCAlert
+                    color="error"
+                    :theme-variant="themeVariant"
+                >
                     Submission failed.
                 </VCAlert>
             </div>

@@ -17,7 +17,14 @@
     transition: transform 200ms ease;
 }
 
-[data-state="open"] > .vc-collapse-chevron,
-[data-state="open"] .vc-collapse-chevron {
+/*
+ * Direct-child selector only. A broader descendant selector
+ * (`[data-state="open"] .vc-collapse-chevron`) would rotate chevrons
+ * inside nested collapses when only an ancestor is open. The chevron
+ * is rendered as a direct child of `<VCCollapseTrigger>` (which is
+ * the element Reka sets `data-state` on), so a direct-child rule
+ * targets it correctly.
+ */
+[data-state="open"] > .vc-collapse-chevron {
     transform: rotate(180deg);
 }

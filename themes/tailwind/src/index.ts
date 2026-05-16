@@ -702,7 +702,11 @@ export default function tailwindTheme(): Theme {
                 },
                 defaultVariants: { chevron: 'auto' },
             },
-            collapseContent: { classes: { root: 'overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up' } },
+            // `collapsible-*` keyframes (not `accordion-*`) — they read
+            // `--reka-collapsible-content-height` which Reka's
+            // CollapsibleContent sets at runtime. Accordion variant would
+            // silently fall back to height `auto` (no animation).
+            collapseContent: { classes: { root: 'overflow-hidden data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up' } },
             alert: {
                 classes: {
                     root: 'relative flex items-start gap-3 rounded-md border text-sm',

@@ -59,9 +59,17 @@
     line-height: 1;
     border-radius: var(--vc-radius-sm, 0.25rem);
 }
+.vc-alert-close-icon:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
 
 .vc-alert-close {
     background: transparent;
     border: 0;
     cursor: pointer;
+}
+.vc-alert-close:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
 }

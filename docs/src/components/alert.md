@@ -190,7 +190,7 @@ Override via `<VCAlert role="log">` for custom interaction patterns (e.g. chat l
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `color` | `'neutral' \| 'info' \| 'success' \| 'warning' \| 'error'` | `undefined` | Folded into `themeVariant`; auto-resolves the icon + ARIA role. |
+| `color` | `'primary' \| 'neutral' \| 'info' \| 'success' \| 'warning' \| 'error'` | `undefined` | Folded into `themeVariant`; auto-resolves the icon + ARIA role for `info/success/warning/error`. `primary` and `neutral` use no preset icon by default (pass `:icon` explicitly to render one). |
 | `variant` | `'solid' \| 'soft' \| 'outline'` | `undefined` | Folded into `themeVariant`. |
 | `size` | `'sm' \| 'md' \| 'lg'` | `undefined` | Folded into `themeVariant`. |
 | `icon` | `string` | `undefined` (preset default for `color`) | Iconify name. Pass `''` to suppress. |

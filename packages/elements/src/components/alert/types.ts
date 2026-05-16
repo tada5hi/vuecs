@@ -1,6 +1,6 @@
 import type { ComponentDefaultValues, ThemeElementDefinition } from '@vuecs/core';
 
-export type AlertColor = 'neutral' | 'info' | 'success' | 'warning' | 'error';
+export type AlertColor = 'primary' | 'neutral' | 'info' | 'success' | 'warning' | 'error';
 export type AlertVariant = 'solid' | 'soft' | 'outline';
 export type AlertSize = 'sm' | 'md' | 'lg';
 

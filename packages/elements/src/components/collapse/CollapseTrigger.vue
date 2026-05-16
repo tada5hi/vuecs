@@ -56,7 +56,16 @@ export default defineComponent({
             // optional peer; if the consumer hasn't installed it, the
             // trigger falls back to plain content (no chevron rendered).
             const VCIcon = chevronIcon ? resolveComponent('VCIcon') : null;
-            const showChevron = chevron === 'auto' && !!chevronIcon && typeof VCIcon !== 'string';
+            // Skip the auto-chevron when `asChild` is set: Reka's asChild
+            // merges trigger behavior onto the slot's *first* child only.
+            // An auto-injected chevron would render as a sibling of that
+            // child — outside the interactive element, breaking layout
+            // and ARIA semantics. Consumers using `asChild` are expected
+            // to render their own icon inside the custom child.
+            const showChevron = !props.asChild &&
+                chevron === 'auto' &&
+                !!chevronIcon &&
+                typeof VCIcon !== 'string';
 
             return h(
                 CollapsibleTrigger,
