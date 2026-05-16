@@ -428,3 +428,32 @@
 .vc-stepper-separator[data-state="completed"] {
     border-top-color: var(--vc-color-primary-600) !important;
 }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * @vuecs/table — gap-fill helpers for features Bootstrap doesn't natively
+ * cover. Bootstrap's theme strings can't carry `[aria-sort=…]` attribute
+ * selectors, so sort-indicator state lives in dedicated `vc-table-sort-{asc,desc}`
+ * helpers. Same approach as the overlay animation helpers.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.vc-table-sort-asc,
+.vc-table-sort-desc {
+    color: var(--vc-color-fg);
+}
+
+.vc-table-sticky-header thead th {
+    position: sticky;
+    top: 0;
+    background: var(--vc-color-bg);
+    z-index: 10;
+}
+
+.vc-table-sticky-column {
+    background: var(--vc-color-bg);
+    z-index: 1;
+}
+
+.vc-table-row-focused {
+    outline: 2px solid var(--vc-color-primary-500);
+    outline-offset: -2px;
+}

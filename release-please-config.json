@@ -19,6 +19,7 @@
         "packages/nuxt": {"component": "nuxt" },
         "packages/overlays": {"component": "overlays" },
         "packages/pagination": {"component": "pagination" },
+        "packages/table": {"component": "table" },
         "themes/bootstrap": {"component": "theme-bootstrap" },
         "themes/bulma": {"component": "theme-bulma" },
         "themes/tailwind": {"component": "theme-tailwind" },

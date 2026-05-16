@@ -59,6 +59,12 @@ const generalItems: NavigationItem[] = [
         url: '/pagination',
     },
     {
+        name: 'Table',
+        type: 'link',
+        icon: 'fa6-solid:table',
+        url: '/table',
+    },
+    {
         name: 'Timeago',
         type: 'link',
         icon: 'fa6-solid:hourglass',

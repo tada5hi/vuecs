@@ -432,6 +432,96 @@ export default function tailwindTheme(): Theme {
                 },
                 defaultVariants: { size: 'md' },
             },
+            table: {
+                classes: {
+                    root: 'w-full border-collapse text-sm text-fg',
+                    scrollContainer: 'relative overflow-auto rounded-md border border-border',
+                },
+                variants: {
+                    density: {
+                        compact: { root: '[&_td]:py-1 [&_th]:py-1.5' },
+                        normal: { root: '[&_td]:py-2 [&_th]:py-2.5' },
+                        spacious: { root: '[&_td]:py-3 [&_th]:py-3.5' },
+                    },
+                    striped: { true: { root: '[&_tbody_tr:nth-child(even)]:bg-bg-muted/40' } },
+                    bordered: { true: { root: '[&_td]:border [&_th]:border [&_td]:border-border [&_th]:border-border' } },
+                    hover: { true: { root: '[&_tbody_tr:hover]:bg-bg-muted/60' } },
+                    stickyHeader: { true: { root: '[&_thead_th]:sticky [&_thead_th]:top-0 [&_thead_th]:bg-bg [&_thead_th]:z-10' } },
+                },
+                defaultVariants: { density: 'normal' },
+            },
+            tableHeader: { classes: { root: 'border-b border-border bg-bg-muted/30 text-xs uppercase tracking-wide text-fg-muted' } },
+            tableBody: { classes: { root: '' } },
+            tableFooter: { classes: { root: 'border-t border-border bg-bg-muted/30 font-medium' } },
+            tableRow: {
+                classes: { root: 'border-b border-border last:border-b-0 transition-colors' },
+                variants: {
+                    disabled: { true: { root: 'opacity-50 pointer-events-none' } },
+                    selected: { true: { root: 'bg-primary-50 dark:bg-primary-950/40' } },
+                    focused: { true: { root: 'outline outline-2 outline-ring outline-offset-[-2px]' } },
+                    rowVariant: {
+                        success: { root: 'bg-success-50 dark:bg-success-950/30' },
+                        warning: { root: 'bg-warning-50 dark:bg-warning-950/30' },
+                        error: { root: 'bg-error-50 dark:bg-error-950/30' },
+                        info: { root: 'bg-info-50 dark:bg-info-950/30' },
+                        neutral: { root: 'bg-neutral-50 dark:bg-neutral-900' },
+                        primary: { root: 'bg-primary-50 dark:bg-primary-950/30' },
+                    },
+                },
+            },
+            tableCell: {
+                classes: { root: 'px-3 align-middle' },
+                variants: {
+                    align: {
+                        left: { root: 'text-left' },
+                        center: { root: 'text-center' },
+                        right: { root: 'text-right' },
+                    },
+                    stickyColumn: { true: { root: 'sticky left-0 bg-bg z-[1]' } },
+                    cellVariant: {
+                        success: { root: 'text-success-700 dark:text-success-300' },
+                        warning: { root: 'text-warning-700 dark:text-warning-300' },
+                        error: { root: 'text-error-700 dark:text-error-300' },
+                        info: { root: 'text-info-700 dark:text-info-300' },
+                        neutral: { root: 'text-neutral-700 dark:text-neutral-200' },
+                        primary: { root: 'text-primary-700 dark:text-primary-300' },
+                    },
+                },
+            },
+            tableHeadCell: {
+                classes: {
+                    root: 'px-3 text-left font-medium',
+                    sortIcon: 'ml-1 inline-block text-xs leading-none',
+                },
+                variants: {
+                    align: {
+                        left: { root: 'text-left' },
+                        center: { root: 'text-center' },
+                        right: { root: 'text-right' },
+                    },
+                    stickyColumn: { true: { root: 'sticky left-0 bg-bg-muted z-[2]' } },
+                    sorted: {
+                        asc: { root: 'text-fg' },
+                        desc: { root: 'text-fg' },
+                        none: { root: '' },
+                    },
+                },
+            },
+            tableEmpty: {
+                classes: { root: '' },
+                variants: {
+                    filtered: {
+                        true: { root: '[&_td]:py-6 [&_td]:text-center [&_td]:text-fg-muted [&_td]:italic' },
+                        false: { root: '[&_td]:py-6 [&_td]:text-center [&_td]:text-fg-muted' },
+                    },
+                },
+            },
+            tableLoading: {
+                classes: {
+                    root: '[&_td]:py-6 [&_td]:text-center [&_td]:text-fg-muted',
+                    overlay: 'bg-bg/70 backdrop-blur-[1px] text-fg-muted',
+                },
+            },
             pagination: {
                 classes: {
                     root: 'inline-flex items-center',

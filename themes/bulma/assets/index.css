@@ -507,3 +507,41 @@
 .box.vc-card-soft {
     background-color: var(--vc-color-bg-muted);
 }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * @vuecs/table — gap-fill helpers. Same rationale as Bootstrap:
+ * Bulma theme strings can't carry attribute selectors, so sort-indicator
+ * state + sticky-header + disabled-row + focused-row each get a vc-*
+ * helper class instead of a `[aria-sort=…]` / `[data-state=…]` rule.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.vc-table-sort-asc,
+.vc-table-sort-desc {
+    color: var(--vc-color-fg);
+}
+
+.vc-table-sticky-header thead th {
+    position: sticky;
+    top: 0;
+    background: var(--vc-color-bg);
+    z-index: 10;
+}
+
+.vc-table-sticky-column {
+    background: var(--vc-color-bg);
+    z-index: 1;
+}
+
+.vc-table-row-focused {
+    outline: 2px solid var(--vc-color-primary-500);
+    outline-offset: -2px;
+}
+
+.vc-table-row-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.vc-table-loading-overlay-bulma {
+    background: hsla(var(--bulma-scheme-h, 0), var(--bulma-scheme-s, 0%), var(--bulma-scheme-main-l, 100%), 0.7);
+}

@@ -221,6 +221,12 @@ unless the variant is structural (e.g. orientation-driven layout).
 | Tag | `size` | sm/md/lg | Matches badge sizing |
 | Avatar | `size` | sm/md/lg | Theme-bootstrap uses `vc-avatar-{sm,lg}` helpers |
 | Pagination | `variant` × `size` | outline/soft/ghost × sm/md/lg | |
+| Table | `density` × `striped` × `bordered` × `hover` × `stickyHeader` | compact/normal/spacious × boolean × boolean × boolean × boolean | Whole-table chrome; sortable headers driven by per-column `:sortable` |
+| TableRow | `disabled` / `selected` / `focused` / `rowVariant` | boolean × boolean × boolean × success/warning/error/info/neutral/primary | `rowVariant` resolved from `row._rowVariant` (plan 028) |
+| TableCell | `align` / `stickyColumn` / `cellVariant` | left/center/right × boolean × six semantic colors | `cellVariant` resolved from `row._cellVariants[columnKey]` |
+| TableHeadCell | `align` / `stickyColumn` / `sorted` | left/center/right × boolean × asc/desc/none | `sorted` drives the indicator span + `aria-sort` |
+| TableEmpty | `filtered` | boolean | Distinct copy / style for empty-after-filter vs empty-no-data |
+| TableLoading | `overlay` | boolean | In-table band default vs absolute overlay for refresh-feedback |
 | FormInput / FormTextarea / FormSelect / FormNumber / FormTags | `size` | sm/md/lg | theme-tailwind uses padding+font utilities; theme-bootstrap uses `form-control-{sm,lg}` (and input-group-{sm,lg} for groups) |
 | FormCheckbox / FormSwitch / FormRadio | `size` | sm/md/lg | theme-bootstrap uses `vc-form-{checkbox,switch,radio}-{sm,lg}` helpers from @vuecs/forms structural CSS |
 | Modal | `size` | sm/md/lg/xl | theme-tailwind uses `max-w-*`; theme-bootstrap uses `modal-{sm,lg,xl}` |
@@ -1717,6 +1723,171 @@ Theme entries ship in `@vuecs/theme-tailwind` (uses
 prefixes, scoped via the `group` utility added by `<VCStepperItem>`) and
 `@vuecs/theme-bootstrap` (Bootstrap utility classes only, with
 data-state visualization handled by the bridge CSS as noted above).
+
+## Table compound (@vuecs/table, plan 028)
+
+Semantic-HTML compound for entity-list pages. Outer `<VCTable>` + eight
+parts (`<VCTableHeader>` / `<VCTableBody>` / `<VCTableFooter>` /
+`<VCTableRow>` / `<VCTableCell>` / `<VCTableHeadCell>` / `<VCTableEmpty>` /
+`<VCTableLoading>`). Layer 1 — `@vuecs/core` peer dep only; no Reka dep
+(no Reka table primitive exists, semantic HTML covers it).
+
+### Two authoring shapes
+
+- **`:columns :data` driver** (primary): consumer passes `:columns`
+  (array of `TableColumn` or bare-string shorthand) + `:data`; uses
+  `#cell-<key>` / `#header-<key>` slots for per-column overrides.
+  Direct lift-and-shift from `<BTable :fields :items>`.
+- **Manual compound markup** (escape hatch): consumer writes
+  `<VCTableHeader>` + `<VCTableBody>` + `<VCTableRow>` etc by hand for
+  layouts that don't fit the driver (merged cells, custom row
+  groupings, multi-line rows).
+
+Both shapes can mix — pass `:columns` AND write `<VCTableHeader>` to
+override only the header band, etc.
+
+### Column shape (excerpt)
+
+```ts
+type TableColumnRaw<Row> = string | TableColumn<Row>;  // bare-string shorthand
+interface TableColumn<Row, K extends string = string> {
+    key: K;
+    label?: string;                              // defaults to startCase(key)
+    class?: VNodeClass;                           // applied to both <th> AND <td>
+    headerClass?: VNodeClass;                     // additive on <th>
+    cellClass?: VNodeClass;                       // additive on <td>
+    sortable?: boolean;
+    accessor?: string | ((row: Row) => unknown); // string supports dot-paths
+    formatter?: (ctx: { value, key, row }) => string;
+    isRowHeader?: boolean;                        // <th scope="row"> instead of <td>
+    cellAttrs?: ... | (ctx) => ...;               // per-cell data-* / aria-* escape hatch
+    headerAttrs?: ... | (ctx) => ...;             // per-header escape hatch
+    headerTitle?: string;                         // native <th title>
+    headerAbbr?: string;                          // native <th abbr>
+    stickyColumn?: boolean;
+    initialSortDirection?: 'asc' | 'desc';
+}
+```
+
+Near-superset of bootstrap-vue-next's `TableField` so most field
+entries copy verbatim from a migration. Auto-derive: when `:columns`
+is omitted and `data[0]` is an object, columns come from
+`Object.keys(data[0])` (skipping underscore-prefixed row-meta keys).
+
+### Row-meta convention (`_rowVariant` / `_cellVariants`)
+
+Underscore-prefixed fields on the data row tint rows / specific cells
+without a function prop. Resolved by `<VCTableRow>` (via row context)
+and `<VCTableCell>` (via `columnKey` lookup in `_cellVariants`):
+
+```ts
+const users: WithRowMeta<User>[] = [
+    { id: 1, name: 'Alice', _rowVariant: 'warning' },
+    { id: 2, name: 'Bob', _cellVariants: { email: 'error' } },
+];
+```
+
+### Sorting
+
+Single-column controlled sort via `v-model:sort`. The table never
+sorts data — `setSort` cycles state (`null → asc → desc → null` or
+`null → asc → desc → asc` when `:must-sort`) and emits intent.
+Consumer sorts (typically via server-side query refetch). Clicks +
+Enter/Space on a `:sortable` `<VCTableHeadCell>` cycle the state;
+`aria-sort` flips to `"ascending"` / `"descending"` / `"none"` to
+match.
+
+Per-column `initialSortDirection` (`'asc'` default) sets the first
+direction on activation. Defer to v1.x: client-side sort, multi-column,
+custom comparators.
+
+### Row click + keyboard navigation (D5 + plan 028 row-nav adoption)
+
+`:row-clickable` opt-in adds `tabindex="0"` + `cursor-pointer` per row
+and wires the keyboard ladder (`↓` / `↑` / `Home` / `End` + Shift, plus
+Enter / Space for activation). The click handler runs through a shared
+`filterRowClickEvent()` helper that suppresses the row-click when the
+event originates inside an interactive descendant — `<a>`, `<button>`,
+`<input>`, `<select>`, `<textarea>`, `<label for>`, `[role=button]`,
+`[role=link]`, `[contenteditable]`, `[tabindex]:not([tabindex="-1"])`,
+or `.vc-overlay-portal-content`. Ported from bootstrap-vue-next's
+`utils/filterEvent.ts`; intended to migrate into `@vuecs/core/utils`
+so `<VCListItem>`'s selection click can share it.
+
+`useTable().focusedRow` tracks the current focus index — forward-compat
+hook for future selection v1.x.
+
+### Colspan resolution (D3 reversal)
+
+`<VCTableEmpty>` and the default-mode `<VCTableLoading>` resolve their
+`<td colspan="N">` from two parallel paths:
+
+1. **Shape A** — `columns.length` when `:columns` is set on `<VCTable>`.
+2. **Shape B** — auto-count from `<VCTableHeadCell>` siblings via a
+   render-time `provide`/`inject` ref. `<VCTableFooter>` provides a
+   no-op variant so footer cells don't double-register.
+
+Per-instance `:colspan` on Empty / Loading wins over both. The originally-
+proposed sentinel `9999` fallback was reversed during the bvnext research
+pass — Firefox honors literal `colspan` values (no clamping), so
+auto-counting + explicit prop covers every case correctly.
+
+### Sortable header role (D4 reversal)
+
+Sortable `<VCTableHeadCell>` renders as
+`<th tabindex="0" role="columnheader" aria-sort="…">` — native
+column-header semantics rather than a nested `<button>`. JAWS / NVDA /
+VoiceOver announce column-header context more strongly than a wrapped
+button; one focus stop per cell; DOM matches `<BTable>`'s output so
+visual-regression baselines don't drift on migration. The originally-
+proposed `<button>` wrapper was reversed during the bvnext research.
+
+### Free-win a11y attributes
+
+Applied unconditionally:
+
+- `<table aria-busy="true">` while `:busy`.
+- `aria-sort="ascending" | "descending" | "none"` on sortable `<th>`.
+- Smart `<th scope>` default — `colgroup` for `colspan > 1`,
+  `rowgroup` for `rowspan > 1`, else `'col'`.
+- `data-label="<column.label>"` on every `<td>` — forward-compat for
+  future stacked-mode CSS (responsive collapse to cards), out of
+  scope for v0.1 but adding the attribute now means consumers don't
+  rewrite cells later.
+- `role="alert" aria-live="polite"` on `<VCTableEmpty>` and
+  `role="status" aria-live="polite" aria-busy="true"` on
+  `<VCTableLoading>`.
+
+### Theme entries
+
+Theme entries ship in **all three** shipping themes (tailwind /
+bootstrap / bulma). theme-bootstrap composes Bootstrap's native
+`.table` family (`table-striped`, `table-bordered`, `table-hover`,
+`table-sm`, `table-success`, …). theme-bulma composes Bulma's
+`.table` family (`is-striped`, `is-bordered`, `is-hoverable`,
+`is-narrow`, `has-background-success-light`, …). theme-tailwind
+emits utility classes via `@vuecs/design` semantic tokens
+(`bg-bg-muted`, `border-border`, `text-fg`).
+
+Bootstrap + Bulma theme strings can't carry `[aria-sort=…]` attribute
+selectors, so sort-indicator state lives in dedicated
+`vc-table-sort-{asc,desc}` helpers in each bridge's `assets/index.css`.
+Sticky-header / sticky-column / row-focused / row-disabled use the
+same gap-fill helper pattern (`vc-table-sticky-{header,column}`,
+`vc-table-row-{focused,disabled}`) — Bootstrap's `.table-active`
+inverts on hover and `.table-success/-warning/-danger` use Bootstrap's
+runtime variables, both of which bridge correctly through
+`--bs-*` → `--vc-color-*`.
+
+### Out of scope for v0.1
+
+Selection v-model + listbox / treegrid a11y (deferred to v1.x —
+`<VCList>`'s selection precedent applies, but tables need a different
+a11y model and authup doesn't use it today); expandable rows + nested
+tables; virtual scrolling (tanstack-virtual on top of the compound is
+the doctrinal path); drag-and-drop column reordering; the
+`Simple`/`Lite`/Full three-tier layering (consider for v0.2 — adding
+later is non-breaking).
 
 ## Visual regression CI (@vuecs-tests/visual-regression, plan 015 P2)
 
