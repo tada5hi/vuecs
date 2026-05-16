@@ -90,6 +90,12 @@ vuecs ships its components across separate packages — install only what you us
 |-----------|-------|
 | [Pagination](/components/pagination) | Offset/limit page navigation |
 
+## @vuecs/table
+
+| Component | Notes |
+|-----------|-------|
+| [Table](/components/table) | Compound table — `<VCTable>` + 8 parts (Header / Body / Footer / Row / Cell / HeadCell / Empty / Loading) with a `:columns :data` driver, controlled sort, row-meta variants, and opt-in row keyboard nav |
+
 ## @vuecs/timeago
 
 | Component | Notes |

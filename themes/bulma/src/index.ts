@@ -558,6 +558,92 @@ export default function bulmaTheme(): Theme {
                     size: 'md',
                 },
             },
+            // Bulma's `.table` family covers the basic chrome. Variant
+            // mappings: `.table.is-striped`, `.is-bordered`, `.is-hoverable`,
+            // `.is-narrow` (compact). Sticky-header and per-row variants
+            // come from the bridge CSS (`vc-table-*` gap-fill helpers).
+            table: {
+                classes: { root: 'table is-fullwidth' },
+                variants: {
+                    density: {
+                        compact: { root: 'is-narrow' },
+                        normal: { root: '' },
+                        spacious: { root: '' },
+                    },
+                    striped: { true: { root: 'is-striped' } },
+                    bordered: { true: { root: 'is-bordered' } },
+                    hover: { true: { root: 'is-hoverable' } },
+                    stickyHeader: { true: { root: 'vc-table-sticky-header' } },
+                },
+                defaultVariants: { density: 'normal' },
+            },
+            tableHeader: { classes: { root: 'is-uppercase has-text-grey is-size-7' } },
+            tableBody: { classes: { root: '' } },
+            tableFooter: { classes: { root: 'has-text-weight-medium' } },
+            tableRow: {
+                variants: {
+                    disabled: { true: { root: 'vc-table-row-disabled' } },
+                    selected: { true: { root: 'is-selected' } },
+                    focused: { true: { root: 'vc-table-row-focused' } },
+                    rowVariant: {
+                        success: { root: 'has-background-success-light' },
+                        warning: { root: 'has-background-warning-light' },
+                        error: { root: 'has-background-danger-light' },
+                        info: { root: 'has-background-info-light' },
+                        neutral: { root: 'has-background-light' },
+                        primary: { root: 'has-background-primary-light' },
+                    },
+                },
+            },
+            tableCell: {
+                variants: {
+                    align: {
+                        left: { root: 'has-text-left' },
+                        center: { root: 'has-text-centered' },
+                        right: { root: 'has-text-right' },
+                    },
+                    stickyColumn: { true: { root: 'vc-table-sticky-column' } },
+                    cellVariant: {
+                        success: { root: 'has-text-success' },
+                        warning: { root: 'has-text-warning' },
+                        error: { root: 'has-text-danger' },
+                        info: { root: 'has-text-info' },
+                        neutral: { root: 'has-text-grey' },
+                        primary: { root: 'has-text-primary' },
+                    },
+                },
+            },
+            tableHeadCell: {
+                classes: { sortIcon: 'ml-1 is-size-7' },
+                variants: {
+                    align: {
+                        left: { root: 'has-text-left' },
+                        center: { root: 'has-text-centered' },
+                        right: { root: 'has-text-right' },
+                    },
+                    stickyColumn: { true: { root: 'vc-table-sticky-column' } },
+                    sorted: {
+                        asc: { root: 'vc-table-sort-asc' },
+                        desc: { root: 'vc-table-sort-desc' },
+                        none: { root: '' },
+                    },
+                },
+            },
+            tableEmpty: {
+                classes: { root: '' },
+                variants: {
+                    filtered: {
+                        true: { root: 'has-text-centered has-text-grey is-italic py-5' },
+                        false: { root: 'has-text-centered has-text-grey py-5' },
+                    },
+                },
+            },
+            tableLoading: {
+                classes: {
+                    root: 'has-text-centered has-text-grey py-5',
+                    overlay: 'vc-table-loading-overlay-bulma',
+                },
+            },
             pagination: {
                 // Bulma's pagination canonical structure is
                 // `<nav class="pagination">` containing standalone

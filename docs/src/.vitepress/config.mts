@@ -177,6 +177,12 @@ export default defineConfig({
                     ],
                 },
                 {
+                    text: '@vuecs/table',
+                    items: [
+                        { text: 'Table', link: '/components/table' },
+                    ],
+                },
+                {
                     text: '@vuecs/timeago',
                     items: [
                         { text: 'Timeago', link: '/components/timeago' },

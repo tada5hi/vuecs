@@ -58,6 +58,17 @@ import {
     tooltipThemeDefaults,
 } from '@vuecs/overlays';
 import { paginationThemeDefaults } from '@vuecs/pagination';
+import {
+    tableBodyThemeDefaults,
+    tableCellThemeDefaults,
+    tableEmptyThemeDefaults,
+    tableFooterThemeDefaults,
+    tableHeadCellThemeDefaults,
+    tableHeaderThemeDefaults,
+    tableLoadingThemeDefaults,
+    tableRowThemeDefaults,
+    tableThemeDefaults,
+} from '@vuecs/table';
 import { timeagoThemeDefaults } from '@vuecs/timeago';
 import bootstrapTheme from '../../src';
 
@@ -119,6 +130,15 @@ const expectedCatalog = {
     popover: popoverThemeDefaults,
     separator: separatorThemeDefaults,
     stepper: stepperThemeDefaults,
+    table: tableThemeDefaults,
+    tableBody: tableBodyThemeDefaults,
+    tableCell: tableCellThemeDefaults,
+    tableEmpty: tableEmptyThemeDefaults,
+    tableFooter: tableFooterThemeDefaults,
+    tableHeadCell: tableHeadCellThemeDefaults,
+    tableHeader: tableHeaderThemeDefaults,
+    tableLoading: tableLoadingThemeDefaults,
+    tableRow: tableRowThemeDefaults,
     tag: tagThemeDefaults,
     tags: tagsThemeDefaults,
     timeago: timeagoThemeDefaults,

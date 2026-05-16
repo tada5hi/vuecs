@@ -508,6 +508,94 @@ export default function bootstrapTheme(): Theme {
                     size: 'md',
                 },
             },
+            // Bootstrap ships `.table` family natively. Compose those
+            // utility classes plus the design-token bridge for
+            // dark-mode + runtime palette propagation.
+            table: {
+                classes: {
+                    root: 'table align-middle mb-0',
+                    scrollContainer: 'table-responsive border rounded',
+                },
+                variants: {
+                    density: {
+                        compact: { root: 'table-sm' },
+                        normal: { root: '' },
+                        spacious: { root: '' },
+                    },
+                    striped: { true: { root: 'table-striped' } },
+                    bordered: { true: { root: 'table-bordered' } },
+                    hover: { true: { root: 'table-hover' } },
+                    stickyHeader: { true: { root: 'vc-table-sticky-header' } },
+                },
+                defaultVariants: { density: 'normal' },
+            },
+            tableHeader: { classes: { root: 'text-uppercase small text-body-secondary' } },
+            tableBody: { classes: { root: '' } },
+            tableFooter: { classes: { root: 'fw-medium' } },
+            tableRow: {
+                variants: {
+                    disabled: { true: { root: 'opacity-50' } },
+                    selected: { true: { root: 'table-active' } },
+                    focused: { true: { root: 'vc-table-row-focused' } },
+                    rowVariant: {
+                        success: { root: 'table-success' },
+                        warning: { root: 'table-warning' },
+                        error: { root: 'table-danger' },
+                        info: { root: 'table-info' },
+                        neutral: { root: 'table-secondary' },
+                        primary: { root: 'table-primary' },
+                    },
+                },
+            },
+            tableCell: {
+                variants: {
+                    align: {
+                        left: { root: 'text-start' },
+                        center: { root: 'text-center' },
+                        right: { root: 'text-end' },
+                    },
+                    stickyColumn: { true: { root: 'vc-table-sticky-column' } },
+                    cellVariant: {
+                        success: { root: 'text-success' },
+                        warning: { root: 'text-warning' },
+                        error: { root: 'text-danger' },
+                        info: { root: 'text-info' },
+                        neutral: { root: 'text-body-secondary' },
+                        primary: { root: 'text-primary' },
+                    },
+                },
+            },
+            tableHeadCell: {
+                classes: { sortIcon: 'ms-1 small lh-1' },
+                variants: {
+                    align: {
+                        left: { root: 'text-start' },
+                        center: { root: 'text-center' },
+                        right: { root: 'text-end' },
+                    },
+                    stickyColumn: { true: { root: 'vc-table-sticky-column' } },
+                    sorted: {
+                        asc: { root: 'vc-table-sort-asc' },
+                        desc: { root: 'vc-table-sort-desc' },
+                        none: { root: '' },
+                    },
+                },
+            },
+            tableEmpty: {
+                classes: { root: '' },
+                variants: {
+                    filtered: {
+                        true: { root: 'text-center text-body-secondary fst-italic py-4' },
+                        false: { root: 'text-center text-body-secondary py-4' },
+                    },
+                },
+            },
+            tableLoading: {
+                classes: {
+                    root: 'text-center text-body-secondary py-4',
+                    overlay: 'bg-body bg-opacity-75 text-body-secondary',
+                },
+            },
             pagination: {
                 classes: {
                     root: 'd-flex justify-content-center pagination',

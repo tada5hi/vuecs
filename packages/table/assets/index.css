@@ -1,0 +1,76 @@
+/*
+ * @vuecs/table — structural defaults.
+ *
+ * Themes layer visual styling (borders, hover, density) on top. These
+ * rules cover element-level baselines that don't depend on a theme:
+ * box-sizing, default layout, sort-indicator helpers, and scroll
+ * container shape.
+ */
+
+.vc-table {
+    width: 100%;
+    border-collapse: collapse;
+    box-sizing: border-box;
+}
+
+.vc-table-scroll-container {
+    position: relative;
+    overflow: auto;
+}
+
+.vc-table-header,
+.vc-table-body,
+.vc-table-footer {
+    /* Native table sections — no structural overrides. */
+}
+
+.vc-table-row[tabindex="0"] {
+    cursor: pointer;
+}
+
+.vc-table-row[tabindex="0"]:focus-visible {
+    outline: 2px solid currentcolor;
+    outline-offset: -2px;
+}
+
+.vc-table-cell,
+.vc-table-head-cell {
+    box-sizing: border-box;
+    text-align: left;
+    vertical-align: middle;
+}
+
+/* Sortable head cells — cursor + alignment for the sort indicator span.
+ * Themes paint the visual sort-state via `aria-sort`. */
+.vc-table-head-cell[role="columnheader"][tabindex="0"] {
+    cursor: pointer;
+    user-select: none;
+}
+
+.vc-table-head-cell-sort-icon {
+    display: inline-block;
+    margin-left: 0.25rem;
+    font-size: 0.75em;
+    line-height: 1;
+    vertical-align: baseline;
+}
+
+/* Loading overlay variant — covers the table area for refresh-feedback
+ * mode without unmounting the existing rows. Theme controls colors. */
+.vc-table-loading-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+    z-index: 1;
+}
+
+/* Sticky-column / sticky-header placement. Theme owns the background
+ * + z-index ladder; we set position only. */
+.vc-table-head-cell[data-sticky-column],
+.vc-table-cell[data-sticky-column] {
+    position: sticky;
+    left: 0;
+}

@@ -197,6 +197,12 @@ export const sharedRoutes: SharedRoute[] = [
         view: () => import('./views/Stepper.vue').then((m) => m.default),
     },
     {
+        path: '/table',
+        name: 'table',
+        label: 'Table',
+        view: () => import('./views/Table.vue').then((m) => m.default),
+    },
+    {
         path: '/tag',
         name: 'tag',
         label: 'Tag',
