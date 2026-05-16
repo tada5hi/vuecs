@@ -69,6 +69,13 @@ export default defineComponent({
             if (!shouldRender.value) return null;
             const cellContent = slots.default?.() ??
                 (props.filtered ? defaults.value.filteredContent : defaults.value.content);
+            // ARIA live-region attributes (`role`, `aria-live`) do NOT
+            // belong on `<tbody>` — they override the native `rowgroup`
+            // semantics and break table-structure recognition for
+            // assistive tech. The live region lives inside the `<td>`
+            // as a wrapper `<div>` instead, where it announces the
+            // empty-state message without corrupting the table's
+            // accessibility tree.
             return h(
                 'tbody',
                 mergeProps(attrs, {
@@ -83,7 +90,9 @@ export default defineComponent({
                 }),
                 [
                     h('tr', null, [
-                        h('td', { colspan: resolvedColspan.value }, cellContent as never),
+                        h('td', { colspan: resolvedColspan.value }, [
+                            h('div', { role: 'status', 'aria-live': 'polite' }, cellContent as never),
+                        ]),
                     ]),
                 ],
             );

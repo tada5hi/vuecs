@@ -134,6 +134,8 @@ export default defineComponent({
             emit('row-click', row, index, event);
         };
 
+        const wrapperEl = ref<globalThis.HTMLElement | null>(null);
+
         provideTableContext({
             data: dataRef,
             busy: toRef(props, 'busy'),
@@ -145,6 +147,7 @@ export default defineComponent({
             setFocusedRow,
             colspan,
             emitRowClick,
+            wrapperEl,
         });
 
         const slotProps = computed<TableSlotProps>(() => ({
@@ -155,37 +158,55 @@ export default defineComponent({
             setSort: sortMachine.setSort,
         }));
 
+        const setWrapperRef = (el: unknown) => {
+            wrapperEl.value = (el as globalThis.HTMLElement | null) ?? null;
+        };
+
         return () => {
             const inner: unknown[] = [];
             if (slots.caption) inner.push(h('caption', null, slots.caption() as never));
             if (slots.colgroup) inner.push(h('colgroup', null, slots.colgroup() as never));
             inner.push(slots.default?.(slotProps.value));
 
+            // `attrs` always forward to the `<table>` itself — consumers'
+            // `:class` / `@click` / etc target the same element regardless
+            // of whether `:scrollable` is set.
             const tableNode = h(
                 props.tag,
-                props.scrollable ?
-                    {
-                        class: theme.value.root || undefined,
-                        'aria-busy': props.busy ? 'true' : undefined,
-                    } :
-                    mergeProps(attrs, {
-                        class: theme.value.root || undefined,
-                        'aria-busy': props.busy ? 'true' : undefined,
-                    }),
+                mergeProps(attrs, {
+                    class: theme.value.root || undefined,
+                    'aria-busy': props.busy ? 'true' : undefined,
+                }),
                 inner as never,
             );
 
-            if (!props.scrollable) return tableNode;
+            // Always wrap the `<table>` in a positioned wrapper. This is
+            // the teleport target for `<VCTableLoading :overlay>` — a
+            // `<div>` inside a `<table>` is foster-parented out by the
+            // HTML parser, breaking the overlay; rendering it as a
+            // sibling of the `<table>` (inside this wrapper) keeps the
+            // overlay correctly sized against the table area.
+            const wrapper = h(
+                'div',
+                {
+                    ref: setWrapperRef,
+                    class: 'vc-table-wrapper',
+                    style: { position: 'relative' },
+                },
+                [tableNode],
+            );
+
+            if (!props.scrollable) return wrapper;
 
             return h(
                 'div',
-                mergeProps(attrs, {
+                {
                     class: theme.value.scrollContainer || undefined,
                     style: props.maxHeight ?
                         { maxHeight: props.maxHeight, overflow: 'auto' } :
                         { overflow: 'auto' },
-                }),
-                [tableNode],
+                },
+                [wrapper],
             );
         };
     },

@@ -25,6 +25,13 @@ export type TableContext<Row = unknown> = {
     colspan: Ref<number>;
     /** Emit a `row-click` event from inside a body row. */
     emitRowClick: (row: Row, index: number, event: Event) => void;
+    /**
+     * The positioned wrapper element that wraps the `<table>` in the DOM.
+     * `<VCTableLoading :overlay>` teleports here so its `<div>` isn't
+     * fostered out of the table by the HTML parser AND so it has a real
+     * positioning context for `position: absolute; inset: 0`.
+     */
+    wrapperEl: Ref<globalThis.HTMLElement | null>;
 };
 
 const TABLE_CONTEXT_KEY: InjectionKey<TableContext<unknown>> = Symbol('vcTableContext');

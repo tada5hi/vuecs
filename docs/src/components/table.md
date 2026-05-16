@@ -1,6 +1,6 @@
 # Table
 
-Compound table — `<VCTable>` outer + nine semantic-HTML parts (`Header` / `Body` / `Footer` / `Row` / `Cell` / `HeadCell` / `Empty` / `Loading`). A `:columns :data` driver covers the common entity-list shape; manual compound markup is an escape hatch for custom layouts. Single-column controlled sort via `v-model:sort`; opt-in row-click affordance with full keyboard navigation. Row-meta variants (`_rowVariant` / `_cellVariants`) tint rows + cells declaratively from the data.
+Compound table — `<VCTable>` outer + eight semantic-HTML parts (`Header` / `Body` / `Footer` / `Row` / `Cell` / `HeadCell` / `Empty` / `Loading`). A `:columns :data` driver covers the common entity-list shape; manual compound markup is an escape hatch for custom layouts. Single-column controlled sort via `v-model:sort`; opt-in row-click affordance with full keyboard navigation. Row-meta variants (`_rowVariant` / `_cellVariants`) tint rows + cells declaratively from the data.
 
 ```bash
 npm install @vuecs/table

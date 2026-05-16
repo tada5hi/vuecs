@@ -28,21 +28,23 @@ export default defineComponent({
         const ctx = useTable();
 
         return () => {
-            // Render condition: only when there's data. Empty / Loading
-            // sit as siblings under `<VCTable>` and render based on their
-            // own predicates — they don't share the body's `<tbody>`.
-            // Decoupled per plan 028 D1 / D6.
-            const data = ctx?.data.value ?? [];
-            if (data.length === 0) return null;
-
             const rowSlot = slots.row;
+            const data = ctx?.data.value ?? [];
 
             let children: unknown[];
             if (rowSlot) {
+                // Driver path — auto-iterate `<VCTable>` data. Suppress
+                // the entire `<tbody>` when there's nothing to render so
+                // `<VCTableEmpty>` / `<VCTableLoading>` get the spotlight
+                // (decoupled render conditions per the compound layout).
+                if (data.length === 0) return null;
                 children = data.map((row, index) => rowSlot({ row, index } as TableBodyRowSlotProps));
             } else {
-                // Default slot fallback — consumers writing Shape B manual
-                // markup put their `<VCTableRow>` chain directly inside.
+                // Manual Shape B markup — consumers writing their own
+                // `<VCTableRow>` chain inside the default slot drive the
+                // content directly. Render whatever they wrote, even if
+                // `ctx.data` is empty (their markup might not depend on
+                // it).
                 children = [slots.default?.() ?? null];
             }
 

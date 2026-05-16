@@ -102,7 +102,8 @@ export default defineComponent({
 
         function onClick(event: globalThis.MouseEvent) {
             if (!isClickable.value) return;
-            if (filterRowClickEvent(event)) return;
+            const rowEl = event.currentTarget as globalThis.Element | null;
+            if (filterRowClickEvent(event, rowEl)) return;
             if (props.index === undefined) return;
             ctx?.setFocusedRow(props.index);
             ctx?.emitRowClick(props.row, props.index, event);

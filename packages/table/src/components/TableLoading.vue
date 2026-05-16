@@ -1,9 +1,10 @@
 <script lang="ts">
-import { 
-    computed, 
-    defineComponent, 
-    h, 
-    mergeProps, 
+import {
+    Teleport,
+    computed,
+    defineComponent,
+    h,
+    mergeProps,
 } from 'vue';
 import type { ExtractPublicPropTypes } from 'vue';
 import {
@@ -67,7 +68,15 @@ export default defineComponent({
             const cellContent = slots.default?.() ?? defaults.value.content;
 
             if (props.overlay) {
-                return h(
+                // Teleport the overlay into `<VCTable>`'s positioned
+                // wrapper. Rendering a `<div>` directly as a child of the
+                // `<table>` is invalid HTML — the parser foster-parents
+                // it OUT of the table, breaking the intended absolute
+                // positioning. The wrapper is a sibling-of-`<table>`
+                // `<div style="position:relative">` provided by
+                // `<VCTable>`. If we're rendered outside `<VCTable>` (no
+                // ctx, no wrapper), fall back to rendering inline.
+                const overlayNode = h(
                     'div',
                     mergeProps(attrs, {
                         class: [theme.value.root || undefined, theme.value.overlay || undefined],
@@ -77,19 +86,33 @@ export default defineComponent({
                     }),
                     cellContent as never,
                 );
+                if (ctx?.wrapperEl.value) {
+                    return h(Teleport, { to: ctx.wrapperEl.value }, [overlayNode]);
+                }
+                return overlayNode;
             }
 
+            // ARIA live-region attributes (`role`, `aria-live`,
+            // `aria-busy`) do NOT belong on `<tbody>` — they override
+            // the native `rowgroup` semantics and break table-structure
+            // recognition for AT. Wrap the cell content in a `<div>`
+            // that carries the live region instead.
             return h(
                 'tbody',
-                mergeProps(attrs, {
-                    class: theme.value.root || undefined,
-                    role: 'status',
-                    'aria-live': 'polite',
-                    'aria-busy': 'true',
-                }),
+                mergeProps(attrs, { class: theme.value.root || undefined }),
                 [
                     h('tr', null, [
-                        h('td', { colspan: resolvedColspan.value }, cellContent as never),
+                        h('td', { colspan: resolvedColspan.value }, [
+                            h(
+                                'div',
+                                {
+                                    role: 'status',
+                                    'aria-live': 'polite',
+                                    'aria-busy': 'true',
+                                },
+                                cellContent as never,
+                            ),
+                        ]),
                     ]),
                 ],
             );

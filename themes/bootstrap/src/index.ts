@@ -534,7 +534,7 @@ export default function bootstrapTheme(): Theme {
             tableFooter: { classes: { root: 'fw-medium' } },
             tableRow: {
                 variants: {
-                    disabled: { true: { root: 'opacity-50' } },
+                    disabled: { true: { root: 'opacity-50 pe-none' } },
                     selected: { true: { root: 'table-active' } },
                     focused: { true: { root: 'vc-table-row-focused' } },
                     rowVariant: {
