@@ -95,10 +95,16 @@ export default defineComponent({
             return props.color === 'error' || props.color === 'warning' ? 'alert' : 'status';
         });
 
+        // Hoisted out of the render fn — resolves once per component
+        // instance instead of per render. `resolveComponent` reads the
+        // app-wide component registry; if `@vuecs/icon` isn't installed
+        // it returns the lookup string ('VCIcon'), which we detect below.
+        const VCIcon = resolveComponent('VCIcon');
+        const hasIconComponent = typeof VCIcon !== 'string';
+
         return () => {
             const iconValue = iconName.value;
-            const VCIcon = iconValue ? resolveComponent('VCIcon') : null;
-            const showIcon = !!iconValue && typeof VCIcon !== 'string';
+            const showIcon = !!iconValue && hasIconComponent;
 
             return h(
                 props.as,

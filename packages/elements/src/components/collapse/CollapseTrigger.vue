@@ -49,13 +49,16 @@ export default defineComponent({
         const theme = useComponentTheme('collapseTrigger', themeProps, collapseTriggerThemeDefaults);
         const defaults = useComponentDefaults('collapseTrigger', {}, collapseTriggerBehavioralDefaults);
 
+        // Hoisted out of the render fn — resolves once per component
+        // instance. `@vuecs/icon` is an optional peer; when not
+        // installed, `resolveComponent` returns the lookup string
+        // ('VCIcon'), so we cache the boolean check too.
+        const VCIcon = resolveComponent('VCIcon');
+        const hasIconComponent = typeof VCIcon !== 'string';
+
         return () => {
             const chevron = props.chevron ?? 'auto';
             const { chevronIcon } = defaults.value;
-            // Lazily resolve <VCIcon> at render time — `@vuecs/icon` is an
-            // optional peer; if the consumer hasn't installed it, the
-            // trigger falls back to plain content (no chevron rendered).
-            const VCIcon = chevronIcon ? resolveComponent('VCIcon') : null;
             // Skip the auto-chevron when `asChild` is set: Reka's asChild
             // merges trigger behavior onto the slot's *first* child only.
             // An auto-injected chevron would render as a sibling of that
@@ -65,7 +68,7 @@ export default defineComponent({
             const showChevron = !props.asChild &&
                 chevron === 'auto' &&
                 !!chevronIcon &&
-                typeof VCIcon !== 'string';
+                hasIconComponent;
 
             return h(
                 CollapsibleTrigger,
