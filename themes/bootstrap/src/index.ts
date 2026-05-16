@@ -740,6 +740,63 @@ export default function bootstrapTheme(): Theme {
                 },
                 defaultVariants: { size: 'md' },
             },
+            // Bootstrap doesn't ship a Toast viewport / queue idiom (the
+            // toasts CSS exists but `.toast-container` is a static
+            // layout). We compose `.toast-container` + position helpers
+            // for the viewport, and `.toast.show` for each entry so
+            // Bootstrap's per-color contrast (`text-bg-*`) propagates.
+            // Slide-in/out animations use the `vc-toast-anim` dual-state
+            // helper in the bridge CSS (BS theme strings can't carry
+            // `data-[state=]:` attribute selectors).
+            toastViewport: {
+                classes: { root: 'toast-container position-fixed d-flex flex-column p-3 list-unstyled m-0' },
+                variants: {
+                    position: {
+                        'top-left': { root: 'top-0 start-0' },
+                        'top-right': { root: 'top-0 end-0' },
+                        'top-center': { root: 'top-0 start-50 translate-middle-x' },
+                        'bottom-left': { root: 'bottom-0 start-0 flex-column-reverse' },
+                        'bottom-right': { root: 'bottom-0 end-0 flex-column-reverse' },
+                        'bottom-center': { root: 'bottom-0 start-50 translate-middle-x flex-column-reverse' },
+                    },
+                },
+                defaultVariants: { position: 'top-right' },
+            },
+            toast: {
+                classes: {
+                    root: 'toast show vc-toast-anim d-flex align-items-start gap-3 position-relative pe-5',
+                    body: 'flex-grow-1 min-w-0',
+                    close: 'btn-close-white btn btn-sm align-self-start',
+                    closeIcon: 'btn-close position-absolute top-0 end-0 m-2',
+                },
+                compoundVariants: [
+                    // solid via Bootstrap's contrast-aware `text-bg-*`
+                    { variants: { variant: 'solid', color: 'primary' }, class: { root: 'text-bg-primary' } },
+                    { variants: { variant: 'solid', color: 'neutral' }, class: { root: 'text-bg-secondary' } },
+                    { variants: { variant: 'solid', color: 'success' }, class: { root: 'text-bg-success' } },
+                    { variants: { variant: 'solid', color: 'warning' }, class: { root: 'text-bg-warning' } },
+                    { variants: { variant: 'solid', color: 'error' }, class: { root: 'text-bg-danger' } },
+                    { variants: { variant: 'solid', color: 'info' }, class: { root: 'text-bg-info' } },
+                    // soft — subtle bg + emphasis text
+                    { variants: { variant: 'soft', color: 'primary' }, class: { root: 'bg-primary-subtle text-primary-emphasis border border-primary-subtle' } },
+                    { variants: { variant: 'soft', color: 'neutral' }, class: { root: 'bg-body-tertiary text-body border' } },
+                    { variants: { variant: 'soft', color: 'success' }, class: { root: 'bg-success-subtle text-success-emphasis border border-success-subtle' } },
+                    { variants: { variant: 'soft', color: 'warning' }, class: { root: 'bg-warning-subtle text-warning-emphasis border border-warning-subtle' } },
+                    { variants: { variant: 'soft', color: 'error' }, class: { root: 'bg-danger-subtle text-danger-emphasis border border-danger-subtle' } },
+                    { variants: { variant: 'soft', color: 'info' }, class: { root: 'bg-info-subtle text-info-emphasis border border-info-subtle' } },
+                    // outline — border + emphasis text on transparent
+                    { variants: { variant: 'outline', color: 'primary' }, class: { root: 'border border-primary text-primary-emphasis bg-body' } },
+                    { variants: { variant: 'outline', color: 'neutral' }, class: { root: 'border text-body bg-body' } },
+                    { variants: { variant: 'outline', color: 'success' }, class: { root: 'border border-success text-success-emphasis bg-body' } },
+                    { variants: { variant: 'outline', color: 'warning' }, class: { root: 'border border-warning text-warning-emphasis bg-body' } },
+                    { variants: { variant: 'outline', color: 'error' }, class: { root: 'border border-danger text-danger-emphasis bg-body' } },
+                    { variants: { variant: 'outline', color: 'info' }, class: { root: 'border border-info text-info-emphasis bg-body' } },
+                ],
+                defaultVariants: { variant: 'soft', color: 'neutral' },
+            },
+            toastTitle: { classes: { root: 'toast-header bg-transparent border-0 p-0 mb-1 fw-semibold' } },
+            toastDescription: { classes: { root: 'toast-body p-0' } },
+            toastAction: { classes: { root: 'btn btn-sm btn-outline-secondary flex-shrink-0' } },
             tooltip: {
                 classes: {
                     trigger: '',

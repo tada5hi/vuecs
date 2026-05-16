@@ -55,6 +55,11 @@ import {
     hoverCardThemeDefaults,
     modalThemeDefaults,
     popoverThemeDefaults,
+    toastActionThemeDefaults,
+    toastDescriptionThemeDefaults,
+    toastThemeDefaults,
+    toastTitleThemeDefaults,
+    toastViewportThemeDefaults,
     tooltipThemeDefaults,
 } from '@vuecs/overlays';
 import { paginationThemeDefaults } from '@vuecs/pagination';
@@ -142,6 +147,11 @@ const expectedCatalog = {
     tag: tagThemeDefaults,
     tags: tagsThemeDefaults,
     timeago: timeagoThemeDefaults,
+    toast: toastThemeDefaults,
+    toastAction: toastActionThemeDefaults,
+    toastDescription: toastDescriptionThemeDefaults,
+    toastTitle: toastTitleThemeDefaults,
+    toastViewport: toastViewportThemeDefaults,
     tooltip: tooltipThemeDefaults,
     validationGroup: validationGroupThemeDefaults,
 };

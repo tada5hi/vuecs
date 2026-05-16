@@ -43,6 +43,13 @@ import type VCPopoverClose from './components/popover/PopoverClose.vue';
 import type VCPopoverContent from './components/popover/PopoverContent.vue';
 import type VCPopoverTrigger from './components/popover/PopoverTrigger.vue';
 import type VCPresence from './components/presence/Presence.vue';
+import type VCToast from './components/toast/Toast.vue';
+import type VCToastAction from './components/toast/ToastAction.vue';
+import type VCToastClose from './components/toast/ToastClose.vue';
+import type VCToastDescription from './components/toast/ToastDescription.vue';
+import type VCToastProvider from './components/toast/ToastProvider.vue';
+import type VCToastTitle from './components/toast/ToastTitle.vue';
+import type VCToaster from './components/toast/Toaster.vue';
 import type VCTooltip from './components/tooltip/Tooltip.vue';
 import type VCTooltipArrow from './components/tooltip/TooltipArrow.vue';
 import type VCTooltipContent from './components/tooltip/TooltipContent.vue';
@@ -101,5 +108,12 @@ declare module '@vue/runtime-core' {
         VCContextMenuSub: typeof VCContextMenuSub,
         VCContextMenuSubTrigger: typeof VCContextMenuSubTrigger,
         VCContextMenuSubContent: typeof VCContextMenuSubContent,
+        VCToastProvider: typeof VCToastProvider,
+        VCToaster: typeof VCToaster,
+        VCToast: typeof VCToast,
+        VCToastTitle: typeof VCToastTitle,
+        VCToastDescription: typeof VCToastDescription,
+        VCToastAction: typeof VCToastAction,
+        VCToastClose: typeof VCToastClose,
     }
 }

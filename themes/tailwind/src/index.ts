@@ -836,6 +836,61 @@ export default function tailwindTheme(): Theme {
                 },
                 defaultVariants: { size: 'md' },
             },
+            toastViewport: {
+                // Fixed-position viewport. Each position variant pins the
+                // viewport against one viewport corner / center. Stack
+                // direction is bottom-up for `bottom-*` and top-down for
+                // `top-*` so the most recent toast is always closest to
+                // the user's pointer.
+                classes: { root: 'fixed z-[100] flex max-h-screen w-full max-w-sm flex-col gap-2 p-4 list-none m-0 pointer-events-none [&>*]:pointer-events-auto outline-none' },
+                variants: {
+                    position: {
+                        'top-left': { root: 'top-0 left-0' },
+                        'top-right': { root: 'top-0 right-0' },
+                        'top-center': { root: 'top-0 left-1/2 -translate-x-1/2' },
+                        'bottom-left': { root: 'bottom-0 left-0 flex-col-reverse' },
+                        'bottom-right': { root: 'bottom-0 right-0 flex-col-reverse' },
+                        'bottom-center': { root: 'bottom-0 left-1/2 -translate-x-1/2 flex-col-reverse' },
+                    },
+                },
+                defaultVariants: { position: 'top-right' },
+            },
+            toast: {
+                classes: {
+                    root: 'relative pointer-events-auto flex w-full items-start gap-3 overflow-hidden rounded-md border border-border bg-bg p-4 pr-8 text-sm text-fg shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:slide-in-from-right-full data-[state=closed]:slide-out-to-right-full data-[swipe=move]:translate-x-[var(--reka-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--reka-toast-swipe-end-x)] data-[swipe=end]:animate-out data-[swipe=end]:fade-out-80',
+                    body: 'flex flex-col gap-1 flex-1 min-w-0',
+                    close: 'inline-flex items-center justify-center rounded-md px-2 py-1 text-xs font-medium text-fg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
+                    closeIcon: 'absolute right-2 top-2 inline-flex h-6 w-6 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
+                },
+                // Color × variant matrix mirrors `<VCBadge>`'s.
+                compoundVariants: [
+                    // solid
+                    { variants: { variant: 'solid', color: 'primary' }, class: { root: 'bg-primary-600 text-on-primary border-primary-700' } },
+                    { variants: { variant: 'solid', color: 'neutral' }, class: { root: 'bg-neutral-700 text-on-neutral border-neutral-800' } },
+                    { variants: { variant: 'solid', color: 'success' }, class: { root: 'bg-success-600 text-on-success border-success-700' } },
+                    { variants: { variant: 'solid', color: 'warning' }, class: { root: 'bg-warning-600 text-on-warning border-warning-700' } },
+                    { variants: { variant: 'solid', color: 'error' }, class: { root: 'bg-error-600 text-on-error border-error-700' } },
+                    { variants: { variant: 'solid', color: 'info' }, class: { root: 'bg-info-600 text-on-info border-info-700' } },
+                    // soft — tinted bg + colored text
+                    { variants: { variant: 'soft', color: 'primary' }, class: { root: 'bg-primary-50 text-primary-900 border-primary-200 dark:bg-primary-950/30 dark:text-primary-200 dark:border-primary-900' } },
+                    { variants: { variant: 'soft', color: 'neutral' }, class: { root: 'bg-bg-muted text-fg border-border' } },
+                    { variants: { variant: 'soft', color: 'success' }, class: { root: 'bg-success-50 text-success-900 border-success-200 dark:bg-success-950/30 dark:text-success-200 dark:border-success-900' } },
+                    { variants: { variant: 'soft', color: 'warning' }, class: { root: 'bg-warning-50 text-warning-900 border-warning-200 dark:bg-warning-950/30 dark:text-warning-200 dark:border-warning-900' } },
+                    { variants: { variant: 'soft', color: 'error' }, class: { root: 'bg-error-50 text-error-900 border-error-200 dark:bg-error-950/30 dark:text-error-200 dark:border-error-900' } },
+                    { variants: { variant: 'soft', color: 'info' }, class: { root: 'bg-info-50 text-info-900 border-info-200 dark:bg-info-950/30 dark:text-info-200 dark:border-info-900' } },
+                    // outline — colored border, transparent fill
+                    { variants: { variant: 'outline', color: 'primary' }, class: { root: 'border-primary-600 bg-bg text-primary-700 dark:text-primary-300' } },
+                    { variants: { variant: 'outline', color: 'neutral' }, class: { root: 'border-border bg-bg text-fg' } },
+                    { variants: { variant: 'outline', color: 'success' }, class: { root: 'border-success-600 bg-bg text-success-700 dark:text-success-300' } },
+                    { variants: { variant: 'outline', color: 'warning' }, class: { root: 'border-warning-600 bg-bg text-warning-700 dark:text-warning-300' } },
+                    { variants: { variant: 'outline', color: 'error' }, class: { root: 'border-error-600 bg-bg text-error-700 dark:text-error-300' } },
+                    { variants: { variant: 'outline', color: 'info' }, class: { root: 'border-info-600 bg-bg text-info-700 dark:text-info-300' } },
+                ],
+                defaultVariants: { variant: 'soft', color: 'neutral' },
+            },
+            toastTitle: { classes: { root: 'text-sm font-semibold leading-tight' } },
+            toastDescription: { classes: { root: 'text-sm leading-snug opacity-90' } },
+            toastAction: { classes: { root: 'inline-flex items-center justify-center rounded-md border border-current px-2 py-1 text-xs font-medium hover:bg-bg-muted focus:outline-none focus:ring-2 focus:ring-ring shrink-0' } },
             tooltip: {
                 classes: {
                     trigger: '',

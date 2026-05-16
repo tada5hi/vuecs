@@ -758,6 +758,61 @@ export default function bulmaTheme(): Theme {
                 },
                 defaultVariants: { size: 'md' },
             },
+            // Bulma has no native toast component. Compose `.notification`
+            // (its closest visual equivalent) for the per-toast root plus
+            // position utilities on the viewport. Slide animations use
+            // the `vc-toast-anim` dual-state helper.
+            toastViewport: {
+                classes: { root: 'is-flex is-flex-direction-column m-0 p-4 vc-toast-viewport-fixed' },
+                variants: {
+                    position: {
+                        'top-left': { root: 'vc-toast-viewport-top-left' },
+                        'top-right': { root: 'vc-toast-viewport-top-right' },
+                        'top-center': { root: 'vc-toast-viewport-top-center' },
+                        'bottom-left': { root: 'vc-toast-viewport-bottom-left is-flex-direction-column-reverse' },
+                        'bottom-right': { root: 'vc-toast-viewport-bottom-right is-flex-direction-column-reverse' },
+                        'bottom-center': { root: 'vc-toast-viewport-bottom-center is-flex-direction-column-reverse' },
+                    },
+                },
+                defaultVariants: { position: 'top-right' },
+            },
+            toast: {
+                classes: {
+                    root: 'notification is-flex is-align-items-flex-start vc-toast-anim',
+                    body: 'is-flex-grow-1',
+                    close: 'button is-small is-text',
+                    closeIcon: 'delete is-small',
+                },
+                compoundVariants: [
+                    // solid → `.notification.is-<color>`
+                    { variants: { variant: 'solid', color: 'primary' }, class: { root: 'is-primary' } },
+                    { variants: { variant: 'solid', color: 'neutral' }, class: { root: 'is-dark' } },
+                    { variants: { variant: 'solid', color: 'success' }, class: { root: 'is-success' } },
+                    { variants: { variant: 'solid', color: 'warning' }, class: { root: 'is-warning' } },
+                    { variants: { variant: 'solid', color: 'error' }, class: { root: 'is-danger' } },
+                    { variants: { variant: 'solid', color: 'info' }, class: { root: 'is-info' } },
+                    // soft → `.notification.is-<color>.is-light`
+                    { variants: { variant: 'soft', color: 'primary' }, class: { root: 'is-primary is-light' } },
+                    { variants: { variant: 'soft', color: 'neutral' }, class: { root: 'is-light' } },
+                    { variants: { variant: 'soft', color: 'success' }, class: { root: 'is-success is-light' } },
+                    { variants: { variant: 'soft', color: 'warning' }, class: { root: 'is-warning is-light' } },
+                    { variants: { variant: 'soft', color: 'error' }, class: { root: 'is-danger is-light' } },
+                    { variants: { variant: 'soft', color: 'info' }, class: { root: 'is-info is-light' } },
+                    // outline — bridge helper `vc-toast-outline-*` paints
+                    // the border + emphasis text since Bulma's
+                    // `.notification` has no outline variant.
+                    { variants: { variant: 'outline', color: 'primary' }, class: { root: 'vc-toast-outline-primary' } },
+                    { variants: { variant: 'outline', color: 'neutral' }, class: { root: 'vc-toast-outline-neutral' } },
+                    { variants: { variant: 'outline', color: 'success' }, class: { root: 'vc-toast-outline-success' } },
+                    { variants: { variant: 'outline', color: 'warning' }, class: { root: 'vc-toast-outline-warning' } },
+                    { variants: { variant: 'outline', color: 'error' }, class: { root: 'vc-toast-outline-error' } },
+                    { variants: { variant: 'outline', color: 'info' }, class: { root: 'vc-toast-outline-info' } },
+                ],
+                defaultVariants: { variant: 'soft', color: 'neutral' },
+            },
+            toastTitle: { classes: { root: 'has-text-weight-semibold mb-1' } },
+            toastDescription: { classes: { root: 'is-size-7' } },
+            toastAction: { classes: { root: 'button is-small is-outlined' } },
             tooltip: {
                 classes: {
                     trigger: '',

@@ -166,6 +166,7 @@ export default defineConfig({
                         { text: 'Popover', link: '/components/popover' },
                         { text: 'HoverCard', link: '/components/hover-card' },
                         { text: 'Tooltip', link: '/components/tooltip' },
+                        { text: 'Toast', link: '/components/toast' },
                         { text: 'DropdownMenu', link: '/components/dropdown-menu' },
                         { text: 'ContextMenu', link: '/components/context-menu' },
                     ],

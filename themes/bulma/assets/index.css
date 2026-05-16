@@ -545,3 +545,60 @@
 .vc-table-loading-overlay-bulma {
     background: hsla(var(--bulma-scheme-h, 0), var(--bulma-scheme-s, 0%), var(--bulma-scheme-main-l, 100%), 0.7);
 }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * @vuecs/overlays Toast — Bulma 1.0 ships no toast component, so the
+ * theme entry composes `.notification` (closest visual equivalent) for
+ * the toast root. The viewport positioning helpers below pin the toast
+ * stack into one of six corners on top of any page chrome, and the
+ * `vc-toast-outline-*` helpers reskin the `outline` variant per color
+ * since `.notification` has no outline modifier.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.vc-toast-viewport-fixed {
+    position: fixed;
+    z-index: 1000;
+    gap: 0.5rem;
+    max-width: calc(100% - 2rem);
+    pointer-events: none;
+}
+.vc-toast-viewport-fixed > * {
+    pointer-events: auto;
+}
+.vc-toast-viewport-top-left    { top: 1rem; left: 1rem; }
+.vc-toast-viewport-top-right   { top: 1rem; right: 1rem; }
+.vc-toast-viewport-top-center  { top: 1rem; left: 50%; transform: translateX(-50%); }
+.vc-toast-viewport-bottom-left   { bottom: 1rem; left: 1rem; }
+.vc-toast-viewport-bottom-right  { bottom: 1rem; right: 1rem; }
+.vc-toast-viewport-bottom-center { bottom: 1rem; left: 50%; transform: translateX(-50%); }
+
+.vc-toast-outline-primary {
+    background-color: transparent;
+    border: 1px solid var(--vc-color-primary-600);
+    color: var(--vc-color-primary-700);
+}
+.vc-toast-outline-neutral {
+    background-color: transparent;
+    border: 1px solid var(--vc-color-neutral-500);
+    color: var(--vc-color-fg);
+}
+.vc-toast-outline-success {
+    background-color: transparent;
+    border: 1px solid var(--vc-color-success-600);
+    color: var(--vc-color-success-700);
+}
+.vc-toast-outline-warning {
+    background-color: transparent;
+    border: 1px solid var(--vc-color-warning-600);
+    color: var(--vc-color-warning-800);
+}
+.vc-toast-outline-error {
+    background-color: transparent;
+    border: 1px solid var(--vc-color-error-600);
+    color: var(--vc-color-error-700);
+}
+.vc-toast-outline-info {
+    background-color: transparent;
+    border: 1px solid var(--vc-color-info-600);
+    color: var(--vc-color-info-700);
+}
