@@ -1802,6 +1802,39 @@ entries copy verbatim from a migration. Auto-derive: when `:columns`
 is omitted and `data[0]` is an object, columns come from
 `Object.keys(data[0])` (skipping underscore-prefixed row-meta keys).
 
+### Default cell rendering (v0.2-A)
+
+`<VCTableCell columnKey="...">` without slot content auto-renders the
+cell value when both `<VCTable>` and `<VCTableRow>` context are
+available. Resolution order per cell:
+
+1. **Slot content wins** — any non-whitespace / non-comment slot content
+   skips the auto-render entirely. The consumer keeps full control by
+   passing children.
+2. **Column lookup** — `columnKey` is matched against `tableCtx.columns`.
+   No match → empty cell (no fallback to `row[columnKey]`).
+3. **Value resolution** — `resolveCellValue(column, row)`:
+   - `column.accessor` function → `accessor(row)`
+   - `column.accessor` string → dot-path lookup on `row` (e.g.
+     `'profile.email'`)
+   - else → `row[column.key]`
+4. **Formatting** — when `column.formatter` is set, it receives
+   `{ value, key, row }` and its return value is rendered. Otherwise
+   `null` / `undefined` render as `''`; everything else via `String(...)`.
+
+The slot-vs-auto branch is decided by `hasMeaningfulSlotContent()` —
+Vue passes `slots.default` as an always-present render fn when a
+`<template>` slot is declared, so a naive `slots.default?.()` truthy
+check would always pick the slot path. The helper walks the returned
+vnode array and considers a slot meaningful when it contains an
+element, a component, or a text node with non-whitespace content.
+
+Mounting `<VCTableCell>` outside a `<VCTable>` context renders an
+empty cell — no fallback to `row[columnKey]` from inject. Manual
+compound markup that needs auto-render must wrap rows in
+`<VCTableRow :row :index>` inside a `<VCTable>` so the contexts
+exist.
+
 ### Row-meta convention (`_rowVariant` / `_cellVariants`)
 
 Underscore-prefixed fields on the data row tint rows / specific cells
