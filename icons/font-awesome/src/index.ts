@@ -30,6 +30,13 @@ export default function fontAwesomeIcons(): Icon {
                 createIcon: 'fa6-solid:plus',
                 updateIcon: 'fa6-solid:floppy-disk',
             },
+            collapseTrigger: { chevronIcon: 'fa6-solid:chevron-down' },
+            alert: {
+                infoIcon: 'fa6-solid:circle-info',
+                successIcon: 'fa6-solid:circle-check',
+                warningIcon: 'fa6-solid:triangle-exclamation',
+                errorIcon: 'fa6-solid:circle-xmark',
+            },
         },
     };
 }

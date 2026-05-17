@@ -7,6 +7,9 @@ import {
 import { buttonThemeDefaults } from '@vuecs/button';
 import { countdownThemeDefaults } from '@vuecs/countdown';
 import {
+    alertDescriptionThemeDefaults,
+    alertThemeDefaults,
+    alertTitleThemeDefaults,
     aspectRatioThemeDefaults,
     avatarThemeDefaults,
     badgeThemeDefaults,
@@ -16,6 +19,9 @@ import {
     cardHeaderThemeDefaults,
     cardThemeDefaults,
     cardTitleThemeDefaults,
+    collapseContentThemeDefaults,
+    collapseThemeDefaults,
+    collapseTriggerThemeDefaults,
     separatorThemeDefaults,
     tagThemeDefaults,
     tagsThemeDefaults,
@@ -95,6 +101,9 @@ import bulmaTheme from '../../src';
  * and typos in theme entries.
  */
 const expectedCatalog = {
+    alert: alertThemeDefaults,
+    alertDescription: alertDescriptionThemeDefaults,
+    alertTitle: alertTitleThemeDefaults,
     aspectRatio: aspectRatioThemeDefaults,
     avatar: avatarThemeDefaults,
     badge: badgeThemeDefaults,
@@ -105,6 +114,9 @@ const expectedCatalog = {
     cardFooter: cardFooterThemeDefaults,
     cardHeader: cardHeaderThemeDefaults,
     cardTitle: cardTitleThemeDefaults,
+    collapse: collapseThemeDefaults,
+    collapseContent: collapseContentThemeDefaults,
+    collapseTrigger: collapseTriggerThemeDefaults,
     contextMenu: contextMenuThemeDefaults,
     countdown: countdownThemeDefaults,
     dropdownMenu: dropdownMenuThemeDefaults,

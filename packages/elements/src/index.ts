@@ -2,15 +2,21 @@ import type { App, Plugin } from 'vue';
 import { installDefaultsManager, installThemeManager } from '@vuecs/core';
 import type { CoreOptions } from '@vuecs/core';
 
+import '../assets/alert.css';
 import '../assets/aspect-ratio.css';
 import '../assets/avatar.css';
 import '../assets/badge.css';
 import '../assets/card.css';
+import '../assets/collapse.css';
 import '../assets/separator.css';
 import '../assets/tag.css';
 import './vue';
 
 import {
+    VCAlert,
+    VCAlertClose,
+    VCAlertDescription,
+    VCAlertTitle,
     VCAspectRatio,
     VCAvatar,
     VCBadge,
@@ -20,6 +26,9 @@ import {
     VCCardFooter,
     VCCardHeader,
     VCCardTitle,
+    VCCollapse,
+    VCCollapseContent,
+    VCCollapseTrigger,
     VCSeparator,
     VCTag,
     VCTags,
@@ -48,6 +57,13 @@ export function install(app: App, options: Options = {}): void {
         VCCardDescription,
         VCCardBody,
         VCCardFooter,
+        VCCollapse,
+        VCCollapseTrigger,
+        VCCollapseContent,
+        VCAlert,
+        VCAlertTitle,
+        VCAlertDescription,
+        VCAlertClose,
     }).forEach(([name, component]) => {
         app.component(name, component);
     });

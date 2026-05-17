@@ -429,6 +429,31 @@
     --tw-exit-scale: 0.95;
 }
 
+/* Collapse — height transition driven by Reka's runtime CSS var
+   `--reka-collapsible-content-height`. The collapsible keyframes from
+   tw-animate-css interpolate from 0 → height (open) and height → 0
+   (close); Reka's `Presence` suspends unmount until `animationend`.
+
+   Must use the `collapsible-*` keyframes, NOT `accordion-*` —
+   `<VCCollapse>` wraps Reka's `CollapsibleContent` which exposes
+   `--reka-collapsible-content-height`. The accordion variant reads
+   a different runtime var that Reka's Collapsible primitive doesn't
+   set, so animations would interpolate from 0 → fallback `auto` (no
+   visible animation).
+
+   themes whose strings can't carry attribute selectors use this
+   dual-state helper; theme-tailwind composes the equivalent via
+   `data-[state=open]:animate-collapsible-down`. */
+.vc-collapse-anim {
+    overflow: hidden;
+}
+.vc-collapse-anim[data-state="open"] {
+    animation: collapsible-down 200ms ease-out;
+}
+.vc-collapse-anim[data-state="closed"] {
+    animation: collapsible-up 200ms ease-out;
+}
+
 /* Toast — slide-in from the right on open; slide-out to the right on close.
    Matches the default `swipeDirection: 'right'` on `<VCToastProvider>`. The
    `swipe-end` data-state is also used by Reka when the user swipes the toast
@@ -473,7 +498,8 @@
     .vc-overlay-fade-anim[data-state],
     .vc-tooltip-anim[data-state],
     .vc-toast-anim[data-state],
-    .vc-toast-anim[data-swipe] {
+    .vc-toast-anim[data-swipe],
+    .vc-collapse-anim[data-state] {
         animation: none !important;
         transition: none !important;
     }

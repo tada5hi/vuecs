@@ -1,0 +1,30 @@
+/*
+ * @vuecs/elements Collapse — structural defaults.
+ *
+ * Themes paint paddings / colors / borders; this file owns the cross-theme
+ * mechanics: chevron rotation tied to the trigger's `data-state` attribute,
+ * and the height-transition recipe that pairs with Reka's
+ * `--reka-collapsible-content-height` runtime var.
+ *
+ * `vc-collapse-anim` (in @vuecs/design/animations.css) does the heavy
+ * lifting for theme-bootstrap / theme-bulma (theme strings that can't
+ * carry `data-[state=]:` attribute selectors). theme-tailwind composes
+ * the same `accordion-down` / `accordion-up` keyframes via Tailwind's
+ * `data-[state=open]:animate-accordion-down` variant.
+ */
+
+.vc-collapse-chevron {
+    transition: transform 200ms ease;
+}
+
+/*
+ * Direct-child selector only. A broader descendant selector
+ * (`[data-state="open"] .vc-collapse-chevron`) would rotate chevrons
+ * inside nested collapses when only an ancestor is open. The chevron
+ * is rendered as a direct child of `<VCCollapseTrigger>` (which is
+ * the element Reka sets `data-state` on), so a direct-child rule
+ * targets it correctly.
+ */
+[data-state="open"] > .vc-collapse-chevron {
+    transform: rotate(180deg);
+}

@@ -466,6 +466,79 @@ export default function bootstrapTheme(): Theme {
                 },
                 defaultVariants: { padding: 'normal' },
             },
+            collapse: { classes: { root: '' } },
+            collapseTrigger: {
+                classes: {
+                    root: 'btn btn-link p-0 d-inline-flex align-items-center gap-2 text-decoration-none',
+                    chevron: 'small',
+                },
+                variants: {
+                    chevron: {
+                        auto: { chevron: 'd-inline-flex' },
+                        none: { chevron: 'd-none' },
+                    },
+                },
+                defaultVariants: { chevron: 'auto' },
+            },
+            collapseContent: { classes: { root: 'vc-collapse-anim' } },
+            alert: {
+                // Bootstrap's `.alert` ships padding + border-radius +
+                // border-width baseline; per-variant color comes from
+                // `.alert-<color>`. Outline variant has no native BS class
+                // — bridge CSS adds `.vc-alert.vc-alert-outline.alert-<color>`
+                // rules that flip background to transparent.
+                classes: {
+                    root: 'alert d-flex align-items-start gap-3 mb-0 position-relative pe-5',
+                    icon: 'flex-shrink-0 d-inline-flex align-items-center justify-content-center',
+                    content: 'flex-grow-1 min-w-0 d-flex flex-column gap-1',
+                    closeIcon: 'btn-close position-absolute top-0 end-0 m-2',
+                    close: 'btn btn-sm',
+                },
+                variants: {
+                    // Size variants only adjust vertical padding + font-size.
+                    // Right-padding (reserved for the absolute corner-close
+                    // button) comes from the base `.pe-5` class; overriding
+                    // with `px-*` here would let text overlap the close icon
+                    // because BS `.px-*` utilities clobber both sides.
+                    size: {
+                        sm: { root: 'py-2 small' },
+                        md: { root: '' },
+                        lg: { root: 'py-3 fs-6' },
+                    },
+                },
+                compoundVariants: [
+                    // solid — BS `.alert-<color>` uses the subtle/tinted style
+                    // which matches our `soft` variant; for `solid` use the
+                    // `text-bg-<color>` contrast-aware utility.
+                    { variants: { variant: 'solid', color: 'primary' }, class: { root: 'text-bg-primary' } },
+                    { variants: { variant: 'solid', color: 'neutral' }, class: { root: 'text-bg-secondary' } },
+                    { variants: { variant: 'solid', color: 'success' }, class: { root: 'text-bg-success' } },
+                    { variants: { variant: 'solid', color: 'warning' }, class: { root: 'text-bg-warning' } },
+                    { variants: { variant: 'solid', color: 'error' }, class: { root: 'text-bg-danger' } },
+                    { variants: { variant: 'solid', color: 'info' }, class: { root: 'text-bg-info' } },
+                    // soft → BS's native `.alert-<color>`
+                    { variants: { variant: 'soft', color: 'primary' }, class: { root: 'alert-primary' } },
+                    { variants: { variant: 'soft', color: 'neutral' }, class: { root: 'alert-secondary' } },
+                    { variants: { variant: 'soft', color: 'success' }, class: { root: 'alert-success' } },
+                    { variants: { variant: 'soft', color: 'warning' }, class: { root: 'alert-warning' } },
+                    { variants: { variant: 'soft', color: 'error' }, class: { root: 'alert-danger' } },
+                    { variants: { variant: 'soft', color: 'info' }, class: { root: 'alert-info' } },
+                    // outline — bridge CSS picks these up
+                    { variants: { variant: 'outline', color: 'primary' }, class: { root: 'vc-alert-outline alert-primary' } },
+                    { variants: { variant: 'outline', color: 'neutral' }, class: { root: 'vc-alert-outline alert-secondary' } },
+                    { variants: { variant: 'outline', color: 'success' }, class: { root: 'vc-alert-outline alert-success' } },
+                    { variants: { variant: 'outline', color: 'warning' }, class: { root: 'vc-alert-outline alert-warning' } },
+                    { variants: { variant: 'outline', color: 'error' }, class: { root: 'vc-alert-outline alert-danger' } },
+                    { variants: { variant: 'outline', color: 'info' }, class: { root: 'vc-alert-outline alert-info' } },
+                ],
+                defaultVariants: {
+                    variant: 'soft', 
+                    color: 'neutral', 
+                    size: 'md', 
+                },
+            },
+            alertTitle: { classes: { root: 'fw-semibold mb-1' } },
+            alertDescription: { classes: { root: 'mb-0' } },
             badge: {
                 classes: { root: 'badge rounded-pill' },
                 variants: {

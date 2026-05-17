@@ -513,6 +513,78 @@ export default function bulmaTheme(): Theme {
                 },
                 defaultVariants: { padding: 'normal' },
             },
+            collapse: { classes: { root: '' } },
+            collapseTrigger: {
+                classes: {
+                    root: 'is-inline-flex is-align-items-center button is-text px-0',
+                    chevron: 'is-size-7',
+                },
+                variants: {
+                    chevron: {
+                        auto: { chevron: 'is-inline-flex' },
+                        none: { chevron: 'is-hidden' },
+                    },
+                },
+                defaultVariants: { chevron: 'auto' },
+            },
+            collapseContent: { classes: { root: 'vc-collapse-anim' } },
+            alert: {
+                // Bulma's `.notification` is the alert-equivalent. Toast
+                // already composes `.notification`, so per-variant `is-*`
+                // overrides + `is-light` for `soft` work the same way.
+                // Outline variant uses the existing `vc-toast-outline-*`
+                // helpers (same color palette, same intent).
+                classes: {
+                    root: 'notification is-flex is-align-items-flex-start mb-0 is-relative',
+                    icon: 'is-flex is-flex-shrink-0 is-align-items-center is-justify-content-center mr-3',
+                    content: 'is-flex-grow-1 is-flex is-flex-direction-column',
+                    closeIcon: 'delete is-small',
+                    close: 'button is-small is-text',
+                },
+                variants: {
+                    // Size variants only adjust font-size. Bulma's
+                    // `.notification` already reserves right-padding for the
+                    // built-in `.delete` button; overriding with `.p-*` here
+                    // would shrink that reserved space and let text overlap
+                    // the close icon.
+                    size: {
+                        sm: { root: 'is-size-7' },
+                        md: { root: '' },
+                        lg: { root: 'is-size-5' },
+                    },
+                },
+                compoundVariants: [
+                    // solid → `.notification.is-<color>`
+                    { variants: { variant: 'solid', color: 'primary' }, class: { root: 'is-primary' } },
+                    { variants: { variant: 'solid', color: 'neutral' }, class: { root: 'is-dark' } },
+                    { variants: { variant: 'solid', color: 'success' }, class: { root: 'is-success' } },
+                    { variants: { variant: 'solid', color: 'warning' }, class: { root: 'is-warning' } },
+                    { variants: { variant: 'solid', color: 'error' }, class: { root: 'is-danger' } },
+                    { variants: { variant: 'solid', color: 'info' }, class: { root: 'is-info' } },
+                    // soft → `.notification.is-<color>.is-light`
+                    { variants: { variant: 'soft', color: 'primary' }, class: { root: 'is-primary is-light' } },
+                    { variants: { variant: 'soft', color: 'neutral' }, class: { root: 'is-light' } },
+                    { variants: { variant: 'soft', color: 'success' }, class: { root: 'is-success is-light' } },
+                    { variants: { variant: 'soft', color: 'warning' }, class: { root: 'is-warning is-light' } },
+                    { variants: { variant: 'soft', color: 'error' }, class: { root: 'is-danger is-light' } },
+                    { variants: { variant: 'soft', color: 'info' }, class: { root: 'is-info is-light' } },
+                    // outline — reuse Toast's bridge helpers
+                    // (same color palette + same intent).
+                    { variants: { variant: 'outline', color: 'primary' }, class: { root: 'vc-toast-outline-primary' } },
+                    { variants: { variant: 'outline', color: 'neutral' }, class: { root: 'vc-toast-outline-neutral' } },
+                    { variants: { variant: 'outline', color: 'success' }, class: { root: 'vc-toast-outline-success' } },
+                    { variants: { variant: 'outline', color: 'warning' }, class: { root: 'vc-toast-outline-warning' } },
+                    { variants: { variant: 'outline', color: 'error' }, class: { root: 'vc-toast-outline-error' } },
+                    { variants: { variant: 'outline', color: 'info' }, class: { root: 'vc-toast-outline-info' } },
+                ],
+                defaultVariants: {
+                    variant: 'soft', 
+                    color: 'neutral', 
+                    size: 'md', 
+                },
+            },
+            alertTitle: { classes: { root: 'has-text-weight-semibold mb-1' } },
+            alertDescription: { classes: { root: 'mb-0' } },
             // Bulma has NO core `.badge` class. Use `.tag` as the host
             // (consistent with how Bulma docs recommend chip-style badges)
             // plus the same color × variant matrix structure as button.

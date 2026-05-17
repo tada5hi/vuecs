@@ -457,3 +457,16 @@
     outline: 2px solid var(--vc-color-primary-500);
     outline-offset: -2px;
 }
+
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * @vuecs/elements Alert — `outline` variant gap-fill. Bootstrap's
+ * `.alert-<color>` ships tinted background + border + text in one
+ * package; the `outline` variant flattens the background to transparent
+ * while keeping the border and color. Used together: e.g.
+ * `vc-alert-outline alert-danger`.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.vc-alert-outline {
+    background-color: transparent !important;
+}
