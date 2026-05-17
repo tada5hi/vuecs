@@ -5,7 +5,7 @@ import {
     expect,
     it,
 } from 'vitest';
-import { defineComponent, h } from 'vue';
+import { Fragment, defineComponent, h } from 'vue';
 import { mount } from '@vue/test-utils';
 import vuecsTable, {
     VCTable,
@@ -89,6 +89,12 @@ describe('<VCTableCell> default renderer', () => {
                                         h(VCTableCell, { columnKey: 'missing' }),
                                     ],
                                 }),
+                                h(VCTableRow, { row: { name: 'Bob', missing: undefined }, index: 1 }, {
+                                    default: () => [
+                                        h(VCTableCell, { columnKey: 'name' }),
+                                        h(VCTableCell, { columnKey: 'missing' }),
+                                    ],
+                                }),
                             ],
                         }),
                     ],
@@ -99,6 +105,8 @@ describe('<VCTableCell> default renderer', () => {
         const cells = wrapper.element.querySelectorAll('tbody td');
         expect(cells[0].textContent).toBe('Alice');
         expect(cells[1].textContent).toBe('');
+        expect(cells[2].textContent).toBe('Bob');
+        expect(cells[3].textContent).toBe('');
     });
 
     it('honors string-accessor dot-path', () => {
@@ -223,6 +231,32 @@ describe('<VCTableCell> default renderer', () => {
             row: data[0], 
         });
         wrapper.unmount();
+    });
+
+    it('honors Fragment-wrapped slot content (e.g. template v-if / v-for)', () => {
+        const wrapper = mount(defineComponent({
+            setup() {
+                return () => h(VCTable, {
+                    columns: [
+                        { key: 'name', formatter: () => 'AUTO' },
+                    ] as never,
+                    data: data as never,
+                }, {
+                    default: () => [
+                        h(VCTableHeader),
+                        h(VCTableBody, null, {
+                            default: () => [h(VCTableRow, { row: data[0], index: 0 }, {
+                                default: () => [
+                                    h(VCTableCell, { columnKey: 'name' }, { default: () => [h(Fragment, null, ['FRAGMENT'])] }),
+                                ],
+                            })],
+                        }),
+                    ],
+                });
+            },
+        }), { global: { plugins: [...plugins] } });
+        // Without Fragment-aware walk the cell would render 'AUTO'.
+        expect(wrapper.element.querySelector('tbody td')!.textContent).toBe('FRAGMENT');
     });
 
     it('consumer slot content overrides the default renderer', () => {
