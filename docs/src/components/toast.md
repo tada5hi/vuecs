@@ -83,6 +83,9 @@ toast.clear();
 | `clear()` | `() => void` | Dismisses every queued entry. |
 
 ```ts
+import type { Component, VNode } from 'vue';
+import type { UseToastReturn } from '@vuecs/overlays';
+
 type ToastRenderFn = () => VNode | VNode[] | string;
 
 type ToastEntryInput = {
@@ -187,6 +190,8 @@ When the canonical layout doesn't fit (e.g. a progress toast with a
 as props:
 
 ```ts
+import { defineComponent, h } from 'vue';
+
 const ProgressToast = defineComponent({
     props: { entry: Object, dismiss: Function, progress: Number },
     setup(props) {

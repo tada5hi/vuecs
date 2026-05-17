@@ -128,9 +128,13 @@ export default defineComponent({
                         'onUpdate:open': (open: boolean) => { if (!open) onClose(); },
                     },
                     () => h(entry.component!, {
+                        // Spread `componentProps` FIRST so the contract-
+                        // guaranteed `entry` + `dismiss` reserved keys
+                        // always win — `componentProps.entry` / `.dismiss`
+                        // can't shadow them.
+                        ...(entry.componentProps ?? {}),
                         entry,
                         dismiss: onClose,
-                        ...(entry.componentProps ?? {}),
                     }),
                 );
             }

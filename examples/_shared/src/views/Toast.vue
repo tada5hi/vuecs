@@ -78,7 +78,13 @@ function showRichInline() {
         ]),
         description: () => h('span', [
             'See the ',
-            h('a', { href: '#', style: 'text-decoration: underline;' }, 'changelog'),
+            // `preventDefault` so the demo link doesn't scroll the page
+            // when clicked — in a real app this would be a route or URL.
+            h('a', {
+                href: '#',
+                style: 'text-decoration: underline;',
+                onClick: (e: globalThis.Event) => e.preventDefault(),
+            }, 'changelog'),
             ' for details.',
         ]),
         color: 'info',
