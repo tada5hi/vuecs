@@ -6,11 +6,11 @@ import {
     h,
     mergeProps,
 } from 'vue';
-import type { 
-    ExtractPublicPropTypes, 
-    PropType, 
-    SlotsType, 
-    VNode, 
+import type {
+    ExtractPublicPropTypes,
+    PropType,
+    SlotsType,
+    VNode,
 } from 'vue';
 import { ToastViewport } from 'reka-ui';
 import { themableProps, useComponentTheme, useThemeProps } from '@vuecs/core';
@@ -20,9 +20,13 @@ import VCToastDescription from './ToastDescription.vue';
 import VCToastAction from './ToastAction.vue';
 import VCToastClose from './ToastClose.vue';
 import { useToast } from './use-toast';
+import type { UseToastReturn } from './use-toast';
 import { toastThemeDefaults, toastViewportThemeDefaults } from './theme';
 import type {
+    ToastActionRenderFn,
     ToastEntry,
+    ToastEntryAction,
+    ToastRenderFn,
     ToastThemeClasses,
     ToastViewportPosition,
     ToastViewportThemeClasses,
@@ -58,6 +62,27 @@ export type ToasterSlotProps = {
     classes: ToastThemeClasses;
 };
 
+// Discriminate the structured `{ label, onClick }` action shape from the
+// render-fn flavour. Render fns ARE functions, so `typeof === 'function'`
+// is the right tell.
+function isActionRenderFn(
+    action: ToastEntryAction | ToastActionRenderFn,
+): action is ToastActionRenderFn {
+    return typeof action === 'function';
+}
+
+// Same shape for title / description — string vs render fn.
+function renderTextField(
+    value: string | ToastRenderFn,
+    wrapper: typeof VCToastTitle | typeof VCToastDescription,
+): VNode {
+    return h(
+        wrapper,
+        null,
+        { default: typeof value === 'function' ? value : () => value },
+    );
+}
+
 export default defineComponent({
     name: 'VCToaster',
     inheritAttrs: false,
@@ -72,7 +97,8 @@ export default defineComponent({
         // slot so custom layouts can reuse the active theme's class strings.
         const toastTheme = useComponentTheme('toast', {}, toastThemeDefaults);
 
-        const { entries, dismiss } = useToast();
+        const toastApi: UseToastReturn = useToast();
+        const { entries, dismiss } = toastApi;
 
         const rekaProps = computed(() => {
             const out: Record<string, unknown> = {};
@@ -81,12 +107,40 @@ export default defineComponent({
             return out;
         });
 
-        // Render each queue entry. If the consumer provides a default slot,
-        // use it for full per-entry customization; otherwise fall back to
-        // the canonical layout (title + description + action + close).
+        // Render each queue entry. Order of precedence for layout:
+        // 1. `entry.component` — per-entry full custom render (escape hatch).
+        // 2. Toaster default slot — global per-entry render fn (consumer slot).
+        // 3. Canonical layout — title + description + action + close.
         function renderEntry(entry: ToastEntry) {
             const onClose = () => dismiss(entry.id);
 
+            // (1) per-entry component wins — wrap in VCToast for the
+            // theme + a11y + animation infrastructure, then mount the
+            // consumer's component as the body.
+            if (entry.component) {
+                return h(
+                    VCToast,
+                    {
+                        key: entry.id,
+                        color: entry.color,
+                        variant: entry.variant,
+                        duration: entry.duration,
+                        'onUpdate:open': (open: boolean) => { if (!open) onClose(); },
+                    },
+                    () => h(entry.component!, {
+                        // Spread `componentProps` FIRST so the contract-
+                        // guaranteed `entry` + `dismiss` reserved keys
+                        // always win — `componentProps.entry` / `.dismiss`
+                        // can't shadow them.
+                        ...(entry.componentProps ?? {}),
+                        entry,
+                        dismiss: onClose,
+                    }),
+                );
+            }
+
+            // (2) consumer slot — takes precedence over canonical layout
+            // when set globally on <VCToaster>.
             if (slots.default) {
                 // Wrap in a keyed Fragment so Vue diffs by entry id, not by
                 // position — preserves vnode state when the queue shifts.
@@ -94,26 +148,21 @@ export default defineComponent({
                 // return as `unknown`, which trips Vue's `h()` overload
                 // resolution against the `Fragment` symbol type.
                 const children = slots.default({
-                    entry, 
-                    dismiss: onClose, 
-                    classes: toastTheme.value, 
+                    entry,
+                    dismiss: onClose,
+                    classes: toastTheme.value,
                 }) as VNode[];
                 return h(Fragment, { key: entry.id }, children);
             }
 
+            // (3) canonical layout — title + description + action + close.
+            // title / description accept string OR render fn for inline
+            // rich content. action accepts {label, onClick} OR render fn
+            // for fully-custom action UIs.
             const body = h('div', { class: toastTheme.value.body || undefined }, [
-                entry.title ? h(VCToastTitle, null, () => entry.title) : null,
-                entry.description ? h(VCToastDescription, null, () => entry.description) : null,
-                entry.action ?
-                    h(
-                        VCToastAction,
-                        {
-                            altText: entry.action.label,
-                            onClick: entry.action.onClick,
-                        },
-                        () => entry.action!.label,
-                    ) :
-                    null,
+                entry.title !== undefined ? renderTextField(entry.title, VCToastTitle) : null,
+                entry.description !== undefined ? renderTextField(entry.description, VCToastDescription) : null,
+                renderAction(entry, toastApi),
             ]);
 
             const closable = entry.closable !== false;
@@ -128,6 +177,26 @@ export default defineComponent({
                     'onUpdate:open': (open: boolean) => { if (!open) onClose(); },
                 },
                 () => [body, closable ? h(VCToastClose) : null],
+            );
+        }
+
+        function renderAction(entry: ToastEntry, api: UseToastReturn): VNode | null {
+            if (!entry.action) return null;
+            if (isActionRenderFn(entry.action)) {
+                // Custom action content — pass `(id, toast)` so the render
+                // fn can wire its own dismiss / update / add handlers
+                // without closure capture. Wrap result in a div so Vue
+                // sees a single vnode.
+                return h('div', null, entry.action(entry.id, api));
+            }
+            const structured = entry.action;
+            return h(
+                VCToastAction,
+                {
+                    altText: structured.label,
+                    onClick: () => structured.onClick(entry.id, api),
+                },
+                () => structured.label,
             );
         }
 
