@@ -218,6 +218,8 @@ unless the variant is structural (e.g. orientation-driven layout).
 | Badge | `variant` × `color` × `size` | solid/soft/outline × six semantic colors × sm/md/lg | Mirrors button |
 | Card | `variant` × `interactive` | outline/soft/elevated × boolean | theme-tailwind uses `border + bg-bg` / `bg-bg-muted` / `shadow-md`; theme-bootstrap composes `.card` + `shadow` / `bg-body-tertiary`; theme-bulma uses `.box` + `vc-card-outline` gap-fill |
 | CardHeader / CardBody / CardFooter | `padding` | compact/normal/spacious | Set once on `<VCCard padding="…">` and propagated to bands via `provideCardContext()`; per-band props win over the inherited value |
+| Alert | `variant` × `color` × `size` | solid/soft/outline × neutral/info/success/warning/error × sm/md/lg | 15-cell `compoundVariants` matrix; `<VCAlertClose>` reuses `closeIcon` / `close` slots on the `alert` element (no separate theme key) |
+| CollapseTrigger | `chevron` | auto/none | Drives visibility of the auto-rendered chevron icon (Iconify name from `ComponentDefaults['collapseTrigger'].chevronIcon`) |
 | Tag | `size` | sm/md/lg | Matches badge sizing |
 | Avatar | `size` | sm/md/lg | Theme-bootstrap uses `vc-avatar-{sm,lg}` helpers |
 | Pagination | `variant` × `size` | outline/soft/ghost × sm/md/lg | |
@@ -1621,6 +1623,10 @@ the theme system.
       badge/            <- VCBadge (pure CSS) — solid/soft/outline × semantic-color matrix
       card/             <- VCCard + VCCardHeader / Title / Description / Body / Footer
                            Compound surface with provideCardContext() for padding inheritance (plan 030)
+      alert/            <- VCAlert + VCAlertTitle / Description / Close
+                           Pure-CSS persistent banner with provideAlertContext() for close dispatch (plan 031)
+      collapse/         <- VCCollapse + VCCollapseTrigger / VCCollapseContent
+                           Reka Collapsible wrapper with auto-chevron + height animation (plan 032)
     vue.ts              <- GlobalComponents augmentation
     index.ts            <- install() (themes, defaults; registers all VC* components)
   assets/
@@ -1630,6 +1636,8 @@ the theme system.
     aspect-ratio.css
     badge.css
     card.css            <- structural defaults for card + bands + title / description
+    alert.css           <- alert flex layout + absolute corner-close positioning
+    collapse.css        <- chevron rotation tied to [data-state="open"]
 ```
 
 ### Card compound (plan 030)

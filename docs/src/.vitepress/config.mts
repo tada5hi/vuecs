@@ -103,10 +103,12 @@ export default defineConfig({
                 {
                     text: '@vuecs/elements',
                     items: [
+                        { text: 'Alert', link: '/components/alert' },
                         { text: 'AspectRatio', link: '/components/aspect-ratio' },
                         { text: 'Avatar', link: '/components/avatar' },
                         { text: 'Badge', link: '/components/badge' },
                         { text: 'Card', link: '/components/card' },
+                        { text: 'Collapse', link: '/components/collapse' },
                         { text: 'Separator', link: '/components/separator' },
                         { text: 'Tag', link: '/components/tag' },
                         { text: 'VisuallyHidden', link: '/components/visually-hidden' },

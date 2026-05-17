@@ -17,6 +17,12 @@ export type SharedRoute = {
  */
 export const sharedRoutes: SharedRoute[] = [
     {
+        path: '/alert',
+        name: 'alert',
+        label: 'Alert',
+        view: () => import('./views/Alert.vue').then((m) => m.default),
+    },
+    {
         path: '/aspect-ratio',
         name: 'aspect-ratio',
         label: 'Aspect Ratio',
@@ -45,6 +51,12 @@ export const sharedRoutes: SharedRoute[] = [
         name: 'card',
         label: 'Card',
         view: () => import('./views/Card.vue').then((m) => m.default),
+    },
+    {
+        path: '/collapse',
+        name: 'collapse',
+        label: 'Collapse',
+        view: () => import('./views/Collapse.vue').then((m) => m.default),
     },
     {
         path: '/context-menu',
