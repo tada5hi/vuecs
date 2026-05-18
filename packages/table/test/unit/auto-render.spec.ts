@@ -188,6 +188,71 @@ describe('<VCTable> driver auto-render (plan 033 v0.2-B)', () => {
         expect(tbodies[0].textContent).toContain('No data.');
     });
 
+    it('does NOT leak `is-row-header` as an HTML attribute on auto-rendered <th> elements', () => {
+        const wrapper = mount(defineComponent({
+            setup() {
+                return () => h(VCTable, { columns: columns as never, data: data as never });
+            },
+        }), { global: { plugins: [...plugins] } });
+
+        const ths = wrapper.element.querySelectorAll('thead th');
+        for (const th of ths) {
+            expect(th.hasAttribute('is-row-header')).toBe(false);
+        }
+    });
+
+    it('forwards per-column class / headerClass / cellClass / stickyColumn / headerTitle / headerAbbr', () => {
+        const richCols = [
+            {
+                key: 'name',
+                label: 'Name',
+                class: 'shared-class',
+                headerClass: 'h-class',
+                cellClass: 'c-class',
+                stickyColumn: true,
+                headerTitle: 'name title',
+                headerAbbr: 'name abbr',
+            },
+        ];
+        const wrapper = mount(defineComponent({
+            setup() {
+                return () => h(VCTable, {
+                    columns: richCols as never,
+                    data: [{ name: 'Alice' }] as never,
+                });
+            },
+        }), { global: { plugins: [...plugins] } });
+
+        const th = wrapper.element.querySelector('thead th') as HTMLTableCellElement;
+        expect(th.classList.contains('shared-class')).toBe(true);
+        expect(th.classList.contains('h-class')).toBe(true);
+        expect(th.classList.contains('c-class')).toBe(false);
+        expect(th.title).toBe('name title');
+        expect(th.abbr).toBe('name abbr');
+        expect(th.hasAttribute('data-sticky-column')).toBe(true);
+
+        const td = wrapper.element.querySelector('tbody td') as HTMLTableCellElement;
+        expect(td.classList.contains('shared-class')).toBe(true);
+        expect(td.classList.contains('c-class')).toBe(true);
+        expect(td.classList.contains('h-class')).toBe(false);
+        expect(td.hasAttribute('data-sticky-column')).toBe(true);
+    });
+
+    it('renders <th scope="row"> for body cells when column.isRowHeader is set', () => {
+        const wrapper = mount(defineComponent({
+            setup() {
+                return () => h(VCTable, {
+                    columns: [{ key: 'name', isRowHeader: true }] as never,
+                    data: [{ name: 'Alice' }] as never,
+                });
+            },
+        }), { global: { plugins: [...plugins] } });
+
+        const cell = wrapper.element.querySelector('tbody tr > *');
+        expect(cell?.tagName).toBe('TH');
+        expect(cell?.getAttribute('scope')).toBe('row');
+    });
+
     it('detects Fragment-wrapped <VCTableHeader> (e.g. template v-if)', () => {
         const wrapper = mount(defineComponent({
             setup() {

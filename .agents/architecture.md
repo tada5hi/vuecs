@@ -1801,11 +1801,20 @@ auto-render (`<VCTable :data />` becomes a viable terse form).
 
 Auto-cells render via the v0.2-A default cell renderer
 (`accessor` + `formatter`); auto-headers render `column.label` and
-forward `column.sortable`. Per-column class hooks (`class`,
-`cellClass`, `headerClass`) and the `cellAttrs` / `headerAttrs`
-escape hatches are out of scope for the auto-render path — consumers
-needing per-cell rendering control compose the manual chrome and
-slot-render those cells themselves.
+forward `column.sortable`. The auto-render also honors the
+per-column display fields off `TableColumn`:
+
+- `class` → applied to BOTH `<th>` and `<td>`.
+- `headerClass` → additive on `<th>`.
+- `cellClass` → additive on `<td>`.
+- `stickyColumn` → forwarded to both head + body cells.
+- `headerTitle` / `headerAbbr` → native `<th title>` / `<th abbr>`.
+- `isRowHeader` → renders the body cell as `<th scope="row">`.
+
+The function-form escape hatches `cellAttrs` / `headerAttrs` are
+out of scope for the auto-render path — consumers needing per-cell
+attribute resolution compose the manual chrome and slot-render
+those cells themselves.
 
 ### Lite escape hatch — `<VCTableLite>` (v0.2-C)
 

@@ -72,7 +72,12 @@ export function composeTableInner(opts: {
                 key: col.key,
                 columnKey: col.key,
                 sortable: col.sortable,
-                isRowHeader: false,
+                stickyColumn: col.stickyColumn,
+                title: col.headerTitle,
+                abbr: col.headerAbbr,
+                // `column.class` applies to BOTH <th> and <td>; `headerClass`
+                // is the header-only additive. Vue normalizes the array.
+                class: [col.class, col.headerClass],
             },
             () => col.label,
         )))));
@@ -89,7 +94,9 @@ export function composeTableInner(opts: {
                     key: col.key,
                     columnKey: col.key,
                     isRowHeader: col.isRowHeader,
+                    stickyColumn: col.stickyColumn,
                     dataLabel: col.label,
+                    class: [col.class, col.cellClass],
                 })),
             ),
         }));
