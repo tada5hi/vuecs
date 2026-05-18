@@ -72,6 +72,10 @@ export default defineComponent({
         const selectionMode = computed(() => ctx?.selection.mode.value);
         const autoSelected = computed<boolean>(() => {
             if (props.selected !== undefined) return props.selected;
+            // Short-circuit when this row has no index — the selection
+            // key falls back to `-1`, which could phantom-match if a
+            // consumer's selection array literally contains `-1`.
+            if (props.index === undefined) return false;
             return ctx?.selection.isSelected(selectionKey.value) ?? false;
         });
 
@@ -128,9 +132,18 @@ export default defineComponent({
         const tabindex = computed<number | undefined>(() => {
             if (!isInteractive.value) return undefined;
             if (!selectionActive.value) return 0;
-            // Grid mode: roving. Default first row when focusedRow is null.
+            // Grid mode: roving tabindex. Fall back to row 0 when
+            // `focusedRow` is unset OR stale (past the new data
+            // length after shrinking) so Tab can always enter the
+            // grid. Without this guard, a data refetch that drops
+            // the focused row leaves the grid unreachable via Tab.
             const focusIdx = ctx?.focusedRow.value;
-            if (focusIdx === null || focusIdx === undefined) {
+            const total = ctx?.data.value.length ?? 0;
+            const inBounds = focusIdx !== null &&
+                focusIdx !== undefined &&
+                focusIdx >= 0 &&
+                focusIdx < total;
+            if (!inBounds) {
                 return props.index === 0 ? 0 : -1;
             }
             return props.index === focusIdx ? 0 : -1;
@@ -175,14 +188,22 @@ export default defineComponent({
                 }
                 if (sibling instanceof globalThis.HTMLElement) sibling.focus();
                 // Shift+arrow extends selection from the range anchor
-                // to the new focused row (multi mode only).
-                if (event.shiftKey && selectionActive.value && selectionMode.value === 'multi') {
-                    const targetRow = ctx?.data.value[clamped];
-                    if (targetRow !== undefined) {
-                        const targetKey = ctx?.getRowKey(targetRow, clamped);
-                        if (targetKey !== undefined) {
-                            ctx?.selection.toggle(targetKey, { range: true });
+                // to the new focused row (multi mode only). Seed the
+                // anchor to the CURRENT row when none exists yet, so
+                // the first Shift+arrow press includes the starting
+                // row in the range (otherwise the machine falls
+                // through to a plain target-only toggle).
+                if (event.shiftKey && selectionActive.value && selectionMode.value === 'multi' && ctx) {
+                    if (ctx.selection.rangeAnchor.value === null) {
+                        const currentRow = ctx.data.value[i];
+                        if (currentRow !== undefined) {
+                            ctx.selection.rangeAnchor.value = ctx.getRowKey(currentRow, i);
                         }
+                    }
+                    const targetRow = ctx.data.value[clamped];
+                    if (targetRow !== undefined) {
+                        const targetKey = ctx.getRowKey(targetRow, clamped);
+                        ctx.selection.toggle(targetKey, { range: true });
                     }
                 }
             };
