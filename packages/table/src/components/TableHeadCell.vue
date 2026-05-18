@@ -120,7 +120,14 @@ export default defineComponent({
                 abbr: props.abbr,
                 'aria-sort': ariaSort.value,
                 tabindex: props.sortable ? 0 : undefined,
-                role: props.sortable ? 'columnheader' : undefined,
+                // Explicit `role="columnheader"` is required whenever the
+                // parent table has `role="grid"` (selection-mode active)
+                // OR the header is sortable (vuecs's tabindex pattern).
+                // Outside both cases, `<th>` inside `<thead>` carries the
+                // implicit `columnheader` role.
+                role: (props.sortable || ctx?.selection.mode.value !== undefined) ?
+                    'columnheader' :
+                    undefined,
                 onClick: props.sortable ? onClick : undefined,
                 onKeydown: props.sortable ? onKeydown : undefined,
             }),

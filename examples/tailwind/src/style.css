@@ -11,6 +11,7 @@
 @import "@vuecs/gravatar";
 @import "@vuecs/navigation";
 @import "@vuecs/pagination";
+@import "@vuecs/table";
 
 /* Scan the theme-tailwind source so Tailwind v4's JIT keeps the class
    names it emits (variant chrome, hover/focus states, etc.).

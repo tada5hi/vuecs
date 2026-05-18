@@ -5,6 +5,7 @@ import type {
     TableColumn,
     TableSortState,
 } from '../types';
+import type { RowSelectionKey, RowSelectionState } from './selection';
 
 // ──────────────────────────────────────────────────────────────────────────
 // Table-scope context (provided by <VCTable>, consumed by every descendant)
@@ -32,6 +33,30 @@ export type TableContext<Row = unknown> = {
      * positioning context for `position: absolute; inset: 0`.
      */
     wrapperEl: Ref<globalThis.HTMLElement | null>;
+    /**
+     * Row selection state (plan 033 v1.x-A). Always provided; reports
+     * mode `undefined` and `isSelected: () => false` when selection is
+     * disabled, so descendants don't need to null-check. `<VCTableRow>`
+     * calls `selection.toggle()` on activation and reads `isSelected`
+     * to render `aria-selected` + the `selected` theme variant.
+     */
+    selection: RowSelectionState;
+    /** Resolve the selection key for a given row (function or index fallback). */
+    getRowKey: (row: Row, index: number) => RowSelectionKey;
+    /**
+     * Set of row indices that are currently interactive (focusable +
+     * keyboard-navigable). Each `<VCTableRow>` registers / unregisters
+     * itself based on its own `isInteractive` state. Used by:
+     *
+     * - Roving-tabindex fallback — when `focusedRow` is unset or stale,
+     *   the FIRST interactive row gets `tabindex="0"` (so a disabled
+     *   row 0 doesn't lock the grid out of Tab navigation).
+     * - Arrow / Home / End nav — skips disabled rows by walking the
+     *   sorted registry rather than the raw data index.
+     */
+    interactiveRows: Ref<Set<number>>;
+    registerInteractiveRow(index: number): void;
+    unregisterInteractiveRow(index: number): void;
 };
 
 const TABLE_CONTEXT_KEY: InjectionKey<TableContext<unknown>> = Symbol('vcTableContext');
@@ -57,6 +82,10 @@ export type TableRowContext<Row = unknown> = {
     cellVariants: Ref<Record<string, string>>;
     /** `true` when `useTable().focusedRow === index`. */
     focused: Ref<boolean>;
+    /** Resolved selection key for this row (memoized per render). */
+    selectionKey: Ref<RowSelectionKey>;
+    /** `true` when the parent table's selection includes this row. */
+    selected: Ref<boolean>;
 };
 
 const TABLE_ROW_CONTEXT_KEY: InjectionKey<TableRowContext<unknown>> = Symbol('vcTableRowContext');

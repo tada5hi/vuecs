@@ -136,6 +136,16 @@ export default defineComponent({
                 }
             }
 
+            // ARIA grid pattern: when the parent table has `role="grid"`
+            // (selection-mode active), implicit `<td>` / `<th>` roles
+            // don't carry through the overridden parent role. Cells
+            // need explicit `gridcell` / `rowheader` so assistive tech
+            // sees a complete grid structure.
+            const inGrid = tableCtx?.selection.mode.value !== undefined;
+            let cellRole: 'rowheader' | 'gridcell' | undefined;
+            if (inGrid) cellRole = props.isRowHeader ? 'rowheader' : 'gridcell';
+            const ariaAttrs: Record<string, unknown> = inGrid ? { role: cellRole } : {};
+
             return h(
                 props.isRowHeader ? 'th' : 'td',
                 mergeProps(attrs, {
@@ -143,6 +153,7 @@ export default defineComponent({
                     'data-label': props.dataLabel || undefined,
                     'data-sticky-column': props.stickyColumn ? '' : undefined,
                     scope: props.isRowHeader ? 'row' : undefined,
+                    ...ariaAttrs,
                 }),
                 content as string | VNodeArrayChildren,
             );

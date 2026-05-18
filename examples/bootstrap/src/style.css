@@ -16,6 +16,7 @@
 @import "@vuecs/gravatar";
 @import "@vuecs/navigation";
 @import "@vuecs/pagination";
+@import "@vuecs/table";
 
 /* Lift body bg/fg into the design tokens so dark mode follows the toggle. */
 body {

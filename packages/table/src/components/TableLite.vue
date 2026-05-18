@@ -14,6 +14,8 @@ import {
     provideHeadCellCountContext,
     provideTableContext,
 } from '../composables/context';
+import { useRowSelectionMachine } from '../composables/selection';
+import type { RowSelectionKey } from '../composables/selection';
 import type {
     TableColumn,
     TableColumnRaw,
@@ -76,6 +78,13 @@ export type TableLiteProps = ExtractPublicPropTypes<typeof tableLiteProps>;
 
 const NOOP_SORT_STATE = ref(null);
 
+// Lite-shared, perma-disabled selection mode + value refs. Module-level
+// singletons are safe here because the values are intentionally
+// read-only at the context contract level (selection is a no-op in
+// Lite). Sharing avoids allocating one ref pair per VCTableLite mount.
+const NOOP_SELECTION_MODE = computed<undefined>(() => undefined);
+const NOOP_SELECTION_VALUE = computed<null>(() => null);
+
 export default defineComponent({
     name: 'VCTableLite',
     inheritAttrs: false,
@@ -123,6 +132,24 @@ export default defineComponent({
 
         const wrapperEl = ref<globalThis.HTMLElement | null>(null);
 
+        // Build a no-op selection machine. With mode permanently
+        // undefined, `isSelected: () => false` and `toggle` is a
+        // no-op — child rows behave as if the consumer hadn't opted
+        // in to selection.
+        const liteSelection = useRowSelectionMachine({
+            mode: NOOP_SELECTION_MODE,
+            value: NOOP_SELECTION_VALUE,
+            emit: () => {},
+            keyAt: () => undefined,
+        });
+        const liteGetRowKey = (row: unknown, index: number): RowSelectionKey => {
+            if (row && typeof row === 'object') {
+                const { id } = (row as { id?: unknown });
+                if (typeof id === 'string' || typeof id === 'number') return id;
+            }
+            return index;
+        };
+
         // No-op sort + row-click hooks. `<VCTableHeadCell :sortable>`
         // and `<VCTableRow>` read these from context; with rowClickable
         // permanently false and `sort` permanently null, the
@@ -140,6 +167,11 @@ export default defineComponent({
             colspan,
             emitRowClick: () => {},
             wrapperEl,
+            selection: liteSelection,
+            getRowKey: liteGetRowKey,
+            interactiveRows: ref(new Set()),
+            registerInteractiveRow: () => {},
+            unregisterInteractiveRow: () => {},
         });
 
         const slotProps = computed<TableSlotProps>(() => ({

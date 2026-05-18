@@ -17,6 +17,7 @@
 @import "@vuecs/gravatar";
 @import "@vuecs/navigation";
 @import "@vuecs/pagination";
+@import "@vuecs/table";
 
 /* Scan theme-tailwind so JIT keeps the class names it emits. */
 @source "../../../themes/tailwind/src";

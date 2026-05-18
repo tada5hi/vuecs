@@ -187,6 +187,61 @@ documented above. Per-cell rendering control still requires
 composing the manual chrome (`<VCTableBody>` + `<VCTableRow>` +
 `<VCTableCell>` with a slot).
 
+## Row selection
+
+`<VCTable :selection-mode>` enables row selection with the W3C ARIA
+grid pattern. When set, the table renders as `role="grid"` with
+`aria-selected` on each row and roving tabindex for keyboard
+navigation.
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { VCTable } from '@vuecs/table';
+import type { TableColumn } from '@vuecs/table';
+
+type User = { id: number; name: string; email: string };
+
+const selection = ref<number[]>([]);
+const columns: TableColumn<User>[] = [
+    { key: 'name' },
+    { key: 'email' },
+];
+const data: User[] = [/* ... */];
+</script>
+
+<template>
+    <VCTable
+        v-model:selection="selection"
+        selection-mode="multi"
+        :columns
+        :data
+    />
+</template>
+```
+
+| Prop | Type | Description |
+|---|---|---|
+| `selectionMode` | `'single' \| 'multi'` | Enables the grid pattern. `undefined` keeps the plain-table semantics. |
+| `selection` | `RowSelectionKey \| RowSelectionKey[] \| null` | Controlled selection state. Use `v-model:selection`. |
+| `getRowKey` | `(row, index) => RowSelectionKey` | Resolve the selection key per row. Defaults to `row.id ?? index`. |
+
+**Click semantics in multi mode:**
+
+- Plain click toggles the row.
+- Shift + click extends the range from the anchor.
+- Ctrl / Cmd + click toggles one row without affecting the rest.
+
+**Keyboard semantics:**
+
+- `↓` / `↑` move focus row-by-row.
+- `Home` / `End` jump to first / last.
+- `Space` / `Enter` toggle the focused row.
+- `Shift + ↓` / `Shift + ↑` extend the range while moving focus.
+
+`<VCTableLite>` doesn't support selection — Lite consumers bring their
+own state plumbing.
+
 ## `<VCTableLite>` — slim escape hatch
 
 Same columns driver + theme system + auto-render as `<VCTable>`, but

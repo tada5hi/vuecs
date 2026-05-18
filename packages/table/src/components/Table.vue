@@ -14,6 +14,12 @@ import {
     provideHeadCellCountContext,
     provideTableContext,
 } from '../composables/context';
+import { useRowSelectionMachine } from '../composables/selection';
+import type {
+    RowSelectionKey,
+    RowSelectionMode,
+    RowSelectionValue,
+} from '../composables/selection';
 import { useSortMachine } from '../composables/sort';
 import type {
     SortDirection,
@@ -53,6 +59,31 @@ const tableProps = {
     /** Opt-in row-click affordance — adds `tabindex` + cursor-pointer on every row and emits `@row-click`. */
     rowClickable: { type: Boolean, default: false },
     /**
+     * Row selection mode (plan 033 v1.x-A). When set, the table flips
+     * to ARIA `role="grid"` (+ `aria-multiselectable` for multi) and
+     * rows render with `aria-selected`. `undefined` keeps the v0.1
+     * plain-table semantics.
+     */
+    selectionMode: { type: String as PropType<RowSelectionMode>, default: undefined },
+    /**
+     * Controlled selection state. Use `v-model:selection`. Type is
+     * `string|number` for single mode, `(string|number)[]` for multi.
+     * `null` clears the selection.
+     */
+    selection: {
+        type: [String, Number, Array, null] as PropType<RowSelectionValue<RowSelectionMode> | null>,
+        default: null,
+    },
+    /**
+     * Resolve a row's selection key. Defaults to `row.id` (falling
+     * back to the row index when absent). Pass a function for richer
+     * mappings (e.g. `(row) => row.uuid`).
+     */
+    getRowKey: {
+        type: Function as PropType<(row: unknown, index: number) => RowSelectionKey>,
+        default: undefined,
+    },
+    /**
      * Stacked responsive mode (v0.2-D). When `true`, sets
      * `data-responsive="true"` on the `<table>` so the structural CSS
      * (and any theme-specific overrides) can collapse the table into
@@ -79,7 +110,7 @@ export default defineComponent({
     name: 'VCTable',
     inheritAttrs: false,
     props: tableProps,
-    emits: ['update:sort', 'row-click'],
+    emits: ['update:sort', 'update:selection', 'row-click'],
     slots: Object as SlotsType<{
         default(props: TableSlotProps): unknown;
         caption(): unknown;
@@ -142,6 +173,57 @@ export default defineComponent({
 
         const wrapperEl = ref<globalThis.HTMLElement | null>(null);
 
+        // Interactive-row registry. Each `<VCTableRow>` registers
+        // itself when `isInteractive` flips on, unregisters when off.
+        // Drives the roving-tabindex fallback (first-interactive gets
+        // the tab stop, not blindly row 0) and the arrow-nav skip
+        // semantics (next/prev interactive, not next/prev data index).
+        // Set is wrapped in a Ref + reassigned on mutation so Vue's
+        // reactivity catches it (Set's internal mutations aren't
+        // tracked by default).
+        const interactiveRows = ref<Set<number>>(new Set());
+        const registerInteractiveRow = (index: number) => {
+            if (interactiveRows.value.has(index)) return;
+            const next = new Set(interactiveRows.value);
+            next.add(index);
+            interactiveRows.value = next;
+        };
+        const unregisterInteractiveRow = (index: number) => {
+            if (!interactiveRows.value.has(index)) return;
+            const next = new Set(interactiveRows.value);
+            next.delete(index);
+            interactiveRows.value = next;
+        };
+
+        // Selection wiring (plan 033 v1.x-A). Always construct the
+        // machine; when `selectionMode` is undefined it reports a
+        // no-op (isSelected → false; toggle → no-op) so descendants
+        // don't need to null-check before calling.
+        const selectionMode = computed(() => props.selectionMode);
+        const selectionValue = computed(() => props.selection);
+        const getRowKey = (row: unknown, index: number): RowSelectionKey => {
+            const custom = props.getRowKey;
+            if (typeof custom === 'function') return custom(row, index);
+            if (row && typeof row === 'object') {
+                const { id } = (row as { id?: unknown });
+                if (typeof id === 'string' || typeof id === 'number') return id;
+            }
+            return index;
+        };
+        const selection = useRowSelectionMachine({
+            mode: selectionMode,
+            value: selectionValue,
+            emit: (next) => emit('update:selection', next),
+            keyAt: (index) => {
+                // Bound the lookup by `data.length` instead of by
+                // `row === undefined` so that `data` arrays containing
+                // legitimate `undefined` entries (the table accepts
+                // `unknown[]`) don't prematurely terminate range scans.
+                if (index < 0 || index >= dataRef.value.length) return undefined;
+                return getRowKey(dataRef.value[index], index);
+            },
+        });
+
         provideTableContext({
             data: dataRef,
             busy: toRef(props, 'busy'),
@@ -151,6 +233,11 @@ export default defineComponent({
             rowClickable: toRef(props, 'rowClickable'),
             focusedRow,
             setFocusedRow,
+            selection,
+            getRowKey,
+            interactiveRows,
+            registerInteractiveRow,
+            unregisterInteractiveRow,
             colspan,
             emitRowClick,
             wrapperEl,
@@ -185,12 +272,26 @@ export default defineComponent({
             // `attrs` always forward to the `<table>` itself — consumers'
             // `:class` / `@click` / etc target the same element regardless
             // of whether `:scrollable` is set.
+            const mode = selectionMode.value;
+            // Build the merge props conditionally so a disabled
+            // selection mode doesn't paint `role: undefined` /
+            // `aria-multiselectable: undefined` over consumer-supplied
+            // attribute fallthrough. `mergeProps` keeps explicit
+            // `undefined` keys on the merged result, which would
+            // shadow attrs.
+            const selectionAttrs: Record<string, unknown> = mode === undefined ?
+                {} :
+                {
+                    role: 'grid',
+                    ...(mode === 'multi' ? { 'aria-multiselectable': 'true' } : {}),
+                };
             const tableNode = h(
                 props.tag,
                 mergeProps(attrs, {
                     class: theme.value.root || undefined,
                     'aria-busy': props.busy ? 'true' : undefined,
                     'data-responsive': props.responsive ? 'true' : undefined,
+                    ...selectionAttrs,
                 }),
                 inner as never,
             );
