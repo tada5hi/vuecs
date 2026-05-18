@@ -12,6 +12,7 @@ import vuecsTable, {
     VCTableBody,
     VCTableCell,
     VCTableEmpty,
+    VCTableFooter,
     VCTableHeadCell,
     VCTableHeader,
     VCTableRow,
@@ -251,6 +252,27 @@ describe('<VCTable> driver auto-render (plan 033 v0.2-B)', () => {
         const cell = wrapper.element.querySelector('tbody tr > *');
         expect(cell?.tagName).toBe('TH');
         expect(cell?.getAttribute('scope')).toBe('row');
+    });
+
+    it('places a manual <VCTableFooter> AFTER the auto-rendered <tbody> (HTML5 table band order)', () => {
+        const wrapper = mount(defineComponent({
+            setup() {
+                return () => h(VCTable, { columns: columns as never, data: data as never }, {
+                    default: () => [
+                        h(VCTableFooter, null, () => h('tr', null, [h('td', null, 'FOOTER')])),
+                    ],
+                });
+            },
+        }), { global: { plugins: [...plugins] } });
+
+        const table = wrapper.element.querySelector('table');
+        const sections = Array.from(table?.children ?? []).map((el) => el.tagName);
+        // Expected order: THEAD, TBODY, TFOOT (regardless of slot order).
+        const theadIdx = sections.indexOf('THEAD');
+        const tbodyIdx = sections.indexOf('TBODY');
+        const tfootIdx = sections.indexOf('TFOOT');
+        expect(theadIdx).toBeLessThan(tbodyIdx);
+        expect(tbodyIdx).toBeLessThan(tfootIdx);
     });
 
     it('detects Fragment-wrapped <VCTableHeader> (e.g. template v-if)', () => {

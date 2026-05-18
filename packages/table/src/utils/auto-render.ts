@@ -2,6 +2,7 @@ import { Fragment, h } from 'vue';
 import type { VNode } from 'vue';
 import VCTableBody from '../components/TableBody.vue';
 import VCTableCell from '../components/TableCell.vue';
+import VCTableFooter from '../components/TableFooter.vue';
 import VCTableHeadCell from '../components/TableHeadCell.vue';
 import VCTableHeader from '../components/TableHeader.vue';
 import VCTableRow from '../components/TableRow.vue';
@@ -31,6 +32,54 @@ export function containsComponent(nodes: unknown, target: unknown): boolean {
     if (v.type === target) return true;
     if (v.type === Fragment) return containsComponent(v.children, target);
     return false;
+}
+
+/**
+ * Flatten a slot return into a single-level array, unwrapping
+ * `Fragment` vnodes so partition logic operates on a flat sequence.
+ * Fragments only serve as grouping markers and lose no DOM semantics
+ * when flattened.
+ */
+function flattenSlot(nodes: unknown): unknown[] {
+    if (nodes == null || nodes === false) return [];
+    if (Array.isArray(nodes)) return nodes.flatMap(flattenSlot);
+    if (typeof nodes !== 'object') return [nodes];
+    const v = nodes as VNode;
+    if (v.type === Fragment) return flattenSlot(v.children);
+    return [nodes];
+}
+
+/**
+ * Partition slot children into vnodes that should render BEFORE the
+ * auto-body and vnodes that should render AFTER it. Body precedence
+ * rules:
+ *
+ *   <thead>           ← always first
+ *   <tbody>           ← auto-rendered band
+ *   <VCTableEmpty>    ← own <tbody>, gated on empty data
+ *   <VCTableLoading>  ← own <tbody>, gated on busy
+ *   <tfoot>           ← must come last (HTML5 says SHOULD; matches
+ *                       browser visual placement so the source order
+ *                       lines up with the rendered order)
+ *
+ * Only `<VCTableFooter>` is partitioned to "after"; everything else
+ * keeps source order in "before".
+ */
+function partitionBeforeAfterBody(nodes: unknown): { before: unknown[]; after: unknown[] } {
+    const flat = flattenSlot(nodes);
+    const before: unknown[] = [];
+    const after: unknown[] = [];
+    for (const n of flat) {
+        if (n && typeof n === 'object' && (n as VNode).type === VCTableFooter) {
+            after.push(n);
+        } else {
+            before.push(n);
+        }
+    }
+    return {
+        before,
+        after,
+    };
 }
 
 /**
@@ -83,7 +132,16 @@ export function composeTableInner(opts: {
         )))));
     }
 
-    if (slotChildren !== undefined) inner.push(slotChildren);
+    // Partition slot children so `<VCTableFooter>` always lands AFTER
+    // the auto-body. Without this, the common terse form
+    // `<VCTable :columns :data><VCTableFooter>…</VCTableFooter></VCTable>`
+    // would source-order as `thead → tfoot → tbody`, which violates
+    // the HTML5 SHOULD-be-last rule for `<tfoot>` and de-syncs source
+    // order from visual placement (browsers render `<tfoot>` last
+    // anyway). Everything else (`<VCTableEmpty>`, `<VCTableLoading>`,
+    // ad-hoc consumer nodes) keeps source order in `before`.
+    const { before, after } = partitionBeforeAfterBody(slotChildren);
+    if (before.length > 0) inner.push(before);
 
     if (autoRender && !hasBody) {
         inner.push(h(VCTableBody, null, {
@@ -101,6 +159,8 @@ export function composeTableInner(opts: {
             ),
         }));
     }
+
+    if (after.length > 0) inner.push(after);
 
     return inner;
 }

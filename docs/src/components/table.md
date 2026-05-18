@@ -212,10 +212,15 @@ const columns: TableColumn<User>[] = [
 ```
 
 Sortable headers render with the indicator markup but clicking is a
-no-op; `:row-clickable` is not declared and any attribute-pass-through
-attempt is dropped. All other parts (`<VCTableHeader>`,
-`<VCTableBody>`, `<VCTableEmpty>`, `<VCTableLoading>`, …) work
-identically.
+no-op. `:row-clickable` is not a declared prop on `<VCTableLite>` —
+it has no behavioral effect (the Lite `TableContext` pins
+`rowClickable: false`), but since Lite uses
+`inheritAttrs: false` + attribute fallthrough, an undeclared
+attribute like `row-clickable` will still land on the `<table>` DOM
+element if you pass it. Pass only the props Lite actually declares
+to avoid spurious HTML attributes. All other parts
+(`<VCTableHeader>`, `<VCTableBody>`, `<VCTableEmpty>`,
+`<VCTableLoading>`, …) work identically.
 
 ## Stacked responsive mode
 
