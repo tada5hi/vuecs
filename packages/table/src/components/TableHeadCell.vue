@@ -60,10 +60,17 @@ export default defineComponent({
 
         // Theme — fold sorted state + stickyColumn into themeVariant
         const themeProps = useThemeProps(props, 'align', 'stickyColumn');
+        // Sort state is `SortDescriptor[]` since v1.x-B. Find THIS
+        // column's entry to drive the indicator arrow + numeric badge.
         const sortDirection = computed<SortDirection | null>(() => {
             if (!props.sortable || !props.columnKey || !ctx) return null;
-            const s = ctx.sort.value;
-            return s && s.key === props.columnKey ? s.direction : null;
+            const found = ctx.sort.value.find((s) => s.key === props.columnKey);
+            return found ? found.direction : null;
+        });
+        const sortIndex = computed<number | null>(() => {
+            if (!props.sortable || !props.columnKey || !ctx) return null;
+            const i = ctx.sort.value.findIndex((s) => s.key === props.columnKey);
+            return i < 0 ? null : i + 1;
         });
 
         const mergedThemeProps = {
@@ -97,14 +104,14 @@ export default defineComponent({
         function onClick(event: globalThis.MouseEvent) {
             if (!props.sortable || !props.columnKey) return;
             event.preventDefault();
-            ctx?.setSort(props.columnKey);
+            ctx?.setSort(props.columnKey, { append: event.shiftKey });
         }
 
         function onKeydown(event: globalThis.KeyboardEvent) {
             if (!props.sortable || !props.columnKey) return;
             if (event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault();
-                ctx?.setSort(props.columnKey);
+                ctx?.setSort(props.columnKey, { append: event.shiftKey });
             }
         }
 
@@ -119,6 +126,14 @@ export default defineComponent({
                 title: props.title,
                 abbr: props.abbr,
                 'aria-sort': ariaSort.value,
+                // Numeric multi-sort badge index. `null` (or 1 — the
+                // primary key) doesn't emit the attribute, so the
+                // structural CSS `::after` badge only shows for
+                // secondary/tertiary keys; primary key still gets the
+                // up/down arrow span below.
+                'data-sort-index': sortIndex.value !== null && sortIndex.value > 1 ?
+                    String(sortIndex.value) :
+                    undefined,
                 tabindex: props.sortable ? 0 : undefined,
                 // Explicit `role="columnheader"` is required whenever the
                 // parent table has `role="grid"` (selection-mode active)

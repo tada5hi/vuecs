@@ -94,6 +94,32 @@ export interface TableColumn<Row = unknown, K extends string = string> {
 
     /** Default direction when this column is sorted for the first time. Defaults to `'asc'`. */
     initialSortDirection?: 'asc' | 'desc';
+
+    /**
+     * Custom comparator for client-side sort (plan 033 v1.x-B). Receives
+     * the two resolved values from `accessor` (or `formatter` output when
+     * `sortByFormatted: true`) — same ergonomics as
+     * `Array.prototype.sort`. Return a negative number when `a` should
+     * come first, positive for `b`, zero when equal.
+     *
+     * Use for semver, IP addresses, locale-aware strings, custom epochs,
+     * or any value where the default `<` / `>` ordering is wrong.
+     */
+    sortFn?: (a: unknown, b: unknown) => number;
+    /**
+     * When `true`, client-side sort compares the formatter output rather
+     * than the raw accessor value. Default `false` — sort by raw value
+     * so dates / numbers sort chronologically / numerically even when
+     * the cell displays "2 days ago" / "$1,234.56". (plan 033 v1.x-B)
+     */
+    sortByFormatted?: boolean;
+    /**
+     * Client-side sort null-handling override. By default, `null` /
+     * `undefined` values sort to the END regardless of direction
+     * ("missing data lives at the bottom"). Set `true` to float them to
+     * the start instead. (plan 033 v1.x-B)
+     */
+    nullsFirst?: boolean;
 }
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -133,10 +159,24 @@ export type WithRowMeta<T> = T & {
 
 export type SortDirection = 'asc' | 'desc';
 
-export type TableSortState = {
+/**
+ * A single sort step. The array form `SortDescriptor[]` is the public
+ * shape of `v-model:sort` from v1.x-B onward — single-column sort
+ * becomes an array of length 0 or 1.
+ */
+export type SortDescriptor = {
     key: string;
     direction: SortDirection;
-} | null;
+};
+
+/**
+ * Public sort state shape — always an array since v1.x-B (breaking
+ * change from v0.1's `{ key, direction } | null`). An empty array
+ * means "no sort active". Multi-key sort appends additional descriptors;
+ * the first descriptor is the primary key, the second is the
+ * tie-breaker, etc.
+ */
+export type TableSortState = SortDescriptor[];
 
 // ──────────────────────────────────────────────────────────────────────────
 // Theme class maps (one per shipping component — 9 total)
@@ -220,7 +260,7 @@ export type TableSlotProps<Row = unknown> = {
     busy: boolean;
     columns: TableColumn<Row>[];
     sort: TableSortState;
-    setSort: (key: string, direction?: SortDirection) => void;
+    setSort: (key: string, opts?: { append?: boolean; direction?: SortDirection }) => void;
 };
 
 export type TableBodyRowSlotProps<Row = unknown> = {

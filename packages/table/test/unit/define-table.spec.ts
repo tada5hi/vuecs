@@ -11,23 +11,23 @@ describe('defineTable factory', () => {
         expect(t.data.value).toHaveLength(1);
         expect(t.columns.value.map((c) => c.key)).toEqual(['id', 'name']);
         expect(t.busy.value).toBe(false);
-        expect(t.sort.value).toBeNull();
+        expect(t.sort.value).toEqual([]);
     });
 
-    it('setSort cycles null → asc → desc → null', () => {
+    it('setSort cycles [] → [asc] → [desc] → []', () => {
         const t = defineTable({ columns: ['id'] });
         t.setSort('id');
-        expect(t.sort.value).toEqual({ key: 'id', direction: 'asc' });
+        expect(t.sort.value).toEqual([{ key: 'id', direction: 'asc' }]);
         t.setSort('id');
-        expect(t.sort.value).toEqual({ key: 'id', direction: 'desc' });
+        expect(t.sort.value).toEqual([{ key: 'id', direction: 'desc' }]);
         t.setSort('id');
-        expect(t.sort.value).toBeNull();
+        expect(t.sort.value).toEqual([]);
     });
 
     it('setSort with explicit direction jumps straight', () => {
         const t = defineTable({ columns: ['id'] });
-        t.setSort('id', 'desc');
-        expect(t.sort.value).toEqual({ key: 'id', direction: 'desc' });
+        t.setSort('id', { direction: 'desc' });
+        expect(t.sort.value).toEqual([{ key: 'id', direction: 'desc' }]);
     });
 
     it('columns is reactive to rawColumns updates', () => {

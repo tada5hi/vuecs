@@ -29,6 +29,7 @@ withDefaults(defineProps<{
     rowClickable?: boolean;
     selectionMode?: 'single' | 'multi' | undefined;
     responsive?: boolean;
+    multiSort?: boolean;
 }>(), {
     density: 'normal',
     striped: false,
@@ -37,14 +38,15 @@ withDefaults(defineProps<{
     rowClickable: false,
     selectionMode: undefined,
     responsive: false,
+    multiSort: false,
 });
 
-const sort = ref<TableSortState>(null);
+const sort = ref<TableSortState>([]);
 const selection = ref<number | number[] | null>(null);
 // Independent sort state for the terse auto-render demo so its
 // sortable headers actually reorder the second table without
 // affecting the first one.
-const terseSort = ref<TableSortState>(null);
+const terseSort = ref<TableSortState>([]);
 
 const columns: TableColumn<User>[] = [
     {
@@ -111,26 +113,10 @@ const data: WithRowMeta<User>[] = [
     },
 ];
 
-// Controlled sort: VCTable emits sort intent via `v-model:sort` but
-// never reorders data itself. The demo applies the sort client-side
-// so the user sees real reordering across every sortable column.
-function applySort(rows: WithRowMeta<User>[], state: TableSortState) {
-    if (!state) return rows;
-    const key = state.key as keyof User;
-    const dir = state.direction === 'asc' ? 1 : -1;
-    return [...rows].sort((a, b) => {
-        const av = a[key];
-        const bv = b[key];
-        if (av == null && bv == null) return 0;
-        if (av == null) return 1;
-        if (bv == null) return -1;
-        if (av < bv) return -1 * dir;
-        if (av > bv) return 1 * dir;
-        return 0;
-    });
-}
-const sortedData = computed(() => applySort(data, sort.value));
-const terseSortedData = computed(() => applySort(data, terseSort.value));
+// Both tables use `<VCTable :client-sort>` so the table reorders the
+// data internally — no consumer-side sort helper needed. The
+// `v-model:sort` array reflects the active sort descriptors for
+// observability (the demo logs the current state below the table).
 
 const lastClicked = ref<User | null>(null);
 function onRowClick(row: User) { lastClicked.value = row; }
@@ -146,6 +132,11 @@ const selectionSummary = computed(() => {
     const found = data.find((d) => d.id === v);
     return found?.name ?? String(v);
 });
+
+// Human-readable summary of the multi-sort descriptor array.
+const sortSummary = computed(() => sort.value
+    .map((s) => `${s.key} ${s.direction}`)
+    .join(' → ') || 'none');
 </script>
 
 <template>
@@ -159,7 +150,7 @@ const selectionSummary = computed(() => {
                 v-model:sort="sort"
                 v-model:selection="selection"
                 :columns="columns"
-                :data="sortedData"
+                :data="data"
                 :density="density"
                 :striped="striped"
                 :bordered="bordered"
@@ -167,6 +158,8 @@ const selectionSummary = computed(() => {
                 :row-clickable="rowClickable"
                 :selection-mode="selectionMode"
                 :responsive="responsive"
+                :multi-sort="multiSort"
+                client-sort
                 @row-click="onRowClick"
             >
                 <VCTableHeader>
@@ -201,6 +194,9 @@ const selectionSummary = computed(() => {
                 </VCTableBody>
                 <VCTableEmpty>No users yet.</VCTableEmpty>
             </VCTable>
+            <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--vc-color-fg-muted);">
+                Sort{{ multiSort ? ' (multi — Shift-click to add)' : '' }}: <strong>{{ sortSummary }}</strong>
+            </div>
             <div
                 v-if="selectionMode"
                 style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--vc-color-fg-muted);"
@@ -228,12 +224,14 @@ const selectionSummary = computed(() => {
             <VCTable
                 v-model:sort="terseSort"
                 :columns="columns"
-                :data="terseSortedData"
+                :data="data"
                 :density="density"
                 :striped="striped"
                 :bordered="bordered"
                 :hover="hover"
                 :responsive="responsive"
+                :multi-sort="multiSort"
+                client-sort
             />
         </div>
 

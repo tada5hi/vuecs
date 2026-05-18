@@ -2000,19 +2000,55 @@ const users: WithRowMeta<User>[] = [
 ];
 ```
 
-### Sorting
+### Sorting (plan 033 v0.1 + v1.x-B)
 
-Single-column controlled sort via `v-model:sort`. The table never
-sorts data — `setSort` cycles state (`null → asc → desc → null` or
-`null → asc → desc → asc` when `:must-sort`) and emits intent.
-Consumer sorts (typically via server-side query refetch). Clicks +
-Enter/Space on a `:sortable` `<VCTableHeadCell>` cycle the state;
-`aria-sort` flips to `"ascending"` / `"descending"` / `"none"` to
-match.
+Controlled sort via `v-model:sort`. **State shape is
+`SortDescriptor[]` since v1.x-B** (breaking change from v0.1's
+`{ key, direction } | null`). Empty array means "no sort";
+single-column sort is an array of length 1; multi-column sort grows
+the array, primary key first.
 
-Per-column `initialSortDirection` (`'asc'` default) sets the first
-direction on activation. Defer to v1.x: client-side sort, multi-column,
-custom comparators.
+`setSort(key, opts)` cycles state via `useSortMachine`. Plain call
+replaces the entire sort with `[{ key, initialDirection }]`,
+cycling that single key through `[] → [asc] → [desc] → []` (or
+`→ [asc]` when `:must-sort`). `opts.append === true` (Shift-click
+on a sortable header) adds the key as a secondary descriptor or
+cycles its direction if already present; cycling past removes just
+that key. `opts.direction` jumps straight to a given direction
+honoring `append`. Clicks + Enter/Space on a `:sortable`
+`<VCTableHeadCell>` invoke it; `aria-sort` paints the W3C state.
+
+**Per-column hooks** drive client-side sort behaviour:
+
+- `initialSortDirection: 'asc' | 'desc'` — first-click direction.
+  Default `'asc'`.
+- `sortFn(a, b): number` — value comparator (Array.sort
+  ergonomics). Receives resolved `accessor` / formatter values.
+  Use for semver, IP, locale-aware strings.
+- `sortByFormatted: boolean` — when `true`, compare formatter output
+  rather than raw accessor value. Default `false`.
+- `nullsFirst: boolean` — float `null` / `undefined` to the top.
+  Default — nulls sort LAST regardless of direction.
+
+**v1.x-B props on `<VCTable>`:**
+
+| Prop | Default | Description |
+|---|---|---|
+| `multiSort` | `false` | Shift-click on a sortable header adds the key as a secondary descriptor instead of replacing. |
+| `maxSortKeys` | `3` | Cap on the sort array length. `0` = unlimited. Oldest descriptor evicted when over cap. |
+| `clientSort` | `false` | When `true`, the table reorders `:data` internally via `sortRows()` (in `utils/sort-rows.ts`); `v-model:sort` still emits state. |
+
+The sort machine + the `sortRows` utility are decoupled — consumers
+can use the machine for state without enabling `:client-sort`
+(server-side sort path), or call `sortRows()` directly outside the
+component for pre-render sort logic.
+
+**Numeric badge for multi-sort positions 2+:** `<VCTableHeadCell>`
+emits `data-sort-index="N"` (1-based) on the rendered `<th>` when
+the column is at position 2+ in the sort array. Structural CSS
+ships an `::after` superscript badge; themes can override at
+`.vc-table-head-cell[data-sort-index]::after`. Position 1 keeps the
+up/down arrow span.
 
 ### Row click + keyboard navigation (D5 + plan 028 row-nav adoption)
 

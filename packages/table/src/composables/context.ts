@@ -16,7 +16,12 @@ export type TableContext<Row = unknown> = {
     busy: Ref<boolean>;
     columns: Ref<TableColumn<Row>[]>;
     sort: Ref<TableSortState>;
-    setSort: (key: string, direction?: SortDirection) => void;
+    /**
+     * Cycle the sort state for `key`. `opts.append` (Shift-click) adds
+     * the key as a secondary/tertiary descriptor instead of replacing.
+     * `opts.direction` jumps straight to a given direction.
+     */
+    setSort: (key: string, opts?: { append?: boolean; direction?: SortDirection }) => void;
     /** Whether `<VCTable>` was passed `:rowClickable`. */
     rowClickable: Ref<boolean>;
     /** Currently focused row index (row keyboard nav). `null` when nothing focused. */

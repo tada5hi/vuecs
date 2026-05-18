@@ -27,7 +27,7 @@ import type { TableColumn, TableSortState } from '@vuecs/table';
 
 type User = { id: number; name: string; email: string; role: string };
 
-const sort = ref<TableSortState>(null);
+const sort = ref<TableSortState>([]);
 const columns: TableColumn<User>[] = [
     { key: 'name', label: 'Name', sortable: true, isRowHeader: true },
     { key: 'email', label: 'Email', sortable: true },
@@ -309,13 +309,74 @@ const users: WithRowMeta<User>[] = [
 
 ## Sort
 
-Single-column controlled sort via `v-model:sort`. The table never sorts data — it emits intent. Consumer sorts (typically via server-side query refetch).
+Controlled sort via `v-model:sort`. The state shape is always
+`SortDescriptor[]` — empty array means "no sort active",
+single-column sort is an array of length 1, multi-column sort grows
+the array.
 
 ```vue
-<VCTable v-model:sort="sort" :columns :data />
+<script setup lang="ts">
+import { ref } from 'vue';
+import type { TableSortState } from '@vuecs/table';
+
+const sort = ref<TableSortState>([]);
+</script>
+
+<template>
+    <VCTable v-model:sort="sort" :columns :data />
+</template>
 ```
 
-Clicking a `:sortable` header cycles `null → asc → desc → null`. `Enter` / `Space` on a focused `<th>` does the same. `aria-sort` flips to `ascending` / `descending` / `none`.
+Clicking a `:sortable` header cycles `[] → [asc] → [desc] → []`.
+`Enter` / `Space` on a focused `<th>` does the same. `aria-sort`
+flips to `ascending` / `descending` / `none`.
+
+### Multi-column sort + client-side sort
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `multiSort` | `boolean` | `false` | When `true`, Shift-click on a sortable header adds it as a secondary key (or cycles its direction). Plain click replaces. |
+| `maxSortKeys` | `number` | `3` | Cap on the sort array under `:multi-sort`. `0` = unlimited. Adding past the cap evicts the oldest. |
+| `clientSort` | `boolean` | `false` | When `true`, the table reorders `:data` internally — no consumer-side sort helper needed. `v-model:sort` still emits state. |
+
+Per-column hooks:
+
+| Field | Type | Description |
+|---|---|---|
+| `sortable` | `boolean` | Header is interactive (click / Enter / Space cycles sort). |
+| `initialSortDirection` | `'asc' \| 'desc'` | First-click direction for this column. Default `'asc'`. |
+| `sortFn` | `(a, b) => number` | Custom value comparator for client-side sort (semver, IPs, etc.). Receives resolved `accessor` (or formatter) values. |
+| `sortByFormatted` | `boolean` | Client-side sort compares formatter output instead of raw accessor value. Default `false`. |
+| `nullsFirst` | `boolean` | Client-side sort floats `null` / `undefined` to the top. Default — nulls sort last regardless of direction. |
+
+```vue
+<VCTable
+    v-model:sort="sort"
+    :columns :data
+    multi-sort
+    client-sort
+/>
+```
+
+The numeric sort-position badge (1-based) renders via the
+`data-sort-index` attribute on secondary/tertiary `<th>` cells —
+the primary key keeps the up/down arrow. Themes can override the
+badge via `.vc-table-head-cell[data-sort-index]::after`.
+
+::: warning Breaking change in v1.x-B
+`v-model:sort` is now `SortDescriptor[]` instead of v0.1's
+`{ key, direction } \| null`. Migrate single-sort bindings as:
+
+```diff
+- const sort = ref<TableSortState>(null);
++ const sort = ref<TableSortState>([]);
+
+- if (sort.value) { ... }
++ if (sort.value.length > 0) {
++     const { key, direction } = sort.value[0];
++ }
+```
+:::
 
 ## Theme keys
 

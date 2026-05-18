@@ -55,6 +55,23 @@
     vertical-align: baseline;
 }
 
+/*
+ * Multi-sort numeric badge (plan 033 v1.x-B). The primary sort key
+ * (position 1) renders the up/down arrow span inline above; positions
+ * 2+ get this `::after` superscript badge so the user can see the
+ * tie-break order. Themes can override by retargeting
+ * `.vc-table-head-cell[data-sort-index]::after`.
+ */
+.vc-table-head-cell[data-sort-index]::after {
+    content: attr(data-sort-index);
+    display: inline-block;
+    margin-left: 0.125rem;
+    font-size: 0.6em;
+    vertical-align: super;
+    line-height: 1;
+    opacity: 0.75;
+}
+
 /* Loading overlay variant — covers the table area for refresh-feedback
  * mode without unmounting the existing rows. Theme controls colors. */
 .vc-table-loading-overlay {

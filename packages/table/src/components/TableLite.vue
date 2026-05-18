@@ -76,7 +76,9 @@ const tableLiteProps = {
 
 export type TableLiteProps = ExtractPublicPropTypes<typeof tableLiteProps>;
 
-const NOOP_SORT_STATE = ref(null);
+// Sort state is `SortDescriptor[]` since v1.x-B — empty array means
+// "no sort", which is the permanent state for Lite.
+const NOOP_SORT_STATE = ref([]);
 
 // Lite-shared, perma-disabled selection mode + value refs. Module-level
 // singletons are safe here because the values are intentionally

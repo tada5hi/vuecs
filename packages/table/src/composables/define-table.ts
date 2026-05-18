@@ -16,8 +16,10 @@ export type DefineTableOptions<Row> = {
     columns?: TableColumnRaw<Row>[];
     /** Initial busy flag. */
     busy?: boolean;
-    /** Initial sort state. */
+    /** Initial sort state (array of descriptors). Empty array means no sort. */
     sort?: TableSortState;
+    /** Max sort keys retained in multi-sort mode. `0` = unlimited. Default `3`. */
+    maxSortKeys?: number;
     /** When `true`, the sort cycle skips the `null` step. Mirrors `<VCTable :must-sort>`. */
     mustSort?: boolean;
 };
@@ -29,7 +31,7 @@ export type TableState<Row> = {
     busy: Ref<boolean>;
     mustSort: Ref<boolean>;
     sort: Ref<TableSortState>;
-    setSort: (key: string, direction?: SortDirection) => void;
+    setSort: (key: string, opts?: { append?: boolean; direction?: SortDirection }) => void;
 };
 
 /**
@@ -61,7 +63,8 @@ export function defineTable<Row = unknown>(
     const rawColumns = ref(options.columns ?? []) as Ref<TableColumnRaw<Row>[]>;
     const busy = ref(options.busy ?? false);
     const mustSort = ref(options.mustSort ?? false);
-    const sort = ref<TableSortState>(options.sort ?? null);
+    const sort = ref<TableSortState>(options.sort ?? []);
+    const maxSortKeys = ref(options.maxSortKeys ?? 3);
 
     const columns = computed(() => normalizeColumns(rawColumns.value, data.value));
 
@@ -72,6 +75,7 @@ export function defineTable<Row = unknown>(
         source: sort as unknown as Ref<TableSortState | undefined>,
         columns,
         mustSort,
+        maxSortKeys,
         emit: (next) => { sort.value = next; },
     });
 
