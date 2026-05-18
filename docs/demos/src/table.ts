@@ -6,7 +6,21 @@ import { installVuecs } from './shared';
 
 const app = createApp({
     setup() {
-        return () => h(Table, propState.value);
+        // The `selection-mode` control is an enum with three options:
+        // `''` (off), `'single'`, `'multi'`. Map the empty sentinel to
+        // `undefined` so the underlying `<VCTable :selection-mode>`
+        // prop receives the canonical "off" value rather than an
+        // empty-string mode that would partially activate the grid
+        // pattern (role='grid' would fire, but the machine wouldn't
+        // accept toggles).
+        return () => {
+            const props = propState.value as Record<string, unknown>;
+            const selectionMode = props.selectionMode === '' ? undefined : props.selectionMode;
+            return h(Table, {
+                ...props,
+                selectionMode,
+            });
+        };
     },
 });
 installVuecs(app);
@@ -41,6 +55,20 @@ announceProps(
             default: false,
             section: 'Behavior',
         },
+        selectionMode: {
+            type: 'enum',
+            default: '',
+            // Empty string represents "selection off" — the wrapper
+            // setup() above maps it to `undefined` before forwarding.
+            options: ['', 'single', 'multi'],
+            label: 'selection-mode',
+            section: 'Behavior',
+        },
+        responsive: {
+            type: 'boolean',
+            default: false,
+            section: 'Behavior',
+        },
     },
     {
         density: 'normal',
@@ -48,6 +76,8 @@ announceProps(
         bordered: false,
         hover: true,
         rowClickable: false,
+        selectionMode: '',
+        responsive: false,
     },
 );
 

@@ -7,6 +7,7 @@ import {
     VCTableEmpty,
     VCTableHeadCell,
     VCTableHeader,
+    VCTableLite,
     VCTableLoading,
     VCTableRow,
 } from '@vuecs/table';
@@ -26,78 +27,83 @@ withDefaults(defineProps<{
     bordered?: boolean;
     hover?: boolean;
     rowClickable?: boolean;
+    selectionMode?: 'single' | 'multi' | undefined;
+    responsive?: boolean;
 }>(), {
     density: 'normal',
     striped: false,
     bordered: false,
     hover: true,
     rowClickable: false,
+    selectionMode: undefined,
+    responsive: false,
 });
 
 const sort = ref<TableSortState>(null);
+const selection = ref<number | number[] | null>(null);
 
 const columns: TableColumn<User>[] = [
     {
-        key: 'name', 
-        label: 'Name', 
-        sortable: true, 
-        isRowHeader: true, 
+        key: 'name',
+        label: 'Name',
+        sortable: true,
+        isRowHeader: true,
     },
     {
-        key: 'email', 
-        label: 'Email', 
-        sortable: true, 
+        key: 'email',
+        label: 'Email',
+        sortable: true,
     },
     {
-        key: 'role', 
-        label: 'Role', 
-        class: 'w-24', 
+        key: 'role',
+        label: 'Role',
+        class: 'w-24',
     },
     {
-        key: 'createdAt', 
-        label: 'Created', 
-        sortable: true, 
-        class: 'w-32', 
+        key: 'createdAt',
+        label: 'Created',
+        sortable: true,
+        class: 'w-32',
     },
 ];
 
 const data: WithRowMeta<User>[] = [
     {
-        id: 1, 
-        name: 'Alice', 
-        email: 'alice@example.com', 
-        role: 'admin', 
-        createdAt: '2026-01-15', 
+        id: 1,
+        name: 'Alice',
+        email: 'alice@example.com',
+        role: 'admin',
+        createdAt: '2026-01-15',
     },
     {
-        id: 2, 
-        name: 'Bob', 
-        email: 'bob@example.com', 
-        role: 'editor', 
-        createdAt: '2026-02-03', 
-        _rowVariant: 'success', 
+        id: 2,
+        name: 'Bob',
+        email: 'bob@example.com',
+        role: 'editor',
+        createdAt: '2026-02-03',
+        _rowVariant: 'success',
     },
     {
-        id: 3, 
-        name: 'Carol', 
-        email: 'carol@example.com', 
-        role: 'viewer', 
-        createdAt: '2026-02-19', 
+        id: 3,
+        name: 'Carol',
+        email: 'carol@example.com',
+        role: 'viewer',
+        createdAt: '2026-02-19',
     },
     {
-        id: 4, 
-        name: 'Dave', 
-        email: 'dave@example.com', 
-        role: 'viewer', 
-        createdAt: '2026-03-08', 
-        _cellVariants: { role: 'warning' }, 
+        id: 4,
+        name: 'Dave',
+        email: 'dave@example.com',
+        role: 'viewer',
+        createdAt: '2026-03-08',
+        _cellVariants: { role: 'warning' },
     },
     {
-        id: 5, 
-        name: 'Eve', 
-        email: 'eve@example.com', 
-        role: 'admin', 
-        createdAt: '2026-04-22', 
+        id: 5,
+        name: 'Eve',
+        email: 'eve@example.com',
+        role: 'admin',
+        createdAt: '2026-04-22',
     },
 ];
 
@@ -123,6 +129,18 @@ const sortedData = computed(() => {
 
 const lastClicked = ref<User | null>(null);
 function onRowClick(row: User) { lastClicked.value = row; }
+
+// Human-readable selection summary for the playground.
+const selectionSummary = computed(() => {
+    const v = selection.value;
+    if (v === null || (Array.isArray(v) && v.length === 0)) return 'none';
+    if (Array.isArray(v)) {
+        const names = v.map((id) => data.find((d) => d.id === id)?.name ?? id);
+        return `${v.length} row(s): ${names.join(', ')}`;
+    }
+    const found = data.find((d) => d.id === v);
+    return found?.name ?? String(v);
+});
 </script>
 
 <template>
@@ -130,10 +148,11 @@ function onRowClick(row: User) { lastClicked.value = row; }
         <!-- Driver shape: :columns + :data — most common form. -->
         <div>
             <span style="font-size: 0.75rem; color: var(--vc-color-fg-muted);">
-                driver — `:columns :data` + `v-model:sort` + row meta
+                driver — `:columns :data` + `v-model:sort` + `v-model:selection` + row meta
             </span>
             <VCTable
                 v-model:sort="sort"
+                v-model:selection="selection"
                 :columns="columns"
                 :data="sortedData"
                 :density="density"
@@ -141,6 +160,8 @@ function onRowClick(row: User) { lastClicked.value = row; }
                 :bordered="bordered"
                 :hover="hover"
                 :row-clickable="rowClickable"
+                :selection-mode="selectionMode"
+                :responsive="responsive"
                 @row-click="onRowClick"
             >
                 <VCTableHeader>
@@ -176,11 +197,58 @@ function onRowClick(row: User) { lastClicked.value = row; }
                 <VCTableEmpty>No users yet.</VCTableEmpty>
             </VCTable>
             <div
+                v-if="selectionMode"
+                style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--vc-color-fg-muted);"
+            >
+                Selection ({{ selectionMode }}): <strong>{{ selectionSummary }}</strong>
+            </div>
+            <div
                 v-if="lastClicked"
                 style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--vc-color-fg-muted);"
             >
                 Last clicked: <strong>{{ lastClicked.name }}</strong>
             </div>
+        </div>
+
+        <!--
+            Terse form — driver auto-render (v0.2-B). No `<VCTableHeader>` /
+            `<VCTableBody>` markup; the table walks the slot vnodes and
+            renders the missing bands itself. `<VCTableCell>` cells use
+            the default cell renderer (v0.2-A) via `accessor` / `formatter`.
+        -->
+        <div style="padding-top: 0.5rem; border-top: 1px dashed var(--vc-color-border);">
+            <span style="font-size: 0.75rem; color: var(--vc-color-fg-muted);">
+                terse form — `&lt;VCTable :columns :data /&gt;` with auto-rendered header + body
+            </span>
+            <VCTable
+                :columns="columns"
+                :data="data"
+                :density="density"
+                :striped="striped"
+                :bordered="bordered"
+                :hover="hover"
+                :responsive="responsive"
+            />
+        </div>
+
+        <!--
+            VCTableLite (v0.2-C) — slim sibling without sort / row-click
+            machinery. For consumers who want the columns driver + theme
+            system + auto-render but bring their own state plumbing.
+        -->
+        <div style="padding-top: 0.5rem; border-top: 1px dashed var(--vc-color-border);">
+            <span style="font-size: 0.75rem; color: var(--vc-color-fg-muted);">
+                `&lt;VCTableLite&gt;` — slim escape hatch (no sort / no row-click)
+            </span>
+            <VCTableLite
+                :columns="columns"
+                :data="data"
+                :density="density"
+                :striped="striped"
+                :bordered="bordered"
+                :hover="hover"
+                :responsive="responsive"
+            />
         </div>
 
         <!-- Empty / loading states -->
