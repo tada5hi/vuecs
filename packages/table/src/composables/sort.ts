@@ -49,8 +49,8 @@ export type SortMachine = {
  * Controlled sort machine. The consumer owns the sort state via
  * `v-model:sort` — the table emits intent only. When `<VCTable
  * :client-sort>` is set, the table additionally sorts data internally
- * using `accessor` / `sortFn` (see `utils/sort.ts`); the controlled
- * v-model still emits, so consumers stay observable.
+ * via `sortRows()` from `utils/sort-rows.ts`; the controlled v-model
+ * still emits, so consumers stay observable.
  *
  * State shape is `SortDescriptor[]` from v1.x-B onward — single-column
  * sort is an array of length 0–1. Multi-key cycling lives entirely
@@ -187,13 +187,12 @@ export function useSortMachine<Row = unknown>(
 
 /**
  * Coerce v-model input into the canonical array shape. `undefined` /
- * `null` become `[]`; passing a stale single-descriptor object during
- * the v1.x-B migration window is wrapped as a one-element array.
+ * `null` (which Vue may bind through during the v1.x-B migration
+ * window when consumers still hold `ref<...>(null)`) become `[]`.
  */
 function normalize(v: TableSortState | undefined | null): TableSortState {
     if (v == null) return [];
-    if (Array.isArray(v)) return v;
-    return [v];
+    return v;
 }
 
 /**

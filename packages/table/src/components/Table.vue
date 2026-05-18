@@ -283,7 +283,13 @@ export default defineComponent({
             setSort: (
                 key: string,
                 opts?: { append?: boolean; direction?: SortDirection },
-            ) => sortMachine.setSort(key, opts),
+            ) => sortMachine.setSort(key, {
+                ...opts,
+                // Shift-click only appends when `<VCTable :multi-sort>`
+                // is on — otherwise the prop would be advisory only
+                // and headers would always grow the array.
+                append: props.multiSort ? opts?.append : false,
+            }),
             rowClickable: toRef(props, 'rowClickable'),
             focusedRow,
             setFocusedRow,

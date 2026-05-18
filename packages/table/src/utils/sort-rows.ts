@@ -19,8 +19,9 @@ export type SortRowsOptions<Row = unknown> = {
  *   else → use `accessor` resolved value (default, matches v0.1
  *   `resolveCellValue`).
  * - **Comparator**: `column.sortFn(a, b) => number` when present;
- *   else a built-in `<`/`>` compare that handles strings, numbers,
- *   booleans, Dates, and uses `localeCompare` for non-ASCII strings.
+ *   else a built-in compare that handles numbers, Dates, booleans,
+ *   and uses `localeCompare` (with `numeric: true`) for everything
+ *   else — so `'item 2'` sorts before `'item 10'`.
  * - **Null handling**: `null` / `undefined` sort LAST regardless of
  *   direction. Per-column `nullsFirst: true` floats them to the top.
  * - **Multi-key tie-break**: descriptors are applied in order. The
@@ -28,7 +29,8 @@ export type SortRowsOptions<Row = unknown> = {
  * - **Stability**: relies on `Array.prototype.sort`'s stable
  *   guarantee (ES2019+, every supported runtime).
  *
- * Empty `sorts` short-circuits to the input array unchanged.
+ * Empty `sorts` returns a shallow copy — never the input reference
+ * itself, so callers can safely mutate the result.
  */
 export function sortRows<Row>(
     rows: ReadonlyArray<Row>,

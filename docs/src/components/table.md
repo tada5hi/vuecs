@@ -329,7 +329,9 @@ const sort = ref<TableSortState>([]);
 
 Clicking a `:sortable` header cycles `[] → [asc] → [desc] → []`.
 `Enter` / `Space` on a focused `<th>` does the same. `aria-sort`
-flips to `ascending` / `descending` / `none`.
+flips to `ascending` / `descending` / `none`. With `<VCTable :must-sort>`,
+the primary key skips the empty step (`[asc] → [desc] → [asc] → ...`)
+so the data is never unsorted.
 
 ### Multi-column sort + client-side sort
 

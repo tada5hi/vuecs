@@ -65,7 +65,7 @@
 .vc-table-head-cell[data-sort-index]::after {
     content: attr(data-sort-index);
     display: inline-block;
-    margin-left: 0.125rem;
+    margin-inline-start: 0.125rem;
     font-size: 0.6em;
     vertical-align: super;
     line-height: 1;

@@ -132,14 +132,10 @@ describe('<VCTable> multi-sort + client-sort (plan 033 v1.x-B)', () => {
         const nameHeader = wrapper.element.querySelectorAll('thead th')[1] as HTMLElement;
         nameHeader.dispatchEvent(new MouseEvent('click', { shiftKey: true, bubbles: true }));
         await wrapper.vm.$nextTick();
-        // Multi-sort is OFF → the machine ignores the append intent
-        // (TableHeadCell forwards `append: event.shiftKey` but the
-        // machine semantics already handle multi-key cycling
-        // regardless of the table-level toggle; this assertion documents
-        // that header click ALWAYS appends when sortable, which is the
-        // shipped behavior — multi-sort prop is a hint for consumers).
-        // For this test, we simply confirm the state is non-empty + valid.
-        expect(sort.value.length).toBeGreaterThan(0);
+        // `<VCTable>` strips `opts.append` when `:multi-sort` is off,
+        // so Shift-click reads as a plain click and replaces the
+        // entire sort with the newly-clicked key.
+        expect(sort.value).toEqual([{ key: 'name', direction: 'asc' }]);
     });
 
     it('emits data-sort-index attribute for multi-sort positions 2+', async () => {

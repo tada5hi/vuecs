@@ -180,7 +180,7 @@ export default defineComponent({
             data: dataRef.value as unknown[],
             busy: props.busy,
             columns: columns.value,
-            sort: null,
+            sort: NOOP_SORT_STATE.value,
             setSort: () => {},
         }));
 
