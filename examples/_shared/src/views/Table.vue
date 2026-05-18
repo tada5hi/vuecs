@@ -145,6 +145,47 @@ const selectionSummary = computed(() => {
 const sortSummary = computed(() => sort.value
     .map((s) => `${s.key} ${s.direction}`)
     .join(' → ') || 'none');
+
+// ──────────────────────────────────────────────────────────────────────────
+// Sort-chip row preview — UX experiment for issue: Shift-click for
+// multi-sort is unintuitive. Renders one chip per active descriptor;
+// each chip toggles direction on click, has a × to remove, and the
+// row exposes a dropdown to add unsorted sortable columns without
+// touching the header at all.
+// ──────────────────────────────────────────────────────────────────────────
+
+function columnLabelFor(key: string): string {
+    return columns.find((c) => c.key === key)?.label ?? key;
+}
+
+function toggleDirection(key: string) {
+    const idx = sort.value.findIndex((s) => s.key === key);
+    if (idx < 0) return;
+    const cur = sort.value[idx];
+    sort.value = sort.value.map((s, i) => (i === idx ?
+        { ...s, direction: cur.direction === 'asc' ? 'desc' : 'asc' } :
+        s
+    ));
+}
+
+function removeSortKey(key: string) {
+    sort.value = sort.value.filter((s) => s.key !== key);
+}
+
+function addSortKey(event: Event) {
+    const target = event.target as globalThis.HTMLSelectElement;
+    const key = target.value;
+    if (!key) return;
+    sort.value = [...sort.value, { key, direction: 'asc' }];
+    target.value = '';
+}
+
+function clearSort() {
+    sort.value = [];
+}
+
+const unsortedSortableColumns = computed(() => columns
+    .filter((c) => c.sortable && !sort.value.some((s) => s.key === c.key)));
 </script>
 
 <template>
@@ -158,8 +199,71 @@ const sortSummary = computed(() => sort.value
                 v-model="multiSortLocal"
                 type="checkbox"
             >
-            <span>Enable multi-sort (Shift-click headers to add a secondary sort key)</span>
+            <span>Enable multi-sort (Shift-click headers <em>or</em> use the chip row below to manage keys)</span>
         </label>
+
+        <!-- Sort-chip row preview — UX alternative to Shift-click. Only
+             shown when multi-sort is on, since with single-sort the
+             header indicator already covers everything. -->
+        <div
+            v-if="multiSortLocal"
+            class="vc-demo-sort-bar"
+        >
+            <span class="vc-demo-sort-bar__label">Sort:</span>
+            <template v-if="sort.length > 0">
+                <button
+                    v-for="(descriptor, idx) in sort"
+                    :key="descriptor.key"
+                    type="button"
+                    class="vc-demo-sort-chip"
+                    :title="`Click to toggle ${descriptor.direction === 'asc' ? 'descending' : 'ascending'}`"
+                    @click="toggleDirection(descriptor.key)"
+                >
+                    <span class="vc-demo-sort-chip__pos">{{ idx + 1 }}.</span>
+                    <span class="vc-demo-sort-chip__label">{{ columnLabelFor(descriptor.key) }}</span>
+                    <span class="vc-demo-sort-chip__arrow">{{ descriptor.direction === 'asc' ? '↑' : '↓' }}</span>
+                    <span
+                        class="vc-demo-sort-chip__close"
+                        role="button"
+                        tabindex="0"
+                        aria-label="Remove sort key"
+                        @click.stop="removeSortKey(descriptor.key)"
+                        @keydown.enter.stop.prevent="removeSortKey(descriptor.key)"
+                        @keydown.space.stop.prevent="removeSortKey(descriptor.key)"
+                    >×</span>
+                </button>
+            </template>
+            <span
+                v-else
+                class="vc-demo-sort-bar__empty"
+            >no columns sorted yet</span>
+
+            <select
+                v-if="unsortedSortableColumns.length > 0"
+                class="vc-demo-sort-bar__add"
+                @change="addSortKey"
+            >
+                <option value="">
+                    + Add column
+                </option>
+                <option
+                    v-for="col in unsortedSortableColumns"
+                    :key="col.key"
+                    :value="col.key"
+                >
+                    {{ col.label }}
+                </option>
+            </select>
+
+            <button
+                v-if="sort.length > 0"
+                type="button"
+                class="vc-demo-sort-bar__clear"
+                @click="clearSort"
+            >
+                Clear all
+            </button>
+        </div>
 
         <!-- Driver shape: :columns + :data — most common form. -->
         <div>
@@ -323,3 +427,114 @@ const sortSummary = computed(() => sort.value
         </div>
     </div>
 </template>
+
+<style scoped>
+/* Sort-chip row preview — vanilla CSS using design tokens so the
+   widget renders consistently in every example app (Tailwind / BS /
+   Bulma / Nuxt). Not a shipped component — purely a preview to
+   evaluate whether to promote into @vuecs/table. */
+.vc-demo-sort-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--vc-color-bg-muted);
+    border: 1px solid var(--vc-color-border);
+    border-radius: var(--vc-radius-md, 0.5rem);
+    font-size: 0.75rem;
+}
+
+.vc-demo-sort-bar__label {
+    color: var(--vc-color-fg-muted);
+    font-weight: 600;
+    margin-inline-end: 0.25rem;
+}
+
+.vc-demo-sort-bar__empty {
+    color: var(--vc-color-fg-muted);
+    font-style: italic;
+}
+
+.vc-demo-sort-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.5rem;
+    background: var(--vc-color-bg);
+    color: var(--vc-color-fg);
+    border: 1px solid var(--vc-color-border);
+    border-radius: 9999px;
+    font: inherit;
+    cursor: pointer;
+    transition: background-color 120ms;
+}
+
+.vc-demo-sort-chip:hover,
+.vc-demo-sort-chip:focus-visible {
+    background: var(--vc-color-primary-50, var(--vc-color-bg-muted));
+    border-color: var(--vc-color-primary-500, var(--vc-color-border));
+}
+
+.vc-demo-sort-chip__pos {
+    color: var(--vc-color-fg-muted);
+    font-size: 0.625rem;
+    font-weight: 700;
+}
+
+.vc-demo-sort-chip__arrow {
+    font-weight: 700;
+    color: var(--vc-color-primary-600, var(--vc-color-fg));
+}
+
+.vc-demo-sort-chip__close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    height: 1rem;
+    margin-inline-start: 0.125rem;
+    border-radius: 9999px;
+    background: transparent;
+    color: var(--vc-color-fg-muted);
+    font-size: 0.875rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.vc-demo-sort-chip__close:hover,
+.vc-demo-sort-chip__close:focus-visible {
+    background: var(--vc-color-error-100, var(--vc-color-bg-muted));
+    color: var(--vc-color-error-600, var(--vc-color-fg));
+    outline: none;
+}
+
+.vc-demo-sort-bar__add {
+    padding: 0.25rem 0.5rem;
+    background: var(--vc-color-bg);
+    color: var(--vc-color-fg);
+    border: 1px solid var(--vc-color-border);
+    border-radius: 9999px;
+    font: inherit;
+    cursor: pointer;
+}
+
+.vc-demo-sort-bar__clear {
+    margin-inline-start: auto;
+    padding: 0.25rem 0.625rem;
+    background: transparent;
+    color: var(--vc-color-fg-muted);
+    border: 1px solid transparent;
+    border-radius: 9999px;
+    font: inherit;
+    cursor: pointer;
+}
+
+.vc-demo-sort-bar__clear:hover,
+.vc-demo-sort-bar__clear:focus-visible {
+    background: var(--vc-color-bg);
+    border-color: var(--vc-color-border);
+    color: var(--vc-color-fg);
+    outline: none;
+}
+</style>
