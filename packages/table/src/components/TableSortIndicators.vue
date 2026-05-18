@@ -256,11 +256,14 @@ export default defineComponent({
             if (!key) return;
             // Defense-in-depth: the native `<select>` is already
             // filtered to sortable columns, but slot-prop callers
-            // (custom `#add` UIs) may pass any column key. `sortable`
-            // defaults to `undefined` (= not sortable) — only an
-            // explicit `true` opts in.
+            // (custom `#add` UIs) may pass any string. Reject:
+            //   - unknown keys (no matching column → unrenderable
+            //     descriptor; the table can't map it)
+            //   - known but non-sortable columns (`sortable` defaults
+            //     to `undefined` (= not sortable); only an explicit
+            //     `true` opts in)
             const col = columnByKey.value.get(key);
-            if (col && !col.sortable) return;
+            if (!col || !col.sortable) return;
             // Don't re-add a key that's already in the sort.
             if (resolvedSort.value.some((s) => s.key === key)) return;
             const next: TableSortState = [...resolvedSort.value, { key, direction: 'asc' }];

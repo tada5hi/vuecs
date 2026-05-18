@@ -203,6 +203,28 @@ describe('<VCTableSortIndicators> (plan 033 v1.x-C)', () => {
         expect(sort.value.map((s) => s.key)).toEqual(['role', 'note']);
     });
 
+    it('appendKey rejects unknown column keys (defense for slot-prop callers)', async () => {
+        const sort = ref<TableSortState>([]);
+        let capturedAdd: ((key: string) => void) | null = null;
+        mount(defineComponent({
+            setup() {
+                return () => h(VCTableSortIndicators, {
+                    sort: sort.value,
+                    columns,
+                    'onUpdate:sort': (next: TableSortState) => { sort.value = next; },
+                }, {
+                    add: (props: { add: (k: string) => void }) => {
+                        capturedAdd = props.add;
+                        return h('span');
+                    },
+                });
+            },
+        }), { global: { plugins: [...plugins] } });
+        // Unknown key → ignored (no column to map to).
+        capturedAdd!('does-not-exist');
+        expect(sort.value).toEqual([]);
+    });
+
     it('appendKey ignores non-sortable columns (defense for slot-prop callers)', async () => {
         // Mount with `#add` slot override — gives us programmatic
         // access to `addSlotProps.add` so we can simulate a custom
