@@ -1,0 +1,18 @@
+# Changelog
+
+## 1.0.0 (2026-05-18)
+
+
+### Features
+
+* **elements:** alert + collapse compounds (plans 031 + 032) ([#1570](https://github.com/tada5hi/vuecs/issues/1570)) ([b4618e2](https://github.com/tada5hi/vuecs/commit/b4618e2d2f5552d76f8bb8650f61adf704bb7fc9))
+* introduce @vuecs/icon + Iconify presets ([#1524](https://github.com/tada5hi/vuecs/issues/1524)) ([8a13f5d](https://github.com/tada5hi/vuecs/commit/8a13f5dc7898b6ed175ab679b0cdfd716cf513a6))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^2.0.0 to ^3.0.0
+  * peerDependencies
+    * @vuecs/core bumped from ^2.0.0 to ^3.0.0

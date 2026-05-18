@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/pagination",
-    "version": "1.3.1",
+    "version": "2.0.0",
     "type": "module",
     "description": "A package containing a vue pagination component.",
     "exports": {
@@ -46,14 +46,14 @@
     },
     "devDependencies": {
         "@vue/test-utils": "^2.4.10",
-        "@vuecs/core": "^2.0.0",
-        "@vuecs/icon": "^0.0.0",
+        "@vuecs/core": "^3.0.0",
+        "@vuecs/icon": "^1.0.0",
         "jsdom": "^29.1.1",
         "vue": "^3.5.34"
     },
     "peerDependencies": {
-        "@vuecs/core": "^2.0.0",
-        "@vuecs/icon": "^0.0.0",
+        "@vuecs/core": "^3.0.0",
+        "@vuecs/icon": "^1.0.0",
         "vue": "^3.x"
     },
     "engines": {
