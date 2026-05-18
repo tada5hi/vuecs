@@ -148,6 +148,45 @@ const columns: TableColumn<User>[] = [
 `<VCTableCell>` outside a `<VCTable>` (or with a `columnKey` that
 isn't in the columns array) renders an empty cell.
 
+## Driver auto-render
+
+`<VCTable>` auto-renders the missing band(s) when `:columns` resolves
+to a non-empty list and the consumer's default slot omits them. This
+makes the terse form viable:
+
+```vue
+<!-- Slotless: auto-header + auto-body -->
+<VCTable :columns :data />
+
+<!-- Consumer header, auto body -->
+<VCTable :columns :data>
+    <VCTableHeader>
+        <VCTableRow>
+            <VCTableHeadCell v-for="col in columns" :key="col.key">
+                {{ col.label }} <span v-if="col.sortable">⇅</span>
+            </VCTableHeadCell>
+        </VCTableRow>
+    </VCTableHeader>
+</VCTable>
+
+<!-- Auto header + body, plus Empty band -->
+<VCTable :columns :data>
+    <VCTableEmpty>No users yet.</VCTableEmpty>
+</VCTable>
+
+<!-- Even terser: omit :columns and let the table derive from data[0] -->
+<VCTable :data />
+```
+
+The walker recurses into Fragments, so `<template v-if>` /
+`<template v-for>` around a manual `<VCTableHeader>` /
+`<VCTableBody>` still suppresses the auto-render correctly.
+
+Auto-cells use the default cell renderer (`accessor` / `formatter`)
+documented above. Per-cell rendering control still requires
+composing the manual chrome (`<VCTableBody>` + `<VCTableRow>` +
+`<VCTableCell>` with a slot).
+
 ## Row meta — `_rowVariant` / `_cellVariants`
 
 Underscore-prefixed fields on the data row tint the row / specific cells without forcing a function prop:

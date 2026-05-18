@@ -1,14 +1,20 @@
 <script lang="ts">
-import { 
-    computed, 
-    defineComponent, 
-    h, 
-    mergeProps, 
-    ref, 
-    toRef, 
-    watch, 
+import {
+    Fragment,
+    computed,
+    defineComponent,
+    h,
+    mergeProps,
+    ref,
+    toRef,
+    watch,
 } from 'vue';
-import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
+import type {
+    ExtractPublicPropTypes,
+    PropType,
+    SlotsType,
+    VNode,
+} from 'vue';
 import { themableProps, useComponentTheme, useThemeProps } from '@vuecs/core';
 import {
     provideHeadCellCountContext,
@@ -24,6 +30,36 @@ import type {
     TableThemeClasses,
 } from '../types';
 import { normalizeColumns } from '../utils/render-utils';
+import VCTableHeader from './TableHeader.vue';
+import VCTableBody from './TableBody.vue';
+import VCTableRow from './TableRow.vue';
+import VCTableHeadCell from './TableHeadCell.vue';
+import VCTableCell from './TableCell.vue';
+
+/**
+ * Recursively check whether `nodes` (a slot return) contains a vnode
+ * whose `type` equals `target`. Recurses into Vue `Fragment` vnodes so
+ * `<template v-if>` / `<template v-for>` wrapping around a part
+ * doesn't hide it from the auto-render check.
+ *
+ * Used by `<VCTable>` to detect whether the consumer wrote a manual
+ * `<VCTableHeader>` / `<VCTableBody>` in the default slot — if not,
+ * and `:columns` is set, the table renders the missing band itself.
+ */
+function containsComponent(nodes: unknown, target: unknown): boolean {
+    if (nodes == null || nodes === false) return false;
+    if (Array.isArray(nodes)) {
+        for (const child of nodes) {
+            if (containsComponent(child, target)) return true;
+        }
+        return false;
+    }
+    if (typeof nodes !== 'object') return false;
+    const v = nodes as VNode;
+    if (v.type === target) return true;
+    if (v.type === Fragment) return containsComponent(v.children, target);
+    return false;
+}
 
 const tableThemeDefaults = {
     classes: {
@@ -163,7 +199,48 @@ export default defineComponent({
             const inner: unknown[] = [];
             if (slots.caption) inner.push(h('caption', null, slots.caption() as never));
             if (slots.colgroup) inner.push(h('colgroup', null, slots.colgroup() as never));
-            inner.push(slots.default?.(slotProps.value));
+
+            // Driver auto-render (plan 033 v0.2-B): when `:columns` is set
+            // and the consumer's default slot doesn't already contain a
+            // `<VCTableHeader>` / `<VCTableBody>`, render the missing
+            // band(s) automatically. Consumer-provided slot content
+            // (e.g. `<VCTableEmpty>`, `<VCTableLoading>`) flows as
+            // siblings so the band-rendering precedence is unaffected.
+            const slotChildren = slots.default?.(slotProps.value);
+            const cols = columns.value;
+            const autoRender = cols.length > 0;
+            const hasHeader = autoRender && containsComponent(slotChildren, VCTableHeader);
+            const hasBody = autoRender && containsComponent(slotChildren, VCTableBody);
+
+            if (autoRender && !hasHeader) {
+                inner.push(h(VCTableHeader, null, () => h(VCTableRow, null, () => cols.map((col) => h(
+                    VCTableHeadCell,
+                    {
+                        key: col.key,
+                        columnKey: col.key,
+                        sortable: col.sortable,
+                        isRowHeader: false,
+                    },
+                    () => col.label,
+                )))));
+            }
+
+            if (slotChildren !== undefined) inner.push(slotChildren);
+
+            if (autoRender && !hasBody) {
+                inner.push(h(VCTableBody, null, {
+                    row: ({ row, index }: { row: unknown; index: number }) => h(
+                        VCTableRow,
+                        { row, index },
+                        () => cols.map((col) => h(VCTableCell, {
+                            key: col.key,
+                            columnKey: col.key,
+                            isRowHeader: col.isRowHeader,
+                            dataLabel: col.label,
+                        })),
+                    ),
+                }));
+            }
 
             // `attrs` always forward to the `<table>` itself — consumers'
             // `:class` / `@click` / etc target the same element regardless

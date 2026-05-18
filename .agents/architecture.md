@@ -1774,6 +1774,39 @@ parts (`<VCTableHeader>` / `<VCTableBody>` / `<VCTableFooter>` /
 Both shapes can mix — pass `:columns` AND write `<VCTableHeader>` to
 override only the header band, etc.
 
+### Driver auto-render (v0.2-B)
+
+When `:columns` resolves to a non-empty list AND the consumer's
+default slot omits the band, `<VCTable>` auto-renders the missing
+piece — same shape as Shape A's intent, no manual chrome required.
+
+- **`<VCTable :columns :data />`** (slotless): renders auto-header +
+  auto-body.
+- **`<VCTable :columns :data><VCTableHeader>…</VCTableHeader></VCTable>`**:
+  consumer header + auto-body.
+- **`<VCTable :columns :data><VCTableBody>…</VCTableBody></VCTable>`**:
+  auto-header + consumer body.
+- **`<VCTable :columns :data><VCTableEmpty>…</VCTableEmpty></VCTable>`**:
+  auto-header + auto-body (returns null when data empty) + Empty
+  band — the three render as adjacent `<tbody>`s.
+
+Detection walks the slot's rendered vnodes and recurses into
+`Fragment` children so `<template v-if>` / `<template v-for>` wrapping
+around a band doesn't hide it from the walker.
+
+Explicit `:columns="[]"` is authoritative — no auto-render fires.
+Unset `:columns` falls through to the existing auto-derive
+(`Object.keys(data[0])`) behavior, which composes naturally with
+auto-render (`<VCTable :data />` becomes a viable terse form).
+
+Auto-cells render via the v0.2-A default cell renderer
+(`accessor` + `formatter`); auto-headers render `column.label` and
+forward `column.sortable`. Per-column class hooks (`class`,
+`cellClass`, `headerClass`) and the `cellAttrs` / `headerAttrs`
+escape hatches are out of scope for the auto-render path — consumers
+needing per-cell rendering control compose the manual chrome and
+slot-render those cells themselves.
+
 ### Column shape (excerpt)
 
 ```ts
