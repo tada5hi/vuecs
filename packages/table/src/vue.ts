@@ -5,12 +5,14 @@ import type VCTableEmpty from './components/TableEmpty.vue';
 import type VCTableFooter from './components/TableFooter.vue';
 import type VCTableHeadCell from './components/TableHeadCell.vue';
 import type VCTableHeader from './components/TableHeader.vue';
+import type VCTableLite from './components/TableLite.vue';
 import type VCTableLoading from './components/TableLoading.vue';
 import type VCTableRow from './components/TableRow.vue';
 
 declare module '@vue/runtime-core' {
     export interface GlobalComponents {
         VCTable: typeof VCTable;
+        VCTableLite: typeof VCTableLite;
         VCTableHeader: typeof VCTableHeader;
         VCTableBody: typeof VCTableBody;
         VCTableFooter: typeof VCTableFooter;

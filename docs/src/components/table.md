@@ -148,6 +148,99 @@ const columns: TableColumn<User>[] = [
 `<VCTableCell>` outside a `<VCTable>` (or with a `columnKey` that
 isn't in the columns array) renders an empty cell.
 
+## Driver auto-render
+
+`<VCTable>` auto-renders the missing band(s) when `:columns` resolves
+to a non-empty list and the consumer's default slot omits them. This
+makes the terse form viable:
+
+```vue
+<!-- Slotless: auto-header + auto-body -->
+<VCTable :columns :data />
+
+<!-- Consumer header, auto body -->
+<VCTable :columns :data>
+    <VCTableHeader>
+        <VCTableRow>
+            <VCTableHeadCell v-for="col in columns" :key="col.key">
+                {{ col.label }} <span v-if="col.sortable">⇅</span>
+            </VCTableHeadCell>
+        </VCTableRow>
+    </VCTableHeader>
+</VCTable>
+
+<!-- Auto header + body, plus Empty band -->
+<VCTable :columns :data>
+    <VCTableEmpty>No users yet.</VCTableEmpty>
+</VCTable>
+
+<!-- Even terser: omit :columns and let the table derive from data[0] -->
+<VCTable :data />
+```
+
+The walker recurses into Fragments, so `<template v-if>` /
+`<template v-for>` around a manual `<VCTableHeader>` /
+`<VCTableBody>` still suppresses the auto-render correctly.
+
+Auto-cells use the default cell renderer (`accessor` / `formatter`)
+documented above. Per-cell rendering control still requires
+composing the manual chrome (`<VCTableBody>` + `<VCTableRow>` +
+`<VCTableCell>` with a slot).
+
+## `<VCTableLite>` — slim escape hatch
+
+Same columns driver + theme system + auto-render as `<VCTable>`, but
+without the controlled-sort + row-click + keyboard-nav machinery.
+For consumers who bring their own state plumbing (e.g. tanstack-table
+layered on top) and want bundle savings on the sort machine.
+
+```vue
+<script setup lang="ts">
+import { VCTableLite } from '@vuecs/table';
+import type { TableColumn } from '@vuecs/table';
+
+const columns: TableColumn<User>[] = [
+    { key: 'name', sortable: true },
+    { key: 'email' },
+];
+</script>
+
+<template>
+    <!-- Same driver shape; no v-model:sort, no @row-click -->
+    <VCTableLite :columns :data />
+</template>
+```
+
+Sortable headers render with the indicator markup but clicking is a
+no-op. `:row-clickable` is not a declared prop on `<VCTableLite>` —
+it has no behavioral effect (the Lite `TableContext` pins
+`rowClickable: false`), but since Lite uses
+`inheritAttrs: false` + attribute fallthrough, an undeclared
+attribute like `row-clickable` will still land on the `<table>` DOM
+element if you pass it. Pass only the props Lite actually declares
+to avoid spurious HTML attributes. All other parts
+(`<VCTableHeader>`, `<VCTableBody>`, `<VCTableEmpty>`,
+`<VCTableLoading>`, …) work identically.
+
+## Stacked responsive mode
+
+`<VCTable :responsive />` opts in to a stacked-card layout below
+the 640px viewport breakpoint. The structural CSS in
+`@vuecs/table/style.css` collapses each row into a card, hides the
+`<thead>` (kept for assistive tech), and shows each column label as
+a `::before` pseudo element using the `data-label` attribute that
+ships on every `<td>` since v0.1.
+
+```vue
+<VCTable :columns :data responsive />
+```
+
+Themes can override the breakpoint or card styling by targeting
+`[data-responsive="true"]` in their own CSS. The
+`--vc-table-stack-breakpoint` CSS variable is reserved for future
+theme overrides (currently informational — the media-query
+breakpoint is the source of truth).
+
 ## Row meta — `_rowVariant` / `_cellVariants`
 
 Underscore-prefixed fields on the data row tint the row / specific cells without forcing a function prop:

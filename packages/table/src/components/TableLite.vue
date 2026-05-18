@@ -14,51 +14,50 @@ import {
     provideHeadCellCountContext,
     provideTableContext,
 } from '../composables/context';
-import { useSortMachine } from '../composables/sort';
 import type {
-    SortDirection,
     TableColumn,
     TableColumnRaw,
     TableSlotProps,
-    TableSortState,
     TableThemeClasses,
 } from '../types';
 import { composeTableInner } from '../utils/auto-render';
 import { normalizeColumns } from '../utils/render-utils';
 
-const tableThemeDefaults = {
+const tableLiteThemeDefaults = {
     classes: {
         root: 'vc-table',
         scrollContainer: 'vc-table-scroll-container',
     },
 };
 
-const tableProps = {
+/**
+ * Slim sibling of `<VCTable>` — same columns driver + theme system +
+ * auto-render, but with the sort + row-click + keyboard-nav machinery
+ * stripped out (plan 033 v0.2-C). Consumers who want their own state
+ * plumbing (e.g. tanstack-table on top) import this instead of the
+ * full `<VCTable>`. Lite-only consumers tree-shake `useSortMachine`
+ * out of their bundle.
+ *
+ * Provides the same `TableContext` shape so child components
+ * (`<VCTableRow>`, `<VCTableHeadCell>`, …) work identically — the
+ * sort / row-click hooks are wired to no-ops, so sortable headers and
+ * `:row-clickable` rows visually behave as if the consumer hadn't
+ * opted in.
+ */
+const tableLiteProps = {
     /** Row data array. */
     data: { type: Array as PropType<unknown[]>, default: () => [] },
     /** Column definitions (TableColumn or bare-string shorthand). When omitted, columns are derived from `Object.keys(data[0])`. */
     columns: { type: Array as PropType<TableColumnRaw<unknown>[]>, default: undefined },
     /** Busy flag — drives `aria-busy` on the `<table>` and gates the loading-band render. */
     busy: { type: Boolean, default: false },
-    /** Controlled sort state (single column). Use `v-model:sort`. */
-    sort: { type: [Object, null] as PropType<TableSortState>, default: null },
-    /** When `true`, the cycle skips the `null` step: `null → asc → desc → asc`. */
-    mustSort: { type: Boolean, default: false },
     /** Wrap the `<table>` in an overflow scroll container. */
     scrollable: { type: Boolean, default: false },
     /** When `:scrollable`, sticks the `<thead>` to the top of the scroll container. */
     stickyHeader: { type: Boolean, default: false },
-    /** When `:scrollable`, applied as `max-height` on the scroll container (any CSS length, e.g. `'24rem'`). */
+    /** When `:scrollable`, applied as `max-height` on the scroll container. */
     maxHeight: { type: String, default: undefined },
-    /** Opt-in row-click affordance — adds `tabindex` + cursor-pointer on every row and emits `@row-click`. */
-    rowClickable: { type: Boolean, default: false },
-    /**
-     * Stacked responsive mode (v0.2-D). When `true`, sets
-     * `data-responsive="true"` on the `<table>` so the structural CSS
-     * (and any theme-specific overrides) can collapse the table into
-     * per-row cards at narrow viewports. Uses each cell's `data-label`
-     * as the per-row column label.
-     */
+    /** Stacked responsive mode opt-in. Same shape as `<VCTable :responsive>`. */
     responsive: { type: Boolean, default: false },
     /** Density shorthand for `themeVariant.density`. */
     density: { type: String as PropType<'compact' | 'normal' | 'spacious'>, default: undefined },
@@ -73,23 +72,20 @@ const tableProps = {
     ...themableProps<TableThemeClasses>(),
 };
 
-export type TableProps = ExtractPublicPropTypes<typeof tableProps>;
+export type TableLiteProps = ExtractPublicPropTypes<typeof tableLiteProps>;
+
+const NOOP_SORT_STATE = ref(null);
 
 export default defineComponent({
-    name: 'VCTable',
+    name: 'VCTableLite',
     inheritAttrs: false,
-    props: tableProps,
-    emits: ['update:sort', 'row-click'],
+    props: tableLiteProps,
     slots: Object as SlotsType<{
         default(props: TableSlotProps): unknown;
         caption(): unknown;
         colgroup(): unknown;
     }>,
-    setup(props, {
-        attrs, 
-        slots, 
-        emit, 
-    }) {
+    setup(props, { attrs, slots }) {
         const themeProps = useThemeProps(
             props,
             'density',
@@ -98,7 +94,7 @@ export default defineComponent({
             'hover',
             'stickyHeader',
         );
-        const theme = useComponentTheme('table', themeProps, tableThemeDefaults);
+        const theme = useComponentTheme('table', themeProps, tableLiteThemeDefaults);
 
         const dataRef = toRef(props, 'data');
         const rawColumns = toRef(props, 'columns');
@@ -106,17 +102,9 @@ export default defineComponent({
             () => normalizeColumns(rawColumns.value, dataRef.value),
         );
 
-        const sortSource = toRef(props, 'sort');
-        const mustSortRef = toRef(props, 'mustSort');
-        const sortMachine = useSortMachine({
-            source: sortSource,
-            columns,
-            mustSort: mustSortRef,
-            emit: (next) => emit('update:sort', next),
-        });
-
-        // D3 — Shape B colspan auto-counting from <VCTableHeadCell> siblings
-        // that register via context. Shape A overrides via `columns.length`.
+        // Same headcell-count provider as `<VCTable>` so Shape B
+        // (`<VCTableHeader>` written manually) keeps auto-resolving
+        // colspan for `<VCTableEmpty>` / `<VCTableLoading>`.
         const childCellCount = ref(0);
         provideHeadCellCountContext({
             register: () => { childCellCount.value += 1; },
@@ -133,26 +121,24 @@ export default defineComponent({
             },
         );
 
-        const focusedRow = ref<number | null>(null);
-        const setFocusedRow = (index: number | null) => { focusedRow.value = index; };
-
-        const emitRowClick = (row: unknown, index: number, event: Event) => {
-            emit('row-click', row, index, event);
-        };
-
         const wrapperEl = ref<globalThis.HTMLElement | null>(null);
 
+        // No-op sort + row-click hooks. `<VCTableHeadCell :sortable>`
+        // and `<VCTableRow>` read these from context; with rowClickable
+        // permanently false and `sort` permanently null, the
+        // descendants visually behave as if the consumer hadn't opted
+        // in to either feature.
         provideTableContext({
             data: dataRef,
             busy: toRef(props, 'busy'),
             columns,
-            sort: sortMachine.state,
-            setSort: (key: string, direction?: SortDirection) => sortMachine.setSort(key, direction),
-            rowClickable: toRef(props, 'rowClickable'),
-            focusedRow,
-            setFocusedRow,
+            sort: NOOP_SORT_STATE,
+            setSort: () => {},
+            rowClickable: computed(() => false),
+            focusedRow: ref(null),
+            setFocusedRow: () => {},
             colspan,
-            emitRowClick,
+            emitRowClick: () => {},
             wrapperEl,
         });
 
@@ -160,8 +146,8 @@ export default defineComponent({
             data: dataRef.value as unknown[],
             busy: props.busy,
             columns: columns.value,
-            sort: sortMachine.state.value,
-            setSort: sortMachine.setSort,
+            sort: null,
+            setSort: () => {},
         }));
 
         const setWrapperRef = (el: unknown) => {
@@ -169,12 +155,6 @@ export default defineComponent({
         };
 
         return () => {
-            // Driver auto-render (plan 033 v0.2-B): when `:columns` is set
-            // and the consumer's default slot doesn't already contain a
-            // `<VCTableHeader>` / `<VCTableBody>`, render the missing
-            // band(s) automatically. Consumer-provided slot content
-            // (e.g. `<VCTableEmpty>`, `<VCTableLoading>`) flows as
-            // siblings so the band-rendering precedence is unaffected.
             const inner = composeTableInner({
                 cols: columns.value,
                 slotChildren: slots.default?.(slotProps.value),
@@ -182,9 +162,6 @@ export default defineComponent({
                 colgroupSlot: slots.colgroup,
             });
 
-            // `attrs` always forward to the `<table>` itself — consumers'
-            // `:class` / `@click` / etc target the same element regardless
-            // of whether `:scrollable` is set.
             const tableNode = h(
                 props.tag,
                 mergeProps(attrs, {
@@ -195,12 +172,6 @@ export default defineComponent({
                 inner as never,
             );
 
-            // Always wrap the `<table>` in a positioned wrapper. This is
-            // the teleport target for `<VCTableLoading :overlay>` — a
-            // `<div>` inside a `<table>` is foster-parented out by the
-            // HTML parser, breaking the overlay; rendering it as a
-            // sibling of the `<table>` (inside this wrapper) keeps the
-            // overlay correctly sized against the table area.
             const wrapper = h(
                 'div',
                 {

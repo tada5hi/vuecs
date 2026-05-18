@@ -74,3 +74,67 @@
     position: sticky;
     left: 0;
 }
+
+/*
+ * Stacked responsive mode (plan 033 v0.2-D).
+ *
+ * Opt in via `<VCTable :responsive />`. Below the breakpoint, each row
+ * collapses into a per-row card and each cell shows its column label
+ * as a ::before pseudo-element (read from `data-label`, which v0.1
+ * emits on every body cell). Themes can override breakpoint, paddings,
+ * or per-cell layout by writing their own `@media` rule targeting
+ * `[data-responsive="true"]`; the rules here are the bare-minimum
+ * stacking baseline at 640px. Note: CSS custom properties cannot
+ * drive `@media` conditions (they're resolved per element, not at
+ * stylesheet parse time), so the breakpoint can't be exposed as a
+ * `var()` — themes must redeclare their own media query.
+ *
+ * Selectors include `tbody th` to cover row-header cells rendered
+ * when `column.isRowHeader === true`; the `thead` is visually-hidden
+ * a layer above, so `tbody`-scoped selectors don't double-apply.
+ */
+@media (max-width: 640px) {
+    .vc-table[data-responsive="true"] thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+        border: 0;
+    }
+    .vc-table[data-responsive="true"] tbody,
+    .vc-table[data-responsive="true"] tr {
+        display: block;
+        width: 100%;
+    }
+    .vc-table[data-responsive="true"] tr {
+        margin-bottom: 0.75rem;
+    }
+    .vc-table[data-responsive="true"] tbody td,
+    .vc-table[data-responsive="true"] tbody th {
+        display: flex;
+        align-items: baseline;
+        gap: 0.75rem;
+        padding: 0.5rem 0.75rem;
+        text-align: left;
+    }
+    .vc-table[data-responsive="true"] tbody td::before,
+    .vc-table[data-responsive="true"] tbody th::before {
+        content: attr(data-label);
+        flex: 0 0 8rem;
+        font-weight: 600;
+        color: inherit;
+    }
+    /* Hide the ::before pseudo for cells with an empty data-label
+     * (escape hatch: structural cells like checkboxes, plus the
+     * Empty / Loading band cells that don't carry a column label). */
+    .vc-table[data-responsive="true"] tbody td:not([data-label])::before,
+    .vc-table[data-responsive="true"] tbody th:not([data-label])::before,
+    .vc-table[data-responsive="true"] tbody td[data-label=""]::before,
+    .vc-table[data-responsive="true"] tbody th[data-label=""]::before {
+        content: none;
+    }
+}

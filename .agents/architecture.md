@@ -1774,6 +1774,95 @@ parts (`<VCTableHeader>` / `<VCTableBody>` / `<VCTableFooter>` /
 Both shapes can mix — pass `:columns` AND write `<VCTableHeader>` to
 override only the header band, etc.
 
+### Driver auto-render (v0.2-B)
+
+When `:columns` resolves to a non-empty list AND the consumer's
+default slot omits the band, `<VCTable>` auto-renders the missing
+piece — same shape as Shape A's intent, no manual chrome required.
+
+- **`<VCTable :columns :data />`** (slotless): renders auto-header +
+  auto-body.
+- **`<VCTable :columns :data><VCTableHeader>…</VCTableHeader></VCTable>`**:
+  consumer header + auto-body.
+- **`<VCTable :columns :data><VCTableBody>…</VCTableBody></VCTable>`**:
+  auto-header + consumer body.
+- **`<VCTable :columns :data><VCTableEmpty>…</VCTableEmpty></VCTable>`**:
+  auto-header + auto-body (returns null when data empty) + Empty
+  band — the three render as adjacent `<tbody>`s.
+
+Detection walks the slot's rendered vnodes and recurses into
+`Fragment` children so `<template v-if>` / `<template v-for>` wrapping
+around a band doesn't hide it from the walker.
+
+Explicit `:columns="[]"` is authoritative — no auto-render fires.
+Unset `:columns` falls through to the existing auto-derive
+(`Object.keys(data[0])`) behavior, which composes naturally with
+auto-render (`<VCTable :data />` becomes a viable terse form).
+
+Auto-cells render via the v0.2-A default cell renderer
+(`accessor` + `formatter`); auto-headers render `column.label` and
+forward `column.sortable`. The auto-render also honors the
+per-column display fields off `TableColumn`:
+
+- `class` → applied to BOTH `<th>` and `<td>`.
+- `headerClass` → additive on `<th>`.
+- `cellClass` → additive on `<td>`.
+- `stickyColumn` → forwarded to both head + body cells.
+- `headerTitle` / `headerAbbr` → native `<th title>` / `<th abbr>`.
+- `isRowHeader` → renders the body cell as `<th scope="row">`.
+
+The function-form escape hatches `cellAttrs` / `headerAttrs` are
+out of scope for the auto-render path — consumers needing per-cell
+attribute resolution compose the manual chrome and slot-render
+those cells themselves.
+
+### Lite escape hatch — `<VCTableLite>` (v0.2-C)
+
+Slim sibling of `<VCTable>` for consumers who want the columns
+driver + theme system + auto-render but bring their own state
+plumbing (e.g. tanstack-table layered on top). Drops:
+
+- `useSortMachine` (no `:sort` / `:must-sort` / `@update:sort`).
+- Row-click + keyboard-nav wiring (no `:row-clickable` / `@row-click`).
+- `focusedRow` state.
+
+Provides the same `TableContext` shape so child components
+(`<VCTableRow>`, `<VCTableHeadCell>`, …) work identically. The sort
++ row-click hooks resolve to no-ops, so sortable headers and
+`:row-clickable` rows visually behave as if the consumer hadn't
+opted in. The auto-render path (v0.2-B), default cell renderer
+(v0.2-A), stacked responsive mode (v0.2-D), `<VCTableEmpty>` /
+`<VCTableLoading>` band rendering, and `caption` / `colgroup` slots
+all work identically.
+
+Lite-only consumers tree-shake `useSortMachine` out of their
+bundle. The shared `composeTableInner()` helper in
+`packages/table/src/utils/auto-render.ts` is what both SFCs call to
+build their `<table>` children — adding new behavior to the
+auto-render path stays single-source.
+
+### Stacked responsive mode (v0.2-D)
+
+`<VCTable :responsive />` collapses the table into per-row cards
+below the structural-CSS breakpoint (default 640px). Implementation:
+
+- `<VCTable>` adds `data-responsive="true"` on the `<table>` when the
+  `responsive` prop is set.
+- Structural CSS in `packages/table/assets/index.css` ships the
+  baseline stack rules under `@media (max-width: 640px)
+  .vc-table[data-responsive="true"] { … }`. `<thead>` is
+  visually-hidden (kept for a11y), `<tbody>` / `<tr>` become block,
+  each `<td>` becomes a flex row with a `::before` pseudo reading
+  the column label from `data-label`.
+- Themes can override the breakpoint or card styling by targeting
+  `[data-responsive="true"]` themselves. Each shipping theme keeps
+  the structural baseline today; theme-specific stacked variants
+  ship when consumers ask for them.
+
+`data-label="<column.label>"` was already emitted on every `<td>` in
+v0.1 as a forward-compat hook for this exact path; v0.2-D is the
+opt-in that consumes it.
+
 ### Column shape (excerpt)
 
 ```ts
