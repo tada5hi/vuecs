@@ -669,6 +669,20 @@ export default function bootstrapTheme(): Theme {
                     overlay: 'bg-body bg-opacity-75 text-body-secondary',
                 },
             },
+            tableSortIndicators: {
+                classes: {
+                    root: 'd-flex flex-wrap align-items-center gap-2 bg-body-tertiary border rounded px-3 py-2 small',
+                    label: 'fw-semibold text-body-secondary me-1',
+                    empty: 'fst-italic text-body-secondary',
+                    chip: 'btn btn-sm btn-outline-secondary rounded-pill d-inline-flex align-items-center gap-2',
+                    chipPosition: 'fw-bold text-body-secondary',
+                    chipLabel: '',
+                    chipArrow: 'fw-bold text-primary',
+                    chipRemove: 'd-inline-flex align-items-center justify-content-center bg-transparent border-0 text-body-secondary rounded-circle px-1',
+                    add: 'form-select form-select-sm rounded-pill w-auto',
+                    clear: 'btn btn-sm btn-link text-body-secondary text-decoration-none ms-auto',
+                },
+            },
             pagination: {
                 classes: {
                     root: 'd-flex justify-content-center pagination',

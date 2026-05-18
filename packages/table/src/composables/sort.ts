@@ -39,6 +39,12 @@ export type SortMachine = {
      *   `append` for placement.
      */
     setSort: (key: string, opts?: { append?: boolean; direction?: SortDirection }) => void;
+    /**
+     * Replace the entire sort state directly. Bypasses cycle + multi-sort
+     * gating — used by the chip-row indicator UX which mutates the array
+     * declaratively (remove, reorder, clear).
+     */
+    setState: (next: TableSortState) => void;
     /** Direction for a key (regardless of sort position), or `null`. */
     directionFor: (key: string) => SortDirection | null;
     /** 1-based position of a key within the sort array, or `null`. */
@@ -177,9 +183,21 @@ export function useSortMachine<Row = unknown>(
         return i < 0 ? null : i + 1;
     }
 
+    /**
+     * Replace the entire sort state. Bypasses cycle logic + multi-sort
+     * gating — for callers that know exactly what they want (e.g. the
+     * sort-indicator chip row removes / reorders / clears descriptors
+     * directly without going through Shift-click semantics).
+     */
+    function setState(next: TableSortState): void {
+        local.value = next;
+        emit(next);
+    }
+
     return {
         state,
         setSort,
+        setState,
         directionFor,
         positionFor,
     };

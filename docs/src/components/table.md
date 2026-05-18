@@ -365,6 +365,51 @@ The numeric sort-position badge (1-based) renders via the
 the primary key keeps the up/down arrow. Themes can override the
 badge via `.vc-table-head-cell[data-sort-index]::after`.
 
+### `<VCTableSortIndicators>` — discoverable multi-sort UX
+
+Modifier-key-free alternative to Shift-click. Renders a chip row of
+active sort descriptors. Each chip is clickable (toggles asc ↔ desc)
+and carries a `×` button to remove. The bar also surfaces an
+**Add column** dropdown listing unsorted sortable columns, plus a
+**Clear all** action.
+
+```vue
+<VCTableSortIndicators v-model:sort="sort" :columns="columns" />
+<VCTable v-model:sort="sort" :columns :data multi-sort client-sort />
+```
+
+Bind `v-model:sort` to the same ref the table uses — both stay in
+sync without prop forwarding. Place the chip row above or below the
+table; it renders a `<div>`, so it can't live as a slot child of
+`<VCTable>` (the default slot goes inside `<table>`).
+
+All text strings are customisable. Per-instance via props
+(`:label`, `:emptyContent`, `:addLabel`, `:clearLabel`,
+`:removeAriaLabel`) or app-wide via `useComponentDefaults`:
+
+```ts
+app.use(vuecs, {
+    defaults: {
+        tableSortIndicators: {
+            label: 'Sortieren:',
+            emptyContent: 'Keine Spalten sortiert',
+            addLabel: '+ Spalte hinzufügen',
+            clearLabel: 'Alle entfernen',
+            removeAriaLabel: 'Sortierschlüssel entfernen',
+        },
+    },
+});
+```
+
+Customisable text keys: `label`, `emptyContent`, `addLabel`,
+`clearLabel`, `removeAriaLabel`, `toggleAscTitle`, `toggleDescTitle`,
+`arrowAsc`, `arrowDesc`, `removeGlyph`.
+
+Slot overrides for visual customisation: `#label`, `#empty`,
+`#chip="{ descriptor, index, position, toggle, remove }"`,
+`#add="{ options, add }"`, `#clear="{ clear }"`, or `#default` for a
+complete layout replacement using the same handlers.
+
 ::: warning Breaking change in v1.x-B
 `v-model:sort` is now `SortDescriptor[]` instead of v0.1's
 `{ key, direction } \| null`. Migrate single-sort bindings as:
@@ -389,6 +434,7 @@ badge via `.vc-table-head-cell[data-sort-index]::after`.
 | `tableCell` | `root` |
 | `tableHeadCell` | `root`, `sortIcon` |
 | `tableLoading` | `root`, `overlay` |
+| `tableSortIndicators` | `root`, `label`, `empty`, `chip`, `chipPosition`, `chipLabel`, `chipArrow`, `chipRemove`, `add`, `clear` |
 
 ## Variant axes opted-into per theme
 

@@ -716,6 +716,20 @@ export default function bulmaTheme(): Theme {
                     overlay: 'vc-table-loading-overlay-bulma',
                 },
             },
+            tableSortIndicators: {
+                classes: {
+                    root: 'vc-table-sort-indicators-bulma',
+                    label: 'has-text-weight-semibold has-text-grey mr-1',
+                    empty: 'is-italic has-text-grey',
+                    chip: 'tag is-medium is-rounded is-light',
+                    chipPosition: 'has-text-weight-bold has-text-grey is-size-7',
+                    chipLabel: '',
+                    chipArrow: 'has-text-weight-bold has-text-primary',
+                    chipRemove: 'delete is-small ml-1',
+                    add: 'select is-small is-rounded',
+                    clear: 'button is-small is-text ml-auto',
+                },
+            },
             pagination: {
                 // Bulma's pagination canonical structure is
                 // `<nav class="pagination">` containing standalone

@@ -22,6 +22,12 @@ export type TableContext<Row = unknown> = {
      * `opts.direction` jumps straight to a given direction.
      */
     setSort: (key: string, opts?: { append?: boolean; direction?: SortDirection }) => void;
+    /**
+     * Replace the entire sort state directly. Used by
+     * `<VCTableSortIndicators>` to remove / reorder / clear descriptors
+     * without invoking the per-key cycle logic.
+     */
+    setSortState: (next: TableSortState) => void;
     /** Whether `<VCTable>` was passed `:rowClickable`. */
     rowClickable: Ref<boolean>;
     /** Currently focused row index (row keyboard nav). `null` when nothing focused. */

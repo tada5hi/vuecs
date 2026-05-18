@@ -163,6 +163,7 @@ export default defineComponent({
             columns,
             sort: NOOP_SORT_STATE,
             setSort: () => {},
+            setSortState: () => {},
             rowClickable: computed(() => false),
             focusedRow: ref(null),
             setFocusedRow: () => {},

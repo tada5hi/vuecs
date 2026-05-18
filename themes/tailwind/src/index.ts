@@ -522,6 +522,20 @@ export default function tailwindTheme(): Theme {
                     overlay: 'bg-bg/70 backdrop-blur-[1px] text-fg-muted',
                 },
             },
+            tableSortIndicators: {
+                classes: {
+                    root: 'flex flex-wrap items-center gap-1.5 rounded-md border border-border bg-bg-muted px-3 py-2 text-xs',
+                    label: 'font-semibold text-fg-muted me-1',
+                    empty: 'italic text-fg-muted',
+                    chip: 'inline-flex items-center gap-1.5 rounded-full border border-border bg-bg px-2 py-1 text-fg transition-colors hover:bg-primary-50 hover:border-primary-500 focus-visible:bg-primary-50 focus-visible:border-primary-500 focus-visible:outline-none',
+                    chipPosition: 'text-[0.625rem] font-bold text-fg-muted',
+                    chipLabel: '',
+                    chipArrow: 'font-bold text-primary-600',
+                    chipRemove: 'inline-flex h-4 w-4 items-center justify-center rounded-full text-fg-muted hover:bg-error-100 hover:text-error-600 focus-visible:bg-error-100 focus-visible:text-error-600 focus-visible:outline-none',
+                    add: 'rounded-full border border-border bg-bg px-2 py-1 text-fg',
+                    clear: 'ms-auto rounded-full border border-transparent bg-transparent px-2.5 py-1 text-fg-muted hover:bg-bg hover:border-border hover:text-fg focus-visible:bg-bg focus-visible:border-border focus-visible:text-fg focus-visible:outline-none',
+                },
+            },
             pagination: {
                 classes: {
                     root: 'inline-flex items-center',

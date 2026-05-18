@@ -546,6 +546,17 @@
     background: hsla(var(--bulma-scheme-h, 0), var(--bulma-scheme-s, 0%), var(--bulma-scheme-main-l, 100%), 0.7);
 }
 
+/* Sort-indicator bar — Bulma has no canonical container helper that
+ * combines border + muted background + radius + padding in one class,
+ * so we ship the chrome inline. The chips themselves compose `.tag`
+ * (Bulma's existing pill primitive). */
+.vc-table-sort-indicators-bulma {
+    background: var(--bulma-scheme-main-bis, hsl(0deg, 0%, 96%));
+    border: 1px solid var(--bulma-border, hsl(0deg, 0%, 86%));
+    border-radius: var(--bulma-radius, 4px);
+    padding: 0.5rem 0.75rem;
+}
+
 /* ────────────────────────────────────────────────────────────────────────────
  * @vuecs/overlays Toast — Bulma 1.0 ships no toast component, so the
  * theme entry composes `.notification` (closest visual equivalent) for

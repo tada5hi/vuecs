@@ -233,6 +233,29 @@ export type TableLoadingThemeClasses = {
     overlay: string;
 };
 
+export type TableSortIndicatorsThemeClasses = {
+    /** The bar container `<div>`. */
+    root: string;
+    /** The leading `"Sort:"` label. */
+    label: string;
+    /** The empty-state hint shown when no descriptors are active. */
+    empty: string;
+    /** Each chip button. */
+    chip: string;
+    /** The 1-based position prefix (`1.`, `2.`, …) inside a chip. */
+    chipPosition: string;
+    /** The column label inside a chip. */
+    chipLabel: string;
+    /** The direction arrow inside a chip (↑ / ↓). */
+    chipArrow: string;
+    /** The `×` remove button at the trailing edge of a chip. */
+    chipRemove: string;
+    /** The "Add column" trigger (default: a native `<select>`). */
+    add: string;
+    /** The "Clear all" trigger. */
+    clear: string;
+};
+
 // ──────────────────────────────────────────────────────────────────────────
 // Theme element registry augmentation
 // ──────────────────────────────────────────────────────────────────────────
@@ -248,6 +271,7 @@ declare module '@vuecs/core' {
         tableHeadCell?: ThemeElementDefinition<TableHeadCellThemeClasses>;
         tableEmpty?: ThemeElementDefinition<TableEmptyThemeClasses>;
         tableLoading?: ThemeElementDefinition<TableLoadingThemeClasses>;
+        tableSortIndicators?: ThemeElementDefinition<TableSortIndicatorsThemeClasses>;
     }
 }
 

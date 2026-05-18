@@ -8,6 +8,7 @@ import type VCTableHeader from './components/TableHeader.vue';
 import type VCTableLite from './components/TableLite.vue';
 import type VCTableLoading from './components/TableLoading.vue';
 import type VCTableRow from './components/TableRow.vue';
+import type VCTableSortIndicators from './components/TableSortIndicators.vue';
 
 declare module '@vue/runtime-core' {
     export interface GlobalComponents {
@@ -21,5 +22,6 @@ declare module '@vue/runtime-core' {
         VCTableHeadCell: typeof VCTableHeadCell;
         VCTableEmpty: typeof VCTableEmpty;
         VCTableLoading: typeof VCTableLoading;
+        VCTableSortIndicators: typeof VCTableSortIndicators;
     }
 }

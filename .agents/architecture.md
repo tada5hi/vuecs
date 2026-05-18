@@ -2050,6 +2050,50 @@ ships an `::after` superscript badge; themes can override at
 `.vc-table-head-cell[data-sort-index]::after`. Position 1 keeps the
 up/down arrow span.
 
+### `<VCTableSortIndicators>` chip row (plan 033 v1.x-C)
+
+Modifier-key-free alternative to Shift-click for managing multi-
+column sort. Renders one chip per active descriptor — clicking the
+chip body toggles asc ↔ desc, the trailing `×` removes that key —
+plus an **Add column** `<select>` listing unsorted `:sortable`
+columns and a **Clear all** action.
+
+**Default v-model mode (recommended)** — pass `:sort` + `:columns`
+and bind `v-model:sort` against the same ref the `<VCTable>` reads.
+Place the chip row as a sibling of the table:
+
+```vue
+<VCTableSortIndicators v-model:sort="sort" :columns="columns" />
+<VCTable v-model:sort="sort" :columns :data multi-sort client-sort />
+```
+
+**Fallback context mode** — reads `sort` / `columns` /
+`setSortState` from `useTable()` when neither prop is passed. Only
+usable in custom layouts where the chip row's `<div>` can render
+inside the table's component tree (the default `<table>` element
+host means default-slot children become DOM children of `<table>`,
+where a `<div>` is invalid HTML).
+
+**Customisable text strings** flow through
+`useComponentDefaults('tableSortIndicators', …)` — every key
+(`label`, `emptyContent`, `addLabel`, `clearLabel`,
+`removeAriaLabel`, `toggleAscTitle`, `toggleDescTitle`, `arrowAsc`,
+`arrowDesc`, `removeGlyph`) is overridable per-instance via props
+OR app-wide via the `defaults` install option.
+
+**Slot escape hatches**: `#label`, `#empty`, `#chip="{ descriptor,
+index, position, toggle, remove }"`, `#add="{ options, add }"`,
+`#clear="{ clear }"`, or `#default` for full layout replacement
+with the same handlers exposed as slot props.
+
+**Underlying primitive**: the sort machine exposes `setState(state)`
+(in addition to `setSort(key, opts)`) for absolute state
+replacement; `<VCTable>` threads it through
+`TableContext.setSortState`. Bypassing `multiSort` gating is
+intentional — the chip row's `Add column` dropdown adds keys
+regardless of the prop value (consumers who mount the chip row are
+opted into multi-key management).
+
 ### Row click + keyboard navigation (D5 + plan 028 row-nav adoption)
 
 `:row-clickable` opt-in adds `tabindex="0"` + `cursor-pointer` per row

@@ -290,6 +290,7 @@ export default defineComponent({
                 // and headers would always grow the array.
                 append: props.multiSort ? opts?.append : false,
             }),
+            setSortState: sortMachine.setState,
             rowClickable: toRef(props, 'rowClickable'),
             focusedRow,
             setFocusedRow,

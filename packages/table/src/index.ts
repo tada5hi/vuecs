@@ -17,6 +17,7 @@ import {
     VCTableLite,
     VCTableLoading,
     VCTableRow,
+    VCTableSortIndicators,
 } from './components';
 
 export * from './components';
@@ -43,6 +44,7 @@ export function install(app: App, options: Options = {}): void {
         VCTableHeadCell,
         VCTableEmpty,
         VCTableLoading,
+        VCTableSortIndicators,
     }).forEach(([name, component]) => {
         app.component(name, component);
     });
