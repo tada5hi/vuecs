@@ -14,6 +14,7 @@ import {
     VCTableFooter,
     VCTableHeadCell,
     VCTableHeader,
+    VCTableLite,
     VCTableLoading,
     VCTableRow,
 } from './components';
@@ -33,6 +34,7 @@ export function install(app: App, options: Options = {}): void {
 
     Object.entries({
         VCTable,
+        VCTableLite,
         VCTableHeader,
         VCTableBody,
         VCTableFooter,

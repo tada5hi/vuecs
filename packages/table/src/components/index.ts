@@ -1,4 +1,5 @@
 export { default as VCTable } from './Table.vue';
+export { default as VCTableLite } from './TableLite.vue';
 export { default as VCTableHeader } from './TableHeader.vue';
 export { default as VCTableBody } from './TableBody.vue';
 export { default as VCTableFooter } from './TableFooter.vue';
@@ -9,6 +10,7 @@ export { default as VCTableEmpty } from './TableEmpty.vue';
 export { default as VCTableLoading } from './TableLoading.vue';
 
 export type { TableProps } from './Table.vue';
+export type { TableLiteProps } from './TableLite.vue';
 export type { TableHeaderProps } from './TableHeader.vue';
 export type { TableBodyProps } from './TableBody.vue';
 export type { TableFooterProps } from './TableFooter.vue';

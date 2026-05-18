@@ -1807,6 +1807,31 @@ escape hatches are out of scope for the auto-render path — consumers
 needing per-cell rendering control compose the manual chrome and
 slot-render those cells themselves.
 
+### Lite escape hatch — `<VCTableLite>` (v0.2-C)
+
+Slim sibling of `<VCTable>` for consumers who want the columns
+driver + theme system + auto-render but bring their own state
+plumbing (e.g. tanstack-table layered on top). Drops:
+
+- `useSortMachine` (no `:sort` / `:must-sort` / `@update:sort`).
+- Row-click + keyboard-nav wiring (no `:row-clickable` / `@row-click`).
+- `focusedRow` state.
+
+Provides the same `TableContext` shape so child components
+(`<VCTableRow>`, `<VCTableHeadCell>`, …) work identically. The sort
++ row-click hooks resolve to no-ops, so sortable headers and
+`:row-clickable` rows visually behave as if the consumer hadn't
+opted in. The auto-render path (v0.2-B), default cell renderer
+(v0.2-A), stacked responsive mode (v0.2-D), `<VCTableEmpty>` /
+`<VCTableLoading>` band rendering, and `caption` / `colgroup` slots
+all work identically.
+
+Lite-only consumers tree-shake `useSortMachine` out of their
+bundle. The shared `composeTableInner()` helper in
+`packages/table/src/utils/auto-render.ts` is what both SFCs call to
+build their `<table>` children — adding new behavior to the
+auto-render path stays single-source.
+
 ### Stacked responsive mode (v0.2-D)
 
 `<VCTable :responsive />` collapses the table into per-row cards

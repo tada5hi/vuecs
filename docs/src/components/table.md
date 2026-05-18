@@ -187,6 +187,36 @@ documented above. Per-cell rendering control still requires
 composing the manual chrome (`<VCTableBody>` + `<VCTableRow>` +
 `<VCTableCell>` with a slot).
 
+## `<VCTableLite>` — slim escape hatch
+
+Same columns driver + theme system + auto-render as `<VCTable>`, but
+without the controlled-sort + row-click + keyboard-nav machinery.
+For consumers who bring their own state plumbing (e.g. tanstack-table
+layered on top) and want bundle savings on the sort machine.
+
+```vue
+<script setup lang="ts">
+import { VCTableLite } from '@vuecs/table';
+import type { TableColumn } from '@vuecs/table';
+
+const columns: TableColumn<User>[] = [
+    { key: 'name', sortable: true },
+    { key: 'email' },
+];
+</script>
+
+<template>
+    <!-- Same driver shape; no v-model:sort, no @row-click -->
+    <VCTableLite :columns :data />
+</template>
+```
+
+Sortable headers render with the indicator markup but clicking is a
+no-op; `:row-clickable` is not declared and any attribute-pass-through
+attempt is dropped. All other parts (`<VCTableHeader>`,
+`<VCTableBody>`, `<VCTableEmpty>`, `<VCTableLoading>`, …) work
+identically.
+
 ## Stacked responsive mode
 
 `<VCTable :responsive />` opts in to a stacked-card layout below
