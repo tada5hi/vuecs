@@ -223,8 +223,8 @@ const data: User[] = [/* ... */];
 | Prop | Type | Description |
 |---|---|---|
 | `selectionMode` | `'single' \| 'multi'` | Enables the grid pattern. `undefined` keeps the plain-table semantics. |
-| `selection` | `SelectionKey \| SelectionKey[] \| null` | Controlled selection state. Use `v-model:selection`. |
-| `getRowKey` | `(row, index) => SelectionKey` | Resolve the selection key per row. Defaults to `row.id ?? index`. |
+| `selection` | `RowSelectionKey \| RowSelectionKey[] \| null` | Controlled selection state. Use `v-model:selection`. |
+| `getRowKey` | `(row, index) => RowSelectionKey` | Resolve the selection key per row. Defaults to `row.id ?? index`. |
 
 **Click semantics in multi mode:**
 

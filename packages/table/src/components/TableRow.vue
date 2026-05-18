@@ -4,7 +4,9 @@ import {
     defineComponent,
     h,
     mergeProps,
+    onBeforeUnmount,
     toRef,
+    watch,
 } from 'vue';
 import type { ExtractPublicPropTypes, PropType } from 'vue';
 import {
@@ -119,34 +121,67 @@ export default defineComponent({
             !props.disabled
         ));
 
+        // Register with the table's interactive-row registry so the
+        // roving-tabindex fallback can pick the first INTERACTIVE row
+        // (not just row 0, which might be disabled) and arrow nav can
+        // skip non-interactive rows. Wired via `watch` (not
+        // `watchEffect`) so the registry mutations don't recursively
+        // re-trigger this effect — the watcher reads `isInteractive`
+        // + `props.index` explicitly and only re-fires when those
+        // values change.
+        watch(
+            [isInteractive, () => props.index],
+            ([active, idx], [, prevIdx]) => {
+                if (!ctx) return;
+                // Unregister the previous index whenever it changes
+                // (rare, but covers re-keyed rows).
+                if (prevIdx !== undefined && prevIdx !== idx) {
+                    ctx.unregisterInteractiveRow(prevIdx);
+                }
+                if (active && idx !== undefined) {
+                    ctx.registerInteractiveRow(idx);
+                } else if (idx !== undefined) {
+                    ctx.unregisterInteractiveRow(idx);
+                }
+            },
+            { immediate: true },
+        );
+        onBeforeUnmount(() => {
+            if (ctx && props.index !== undefined) {
+                ctx.unregisterInteractiveRow(props.index);
+            }
+        });
+
         // Roving tabindex when grid-mode is active: only the focused
         // row carries tabindex=0; others get -1, so Tab exits the grid
         // instead of cycling row-by-row (W3C grid pattern). Outside
         // selection mode, every clickable row stays tabindex=0 — the
         // v0.1 behavior.
-        const ariaSelected = computed<'true' | 'false' | undefined>(() => {
-            if (!selectionActive.value) return undefined;
-            return autoSelected.value ? 'true' : 'false';
-        });
-
         const tabindex = computed<number | undefined>(() => {
             if (!isInteractive.value) return undefined;
             if (!selectionActive.value) return 0;
-            // Grid mode: roving tabindex. Fall back to row 0 when
-            // `focusedRow` is unset OR stale (past the new data
-            // length after shrinking) so Tab can always enter the
-            // grid. Without this guard, a data refetch that drops
-            // the focused row leaves the grid unreachable via Tab.
+            // Grid mode: roving tabindex. Fall back to the FIRST
+            // interactive row (read from the registry) when
+            // `focusedRow` is unset OR points at a row that is no
+            // longer interactive (e.g. disabled now, or data shrunk
+            // past it). Picking the first interactive row — not
+            // blindly row 0 — keeps Tab navigation working when row 0
+            // happens to be disabled.
             const focusIdx = ctx?.focusedRow.value;
-            const total = ctx?.data.value.length ?? 0;
-            const inBounds = focusIdx !== null &&
+            const interactives = ctx?.interactiveRows.value;
+            const focusActive = focusIdx !== null &&
                 focusIdx !== undefined &&
-                focusIdx >= 0 &&
-                focusIdx < total;
-            if (!inBounds) {
-                return props.index === 0 ? 0 : -1;
+                interactives !== undefined &&
+                interactives.has(focusIdx);
+            if (focusActive) {
+                return props.index === focusIdx ? 0 : -1;
             }
-            return props.index === focusIdx ? 0 : -1;
+            if (!interactives || interactives.size === 0) return -1;
+            let firstInteractive: number | null = null;
+            for (const idx of interactives) {
+                if (firstInteractive === null || idx < firstInteractive) firstInteractive = idx;
+            }
+            return props.index === firstInteractive ? 0 : -1;
         });
 
         function activateSelection(event: globalThis.MouseEvent | globalThis.KeyboardEvent) {
@@ -172,27 +207,53 @@ export default defineComponent({
 
         function onKeydown(event: globalThis.KeyboardEvent) {
             if (!isInteractive.value || props.index === undefined) return;
-            const total = ctx?.data.value.length ?? 0;
             const i = props.index;
-            const move = (target: number) => {
+
+            // Build a sorted snapshot of currently interactive row
+            // indices. Arrow / Home / End walk THIS list rather than
+            // the raw data range, so disabled rows are skipped instead
+            // of becoming dead spots in keyboard navigation.
+            const interactives = ctx?.interactiveRows.value;
+            const sorted = interactives && interactives.size > 0 ?
+                Array.from(interactives).sort((a, b) => a - b) :
+                [];
+            const posInSorted = sorted.indexOf(i);
+
+            const moveTo = (target: number) => {
                 event.preventDefault();
-                const clamped = Math.max(0, Math.min(total - 1, target));
-                ctx?.setFocusedRow(clamped);
+                if (sorted.length === 0) return;
+                const clamped = Math.max(0, Math.min(sorted.length - 1, target));
+                const nextIdx = sorted[clamped];
+                ctx?.setFocusedRow(nextIdx);
                 const tr = event.currentTarget as globalThis.HTMLElement | null;
                 if (!tr) return;
-                const direction = clamped > i ? 'nextElementSibling' : 'previousElementSibling';
-                let sibling: globalThis.Element | null = tr;
-                const steps = Math.abs(clamped - i);
-                for (let s = 0; s < steps; s += 1) {
-                    sibling = sibling ? sibling[direction] : null;
+                // DOM walk: step row-by-row from the current `<tr>`
+                // skipping anything that isn't a focusable `<tr>` (so
+                // disabled rows in between don't catch the focus).
+                // Direction is signed by whether the target index is
+                // after or before this row's data index.
+                const direction = nextIdx > i ? 'nextElementSibling' : 'previousElementSibling';
+                let sibling: globalThis.Element | null = tr[direction];
+                while (sibling) {
+                    if (
+                        sibling instanceof globalThis.HTMLElement &&
+                        sibling.tagName === 'TR' &&
+                        sibling.hasAttribute('tabindex')
+                    ) {
+                        const ti = sibling.getAttribute('tabindex');
+                        if (ti !== '-1' || (ti === '-1' && sibling.matches('[role="row"]'))) {
+                            // Match found — focus this row.
+                            sibling.focus();
+                            break;
+                        }
+                    }
+                    sibling = sibling[direction];
                 }
-                if (sibling instanceof globalThis.HTMLElement) sibling.focus();
                 // Shift+arrow extends selection from the range anchor
                 // to the new focused row (multi mode only). Seed the
                 // anchor to the CURRENT row when none exists yet, so
                 // the first Shift+arrow press includes the starting
-                // row in the range (otherwise the machine falls
-                // through to a plain target-only toggle).
+                // row in the range.
                 if (event.shiftKey && selectionActive.value && selectionMode.value === 'multi' && ctx) {
                     if (ctx.selection.rangeAnchor.value === null) {
                         const currentRow = ctx.data.value[i];
@@ -200,21 +261,22 @@ export default defineComponent({
                             ctx.selection.rangeAnchor.value = ctx.getRowKey(currentRow, i);
                         }
                     }
-                    const targetRow = ctx.data.value[clamped];
+                    const targetRow = ctx.data.value[nextIdx];
                     if (targetRow !== undefined) {
-                        const targetKey = ctx.getRowKey(targetRow, clamped);
+                        const targetKey = ctx.getRowKey(targetRow, nextIdx);
                         ctx.selection.toggle(targetKey, { range: true });
                     }
                 }
             };
+
             if (event.key === 'ArrowDown') {
-                move(i + 1);
+                moveTo(posInSorted + 1);
             } else if (event.key === 'ArrowUp') {
-                move(i - 1);
+                moveTo(posInSorted - 1);
             } else if (event.key === 'Home') {
-                move(0);
+                moveTo(0);
             } else if (event.key === 'End') {
-                move(total - 1);
+                moveTo(sorted.length - 1);
             } else if (event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault();
                 activateSelection(event);
@@ -229,25 +291,31 @@ export default defineComponent({
             ctx?.setFocusedRow(props.index);
         }
 
-        return () => h(
-            'tr',
-            mergeProps(attrs, {
-                class: theme.value.root || undefined,
-                // ARIA grid pattern: explicit `role="row"` is required
-                // on `<tr>` children when the parent table has
-                // `role="grid"` (the implicit role doesn't apply
-                // under an overridden parent role). Selection-mode
-                // also drives `aria-selected`.
-                role: selectionActive.value ? 'row' : undefined,
-                'aria-selected': ariaSelected.value,
-                tabindex: tabindex.value,
-                'data-row-variant': rowVariant.value || undefined,
-                onClick: isInteractive.value ? onClick : undefined,
-                onKeydown: isInteractive.value ? onKeydown : undefined,
-                onFocus: isInteractive.value ? onFocus : undefined,
-            }),
-            slots.default?.(),
-        );
+        return () => {
+            // Conditional ARIA spread — only paint role/aria-selected
+            // when selection is active. Painting `role: undefined`
+            // shadows consumer-provided attrs through mergeProps and
+            // breaks the plain-table escape hatch for manual rows.
+            const selectionAttrs: Record<string, unknown> = selectionActive.value ?
+                {
+                    role: 'row',
+                    'aria-selected': autoSelected.value ? 'true' : 'false',
+                } :
+                {};
+            return h(
+                'tr',
+                mergeProps(attrs, {
+                    class: theme.value.root || undefined,
+                    tabindex: tabindex.value,
+                    'data-row-variant': rowVariant.value || undefined,
+                    ...selectionAttrs,
+                    onClick: isInteractive.value ? onClick : undefined,
+                    onKeydown: isInteractive.value ? onKeydown : undefined,
+                    onFocus: isInteractive.value ? onFocus : undefined,
+                }),
+                slots.default?.(),
+            );
+        };
     },
 });
 </script>

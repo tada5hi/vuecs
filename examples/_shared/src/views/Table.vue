@@ -41,6 +41,10 @@ withDefaults(defineProps<{
 
 const sort = ref<TableSortState>(null);
 const selection = ref<number | number[] | null>(null);
+// Independent sort state for the terse auto-render demo so its
+// sortable headers actually reorder the second table without
+// affecting the first one.
+const terseSort = ref<TableSortState>(null);
 
 const columns: TableColumn<User>[] = [
     {
@@ -110,12 +114,11 @@ const data: WithRowMeta<User>[] = [
 // Controlled sort: VCTable emits sort intent via `v-model:sort` but
 // never reorders data itself. The demo applies the sort client-side
 // so the user sees real reordering across every sortable column.
-const sortedData = computed(() => {
-    const s = sort.value;
-    if (!s) return data;
-    const key = s.key as keyof User;
-    const dir = s.direction === 'asc' ? 1 : -1;
-    return [...data].sort((a, b) => {
+function applySort(rows: WithRowMeta<User>[], state: TableSortState) {
+    if (!state) return rows;
+    const key = state.key as keyof User;
+    const dir = state.direction === 'asc' ? 1 : -1;
+    return [...rows].sort((a, b) => {
         const av = a[key];
         const bv = b[key];
         if (av == null && bv == null) return 0;
@@ -125,7 +128,9 @@ const sortedData = computed(() => {
         if (av > bv) return 1 * dir;
         return 0;
     });
-});
+}
+const sortedData = computed(() => applySort(data, sort.value));
+const terseSortedData = computed(() => applySort(data, terseSort.value));
 
 const lastClicked = ref<User | null>(null);
 function onRowClick(row: User) { lastClicked.value = row; }
@@ -218,11 +223,12 @@ const selectionSummary = computed(() => {
         -->
         <div style="padding-top: 0.5rem; border-top: 1px dashed var(--vc-color-border);">
             <span style="font-size: 0.75rem; color: var(--vc-color-fg-muted);">
-                terse form — `&lt;VCTable :columns :data /&gt;` with auto-rendered header + body
+                terse form — `&lt;VCTable :columns :data v-model:sort /&gt;` with auto-rendered header + body
             </span>
             <VCTable
+                v-model:sort="terseSort"
                 :columns="columns"
-                :data="data"
+                :data="terseSortedData"
                 :density="density"
                 :striped="striped"
                 :bordered="bordered"

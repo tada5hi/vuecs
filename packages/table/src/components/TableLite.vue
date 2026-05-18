@@ -169,6 +169,9 @@ export default defineComponent({
             wrapperEl,
             selection: liteSelection,
             getRowKey: liteGetRowKey,
+            interactiveRows: ref(new Set()),
+            registerInteractiveRow: () => {},
+            unregisterInteractiveRow: () => {},
         });
 
         const slotProps = computed<TableSlotProps>(() => ({

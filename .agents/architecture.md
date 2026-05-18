@@ -1857,8 +1857,8 @@ grid pattern. When set (`'single'` or `'multi'`), the table flips to:
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `selectionMode` | `'single' \| 'multi'` | `undefined` | Enables the grid pattern. `undefined` keeps v0.1 plain-table semantics. |
-| `selection` | `SelectionKey \| SelectionKey[] \| null` | `null` | Controlled selection state. Use `v-model:selection`. |
-| `getRowKey` | `(row, index) => SelectionKey` | `row.id ?? index` | Resolve the selection key per row. |
+| `selection` | `RowSelectionKey \| RowSelectionKey[] \| null` | `null` | Controlled selection state. Use `v-model:selection`. |
+| `getRowKey` | `(row, index) => RowSelectionKey` | `row.id ?? index` | Resolve the selection key per row. |
 
 Events:
 

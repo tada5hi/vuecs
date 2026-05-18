@@ -114,15 +114,26 @@ describe('useRowSelectionMachine', () => {
         expect(valueRef.value).toEqual([]);
     });
 
-    it('moveFocus clamps to selectableCount bounds', () => {
-        const { machine } = makeMachine({ mode: 'multi' });
-        machine.moveFocus('next', 5);
-        expect(machine.focusedIndex.value).toBe(1);
-        machine.moveFocus('end', 5);
-        expect(machine.focusedIndex.value).toBe(4);
-        machine.moveFocus('next', 5);
-        expect(machine.focusedIndex.value).toBe(4); // already at end, clamps
-        machine.moveFocus('home', 5);
-        expect(machine.focusedIndex.value).toBe(0);
+    it('bails after MAX_KEY_AT_ITERATIONS when keyAt never returns undefined (defensive cap)', () => {
+        // Pathological keyAt that returns a finite-but-distinct key for
+        // every index. Without the iteration cap this would spin
+        // forever; with the cap it returns -1 (target not found).
+        const machine = useRowSelectionMachine({
+            mode: ref('multi') as ComputedRef<'multi'>,
+            value: ref([]) as ComputedRef<RowSelectionKey[]>,
+            emit: () => {},
+            keyAt: (i) => `k-${i}`,
+        });
+        // Seed an anchor that isn't reachable via the (pathological)
+        // keyAt to force the indexOfKey walk.
+        machine.rangeAnchor.value = 'nonexistent';
+        // Range toggle to a key that DOES exist near the top — the
+        // anchor lookup will hit the iteration cap and return -1, so
+        // the machine resets the anchor and no-ops. Should NOT hang.
+        const start = Date.now();
+        machine.toggle('k-0', { range: true });
+        const elapsed = Date.now() - start;
+        expect(elapsed).toBeLessThan(5000);
+        expect(machine.rangeAnchor.value).toBe('k-0');
     });
 });

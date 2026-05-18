@@ -43,6 +43,20 @@ export type TableContext<Row = unknown> = {
     selection: RowSelectionState;
     /** Resolve the selection key for a given row (function or index fallback). */
     getRowKey: (row: Row, index: number) => RowSelectionKey;
+    /**
+     * Set of row indices that are currently interactive (focusable +
+     * keyboard-navigable). Each `<VCTableRow>` registers / unregisters
+     * itself based on its own `isInteractive` state. Used by:
+     *
+     * - Roving-tabindex fallback — when `focusedRow` is unset or stale,
+     *   the FIRST interactive row gets `tabindex="0"` (so a disabled
+     *   row 0 doesn't lock the grid out of Tab navigation).
+     * - Arrow / Home / End nav — skips disabled rows by walking the
+     *   sorted registry rather than the raw data index.
+     */
+    interactiveRows: Ref<Set<number>>;
+    registerInteractiveRow(index: number): void;
+    unregisterInteractiveRow(index: number): void;
 };
 
 const TABLE_CONTEXT_KEY: InjectionKey<TableContext<unknown>> = Symbol('vcTableContext');

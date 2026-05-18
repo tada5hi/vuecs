@@ -1,6 +1,12 @@
 import { ref } from 'vue';
 import type { ComputedRef, Ref } from 'vue';
 
+// `focusedIndex`/`moveFocus` were intentionally removed from the
+// machine's public shape — focus state lives on `TableContext.focusedRow`
+// (the single source of truth that VCTableRow's roving tabindex reads).
+// Keeping a second focus model on the machine made the API misleading;
+// the slim machine focuses purely on selection state.
+
 /**
  * Selection state machine for `<VCTable>` (plan 033 v1.x-A).
  *
@@ -23,9 +29,6 @@ export type RowSelectionState = {
     value: ComputedRef<RowSelectionValue<RowSelectionMode> | null>;
     isSelected(key: RowSelectionKey | undefined): boolean;
     toggle(key: RowSelectionKey, opts?: { range?: boolean; toggle?: boolean }): void;
-    /** Row index for roving-tabindex focus management. */
-    focusedIndex: Ref<number>;
-    moveFocus(target: number | 'next' | 'prev' | 'home' | 'end', selectableCount: number): void;
     /** Range anchor — set on plain click; used by Shift+click / Shift+arrow. */
     rangeAnchor: Ref<RowSelectionKey | null>;
 };
@@ -39,7 +42,6 @@ export type UseRowSelectionMachineArgs = {
 };
 
 export function useRowSelectionMachine(args: UseRowSelectionMachineArgs): RowSelectionState {
-    const focusedIndex = ref(0);
     const rangeAnchor: Ref<RowSelectionKey | null> = ref(null);
 
     const isSelected = (key: RowSelectionKey | undefined): boolean => {
@@ -112,39 +114,33 @@ export function useRowSelectionMachine(args: UseRowSelectionMachineArgs): RowSel
         rangeAnchor.value = key;
     };
 
-    const moveFocus = (
-        target: number | 'next' | 'prev' | 'home' | 'end',
-        selectableCount: number,
-    ): void => {
-        if (selectableCount <= 0) return;
-        const cur = focusedIndex.value;
-        let next: number;
-        if (typeof target === 'number') next = target;
-        else if (target === 'home') next = 0;
-        else if (target === 'end') next = selectableCount - 1;
-        else if (target === 'next') next = Math.min(cur + 1, selectableCount - 1);
-        else next = Math.max(cur - 1, 0);
-        focusedIndex.value = Math.max(0, Math.min(next, selectableCount - 1));
-    };
-
     return {
         mode: args.mode,
         value: args.value,
         isSelected,
         toggle,
-        focusedIndex,
-        moveFocus,
         rangeAnchor,
     };
 }
+
+/**
+ * Defensive cap on `indexOfKey` iteration. The contract assumes
+ * `keyAt(i)` eventually returns `undefined` past the end of the data
+ * (the in-tree caller bounds by `data.length`), but a buggy custom
+ * `keyAt` that always returns a value would otherwise spin forever.
+ * One million rows is well past any realistic table size; consumers
+ * hitting this limit are doing something pathological.
+ */
+const MAX_KEY_AT_ITERATIONS = 1_000_000;
 
 function indexOfKey(
     keyAt: (index: number) => RowSelectionKey | undefined,
     target: RowSelectionKey,
 ): number {
-    for (let i = 0; ; i += 1) {
+    for (let i = 0; i < MAX_KEY_AT_ITERATIONS; i += 1) {
         const k = keyAt(i);
         if (k === undefined) return -1;
         if (k === target) return i;
     }
+    return -1;
 }

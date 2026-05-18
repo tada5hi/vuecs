@@ -335,6 +335,204 @@ describe('<VCTable> selection (plan 033 v1.x-A)', () => {
         expect(selectionRef.value).toEqual([1, 2]);
     });
 
+    it('keyboard nav: ArrowDown moves the roving tab stop to the next row', async () => {
+        // jsdom is flaky about `.focus()` on tabindex="-1" elements, so we
+        // assert on the resulting roving-tabindex shift instead of
+        // document.activeElement.
+        const wrapper = mount(defineComponent({
+            setup() {
+                return () => h(VCTable, {
+                    columns: [{ key: 'name' }] as never,
+                    data: data as never,
+                    selectionMode: 'multi',
+                });
+            },
+        }), { global: { plugins: [...plugins] } });
+
+        const rows = wrapper.element.querySelectorAll('tbody tr');
+        // Initial state: row 0 = tab stop.
+        expect(rows[0].getAttribute('tabindex')).toBe('0');
+        // ArrowDown on row 0 → focusedRow=1 → roving shifts.
+        rows[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+        await nextTick();
+        expect(rows[0].getAttribute('tabindex')).toBe('-1');
+        expect(rows[1].getAttribute('tabindex')).toBe('0');
+        // ArrowDown again → row 2.
+        rows[1].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+        await nextTick();
+        expect(rows[2].getAttribute('tabindex')).toBe('0');
+        // ArrowUp → back to row 1.
+        rows[2].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
+        await nextTick();
+        expect(rows[1].getAttribute('tabindex')).toBe('0');
+    });
+
+    it('keyboard nav: Home and End jump the roving tab stop to first / last row', async () => {
+        const wrapper = mount(defineComponent({
+            setup() {
+                return () => h(VCTable, {
+                    columns: [{ key: 'name' }] as never,
+                    data: data as never,
+                    selectionMode: 'multi',
+                });
+            },
+        }), { global: { plugins: [...plugins] } });
+
+        const rows = wrapper.element.querySelectorAll('tbody tr');
+        // Move to middle first via ArrowDown.
+        rows[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+        await nextTick();
+        rows[1].dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true }));
+        await nextTick();
+        expect(rows[2].getAttribute('tabindex')).toBe('0');
+        rows[2].dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
+        await nextTick();
+        expect(rows[0].getAttribute('tabindex')).toBe('0');
+    });
+
+    it('keyboard: Space toggles the focused row', async () => {
+        const selectionRef = ref<unknown>(null);
+        const wrapper = mount(defineComponent({
+            setup() {
+                return () => h(VCTable, {
+                    columns: [{ key: 'name' }] as never,
+                    data: data as never,
+                    selectionMode: 'multi',
+                    selection: selectionRef.value,
+                    'onUpdate:selection': (next: unknown) => { selectionRef.value = next; },
+                });
+            },
+        }), { global: { plugins: [...plugins] } });
+
+        const rows = wrapper.element.querySelectorAll('tbody tr');
+        (rows[0] as HTMLElement).focus();
+        await nextTick();
+        rows[0].dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+        await nextTick();
+        expect(selectionRef.value).toEqual([1]);
+    });
+
+    it('roving tabindex: disabled row 0 doesn\'t block Tab entry — first INTERACTIVE row gets tab stop', async () => {
+        const wrapper = mount(defineComponent({
+            setup() {
+                return () => h(VCTable, {
+                    columns: [{ key: 'name' }] as never,
+                    data: data as never,
+                    selectionMode: 'multi',
+                }, {
+                    default: () => h(VCTableBody, null, {
+                        row: ({ row, index }: { row: User; index: number }) => h(
+                            VCTableRow,
+                            {
+                                row,
+                                index,
+                                // Disable the first row.
+                                disabled: row.id === 1,
+                            },
+                            () => [h(VCTableCell, { columnKey: 'name' })],
+                        ),
+                    }),
+                });
+            },
+        }), { global: { plugins: [...plugins] } });
+
+        await nextTick();
+        const rows = wrapper.element.querySelectorAll('tbody tr');
+        // Row 0 is disabled → no tabindex (not interactive).
+        expect(rows[0].hasAttribute('tabindex')).toBe(false);
+        // First INTERACTIVE row (row 1) gets the tab stop, not blindly row 0.
+        expect(rows[1].getAttribute('tabindex')).toBe('0');
+        expect(rows[2].getAttribute('tabindex')).toBe('-1');
+    });
+
+    it('arrow nav skips disabled rows', async () => {
+        const wrapper = mount(defineComponent({
+            setup() {
+                return () => h(VCTable, {
+                    columns: [{ key: 'name' }] as never,
+                    data: data as never,
+                    selectionMode: 'multi',
+                }, {
+                    default: () => h(VCTableBody, null, {
+                        row: ({ row, index }: { row: User; index: number }) => h(
+                            VCTableRow,
+                            {
+                                row,
+                                index,
+                                // Disable middle row.
+                                disabled: row.id === 2,
+                            },
+                            () => [h(VCTableCell, { columnKey: 'name' })],
+                        ),
+                    }),
+                });
+            },
+        }), { global: { plugins: [...plugins] } });
+
+        await nextTick();
+        const rows = wrapper.element.querySelectorAll('tbody tr');
+        // Row 1 (id=2) is disabled → no tabindex.
+        expect(rows[1].hasAttribute('tabindex')).toBe(false);
+        // ArrowDown from row 0 should skip the disabled middle row
+        // and shift the roving tab stop to row 2.
+        rows[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+        await nextTick();
+        expect(rows[0].getAttribute('tabindex')).toBe('-1');
+        expect(rows[2].getAttribute('tabindex')).toBe('0');
+    });
+
+    it('cells render role="gridcell" / role="rowheader" when parent is role="grid"', () => {
+        const wrapper = mount(defineComponent({
+            setup() {
+                return () => h(VCTable, {
+                    columns: [
+                        { key: 'name', isRowHeader: true },
+                        { key: 'email' },
+                    ] as never,
+                    data: data as never,
+                    selectionMode: 'single',
+                });
+            },
+        }), { global: { plugins: [...plugins] } });
+
+        const firstRow = wrapper.element.querySelector('tbody tr');
+        const rowheader = firstRow?.querySelector('th[scope="row"]');
+        const cell = firstRow?.querySelector('td');
+        expect(rowheader?.getAttribute('role')).toBe('rowheader');
+        expect(cell?.getAttribute('role')).toBe('gridcell');
+        // Header cells under role=grid get explicit columnheader.
+        const headerCells = wrapper.element.querySelectorAll('thead th');
+        for (const th of headerCells) {
+            expect(th.getAttribute('role')).toBe('columnheader');
+        }
+    });
+
+    it('selection-off table keeps fallthrough attrs intact (no aria-selected/role leak)', () => {
+        const wrapper = mount(defineComponent({
+            setup() {
+                return () => h(VCTable, {
+                    columns: [{ key: 'name' }] as never,
+                    data: data as never,
+                });
+            },
+        }), { global: { plugins: [...plugins] } });
+
+        const table = wrapper.element.querySelector('table');
+        // No role attribute (plain table semantics, v0.1 behavior).
+        expect(table?.hasAttribute('role')).toBe(false);
+        expect(table?.hasAttribute('aria-multiselectable')).toBe(false);
+        const rows = wrapper.element.querySelectorAll('tbody tr');
+        for (const tr of rows) {
+            expect(tr.hasAttribute('role')).toBe(false);
+            expect(tr.hasAttribute('aria-selected')).toBe(false);
+        }
+        const cells = wrapper.element.querySelectorAll('tbody td');
+        for (const td of cells) {
+            // Cells get NO explicit role outside grid mode.
+            expect(td.hasAttribute('role')).toBe(false);
+        }
+    });
+
     it('renders a header consistently when selection is set', () => {
         // Smoke: header cells still render correctly when grid role is on.
         const wrapper = mount(defineComponent({

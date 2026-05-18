@@ -173,6 +173,28 @@ export default defineComponent({
 
         const wrapperEl = ref<globalThis.HTMLElement | null>(null);
 
+        // Interactive-row registry. Each `<VCTableRow>` registers
+        // itself when `isInteractive` flips on, unregisters when off.
+        // Drives the roving-tabindex fallback (first-interactive gets
+        // the tab stop, not blindly row 0) and the arrow-nav skip
+        // semantics (next/prev interactive, not next/prev data index).
+        // Set is wrapped in a Ref + reassigned on mutation so Vue's
+        // reactivity catches it (Set's internal mutations aren't
+        // tracked by default).
+        const interactiveRows = ref<Set<number>>(new Set());
+        const registerInteractiveRow = (index: number) => {
+            if (interactiveRows.value.has(index)) return;
+            const next = new Set(interactiveRows.value);
+            next.add(index);
+            interactiveRows.value = next;
+        };
+        const unregisterInteractiveRow = (index: number) => {
+            if (!interactiveRows.value.has(index)) return;
+            const next = new Set(interactiveRows.value);
+            next.delete(index);
+            interactiveRows.value = next;
+        };
+
         // Selection wiring (plan 033 v1.x-A). Always construct the
         // machine; when `selectionMode` is undefined it reports a
         // no-op (isSelected → false; toggle → no-op) so descendants
@@ -193,9 +215,12 @@ export default defineComponent({
             value: selectionValue,
             emit: (next) => emit('update:selection', next),
             keyAt: (index) => {
-                const row = dataRef.value[index];
-                if (row === undefined) return undefined;
-                return getRowKey(row, index);
+                // Bound the lookup by `data.length` instead of by
+                // `row === undefined` so that `data` arrays containing
+                // legitimate `undefined` entries (the table accepts
+                // `unknown[]`) don't prematurely terminate range scans.
+                if (index < 0 || index >= dataRef.value.length) return undefined;
+                return getRowKey(dataRef.value[index], index);
             },
         });
 
@@ -210,6 +235,9 @@ export default defineComponent({
             setFocusedRow,
             selection,
             getRowKey,
+            interactiveRows,
+            registerInteractiveRow,
+            unregisterInteractiveRow,
             colspan,
             emitRowClick,
             wrapperEl,
@@ -245,18 +273,25 @@ export default defineComponent({
             // `:class` / `@click` / etc target the same element regardless
             // of whether `:scrollable` is set.
             const mode = selectionMode.value;
+            // Build the merge props conditionally so a disabled
+            // selection mode doesn't paint `role: undefined` /
+            // `aria-multiselectable: undefined` over consumer-supplied
+            // attribute fallthrough. `mergeProps` keeps explicit
+            // `undefined` keys on the merged result, which would
+            // shadow attrs.
+            const selectionAttrs: Record<string, unknown> = mode === undefined ?
+                {} :
+                {
+                    role: 'grid',
+                    ...(mode === 'multi' ? { 'aria-multiselectable': 'true' } : {}),
+                };
             const tableNode = h(
                 props.tag,
                 mergeProps(attrs, {
                     class: theme.value.root || undefined,
                     'aria-busy': props.busy ? 'true' : undefined,
                     'data-responsive': props.responsive ? 'true' : undefined,
-                    // Selection: when enabled, switch the table's ARIA
-                    // semantics to `role="grid"` (+ `aria-multiselectable`
-                    // for multi). Plain `<table>` (no role) stays the
-                    // default when selection is off — matching v0.1.
-                    role: mode !== undefined ? 'grid' : undefined,
-                    'aria-multiselectable': mode === 'multi' ? 'true' : undefined,
+                    ...selectionAttrs,
                 }),
                 inner as never,
             );
