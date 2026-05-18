@@ -122,6 +122,32 @@ columns: ['id', 'name', 'email']
 // ≡ [{ key: 'id', label: 'Id' }, { key: 'name', label: 'Name' }, ...]
 ```
 
+## Default cell rendering
+
+`<VCTableCell columnKey="...">` with no slot content auto-renders the
+value via the column's `accessor` + `formatter`. Slot content always
+wins, so passing children opts out of the default render:
+
+```vue
+<!-- Auto-rendered: row[col.key] / accessor / formatter -->
+<VCTableCell :column-key="col.key" />
+
+<!-- Slot wins: consumer renders manually -->
+<VCTableCell :column-key="col.key">
+    {{ row[col.key as keyof User] }}
+</VCTableCell>
+
+<!-- With accessor dot-path + formatter -->
+const columns: TableColumn<User>[] = [
+    { key: 'email', accessor: 'profile.email' },
+    { key: 'price', formatter: ({ value }) => `$${value}` },
+];
+```
+
+`null` / `undefined` resolve to empty strings. Mounting
+`<VCTableCell>` outside a `<VCTable>` (or with a `columnKey` that
+isn't in the columns array) renders an empty cell.
+
 ## Row meta — `_rowVariant` / `_cellVariants`
 
 Underscore-prefixed fields on the data row tint the row / specific cells without forcing a function prop:
