@@ -716,6 +716,30 @@ export default function bulmaTheme(): Theme {
                     overlay: 'vc-table-loading-overlay-bulma',
                 },
             },
+            tableSortIndicators: {
+                classes: {
+                    root: 'vc-table-sort-indicators-bulma',
+                    label: 'has-text-weight-semibold has-text-grey mr-1',
+                    empty: 'is-italic has-text-grey',
+                    // Bulma's `.tag` is the chip primitive; we use it
+                    // for the wrapper. Inner toggle is a borderless
+                    // button. Inner remove is a button styled to
+                    // match (Bulma's `.delete` pseudo-element
+                    // approach can't compose with a real glyph
+                    // inside, so we go custom via gap-fill CSS).
+                    chip: 'tag is-medium is-rounded is-light vc-table-sort-indicators-chip-bulma',
+                    chipToggle: 'button is-small is-rounded vc-table-sort-indicators-chip-toggle-bulma',
+                    chipPosition: 'has-text-weight-bold has-text-grey is-size-7',
+                    chipLabel: '',
+                    chipArrow: 'has-text-weight-bold has-text-primary',
+                    chipRemove: 'button is-small is-rounded vc-table-sort-indicators-chip-remove-bulma',
+                    // Bulma 1.x `.select` is a wrapper styling pattern,
+                    // not a direct-on-select class — see addWrapper.
+                    addWrapper: 'select is-small is-rounded',
+                    add: '',
+                    clear: 'button is-small is-text ml-auto',
+                },
+            },
             pagination: {
                 // Bulma's pagination canonical structure is
                 // `<nav class="pagination">` containing standalone

@@ -55,6 +55,23 @@
     vertical-align: baseline;
 }
 
+/*
+ * Multi-sort numeric badge (plan 033 v1.x-B). The primary sort key
+ * (position 1) renders the up/down arrow span inline above; positions
+ * 2+ get this `::after` superscript badge so the user can see the
+ * tie-break order. Themes can override by retargeting
+ * `.vc-table-head-cell[data-sort-index]::after`.
+ */
+.vc-table-head-cell[data-sort-index]::after {
+    content: attr(data-sort-index);
+    display: inline-block;
+    margin-inline-start: 0.125rem;
+    font-size: 0.6em;
+    vertical-align: super;
+    line-height: 1;
+    opacity: 0.75;
+}
+
 /* Loading overlay variant — covers the table area for refresh-feedback
  * mode without unmounting the existing rows. Theme controls colors. */
 .vc-table-loading-overlay {
@@ -137,4 +154,46 @@
     .vc-table[data-responsive="true"] tbody th[data-label=""]::before {
         content: none;
     }
+}
+
+/* Sort-indicator chip row (plan 033 v1.x-C).
+ * Structural baseline only — themes layer their visual styling on top
+ * via the `tableSortIndicators` theme key. The CSS below covers the
+ * geometry that themes don't typically own (flex layout, gap, chip
+ * roundness, focus outlines) so the bar renders coherently without a
+ * theme installed.
+ */
+.vc-table-sort-indicators {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.vc-table-sort-indicators-chip {
+    display: inline-flex;
+    align-items: center;
+    font: inherit;
+}
+
+.vc-table-sort-indicators-chip-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font: inherit;
+    cursor: pointer;
+}
+
+.vc-table-sort-indicators-chip-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.vc-table-sort-indicators-add,
+.vc-table-sort-indicators-clear {
+    font: inherit;
+    cursor: pointer;
 }

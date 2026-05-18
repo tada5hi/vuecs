@@ -69,6 +69,12 @@ announceProps(
             default: false,
             section: 'Behavior',
         },
+        multiSort: {
+            type: 'boolean',
+            default: false,
+            label: 'multi-sort',
+            section: 'Behavior',
+        },
     },
     {
         density: 'normal',
@@ -78,6 +84,7 @@ announceProps(
         rowClickable: false,
         selectionMode: '',
         responsive: false,
+        multiSort: false,
     },
 );
 

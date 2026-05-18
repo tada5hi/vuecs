@@ -16,7 +16,25 @@ export type TableContext<Row = unknown> = {
     busy: Ref<boolean>;
     columns: Ref<TableColumn<Row>[]>;
     sort: Ref<TableSortState>;
-    setSort: (key: string, direction?: SortDirection) => void;
+    /**
+     * Cycle the sort state for `key`. `opts.append` (Shift-click) adds
+     * the key as a secondary/tertiary descriptor instead of replacing.
+     * `opts.direction` jumps straight to a given direction.
+     */
+    setSort: (key: string, opts?: { append?: boolean; direction?: SortDirection }) => void;
+    /**
+     * Replace the entire sort state directly. Used by
+     * `<VCTableSortIndicators>` to remove / reorder / clear descriptors
+     * without invoking the per-key cycle logic.
+     */
+    setSortState: (next: TableSortState) => void;
+    /**
+     * Cap on the sort-state array length (`<VCTable :max-sort-keys>`).
+     * Exposed so descendants like `<VCTableSortIndicators>` can
+     * enforce the cap consistently — `setSortState` itself bypasses
+     * cycle logic, so the cap is enforced at the call site.
+     */
+    maxSortKeys: Ref<number>;
     /** Whether `<VCTable>` was passed `:rowClickable`. */
     rowClickable: Ref<boolean>;
     /** Currently focused row index (row keyboard nav). `null` when nothing focused. */

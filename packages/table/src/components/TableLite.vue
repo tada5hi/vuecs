@@ -76,7 +76,9 @@ const tableLiteProps = {
 
 export type TableLiteProps = ExtractPublicPropTypes<typeof tableLiteProps>;
 
-const NOOP_SORT_STATE = ref(null);
+// Sort state is `SortDescriptor[]` since v1.x-B — empty array means
+// "no sort", which is the permanent state for Lite.
+const NOOP_SORT_STATE = ref([]);
 
 // Lite-shared, perma-disabled selection mode + value refs. Module-level
 // singletons are safe here because the values are intentionally
@@ -161,6 +163,8 @@ export default defineComponent({
             columns,
             sort: NOOP_SORT_STATE,
             setSort: () => {},
+            setSortState: () => {},
+            maxSortKeys: ref(0),
             rowClickable: computed(() => false),
             focusedRow: ref(null),
             setFocusedRow: () => {},
@@ -178,7 +182,7 @@ export default defineComponent({
             data: dataRef.value as unknown[],
             busy: props.busy,
             columns: columns.value,
-            sort: null,
+            sort: NOOP_SORT_STATE.value,
             setSort: () => {},
         }));
 

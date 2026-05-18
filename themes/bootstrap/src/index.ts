@@ -669,6 +669,27 @@ export default function bootstrapTheme(): Theme {
                     overlay: 'bg-body bg-opacity-75 text-body-secondary',
                 },
             },
+            tableSortIndicators: {
+                classes: {
+                    root: 'd-flex flex-wrap align-items-center gap-2 bg-body-tertiary border rounded px-3 py-2 small',
+                    label: 'fw-semibold text-body-secondary me-1',
+                    empty: 'fst-italic text-body-secondary',
+                    // The chip is now a non-interactive wrapper. We
+                    // restyle two real `<button>`s inside (toggle +
+                    // remove), each borderless to inherit the chip
+                    // pill look as one unit.
+                    chip: 'd-inline-flex align-items-center border rounded-pill bg-body',
+                    chipToggle: 'btn btn-sm d-inline-flex align-items-center gap-2 border-0 rounded-start-pill rounded-end-0',
+                    chipPosition: 'fw-bold text-body-secondary',
+                    chipLabel: '',
+                    chipArrow: 'fw-bold text-primary',
+                    chipRemove: 'btn btn-sm d-inline-flex align-items-center justify-content-center border-0 rounded-end-pill rounded-start-0 px-2 text-body-secondary',
+                    // addWrapper omitted — Bootstrap styles the
+                    // <select> directly via `.form-select`.
+                    add: 'form-select form-select-sm rounded-pill w-auto',
+                    clear: 'btn btn-sm btn-link text-body-secondary text-decoration-none ms-auto',
+                },
+            },
             pagination: {
                 classes: {
                     root: 'd-flex justify-content-center pagination',

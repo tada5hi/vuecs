@@ -31,6 +31,7 @@ import type {
 } from '../types';
 import { composeTableInner } from '../utils/auto-render';
 import { normalizeColumns } from '../utils/render-utils';
+import { sortRows } from '../utils/sort-rows';
 
 const tableThemeDefaults = {
     classes: {
@@ -46,10 +47,39 @@ const tableProps = {
     columns: { type: Array as PropType<TableColumnRaw<unknown>[]>, default: undefined },
     /** Busy flag — drives `aria-busy` on the `<table>` and gates the loading-band render. */
     busy: { type: Boolean, default: false },
-    /** Controlled sort state (single column). Use `v-model:sort`. */
-    sort: { type: [Object, null] as PropType<TableSortState>, default: null },
+    /**
+     * Controlled sort state as `SortDescriptor[]`. Use `v-model:sort`.
+     * Empty array means "no sort". Since v1.x-B this is always an
+     * array (BREAKING change from v0.1's `{ key, direction } | null`).
+     * Single-column sort is just an array of length 0 or 1.
+     */
+    sort: { type: Array as PropType<TableSortState>, default: () => [] },
     /** When `true`, the cycle skips the `null` step: `null → asc → desc → asc`. */
     mustSort: { type: Boolean, default: false },
+    /**
+     * Enable multi-column sort. When `true`, Shift-click on a
+     * sortable header adds it as a secondary descriptor (or cycles
+     * its direction if already present). Plain click without Shift
+     * replaces multi-sort with single-sort of the clicked column.
+     * Default `false` — Shift-click behaves identically to plain
+     * click and the sort array stays length 0–1.
+     */
+    multiSort: { type: Boolean, default: false },
+    /**
+     * Maximum number of sort keys retained when `:multi-sort` is on.
+     * Adding a key past the cap drops the oldest descriptor. `0`
+     * means unlimited. Default `3` (matches Excel / bvnext / TanStack
+     * convention).
+     */
+    maxSortKeys: { type: Number, default: 3 },
+    /**
+     * When `true`, the table reorders `:data` internally using
+     * `accessor` (or `formatter` output if `column.sortByFormatted`),
+     * honoring `column.sortFn` / `nullsFirst` if set. `v-model:sort`
+     * still emits intent so consumers stay observable. Default
+     * `false` — v0.1 controlled-sort behaviour preserved.
+     */
+    clientSort: { type: Boolean, default: false },
     /** Wrap the `<table>` in an overflow scroll container. */
     scrollable: { type: Boolean, default: false },
     /** When `:scrollable`, sticks the `<thead>` to the top of the scroll container. */
@@ -139,11 +169,27 @@ export default defineComponent({
 
         const sortSource = toRef(props, 'sort');
         const mustSortRef = toRef(props, 'mustSort');
+        const maxSortKeysRef = toRef(props, 'maxSortKeys');
         const sortMachine = useSortMachine({
             source: sortSource,
             columns,
             mustSort: mustSortRef,
+            maxSortKeys: maxSortKeysRef,
             emit: (next) => emit('update:sort', next),
+        });
+
+        // Client-side sort (plan 033 v1.x-B). When `:client-sort` is
+        // set, the table reorders `:data` itself using the resolved
+        // sort descriptors. Always emits `update:sort` so consumers
+        // still observe the state changes.
+        const visibleData = computed<unknown[]>(() => {
+            if (!props.clientSort || sortMachine.state.value.length === 0) {
+                return dataRef.value;
+            }
+            return sortRows(dataRef.value, {
+                columns: columns.value,
+                sorts: sortMachine.state.value,
+            });
         });
 
         // D3 — Shape B colspan auto-counting from <VCTableHeadCell> siblings
@@ -215,21 +261,37 @@ export default defineComponent({
             value: selectionValue,
             emit: (next) => emit('update:selection', next),
             keyAt: (index) => {
-                // Bound the lookup by `data.length` instead of by
-                // `row === undefined` so that `data` arrays containing
-                // legitimate `undefined` entries (the table accepts
-                // `unknown[]`) don't prematurely terminate range scans.
-                if (index < 0 || index >= dataRef.value.length) return undefined;
-                return getRowKey(dataRef.value[index], index);
+                // Look up against the VISIBLE data view, not the raw
+                // source — when `:client-sort` reorders rows, the
+                // index seen in selection events matches the rendered
+                // position, so range-select spans the rendered order.
+                const view = visibleData.value;
+                if (index < 0 || index >= view.length) return undefined;
+                return getRowKey(view[index], index);
             },
         });
 
         provideTableContext({
-            data: dataRef,
+            // When `:client-sort` is on, descendants see the sorted view
+            // — `<VCTableBody>` iterates `ctx.data`, so threading the
+            // sorted view here is what reorders rendered rows. When
+            // off, this is the unsorted source array (v0.1 behaviour).
+            data: visibleData,
             busy: toRef(props, 'busy'),
             columns,
             sort: sortMachine.state,
-            setSort: (key: string, direction?: SortDirection) => sortMachine.setSort(key, direction),
+            setSort: (
+                key: string,
+                opts?: { append?: boolean; direction?: SortDirection },
+            ) => sortMachine.setSort(key, {
+                ...opts,
+                // Shift-click only appends when `<VCTable :multi-sort>`
+                // is on — otherwise the prop would be advisory only
+                // and headers would always grow the array.
+                append: props.multiSort ? opts?.append : false,
+            }),
+            setSortState: sortMachine.setState,
+            maxSortKeys: maxSortKeysRef,
             rowClickable: toRef(props, 'rowClickable'),
             focusedRow,
             setFocusedRow,
@@ -244,7 +306,7 @@ export default defineComponent({
         });
 
         const slotProps = computed<TableSlotProps>(() => ({
-            data: dataRef.value as unknown[],
+            data: visibleData.value,
             busy: props.busy,
             columns: columns.value,
             sort: sortMachine.state.value,

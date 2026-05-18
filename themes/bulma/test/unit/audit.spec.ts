@@ -78,6 +78,7 @@ import {
     tableHeaderThemeDefaults,
     tableLoadingThemeDefaults,
     tableRowThemeDefaults,
+    tableSortIndicatorsThemeDefaults,
     tableThemeDefaults,
 } from '@vuecs/table';
 import { timeagoThemeDefaults } from '@vuecs/timeago';
@@ -156,6 +157,7 @@ const expectedCatalog = {
     tableHeader: tableHeaderThemeDefaults,
     tableLoading: tableLoadingThemeDefaults,
     tableRow: tableRowThemeDefaults,
+    tableSortIndicators: tableSortIndicatorsThemeDefaults,
     tag: tagThemeDefaults,
     tags: tagsThemeDefaults,
     timeago: timeagoThemeDefaults,

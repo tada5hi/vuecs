@@ -2000,19 +2000,117 @@ const users: WithRowMeta<User>[] = [
 ];
 ```
 
-### Sorting
+### Sorting (plan 033 v0.1 + v1.x-B)
 
-Single-column controlled sort via `v-model:sort`. The table never
-sorts data — `setSort` cycles state (`null → asc → desc → null` or
-`null → asc → desc → asc` when `:must-sort`) and emits intent.
-Consumer sorts (typically via server-side query refetch). Clicks +
-Enter/Space on a `:sortable` `<VCTableHeadCell>` cycle the state;
-`aria-sort` flips to `"ascending"` / `"descending"` / `"none"` to
-match.
+Controlled sort via `v-model:sort`. **State shape is
+`SortDescriptor[]` since v1.x-B** (breaking change from v0.1's
+`{ key, direction } | null`). Empty array means "no sort";
+single-column sort is an array of length 1; multi-column sort grows
+the array, primary key first.
 
-Per-column `initialSortDirection` (`'asc'` default) sets the first
-direction on activation. Defer to v1.x: client-side sort, multi-column,
-custom comparators.
+`setSort(key, opts)` cycles state via `useSortMachine`. Plain call
+replaces the entire sort with `[{ key, initialDirection }]`,
+cycling that single key through `[] → [asc] → [desc] → []` (or
+`→ [asc]` when `:must-sort`). `opts.append === true` (Shift-click
+on a sortable header) adds the key as a secondary descriptor or
+cycles its direction if already present; cycling past removes just
+that key. `opts.direction` jumps straight to a given direction
+honoring `append`. Clicks + Enter/Space on a `:sortable`
+`<VCTableHeadCell>` invoke it; `aria-sort` paints the W3C state.
+
+**Per-column hooks** drive client-side sort behaviour:
+
+- `initialSortDirection: 'asc' | 'desc'` — first-click direction.
+  Default `'asc'`.
+- `sortFn(a, b): number` — value comparator (Array.sort
+  ergonomics). Receives resolved `accessor` / formatter values.
+  Use for semver, IP, locale-aware strings.
+- `sortByFormatted: boolean` — when `true`, compare formatter output
+  rather than raw accessor value. Default `false`.
+- `nullsFirst: boolean` — float `null` / `undefined` to the top.
+  Default — nulls sort LAST regardless of direction.
+
+**v1.x-B props on `<VCTable>`:**
+
+| Prop | Default | Description |
+|---|---|---|
+| `multiSort` | `false` | Shift-click on a sortable header adds the key as a secondary descriptor instead of replacing. |
+| `maxSortKeys` | `3` | Cap on the sort array length. `0` = unlimited. Oldest descriptor evicted when over cap. |
+| `clientSort` | `false` | When `true`, the table reorders `:data` internally via `sortRows()` (in `utils/sort-rows.ts`); `v-model:sort` still emits state. |
+
+The sort machine + the `sortRows` utility are decoupled — consumers
+can use the machine for state without enabling `:client-sort`
+(server-side sort path), or call `sortRows()` directly outside the
+component for pre-render sort logic.
+
+**Numeric badge for multi-sort positions 2+:** `<VCTableHeadCell>`
+emits `data-sort-index="N"` (1-based) on the rendered `<th>` when
+the column is at position 2+ in the sort array. Structural CSS
+ships an `::after` superscript badge; themes can override at
+`.vc-table-head-cell[data-sort-index]::after`. Position 1 keeps the
+up/down arrow span.
+
+### `<VCTableSortIndicators>` chip row (plan 033 v1.x-C)
+
+Modifier-key-free alternative to Shift-click for managing multi-
+column sort. Renders one chip per active descriptor — clicking the
+chip toggle button toggles asc ↔ desc, the trailing `×` button
+removes that key — plus an **Add column** `<select>` listing
+unsorted `:sortable` columns and a **Clear all** action.
+
+**Chip structure.** Each chip is a non-interactive `<div>` wrapper
+containing **two real `<button>` elements** (`chipToggle` + `chipRemove`).
+Nesting one interactive element inside another is invalid HTML
+(browsers hoist the inner button) and a screen-reader trap (nested
+role=button announcements), so the wrapper carries the visual pill
+styling while the inner buttons are themed borderless to inherit it.
+
+**Default v-model mode (recommended)** — pass `:sort` + `:columns`
+and bind `v-model:sort` against the same ref the `<VCTable>` reads.
+Place the chip row as a sibling of the table:
+
+```vue
+<VCTableSortIndicators v-model:sort="sort" :columns="columns" />
+<VCTable v-model:sort="sort" :columns :data multi-sort client-sort />
+```
+
+**Fallback context mode** — reads `sort` / `columns` /
+`setSortState` from `useTable()` when neither prop is passed. Only
+usable in custom layouts where the chip row's `<div>` can render
+inside the table's component tree (the default `<table>` element
+host means default-slot children become DOM children of `<table>`,
+where a `<div>` is invalid HTML).
+
+**Customisable text strings** flow through
+`useComponentDefaults('tableSortIndicators', …)` — every key
+(`label`, `emptyContent`, `addLabel`, `clearLabel`,
+`removeAriaLabel`, `toggleAscTitle`, `toggleDescTitle`, `arrowAsc`,
+`arrowDesc`, `removeGlyph`) is overridable per-instance via props
+OR app-wide via the `defaults` install option.
+
+**Slot escape hatches**: `#label`, `#empty`, `#chip="{ descriptor,
+index, position, toggle, remove }"`, `#add="{ options, add }"`,
+`#clear="{ clear }"`, or `#default` for full layout replacement
+with the same handlers exposed as slot props.
+
+**Underlying primitive**: the sort machine exposes `setState(state)`
+(in addition to `setSort(key, opts)`) for absolute state
+replacement; `<VCTable>` threads it through
+`TableContext.setSortState`. Bypassing `multiSort` gating is
+intentional — the chip row's `Add column` dropdown adds keys
+regardless of the prop value (consumers who mount the chip row are
+opted into multi-key management). The `maxSortKeys` cap is also
+exposed via `TableContext.maxSortKeys` (or a `:max-sort-keys` prop
+on the chip row directly) and is enforced **at the chip-row call
+site** — `setState` itself stays cap-agnostic. Adding past the cap
+evicts the oldest descriptor (mirrors the sort machine's
+`appendCapped` semantic for Shift-click).
+
+**`null` v-model handling**: passing `:sort="null"` keeps v-model
+mode active (writeback path emits `update:sort`) but renders an
+empty array, so migration-era consumers carrying
+`ref<TableSortState | null>(null)` don't crash on `.map`. Only
+`undefined` (i.e. the prop is unbound) falls back to context.
 
 ### Row click + keyboard navigation (D5 + plan 028 row-nav adoption)
 
