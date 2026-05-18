@@ -1841,6 +1841,69 @@ bundle. The shared `composeTableInner()` helper in
 build their `<table>` children — adding new behavior to the
 auto-render path stays single-source.
 
+### Row selection + grid a11y (v1.x-A)
+
+`<VCTable :selection-mode>` enables row selection with the W3C ARIA
+grid pattern. When set (`'single'` or `'multi'`), the table flips to:
+
+- `role="grid"` on `<table>`; `aria-multiselectable="true"` for multi.
+- `role="row"` + `aria-selected="true|false"` on every `<tr>`.
+- Roving tabindex — only the focused row carries `tabindex="0"`,
+  others get `-1`. Tab exits the grid (W3C grid pattern); arrow
+  keys move row-by-row within.
+
+**Public API:**
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `selectionMode` | `'single' \| 'multi'` | `undefined` | Enables the grid pattern. `undefined` keeps v0.1 plain-table semantics. |
+| `selection` | `SelectionKey \| SelectionKey[] \| null` | `null` | Controlled selection state. Use `v-model:selection`. |
+| `getRowKey` | `(row, index) => SelectionKey` | `row.id ?? index` | Resolve the selection key per row. |
+
+Events:
+
+- `update:selection` — fired on toggle / range / ctrl-click.
+
+**Click semantics in multi mode:**
+
+- Plain click → toggle this row's membership.
+- Shift + click → range select from the last-clicked anchor.
+- Ctrl/Cmd + click → toggle one without affecting others.
+
+**Keyboard semantics:**
+
+- `↓` / `↑` move focus row-by-row (does not toggle).
+- `Home` / `End` jump to first / last row.
+- `Space` / `Enter` toggle the focused row.
+- `Shift + ↓` / `Shift + ↑` extend the range while moving focus.
+
+**`<VCTableRow>` selection rendering:**
+
+- Resolves `selected` from `useTable().selection.isSelected(key)`
+  unless the consumer passes an explicit `:selected` (the v0.1
+  declarative escape hatch).
+- Folds `selected` into `themeVariant` so the `tableRow.selected`
+  variant axis lights up. All three shipping themes declare it.
+
+**Composition with `:row-clickable`:**
+
+- `:row-clickable` and `:selection-mode` compose. A click on a
+  selectable + row-clickable row both toggles selection AND emits
+  `@row-click`. Consumers can opt in to either independently.
+
+**Limitations / forward-compat:**
+
+- `<VCTableHeadCell isSelector>` (select-all header) is not in v1.x-A
+  scope. The plan reserves it for a follow-up once consumer demand
+  is concrete.
+- Cell-level focus (W3C grid pattern variant for spreadsheet-like
+  data grids) is out of scope. Row-level focus is the v1.x-A
+  default; a future `:a11y-mode="cells"` could layer on top.
+- `useRowSelectionMachine` lives in `@vuecs/table` today but is
+  data-shape-agnostic — a follow-up will promote it to
+  `@vuecs/core/utils/composables` so `@vuecs/list`'s near-identical
+  composable can dedupe to a single source.
+
 ### Stacked responsive mode (v0.2-D)
 
 `<VCTable :responsive />` collapses the table into per-row cards
