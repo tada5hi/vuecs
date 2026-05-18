@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import {
     VCTable,
     VCTableBody,
@@ -101,6 +101,26 @@ const data: WithRowMeta<User>[] = [
     },
 ];
 
+// Controlled sort: VCTable emits sort intent via `v-model:sort` but
+// never reorders data itself. The demo applies the sort client-side
+// so the user sees real reordering across every sortable column.
+const sortedData = computed(() => {
+    const s = sort.value;
+    if (!s) return data;
+    const key = s.key as keyof User;
+    const dir = s.direction === 'asc' ? 1 : -1;
+    return [...data].sort((a, b) => {
+        const av = a[key];
+        const bv = b[key];
+        if (av == null && bv == null) return 0;
+        if (av == null) return 1;
+        if (bv == null) return -1;
+        if (av < bv) return -1 * dir;
+        if (av > bv) return 1 * dir;
+        return 0;
+    });
+});
+
 const lastClicked = ref<User | null>(null);
 function onRowClick(row: User) { lastClicked.value = row; }
 </script>
@@ -115,7 +135,7 @@ function onRowClick(row: User) { lastClicked.value = row; }
             <VCTable
                 v-model:sort="sort"
                 :columns="columns"
-                :data="data"
+                :data="sortedData"
                 :density="density"
                 :striped="striped"
                 :bordered="bordered"
