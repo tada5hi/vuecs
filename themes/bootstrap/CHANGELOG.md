@@ -1,5 +1,60 @@
 # Changelog
 
+## [4.0.0](https://github.com/tada5hi/vuecs/compare/theme-bootstrap-v3.0.0...theme-bootstrap-v4.0.0) (2026-05-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* **table:** client-sort + multi-column + custom comparators (plan 033 v1.x-B) ([#1575](https://github.com/tada5hi/vuecs/issues/1575))
+* **list:** compound API redesign + selection v-model (plan 027) ([#1565](https://github.com/tada5hi/vuecs/issues/1565))
+* palette runtime moved out of @vuecs/design into @vuecs/theme-tailwind; Nuxt palette concerns moved out of @vuecs/nuxt into the new @vuecs/theme-tailwind-nuxt module. Identifiers renamed from `palette` → `colorPalette` (`useColorPalette`, `setColorPalette`, `bindColorPalette`, `applyColorPaletteCss`, `renderColorPaletteStyles`, `ColorPaletteConfig`, `TailwindColorPaletteName`, `COLOR_PALETTE_STYLE_ELEMENT_ID`, …) for symmetry with `useColorMode`.
+* **gravatar:** rendered DOM changed from <img class="vc-gravatar"> to <span class="vc-avatar"><img class="vc-avatar-image" />…</span>. Consumers styling against img.vc-gravatar need to retarget the new shape. The gravatar theme key still applies — its classes now compose onto the <VCAvatar> wrapper via extend(), so per-instance theming continues to work without changes.
+* <VCTagList> is gone — use <VCTags>. The package is unreleased so no compat shim ships.
+* VCFormSelect's themeClass.root slot is renamed to themeClass.trigger to reflect the new compound DOM. Consumers passing themeClass={ root: ... } need to migrate to themeClass={ trigger: ... }.
+
+### Features
+
+* add @vuecs/elements + &lt;VCHoverCard&gt; + <VCStepper> (plan 013) ([#1529](https://github.com/tada5hi/vuecs/issues/1529)) ([4df0db1](https://github.com/tada5hi/vuecs/commit/4df0db165acb120bb74d3c7f55ec76cee69c3114))
+* decouple @vuecs/design from Tailwind (plan 017) ([#1536](https://github.com/tada5hi/vuecs/issues/1536)) ([f108686](https://github.com/tada5hi/vuecs/commit/f10868688e834e89f269b5931d1cfcc6478e769c))
+* demo/playground split, stepper context, structural-CSS color is… ([#1533](https://github.com/tada5hi/vuecs/issues/1533)) ([4f3b053](https://github.com/tada5hi/vuecs/commit/4f3b0532c5bf334f5d50dd56c0d18d9eb2447fc7))
+* **design,themes:** generic useColorPalette dispatcher  ([#1546](https://github.com/tada5hi/vuecs/issues/1546)) ([88f6ad2](https://github.com/tada5hi/vuecs/commit/88f6ad26820a664b1ba4ebb6bf02ea07a33c15a1))
+* **design:** standalone subpath for tailwind-free consumers (plan 015 P3) ([#1555](https://github.com/tada5hi/vuecs/issues/1555)) ([31e5faa](https://github.com/tada5hi/vuecs/commit/31e5faab48a9d2f575536a1fa4f5078976f714e2))
+* **elements,gravatar:** semantic size variant on &lt;VCAvatar&gt;, display… ([#1532](https://github.com/tada5hi/vuecs/issues/1532)) ([bf5f61a](https://github.com/tada5hi/vuecs/commit/bf5f61a213bc2f446a86dc76cc9784d9b135582a))
+* **elements:** alert + collapse compounds (plans 031 + 032) ([#1570](https://github.com/tada5hi/vuecs/issues/1570)) ([b4618e2](https://github.com/tada5hi/vuecs/commit/b4618e2d2f5552d76f8bb8650f61adf704bb7fc9))
+* **elements:** card compound — VCCard + Header/Title/Description/Body/Footer (plan 030) ([#1566](https://github.com/tada5hi/vuecs/issues/1566)) ([53f242a](https://github.com/tada5hi/vuecs/commit/53f242ab585be7bdcb157fc522ceb4f15544ff20))
+* **gravatar:** compose &lt;VCAvatar&gt; from @vuecs/elements ([#1530](https://github.com/tada5hi/vuecs/issues/1530)) ([63fc3ef](https://github.com/tada5hi/vuecs/commit/63fc3ef54bd7a484c6e472ceb63ba5674e31db29))
+* **list:** compound API redesign + selection v-model (plan 027) ([#1565](https://github.com/tada5hi/vuecs/issues/1565)) ([2b6c45a](https://github.com/tada5hi/vuecs/commit/2b6c45ad8ada913abcc91c05cc64501d70265ad2))
+* migrate VCFormSelect to Reka Select primitives, theme VCFormSelectSearch ([#1527](https://github.com/tada5hi/vuecs/issues/1527)) ([7e10319](https://github.com/tada5hi/vuecs/commit/7e10319bfe6e881382e3e6f999e378ee4900a33b))
+* **overlays:** toast compound + useToast shared queue (plan 029) ([#1569](https://github.com/tada5hi/vuecs/issues/1569)) ([262e94a](https://github.com/tada5hi/vuecs/commit/262e94a69dee2c958680e303401bc41640fe66d6))
+* redesign @vuecs/list-controls → @vuecs/list with compound API ([#1525](https://github.com/tada5hi/vuecs/issues/1525)) ([b6a44b7](https://github.com/tada5hi/vuecs/commit/b6a44b7eda357cc2b3e946da2917f1fe8975a5a8))
+* rename @vuecs/form-controls → @vuecs/forms, migrate to Reka pri… ([#1522](https://github.com/tada5hi/vuecs/issues/1522)) ([b633851](https://github.com/tada5hi/vuecs/commit/b633851eadf022facdcd59ee933b5f2031d83b72))
+* **table:** client-sort + multi-column + custom comparators (plan 033 v1.x-B) ([#1575](https://github.com/tada5hi/vuecs/issues/1575)) ([1ff51f6](https://github.com/tada5hi/vuecs/commit/1ff51f6461bc0ca9791cd94a7b29b4fb447c2745))
+* **table:** semantic-HTML compound + columns driver (plan 028) ([#1567](https://github.com/tada5hi/vuecs/issues/1567)) ([507bd6b](https://github.com/tada5hi/vuecs/commit/507bd6b9878c4c27e822b3c6e9b682bd5218b726))
+
+
+### Bug Fixes
+
+* **elements,theme-bootstrap:** structural CSS no longer clobbers themes ([49734ae](https://github.com/tada5hi/vuecs/commit/49734ae973a95f497d564579debe15c44288dfdf))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/button bumped from ^0.0.0 to ^1.0.0
+    * @vuecs/core bumped from ^2.0.0 to ^3.0.0
+    * @vuecs/countdown bumped from ^1.0.1 to ^2.0.0
+    * @vuecs/elements bumped from ^0.0.0 to ^1.0.0
+    * @vuecs/forms bumped from ^3.0.0 to ^4.0.0
+    * @vuecs/gravatar bumped from ^1.0.2 to ^2.0.0
+    * @vuecs/list bumped from ^0.0.0 to ^1.0.0
+    * @vuecs/navigation bumped from ^2.4.1 to ^3.0.0
+    * @vuecs/overlays bumped from ^0.0.0 to ^1.0.0
+    * @vuecs/pagination bumped from ^1.3.1 to ^2.0.0
+    * @vuecs/timeago bumped from ^1.1.2 to ^2.0.0
+  * peerDependencies
+    * @vuecs/core bumped from ^2.0.0 to ^3.0.0
+
 ## [2.0.1](https://github.com/tada5hi/vuecs/compare/preset-bootstrap-v5-v2.0.0...preset-bootstrap-v5-v2.0.1) (2026-02-18)
 
 

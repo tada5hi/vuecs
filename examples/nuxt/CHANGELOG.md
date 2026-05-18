@@ -1,5 +1,69 @@
 # Changelog
 
+## [4.0.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v3.5.0...examples-nuxt-v4.0.0) (2026-05-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* **nuxt:** collapse @vuecs/theme-tailwind-nuxt into @vuecs/nuxt (pl… ([#1559](https://github.com/tada5hi/vuecs/issues/1559))
+* palette runtime moved out of @vuecs/design into @vuecs/theme-tailwind; Nuxt palette concerns moved out of @vuecs/nuxt into the new @vuecs/theme-tailwind-nuxt module. Identifiers renamed from `palette` → `colorPalette` (`useColorPalette`, `setColorPalette`, `bindColorPalette`, `applyColorPaletteCss`, `renderColorPaletteStyles`, `ColorPaletteConfig`, `TailwindColorPaletteName`, `COLOR_PALETTE_STYLE_ELEMENT_ID`, …) for symmetry with `useColorMode`.
+* VCFormSelect's themeClass.root slot is renamed to themeClass.trigger to reflect the new compound DOM. Consumers passing themeClass={ root: ... } need to migrate to themeClass={ trigger: ... }.
+* Replace hardcoded Tailwind palette classes across theme packages with a CSS-variable design-token layer
+* Replace hardcoded Tailwind palette classes across theme packages with a CSS-variable design-token layer
+* Public api changed
+* change architecture
+
+### Features
+
+* add composables + separate button ([#1515](https://github.com/tada5hi/vuecs/issues/1515)) ([e876b6e](https://github.com/tada5hi/vuecs/commit/e876b6ece12ffa7933ddfbdf66192865c6c01e75))
+* add VitePress docs site, switch to Apache 2.0, fix library bugs ([#1512](https://github.com/tada5hi/vuecs/issues/1512)) ([9892980](https://github.com/tada5hi/vuecs/commit/989298063a1184921498e8d5932fa6c95e6abd07))
+* decouple @vuecs/design from Tailwind (plan 017) ([#1536](https://github.com/tada5hi/vuecs/issues/1536)) ([f108686](https://github.com/tada5hi/vuecs/commit/f10868688e834e89f269b5931d1cfcc6478e769c))
+* design-token layer + runtime palette switcher + Nuxt module ([#1508](https://github.com/tada5hi/vuecs/issues/1508)) ([398fb85](https://github.com/tada5hi/vuecs/commit/398fb8555b4ed16b87c3d2703bfed67e31af38fc))
+* drop meta prop in favor of v-bind spread ([e188248](https://github.com/tada5hi/vuecs/commit/e188248691c0c7427c7e433441ab95ef435a97ce))
+* **elements:** alert + collapse compounds (plans 031 + 032) ([#1570](https://github.com/tada5hi/vuecs/issues/1570)) ([b4618e2](https://github.com/tada5hi/vuecs/commit/b4618e2d2f5552d76f8bb8650f61adf704bb7fc9))
+* **elements:** card compound — VCCard + Header/Title/Description/Body/Footer (plan 030) ([#1566](https://github.com/tada5hi/vuecs/issues/1566)) ([53f242a](https://github.com/tada5hi/vuecs/commit/53f242ab585be7bdcb157fc522ceb4f15544ff20))
+* introduce @vuecs/icon + Iconify presets ([#1524](https://github.com/tada5hi/vuecs/issues/1524)) ([8a13f5d](https://github.com/tada5hi/vuecs/commit/8a13f5dc7898b6ed175ab679b0cdfd716cf513a6))
+* migrate VCFormSelect to Reka Select primitives, theme VCFormSelectSearch ([#1527](https://github.com/tada5hi/vuecs/issues/1527)) ([7e10319](https://github.com/tada5hi/vuecs/commit/7e10319bfe6e881382e3e6f999e378ee4900a33b))
+* **nuxt:** collapse @vuecs/theme-tailwind-nuxt into @vuecs/nuxt (pl… ([#1559](https://github.com/tada5hi/vuecs/issues/1559)) ([9dbca23](https://github.com/tada5hi/vuecs/commit/9dbca23f65c63b216643a912f43b103e1765f478))
+* **overlays:** add @vuecs/overlays with Modal/Popover/Tooltip/DropdownMenu/ContextMenu ([#1518](https://github.com/tada5hi/vuecs/issues/1518)) ([4c8e934](https://github.com/tada5hi/vuecs/commit/4c8e93475919871bad0ac9a4ba7913c639eb23eb))
+* **overlays:** toast compound + useToast shared queue (plan 029) ([#1569](https://github.com/tada5hi/vuecs/issues/1569)) ([262e94a](https://github.com/tada5hi/vuecs/commit/262e94a69dee2c958680e303401bc41640fe66d6))
+* per-theme example apps + shared demo views ([#1539](https://github.com/tada5hi/vuecs/issues/1539)) ([0da8c64](https://github.com/tada5hi/vuecs/commit/0da8c64f59f4d74aa4c875854c2e4045413b6502))
+* redesign @vuecs/list-controls → @vuecs/list with compound API ([#1525](https://github.com/tada5hi/vuecs/issues/1525)) ([b6a44b7](https://github.com/tada5hi/vuecs/commit/b6a44b7eda357cc2b3e946da2917f1fe8975a5a8))
+* rename @vuecs/form-controls → @vuecs/forms, migrate to Reka pri… ([#1522](https://github.com/tada5hi/vuecs/issues/1522)) ([b633851](https://github.com/tada5hi/vuecs/commit/b633851eadf022facdcd59ee933b5f2031d83b72))
+* replace store system with theme resolution engine ([#1492](https://github.com/tada5hi/vuecs/issues/1492)) ([7d586b3](https://github.com/tada5hi/vuecs/commit/7d586b3707d5210970ce0138985e3cc8210264cf))
+* shared usePalette + useColorMode composables in @vuecs/design ([#1514](https://github.com/tada5hi/vuecs/issues/1514)) ([d0dc920](https://github.com/tada5hi/vuecs/commit/d0dc920a96e3e048dbf28fd1513c3400d29708f4))
+* **table:** row selection v-model + ARIA grid (plan 033 v1.x-A) ([#1574](https://github.com/tada5hi/vuecs/issues/1574)) ([f9aab3e](https://github.com/tada5hi/vuecs/commit/f9aab3e12912e3f25d5fcab74740268f6de6af5f))
+* **table:** semantic-HTML compound + columns driver (plan 028) ([#1567](https://github.com/tada5hi/vuecs/issues/1567)) ([507bd6b](https://github.com/tada5hi/vuecs/commit/507bd6b9878c4c27e822b3c6e9b682bd5218b726))
+
+
+### Bug Fixes
+
+* **deps:** bump @iconify/vue from 4.3.0 to 5.0.0 in the majorprod group ([#1534](https://github.com/tada5hi/vuecs/issues/1534)) ([e46d121](https://github.com/tada5hi/vuecs/commit/e46d1216c674c17e5254ff8df5b91b8b0e164e03))
+* **deps:** bump the minorandpatch group across 1 directory with 14 updates ([#1528](https://github.com/tada5hi/vuecs/issues/1528)) ([68d5e3b](https://github.com/tada5hi/vuecs/commit/68d5e3bbbe53d0c7f4999a989272fd93f886e0e1))
+* **deps:** bump the minorandpatch group across 1 directory with 17 updates ([#1558](https://github.com/tada5hi/vuecs/issues/1558)) ([eae87f0](https://github.com/tada5hi/vuecs/commit/eae87f0ac750f521f2d604823c7dfaffcbb680a2))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/button bumped from ^0.0.0 to ^1.0.0
+    * @vuecs/countdown bumped from ^1.0.1 to ^2.0.0
+    * @vuecs/design bumped from ^0.0.0 to ^1.0.0
+    * @vuecs/elements bumped from ^0.0.0 to ^1.0.0
+    * @vuecs/forms bumped from ^3.0.0 to ^4.0.0
+    * @vuecs/gravatar bumped from ^1.0.2 to ^2.0.0
+    * @vuecs/icon bumped from ^0.0.0 to ^1.0.0
+    * @vuecs/icons-font-awesome bumped from ^0.0.0 to ^1.0.0
+    * @vuecs/link bumped from ^1.0.1 to ^2.0.0
+    * @vuecs/list bumped from ^0.0.0 to ^1.0.0
+    * @vuecs/navigation bumped from ^2.4.1 to ^3.0.0
+    * @vuecs/nuxt bumped from ^0.0.0 to ^1.0.0
+    * @vuecs/overlays bumped from ^0.0.0 to ^1.0.0
+    * @vuecs/pagination bumped from ^1.3.1 to ^2.0.0
+    * @vuecs/theme-tailwind bumped from ^0.0.0 to ^1.0.0
+    * @vuecs/timeago bumped from ^1.1.2 to ^2.0.0
+
 ## [3.5.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v3.4.0...examples-nuxt-v3.5.0) (2026-02-18)
 
 

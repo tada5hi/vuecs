@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/icons-lucide",
-    "version": "0.0.0",
+    "version": "1.0.0",
     "type": "module",
     "description": "Lucide icon preset for vuecs — maps semantic-slot defaults (pagination prev/next/first/last, submit-button create/update, ...) to Lucide Iconify names.",
     "exports": {
@@ -39,10 +39,10 @@
         "build": "rimraf dist && npm run build:js && npm run build:types"
     },
     "devDependencies": {
-        "@vuecs/core": "^2.0.0"
+        "@vuecs/core": "^3.0.0"
     },
     "peerDependencies": {
-        "@vuecs/core": "^2.0.0"
+        "@vuecs/core": "^3.0.0"
     },
     "engines": {
         "node": ">=22.0.0"
