@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import {
     VCTable,
     VCTableBody,
@@ -21,7 +21,7 @@ type User = {
     createdAt: string;
 };
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
     density?: 'compact' | 'normal' | 'spacious';
     striped?: boolean;
     bordered?: boolean;
@@ -40,6 +40,14 @@ withDefaults(defineProps<{
     responsive: false,
     multiSort: false,
 });
+
+// Local mirror of the `multiSort` prop. The docs-site playground
+// forwards a value via `:multi-sort="..."` (top-of-page controls);
+// the bare example apps mount this view directly with no controls,
+// so we expose an in-page checkbox that drives the same state. The
+// watch keeps the local ref in sync when the playground toggles.
+const multiSortLocal = ref(props.multiSort);
+watch(() => props.multiSort, (v) => { multiSortLocal.value = v; });
 
 const sort = ref<TableSortState>([]);
 const selection = ref<number | number[] | null>(null);
@@ -141,6 +149,18 @@ const sortSummary = computed(() => sort.value
 
 <template>
     <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <!-- In-page demo controls so the example apps (Tailwind / BS /
+             Bulma / Nuxt) expose toggles that aren't in the docs-site
+             playground. The docs playground forwards `multi-sort` as a
+             prop too — both wires drive the same local state. -->
+        <label style="display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.75rem;">
+            <input
+                v-model="multiSortLocal"
+                type="checkbox"
+            >
+            <span>Enable multi-sort (Shift-click headers to add a secondary sort key)</span>
+        </label>
+
         <!-- Driver shape: :columns + :data — most common form. -->
         <div>
             <span style="font-size: 0.75rem; color: var(--vc-color-fg-muted);">
@@ -158,7 +178,7 @@ const sortSummary = computed(() => sort.value
                 :row-clickable="rowClickable"
                 :selection-mode="selectionMode"
                 :responsive="responsive"
-                :multi-sort="multiSort"
+                :multi-sort="multiSortLocal"
                 client-sort
                 @row-click="onRowClick"
             >
@@ -195,7 +215,7 @@ const sortSummary = computed(() => sort.value
                 <VCTableEmpty>No users yet.</VCTableEmpty>
             </VCTable>
             <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--vc-color-fg-muted);">
-                Sort{{ multiSort ? ' (multi — Shift-click to add)' : '' }}: <strong>{{ sortSummary }}</strong>
+                Sort{{ multiSortLocal ? ' (multi — Shift-click to add)' : '' }}: <strong>{{ sortSummary }}</strong>
             </div>
             <div
                 v-if="selectionMode"
@@ -230,7 +250,7 @@ const sortSummary = computed(() => sort.value
                 :bordered="bordered"
                 :hover="hover"
                 :responsive="responsive"
-                :multi-sort="multiSort"
+                :multi-sort="multiSortLocal"
                 client-sort
             />
         </div>
