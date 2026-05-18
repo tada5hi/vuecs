@@ -1807,6 +1807,28 @@ escape hatches are out of scope for the auto-render path — consumers
 needing per-cell rendering control compose the manual chrome and
 slot-render those cells themselves.
 
+### Stacked responsive mode (v0.2-D)
+
+`<VCTable :responsive />` collapses the table into per-row cards
+below the structural-CSS breakpoint (default 640px). Implementation:
+
+- `<VCTable>` adds `data-responsive="true"` on the `<table>` when the
+  `responsive` prop is set.
+- Structural CSS in `packages/table/assets/index.css` ships the
+  baseline stack rules under `@media (max-width: 640px)
+  .vc-table[data-responsive="true"] { … }`. `<thead>` is
+  visually-hidden (kept for a11y), `<tbody>` / `<tr>` become block,
+  each `<td>` becomes a flex row with a `::before` pseudo reading
+  the column label from `data-label`.
+- Themes can override the breakpoint or card styling by targeting
+  `[data-responsive="true"]` themselves. Each shipping theme keeps
+  the structural baseline today; theme-specific stacked variants
+  ship when consumers ask for them.
+
+`data-label="<column.label>"` was already emitted on every `<td>` in
+v0.1 as a forward-compat hook for this exact path; v0.2-D is the
+opt-in that consumes it.
+
 ### Column shape (excerpt)
 
 ```ts

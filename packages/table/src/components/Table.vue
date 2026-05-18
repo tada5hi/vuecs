@@ -87,6 +87,14 @@ const tableProps = {
     maxHeight: { type: String, default: undefined },
     /** Opt-in row-click affordance — adds `tabindex` + cursor-pointer on every row and emits `@row-click`. */
     rowClickable: { type: Boolean, default: false },
+    /**
+     * Stacked responsive mode (v0.2-D). When `true`, sets
+     * `data-responsive="true"` on the `<table>` so the structural CSS
+     * (and any theme-specific overrides) can collapse the table into
+     * per-row cards at narrow viewports. Uses each cell's `data-label`
+     * as the per-row column label.
+     */
+    responsive: { type: Boolean, default: false },
     /** Density shorthand for `themeVariant.density`. */
     density: { type: String as PropType<'compact' | 'normal' | 'spacious'>, default: undefined },
     /** Alternating row backgrounds — shorthand for `themeVariant.striped`. */
@@ -250,6 +258,7 @@ export default defineComponent({
                 mergeProps(attrs, {
                     class: theme.value.root || undefined,
                     'aria-busy': props.busy ? 'true' : undefined,
+                    'data-responsive': props.responsive ? 'true' : undefined,
                 }),
                 inner as never,
             );

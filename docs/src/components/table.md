@@ -187,6 +187,25 @@ documented above. Per-cell rendering control still requires
 composing the manual chrome (`<VCTableBody>` + `<VCTableRow>` +
 `<VCTableCell>` with a slot).
 
+## Stacked responsive mode
+
+`<VCTable :responsive />` opts in to a stacked-card layout below
+the 640px viewport breakpoint. The structural CSS in
+`@vuecs/table/style.css` collapses each row into a card, hides the
+`<thead>` (kept for assistive tech), and shows each column label as
+a `::before` pseudo element using the `data-label` attribute that
+ships on every `<td>` since v0.1.
+
+```vue
+<VCTable :columns :data responsive />
+```
+
+Themes can override the breakpoint or card styling by targeting
+`[data-responsive="true"]` in their own CSS. The
+`--vc-table-stack-breakpoint` CSS variable is reserved for future
+theme overrides (currently informational — the media-query
+breakpoint is the source of truth).
+
 ## Row meta — `_rowVariant` / `_cellVariants`
 
 Underscore-prefixed fields on the data row tint the row / specific cells without forcing a function prop:
