@@ -268,6 +268,28 @@ describe('<VCTableSortIndicators> (plan 033 v1.x-C)', () => {
         expect(wrapper.element.textContent).not.toContain('no columns sorted yet');
     });
 
+    it('themeClass.addWrapper wraps the <select> in a styled <div> (Bulma pattern)', () => {
+        const wrapper = mount(defineComponent({
+            setup() {
+                return () => h(VCTableSortIndicators, {
+                    sort: [] as TableSortState,
+                    columns,
+                    themeClass: {
+                        addWrapper: 'my-wrapper',
+                        add: 'my-select',
+                    } as never,
+                });
+            },
+        }), { global: { plugins: [...plugins] } });
+        const wrap = wrapper.element.querySelector('.my-wrapper');
+        expect(wrap).not.toBeNull();
+        // The wrapper must be a <div>, and the <select> must live inside it.
+        expect((wrap as HTMLElement).tagName).toBe('DIV');
+        const select = wrap!.querySelector('.my-select');
+        expect(select).not.toBeNull();
+        expect((select as HTMLElement).tagName).toBe('SELECT');
+    });
+
     it('renders two real <button> elements per chip (not nested role=button)', () => {
         const { wrapper } = mountIndicators([{ key: 'role', direction: 'asc' }]);
         const chip = wrapper.element.querySelector('.vc-table-sort-indicators-chip');

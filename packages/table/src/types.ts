@@ -252,7 +252,14 @@ export type TableSortIndicatorsThemeClasses = {
     chipArrow: string;
     /** The `×` remove `<button>` at the trailing edge of a chip. */
     chipRemove: string;
-    /** The "Add column" trigger (default: a native `<select>`). */
+    /**
+     * Wrapper element around the "Add column" `<select>`. Optional —
+     * themes that style the `<select>` directly leave it empty
+     * (Tailwind, Bootstrap). Bulma's `.select` is a wrapper pattern,
+     * so theme-bulma populates this slot.
+     */
+    addWrapper: string;
+    /** The "Add column" `<select>` element. */
     add: string;
     /** The "Clear all" trigger. */
     clear: string;

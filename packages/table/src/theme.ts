@@ -56,6 +56,7 @@ export const tableSortIndicatorsThemeDefaults: ComponentThemeDefinition<TableSor
         chipLabel: 'vc-table-sort-indicators-chip-label',
         chipArrow: 'vc-table-sort-indicators-chip-arrow',
         chipRemove: 'vc-table-sort-indicators-chip-remove',
+        addWrapper: '',
         add: 'vc-table-sort-indicators-add',
         clear: 'vc-table-sort-indicators-clear',
     },

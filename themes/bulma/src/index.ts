@@ -733,7 +733,10 @@ export default function bulmaTheme(): Theme {
                     chipLabel: '',
                     chipArrow: 'has-text-weight-bold has-text-primary',
                     chipRemove: 'button is-small is-rounded vc-table-sort-indicators-chip-remove-bulma',
-                    add: 'select is-small is-rounded',
+                    // Bulma 1.x `.select` is a wrapper styling pattern,
+                    // not a direct-on-select class — see addWrapper.
+                    addWrapper: 'select is-small is-rounded',
+                    add: '',
                     clear: 'button is-small is-text ml-auto',
                 },
             },

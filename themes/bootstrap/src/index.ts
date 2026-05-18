@@ -684,6 +684,7 @@ export default function bootstrapTheme(): Theme {
                     chipLabel: '',
                     chipArrow: 'fw-bold text-primary',
                     chipRemove: 'btn btn-sm d-inline-flex align-items-center justify-content-center border-0 rounded-end-pill rounded-start-0 px-2 text-body-secondary',
+                    addWrapper: '',
                     add: 'form-select form-select-sm rounded-pill w-auto',
                     clear: 'btn btn-sm btn-link text-body-secondary text-decoration-none ms-auto',
                 },

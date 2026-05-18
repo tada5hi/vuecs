@@ -537,6 +537,7 @@ export default function tailwindTheme(): Theme {
                     chipLabel: '',
                     chipArrow: 'font-bold text-primary-600',
                     chipRemove: 'inline-flex h-7 w-6 items-center justify-center bg-transparent border-0 rounded-r-full text-fg-muted cursor-pointer hover:bg-error-100 hover:text-error-600 focus-visible:bg-error-100 focus-visible:text-error-600 focus-visible:outline-none',
+                    addWrapper: '',
                     add: 'rounded-full border border-border bg-bg px-2 py-1 text-fg',
                     clear: 'ms-auto rounded-full border border-transparent bg-transparent px-2.5 py-1 text-fg-muted hover:bg-bg hover:border-border hover:text-fg focus-visible:bg-bg focus-visible:border-border focus-visible:text-fg focus-visible:outline-none',
                 },

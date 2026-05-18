@@ -32,6 +32,7 @@ const tableSortIndicatorsThemeDefaults = {
         chipLabel: 'vc-table-sort-indicators-chip-label',
         chipArrow: 'vc-table-sort-indicators-chip-arrow',
         chipRemove: 'vc-table-sort-indicators-chip-remove',
+        addWrapper: '',
         add: 'vc-table-sort-indicators-add',
         clear: 'vc-table-sort-indicators-clear',
     },
@@ -350,7 +351,7 @@ export default defineComponent({
             const renderAdd = () => {
                 if (props.hideAdd || addSlotProps.options.length === 0) return null;
                 if (slots.add) return slots.add(addSlotProps);
-                return h('select', {
+                const selectNode = h('select', {
                     class: t.add || undefined,
                     'aria-label': d.addLabel,
                     onChange: (e: Event) => {
@@ -366,6 +367,14 @@ export default defineComponent({
                         col.label ?? col.key,
                     )),
                 ]);
+                // Some themes (Bulma) style a wrapper element rather
+                // than the `<select>` itself — `.select` in Bulma 1.x
+                // is a wrapper pattern, not a direct-on-select class.
+                // Themes that style the select directly (Tailwind,
+                // Bootstrap) leave `addWrapper` empty and we render
+                // the bare select.
+                if (!t.addWrapper) return selectNode;
+                return h('div', { class: t.addWrapper }, [selectNode]);
             };
 
             const renderClear = () => {
