@@ -2054,9 +2054,16 @@ up/down arrow span.
 
 Modifier-key-free alternative to Shift-click for managing multi-
 column sort. Renders one chip per active descriptor — clicking the
-chip body toggles asc ↔ desc, the trailing `×` removes that key —
-plus an **Add column** `<select>` listing unsorted `:sortable`
-columns and a **Clear all** action.
+chip toggle button toggles asc ↔ desc, the trailing `×` button
+removes that key — plus an **Add column** `<select>` listing
+unsorted `:sortable` columns and a **Clear all** action.
+
+**Chip structure.** Each chip is a non-interactive `<div>` wrapper
+containing **two real `<button>` elements** (`chipToggle` + `chipRemove`).
+Nesting one interactive element inside another is invalid HTML
+(browsers hoist the inner button) and a screen-reader trap (nested
+role=button announcements), so the wrapper carries the visual pill
+styling while the inner buttons are themed borderless to inherit it.
 
 **Default v-model mode (recommended)** — pass `:sort` + `:columns`
 and bind `v-model:sort` against the same ref the `<VCTable>` reads.
@@ -2092,7 +2099,18 @@ replacement; `<VCTable>` threads it through
 `TableContext.setSortState`. Bypassing `multiSort` gating is
 intentional — the chip row's `Add column` dropdown adds keys
 regardless of the prop value (consumers who mount the chip row are
-opted into multi-key management).
+opted into multi-key management). The `maxSortKeys` cap is also
+exposed via `TableContext.maxSortKeys` (or a `:max-sort-keys` prop
+on the chip row directly) and is enforced **at the chip-row call
+site** — `setState` itself stays cap-agnostic. Adding past the cap
+evicts the oldest descriptor (mirrors the sort machine's
+`appendCapped` semantic for Shift-click).
+
+**`null` v-model handling**: passing `:sort="null"` keeps v-model
+mode active (writeback path emits `update:sort`) but renders an
+empty array, so migration-era consumers carrying
+`ref<TableSortState | null>(null)` don't crash on `.map`. Only
+`undefined` (i.e. the prop is unbound) falls back to context.
 
 ### Row click + keyboard navigation (D5 + plan 028 row-nav adoption)
 

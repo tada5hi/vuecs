@@ -28,6 +28,13 @@ export type TableContext<Row = unknown> = {
      * without invoking the per-key cycle logic.
      */
     setSortState: (next: TableSortState) => void;
+    /**
+     * Cap on the sort-state array length (`<VCTable :max-sort-keys>`).
+     * Exposed so descendants like `<VCTableSortIndicators>` can
+     * enforce the cap consistently — `setSortState` itself bypasses
+     * cycle logic, so the cap is enforced at the call site.
+     */
+    maxSortKeys: Ref<number>;
     /** Whether `<VCTable>` was passed `:rowClickable`. */
     rowClickable: Ref<boolean>;
     /** Currently focused row index (row keyboard nav). `null` when nothing focused. */

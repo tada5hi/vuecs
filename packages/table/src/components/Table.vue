@@ -291,6 +291,7 @@ export default defineComponent({
                 append: props.multiSort ? opts?.append : false,
             }),
             setSortState: sortMachine.setState,
+            maxSortKeys: maxSortKeysRef,
             rowClickable: toRef(props, 'rowClickable'),
             focusedRow,
             setFocusedRow,

@@ -164,6 +164,7 @@ export default defineComponent({
             sort: NOOP_SORT_STATE,
             setSort: () => {},
             setSortState: () => {},
+            maxSortKeys: ref(0),
             rowClickable: computed(() => false),
             focusedRow: ref(null),
             setFocusedRow: () => {},

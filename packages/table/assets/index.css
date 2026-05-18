@@ -173,6 +173,12 @@
 .vc-table-sort-indicators-chip {
     display: inline-flex;
     align-items: center;
+    font: inherit;
+}
+
+.vc-table-sort-indicators-chip-toggle {
+    display: inline-flex;
+    align-items: center;
     gap: 0.375rem;
     font: inherit;
     cursor: pointer;

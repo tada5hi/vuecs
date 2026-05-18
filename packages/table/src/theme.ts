@@ -51,6 +51,7 @@ export const tableSortIndicatorsThemeDefaults: ComponentThemeDefinition<TableSor
         label: 'vc-table-sort-indicators-label',
         empty: 'vc-table-sort-indicators-empty',
         chip: 'vc-table-sort-indicators-chip',
+        chipToggle: 'vc-table-sort-indicators-chip-toggle',
         chipPosition: 'vc-table-sort-indicators-chip-position',
         chipLabel: 'vc-table-sort-indicators-chip-label',
         chipArrow: 'vc-table-sort-indicators-chip-arrow',

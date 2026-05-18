@@ -548,13 +548,44 @@
 
 /* Sort-indicator bar — Bulma has no canonical container helper that
  * combines border + muted background + radius + padding in one class,
- * so we ship the chrome inline. The chips themselves compose `.tag`
- * (Bulma's existing pill primitive). */
+ * so we ship the chrome inline. The chip is `.tag` (Bulma's pill
+ * primitive); the inner toggle + remove are borderless buttons that
+ * inherit the tag's background. */
 .vc-table-sort-indicators-bulma {
     background: var(--bulma-scheme-main-bis, hsl(0deg, 0%, 96%));
     border: 1px solid var(--bulma-border, hsl(0deg, 0%, 86%));
     border-radius: var(--bulma-radius, 4px);
     padding: 0.5rem 0.75rem;
+}
+
+.vc-table-sort-indicators-chip-bulma {
+    /* `.tag` is normally a styled `<span>`. We turn it into a flex
+     * container so the inner toggle + remove buttons stack
+     * horizontally inside the pill. */
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    gap: 0;
+}
+
+.vc-table-sort-indicators-chip-toggle-bulma,
+.vc-table-sort-indicators-chip-remove-bulma {
+    /* Bulma's `.button` ships its own background + border. Strip
+     * both so the toggle / remove inherit the parent tag's
+     * background and look like one unified chip. */
+    background: transparent;
+    border: 0;
+    height: auto;
+    padding: 0.125rem 0.5rem;
+}
+
+.vc-table-sort-indicators-chip-toggle-bulma {
+    gap: 0.375rem;
+}
+
+.vc-table-sort-indicators-chip-toggle-bulma:hover,
+.vc-table-sort-indicators-chip-remove-bulma:hover {
+    background: var(--bulma-scheme-main-ter, hsl(0deg, 0%, 92%));
 }
 
 /* ────────────────────────────────────────────────────────────────────────────

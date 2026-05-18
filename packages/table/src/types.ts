@@ -240,15 +240,17 @@ export type TableSortIndicatorsThemeClasses = {
     label: string;
     /** The empty-state hint shown when no descriptors are active. */
     empty: string;
-    /** Each chip button. */
+    /** The chip wrapper `<div>` (non-interactive — holds the two buttons). */
     chip: string;
-    /** The 1-based position prefix (`1.`, `2.`, …) inside a chip. */
+    /** The toggle `<button>` inside a chip (cycles asc ↔ desc on click). */
+    chipToggle: string;
+    /** The 1-based position prefix (`1.`, `2.`, …) inside the toggle button. */
     chipPosition: string;
-    /** The column label inside a chip. */
+    /** The column label inside the toggle button. */
     chipLabel: string;
-    /** The direction arrow inside a chip (↑ / ↓). */
+    /** The direction arrow inside the toggle button (↑ / ↓). */
     chipArrow: string;
-    /** The `×` remove button at the trailing edge of a chip. */
+    /** The `×` remove `<button>` at the trailing edge of a chip. */
     chipRemove: string;
     /** The "Add column" trigger (default: a native `<select>`). */
     add: string;

@@ -434,7 +434,7 @@ complete layout replacement using the same handlers.
 | `tableCell` | `root` |
 | `tableHeadCell` | `root`, `sortIcon` |
 | `tableLoading` | `root`, `overlay` |
-| `tableSortIndicators` | `root`, `label`, `empty`, `chip`, `chipPosition`, `chipLabel`, `chipArrow`, `chipRemove`, `add`, `clear` |
+| `tableSortIndicators` | `root`, `label`, `empty`, `chip`, `chipToggle`, `chipPosition`, `chipLabel`, `chipArrow`, `chipRemove`, `add`, `clear` |
 
 ## Variant axes opted-into per theme
 

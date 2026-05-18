@@ -27,6 +27,7 @@ const tableSortIndicatorsThemeDefaults = {
         label: 'vc-table-sort-indicators-label',
         empty: 'vc-table-sort-indicators-empty',
         chip: 'vc-table-sort-indicators-chip',
+        chipToggle: 'vc-table-sort-indicators-chip-toggle',
         chipPosition: 'vc-table-sort-indicators-chip-position',
         chipLabel: 'vc-table-sort-indicators-chip-label',
         chipArrow: 'vc-table-sort-indicators-chip-arrow',
@@ -52,19 +53,30 @@ const behavioralDefaults = {
 const tableSortIndicatorsProps = {
     /**
      * Sort state to render. Use `v-model:sort` for two-way binding.
-     * When omitted, the component falls back to `useTable()` context
-     * (i.e. when used inside a `<VCTable>` slot) — note that with the
+     * `null` is treated as "empty array" so consumers carrying
+     * migration-era `ref<TableSortState | null>(null)` don't crash.
+     * When BOTH `:sort` and `:columns` are omitted, the component
+     * falls back to `useTable()` context — note that with the
      * default `<table>` rendering, slot children render INSIDE the
      * `<table>`, so the v-model path is the recommended placement
      * for chip rows above / below the table.
      */
-    sort: { type: Array as PropType<TableSortState>, default: undefined },
+    sort: { type: Array as PropType<TableSortState | null>, default: undefined },
     /**
      * Columns the sort can reference. Required when using v-model
      * mode (to look up labels + filter the add-column dropdown).
      * Falls back to `useTable()` context when omitted.
      */
     columns: { type: Array as PropType<TableColumn[]>, default: undefined },
+    /**
+     * Cap on the sort-state array length (mirrors `<VCTable
+     * :max-sort-keys>`). `0` = unlimited. When the cap is hit,
+     * adding via this component evicts the oldest descriptor.
+     * Falls back to `useTable().maxSortKeys` when omitted; defaults
+     * to `0` (unlimited) in stand-alone v-model mode without a
+     * context.
+     */
+    maxSortKeys: { type: Number, default: undefined },
     /** Override the leading label text. Falls back to global defaults. */
     label: { type: String, default: undefined },
     /** Override the empty-state copy. Falls back to global defaults. */
@@ -183,8 +195,14 @@ export default defineComponent({
         // win over the context — this lets the chip row be placed
         // outside the `<VCTable>` (the recommended path) while
         // still working as a compound child in custom layouts.
+        // `null` is treated as "v-model is wired, currently empty" —
+        // a consumer holding `ref<TableSortState | null>(null)` keeps
+        // the writeback path active. Only `undefined` (= prop not
+        // bound at all) falls back to the table context. The `?? []`
+        // floor makes `.map` etc safe.
+        const sortPropProvided = computed<boolean>(() => props.sort !== undefined);
         const resolvedSort = computed<TableSortState>(() => {
-            if (props.sort !== undefined) return props.sort;
+            if (sortPropProvided.value) return (props.sort ?? []) as TableSortState;
             return (ctx?.sort.value ?? []) as TableSortState;
         });
         const resolvedColumns = computed<TableColumn[]>(() => {
@@ -193,11 +211,18 @@ export default defineComponent({
         });
 
         function commitSort(next: TableSortState): void {
-            // Always emit so v-model consumers see the change. When
-            // sharing context with a `<VCTable>` (sort prop unset),
-            // also push into the table's machine state.
-            emit('update:sort', next);
-            if (props.sort === undefined && ctx) ctx.setSortState(next);
+            if (sortPropProvided.value) {
+                // v-model mode — emit only; consumer's binding owns
+                // the writeback path.
+                emit('update:sort', next);
+                return;
+            }
+            // Context-fallback mode — push into the table's machine.
+            // No `update:sort` emit here (the table emits its own
+            // `update:sort` once the machine state lands), so a
+            // double-emit doesn't fire for consumers who happen to
+            // listen on the chip row.
+            if (ctx) ctx.setSortState(next);
         }
 
         const columnByKey = computed(() => {
@@ -221,9 +246,29 @@ export default defineComponent({
             commitSort(resolvedSort.value.filter((s) => s.key !== key));
         }
 
+        const resolvedMaxSortKeys = computed<number>(() => {
+            if (props.maxSortKeys !== undefined) return props.maxSortKeys;
+            return ctx?.maxSortKeys.value ?? 0;
+        });
+
         function appendKey(key: string) {
             if (!key) return;
-            commitSort([...resolvedSort.value, { key, direction: 'asc' }]);
+            // Defense-in-depth: the native `<select>` is already
+            // filtered to sortable columns, but slot-prop callers
+            // (custom `#add` UIs) may pass any column key. `sortable`
+            // defaults to `undefined` (= not sortable) — only an
+            // explicit `true` opts in.
+            const col = columnByKey.value.get(key);
+            if (col && !col.sortable) return;
+            // Don't re-add a key that's already in the sort.
+            if (resolvedSort.value.some((s) => s.key === key)) return;
+            const next: TableSortState = [...resolvedSort.value, { key, direction: 'asc' }];
+            const cap = resolvedMaxSortKeys.value;
+            // Evict from the front (oldest first) to match the
+            // sort machine's `appendCapped` semantic. `cap <= 0`
+            // means unlimited.
+            const capped = cap > 0 && next.length > cap ? next.slice(next.length - cap) : next;
+            commitSort(capped);
         }
 
         function clearAll() {
@@ -243,7 +288,7 @@ export default defineComponent({
         return () => {
             // Render nothing when we have neither v-model state nor a
             // table context — there's no useful interaction to expose.
-            if (props.sort === undefined && !ctx) return null;
+            if (!sortPropProvided.value && !ctx) return null;
 
             const sortState = resolvedSort.value;
             const t = theme.value;
@@ -258,34 +303,34 @@ export default defineComponent({
             const renderChip = (chip: TableSortIndicatorsChipSlotProps) => {
                 if (slots.chip) return slots.chip(chip);
                 const isAsc = chip.descriptor.direction === 'asc';
-                return h('button', {
+                // Two real `<button>`s wrapped in a non-interactive
+                // `<div>`. Putting a `<button>` inside another
+                // `<button>` is invalid HTML (browsers hoist the
+                // inner button) and a screen-reader trap (nested
+                // role=button announcements). The wrapper carries
+                // the chip's visual styling; the two buttons inherit
+                // a borderless `chipToggle` / `chipRemove` look.
+                return h('div', {
                     key: chip.descriptor.key,
-                    type: 'button',
                     class: t.chip || undefined,
-                    title: isAsc ? d.toggleAscTitle : d.toggleDescTitle,
                     'data-sort-key': chip.descriptor.key,
                     'data-direction': chip.descriptor.direction,
-                    onClick: chip.toggle,
                 }, [
-                    h('span', { class: t.chipPosition || undefined }, `${chip.position}.`),
-                    h('span', { class: t.chipLabel || undefined }, chip.column?.label ?? chip.descriptor.key),
-                    h('span', { class: t.chipArrow || undefined }, isAsc ? d.arrowAsc : d.arrowDesc),
-                    h('span', {
+                    h('button', {
+                        type: 'button',
+                        class: t.chipToggle || undefined,
+                        title: isAsc ? d.toggleAscTitle : d.toggleDescTitle,
+                        onClick: chip.toggle,
+                    }, [
+                        h('span', { class: t.chipPosition || undefined }, `${chip.position}.`),
+                        h('span', { class: t.chipLabel || undefined }, chip.column?.label ?? chip.descriptor.key),
+                        h('span', { class: t.chipArrow || undefined }, isAsc ? d.arrowAsc : d.arrowDesc),
+                    ]),
+                    h('button', {
+                        type: 'button',
                         class: t.chipRemove || undefined,
-                        role: 'button',
-                        tabindex: 0,
                         'aria-label': d.removeAriaLabel,
-                        onClick: (e: Event) => {
-                            e.stopPropagation();
-                            chip.remove();
-                        },
-                        onKeydown: (e: globalThis.KeyboardEvent) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                chip.remove();
-                            }
-                        },
+                        onClick: chip.remove,
                     }, d.removeGlyph),
                 ]);
             };
@@ -333,10 +378,18 @@ export default defineComponent({
                 }, d.clearLabel);
             };
 
+            // Root attrs are identical across both render paths so
+            // `#default` overrides keep the toolbar a11y semantics.
+            const rootAttrs = {
+                class: t.root || undefined,
+                role: 'toolbar',
+                'aria-label': 'Active sort columns',
+            };
+
             if (slots.default) {
                 return h(
                     'div',
-                    mergeProps(attrs, { class: t.root || undefined }),
+                    mergeProps(attrs, rootAttrs),
                     slots.default({
                         sort: sortState,
                         chips: chipSlotProps.value,
@@ -352,11 +405,7 @@ export default defineComponent({
 
             return h(
                 'div',
-                mergeProps(attrs, {
-                    class: t.root || undefined,
-                    role: 'toolbar',
-                    'aria-label': 'Active sort columns',
-                }),
+                mergeProps(attrs, rootAttrs),
                 ([
                     renderLabel(),
                     ...chipsContent,

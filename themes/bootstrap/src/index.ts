@@ -674,11 +674,16 @@ export default function bootstrapTheme(): Theme {
                     root: 'd-flex flex-wrap align-items-center gap-2 bg-body-tertiary border rounded px-3 py-2 small',
                     label: 'fw-semibold text-body-secondary me-1',
                     empty: 'fst-italic text-body-secondary',
-                    chip: 'btn btn-sm btn-outline-secondary rounded-pill d-inline-flex align-items-center gap-2',
+                    // The chip is now a non-interactive wrapper. We
+                    // restyle two real `<button>`s inside (toggle +
+                    // remove), each borderless to inherit the chip
+                    // pill look as one unit.
+                    chip: 'd-inline-flex align-items-center border rounded-pill bg-body',
+                    chipToggle: 'btn btn-sm d-inline-flex align-items-center gap-2 border-0 rounded-start-pill rounded-end-0',
                     chipPosition: 'fw-bold text-body-secondary',
                     chipLabel: '',
                     chipArrow: 'fw-bold text-primary',
-                    chipRemove: 'd-inline-flex align-items-center justify-content-center bg-transparent border-0 text-body-secondary rounded-circle px-1',
+                    chipRemove: 'btn btn-sm d-inline-flex align-items-center justify-content-center border-0 rounded-end-pill rounded-start-0 px-2 text-body-secondary',
                     add: 'form-select form-select-sm rounded-pill w-auto',
                     clear: 'btn btn-sm btn-link text-body-secondary text-decoration-none ms-auto',
                 },
