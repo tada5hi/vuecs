@@ -218,7 +218,7 @@ export default defineComponent({
                 onClick: props.sortable ? onClick : undefined,
                 onKeydown: props.sortable ? onKeydown : undefined,
             }),
-            [
+            ([
                 // Selector head — checkbox in multi mode; empty in
                 // single mode (only one row can be selected so a
                 // "select-all" doesn't apply). Falls through to the
@@ -241,7 +241,7 @@ export default defineComponent({
                         'data-sort': sortDirection.value,
                     }, sortDirection.value === 'asc' ? '↑' : '↓') :
                     null,
-            ],
+            ]) as never,
         );
     },
 });
