@@ -195,6 +195,13 @@ const sortSummary = computed(() => sort.value
             >
                 <VCTableHeader>
                     <VCTableRow>
+                        <!-- Selection column — only when selection is on.
+                             Renders the select-all checkbox (multi mode)
+                             or an empty cell (single mode). -->
+                        <VCTableHeadCell
+                            v-if="selectionMode"
+                            is-selector
+                        />
                         <VCTableHeadCell
                             v-for="col in columns"
                             :key="col.key"
@@ -211,6 +218,10 @@ const sortSummary = computed(() => sort.value
                             :row="row"
                             :index="index"
                         >
+                            <VCTableCell
+                                v-if="selectionMode"
+                                is-selector
+                            />
                             <VCTableCell
                                 v-for="col in columns"
                                 :key="col.key"

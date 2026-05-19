@@ -161,12 +161,14 @@ export default defineComponent({
         const theme = useComponentTheme('listItem', themedProps, listItemThemeDefaults);
 
         const isFocused = computed(() => {
-            // Roving tabindex: compare item's index against the focused
-            // selectable index. Known Phase 1 limitation: when item 0
-            // isn't selectable, no row is keyboard-reachable. Tracked
-            // alongside the broader arrow-key navigation work.
-            if (!props.selectable) return false;
-            return selection.focusedIndex.value === props.index;
+            // Roving tabindex: only the first selectable item gets
+            // `tabindex="0"` initially; full arrow-key navigation
+            // hasn't shipped yet. This mirrors the legacy
+            // `focusedIndex === props.index` behavior (where
+            // `focusedIndex` always remained 0 — `moveFocus` was
+            // never wired up) without the dead machine reference.
+            if (!props.selectable || props.disabled) return false;
+            return props.index === 0;
         });
 
         const toggle = (opts: { range?: boolean; toggle?: boolean } = {}): void => {
