@@ -5,6 +5,16 @@ import { ConfigManager } from './manager';
 import type { Config } from './types';
 
 /**
+ * Module-level fallback manager. Used when no manager is installed
+ * via `app.use(vuecs)`. Singleton on purpose — every `useConfig`
+ * call without an injected manager should see the SAME instance, so
+ * `setConfig` / `withDefaults` calls observed by one consumer are
+ * also observed by the next. Previously the fallback was constructed
+ * per-call, so state was lost between consumers.
+ */
+const fallbackManager = new ConfigManager();
+
+/**
  * Reactive accessor for a single config key. Returns a `ComputedRef` so
  * locale / direction changes propagate automatically.
  *
@@ -29,7 +39,7 @@ export function useConfig<K extends keyof Config>(
     key: K,
     fallback?: NonNullable<Config[K]>,
 ): ComputedRef<Config[K] | undefined> {
-    const manager = injectConfigManager() ?? new ConfigManager();
+    const manager = injectConfigManager() ?? fallbackManager;
     return computed(() => {
         const value = manager.get(key);
         return value === undefined ? fallback : value;

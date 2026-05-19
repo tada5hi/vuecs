@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, h } from 'vue';
+import { defineComponent, h, mergeProps } from 'vue';
 import type { ExtractPublicPropTypes, PropType } from 'vue';
 import { PopoverTrigger } from 'reka-ui';
 import { useComponentTheme } from '@vuecs/core';
@@ -22,16 +22,17 @@ export type PopoverTriggerProps = ExtractPublicPropTypes<typeof popoverTriggerPr
 
 export default defineComponent({
     name: 'VCPopoverTrigger',
+    inheritAttrs: false,
     props: popoverTriggerProps,
-    setup(props, { slots }) {
+    setup(props, { attrs, slots }) {
         const theme = useComponentTheme('popover', props, popoverThemeDefaults);
         return () => h(
             PopoverTrigger,
-            {
+            mergeProps(attrs, {
                 as: props.as,
                 asChild: props.asChild,
                 class: theme.value.trigger || undefined,
-            },
+            }),
             { default: () => slots.default?.() },
         );
     },

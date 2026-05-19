@@ -6,6 +6,7 @@ import {
     defineComponent,
     h,
     mergeProps,
+    ref,
 } from 'vue';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import { provideListItemContext, useList } from '../../composables';
@@ -160,16 +161,20 @@ export default defineComponent({
         };
         const theme = useComponentTheme('listItem', themedProps, listItemThemeDefaults);
 
-        const isFocused = computed(() => {
-            // Roving tabindex: only the first selectable item gets
-            // `tabindex="0"` initially; full arrow-key navigation
-            // hasn't shipped yet. This mirrors the legacy
-            // `focusedIndex === props.index` behavior (where
-            // `focusedIndex` always remained 0 — `moveFocus` was
-            // never wired up) without the dead machine reference.
+        // Tab-stop ownership — only the first selectable, enabled
+        // item gets `tabindex="0"` initially. Full arrow-key roving
+        // tabindex hasn't shipped; this is the static fallback that
+        // gives the list ONE keyboard entry point per page.
+        const isTabStop = computed(() => {
             if (!props.selectable || props.disabled) return false;
             return props.index === 0;
         });
+
+        // Real DOM-focus state — wired via focusin/focusout on the
+        // root element. Previously this was `props.index === 0`
+        // (always true for row 0), which lied about actual focus.
+        // Driven by `onFocusin` / `onFocusout` attached below.
+        const isFocused = ref(false);
 
         const toggle = (opts: { range?: boolean; toggle?: boolean } = {}): void => {
             if (props.disabled || !props.selectable || key.value === undefined) return;
@@ -251,7 +256,9 @@ export default defineComponent({
             if (inListbox) {
                 elementAttrs.role = 'option';
                 elementAttrs['aria-selected'] = isSelected.value ? 'true' : 'false';
-                elementAttrs.tabindex = isFocused.value ? 0 : -1;
+                elementAttrs.tabindex = isTabStop.value ? 0 : -1;
+                elementAttrs.onFocusin = () => { isFocused.value = true; };
+                elementAttrs.onFocusout = () => { isFocused.value = false; };
                 elementAttrs['data-selected'] = isSelected.value ? '' : undefined;
                 elementAttrs.onClick = onClick;
                 // Keyboard activation only when listbox semantics are on.

@@ -51,6 +51,8 @@ const alertProps = {
 export type AlertProps = ExtractPublicPropTypes<typeof alertProps>;
 
 const alertBehavioralDefaults: AlertDefaults = {
+    primaryIcon: '',
+    neutralIcon: '',
     infoIcon: '',
     successIcon: '',
     warningIcon: '',
@@ -85,6 +87,8 @@ export default defineComponent({
                 case 'warning': return defaults.value.warningIcon;
                 case 'success': return defaults.value.successIcon;
                 case 'info': return defaults.value.infoIcon;
+                case 'primary': return defaults.value.primaryIcon;
+                case 'neutral': return defaults.value.neutralIcon;
                 default: return '';
             }
         });

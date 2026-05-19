@@ -130,6 +130,13 @@ export default defineComponent({
             );
         }
 
+        // `data`/`busy`/`total` pass getters so they react to prop
+        // updates. `meta` is captured by value — matches
+        // `defineList`'s "verbatim forward" semantic. Consumers who
+        // need reactive meta inside the convenience-prop path should
+        // wrap individual fields in `Ref` / `computed` themselves
+        // (e.g. `:meta="{ count: computed(...) }"`) OR construct a
+        // `ListState` via `defineList()` directly and pass `:state`.
         const state: ListState = props.state ?? defineList({
             data: () => props.data ?? [],
             busy: () => !!props.busy,

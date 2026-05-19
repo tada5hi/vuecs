@@ -13,7 +13,7 @@ import type {
     SlotsType,
     VNodeChild,
 } from 'vue';
-import { defineComponent, h } from 'vue';
+import { defineComponent, h, mergeProps } from 'vue';
 import { ValidationSeverity } from '../constants';
 import type { ValidationMessages } from '../type';
 import {
@@ -87,6 +87,7 @@ export type FormGroupProps = ExtractPublicPropTypes<typeof formGroupProps>;
 
 export default defineComponent({
     name: 'VCFormGroup',
+    inheritAttrs: false,
     props: formGroupProps,
     slots: Object as SlotsType<{
         default: Record<string, never>;
@@ -162,10 +163,7 @@ export default defineComponent({
 
             return h(
                 'div',
-                {
-                    class: [resolved.root || undefined, validationClass || undefined],
-                    ...attrs,
-                },
+                mergeProps(attrs, { class: [resolved.root || undefined, validationClass || undefined] }),
                 children,
             );
         };

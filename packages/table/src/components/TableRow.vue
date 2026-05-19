@@ -4,6 +4,7 @@ import {
     defineComponent,
     h,
     mergeProps,
+    nextTick,
     onBeforeUnmount,
     toRef,
     watch,
@@ -227,28 +228,30 @@ export default defineComponent({
                 ctx?.setFocusedRow(nextIdx);
                 const tr = event.currentTarget as globalThis.HTMLElement | null;
                 if (!tr) return;
-                // DOM walk: step row-by-row from the current `<tr>`
-                // skipping anything that isn't a focusable `<tr>` (so
-                // disabled rows in between don't catch the focus).
-                // Direction is signed by whether the target index is
-                // after or before this row's data index.
-                const direction = nextIdx > i ? 'nextElementSibling' : 'previousElementSibling';
-                let sibling: globalThis.Element | null = tr[direction];
-                while (sibling) {
-                    if (
-                        sibling instanceof globalThis.HTMLElement &&
-                        sibling.tagName === 'TR' &&
-                        sibling.hasAttribute('tabindex')
-                    ) {
-                        const ti = sibling.getAttribute('tabindex');
-                        if (ti !== '-1' || (ti === '-1' && sibling.matches('[role="row"]'))) {
-                            // Match found — focus this row.
+                // Defer the DOM .focus() until after Vue re-renders
+                // with the updated tabindex. The roving-tabindex
+                // pattern only ever has ONE row carrying `tabindex="0"`
+                // at a time; walking siblings before the re-render
+                // would never find the new target (all other rows
+                // still carry `tabindex="-1"`). After the tick, only
+                // the new target row carries `tabindex="0"`, so the
+                // walker latches on it cleanly and disabled rows
+                // (carrying `tabindex="-1"`) are correctly skipped.
+                nextTick(() => {
+                    const direction = nextIdx > i ? 'nextElementSibling' : 'previousElementSibling';
+                    let sibling: globalThis.Element | null = tr[direction];
+                    while (sibling) {
+                        if (
+                            sibling instanceof globalThis.HTMLElement &&
+                            sibling.tagName === 'TR' &&
+                            sibling.getAttribute('tabindex') === '0'
+                        ) {
                             sibling.focus();
                             break;
                         }
+                        sibling = sibling[direction];
                     }
-                    sibling = sibling[direction];
-                }
+                });
                 // Shift+arrow extends selection from the range anchor
                 // to the new focused row (multi mode only). Seed the
                 // anchor to the CURRENT row when none exists yet, so

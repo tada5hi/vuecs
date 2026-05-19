@@ -148,13 +148,15 @@ export const VCTimeago = defineComponent({
         return () => h(
             'time',
             {
+                // Vue 3 forwards HTML attributes flat on the props
+                // object — there's no `attrs:` sub-key (that was a
+                // Vue 2 render-fn shape). The previous form silently
+                // dropped `datetime` + `title`.
                 class: theme.value.root || undefined,
-                attrs: {
-                    datetime: new Date(dateTimeProp.value).toISOString(),
-                    title: typeof titleProp.value === 'string' ?
-                        titleProp.value :
-                        time.value,
-                },
+                datetime: new Date(dateTimeProp.value).toISOString(),
+                title: typeof titleProp.value === 'string' ?
+                    titleProp.value :
+                    time.value,
             },
             [time.value],
         );

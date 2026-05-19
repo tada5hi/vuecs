@@ -40,6 +40,13 @@ const paginationProps = {
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
     /** When true, edge controls are unrendered (vs rendered-disabled) at page boundaries. Does not apply to `busy`. */
     hideDisabled: { type: Boolean, default: false },
+    /**
+     * Number of sibling page items on either side of the current
+     * page in the rendered range. Forwarded to Reka `siblingCount`.
+     */
+    siblingCount: { type: Number, default: 1 },
+    /** When true, renders First / Last edge buttons. Forwarded to Reka `showEdges`. */
+    showEdges: { type: Boolean, default: true },
     /** Icon name (Iconify format) for the First button. `undefined` falls through to the DefaultsManager; `''` suppresses. */
     firstIcon: { type: String, default: undefined },
     /** Icon name (Iconify format) for the Previous button. `undefined` falls through to the DefaultsManager; `''` suppresses. */
@@ -113,6 +120,17 @@ export default defineComponent({
                 1
         ));
 
+        // Guard against unrealistically-small `limit` values. The
+        // previous `limit || 1` mapping forwarded `1` to Reka when
+        // limit was 0/negative — Reka then computes
+        // `Math.ceil(total / 1) = total` pages and renders every
+        // page item, which is a render-time loop spike for moderate
+        // totals. Clamp to a sane floor of 1 when `limit` is unset
+        // or non-positive.
+        const effectiveLimit = computed(() => (
+            props.limit && props.limit > 0 ? props.limit : Math.max(props.total, 1)
+        ));
+
         const showStartControls = computed(() => !props.hideDisabled || currentPage.value > 1);
         const showEndControls = computed(() => !props.hideDisabled || currentPage.value < pageCount.value);
 
@@ -145,6 +163,7 @@ export default defineComponent({
             theme,
             defaults,
             currentPage,
+            effectiveLimit,
             showStartControls,
             showEndControls,
             pageItemClass,
@@ -159,9 +178,9 @@ export default defineComponent({
     <PaginationRoot
         :as="tag"
         :total="total"
-        :items-per-page="limit || 1"
-        :sibling-count="1"
-        :show-edges="true"
+        :items-per-page="effectiveLimit"
+        :sibling-count="siblingCount"
+        :show-edges="showEdges"
         :page="currentPage"
         :disabled="busy"
         :class="theme.root || undefined"

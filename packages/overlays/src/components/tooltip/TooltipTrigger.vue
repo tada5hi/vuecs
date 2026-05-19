@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, h } from 'vue';
+import { defineComponent, h, mergeProps } from 'vue';
 import type { ExtractPublicPropTypes, PropType } from 'vue';
 import { TooltipTrigger } from 'reka-ui';
 import { useComponentTheme } from '@vuecs/core';
@@ -22,16 +22,17 @@ export type TooltipTriggerProps = ExtractPublicPropTypes<typeof tooltipTriggerPr
 
 export default defineComponent({
     name: 'VCTooltipTrigger',
+    inheritAttrs: false,
     props: tooltipTriggerProps,
-    setup(props, { slots }) {
+    setup(props, { attrs, slots }) {
         const theme = useComponentTheme('tooltip', props, tooltipThemeDefaults);
         return () => h(
             TooltipTrigger,
-            {
+            mergeProps(attrs, {
                 as: props.as,
                 asChild: props.asChild,
                 class: theme.value.trigger || undefined,
-            },
+            }),
             { default: () => slots.default?.() },
         );
     },

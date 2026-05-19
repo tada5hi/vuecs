@@ -75,6 +75,11 @@ export type FormInputProps = ExtractPublicPropTypes<typeof formInputProps>;
 
 export default defineComponent({
     name: 'VCFormInput',
+    // attrs are explicitly merged onto the `<input>` below via
+    // `mergeProps(..., attrs)`. Without `inheritAttrs: false`, the
+    // group-wrapper `<div>` (when rendered) also receives them, so
+    // `id` / `disabled` / `placeholder` end up on both elements.
+    inheritAttrs: false,
     props: formInputProps,
     emits: ['update:modelValue'],
     slots: Object as SlotsType<{

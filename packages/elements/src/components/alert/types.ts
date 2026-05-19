@@ -28,6 +28,9 @@ export type AlertDescriptionThemeClasses = {
 };
 
 export type AlertDefaults = {
+    /** Color-derived default icons. Empty string = no icon for that color (primary / neutral default to no icon). */
+    primaryIcon: string;
+    neutralIcon: string;
     infoIcon: string;
     successIcon: string;
     warningIcon: string;

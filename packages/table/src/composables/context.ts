@@ -35,6 +35,14 @@ export type TableContext<Row = unknown> = {
      * cycle logic, so the cap is enforced at the call site.
      */
     maxSortKeys: Ref<number>;
+    /**
+     * Whether the host table can actually mutate sort state.
+     * `<VCTable>` sets this to `true`; `<VCTableLite>` sets it to
+     * `false` (it ships no sort machine). Descendants like
+     * `<VCTableSortIndicators>` check this in their context-fallback
+     * path so they refuse to silently no-op when mounted inside Lite.
+     */
+    supportsSortMutation: boolean;
     /** Whether `<VCTable>` was passed `:rowClickable`. */
     rowClickable: Ref<boolean>;
     /** Currently focused row index (row keyboard nav). `null` when nothing focused. */

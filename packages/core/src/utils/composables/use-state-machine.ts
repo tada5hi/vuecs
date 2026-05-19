@@ -11,7 +11,11 @@ export function useStateMachine<S extends string, E extends string>(
 
     const dispatch = (event: E) => {
         const next = machine[state.value]?.[event];
-        if (next) {
+        // `S extends string` permits empty-string states. A truthy
+        // check here would silently drop `'' → ?` transitions; use an
+        // explicit undefined check so unknown events stay no-ops but
+        // legitimate empty-state targets transition correctly.
+        if (next !== undefined) {
             state.value = next;
         }
     };

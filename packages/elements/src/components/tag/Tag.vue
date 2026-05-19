@@ -1,5 +1,10 @@
 <script lang="ts">
-import { defineComponent, h, mergeProps } from 'vue';
+import { 
+    defineComponent, 
+    h, 
+    mergeProps, 
+    resolveComponent, 
+} from 'vue';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import { useComponentTheme } from '@vuecs/core';
 import type {
@@ -78,9 +83,13 @@ export default defineComponent({
 
             if (props.icon || slots.icon) {
                 const iconSlot = slots.icon;
-                children.push(h('span', { class: resolved.icon || undefined }, iconSlot ?
+                // When the consumer passes an `:icon="..."` string
+                // (Iconify name), mount `<VCIcon name="...">` instead
+                // of rendering the raw string as text content.
+                const iconNode = iconSlot ?
                     iconSlot({ class: resolved.icon }) :
-                    [props.icon]));
+                    [h(resolveComponent('VCIcon'), { name: props.icon })];
+                children.push(h('span', { class: resolved.icon || undefined }, iconNode));
             }
 
             children.push(slots.default ?
