@@ -125,14 +125,9 @@ export default defineComponent({
                 const rowKey = rowCtx.selectionKey.value;
                 const mode = tableCtx.selection.mode.value;
                 const checked = tableCtx.selection.isSelected(rowKey);
-                // Selector cell carries `gridcell` role + sticky/data-label
-                // forwarding via the same path as a regular cell.
-                const inGrid = tableCtx.selection.mode.value !== undefined;
-                let selectorCellRole: 'rowheader' | 'gridcell' | undefined;
-                if (inGrid) selectorCellRole = props.isRowHeader ? 'rowheader' : 'gridcell';
-                const selectorAriaAttrs: Record<string, unknown> = inGrid ?
-                    { role: selectorCellRole } :
-                    {};
+                // ARIA grid role is always required here — the outer
+                // guard already established `mode !== undefined`, so
+                // the parent `<table>` carries `role="grid"`.
                 return h(
                     props.isRowHeader ? 'th' : 'td',
                     mergeProps(attrs, {
@@ -140,7 +135,7 @@ export default defineComponent({
                         'data-label': props.dataLabel || undefined,
                         'data-sticky-column': props.stickyColumn ? '' : undefined,
                         scope: props.isRowHeader ? 'row' : undefined,
-                        ...selectorAriaAttrs,
+                        role: props.isRowHeader ? 'rowheader' : 'gridcell',
                     }),
                     [
                         h('input', {

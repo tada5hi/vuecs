@@ -71,12 +71,20 @@ const tableHeadCellProps = {
     /**
      * Renders a select-all checkbox when the parent table has
      * `:selection-mode="multi"`. State is derived from the current
-     * selection: checked = all rows selected; indeterminate = some
-     * rows selected; unchecked = none. Clicking toggles between
-     * select-all and clear-all. In `single` mode the header
-     * renders empty (only one row can be selected); when selection
-     * is off, the slot's default content renders so the column
-     * collapses gracefully.
+     * selection against the visible data set: checked = all visible
+     * rows selected; indeterminate = some visible rows selected;
+     * unchecked = none.
+     *
+     * Click semantics — Gmail / GitHub style: when state is `none`
+     * or `some`, ADDS every visible row's key to the selection
+     * (preserving any off-screen / paginated selection); when state
+     * is `all`, REMOVES every visible row's key (also preserving
+     * off-screen selection). Cross-page selection persists across
+     * pagination flips.
+     *
+     * In `single` mode the header renders empty (only one row can
+     * be selected); when selection is off, the slot's default
+     * content renders so the column collapses gracefully.
      */
     isSelector: { type: Boolean, default: false },
     /** `aria-label` for the select-all checkbox (defaults to `'Select all rows'`). */
@@ -155,28 +163,55 @@ export default defineComponent({
         // documented "select-all" mental model: if the user has
         // filtered rows out, select-all only affects the visible
         // subset.
+        //
+        // Defensive fallback to the row index when `getRowKey` returns
+        // `null` / `undefined` mirrors the `<VCTableRow>` resolution
+        // (`getRowKey(row, i) ?? props.index`) so a misbehaving
+        // resolver can't push invalid keys into the select-all set.
         const allRowKeys = computed<(string | number)[]>(() => {
             if (!ctx) return [];
             const data = ctx.data.value;
-            return data.map((row, i) => ctx.getRowKey(row, i));
+            return data.map((row, i) => ctx.getRowKey(row, i) ?? i);
         });
         const selectAllState = computed<'all' | 'some' | 'none'>(() => {
             if (!ctx || ctx.selection.mode.value !== 'multi') return 'none';
             const keys = allRowKeys.value;
             if (keys.length === 0) return 'none';
+            // Pre-build a Set from the current selection so membership
+            // checks are O(1) per row — `isSelected` falls back to
+            // `Array.includes`, making the worst case O(visible *
+            // selected) for large tables.
+            const sel = ctx.selection.value.value;
+            const selectedSet = new Set<string | number>(
+                Array.isArray(sel) ? sel : [],
+            );
+            if (selectedSet.size === 0) return 'none';
             let selectedCount = 0;
-            for (const k of keys) if (ctx.selection.isSelected(k)) selectedCount += 1;
+            for (const k of keys) if (selectedSet.has(k)) selectedCount += 1;
             if (selectedCount === 0) return 'none';
             if (selectedCount === keys.length) return 'all';
             return 'some';
         });
         function onSelectorClick() {
             if (!ctx || ctx.selection.mode.value !== 'multi') return;
-            // 'all' → clear; 'none' or 'some' → select all visible.
-            // Matches the platform-standard select-all interaction
-            // (Gmail / GitHub / macOS Finder).
-            if (selectAllState.value === 'all') ctx.selection.setValue([]);
-            else ctx.selection.setValue([...allRowKeys.value]);
+            // Cross-page-safe semantics: union with the current
+            // selection rather than overwriting. This way, a row
+            // selected on page 1 doesn't get clobbered when the user
+            // navigates to page 2 and clicks select-all (matches
+            // Gmail / GitHub).
+            const current = ctx.selection.value.value;
+            const existing = new Set<string | number>(
+                Array.isArray(current) ? current : [],
+            );
+            if (selectAllState.value === 'all') {
+                // Clear every VISIBLE row's key from the existing set;
+                // off-screen selections are preserved.
+                for (const k of allRowKeys.value) existing.delete(k);
+            } else {
+                // Add every visible row's key to the existing set.
+                for (const k of allRowKeys.value) existing.add(k);
+            }
+            ctx.selection.setValue(Array.from(existing));
         }
 
         function onKeydown(event: globalThis.KeyboardEvent) {

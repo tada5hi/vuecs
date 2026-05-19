@@ -199,10 +199,12 @@
 }
 
 /* Selection-column checkbox (plan 033 v1.x-D). Lives inside head /
- * body cells flagged with `is-selector`. Themes can restyle by
- * targeting this class; structural baseline only ensures cursor +
- * alignment. */
+ * body cells flagged with `is-selector`. `accent-color` paints the
+ * native checkbox / radio with the design-token primary so the
+ * control matches the active theme without needing per-theme
+ * overrides. Themes can still restyle by targeting this class. */
 .vc-table-selector-checkbox {
     cursor: pointer;
     vertical-align: middle;
+    accent-color: var(--vc-color-primary-600);
 }

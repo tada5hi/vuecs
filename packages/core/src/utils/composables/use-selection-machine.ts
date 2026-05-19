@@ -136,14 +136,32 @@ export function useSelectionMachine(args: UseSelectionMachineArgs): SelectionSta
     };
 
     const setValue = (next: SelectionValue<SelectionMode> | null): void => {
-        args.emit(next);
+        const m = args.mode.value;
+        // Selection disabled (mode === undefined) means "cannot be
+        // mutated" — match `toggle()`'s no-op behavior.
+        if (m === undefined) return;
+        // Normalize cross-mode misuse at the boundary. The
+        // `SelectionValue` type union accepts both array and bare-key
+        // shapes regardless of mode, so a `single`-mode caller can
+        // technically pass `['a','b']` (and a `multi` caller can pass
+        // `'a'`). Coerce so the v-model writeback always matches the
+        // mode's expected shape:
+        //   single + array → take last element (or null if empty)
+        //   multi  + key   → wrap as one-element array
+        let normalized: SelectionValue<SelectionMode> | null = next;
+        if (m === 'single' && Array.isArray(next)) {
+            normalized = next.length > 0 ? next[next.length - 1] : null;
+        } else if (m === 'multi' && next !== null && !Array.isArray(next)) {
+            normalized = [next];
+        }
+        args.emit(normalized);
         // Re-anchor on the last key — for `null` / `[]` reset, clear
         // the anchor so the next Shift+click starts a fresh range.
-        if (next === null || (Array.isArray(next) && next.length === 0)) {
+        if (normalized === null || (Array.isArray(normalized) && normalized.length === 0)) {
             rangeAnchor.value = null;
             return;
         }
-        rangeAnchor.value = Array.isArray(next) ? next[next.length - 1] : next;
+        rangeAnchor.value = Array.isArray(normalized) ? normalized[normalized.length - 1] : normalized;
     };
 
     return {

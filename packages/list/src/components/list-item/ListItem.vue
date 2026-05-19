@@ -167,7 +167,7 @@ export default defineComponent({
             // `focusedIndex === props.index` behavior (where
             // `focusedIndex` always remained 0 — `moveFocus` was
             // never wired up) without the dead machine reference.
-            if (!props.selectable) return false;
+            if (!props.selectable || props.disabled) return false;
             return props.index === 0;
         });
 

@@ -95,6 +95,29 @@ describe('useSelectionMachine', () => {
         expect(v.value).toBeNull();
     });
 
+    it('setValue normalizes cross-mode misuse — single + array writes the last element', () => {
+        const { args, v } = makeArgs(null, 'single', ['a', 'b', 'c']);
+        const m = useSelectionMachine(args);
+        m.setValue(['a', 'b', 'c'] as never);
+        expect(v.value).toBe('c');
+        m.setValue([] as never);
+        expect(v.value).toBeNull();
+    });
+
+    it('setValue normalizes cross-mode misuse — multi + bare key wraps as a one-element array', () => {
+        const { args, v } = makeArgs([], 'multi', ['a', 'b', 'c']);
+        const m = useSelectionMachine(args);
+        m.setValue('a' as never);
+        expect(v.value).toEqual(['a']);
+    });
+
+    it('setValue is a no-op when selection is disabled (mode === undefined)', () => {
+        const { args, v } = makeArgs(null, undefined, ['a']);
+        const m = useSelectionMachine(args);
+        m.setValue(['a'] as never);
+        expect(v.value).toBeNull();
+    });
+
     it('range select with a stale anchor (key no longer in data) refreshes the anchor + no-ops', () => {
         const { args, v } = makeArgs([], 'multi', ['a', 'b', 'c']);
         const m = useSelectionMachine(args);

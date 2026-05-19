@@ -6,6 +6,7 @@ import {
     it,
 } from 'vitest';
 import { defineComponent, h, ref } from 'vue';
+import type { Ref } from 'vue';
 import { mount } from '@vue/test-utils';
 import vuecsTable, {
     VCTable,
@@ -19,6 +20,7 @@ import vuecsTable, {
 const plugins = [[vuecsTable, {}]] as const;
 
 type User = { id: number; name: string };
+type SelectionValue = number | number[] | null;
 
 const data: User[] = [
     { id: 1, name: 'Alice' },
@@ -31,7 +33,7 @@ const columns = [
     { key: 'name', label: 'Name' },
 ];
 
-function mountTable(selection: ref<number[] | null>, mode: 'single' | 'multi' = 'multi') {
+function mountTable(selection: Ref<SelectionValue>, mode: 'single' | 'multi' = 'multi') {
     return mount(defineComponent({
         setup() {
             return () => h(VCTable, {
@@ -39,7 +41,7 @@ function mountTable(selection: ref<number[] | null>, mode: 'single' | 'multi' = 
                 data: data as never,
                 selectionMode: mode,
                 selection: selection.value,
-                'onUpdate:selection': (next: number[] | null) => { selection.value = next; },
+                'onUpdate:selection': (next: SelectionValue) => { selection.value = next; },
             }, () => [
                 h(VCTableHeader, () => h(VCTableRow, () => [
                     h(VCTableHeadCell, { isSelector: true }),
@@ -61,7 +63,7 @@ describe('<VCTableHeadCell isSelector> + <VCTableCell isSelector> (plan 033 v1.x
     afterEach(() => { document.body.innerHTML = ''; });
 
     it('renders an indeterminate-capable checkbox in multi mode', () => {
-        const selection = ref<number[] | null>([]);
+        const selection = ref<SelectionValue>([]);
         const wrapper = mountTable(selection);
         const headerCheckbox = wrapper.element.querySelector(
             'thead .vc-table-selector-checkbox',
@@ -73,8 +75,8 @@ describe('<VCTableHeadCell isSelector> + <VCTableCell isSelector> (plan 033 v1.x
     });
 
     it('per-row checkbox renders as <input type="radio"> in single mode', () => {
-        const selection = ref<number[] | null>(null);
-        const wrapper = mountTable(selection as never, 'single');
+        const selection = ref<SelectionValue>(null);
+        const wrapper = mountTable(selection, 'single');
         const bodyInputs = wrapper.element.querySelectorAll(
             'tbody .vc-table-selector-checkbox',
         ) as NodeListOf<HTMLInputElement>;
@@ -83,7 +85,7 @@ describe('<VCTableHeadCell isSelector> + <VCTableCell isSelector> (plan 033 v1.x
     });
 
     it('select-all clicks all rows then clears on second click', async () => {
-        const selection = ref<number[] | null>([]);
+        const selection = ref<SelectionValue>([]);
         const wrapper = mountTable(selection);
         const headerCheckbox = wrapper.element.querySelector(
             'thead .vc-table-selector-checkbox',
@@ -105,7 +107,7 @@ describe('<VCTableHeadCell isSelector> + <VCTableCell isSelector> (plan 033 v1.x
     });
 
     it('header checkbox is indeterminate when some but not all are selected', async () => {
-        const selection = ref<number[] | null>([1]);
+        const selection = ref<SelectionValue>([1]);
         const wrapper = mountTable(selection);
         const headerCheckbox = wrapper.element.querySelector(
             'thead .vc-table-selector-checkbox',
@@ -115,7 +117,7 @@ describe('<VCTableHeadCell isSelector> + <VCTableCell isSelector> (plan 033 v1.x
     });
 
     it('per-row checkbox toggles that row independently', async () => {
-        const selection = ref<number[] | null>([]);
+        const selection = ref<SelectionValue>([]);
         const wrapper = mountTable(selection);
         const bodyCheckboxes = wrapper.element.querySelectorAll(
             'tbody .vc-table-selector-checkbox',
@@ -126,11 +128,39 @@ describe('<VCTableHeadCell isSelector> + <VCTableCell isSelector> (plan 033 v1.x
     });
 
     it('header is empty in single mode (select-all does not apply)', () => {
-        const selection = ref<number[] | null>(null);
-        const wrapper = mountTable(selection as never, 'single');
+        const selection = ref<SelectionValue>(null);
+        const wrapper = mountTable(selection, 'single');
         const headerCheckbox = wrapper.element.querySelector(
             'thead .vc-table-selector-checkbox',
         );
         expect(headerCheckbox).toBeNull();
+    });
+
+    it('select-all preserves off-screen selections (union, not overwrite)', async () => {
+        // Simulate a paginated scenario: row id `99` is selected
+        // but not in the visible data set. select-all must union it
+        // in, not overwrite it.
+        const selection = ref<SelectionValue>([99]);
+        const wrapper = mountTable(selection);
+        const headerCheckbox = wrapper.element.querySelector(
+            'thead .vc-table-selector-checkbox',
+        ) as HTMLInputElement;
+        headerCheckbox.click();
+        await wrapper.vm.$nextTick();
+        // 99 (off-screen) preserved + visible rows added.
+        expect(selection.value).toEqual(expect.arrayContaining([99, 1, 2, 3]));
+        expect((selection.value as number[]).length).toBe(4);
+    });
+
+    it('clear-all only removes visible row keys, not off-screen ones', async () => {
+        const selection = ref<SelectionValue>([99, 1, 2, 3]);
+        const wrapper = mountTable(selection);
+        const headerCheckbox = wrapper.element.querySelector(
+            'thead .vc-table-selector-checkbox',
+        ) as HTMLInputElement;
+        // All 3 visible rows are selected → state is 'all'. Click clears them.
+        headerCheckbox.click();
+        await wrapper.vm.$nextTick();
+        expect(selection.value).toEqual([99]);
     });
 });
