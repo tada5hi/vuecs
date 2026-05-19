@@ -16,6 +16,18 @@ type ListContext = {
     state: ListState<unknown, Record<string, unknown>>;
     classes: ComputedRef<ListThemeClasses>;
     selection: SelectionState;
+    /**
+     * Registry of indices of selectable + enabled items. Each
+     * `<VCListItem>` self-registers when it's eligible to be a
+     * keyboard tab stop. `firstTabStopIndex` (below) is derived
+     * from the lowest registered index — that's the one that
+     * carries `tabindex="0"` so the listbox always has a keyboard
+     * entry point even when item 0 is disabled.
+     */
+    registerEligibleItem(index: number): void;
+    unregisterEligibleItem(index: number): void;
+    /** Lowest registered eligible-item index, or `null` when none. */
+    firstTabStopIndex: ComputedRef<number | null>;
 };
 
 const LIST_CONTEXT_KEY = Symbol('VCListContext') as InjectionKey<ListContext>;

@@ -6,7 +6,9 @@ import {
     defineComponent,
     h,
     mergeProps,
+    onBeforeUnmount,
     ref,
+    watch,
 } from 'vue';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import { provideListItemContext, useList } from '../../composables';
@@ -122,7 +124,8 @@ export default defineComponent({
         default: ListItemSlotProps;
     }>,
     setup(props, { slots, attrs }) {
-        const { state, selection } = useList<unknown>('VCListItem');
+        const list = useList<unknown>('VCListItem');
+        const { state, selection } = list;
 
         const key = computed(() => {
             if (props.data === undefined) return undefined;
@@ -161,14 +164,24 @@ export default defineComponent({
         };
         const theme = useComponentTheme('listItem', themedProps, listItemThemeDefaults);
 
-        // Tab-stop ownership — only the first selectable, enabled
-        // item gets `tabindex="0"` initially. Full arrow-key roving
-        // tabindex hasn't shipped; this is the static fallback that
-        // gives the list ONE keyboard entry point per page.
-        const isTabStop = computed(() => {
-            if (!props.selectable || props.disabled) return false;
-            return props.index === 0;
-        });
+        // Tab-stop ownership — the FIRST selectable + enabled item
+        // (lowest data index, dynamically resolved) gets
+        // `tabindex="0"` initially. Previously hard-coded to
+        // `props.index === 0`, which left the listbox with no
+        // keyboard entry point if row 0 was disabled. Each eligible
+        // item registers with the list-scope tab-stop registry;
+        // `firstTabStopIndex` is the lowest registered index.
+        const isEligibleTabStop = computed(() => (
+            props.selectable && !props.disabled
+        ));
+        watch(isEligibleTabStop, (eligible) => {
+            if (eligible) list.registerEligibleItem(props.index);
+            else list.unregisterEligibleItem(props.index);
+        }, { immediate: true });
+        onBeforeUnmount(() => list.unregisterEligibleItem(props.index));
+        const isTabStop = computed(() => (
+            isEligibleTabStop.value && list.firstTabStopIndex.value === props.index
+        ));
 
         // Real DOM-focus state — wired via focusin/focusout on the
         // root element. Previously this was `props.index === 0`

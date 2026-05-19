@@ -1,7 +1,13 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
 import type { ComponentThemeDefinition, ThemeClassesOverride, VariantValues } from '@vuecs/core';
-import { computed, defineComponent, h } from 'vue';
+import {
+    computed, 
+    defineComponent, 
+    h, 
+    shallowRef, 
+    triggerRef,
+} from 'vue';
 import type {
     ExtractPublicPropTypes,
     PropType,
@@ -164,10 +170,39 @@ export default defineComponent({
 
         const classes = computed(() => theme.value);
 
+        // Tab-stop registry. Each `<VCListItem>` calls `register`
+        // when it's selectable + enabled (eligible to receive
+        // keyboard focus); the lowest registered index becomes the
+        // initial `tabindex="0"` row. Set mutations aren't reactive
+        // by default, so we hold a shallowRef and triggerRef on
+        // each in-place mutation (parallel to the table's
+        // `interactiveRows` pattern).
+        const eligibleIndices = shallowRef<Set<number>>(new Set());
+        const registerEligibleItem = (index: number) => {
+            if (eligibleIndices.value.has(index)) return;
+            eligibleIndices.value.add(index);
+            triggerRef(eligibleIndices);
+        };
+        const unregisterEligibleItem = (index: number) => {
+            if (!eligibleIndices.value.has(index)) return;
+            eligibleIndices.value.delete(index);
+            triggerRef(eligibleIndices);
+        };
+        const firstTabStopIndex = computed<number | null>(() => {
+            let min: number | null = null;
+            for (const i of eligibleIndices.value) {
+                if (min === null || i < min) min = i;
+            }
+            return min;
+        });
+
         provideListContext({
             state: state as ListState<unknown, Record<string, unknown>>,
             classes,
             selection,
+            registerEligibleItem,
+            unregisterEligibleItem,
+            firstTabStopIndex,
         });
 
         return () => h(

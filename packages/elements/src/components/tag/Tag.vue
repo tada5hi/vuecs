@@ -64,6 +64,13 @@ export default defineComponent({
         slots,
         emit,
     }) {
+        // Resolve `<VCIcon>` once at setup. `resolveComponent`
+        // returns the literal lookup string when `@vuecs/icon` isn't
+        // installed (optional peer); guard so the bare `:icon="..."`
+        // path falls back to the raw text content instead of
+        // rendering an unknown `<VCIcon>` element.
+        const VCIcon = resolveComponent('VCIcon');
+        const hasIconComponent = typeof VCIcon !== 'string';
         const themeProps: UseComponentThemeProps<TagThemeClasses> = {
             get themeClass() {
                 return props.themeClass;
@@ -83,13 +90,16 @@ export default defineComponent({
 
             if (props.icon || slots.icon) {
                 const iconSlot = slots.icon;
-                // When the consumer passes an `:icon="..."` string
-                // (Iconify name), mount `<VCIcon name="...">` instead
-                // of rendering the raw string as text content.
-                const iconNode = iconSlot ?
-                    iconSlot({ class: resolved.icon }) :
-                    [h(resolveComponent('VCIcon'), { name: props.icon })];
-                children.push(h('span', { class: resolved.icon || undefined }, iconNode));
+                // Slot wins. Otherwise mount `<VCIcon>` if available;
+                // when `@vuecs/icon` isn't installed (`VCIcon` is the
+                // raw lookup string), render the icon name as plain
+                // text so the chip is still visually distinct rather
+                // than crashing with an unknown component error.
+                let iconNode: unknown;
+                if (iconSlot) iconNode = iconSlot({ class: resolved.icon });
+                else if (hasIconComponent) iconNode = [h(VCIcon, { name: props.icon })];
+                else iconNode = [props.icon];
+                children.push(h('span', { class: resolved.icon || undefined }, iconNode as never));
             }
 
             children.push(slots.default ?

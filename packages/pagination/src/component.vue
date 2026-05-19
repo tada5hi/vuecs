@@ -108,27 +108,29 @@ export default defineComponent({
 
         const defaults = useComponentDefaults('pagination', props, behavioralDefaults);
 
-        const currentPage = computed(() => (
-            props.total && props.limit ?
-                calculatePage({ limit: props.limit, offset: props.offset }) :
-                1
-        ));
-
-        const pageCount = computed(() => (
-            props.total && props.limit ?
-                calculatePagesTotal({ limit: props.limit, total: props.total }) :
-                1
-        ));
-
         // Guard against unrealistically-small `limit` values. The
         // previous `limit || 1` mapping forwarded `1` to Reka when
         // limit was 0/negative — Reka then computes
         // `Math.ceil(total / 1) = total` pages and renders every
         // page item, which is a render-time loop spike for moderate
         // totals. Clamp to a sane floor of 1 when `limit` is unset
-        // or non-positive.
+        // or non-positive. ALL internal math + emitted-meta paths
+        // read from this normalized value so rendered pagination
+        // and the `load` event payload stay consistent.
         const effectiveLimit = computed(() => (
             props.limit && props.limit > 0 ? props.limit : Math.max(props.total, 1)
+        ));
+
+        const currentPage = computed(() => (
+            props.total > 0 ?
+                calculatePage({ limit: effectiveLimit.value, offset: props.offset }) :
+                1
+        ));
+
+        const pageCount = computed(() => (
+            props.total > 0 ?
+                calculatePagesTotal({ limit: effectiveLimit.value, total: props.total }) :
+                1
         ));
 
         const showStartControls = computed(() => !props.hideDisabled || currentPage.value > 1);
@@ -152,8 +154,8 @@ export default defineComponent({
             if (props.busy || newPage === currentPage.value) return;
             const meta: PaginationMeta = {
                 page: newPage,
-                offset: calculateOffset({ page: newPage, limit: props.limit }),
-                limit: props.limit,
+                offset: calculateOffset({ page: newPage, limit: effectiveLimit.value }),
+                limit: effectiveLimit.value,
                 total: pageCount.value,
             };
             emit('load', meta);
