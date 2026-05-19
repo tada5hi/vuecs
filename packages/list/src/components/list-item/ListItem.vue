@@ -174,11 +174,26 @@ export default defineComponent({
         const isEligibleTabStop = computed(() => (
             props.selectable && !props.disabled
         ));
-        watch(isEligibleTabStop, (eligible) => {
-            if (eligible) list.registerEligibleItem(props.index);
-            else list.unregisterEligibleItem(props.index);
-        }, { immediate: true });
-        onBeforeUnmount(() => list.unregisterEligibleItem(props.index));
+        // Watch eligibility AND index together. If the row's index
+        // changes mid-life (list reorder / splice), the old index
+        // must unregister before the new one registers — otherwise
+        // the registry holds a stale entry and `firstTabStopIndex`
+        // points at a row that no longer exists.
+        watch(
+            [isEligibleTabStop, () => props.index],
+            ([eligible, newIndex], oldValues) => {
+                const oldIndex = oldValues?.[1];
+                if (oldIndex !== undefined && oldIndex !== newIndex) {
+                    list.unregisterEligibleItem(oldIndex);
+                }
+                if (eligible) list.registerEligibleItem(newIndex);
+                else list.unregisterEligibleItem(newIndex);
+            },
+            { immediate: true },
+        );
+        onBeforeUnmount(() => {
+            if (isEligibleTabStop.value) list.unregisterEligibleItem(props.index);
+        });
         const isTabStop = computed(() => (
             isEligibleTabStop.value && list.firstTabStopIndex.value === props.index
         ));
