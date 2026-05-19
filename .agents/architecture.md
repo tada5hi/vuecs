@@ -2112,6 +2112,50 @@ empty array, so migration-era consumers carrying
 `ref<TableSortState | null>(null)` don't crash on `.map`. Only
 `undefined` (i.e. the prop is unbound) falls back to context.
 
+### Selection column (`isSelector`, plan 033 v1.x-D)
+
+`<VCTableHeadCell isSelector>` + `<VCTableCell isSelector>` build a
+Gmail-style selection column inside a grid-pattern table:
+
+- **Head cell** — renders an indeterminate-capable
+  `<input type="checkbox">` when `selection-mode === 'multi'`. State
+  derives from the visible data set: `all` → checked; `some` →
+  indeterminate; `none` → unchecked. Click toggles between
+  select-all (writes `[...allRowKeys]`) and clear-all (writes `[]`).
+  In `single` mode the cell renders empty (select-all doesn't
+  apply); with no selection mode it falls back to the default slot
+  so consumers can keep the column structurally present.
+- **Body cell** — renders a per-row `<input type="checkbox">`
+  (multi) or `<input type="radio">` (single), bound to
+  `selection.isSelected(rowKey)`. Click stops propagation + calls
+  `selection.toggle(rowKey)`. Falls back to the default slot when
+  selection is disabled.
+
+Underlying primitive: the selection machine gained a `setValue(next)`
+method for absolute state replacement (parallels the sort machine's
+`setState`). Used by the select-all path to write `[]` or
+`[...allKeys]` in one shot; toggle / range / Ctrl semantics live on
+the cycle methods as before.
+
+### Shared selection machine (`useSelectionMachine` in `@vuecs/core`)
+
+The selection state machine that drives both `<VCList>` (ARIA
+listbox) and `<VCTable>` (ARIA grid) now lives at
+`@vuecs/core/utils/composables/use-selection-machine.ts`. Both
+packages re-export it under their own type aliases for back-compat
+(`useRowSelectionMachine` / `RowSelectionKey` in `@vuecs/table`;
+`useSelectionMachine` / `SelectionKey` in `@vuecs/list`), but the
+runtime is single-source. Promotion is intentional — the machine is
+data-shape-agnostic (`keyAt` mapper, mode-aware
+toggle / range / Ctrl), and duplicating it across two packages
+created drift risk on every bug fix.
+
+The shape is **slim by design**: tracks selection state only, never
+focus. Focus management is a per-consumer concern — the table keeps
+`focusedRow` on its own context; the list component handles its own
+roving tabindex. Coupling focus to selection made the shared API
+misleading.
+
 ### Row click + keyboard navigation (D5 + plan 028 row-nav adoption)
 
 `:row-clickable` opt-in adds `tabindex="0"` + `cursor-pointer` per row

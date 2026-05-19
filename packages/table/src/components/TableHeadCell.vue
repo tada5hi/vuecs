@@ -19,6 +19,36 @@ const tableHeadCellThemeDefaults = {
     },
 };
 
+function renderHeadContent(args: {
+    isSelector: boolean;
+    selectionMode: 'single' | 'multi' | undefined;
+    selectAllState: 'all' | 'some' | 'none';
+    selectorAriaLabel: string;
+    onSelectorClick: () => void;
+    defaultSlot: (() => unknown) | undefined;
+}): unknown {
+    if (!args.isSelector) return args.defaultSlot?.();
+    // Empty in single mode — "select-all" doesn't apply.
+    if (args.selectionMode === 'single') return null;
+    // No selection mode at all → fall back to whatever the consumer
+    // put in the slot so the column doesn't visually collapse.
+    if (args.selectionMode === undefined) return args.defaultSlot?.();
+    return h('input', {
+        type: 'checkbox',
+        class: 'vc-table-selector-checkbox',
+        'aria-label': args.selectorAriaLabel,
+        checked: args.selectAllState === 'all',
+        // jsdom + real browsers both require setting `indeterminate`
+        // as a property (no attribute form). Vue's runtime forwards
+        // prop-style bindings via `el.indeterminate = …`.
+        indeterminate: args.selectAllState === 'some',
+        onClick: (e: globalThis.MouseEvent) => {
+            e.stopPropagation();
+            args.onSelectorClick();
+        },
+    });
+}
+
 const tableHeadCellProps = {
     /** Column key — required for sort wiring (omit for purely presentational heads). */
     columnKey: { type: String, default: undefined },
@@ -38,6 +68,19 @@ const tableHeadCellProps = {
     align: { type: String as PropType<'left' | 'center' | 'right'>, default: undefined },
     /** `position: sticky` on this header cell. Forwarded as `themeVariant.stickyColumn`. */
     stickyColumn: { type: Boolean, default: undefined },
+    /**
+     * Renders a select-all checkbox when the parent table has
+     * `:selection-mode="multi"`. State is derived from the current
+     * selection: checked = all rows selected; indeterminate = some
+     * rows selected; unchecked = none. Clicking toggles between
+     * select-all and clear-all. In `single` mode the header
+     * renders empty (only one row can be selected); when selection
+     * is off, the slot's default content renders so the column
+     * collapses gracefully.
+     */
+    isSelector: { type: Boolean, default: false },
+    /** `aria-label` for the select-all checkbox (defaults to `'Select all rows'`). */
+    selectorAriaLabel: { type: String, default: 'Select all rows' },
     ...themableProps<TableHeadCellThemeClasses>(),
 };
 
@@ -107,6 +150,35 @@ export default defineComponent({
             ctx?.setSort(props.columnKey, { append: event.shiftKey });
         }
 
+        // Select-all state — derived from the visible data set and
+        // the current selection. Visible-data check matches the
+        // documented "select-all" mental model: if the user has
+        // filtered rows out, select-all only affects the visible
+        // subset.
+        const allRowKeys = computed<(string | number)[]>(() => {
+            if (!ctx) return [];
+            const data = ctx.data.value;
+            return data.map((row, i) => ctx.getRowKey(row, i));
+        });
+        const selectAllState = computed<'all' | 'some' | 'none'>(() => {
+            if (!ctx || ctx.selection.mode.value !== 'multi') return 'none';
+            const keys = allRowKeys.value;
+            if (keys.length === 0) return 'none';
+            let selectedCount = 0;
+            for (const k of keys) if (ctx.selection.isSelected(k)) selectedCount += 1;
+            if (selectedCount === 0) return 'none';
+            if (selectedCount === keys.length) return 'all';
+            return 'some';
+        });
+        function onSelectorClick() {
+            if (!ctx || ctx.selection.mode.value !== 'multi') return;
+            // 'all' → clear; 'none' or 'some' → select all visible.
+            // Matches the platform-standard select-all interaction
+            // (Gmail / GitHub / macOS Finder).
+            if (selectAllState.value === 'all') ctx.selection.setValue([]);
+            else ctx.selection.setValue([...allRowKeys.value]);
+        }
+
         function onKeydown(event: globalThis.KeyboardEvent) {
             if (!props.sortable || !props.columnKey) return;
             if (event.key === 'Enter' || event.key === ' ') {
@@ -147,7 +219,21 @@ export default defineComponent({
                 onKeydown: props.sortable ? onKeydown : undefined,
             }),
             [
-                slots.default?.(),
+                // Selector head — checkbox in multi mode; empty in
+                // single mode (only one row can be selected so a
+                // "select-all" doesn't apply). Falls through to the
+                // default slot when selection is off entirely so the
+                // column collapses gracefully if a consumer keeps
+                // `is-selector` cells in place when toggling
+                // selection off.
+                renderHeadContent({
+                    isSelector: props.isSelector,
+                    selectionMode: ctx?.selection.mode.value,
+                    selectAllState: selectAllState.value,
+                    selectorAriaLabel: props.selectorAriaLabel,
+                    onSelectorClick,
+                    defaultSlot: slots.default,
+                }),
                 props.sortable && sortDirection.value ?
                     h('span', {
                         class: theme.value.sortIcon || undefined,

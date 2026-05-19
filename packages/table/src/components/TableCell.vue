@@ -35,6 +35,16 @@ const tableCellProps = {
     align: { type: String as PropType<'left' | 'center' | 'right'>, default: undefined },
     /** `position: sticky` on this cell. Forwarded as `themeVariant.stickyColumn`. */
     stickyColumn: { type: Boolean, default: undefined },
+    /**
+     * Renders a selection checkbox/radio for this row. Pairs with
+     * `<VCTableHeadCell isSelector>` to build a selection column.
+     * State mirrors `selection.isSelected(rowKey)`; clicking toggles
+     * that row independently of any row-click handler. Falls back
+     * to the default slot when selection is off.
+     */
+    isSelector: { type: Boolean, default: false },
+    /** `aria-label` for the per-row checkbox (defaults to `'Select row'`). */
+    selectorAriaLabel: { type: String, default: 'Select row' },
     ...themableProps<TableCellThemeClasses>(),
 };
 
@@ -105,6 +115,49 @@ export default defineComponent({
         const theme = useComponentTheme('tableCell', mergedThemeProps, tableCellThemeDefaults);
 
         return () => {
+            // Selector cell — renders a checkbox / radio bound to the
+            // current row's selection state. Short-circuits the
+            // default-cell rendering entirely so consumers don't need
+            // to pass slot content. Falls back to the default render
+            // path when selection is off, so consumers can keep
+            // `is-selector` cells in place when toggling selection.
+            if (props.isSelector && tableCtx?.selection.mode.value !== undefined && rowCtx) {
+                const rowKey = rowCtx.selectionKey.value;
+                const mode = tableCtx.selection.mode.value;
+                const checked = tableCtx.selection.isSelected(rowKey);
+                // Selector cell carries `gridcell` role + sticky/data-label
+                // forwarding via the same path as a regular cell.
+                const inGrid = tableCtx.selection.mode.value !== undefined;
+                let selectorCellRole: 'rowheader' | 'gridcell' | undefined;
+                if (inGrid) selectorCellRole = props.isRowHeader ? 'rowheader' : 'gridcell';
+                const selectorAriaAttrs: Record<string, unknown> = inGrid ?
+                    { role: selectorCellRole } :
+                    {};
+                return h(
+                    props.isRowHeader ? 'th' : 'td',
+                    mergeProps(attrs, {
+                        class: theme.value.root || undefined,
+                        'data-label': props.dataLabel || undefined,
+                        'data-sticky-column': props.stickyColumn ? '' : undefined,
+                        scope: props.isRowHeader ? 'row' : undefined,
+                        ...selectorAriaAttrs,
+                    }),
+                    [
+                        h('input', {
+                            type: mode === 'single' ? 'radio' : 'checkbox',
+                            class: 'vc-table-selector-checkbox',
+                            'aria-label': props.selectorAriaLabel,
+                            checked,
+                            onClick: (e: globalThis.MouseEvent) => {
+                                e.stopPropagation();
+                                if (rowKey === undefined) return;
+                                tableCtx.selection.toggle(rowKey);
+                            },
+                        }),
+                    ],
+                );
+            }
+
             // Default-render path: when the consumer didn't provide slot
             // content AND we have enough context (table column lookup + row
             // value), resolve via `accessor` + `formatter`. Slot content

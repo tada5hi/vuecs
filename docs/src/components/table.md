@@ -242,6 +242,41 @@ const data: User[] = [/* ... */];
 `<VCTableLite>` doesn't support selection — Lite consumers bring their
 own state plumbing.
 
+### Selection column (`isSelector`)
+
+Build a Gmail-style selection column by adding `isSelector` to both
+the head cell + each body cell. The head cell renders an
+indeterminate-capable checkbox (`some` / `all` / `none` states) that
+toggles select-all vs. clear-all; each body cell renders a per-row
+checkbox (or `<input type="radio">` in single mode).
+
+```vue
+<VCTable :selection-mode="'multi'" v-model:selection="selection" :columns :data>
+    <VCTableHeader>
+        <VCTableRow>
+            <VCTableHeadCell is-selector />
+            <VCTableHeadCell v-for="col in columns" :key="col.key" :column-key="col.key" />
+        </VCTableRow>
+    </VCTableHeader>
+    <VCTableBody>
+        <template #row="{ row, index }">
+            <VCTableRow :row :index>
+                <VCTableCell is-selector />
+                <VCTableCell v-for="col in columns" :key="col.key" :column-key="col.key" />
+            </VCTableRow>
+        </template>
+    </VCTableBody>
+</VCTable>
+```
+
+The select-all click sets the selection to every visible row's key
+(via `getRowKey`); a second click clears the array. When the
+selection is `single`, the head cell renders empty and the per-row
+input becomes a `radio`. With selection disabled entirely, both fall
+back to the default slot so consumers can keep the column in place
+without losing layout. `aria-label` defaults to `'Select all rows'` /
+`'Select row'` — override via `:selector-aria-label` for i18n.
+
 ## `<VCTableLite>` — slim escape hatch
 
 Same columns driver + theme system + auto-render as `<VCTable>`, but

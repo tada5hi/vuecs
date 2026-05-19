@@ -4,5 +4,6 @@ export * from './use-forward-expose';
 export * from './use-forward-props';
 export * from './use-forward-props-emits';
 export * from './use-id';
+export * from './use-selection-machine';
 export * from './use-state-machine';
 export * from './use-typeahead';

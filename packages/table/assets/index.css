@@ -197,3 +197,12 @@
     font: inherit;
     cursor: pointer;
 }
+
+/* Selection-column checkbox (plan 033 v1.x-D). Lives inside head /
+ * body cells flagged with `is-selector`. Themes can restyle by
+ * targeting this class; structural baseline only ensures cursor +
+ * alignment. */
+.vc-table-selector-checkbox {
+    cursor: pointer;
+    vertical-align: middle;
+}
