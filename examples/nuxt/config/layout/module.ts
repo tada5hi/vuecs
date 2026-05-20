@@ -59,6 +59,12 @@ const generalItems: NavigationItem[] = [
         url: '/pagination',
     },
     {
+        name: 'Placeholder',
+        type: 'link',
+        icon: 'fa6-solid:ellipsis',
+        url: '/placeholder',
+    },
+    {
         name: 'Table',
         type: 'link',
         icon: 'fa6-solid:table',

@@ -23,6 +23,7 @@ import installList from '@vuecs/list';
 import { install as installNavigation } from '@vuecs/navigation';
 import installOverlays from '@vuecs/overlays';
 import installPagination from '@vuecs/pagination';
+import installPlaceholder from '@vuecs/placeholder';
 import installTimeago from '@vuecs/timeago';
 import { de } from 'date-fns/locale';
 import { defineNuxtPlugin } from '#app';
@@ -54,5 +55,6 @@ export default defineNuxtPlugin((ctx) => {
     installNavigation(ctx.vueApp, { items: ({ level, parent }) => findNavigationItems(level, parent) });
 
     ctx.vueApp.use(installPagination);
+    ctx.vueApp.use(installPlaceholder);
     ctx.vueApp.use(installOverlays);
 });
