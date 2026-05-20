@@ -1,10 +1,16 @@
-# Vuecs 📦
+<p align="center">
+  <img src="https://vuecs.dev/logo.svg" alt="Vuecs" width="96" />
+</p>
 
-[![main](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
-[![Known Vulnerabilities](https://snyk.io/test/github/Tada5hi/vuecs/badge.svg)](https://snyk.io/test/github/Tada5hi/vuecs)
-[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
+<h1 align="center">Vuecs</h1>
 
-A Vue 3 component library providing reusable UI components with TypeScript support, CSS extraction, and composable theming.
+<p align="center">A Vue 3 theming framework with shipped components.</p>
+
+<p align="center">
+  <a href="https://github.com/Tada5hi/vuecs/actions/workflows/main.yml"><img src="https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg" alt="CI" /></a>
+  <a href="https://snyk.io/test/github/Tada5hi/vuecs"><img src="https://snyk.io/test/github/Tada5hi/vuecs/badge.svg" alt="Known Vulnerabilities" /></a>
+  <a href="https://conventionalcommits.org"><img src="https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white" alt="Conventional Commits" /></a>
+</p>
 
 **Table of Contents**
 
