@@ -2,7 +2,7 @@
 
 `<VCPrimitive>` is the unthemed render target that vuecs's themable components use under the hood. It does one job: render an HTML tag (or component) you pass in, optionally falling through to a custom child element via the `asChild` pattern. It carries **no theming, no defaults, no manager wiring** — pair it with `useComponentTheme` when you want a themable wrapper.
 
-It ships in `@vuecs/core` (no `reka-ui` peer dep required) so libraries built on top of vuecs can author their own themable elements without pulling in a parallel primitive layer. The implementation is a line-for-line port of [Reka UI](https://reka-ui.com/)'s `Primitive`, kept in-tree as part of vuecs's "port-don't-depend" stance for tiny primitives.
+It ships in `@vuecs/core` (no `reka-ui` peer dep required) so libraries built on top of vuecs can author their own themable elements without pulling in a parallel primitive layer. The implementation is a behaviourally-equivalent port of [Reka UI](https://reka-ui.com/)'s `Primitive` (MIT) — the small `unrefElement` helper is inlined so `@vuecs/core` stays zero-dep beyond Vue, and JSDoc / source-pointer comments are added. Behaviour, defaults, and the self-closing-tag short-circuit match upstream.
 
 ## Why this exists
 
@@ -71,8 +71,7 @@ This renders:
 
 Notes on `asChild` semantics:
 
-- **Wrapper class + child class compose.** Both `vc-card vc-card-link` (from the wrapper) and any class set on the slot child appear on the final element. CSS specificity resolves precedence.
-- **Child props win on conflict.** If both the wrapper and the slot child set the same attribute, the child's value takes precedence — so a consumer can override e.g. `aria-label` from inside the slot.
+- **`class` and `style` compose; other attrs use child-wins precedence.** Vue's `mergeProps` special-cases `class` and `style` — wrapper-supplied and child-supplied values both apply on the final element (CSS specificity resolves precedence inside `class`, last-write-wins inside `style`). For *any other* attribute (e.g. `id`, `aria-label`, event listeners), the child's value wins on conflict — so a consumer can override e.g. `aria-label` from inside the slot.
 - **Comments and multi-child slots.** Comment children are skipped. If the slot has multiple element children, only the first non-comment child receives the merged attrs; the others render as-is.
 - **The slot child's `ref` is dropped** — keep template refs on the wrapper itself (via `usePrimitiveElement` below), not on the slot child.
 

@@ -36,22 +36,30 @@ describe('Slot (via VCPrimitive asChild)', () => {
         expect(wrapper.element.className).toContain('child');
     });
 
-    it('child class wins on conflict in mergeProps order', () => {
-        // mergeProps concatenates string class lists in order, so both classes
-        // appear; CSS specificity resolves precedence. This regression-pins
-        // the merge call site that flips precedence vs. naive cloneVNode.
+    it('composes classes from wrapper and child; child wins on non-class attr conflict', () => {
+        // mergeProps concatenates `class` lists in order, so both classes
+        // appear on the final element. For non-class attrs (here `id`),
+        // mergeProps(attrs, child.props) means the child's value wins —
+        // this regression-pins the explicit-merge call site that reverses
+        // the precedence cloneVNode(node, attrs) would otherwise apply.
         const wrapper = mount(defineComponent({
             setup() {
                 return () => h(
                     VCPrimitive,
-                    { asChild: true, class: 'foo' },
-                    { default: () => h('div', { class: 'bar' }) },
+                    {
+                        asChild: true, 
+                        class: 'foo', 
+                        id: 'wrapper-id', 
+                    },
+                    { default: () => h('div', { class: 'bar', id: 'child-id' }) },
                 );
             },
         }));
 
         expect(wrapper.element.className).toContain('foo');
         expect(wrapper.element.className).toContain('bar');
+        // Non-class attr: child's `id` wins.
+        expect(wrapper.element.id).toBe('child-id');
     });
 
     it('unwraps Fragment vnodes (e.g. from v-for/v-if templates)', () => {

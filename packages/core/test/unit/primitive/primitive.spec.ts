@@ -29,8 +29,12 @@ describe('VCPrimitive', () => {
             },
         });
 
+        // `label` flows through VCPrimitive's `attrs` and lands on `Inner`'s
+        // declared `label` prop — exercises that VCPrimitive forwards
+        // unrecognised attrs onto whatever it renders.
         const wrapper = mount(VCPrimitive, {
-            props: { as: Inner, label: 'hi' } as any,
+            props: { as: Inner },
+            attrs: { label: 'hi' },
             slots: { default: () => 'body' },
         });
 

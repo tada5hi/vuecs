@@ -20,7 +20,7 @@ describe('usePrimitiveElement', () => {
             setup() {
                 const { primitiveElement, currentElement } = usePrimitiveElement();
                 return () => h(Inner, {
-                    ref: primitiveElement as any,
+                    ref: primitiveElement,
                     'data-tag': currentElement.value?.tagName ?? '',
                 });
             },
