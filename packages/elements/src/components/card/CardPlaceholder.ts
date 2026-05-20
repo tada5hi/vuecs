@@ -77,7 +77,15 @@ export const VCCardPlaceholder = defineComponent({
                 ));
             }
 
-            const bodyLines = Math.max(0, props.bodyLines);
+            // Clamp + integer-ize bodyLines. Without an upper cap a
+            // pathological value (`:body-lines="100000"`) would
+            // generate tens of thousands of bar vnodes and freeze
+            // the render. Skeletons are visual indicators, not data
+            // payloads — `20` lines covers every realistic use.
+            const MAX_BODY_LINES = 20;
+            const bodyLines = Number.isFinite(props.bodyLines) ?
+                Math.min(MAX_BODY_LINES, Math.max(0, Math.floor(props.bodyLines))) :
+                0;
             if (bodyLines > 0) {
                 const widths = ['100%', '95%', '90%', '88%', '92%'];
                 const bodyChildren = Array.from({ length: bodyLines }, (_, i) => {
