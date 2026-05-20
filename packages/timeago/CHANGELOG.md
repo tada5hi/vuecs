@@ -1,5 +1,44 @@
 # Changelog
 
+## [3.0.0](https://github.com/tada5hi/vuecs/compare/timeago-v2.0.0...timeago-v3.0.0) (2026-05-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* Replace hardcoded Tailwind palette classes across theme packages with a CSS-variable design-token layer
+* Replace hardcoded Tailwind palette classes across theme packages with a CSS-variable design-token layer
+* change architecture
+
+### Features
+
+* add VitePress docs site, switch to Apache 2.0, fix library bugs ([#1512](https://github.com/tada5hi/vuecs/issues/1512)) ([9892980](https://github.com/tada5hi/vuecs/commit/989298063a1184921498e8d5932fa6c95e6abd07))
+* allow string to be passed as date-time + add slot typing for countdown ([00f2c78](https://github.com/tada5hi/vuecs/commit/00f2c7889f3a4ae6e051605be1a5332ed85b1259))
+* **core:** add global behavioral defaults system ([#1507](https://github.com/tada5hi/vuecs/issues/1507)) ([b52f4e5](https://github.com/tada5hi/vuecs/commit/b52f4e5a360d2804279465ada37f3ce6522d37b4))
+* **core:** add structured variant system and classes sub-object ([#1497](https://github.com/tada5hi/vuecs/issues/1497)) ([529a5bf](https://github.com/tada5hi/vuecs/commit/529a5bf2afff6874a4b952db5b2c9a4a67d72dae))
+* **core:** type-safe theme slots via ThemeElements declaration merging ([#1496](https://github.com/tada5hi/vuecs/issues/1496)) ([f0571c6](https://github.com/tada5hi/vuecs/commit/f0571c69416b1322bb071bb6b3d8f2f65f723885))
+* design-token layer + runtime palette switcher + Nuxt module ([#1508](https://github.com/tada5hi/vuecs/issues/1508)) ([398fb85](https://github.com/tada5hi/vuecs/commit/398fb8555b4ed16b87c3d2703bfed67e31af38fc))
+* export per-component &lt;Name&gt;Props types across all packages ([#1523](https://github.com/tada5hi/vuecs/issues/1523)) ([47d43de](https://github.com/tada5hi/vuecs/commit/47d43de5dd15b41a19db4030bcfb52e91374c17a))
+* initial release for timeago component ([6db9b59](https://github.com/tada5hi/vuecs/commit/6db9b593b7678bf9788141795559553ec8fdf860))
+* refactor and optimized component & dependency management ([eb85211](https://github.com/tada5hi/vuecs/commit/eb85211b9efaa08cfde06c2ad6dc5eaca2a87fc8))
+* rename @vuecs/form-controls → @vuecs/forms, migrate to Reka pri… ([#1522](https://github.com/tada5hi/vuecs/issues/1522)) ([b633851](https://github.com/tada5hi/vuecs/commit/b633851eadf022facdcd59ee933b5f2031d83b72))
+* replace store system with theme resolution engine ([#1492](https://github.com/tada5hi/vuecs/issues/1492)) ([7d586b3](https://github.com/tada5hi/vuecs/commit/7d586b3707d5210970ce0138985e3cc8210264cf))
+* **timeago:** extend vue runtime interface with component ([6309d54](https://github.com/tada5hi/vuecs/commit/6309d54352da65845386a58fdc8f41fd6f0ad3ba))
+
+
+### Bug Fixes
+
+* bump date-fns to v3 ([54f4125](https://github.com/tada5hi/vuecs/commit/54f412507a8be1195e6f239148f414c528b3cb6b))
+* **deps:** bump (dev-)dependencies ([31acd65](https://github.com/tada5hi/vuecs/commit/31acd654d3c14eeba8edae6d889c5c3c48b85f63))
+* **deps:** bump date-fns from 3.0.0 to 3.0.1 ([#848](https://github.com/tada5hi/vuecs/issues/848)) ([067aadf](https://github.com/tada5hi/vuecs/commit/067aadf962b39d48c8b631b8016dddb9b3d49fef))
+* **deps:** bump date-fns from 3.0.1 to 3.0.5 ([#849](https://github.com/tada5hi/vuecs/issues/849)) ([d206c40](https://github.com/tada5hi/vuecs/commit/d206c4038dd9de86cbb16343e60edad42d84970b))
+* **deps:** bump date-fns from 3.0.5 to 3.3.1 ([#893](https://github.com/tada5hi/vuecs/issues/893)) ([72b8937](https://github.com/tada5hi/vuecs/commit/72b8937de00f0c5b1d735c0ce6d687adeacc6b35))
+* **deps:** bump date-fns from 3.3.1 to 3.6.0 ([#959](https://github.com/tada5hi/vuecs/issues/959)) ([a509c33](https://github.com/tada5hi/vuecs/commit/a509c33fb5000455209a2d482723174d2db7d26f))
+* **deps:** bump the minorandpatch group across 1 directory with 14 updates ([#1528](https://github.com/tada5hi/vuecs/issues/1528)) ([68d5e3b](https://github.com/tada5hi/vuecs/commit/68d5e3bbbe53d0c7f4999a989272fd93f886e0e1))
+* **deps:** bump the minorandpatch group across 1 directory with 17 updates ([#1558](https://github.com/tada5hi/vuecs/issues/1558)) ([eae87f0](https://github.com/tada5hi/vuecs/commit/eae87f0ac750f521f2d604823c7dfaffcbb680a2))
+* permit date-fns v3.x or v4.x ([5d7238f](https://github.com/tada5hi/vuecs/commit/5d7238fc7776252a6f4d4325c01160b33794a963))
+* pre-release audit batch (items 1-19) ([#1578](https://github.com/tada5hi/vuecs/issues/1578)) ([ee21e19](https://github.com/tada5hi/vuecs/commit/ee21e1958712fccdaac695ff4e3d8f79adc4a297))
+* remove copyright & trigger release ([d23f8af](https://github.com/tada5hi/vuecs/commit/d23f8afe5f3f00201017925bbd0c0e8d421aae99))
+
 ## [2.0.0](https://github.com/tada5hi/vuecs/compare/timeago-v1.1.2...timeago-v2.0.0) (2026-05-20)
 
 

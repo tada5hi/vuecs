@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/navigation",
-    "version": "3.0.0",
+    "version": "4.0.0",
     "type": "module",
     "description": "A package for multi level navigations.",
     "exports": {
@@ -55,14 +55,14 @@
     "devDependencies": {
         "@vue/test-utils": "^2.4.10",
         "@vuecs/core": "^3.0.0",
-        "@vuecs/link": "^2.0.0",
+        "@vuecs/link": "^3.0.0",
         "jsdom": "^29.1.1",
         "vue": "^3.5.34",
         "vue-router": "^5.0.6"
     },
     "peerDependencies": {
         "@vuecs/core": "^3.0.0",
-        "@vuecs/link": "^2.0.0",
+        "@vuecs/link": "^3.0.0",
         "vue": "^3.x",
         "vue-router": "^4.x || ^5.x"
     },

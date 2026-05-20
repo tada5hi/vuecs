@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/forms",
-    "version": "4.0.0",
+    "version": "5.0.0",
     "type": "module",
     "description": "Form controls (inputs, checkbox, switch, select, textarea, range slider) on Reka UI primitives.",
     "exports": {
