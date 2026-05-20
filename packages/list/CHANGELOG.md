@@ -1,5 +1,36 @@
 # Changelog
 
+## 1.0.0 (2026-05-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* **table:** select-all column + shared selection machine in @vuecs/core ([#1577](https://github.com/tada5hi/vuecs/issues/1577))
+* **list:** compound API redesign + selection v-model (plan 027) ([#1565](https://github.com/tada5hi/vuecs/issues/1565))
+
+### Features
+
+* **list:** compound API redesign + selection v-model (plan 027) ([#1565](https://github.com/tada5hi/vuecs/issues/1565)) ([2b6c45a](https://github.com/tada5hi/vuecs/commit/2b6c45ad8ada913abcc91c05cc64501d70265ad2))
+* redesign @vuecs/list-controls → @vuecs/list with compound API ([#1525](https://github.com/tada5hi/vuecs/issues/1525)) ([b6a44b7](https://github.com/tada5hi/vuecs/commit/b6a44b7eda357cc2b3e946da2917f1fe8975a5a8))
+* **table:** select-all column + shared selection machine in @vuecs/core ([#1577](https://github.com/tada5hi/vuecs/issues/1577)) ([9b99d59](https://github.com/tada5hi/vuecs/commit/9b99d59f415cb812ba1ebe43c25cc2124e7a5bf8))
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 14 updates ([#1528](https://github.com/tada5hi/vuecs/issues/1528)) ([68d5e3b](https://github.com/tada5hi/vuecs/commit/68d5e3bbbe53d0c7f4999a989272fd93f886e0e1))
+* **deps:** bump the minorandpatch group across 1 directory with 17 updates ([#1558](https://github.com/tada5hi/vuecs/issues/1558)) ([eae87f0](https://github.com/tada5hi/vuecs/commit/eae87f0ac750f521f2d604823c7dfaffcbb680a2))
+* **deps:** bump the minorandpatch group across 1 directory with 7 updates ([#1564](https://github.com/tada5hi/vuecs/issues/1564)) ([d3649af](https://github.com/tada5hi/vuecs/commit/d3649afa0950eb746d84514edd6639b00eaf4800))
+* pre-release audit batch (items 1-19) ([#1578](https://github.com/tada5hi/vuecs/issues/1578)) ([ee21e19](https://github.com/tada5hi/vuecs/commit/ee21e1958712fccdaac695ff4e3d8f79adc4a297))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^2.0.0 to ^3.0.0
+  * peerDependencies
+    * @vuecs/core bumped from ^2.0.0 to ^3.0.0
+
 ## [2.0.1](https://github.com/tada5hi/vuecs/compare/list-controls-v2.0.0...list-controls-v2.0.1) (2026-02-18)
 
 
