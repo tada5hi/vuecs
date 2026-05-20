@@ -1757,7 +1757,7 @@ data-state visualization handled by the bridge CSS as noted above).
 Skeleton / placeholder loading components — the "Twitter / Facebook
 shimmer" pattern.
 
-```
+```text
 @vuecs/placeholder/
   src/
     components/

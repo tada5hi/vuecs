@@ -29,6 +29,18 @@
 .vc-placeholder-lg { min-height: 1.4em; }
 .vc-placeholder-xl { min-height: 2em; }
 
+/* Shape variants — `pill` fully rounds the ends (button / badge
+ * skeletons); `circle` forces a 1:1 aspect ratio using the width
+ * value as the diameter (avatar skeletons — pair with a fixed
+ * `:width` like `'40px'`). */
+.vc-placeholder-pill { border-radius: 9999px; }
+
+.vc-placeholder-circle {
+    aspect-ratio: 1 / 1;
+    height: auto;
+    border-radius: 50%;
+}
+
 /* Glow animation — opacity pulse. Matches Bootstrap 5's
  * `.placeholder-glow` behavior; subtler than the wave. */
 .vc-placeholder-glow,
@@ -40,10 +52,19 @@
     50% { opacity: 0.2; }
 }
 
-/* Wave animation — moving gradient sweep. The animation is bound
- * to the bar's background-image so it works whether the wave class
- * lives on the bar itself or on a parent (consumers / themes can
- * choose either placement). */
+/* Wave animation — moving gradient sweep. The animation works
+ * whether the wave class lives on the bar itself or on a parent
+ * (consumers / themes can choose either placement).
+ *
+ * The mask uses alpha mode explicitly — the spec default for `mask`
+ * is luminance-source while `-webkit-mask` is alpha; declaring
+ * `mask-mode: alpha` makes both interpretations consistent across
+ * Chrome / Firefox / Safari.
+ *
+ * The keyframe sweeps mask-position from `200% 0%` to `0% 0%`,
+ * which renders as a left-to-right wave (matching the conventional
+ * LinkedIn / Facebook direction). The 130deg gradient angle puts
+ * the highlight diagonally across the bar. */
 .vc-placeholder-wave .vc-placeholder,
 .vc-placeholder.vc-placeholder-wave {
     mask-image: linear-gradient(
@@ -60,13 +81,17 @@
     );
     mask-size: 200% 100%;
     -webkit-mask-size: 200% 100%;
+    mask-mode: alpha;
+    -webkit-mask-mode: alpha;
+    mask-position: 200% 0%;
+    -webkit-mask-position: 200% 0%;
     animation: vc-placeholder-wave 2s linear infinite;
 }
 
 @keyframes vc-placeholder-wave {
     100% {
-        mask-position: -200% 0%;
-        -webkit-mask-position: -200% 0%;
+        mask-position: 0% 0%;
+        -webkit-mask-position: 0% 0%;
     }
 }
 

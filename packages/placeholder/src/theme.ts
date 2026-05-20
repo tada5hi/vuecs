@@ -20,8 +20,13 @@ export const placeholderThemeDefaults: ComponentThemeDefinition<PlaceholderTheme
             lg: { root: 'vc-placeholder-lg' },
             xl: { root: 'vc-placeholder-xl' },
         },
+        shape: {
+            rect: { root: '' },
+            pill: { root: 'vc-placeholder-pill' },
+            circle: { root: 'vc-placeholder-circle' },
+        },
     },
-    defaultVariants: { size: 'md' },
+    defaultVariants: { size: 'md', shape: 'rect' },
 };
 
 export const placeholderTableThemeDefaults: ComponentThemeDefinition<PlaceholderTableThemeClasses> = {

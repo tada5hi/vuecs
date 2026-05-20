@@ -11,6 +11,14 @@ export type PlaceholderSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 /** Shimmer animation flavor. `none` disables the animation entirely. */
 export type PlaceholderAnimation = 'wave' | 'glow' | 'none';
 
+/**
+ * Shape of the bar. `rect` is the default (slightly-rounded
+ * rectangle); `pill` rounds the ends fully (use for button /
+ * badge skeletons); `circle` forces a 1:1 aspect (use for avatar
+ * skeletons — combine with `:width` and the bar height will match).
+ */
+export type PlaceholderShape = 'rect' | 'pill' | 'circle';
+
 // ──────────────────────────────────────────────────────────────────────────
 // Per-component theme classes
 // ──────────────────────────────────────────────────────────────────────────

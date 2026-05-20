@@ -54,6 +54,26 @@ describe('<VCPlaceholder>', () => {
         const wrapper = mount(VCPlaceholder, { props: { size: 'lg' }, global: { plugins: [...plugins] } });
         expect(wrapper.element.classList.contains('vc-placeholder-lg')).toBe(true);
     });
+
+    it('shape="circle" applies the circle variant', () => {
+        const wrapper = mount(VCPlaceholder, { props: { shape: 'circle' }, global: { plugins: [...plugins] } });
+        expect(wrapper.element.classList.contains('vc-placeholder-circle')).toBe(true);
+    });
+
+    it('shape="pill" applies the pill variant', () => {
+        const wrapper = mount(VCPlaceholder, { props: { shape: 'pill' }, global: { plugins: [...plugins] } });
+        expect(wrapper.element.classList.contains('vc-placeholder-pill')).toBe(true);
+    });
+
+    it('clamps negative numeric width to 0%', () => {
+        const wrapper = mount(VCPlaceholder, { props: { width: -50 }, global: { plugins: [...plugins] } });
+        expect((wrapper.element as HTMLElement).style.width).toBe('0%');
+    });
+
+    it(':duration sets the animation-duration inline style', () => {
+        const wrapper = mount(VCPlaceholder, { props: { duration: '500ms' }, global: { plugins: [...plugins] } });
+        expect((wrapper.element as HTMLElement).style.animationDuration).toBe('500ms');
+    });
 });
 
 describe('<VCPlaceholderTable>', () => {
@@ -99,13 +119,54 @@ describe('<VCPlaceholderTable>', () => {
     it('handles zero rows / columns gracefully', () => {
         const wrapper = mount(VCPlaceholderTable, {
             props: {
-                rows: 0, 
-                columns: 0, 
-                showHeader: false, 
+                rows: 0,
+                columns: 0,
+                showHeader: false,
             },
             global: { plugins: [...plugins] },
         });
         expect(wrapper.element.querySelectorAll('tbody tr').length).toBe(0);
+    });
+
+    it('every header bar receives a valid (non-undefined) width', () => {
+        // Regression test for the negative-modulo bug — the header
+        // band passes `rowIdx = -1` into widthFor, and JS `%` with a
+        // negative dividend yields a negative remainder. Without the
+        // normalized modulo, `pattern[-3]` was `undefined` and the
+        // first 3 header bars rendered `width: undefined%` (dropped
+        // by the browser, collapsing to zero width).
+        const wrapper = mount(VCPlaceholderTable, {
+            props: { rows: 1, columns: 4 },
+            global: { plugins: [...plugins] },
+        });
+        const headerBars = wrapper.element.querySelectorAll(
+            'thead .vc-placeholder',
+        ) as NodeListOf<HTMLElement>;
+        expect(headerBars.length).toBe(4);
+        headerBars.forEach((bar) => {
+            expect(bar.style.width).toMatch(/^\d+%$/);
+        });
+    });
+
+    it('#thead slot replaces the default header row', () => {
+        const wrapper = mount(VCPlaceholderTable, {
+            props: { rows: 2, columns: 3 },
+            slots: { thead: '<tr><th data-test="custom-thead">CUSTOM</th></tr>' },
+            global: { plugins: [...plugins] },
+        });
+        expect(wrapper.element.querySelector('thead [data-test="custom-thead"]')).not.toBeNull();
+        // Default header bars are gone.
+        expect(wrapper.element.querySelectorAll('thead .vc-placeholder').length).toBe(0);
+    });
+
+    it('#tfoot slot replaces the default footer row when showFooter is on', () => {
+        const wrapper = mount(VCPlaceholderTable, {
+            props: { rows: 2, columns: 3, showFooter: true },
+            slots: { tfoot: '<tr><td data-test="custom-tfoot">CUSTOM</td></tr>' },
+            global: { plugins: [...plugins] },
+        });
+        expect(wrapper.element.querySelector('tfoot [data-test="custom-tfoot"]')).not.toBeNull();
+        expect(wrapper.element.querySelectorAll('tfoot .vc-placeholder').length).toBe(0);
     });
 });
 
@@ -164,7 +225,7 @@ describe('<VCPlaceholderWrapper>', () => {
         expect(wrapper.element.getAttribute('aria-busy')).toBeNull();
     });
 
-    it('renders loading slot + aria-busy when loading=true', () => {
+    it('renders loading slot + ARIA loading announcement when loading=true', () => {
         const wrapper = mount(VCPlaceholderWrapper, {
             props: { loading: true },
             slots: { default: '<p data-test="real">real</p>', loading: '<p data-test="skeleton">skeleton</p>' },
@@ -172,6 +233,11 @@ describe('<VCPlaceholderWrapper>', () => {
         });
         expect(wrapper.element.querySelector('[data-test="real"]')).toBeNull();
         expect(wrapper.element.querySelector('[data-test="skeleton"]')).not.toBeNull();
+        // W3C "Loading content" pattern — exposes the wrapper as a
+        // polite live region so AT consumers get an announcement
+        // when the loading state begins.
         expect(wrapper.element.getAttribute('aria-busy')).toBe('true');
+        expect(wrapper.element.getAttribute('role')).toBe('status');
+        expect(wrapper.element.getAttribute('aria-live')).toBe('polite');
     });
 });

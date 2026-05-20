@@ -4,6 +4,7 @@ Skeleton / placeholder loading components. Show animated shapes while
 content is loading — the "Twitter / Facebook shimmer" pattern.
 
 <Playground name="placeholder">
+  <template #code>
 
 ```vue
 <script setup>
@@ -21,6 +22,12 @@ const loading = ref(true);
 <template>
     <!-- Single bar — building block. -->
     <VCPlaceholder width="60%" size="lg" />
+
+    <!-- Circle skeleton — for avatars. -->
+    <VCPlaceholder shape="circle" width="40px" />
+
+    <!-- Pill — for buttons / badges. -->
+    <VCPlaceholder shape="pill" width="80px" size="lg" />
 
     <!-- Table-shaped skeleton. -->
     <VCPlaceholderTable :rows="5" :columns="4" />
@@ -40,6 +47,7 @@ const loading = ref(true);
 </template>
 ```
 
+  </template>
 </Playground>
 
 ## Components
@@ -50,9 +58,11 @@ Single animated bar — the building block.
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `width` | `string \| number` | `'100%'` | Width — CSS length (`'12rem'`) or number interpreted as percentage (`60` → `'60%'`). |
+| `width` | `string \| number` | `'100%'` | Width — CSS length (`'12rem'`) or number interpreted as percentage (`60` → `'60%'`). Negative numbers clamp to `0`. |
 | `size` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | `'md'` | Size tier — drives the bar height via the `size` theme variant. |
+| `shape` | `'rect' \| 'pill' \| 'circle'` | `'rect'` | Bar shape. `pill` rounds the ends (button / badge skeletons); `circle` forces 1:1 aspect (avatar skeletons — pair with a fixed `:width`). |
 | `animation` | `'wave' \| 'glow' \| 'none'` | `'wave'` | Shimmer animation. `none` disables the animation (e.g. for reduced-motion callers). |
+| `duration` | `string` | `undefined` | Override the shimmer duration (`'500ms'`, `'4s'`). Defaults to the theme's value (typically `2s`). |
 | `tag` | `string` | `'span'` | Element to render as. |
 
 ### `<VCPlaceholderTable>`

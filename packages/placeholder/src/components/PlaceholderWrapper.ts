@@ -60,6 +60,13 @@ export const VCPlaceholderWrapper = defineComponent({
             props.tag,
             mergeProps(attrs, {
                 class: theme.value.root || undefined,
+                // W3C ARIA "Loading content" pattern: while loading,
+                // expose the wrapper as a polite live region with
+                // `aria-busy="true"`. The skeletons themselves stay
+                // `aria-hidden` — AT consumers get a single "loading"
+                // announcement rather than enumerating every bar.
+                role: props.loading ? 'status' : undefined,
+                'aria-live': props.loading ? 'polite' : undefined,
                 'aria-busy': props.loading ? 'true' : undefined,
                 'data-loading': props.loading ? '' : undefined,
             }),
