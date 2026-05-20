@@ -161,7 +161,11 @@ describe('<VCPlaceholderTable>', () => {
 
     it('#tfoot slot replaces the default footer row when showFooter is on', () => {
         const wrapper = mount(VCPlaceholderTable, {
-            props: { rows: 2, columns: 3, showFooter: true },
+            props: {
+                rows: 2, 
+                columns: 3, 
+                showFooter: true, 
+            },
             slots: { tfoot: '<tr><td data-test="custom-tfoot">CUSTOM</td></tr>' },
             global: { plugins: [...plugins] },
         });
