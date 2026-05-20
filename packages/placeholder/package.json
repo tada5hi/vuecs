@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/placeholder",
-    "version": "0.0.0",
+    "version": "1.0.0",
     "type": "module",
     "description": "Skeleton / placeholder loading components for vuecs (the Twitter/Facebook shimmer pattern).",
     "exports": {
