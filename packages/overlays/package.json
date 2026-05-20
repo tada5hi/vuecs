@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/overlays",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "type": "module",
     "description": "Overlay components (Modal, Popover, Tooltip, DropdownMenu, ContextMenu) for vuecs, built on Reka UI primitives.",
     "exports": {
