@@ -460,6 +460,69 @@ complete layout replacement using the same handlers.
 ```
 :::
 
+## Table-placeholder skeleton
+
+`<VCTablePlaceholder>` is the table-shaped loading skeleton —
+`rows × columns` placeholder bars in a real `<table>` element so
+the surrounding layout reads as a table. Cell widths vary per
+index so the result looks natural rather than a uniform grid.
+Composes `<VCPlaceholder>` from `@vuecs/placeholder` per cell.
+
+```vue
+<script setup>
+import { VCTablePlaceholder } from '@vuecs/table';
+</script>
+
+<template>
+    <VCTablePlaceholder :rows="5" :columns="7" show-header />
+
+    <!-- Custom header markup via the `#thead` slot. -->
+    <VCTablePlaceholder :rows="3" :columns="4">
+        <template #thead>
+            <tr><th colspan="4">Loading entries…</th></tr>
+        </template>
+    </VCTablePlaceholder>
+</template>
+```
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `rows` | `number` | `5` | Body row count. |
+| `columns` | `number` | `4` | Column count. |
+| `showHeader` | `boolean` | `true` | Render `<thead>` band. |
+| `showFooter` | `boolean` | `false` | Render `<tfoot>` band. |
+| `animation` | `'wave' \| 'glow' \| 'none'` | `'wave'` | Forwarded to every inner bar. |
+
+**Slot overrides:** `#thead` / `#tfoot` replace the default header /
+footer rendering with consumer markup — useful when the default
+fixed-column header doesn't match the real table layout.
+
+### Integrated `:placeholder` mode on `<VCTable>` / `<VCTableLite>`
+
+For the common "swap real rows for a skeleton while loading" pattern,
+opt into `:placeholder` directly on the table — no `VCPlaceholderWrapper`
+chrome needed. The table already knows its `:columns` count and the
+current `:data.length`, so the skeleton matches the layout exactly.
+
+```vue
+<VCTable :busy="loading" placeholder :columns :data />
+```
+
+Behavior:
+
+- Header still renders from `:columns` (real labels).
+- Body is replaced by a `<tbody>` of skeleton rows; `:placeholder-rows`
+  overrides the count (defaults to `:data.length`, or `5` when the
+  data is empty — the first-load case).
+- `<VCTableLoading>` / `<VCTableEmpty>` siblings are suppressed while
+  in placeholder mode so AT consumers don't get a double-loader.
+- No-op when `:busy` is `false`, or when `:columns` is unset.
+
+Same opt-in is available on `<VCTableLite>`. For more layout
+control (custom header markup, separate skeleton row counts, no
+columns-driver setup), reach for the explicit `<VCTablePlaceholder>` +
+`<VCPlaceholderWrapper>` composition instead.
+
 ## Theme keys
 
 | Component | Slot keys |
@@ -469,6 +532,7 @@ complete layout replacement using the same handlers.
 | `tableCell` | `root` |
 | `tableHeadCell` | `root`, `sortIcon` |
 | `tableLoading` | `root`, `overlay` |
+| `tablePlaceholder` | `root`, `header`, `body`, `footer`, `row`, `cell` |
 | `tableSortIndicators` | `root`, `label`, `empty`, `chip`, `chipToggle`, `chipPosition`, `chipLabel`, `chipArrow`, `chipRemove`, `addWrapper`, `add`, `clear` |
 
 ## Variant axes opted-into per theme

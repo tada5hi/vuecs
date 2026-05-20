@@ -1066,6 +1066,37 @@ export default function tailwindTheme(): Theme {
                 },
                 defaultVariants: { size: 'md' },
             },
+            placeholder: {
+                // Tailwind 4 ships `animate-pulse` for the glow
+                // pattern. The wave variant inherits the default
+                // (`vc-placeholder-wave`), which composes the
+                // shipped mask-based gradient sweep from
+                // `@vuecs/placeholder/assets/index.css`.
+                classes: {
+                    root: 'bg-bg-muted text-fg-muted',
+                    glow: 'animate-pulse',
+                },
+            },
+            tablePlaceholder: {
+                classes: {
+                    root: 'w-full table-fixed border-collapse',
+                    header: 'border-b border-border',
+                    body: '',
+                    footer: 'border-t border-border',
+                    row: '[&>*]:py-2 [&>*]:px-3',
+                    cell: '',
+                },
+            },
+            cardPlaceholder: {
+                classes: {
+                    root: 'flex flex-col gap-2 rounded-md border border-border bg-bg p-4 text-fg-muted',
+                    image: 'overflow-hidden rounded-md',
+                    header: '',
+                    body: 'flex flex-col gap-1.5',
+                    footer: 'mt-2 flex gap-2',
+                },
+            },
+            placeholderWrapper: { classes: { root: 'relative' } },
         },
     };
 }

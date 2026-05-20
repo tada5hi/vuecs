@@ -978,6 +978,36 @@ export default function bootstrapTheme(): Theme {
                 },
                 defaultVariants: { size: 'md' },
             },
+            placeholder: {
+                // Bootstrap 5 ships native `.placeholder`,
+                // `.placeholder-wave`, and `.placeholder-glow` —
+                // map onto those directly.
+                classes: {
+                    root: 'placeholder',
+                    wave: 'placeholder-wave',
+                    glow: 'placeholder-glow',
+                },
+            },
+            tablePlaceholder: {
+                classes: {
+                    root: 'table table-borderless mb-0',
+                    header: 'border-bottom',
+                    body: '',
+                    footer: 'border-top',
+                    row: '',
+                    cell: '',
+                },
+            },
+            cardPlaceholder: {
+                classes: {
+                    root: 'card',
+                    image: 'ratio ratio-16x9',
+                    header: 'card-header',
+                    body: 'card-body',
+                    footer: 'card-footer d-flex gap-2',
+                },
+            },
+            placeholderWrapper: { classes: { root: 'position-relative' } },
         },
         /*
          * Theme-runtime hook (plan 021): mirror the resolved color mode

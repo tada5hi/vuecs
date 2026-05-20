@@ -94,6 +94,37 @@ Use `:as-child` to render `<VCCard>` (or any part) as a passed slot child. Combi
 | `themeClass` | `Partial<*ThemeClasses>` | `undefined` | Per-instance theme override. |
 | `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values; merged onto card context. |
 
+## Card-placeholder skeleton
+
+`<VCCardPlaceholder>` is the card-shaped loading skeleton — image +
+header line + body lines + footer block. Each section is
+independently togglable via `:no-*` props. Composes
+`<VCPlaceholder>` from `@vuecs/placeholder` per section, so the
+`:animation` prop flows through and reduced-motion handling at the
+bar level applies here too.
+
+```vue
+<script setup>
+import { VCCardPlaceholder } from '@vuecs/elements';
+</script>
+
+<template>
+    <VCCardPlaceholder :body-lines="3" animation="wave" />
+
+    <!-- Skip cover + footer; show only header + body. -->
+    <VCCardPlaceholder no-img no-footer />
+</template>
+```
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `noImg` | `boolean` | `false` | Skip the cover-image placeholder. |
+| `noHeader` | `boolean` | `false` | Skip the header line. |
+| `noFooter` | `boolean` | `false` | Skip the footer block. |
+| `imgHeight` | `string` | `'180px'` | Cover-image placeholder height. |
+| `bodyLines` | `number` | `3` | Number of body lines below the header. |
+| `animation` | `'wave' \| 'glow' \| 'none'` | `'wave'` | Forwarded to every inner bar. |
+
 ## Theme keys
 
 | Component | Key | Default class |
@@ -104,6 +135,7 @@ Use `:as-child` to render `<VCCard>` (or any part) as a passed slot child. Combi
 | `cardDescription` | `root` | `vc-card-description` |
 | `cardBody` | `root` | `vc-card-body` |
 | `cardFooter` | `root` | `vc-card-footer` |
+| `cardPlaceholder` | `root` / `image` / `header` / `body` / `footer` | `vc-card-placeholder-*` |
 
 ## Variants opted-into per shipping theme
 

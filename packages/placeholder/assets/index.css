@@ -1,0 +1,117 @@
+/*
+ * @vuecs/placeholder — structural defaults.
+ *
+ * Ships a minimal shimmer animation that works without any theme.
+ * Themes layer their visual styling (colors, radii, finer animation
+ * tuning) on top via the `placeholder*` theme keys.
+ *
+ * The bar itself is an inline-block element with a flat background;
+ * the wave / glow animation modifiers add the shimmer overlay. The
+ * default `wave` animation is the "moving-gradient" pattern (also
+ * known as the Facebook / LinkedIn skeleton). `glow` is a simpler
+ * opacity pulse — used by Bootstrap 5 by default.
+ *
+ * `prefers-reduced-motion: reduce` disables both animations.
+ */
+
+.vc-placeholder {
+    display: inline-block;
+    min-height: 1em;
+    vertical-align: middle;
+    background-color: currentcolor;
+    opacity: 0.5;
+    border-radius: 0.25rem;
+}
+
+.vc-placeholder-xs { min-height: 0.4em; }
+.vc-placeholder-sm { min-height: 0.65em; }
+.vc-placeholder-md { min-height: 1em; }
+.vc-placeholder-lg { min-height: 1.4em; }
+.vc-placeholder-xl { min-height: 2em; }
+
+/* Shape variants — `pill` fully rounds the ends (button / badge
+ * skeletons); `circle` forces a 1:1 aspect ratio using the width
+ * value as the diameter (avatar skeletons — pair with a fixed
+ * `:width` like `'40px'`). */
+.vc-placeholder-pill { border-radius: 9999px; }
+
+.vc-placeholder-circle {
+    aspect-ratio: 1 / 1;
+    height: auto;
+    border-radius: 50%;
+}
+
+/* Glow animation — opacity pulse. Matches Bootstrap 5's
+ * `.placeholder-glow` behavior; subtler than the wave. */
+.vc-placeholder-glow,
+.vc-placeholder-glow .vc-placeholder {
+    animation: vc-placeholder-glow 2s ease-in-out infinite;
+}
+
+@keyframes vc-placeholder-glow {
+    50% { opacity: 0.2; }
+}
+
+/* Wave animation — moving gradient sweep. The animation works
+ * whether the wave class lives on the bar itself or on a parent
+ * (consumers / themes can choose either placement).
+ *
+ * The mask uses alpha mode explicitly — the spec default for `mask`
+ * is luminance-source while `-webkit-mask` is alpha; declaring
+ * `mask-mode: alpha` makes both interpretations consistent across
+ * Chrome / Firefox / Safari.
+ *
+ * The keyframe sweeps mask-position from `200% 0%` to `0% 0%`,
+ * which renders as a left-to-right wave (matching the conventional
+ * LinkedIn / Facebook direction). The 130deg gradient angle puts
+ * the highlight diagonally across the bar. */
+.vc-placeholder-wave .vc-placeholder,
+.vc-placeholder.vc-placeholder-wave {
+    mask-image: linear-gradient(
+        130deg,
+        currentcolor 55%,
+        rgba(0, 0, 0, 0.8) 75%,
+        currentcolor 95%
+    );
+    -webkit-mask-image: linear-gradient(
+        130deg,
+        currentcolor 55%,
+        rgba(0, 0, 0, 0.8) 75%,
+        currentcolor 95%
+    );
+    mask-size: 200% 100%;
+    -webkit-mask-size: 200% 100%;
+    mask-mode: alpha;
+    -webkit-mask-mode: alpha;
+    mask-position: 200% 0%;
+    -webkit-mask-position: 200% 0%;
+    animation: vc-placeholder-wave 2s linear infinite;
+}
+
+@keyframes vc-placeholder-wave {
+    100% {
+        mask-position: 0% 0%;
+        -webkit-mask-position: 0% 0%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vc-placeholder-wave,
+    .vc-placeholder-wave .vc-placeholder,
+    .vc-placeholder.vc-placeholder-wave,
+    .vc-placeholder-glow,
+    .vc-placeholder-glow .vc-placeholder {
+        animation: none;
+    }
+}
+
+/* Composite skeletons — table-shaped + card-shaped — live in
+ * `@vuecs/table` and `@vuecs/elements` respectively as
+ * `VCTablePlaceholder` / `VCCardPlaceholder`. Each composes the
+ * primitive `<VCPlaceholder>` shipped here. */
+
+/* Wrapper — adds nothing structurally; presence enables
+ * theme-driven dimming / transition effects. */
+.vc-placeholder-wrapper {
+    position: relative;
+}

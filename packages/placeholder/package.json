@@ -1,0 +1,63 @@
+{
+    "name": "@vuecs/placeholder",
+    "version": "0.0.0",
+    "type": "module",
+    "description": "Skeleton / placeholder loading components for vuecs (the Twitter/Facebook shimmer pattern).",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./dist/index.d.ts",
+            "style": "./dist/style.css",
+            "import": "./dist/index.mjs"
+        },
+        "./style.css": "./dist/style.css",
+        "./dist/style.css": "./dist/style.css"
+    },
+    "style": "./dist/style.css",
+    "files": [
+        "dist"
+    ],
+    "keywords": [
+        "vue",
+        "vuecs",
+        "placeholder",
+        "skeleton",
+        "shimmer",
+        "loading",
+        "component"
+    ],
+    "author": {
+        "name": "Peter Placzek",
+        "email": "contact@tada5hi.net",
+        "url": "https://tada5hi.net"
+    },
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tada5hi/vuecs.git",
+        "directory": "packages/placeholder"
+    },
+    "scripts": {
+        "build:js": "tsdown",
+        "build:types": "vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json",
+        "build": "rimraf dist && npm run build:js && npm run build:types",
+        "test": "vitest --config test/vitest.config.ts --run"
+    },
+    "devDependencies": {
+        "@vuecs/core": "^3.0.0",
+        "@vue/test-utils": "^2.4.10",
+        "@vitejs/plugin-vue": "^6.0.1",
+        "jsdom": "^29.1.1",
+        "vue": "^3.5.34"
+    },
+    "peerDependencies": {
+        "@vuecs/core": "^3.0.0",
+        "vue": "^3.x"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

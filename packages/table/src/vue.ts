@@ -7,6 +7,7 @@ import type VCTableHeadCell from './components/TableHeadCell.vue';
 import type VCTableHeader from './components/TableHeader.vue';
 import type VCTableLite from './components/TableLite.vue';
 import type VCTableLoading from './components/TableLoading.vue';
+import type { VCTablePlaceholder } from './components/TablePlaceholder';
 import type VCTableRow from './components/TableRow.vue';
 import type VCTableSortIndicators from './components/TableSortIndicators.vue';
 
@@ -22,6 +23,7 @@ declare module '@vue/runtime-core' {
         VCTableHeadCell: typeof VCTableHeadCell;
         VCTableEmpty: typeof VCTableEmpty;
         VCTableLoading: typeof VCTableLoading;
+        VCTablePlaceholder: typeof VCTablePlaceholder;
         VCTableSortIndicators: typeof VCTableSortIndicators;
     }
 }

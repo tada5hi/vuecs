@@ -50,6 +50,21 @@ const tableProps = {
     /** Busy flag — drives `aria-busy` on the `<table>` and gates the loading-band render. */
     busy: { type: Boolean, default: false },
     /**
+     * Render a skeleton body while `:busy` is true (replaces the
+     * real `<VCTableBody>` rows with `<VCTablePlaceholder>` rows
+     * matching `:columns.length`). Header stays. Opt-in: when this
+     * is `false` (default) the existing `:busy` semantic (aria-busy
+     * + optional `<VCTableLoading>` band) is preserved unchanged.
+     */
+    placeholder: { type: Boolean, default: false },
+    /**
+     * Number of skeleton rows to render when `:busy && :placeholder`.
+     * Defaults to the current `:data.length` (so the layout doesn't
+     * jump on the first load → busy → data cycle), with a floor of
+     * `5` when `:data` is empty.
+     */
+    placeholderRows: { type: Number, default: undefined },
+    /**
      * Controlled sort state as `SortDescriptor[]`. Use `v-model:sort`.
      * Empty array means "no sort". Since v1.x-B this is always an
      * array (BREAKING change from v0.1's `{ key, direction } | null`).
@@ -322,6 +337,16 @@ export default defineComponent({
         };
 
         return () => {
+            // Skeleton-mode integration (issue #1476 follow-on):
+            // when `:busy && :placeholder` and we have columns, swap
+            // the body band for a skeleton sized to the current data
+            // (or 5 if empty — first-load case). Header continues
+            // auto-rendering from columns so the layout matches.
+            const inPlaceholderMode = props.busy && props.placeholder && columns.value.length > 0;
+            const skeletonRowCount = inPlaceholderMode ?
+                (props.placeholderRows ?? (props.data.length || 5)) :
+                undefined;
+
             // Driver auto-render (plan 033 v0.2-B): when `:columns` is set
             // and the consumer's default slot doesn't already contain a
             // `<VCTableHeader>` / `<VCTableBody>`, render the missing
@@ -333,6 +358,7 @@ export default defineComponent({
                 slotChildren: slots.default?.(slotProps.value),
                 captionSlot: slots.caption,
                 colgroupSlot: slots.colgroup,
+                placeholderRows: skeletonRowCount,
             });
 
             // `attrs` always forward to the `<table>` itself — consumers'

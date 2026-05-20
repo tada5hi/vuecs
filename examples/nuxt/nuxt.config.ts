@@ -23,6 +23,7 @@ export default defineNuxtConfig({
         '@vuecs/navigation': path.join(__dirname, '..', '..', 'packages', 'navigation', 'src'),
         '@vuecs/overlays': path.join(__dirname, '..', '..', 'packages', 'overlays', 'src'),
         '@vuecs/pagination': path.join(__dirname, '..', '..', 'packages', 'pagination', 'src'),
+        '@vuecs/placeholder': path.join(__dirname, '..', '..', 'packages', 'placeholder', 'src'),
         '@vuecs/table': path.join(__dirname, '..', '..', 'packages', 'table', 'src'),
         '@vuecs/theme-tailwind': path.join(__dirname, '..', '..', 'themes', 'tailwind', 'src'),
         '@vuecs/icons-font-awesome': path.join(__dirname, '..', '..', 'icons', 'font-awesome', 'src'),

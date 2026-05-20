@@ -53,6 +53,10 @@ const tableLiteProps = {
     columns: { type: Array as PropType<TableColumnRaw<unknown>[]>, default: undefined },
     /** Busy flag — drives `aria-busy` on the `<table>` and gates the loading-band render. */
     busy: { type: Boolean, default: false },
+    /** Render a skeleton body while `:busy` is true. See `<VCTable>` for full semantics. */
+    placeholder: { type: Boolean, default: false },
+    /** Number of skeleton rows when `:busy && :placeholder` — defaults to `:data.length` (or 5 when empty). */
+    placeholderRows: { type: Number, default: undefined },
     /** Wrap the `<table>` in an overflow scroll container. */
     scrollable: { type: Boolean, default: false },
     /** When `:scrollable`, sticks the `<thead>` to the top of the scroll container. */
@@ -192,11 +196,17 @@ export default defineComponent({
         };
 
         return () => {
+            // Skeleton-mode integration (issue #1476 follow-on).
+            const inPlaceholderMode = props.busy && props.placeholder && columns.value.length > 0;
+            const skeletonRowCount = inPlaceholderMode ?
+                (props.placeholderRows ?? (props.data.length || 5)) :
+                undefined;
             const inner = composeTableInner({
                 cols: columns.value,
                 slotChildren: slots.default?.(slotProps.value),
                 captionSlot: slots.caption,
                 colgroupSlot: slots.colgroup,
+                placeholderRows: skeletonRowCount,
             });
 
             const tableNode = h(

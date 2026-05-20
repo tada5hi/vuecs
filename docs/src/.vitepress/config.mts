@@ -180,6 +180,12 @@ export default defineConfig({
                     ],
                 },
                 {
+                    text: '@vuecs/placeholder',
+                    items: [
+                        { text: 'Placeholder', link: '/components/placeholder' },
+                    ],
+                },
+                {
                     text: '@vuecs/table',
                     items: [
                         { text: 'Table', link: '/components/table' },

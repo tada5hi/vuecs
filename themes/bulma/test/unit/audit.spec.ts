@@ -17,6 +17,7 @@ import {
     cardDescriptionThemeDefaults,
     cardFooterThemeDefaults,
     cardHeaderThemeDefaults,
+    cardPlaceholderThemeDefaults,
     cardThemeDefaults,
     cardTitleThemeDefaults,
     collapseContentThemeDefaults,
@@ -70,6 +71,10 @@ import {
 } from '@vuecs/overlays';
 import { paginationThemeDefaults } from '@vuecs/pagination';
 import {
+    placeholderThemeDefaults,
+    placeholderWrapperThemeDefaults,
+} from '@vuecs/placeholder';
+import {
     tableBodyThemeDefaults,
     tableCellThemeDefaults,
     tableEmptyThemeDefaults,
@@ -77,6 +82,7 @@ import {
     tableHeadCellThemeDefaults,
     tableHeaderThemeDefaults,
     tableLoadingThemeDefaults,
+    tablePlaceholderThemeDefaults,
     tableRowThemeDefaults,
     tableSortIndicatorsThemeDefaults,
     tableThemeDefaults,
@@ -113,6 +119,7 @@ const expectedCatalog = {
     cardBody: cardBodyThemeDefaults,
     cardDescription: cardDescriptionThemeDefaults,
     cardFooter: cardFooterThemeDefaults,
+    cardPlaceholder: cardPlaceholderThemeDefaults,
     cardHeader: cardHeaderThemeDefaults,
     cardTitle: cardTitleThemeDefaults,
     collapse: collapseThemeDefaults,
@@ -145,6 +152,8 @@ const expectedCatalog = {
     modal: modalThemeDefaults,
     navigation: navigationThemeDefaults,
     pagination: paginationThemeDefaults,
+    placeholder: placeholderThemeDefaults,
+    placeholderWrapper: placeholderWrapperThemeDefaults,
     popover: popoverThemeDefaults,
     separator: separatorThemeDefaults,
     stepper: stepperThemeDefaults,
@@ -156,6 +165,7 @@ const expectedCatalog = {
     tableHeadCell: tableHeadCellThemeDefaults,
     tableHeader: tableHeaderThemeDefaults,
     tableLoading: tableLoadingThemeDefaults,
+    tablePlaceholder: tablePlaceholderThemeDefaults,
     tableRow: tableRowThemeDefaults,
     tableSortIndicators: tableSortIndicatorsThemeDefaults,
     tag: tagThemeDefaults,

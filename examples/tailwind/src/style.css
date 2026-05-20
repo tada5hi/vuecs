@@ -11,6 +11,7 @@
 @import "@vuecs/gravatar";
 @import "@vuecs/navigation";
 @import "@vuecs/pagination";
+@import "@vuecs/placeholder";
 @import "@vuecs/table";
 
 /* Scan the theme-tailwind source so Tailwind v4's JIT keeps the class

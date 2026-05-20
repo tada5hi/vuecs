@@ -1014,6 +1014,33 @@ export default function bulmaTheme(): Theme {
                 },
                 defaultVariants: { size: 'md' },
             },
+            placeholder: {
+                // Bulma has no built-in placeholder primitive — use
+                // the design-token muted bg. `wave` and `glow`
+                // inherit the shipped animation classes from
+                // `@vuecs/placeholder/assets/index.css`.
+                classes: { root: 'has-background-grey-lighter' },
+            },
+            tablePlaceholder: {
+                classes: {
+                    root: 'table is-fullwidth',
+                    header: '',
+                    body: '',
+                    footer: '',
+                    row: '',
+                    cell: '',
+                },
+            },
+            cardPlaceholder: {
+                classes: {
+                    root: 'card',
+                    image: 'card-image',
+                    header: 'card-header p-3',
+                    body: 'card-content',
+                    footer: 'card-footer p-3',
+                },
+            },
+            placeholderWrapper: { classes: { root: 'is-relative' } },
         },
         /*
          * Theme-runtime hook (plan 021): mirror the resolved color mode

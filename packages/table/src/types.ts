@@ -233,6 +233,21 @@ export type TableLoadingThemeClasses = {
     overlay: string;
 };
 
+export type TablePlaceholderThemeClasses = {
+    /** Outer `<table>` element. */
+    root: string;
+    /** `<thead>` band (when `:showHeader` is on). */
+    header: string;
+    /** `<tbody>` band. */
+    body: string;
+    /** `<tfoot>` band (when `:showFooter` is on). */
+    footer: string;
+    /** Per-row `<tr>` element. */
+    row: string;
+    /** Per-cell `<td>` / `<th>` wrapper around the bar. */
+    cell: string;
+};
+
 export type TableSortIndicatorsThemeClasses = {
     /** The bar container `<div>`. */
     root: string;
@@ -280,6 +295,7 @@ declare module '@vuecs/core' {
         tableHeadCell?: ThemeElementDefinition<TableHeadCellThemeClasses>;
         tableEmpty?: ThemeElementDefinition<TableEmptyThemeClasses>;
         tableLoading?: ThemeElementDefinition<TableLoadingThemeClasses>;
+        tablePlaceholder?: ThemeElementDefinition<TablePlaceholderThemeClasses>;
         tableSortIndicators?: ThemeElementDefinition<TableSortIndicatorsThemeClasses>;
     }
 }

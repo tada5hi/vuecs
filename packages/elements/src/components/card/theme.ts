@@ -4,6 +4,7 @@ import type {
     CardDescriptionThemeClasses,
     CardFooterThemeClasses,
     CardHeaderThemeClasses,
+    CardPlaceholderThemeClasses,
     CardThemeClasses,
     CardTitleThemeClasses,
 } from './types';
@@ -19,3 +20,13 @@ export const cardDescriptionThemeDefaults: ComponentThemeDefinition<CardDescript
 export const cardBodyThemeDefaults: ComponentThemeDefinition<CardBodyThemeClasses> = { classes: { root: 'vc-card-body' } };
 
 export const cardFooterThemeDefaults: ComponentThemeDefinition<CardFooterThemeClasses> = { classes: { root: 'vc-card-footer' } };
+
+export const cardPlaceholderThemeDefaults: ComponentThemeDefinition<CardPlaceholderThemeClasses> = {
+    classes: {
+        root: 'vc-card-placeholder',
+        image: 'vc-card-placeholder-image',
+        header: 'vc-card-placeholder-header',
+        body: 'vc-card-placeholder-body',
+        footer: 'vc-card-placeholder-footer',
+    },
+};
