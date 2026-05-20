@@ -144,6 +144,21 @@ dispatch('OPEN'); // state.value === 'open'
 
 Shipped as a Phase-3 prerequisite for the upcoming `@vuecs/overlays` package (open/closed transitions for modals, popovers, etc.).
 
+### `usePrimitiveElement()`
+
+Resolves a template ref through `#text` / `#comment` $el nodes to the underlying DOM element — needed when the rendered element is delivered via `<template>` (e.g. `<VCPrimitive :as-child>`). Pair with `<VCPrimitive>` when building themable wrappers that need a reactive handle to the rendered element.
+
+```ts
+import { usePrimitiveElement, VCPrimitive } from '@vuecs/core';
+
+setup() {
+    const { primitiveElement, currentElement } = usePrimitiveElement();
+    return () => h(VCPrimitive, { ref: primitiveElement, asChild: true });
+}
+```
+
+See [Primitive (as / asChild)](/guide/primitive#useprimitiveelement) for the full reference. For wrappers that also expose the inner ref to parents, reach for `useForwardExpose()` above instead.
+
 ## `@vuecs/design`
 
 Framework-agnostic Vue composables for the two pieces of state consumers usually want to mutate at runtime: the active palette and the dark/light color mode. Both live in `@vuecs/design` and are theme-aware — `useColorPalette()` walks installed themes' `palette.handle` hooks and concatenates the rendered CSS into the runtime `<style id="vc-color-palette">` block. The same composable serves every theme (Tailwind, Bulma, community palette-aware themes); a palette-only theme just declares its `palette.handle` and the composable picks it up.

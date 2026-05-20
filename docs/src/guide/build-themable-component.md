@@ -245,6 +245,97 @@ const brandTheme = () => defineTheme({
 });
 ```
 
+## Using `<VCPrimitive>` for `as` / `asChild`
+
+The example above hardcodes `h('div', ...)` as the root. Most themable components want to give consumers an escape hatch: render as a different tag (`<section>`, `<article>`, `<a>`), or fall through to a custom child element entirely via the [`asChild`](/guide/primitive#the-aschild-pattern) pattern. The render target for that is **`<VCPrimitive>` from `@vuecs/core`** — a generic `as` / `asChild` building block that lives in `@vuecs/core` so you don't need a direct `reka-ui` peer dep.
+
+Refactor `<MyDataTable>` to use it:
+
+```vue
+<script lang="ts">
+import { defineComponent, h, mergeProps } from 'vue';
+import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
+import { themableProps, useComponentTheme, useThemeProps, VCPrimitive } from '@vuecs/core';
+import { myDataTableThemeDefaults } from './theme';
+import type { MyDataTableDensity, MyDataTableThemeClasses } from './types';
+
+const myDataTableProps = {
+    rows: { type: Array as PropType<Array<Record<string, unknown>>>, default: () => [] },
+    density: { type: String as PropType<MyDataTableDensity>, default: undefined },
+
+    /** HTML tag to render. Use `:as-child` to compose onto an existing component. */
+    as: { type: String, default: 'div' },
+    /** Render the consumer's slot child as the root (asChild pattern). */
+    asChild: { type: Boolean, default: false },
+
+    ...themableProps<MyDataTableThemeClasses>(),
+};
+
+export default defineComponent({
+    name: 'MyDataTable',
+    inheritAttrs: false,
+    props: myDataTableProps,
+    slots: Object as SlotsType<{
+        header?: () => unknown;
+        row?: (props: { row: Record<string, unknown> }) => unknown;
+    }>,
+    setup(props, { attrs, slots }) {
+        const theme = useComponentTheme(
+            'myDataTable',
+            useThemeProps(props, 'density'),
+            myDataTableThemeDefaults,
+        );
+
+        return () => h(
+            VCPrimitive,
+            mergeProps(attrs, {
+                as: props.as,
+                asChild: props.asChild,
+                class: theme.value.root,
+            }),
+            {
+                default: () => h('table', [
+                    h('thead', { class: theme.value.header }, slots.header?.()),
+                    h('tbody', props.rows.map((row) => h(
+                        'tr',
+                        { class: theme.value.row },
+                        slots.row?.({ row }) ?? [],
+                    ))),
+                ]),
+            },
+        );
+    },
+});
+</script>
+```
+
+What changed:
+
+- The `as` + `asChild` props are declared on the wrapper (with concrete defaults — `'div'` and `false`), then forwarded onto `<VCPrimitive>` along with the resolved theme class.
+- `inheritAttrs: false` + `mergeProps(attrs, …)` propagates consumer-supplied attributes (`class`, `data-*`, event listeners) onto the rendered element.
+- The body of the table is the wrapper's default slot to `<VCPrimitive>`. Self-closing tags (`as="img"`, `as="input"`) short-circuit the slot automatically — not relevant for a data table but useful to know if you build atomic elements.
+
+Now the consumer can:
+
+```vue
+<template>
+    <!-- Default <div> root -->
+    <MyDataTable :rows="users" />
+
+    <!-- Render as <section> instead -->
+    <MyDataTable :rows="users" as="section" />
+
+    <!-- Render as a router link (the whole table becomes clickable) -->
+    <MyDataTable :rows="users" as-child>
+        <RouterLink :to="`/team/${groupId}`" />
+    </MyDataTable>
+</template>
+```
+
+The third form is the `asChild` pattern: `<VCPrimitive>` falls through to the slot child, merges the wrapper's class + attrs onto it, and renders that element instead of its own root. Consumer styling, theme classes, and the table body all compose onto the `<RouterLink>`.
+
+Why `<VCPrimitive>` and not Reka's `Primitive`? `@vuecs/core` ports it in-tree so your library doesn't take a runtime `reka-ui` dep just to render a generic `as` element. See [Primitive (as / asChild)](/guide/primitive) for the full reference and the asChild rules around comments, multi-child slots, and class precedence.
+
 ## Variants and behavioral defaults
 
 The same declaration-merging pattern extends to two more axes:

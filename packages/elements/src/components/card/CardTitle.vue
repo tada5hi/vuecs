@@ -1,8 +1,7 @@
 <script lang="ts">
 import { defineComponent, h, mergeProps } from 'vue';
 import type { ExtractPublicPropTypes, PropType } from 'vue';
-import { Primitive } from 'reka-ui';
-import { useComponentTheme } from '@vuecs/core';
+import { VCPrimitive, useComponentTheme } from '@vuecs/core';
 import type {
     ThemeClassesOverride,
     UseComponentThemeProps,
@@ -40,7 +39,7 @@ export default defineComponent({
         const theme = useComponentTheme('cardTitle', themeProps, cardTitleThemeDefaults);
 
         return () => h(
-            Primitive,
+            VCPrimitive,
             mergeProps(attrs, {
                 as: props.as,
                 asChild: props.asChild,
