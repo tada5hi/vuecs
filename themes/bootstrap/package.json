@@ -51,6 +51,7 @@
         "@vuecs/navigation": "^3.0.0",
         "@vuecs/overlays": "^1.0.0",
         "@vuecs/pagination": "^2.0.0",
+        "@vuecs/placeholder": "^0.0.0",
         "@vuecs/timeago": "^2.0.0"
     },
     "peerDependencies": {

@@ -70,6 +70,12 @@ import {
 } from '@vuecs/overlays';
 import { paginationThemeDefaults } from '@vuecs/pagination';
 import {
+    placeholderCardThemeDefaults,
+    placeholderTableThemeDefaults,
+    placeholderThemeDefaults,
+    placeholderWrapperThemeDefaults,
+} from '@vuecs/placeholder';
+import {
     tableBodyThemeDefaults,
     tableCellThemeDefaults,
     tableEmptyThemeDefaults,
@@ -145,6 +151,10 @@ const expectedCatalog = {
     modal: modalThemeDefaults,
     navigation: navigationThemeDefaults,
     pagination: paginationThemeDefaults,
+    placeholder: placeholderThemeDefaults,
+    placeholderCard: placeholderCardThemeDefaults,
+    placeholderTable: placeholderTableThemeDefaults,
+    placeholderWrapper: placeholderWrapperThemeDefaults,
     popover: popoverThemeDefaults,
     separator: separatorThemeDefaults,
     stepper: stepperThemeDefaults,

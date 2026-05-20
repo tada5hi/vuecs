@@ -1,0 +1,11 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "lib": ["ESNext", "DOM"],
+        "rootDir": "./src",
+        "jsx": "preserve",
+        "skipLibCheck": true
+    },
+    "include": ["src/**/*.ts", "src/**/*.vue", "../../types/**/*.d.ts"],
+    "exclude": ["node_modules", "dist"]
+}

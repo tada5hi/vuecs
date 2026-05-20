@@ -191,6 +191,12 @@ export const sharedRoutes: SharedRoute[] = [
         view: () => import('./views/Pagination.vue').then((m) => m.default),
     },
     {
+        path: '/placeholder',
+        name: 'placeholder',
+        label: 'Placeholder',
+        view: () => import('./views/Placeholder.vue').then((m) => m.default),
+    },
+    {
         path: '/popover',
         name: 'popover',
         label: 'Popover',

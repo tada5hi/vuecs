@@ -47,6 +47,7 @@ npm run lint:fix       # Auto-fix lint issues
 | `@vuecs/nuxt` | Theme-agnostic Nuxt module — auto-imports `@vuecs/design` tokens, ships SSR-safe color-mode + palette plugins (`useColorMode` / `useColorPalette` auto-imports). Dispatches palette + colorMode runtime hooks through whichever themes the consumer installs (plan 025). Optional `themes: string[]` config auto-generates a plugin that installs listed theme packages. | 0.0.0 |
 | `@vuecs/overlays` | Compound overlays on Reka primitives — Modal (+ `useModal()` view-stack composable), Popover, HoverCard, Tooltip, DropdownMenu, ContextMenu, Toast (+ `useToast()` shared queue composable, plan 029) | 0.0.0 |
 | `@vuecs/pagination` | Pagination component | 1.3.1 |
+| `@vuecs/placeholder` | Skeleton / placeholder loading components — `VCPlaceholder` (single animated bar), `VCPlaceholderTable` (rows × columns skeleton), `VCPlaceholderCard` (image / header / body / footer card skeleton), `VCPlaceholderWrapper` (conditional `#loading` / `#default` slot switch). Wave / glow / none animation modes; reduced-motion respected. Pure-CSS + theme-class strings; ships its own structural CSS so it works without any theme. (issue #1476) | 0.0.0 |
 | `@vuecs/table` | Compound table (`VCTable` + `VCTableLite` + Header / Body / Footer / Row / Cell / HeadCell / Empty / Loading / SortIndicators) with a `:columns :data` driver, default cell renderer (`accessor` + `formatter`), driver auto-render of header/body, stacked responsive mode, controlled `v-model:sort` on `VCTable` with multi-column + client-side sort, opt-in row-click + row keyboard nav, `_rowVariant` / `_cellVariants` row-meta, and a discoverable `<VCTableSortIndicators>` chip-row for managing multi-sort without Shift-click. Layer 1 — `@vuecs/core` peer dep only; semantic HTML, no Reka primitive. (plans 028 + 033) | 0.0.0 |
 | `@vuecs/theme-bootstrap` | Bootstrap theme (currently targets v5; renamed from `@vuecs/theme-bootstrap-v5` in 3.0) | 3.0.0 |
 | `@vuecs/theme-bulma` | Bulma 1.0+ theme + design-token bridge | 0.0.0 |
@@ -59,7 +60,7 @@ npm run lint:fix       # Auto-fix lint issues
 
 ```text
 Layer 0 (no internal deps):  core, countdown, design, icon, link, timeago
-Layer 1 (depends on core):   button, elements, forms, list, navigation, overlays, pagination, table
+Layer 1 (depends on core):   button, elements, forms, list, navigation, overlays, pagination, placeholder, table
 Layer 1' (depends on elements + core):   gravatar (composes VCAvatar)
 Layer 2 (depends on Layer 0): themes (@vuecs/core peer dep only — pure data that targets component packages at runtime)
                               theme-tailwind also depends on @vuecs/design (composes its generic palette primitives)

@@ -1752,6 +1752,48 @@ prefixes, scoped via the `group` utility added by `<VCStepperItem>`) and
 `@vuecs/theme-bootstrap` (Bootstrap utility classes only, with
 data-state visualization handled by the bridge CSS as noted above).
 
+## Placeholder skeletons (@vuecs/placeholder, issue #1476)
+
+Skeleton / placeholder loading components — the "Twitter / Facebook
+shimmer" pattern.
+
+```
+@vuecs/placeholder/
+  src/
+    components/
+      Placeholder.ts         <- VCPlaceholder (single animated bar)
+      PlaceholderTable.ts    <- VCPlaceholderTable (rows × columns)
+      PlaceholderCard.ts     <- VCPlaceholderCard (image / header / body / footer)
+      PlaceholderWrapper.ts  <- VCPlaceholderWrapper (conditional loading↔default)
+    theme.ts                 <- per-component theme defaults
+    types.ts                 <- ThemeElements augmentation + animation/size unions
+    index.ts                 <- install() + barrel re-exports
+  assets/
+    index.css                <- minimal shimmer (wave + glow), reduced-motion respected
+```
+
+**Three animation modes**: `wave` (moving-gradient sweep — default),
+`glow` (opacity pulse — Bootstrap 5 default), `none` (animation
+disabled). `prefers-reduced-motion: reduce` disables both wave + glow
+automatically without needing the consumer to pass `animation="none"`.
+
+**Self-contained**: ships its own structural CSS so the components
+render visibly even without a theme installed. Themes layer their
+visual styling (colors, radii, fine-tuned animation tuning) via the
+`placeholder` / `placeholderTable` / `placeholderCard` /
+`placeholderWrapper` theme keys.
+
+**`<VCPlaceholderWrapper>`** is a conditional wrapper: renders
+`#loading` when `:loading` is true, `#default` otherwise. Mirrors
+`aria-busy` to the wrapper for assistive-tech announcements. Built
+to swap a skeleton in / out without `v-if` plumbing on the consumer
+side. `<VCPlaceholderTable>` and `<VCPlaceholderCard>` are
+composed-from-bar primitives so the animation prop flows through and
+the reduced-motion behavior at the bar level inherits.
+
+Layer 1 — `@vuecs/core` peer dep only; no Reka primitive (the
+shimmer animations are pure CSS).
+
 ## Table compound (@vuecs/table, plan 028)
 
 Semantic-HTML compound for entity-list pages. Outer `<VCTable>` + eight
