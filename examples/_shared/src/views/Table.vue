@@ -31,6 +31,8 @@ const props = withDefaults(defineProps<{
     selectionMode?: 'single' | 'multi' | undefined;
     responsive?: boolean;
     multiSort?: boolean;
+    busy?: boolean;
+    placeholder?: boolean;
 }>(), {
     density: 'normal',
     striped: false,
@@ -40,6 +42,8 @@ const props = withDefaults(defineProps<{
     selectionMode: undefined,
     responsive: false,
     multiSort: false,
+    busy: false,
+    placeholder: false,
 });
 
 // Local mirror of the `multiSort` prop. The docs-site playground
@@ -190,6 +194,8 @@ const sortSummary = computed(() => sort.value
                 :selection-mode="selectionMode"
                 :responsive="responsive"
                 :multi-sort="multiSortLocal"
+                :busy="busy"
+                :placeholder="placeholder"
                 client-sort
                 @row-click="onRowClick"
             >

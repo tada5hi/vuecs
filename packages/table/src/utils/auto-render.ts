@@ -1,5 +1,6 @@
 import { Fragment, h } from 'vue';
 import type { VNode } from 'vue';
+import { VCPlaceholder } from '@vuecs/placeholder';
 import VCTableBody from '../components/TableBody.vue';
 import VCTableCell from '../components/TableCell.vue';
 import VCTableFooter from '../components/TableFooter.vue';
@@ -98,12 +99,22 @@ export function composeTableInner(opts: {
     slotChildren: unknown;
     captionSlot?: (() => unknown) | undefined;
     colgroupSlot?: (() => unknown) | undefined;
+    /**
+     * When set, the body band is REPLACED by a skeleton `<tbody>`
+     * with `placeholderRows × cols.length` placeholder bars. Header
+     * still auto-renders from `cols` (real column labels); any
+     * consumer-provided `<VCTableBody>` / `<VCTableLoading>` /
+     * `<VCTableEmpty>` in `slotChildren` is suppressed so the
+     * skeleton fully owns the rows region while loading.
+     */
+    placeholderRows?: number | undefined;
 }): unknown[] {
     const {
-        cols, 
-        slotChildren, 
-        captionSlot, 
+        cols,
+        slotChildren,
+        captionSlot,
         colgroupSlot,
+        placeholderRows,
     } = opts;
 
     const inner: unknown[] = [];
@@ -142,6 +153,37 @@ export function composeTableInner(opts: {
     // ad-hoc consumer nodes) keeps source order in `before`.
     const { before, after } = partitionBeforeAfterBody(slotChildren);
     if (before.length > 0) inner.push(before);
+
+    if (placeholderRows !== undefined && cols.length > 0) {
+        // Placeholder mode — skip the real body + any
+        // consumer-supplied `<VCTableLoading>` / `<VCTableEmpty>`
+        // (those siblings in `before` / `after` would render
+        // alongside the skeleton, which looks like a double-loader).
+        // Render a plain `<tbody>` with `placeholderRows × cols`
+        // skeleton bars; widths vary per index so the result reads
+        // as tabular data (same pattern `<VCTablePlaceholder>` uses).
+        const pattern = [60, 80, 45, 90, 55, 75, 65];
+        const widthFor = (rowIdx: number, colIdx: number) => {
+            const len = pattern.length;
+            const idx = ((rowIdx * 3 + colIdx) % len + len) % len;
+            return `${pattern[idx]}%`;
+        };
+        const rowRange = Array.from({ length: Math.max(0, placeholderRows) }, (_, i) => i);
+        inner.push(h(
+            'tbody',
+            { class: 'vc-table-placeholder-body', 'aria-hidden': 'true' },
+            rowRange.map((r) => h(
+                'tr',
+                { class: 'vc-table-placeholder-row' },
+                cols.map((_, c) => h(
+                    'td',
+                    { class: 'vc-table-placeholder-cell' },
+                    [h(VCPlaceholder, { width: widthFor(r, c) })],
+                )),
+            )),
+        ));
+        return inner;
+    }
 
     if (autoRender && !hasBody) {
         inner.push(h(VCTableBody, null, {

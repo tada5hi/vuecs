@@ -75,6 +75,16 @@ announceProps(
             label: 'multi-sort',
             section: 'Behavior',
         },
+        busy: {
+            type: 'boolean',
+            default: false,
+            section: 'Loading',
+        },
+        placeholder: {
+            type: 'boolean',
+            default: false,
+            section: 'Loading',
+        },
     },
     {
         density: 'normal',
@@ -85,6 +95,8 @@ announceProps(
         selectionMode: '',
         responsive: false,
         multiSort: false,
+        busy: false,
+        placeholder: false,
     },
 );
 

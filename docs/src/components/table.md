@@ -497,6 +497,32 @@ import { VCTablePlaceholder } from '@vuecs/table';
 footer rendering with consumer markup — useful when the default
 fixed-column header doesn't match the real table layout.
 
+### Integrated `:placeholder` mode on `<VCTable>` / `<VCTableLite>`
+
+For the common "swap real rows for a skeleton while loading" pattern,
+opt into `:placeholder` directly on the table — no `VCPlaceholderWrapper`
+chrome needed. The table already knows its `:columns` count and the
+current `:data.length`, so the skeleton matches the layout exactly.
+
+```vue
+<VCTable :busy="loading" placeholder :columns :data />
+```
+
+Behavior:
+
+- Header still renders from `:columns` (real labels).
+- Body is replaced by a `<tbody>` of skeleton rows; `:placeholder-rows`
+  overrides the count (defaults to `:data.length`, or `5` when the
+  data is empty — the first-load case).
+- `<VCTableLoading>` / `<VCTableEmpty>` siblings are suppressed while
+  in placeholder mode so AT consumers don't get a double-loader.
+- No-op when `:busy` is `false`, or when `:columns` is unset.
+
+Same opt-in is available on `<VCTableLite>`. For more layout
+control (custom header markup, separate skeleton row counts, no
+columns-driver setup), reach for the explicit `<VCTablePlaceholder>` +
+`<VCPlaceholderWrapper>` composition instead.
+
 ## Theme keys
 
 | Component | Slot keys |
