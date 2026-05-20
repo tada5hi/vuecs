@@ -1021,7 +1021,7 @@ export default function bulmaTheme(): Theme {
                 // `@vuecs/placeholder/assets/index.css`.
                 classes: { root: 'has-background-grey-lighter' },
             },
-            placeholderTable: {
+            tablePlaceholder: {
                 classes: {
                     root: 'table is-fullwidth',
                     header: '',
@@ -1031,7 +1031,7 @@ export default function bulmaTheme(): Theme {
                     cell: '',
                 },
             },
-            placeholderCard: {
+            cardPlaceholder: {
                 classes: {
                     root: 'card',
                     image: 'card-image',

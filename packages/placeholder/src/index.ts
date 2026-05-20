@@ -7,8 +7,6 @@ import './vue';
 
 import {
     VCPlaceholder,
-    VCPlaceholderCard,
-    VCPlaceholderTable,
     VCPlaceholderWrapper,
 } from './components';
 
@@ -22,8 +20,6 @@ export function install(app: App, options: Options = {}): void {
 
     Object.entries({
         VCPlaceholder,
-        VCPlaceholderCard,
-        VCPlaceholderTable,
         VCPlaceholderWrapper,
     }).forEach(([name, component]) => {
         app.component(name, component);

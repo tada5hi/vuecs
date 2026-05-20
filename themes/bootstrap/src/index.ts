@@ -988,7 +988,7 @@ export default function bootstrapTheme(): Theme {
                     glow: 'placeholder-glow',
                 },
             },
-            placeholderTable: {
+            tablePlaceholder: {
                 classes: {
                     root: 'table table-borderless mb-0',
                     header: 'border-bottom',
@@ -998,7 +998,7 @@ export default function bootstrapTheme(): Theme {
                     cell: '',
                 },
             },
-            placeholderCard: {
+            cardPlaceholder: {
                 classes: {
                     root: 'card',
                     image: 'ratio ratio-16x9',

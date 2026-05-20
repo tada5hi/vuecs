@@ -7,6 +7,7 @@ import type {
     TableHeadCellThemeClasses,
     TableHeaderThemeClasses,
     TableLoadingThemeClasses,
+    TablePlaceholderThemeClasses,
     TableRowThemeClasses,
     TableSortIndicatorsThemeClasses,
     TableThemeClasses,
@@ -42,6 +43,17 @@ export const tableLoadingThemeDefaults: ComponentThemeDefinition<TableLoadingThe
     classes: {
         root: 'vc-table-loading',
         overlay: 'vc-table-loading-overlay',
+    },
+};
+
+export const tablePlaceholderThemeDefaults: ComponentThemeDefinition<TablePlaceholderThemeClasses> = {
+    classes: {
+        root: 'vc-table-placeholder',
+        header: 'vc-table-placeholder-header',
+        body: 'vc-table-placeholder-body',
+        footer: 'vc-table-placeholder-footer',
+        row: 'vc-table-placeholder-row',
+        cell: 'vc-table-placeholder-cell',
     },
 };
 

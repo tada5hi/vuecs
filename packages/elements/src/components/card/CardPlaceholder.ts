@@ -1,53 +1,54 @@
 import {
-    defineComponent, 
+    defineComponent,
     h,
 } from 'vue';
 import type { ExtractPublicPropTypes, PropType } from 'vue';
 import {
-    themableProps, 
-    useComponentTheme, 
+    themableProps,
+    useComponentTheme,
     useThemeProps,
 } from '@vuecs/core';
-import { placeholderCardThemeDefaults } from '../theme';
-import type {
-    PlaceholderAnimation, 
-    PlaceholderCardThemeClasses,
-} from '../types';
-import { VCPlaceholder } from './Placeholder';
+import { VCPlaceholder } from '@vuecs/placeholder';
+import type { PlaceholderAnimation } from '@vuecs/placeholder';
+import { cardPlaceholderThemeDefaults } from './theme';
+import type { CardPlaceholderThemeClasses } from './types';
 
-const placeholderCardProps = {
+const cardPlaceholderProps = {
     /** Skip the header line. */
     noHeader: { type: Boolean, default: false },
     /** Skip the footer block. */
     noFooter: { type: Boolean, default: false },
     /** Skip the cover-image placeholder. */
     noImg: { type: Boolean, default: false },
-    /**
-     * Cover-image placeholder height. CSS length (`'180px'`, `'12rem'`).
-     */
+    /** Cover-image placeholder height. CSS length (`'180px'`, `'12rem'`). */
     imgHeight: { type: String, default: '180px' },
     /** Number of body lines below the header. */
     bodyLines: { type: Number, default: 3 },
     /** Animation pattern. Forwarded to every inner `<VCPlaceholder>`. */
     animation: { type: String as PropType<PlaceholderAnimation>, default: 'wave' },
-    ...themableProps<PlaceholderCardThemeClasses>(),
+    ...themableProps<CardPlaceholderThemeClasses>(),
 };
 
-export type PlaceholderCardProps = ExtractPublicPropTypes<typeof placeholderCardProps>;
+export type CardPlaceholderProps = ExtractPublicPropTypes<typeof cardPlaceholderProps>;
 
 /**
  * Card-shaped skeleton — cover image + header line + body lines +
- * footer block. Each section is independently togglable via the
- * `:no-*` props.
+ * footer block. Each section independently togglable via `:no-*` props.
+ *
+ * Lives in `@vuecs/elements` next to `<VCCard>` (the real component
+ * it mimics structurally) for discoverability. Composes
+ * `<VCPlaceholder>` per section — the `:animation` prop flows
+ * through, so the reduced-motion handling at the bar level applies
+ * here too.
  */
-export const VCPlaceholderCard = defineComponent({
-    name: 'VCPlaceholderCard',
-    props: placeholderCardProps,
+export const VCCardPlaceholder = defineComponent({
+    name: 'VCCardPlaceholder',
+    props: cardPlaceholderProps,
     setup(props) {
         const theme = useComponentTheme(
-            'placeholderCard',
+            'cardPlaceholder',
             useThemeProps(props),
-            placeholderCardThemeDefaults,
+            cardPlaceholderThemeDefaults,
         );
         return () => {
             const t = theme.value;
@@ -69,8 +70,8 @@ export const VCPlaceholderCard = defineComponent({
                     'div',
                     { class: t.header || undefined },
                     [h(VCPlaceholder, {
-                        animation: props.animation, 
-                        width: '70%', 
+                        animation: props.animation,
+                        width: '70%',
                         size: 'lg',
                     })],
                 ));
@@ -78,9 +79,6 @@ export const VCPlaceholderCard = defineComponent({
 
             const bodyLines = Math.max(0, props.bodyLines);
             if (bodyLines > 0) {
-                // Deterministic widths so the same line has the same
-                // width across renders. The last line is shorter to
-                // mimic a final paragraph wrap.
                 const widths = ['100%', '95%', '90%', '88%', '92%'];
                 const bodyChildren = Array.from({ length: bodyLines }, (_, i) => {
                     const last = i === bodyLines - 1;

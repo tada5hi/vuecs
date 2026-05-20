@@ -460,6 +460,43 @@ complete layout replacement using the same handlers.
 ```
 :::
 
+## Table-placeholder skeleton
+
+`<VCTablePlaceholder>` is the table-shaped loading skeleton —
+`rows × columns` placeholder bars in a real `<table>` element so
+the surrounding layout reads as a table. Cell widths vary per
+index so the result looks natural rather than a uniform grid.
+Composes `<VCPlaceholder>` from `@vuecs/placeholder` per cell.
+
+```vue
+<script setup>
+import { VCTablePlaceholder } from '@vuecs/table';
+</script>
+
+<template>
+    <VCTablePlaceholder :rows="5" :columns="7" show-header />
+
+    <!-- Custom header markup via the `#thead` slot. -->
+    <VCTablePlaceholder :rows="3" :columns="4">
+        <template #thead>
+            <tr><th colspan="4">Loading entries…</th></tr>
+        </template>
+    </VCTablePlaceholder>
+</template>
+```
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `rows` | `number` | `5` | Body row count. |
+| `columns` | `number` | `4` | Column count. |
+| `showHeader` | `boolean` | `true` | Render `<thead>` band. |
+| `showFooter` | `boolean` | `false` | Render `<tfoot>` band. |
+| `animation` | `'wave' \| 'glow' \| 'none'` | `'wave'` | Forwarded to every inner bar. |
+
+**Slot overrides:** `#thead` / `#tfoot` replace the default header /
+footer rendering with consumer markup — useful when the default
+fixed-column header doesn't match the real table layout.
+
 ## Theme keys
 
 | Component | Slot keys |
@@ -469,6 +506,7 @@ complete layout replacement using the same handlers.
 | `tableCell` | `root` |
 | `tableHeadCell` | `root`, `sortIcon` |
 | `tableLoading` | `root`, `overlay` |
+| `tablePlaceholder` | `root`, `header`, `body`, `footer`, `row`, `cell` |
 | `tableSortIndicators` | `root`, `label`, `empty`, `chip`, `chipToggle`, `chipPosition`, `chipLabel`, `chipArrow`, `chipRemove`, `addWrapper`, `add`, `clear` |
 
 ## Variant axes opted-into per theme

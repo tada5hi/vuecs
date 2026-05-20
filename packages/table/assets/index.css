@@ -208,3 +208,21 @@
     vertical-align: middle;
     accent-color: var(--vc-color-primary-600);
 }
+
+/* Table-placeholder skeleton — composes @vuecs/placeholder bars in a
+ * table-shaped layout (plan 033 + issue #1476). Structural baseline
+ * only; themes layer visual styling (borders, density) via the
+ * `tablePlaceholder` theme key. */
+.vc-table-placeholder {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.vc-table-placeholder-row > * {
+    padding: 0.5rem 0.75rem;
+}
+
+.vc-table-placeholder-cell .vc-placeholder {
+    display: block;
+}

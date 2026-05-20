@@ -32,34 +32,6 @@ export type PlaceholderThemeClasses = {
     glow: string;
 };
 
-export type PlaceholderTableThemeClasses = {
-    /** Outer `<table>` element. */
-    root: string;
-    /** `<thead>` band (when `:showHeader` is on). */
-    header: string;
-    /** `<tbody>` band. */
-    body: string;
-    /** `<tfoot>` band (when `:showFooter` is on). */
-    footer: string;
-    /** Per-row `<tr>` element. */
-    row: string;
-    /** Per-cell `<td>` / `<th>` wrapper around the bar. */
-    cell: string;
-};
-
-export type PlaceholderCardThemeClasses = {
-    /** Outer card wrapper (`<div>`). */
-    root: string;
-    /** Wrapper around the cover-image placeholder. */
-    image: string;
-    /** Wrapper around the header line (typically a wide bar). */
-    header: string;
-    /** Wrapper around the body lines. */
-    body: string;
-    /** Wrapper around the footer block (typically two short bars). */
-    footer: string;
-};
-
 export type PlaceholderWrapperThemeClasses = {
     /** Wrapper `<div>`. */
     root: string;
@@ -72,8 +44,6 @@ export type PlaceholderWrapperThemeClasses = {
 declare module '@vuecs/core' {
     interface ThemeElements {
         placeholder?: ThemeElementDefinition<PlaceholderThemeClasses>;
-        placeholderTable?: ThemeElementDefinition<PlaceholderTableThemeClasses>;
-        placeholderCard?: ThemeElementDefinition<PlaceholderCardThemeClasses>;
         placeholderWrapper?: ThemeElementDefinition<PlaceholderWrapperThemeClasses>;
     }
 }

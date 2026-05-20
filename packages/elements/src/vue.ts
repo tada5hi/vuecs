@@ -10,6 +10,7 @@ import type VCCardBody from './components/card/CardBody.vue';
 import type VCCardDescription from './components/card/CardDescription.vue';
 import type VCCardFooter from './components/card/CardFooter.vue';
 import type VCCardHeader from './components/card/CardHeader.vue';
+import type { VCCardPlaceholder } from './components/card/CardPlaceholder';
 import type VCCardTitle from './components/card/CardTitle.vue';
 import type VCCollapse from './components/collapse/Collapse.vue';
 import type VCCollapseContent from './components/collapse/CollapseContent.vue';
@@ -34,6 +35,7 @@ declare module '@vue/runtime-core' {
         VCCardDescription: typeof VCCardDescription,
         VCCardBody: typeof VCCardBody,
         VCCardFooter: typeof VCCardFooter,
+        VCCardPlaceholder: typeof VCCardPlaceholder,
         VCCollapse: typeof VCCollapse,
         VCCollapseTrigger: typeof VCCollapseTrigger,
         VCCollapseContent: typeof VCCollapseContent,

@@ -33,6 +33,19 @@ export type CardFooterThemeClasses = {
     root: string;
 };
 
+export type CardPlaceholderThemeClasses = {
+    /** Outer card wrapper (`<div>`). */
+    root: string;
+    /** Wrapper around the cover-image placeholder. */
+    image: string;
+    /** Wrapper around the header line (typically a wide bar). */
+    header: string;
+    /** Wrapper around the body lines. */
+    body: string;
+    /** Wrapper around the footer block (typically two short bars). */
+    footer: string;
+};
+
 declare module '@vuecs/core' {
     interface ThemeElements {
         card?: ThemeElementDefinition<CardThemeClasses>;
@@ -41,5 +54,6 @@ declare module '@vuecs/core' {
         cardDescription?: ThemeElementDefinition<CardDescriptionThemeClasses>;
         cardBody?: ThemeElementDefinition<CardBodyThemeClasses>;
         cardFooter?: ThemeElementDefinition<CardFooterThemeClasses>;
+        cardPlaceholder?: ThemeElementDefinition<CardPlaceholderThemeClasses>;
     }
 }

@@ -1,4 +1,6 @@
+import elements from '@vuecs/elements';
 import placeholder from '@vuecs/placeholder';
+import table from '@vuecs/table';
 import Placeholder from '@vuecs-examples/shared/views/Placeholder.vue';
 import { createApp, h } from 'vue';
 import { announceProps, installIframeBridge, propState } from './iframe-bridge';
@@ -10,7 +12,12 @@ const app = createApp({
     },
 });
 installVuecs(app);
+// The demo composes the primitive `<VCPlaceholder>` (placeholder
+// package) with `<VCCardPlaceholder>` (elements) + `<VCTablePlaceholder>`
+// (table) — register all three plugins.
 app.use(placeholder);
+app.use(elements);
+app.use(table);
 app.mount('#app');
 
 announceProps(

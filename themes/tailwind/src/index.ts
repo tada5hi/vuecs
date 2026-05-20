@@ -1077,7 +1077,7 @@ export default function tailwindTheme(): Theme {
                     glow: 'animate-pulse',
                 },
             },
-            placeholderTable: {
+            tablePlaceholder: {
                 classes: {
                     root: 'w-full table-fixed border-collapse',
                     header: 'border-b border-border',
@@ -1087,7 +1087,7 @@ export default function tailwindTheme(): Theme {
                     cell: '',
                 },
             },
-            placeholderCard: {
+            cardPlaceholder: {
                 classes: {
                     root: 'flex flex-col gap-2 rounded-md border border-border bg-bg p-4 text-fg-muted',
                     image: 'overflow-hidden rounded-md',
