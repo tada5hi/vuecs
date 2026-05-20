@@ -59,26 +59,25 @@ describe('usePrimitiveElement', () => {
             },
         });
 
-        const observed: string[] = [];
         const Wrapper = defineComponent({
             setup() {
                 const { primitiveElement, currentElement } = usePrimitiveElement();
-                return () => {
-                    observed.push(currentElement.value?.tagName ?? '');
-                    return h('div', null, h(FragmentRoot, { ref: primitiveElement }));
-                };
+                // Project the resolved tag onto a DOM attribute so we
+                // can assert against the final settled value rather than
+                // racing the reactive update.
+                return () => h(
+                    'div',
+                    { 'data-resolved': currentElement.value?.tagName ?? '' },
+                    h(FragmentRoot, { ref: primitiveElement }),
+                );
             },
         });
 
-        mount(Wrapper);
+        const wrapper = mount(Wrapper);
         await nextTick();
         await nextTick();
 
-        // The most recent observation should resolve to the real <article>.
-        // (Early renders before the ref settles can read as empty — that's
-        // expected; the walker only fires once the component instance is
-        // assigned.)
-        expect(observed[observed.length - 1]).toBe('ARTICLE');
+        expect(wrapper.element.getAttribute('data-resolved')).toBe('ARTICLE');
     });
 
     it('skips through #text / #comment $el nodes (asChild template root)', async () => {

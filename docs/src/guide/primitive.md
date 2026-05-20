@@ -71,7 +71,7 @@ This renders:
 
 Notes on `asChild` semantics:
 
-- **`class` and `style` compose; other attrs use child-wins precedence.** Vue's `mergeProps` special-cases `class` and `style` — wrapper-supplied and child-supplied values both apply on the final element (CSS specificity resolves precedence inside `class`, last-write-wins inside `style`). For *any other* attribute (e.g. `id`, `aria-label`, event listeners), the child's value wins on conflict — so a consumer can override e.g. `aria-label` from inside the slot.
+- **`class`, `style`, and `on*` event listeners compose; all other attrs use child-wins precedence.** Vue's `mergeProps` special-cases these three families. For `class`, wrapper- and child-supplied values both apply (CSS specificity resolves precedence). For `style`, object-form properties last-write-wins per key; string-form concatenates. For event listeners (`onClick`, `onUpdate:modelValue`, …), `mergeProps` collects both handlers into an array so **both fire on dispatch** — useful when a themable wrapper attaches its own click logic and the consumer also passes one in. Every other attribute (`id`, `aria-label`, `data-*`, etc.) uses child-wins precedence — so a consumer can override e.g. `aria-label` from inside the slot.
 - **Comments and multi-child slots.** Comment children are skipped. If the slot has multiple element children, only the first non-comment child receives the merged attrs; the others render as-is.
 - **The slot child's `ref` is dropped** — keep template refs on the wrapper itself (via `usePrimitiveElement` below), not on the slot child.
 
