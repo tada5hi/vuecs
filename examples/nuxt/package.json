@@ -46,7 +46,7 @@
         "@vuecs/pagination": "^2.0.0",
         "@vuecs/theme-tailwind": "^1.1.0",
         "@vuecs/timeago": "^2.0.0",
-        "nuxt": "4.4.5",
+        "nuxt": "4.4.6",
         "tailwindcss": "^4.3.0",
         "vue": "^3.5.34",
         "vue-router": "^5.0.6"
