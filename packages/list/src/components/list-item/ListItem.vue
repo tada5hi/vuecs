@@ -6,6 +6,9 @@ import {
     defineComponent,
     h,
     mergeProps,
+    onBeforeUnmount,
+    ref,
+    watch,
 } from 'vue';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import { provideListItemContext, useList } from '../../composables';
@@ -121,7 +124,8 @@ export default defineComponent({
         default: ListItemSlotProps;
     }>,
     setup(props, { slots, attrs }) {
-        const { state, selection } = useList<unknown>('VCListItem');
+        const list = useList<unknown>('VCListItem');
+        const { state, selection } = list;
 
         const key = computed(() => {
             if (props.data === undefined) return undefined;
@@ -160,16 +164,45 @@ export default defineComponent({
         };
         const theme = useComponentTheme('listItem', themedProps, listItemThemeDefaults);
 
-        const isFocused = computed(() => {
-            // Roving tabindex: only the first selectable item gets
-            // `tabindex="0"` initially; full arrow-key navigation
-            // hasn't shipped yet. This mirrors the legacy
-            // `focusedIndex === props.index` behavior (where
-            // `focusedIndex` always remained 0 — `moveFocus` was
-            // never wired up) without the dead machine reference.
-            if (!props.selectable || props.disabled) return false;
-            return props.index === 0;
+        // Tab-stop ownership — the FIRST selectable + enabled item
+        // (lowest data index, dynamically resolved) gets
+        // `tabindex="0"` initially. Previously hard-coded to
+        // `props.index === 0`, which left the listbox with no
+        // keyboard entry point if row 0 was disabled. Each eligible
+        // item registers with the list-scope tab-stop registry;
+        // `firstTabStopIndex` is the lowest registered index.
+        const isEligibleTabStop = computed(() => (
+            props.selectable && !props.disabled
+        ));
+        // Watch eligibility AND index together. If the row's index
+        // changes mid-life (list reorder / splice), the old index
+        // must unregister before the new one registers — otherwise
+        // the registry holds a stale entry and `firstTabStopIndex`
+        // points at a row that no longer exists.
+        watch(
+            [isEligibleTabStop, () => props.index],
+            ([eligible, newIndex], oldValues) => {
+                const oldIndex = oldValues?.[1];
+                if (oldIndex !== undefined && oldIndex !== newIndex) {
+                    list.unregisterEligibleItem(oldIndex);
+                }
+                if (eligible) list.registerEligibleItem(newIndex);
+                else list.unregisterEligibleItem(newIndex);
+            },
+            { immediate: true },
+        );
+        onBeforeUnmount(() => {
+            if (isEligibleTabStop.value) list.unregisterEligibleItem(props.index);
         });
+        const isTabStop = computed(() => (
+            isEligibleTabStop.value && list.firstTabStopIndex.value === props.index
+        ));
+
+        // Real DOM-focus state — wired via focusin/focusout on the
+        // root element. Previously this was `props.index === 0`
+        // (always true for row 0), which lied about actual focus.
+        // Driven by `onFocusin` / `onFocusout` attached below.
+        const isFocused = ref(false);
 
         const toggle = (opts: { range?: boolean; toggle?: boolean } = {}): void => {
             if (props.disabled || !props.selectable || key.value === undefined) return;
@@ -251,7 +284,9 @@ export default defineComponent({
             if (inListbox) {
                 elementAttrs.role = 'option';
                 elementAttrs['aria-selected'] = isSelected.value ? 'true' : 'false';
-                elementAttrs.tabindex = isFocused.value ? 0 : -1;
+                elementAttrs.tabindex = isTabStop.value ? 0 : -1;
+                elementAttrs.onFocusin = () => { isFocused.value = true; };
+                elementAttrs.onFocusout = () => { isFocused.value = false; };
                 elementAttrs['data-selected'] = isSelected.value ? '' : undefined;
                 elementAttrs.onClick = onClick;
                 // Keyboard activation only when listbox semantics are on.

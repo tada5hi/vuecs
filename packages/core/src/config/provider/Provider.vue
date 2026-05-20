@@ -39,9 +39,14 @@ export default defineComponent({
     },
     setup(props, { slots }) {
         const parent = injectConfigManager();
+        // Pass `parent` (not snapshot defaults) so a top-level
+        // `setConfig` for inherited keys flows reactively into the
+        // subtree. Previously the child only saw a constructor-time
+        // snapshot of parent defaults, so post-mount parent changes
+        // didn't reach subtree consumers.
         const local = new ConfigManager({
             config: props.config,
-            defaults: parent?.defaults,
+            parent,
         });
         provideConfigManager(local);
         return () => slots.default?.();

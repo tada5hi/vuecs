@@ -1,5 +1,5 @@
 import { inject, provide } from 'vue';
-import type { ComputedRef, InjectionKey } from 'vue';
+import type { ComputedRef, InjectionKey, Ref } from 'vue';
 import type { ListItemThemeClasses, ListThemeClasses } from '../types';
 import type { ListState } from './define-list';
 import type { SelectionState } from './selection';
@@ -16,6 +16,18 @@ type ListContext = {
     state: ListState<unknown, Record<string, unknown>>;
     classes: ComputedRef<ListThemeClasses>;
     selection: SelectionState;
+    /**
+     * Registry of indices of selectable + enabled items. Each
+     * `<VCListItem>` self-registers when it's eligible to be a
+     * keyboard tab stop. `firstTabStopIndex` (below) is derived
+     * from the lowest registered index — that's the one that
+     * carries `tabindex="0"` so the listbox always has a keyboard
+     * entry point even when item 0 is disabled.
+     */
+    registerEligibleItem(index: number): void;
+    unregisterEligibleItem(index: number): void;
+    /** Lowest registered eligible-item index, or `null` when none. */
+    firstTabStopIndex: ComputedRef<number | null>;
 };
 
 const LIST_CONTEXT_KEY = Symbol('VCListContext') as InjectionKey<ListContext>;
@@ -80,8 +92,14 @@ type ListItemContext = {
     classes: ComputedRef<ListItemThemeClasses>;
     /** Whether this row is in the current selection. */
     isSelected: ComputedRef<boolean>;
-    /** Whether this row carries the roving-tabindex focus. */
-    isFocused: ComputedRef<boolean>;
+    /**
+     * Whether this row currently has DOM focus. Driven by
+     * `focusin` / `focusout` listeners on the `<li>`. Use this for
+     * focused-styling that should reflect real keyboard focus
+     * (separate from the static "first selectable item gets
+     * tabindex=0" semantic).
+     */
+    isFocused: Ref<boolean>;
     /** Whether `<VCListItem :disabled>` was set. */
     isDisabled: ComputedRef<boolean>;
     /** Whether `<VCListItem :active>` was set (routing-style highlight). */

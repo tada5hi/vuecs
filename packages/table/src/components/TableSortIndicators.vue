@@ -223,7 +223,21 @@ export default defineComponent({
             // `update:sort` once the machine state lands), so a
             // double-emit doesn't fire for consumers who happen to
             // listen on the chip row.
-            if (ctx) ctx.setSortState(next);
+            if (ctx) {
+                // `globalThis.process` is the safe lookup in browser
+                // ESM builds where `process` isn't a global; raw
+                // `process.env.NODE_ENV` would throw ReferenceError.
+                if (
+                    (globalThis as { process?: { env?: { NODE_ENV?: string } } }).process?.env?.NODE_ENV !== 'production' &&
+                    !ctx.supportsSortMutation
+                ) {
+                    // eslint-disable-next-line no-console
+                    console.warn(
+                        '[VCTableSortIndicators] mounted inside a table context that does not support sort mutation (likely <VCTableLite>). Clicks will be swallowed. Either bind :sort + :columns directly for v-model mode, or use <VCTable> instead of Lite.',
+                    );
+                }
+                ctx.setSortState(next);
+            }
         }
 
         const columnByKey = computed(() => {

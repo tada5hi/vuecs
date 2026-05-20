@@ -23,16 +23,30 @@ export class ConfigManager {
 
     private readonly defaultsMap: Partial<Config>;
 
+    private readonly parent: ConfigManager | undefined;
+
     /**
      * @param options.config — consumer-supplied config (wins over defaults).
      * @param options.defaults — pre-seeded defaults map. Used by
      *   `<VCConfigProvider>` to inherit a parent manager's registered
      *   defaults at construction time. Snapshot, not reactive — defaults
      *   registered on the parent AFTER the child mounts don't propagate.
+     * @param options.parent — optional parent manager. When set, `get()`
+     *   falls through to the parent's chain for keys the child doesn't
+     *   override locally (consumer config + local defaults). This way
+     *   a top-level `setConfig({ locale: 'de' })` reaches subtree
+     *   consumers reactively, instead of being shadowed by the
+     *   subtree's constructor-time snapshot.
      */
-    constructor(options: ConfigManagerOptions & { defaults?: Partial<Config> } = {}) {
+    constructor(options: ConfigManagerOptions & { defaults?: Partial<Config>; parent?: ConfigManager } = {}) {
         this.configRef = shallowRef(options.config || {});
-        this.defaultsMap = { ...CORE_DEFAULTS, ...options.defaults };
+        // Only the ROOT manager seeds `CORE_DEFAULTS`; child managers
+        // inherit them via the parent chain, so they're never lost
+        // but also never double-applied.
+        this.defaultsMap = options.parent ?
+            { ...options.defaults } :
+            { ...CORE_DEFAULTS, ...options.defaults };
+        this.parent = options.parent;
     }
 
     get config(): ConfigManagerOptions['config'] {
@@ -83,7 +97,14 @@ export class ConfigManager {
         const raw = (this.configRef.value as Record<string, unknown>)?.[key];
         const value = isRef(raw) ? unref(raw) : raw;
         if (value === undefined || value === null) {
-            return this.defaultsMap[key];
+            const local = this.defaultsMap[key];
+            if (local !== undefined) return local;
+            // Chain through to the parent manager so a top-level
+            // `setConfig` propagates into subtree-scoped consumers for
+            // keys the subtree didn't override. Reads `parent.get(key)`
+            // reactively — the child's `useConfig(key)` computed
+            // re-runs when the parent's `configRef` flips.
+            return this.parent?.get(key);
         }
         return value as Config[K];
     }

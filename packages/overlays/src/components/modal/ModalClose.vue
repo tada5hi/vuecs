@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, h } from 'vue';
+import { defineComponent, h, mergeProps } from 'vue';
 import type { ExtractPublicPropTypes, PropType } from 'vue';
 import { DialogClose } from 'reka-ui';
 import { useComponentTheme } from '@vuecs/core';
@@ -31,6 +31,7 @@ export type ModalCloseProps = ExtractPublicPropTypes<typeof modalCloseProps>;
 
 export default defineComponent({
     name: 'VCModalClose',
+    inheritAttrs: false,
     props: modalCloseProps,
     setup(props, { slots, attrs }) {
         const theme = useComponentTheme('modal', props, modalThemeDefaults);
@@ -51,12 +52,12 @@ export default defineComponent({
             const slotKey = props.icon || !hasSlot ? 'closeIcon' : 'close';
             return h(
                 DialogClose,
-                {
+                mergeProps(attrs, {
                     as: props.as,
                     asChild: props.asChild,
                     class: theme.value[slotKey] || undefined,
                     'aria-label': ariaLabel,
-                },
+                }),
                 { default: () => slots.default?.() ?? '×' },
             );
         };

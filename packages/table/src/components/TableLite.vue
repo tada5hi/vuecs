@@ -165,6 +165,7 @@ export default defineComponent({
             setSort: () => {},
             setSortState: () => {},
             maxSortKeys: ref(0),
+            supportsSortMutation: false,
             rowClickable: computed(() => false),
             focusedRow: ref(null),
             setFocusedRow: () => {},

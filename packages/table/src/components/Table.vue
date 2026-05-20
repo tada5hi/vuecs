@@ -5,7 +5,9 @@ import {
     h,
     mergeProps,
     ref,
+    shallowRef,
     toRef,
+    triggerRef,
     watch,
 } from 'vue';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
@@ -224,21 +226,22 @@ export default defineComponent({
         // Drives the roving-tabindex fallback (first-interactive gets
         // the tab stop, not blindly row 0) and the arrow-nav skip
         // semantics (next/prev interactive, not next/prev data index).
-        // Set is wrapped in a Ref + reassigned on mutation so Vue's
-        // reactivity catches it (Set's internal mutations aren't
-        // tracked by default).
-        const interactiveRows = ref<Set<number>>(new Set());
+        // Set mutations aren't reactivity-tracked, so we hold the
+        // Set in a shallow ref and call `triggerRef` after each
+        // in-place `add`/`delete`. Previously the code allocated a
+        // FRESH Set on every register/unregister — during mount of a
+        // table with N interactive rows that was O(N²) allocations
+        // (each new row copies the prior Set).
+        const interactiveRows = shallowRef<Set<number>>(new Set());
         const registerInteractiveRow = (index: number) => {
             if (interactiveRows.value.has(index)) return;
-            const next = new Set(interactiveRows.value);
-            next.add(index);
-            interactiveRows.value = next;
+            interactiveRows.value.add(index);
+            triggerRef(interactiveRows);
         };
         const unregisterInteractiveRow = (index: number) => {
             if (!interactiveRows.value.has(index)) return;
-            const next = new Set(interactiveRows.value);
-            next.delete(index);
-            interactiveRows.value = next;
+            interactiveRows.value.delete(index);
+            triggerRef(interactiveRows);
         };
 
         // Selection wiring (plan 033 v1.x-A). Always construct the
@@ -292,6 +295,7 @@ export default defineComponent({
             }),
             setSortState: sortMachine.setState,
             maxSortKeys: maxSortKeysRef,
+            supportsSortMutation: true,
             rowClickable: toRef(props, 'rowClickable'),
             focusedRow,
             setFocusedRow,

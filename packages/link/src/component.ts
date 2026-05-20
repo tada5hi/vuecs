@@ -46,6 +46,7 @@ const linkProps = {
 export type LinkProps = ExtractPublicPropTypes<typeof linkProps>;
 
 export const VCLink = defineComponent({
+    name: 'VCLink',
     props: linkProps,
     emits: ['click', 'clicked'],
     setup(props, { emit, slots }) {
@@ -193,33 +194,34 @@ export const VCLink = defineComponent({
             return vNodeProps;
         };
 
-        let component : string | VNodeTypes;
+        // Resolve the rendered component INSIDE the render fn so it
+        // reacts to `to`/`disabled` changes — previously the switch
+        // ran once at setup and cached the choice, so toggling
+        // `:disabled` couldn't swap `<router-link>` → `<a>`.
+        const resolvedComponent = computed<string | VNodeTypes>(() => {
+            switch (computedTag.value) {
+                case 'router-link': return routerLink;
+                case 'nuxt-link': return nuxtLink;
+                default: return 'a';
+            }
+        });
 
-        switch (computedTag.value) {
-            case 'router-link':
-                component = routerLink;
-                break;
-            case 'nuxt-link':
-                component = nuxtLink;
-                break;
-            default:
-                component = 'a';
-        }
-
-        if (typeof component === 'string') {
-            return () => h(
-                component as string,
+        return () => {
+            const component = resolvedComponent.value;
+            if (typeof component === 'string') {
+                return h(
+                    component,
+                    buildVNodeProps(),
+                    [
+                        (typeof slots.default === 'function' ? slots.default() : []),
+                    ],
+                );
+            }
+            return h(
+                component as DefineComponent,
                 buildVNodeProps(),
-                [
-                    (typeof slots.default === 'function' ? slots.default() : []),
-                ],
+                { default: () => (typeof slots.default === 'function' ? slots.default() : []) },
             );
-        }
-
-        return () => h(
-            component as DefineComponent,
-            buildVNodeProps(),
-            { default: () => (typeof slots.default === 'function' ? slots.default() : []) },
-        );
+        };
     },
 });

@@ -175,7 +175,11 @@ export default defineComponent({
             if (!q.value || q.value.length < 1) {
                 return props.options;
             }
-            const pattern = new RegExp(q.value, 'ig');
+            // User input goes straight into a RegExp — escape special
+            // chars so typing `(`, `[`, `*`, `+`, `?` etc. doesn't
+            // throw SyntaxError and crash the filter mid-render.
+            const escaped = q.value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const pattern = new RegExp(escaped, 'ig');
             return props.options.filter((option) => option.label.match(pattern));
         });
 
