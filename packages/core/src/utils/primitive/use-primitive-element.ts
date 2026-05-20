@@ -3,6 +3,15 @@ import type { ComponentPublicInstance, Ref } from 'vue';
 
 type ElementOrComponent = Element | ComponentPublicInstance | null | undefined;
 
+/**
+ * Subset of `@vueuse/core`'s `unrefElement` covering the only case
+ * `usePrimitiveElement` needs: a single-level `Ref` whose value is either
+ * an `Element`, a `ComponentPublicInstance` (resolved via `$el`), or
+ * nullish. VueUse's variant additionally accepts `MaybeRefOrGetter` /
+ * nested refs / SVG element shorthands — none of which Vue 3's template
+ * `ref` binding can produce here. Inlined so `@vuecs/core` stays zero-dep
+ * beyond Vue.
+ */
 function unrefElement(elRef: Ref<ElementOrComponent>): Element | null | undefined {
     const { value } = elRef;
     if (value == null) {

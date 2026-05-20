@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
 import {
+    createTextVNode,
     defineComponent,
     h,
     nextTick,
@@ -41,6 +42,43 @@ describe('usePrimitiveElement', () => {
 
         const wrapper = mount(Wrapper);
         expect(wrapper.element.getAttribute('data-empty')).toBe('1');
+    });
+
+    it('walks past a #text $el to the next element sibling (fragment-first-text case)', async () => {
+        // Vue produces a Text node as a component's `$el` when the
+        // component returns a fragment starting with a text vnode. This is
+        // the case `usePrimitiveElement`'s `nodeName === '#text'` branch
+        // exists for — without the walk, `currentElement` would point at
+        // the Text anchor instead of the real `<article>` next to it.
+        const FragmentRoot = defineComponent({
+            setup() {
+                return () => [
+                    createTextVNode(''),
+                    h('article', { class: 'real' }, 'body'),
+                ];
+            },
+        });
+
+        const observed: string[] = [];
+        const Wrapper = defineComponent({
+            setup() {
+                const { primitiveElement, currentElement } = usePrimitiveElement();
+                return () => {
+                    observed.push(currentElement.value?.tagName ?? '');
+                    return h('div', null, h(FragmentRoot, { ref: primitiveElement }));
+                };
+            },
+        });
+
+        mount(Wrapper);
+        await nextTick();
+        await nextTick();
+
+        // The most recent observation should resolve to the real <article>.
+        // (Early renders before the ref settles can read as empty — that's
+        // expected; the walker only fires once the component instance is
+        // assigned.)
+        expect(observed[observed.length - 1]).toBe('ARTICLE');
     });
 
     it('skips through #text / #comment $el nodes (asChild template root)', async () => {

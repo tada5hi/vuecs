@@ -38,6 +38,14 @@ export const Slot = defineComponent({
             // Remove `ref` from being inferred onto the cloned child — refs on
             // the wrapper element flow via `useForwardExpose` / template-ref
             // forwarding, not via the slot child.
+            //
+            // We mutate the original vnode's props in place (same as Reka).
+            // Safe in practice: Vue produces fresh vnodes per render pass, so
+            // a consumer's render function never observes the mutation
+            // through `slots.default()` twice. Defensive shallow-cloning of
+            // `props` would diverge from upstream without buying anything
+            // observable — only worth changing if a future Vue version
+            // starts memoizing slot vnodes.
             if (firstNonCommentChildren.props) {
                 delete firstNonCommentChildren.props.ref;
             }

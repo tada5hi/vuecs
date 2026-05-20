@@ -1,6 +1,11 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
-import { createCommentVNode, defineComponent, h } from 'vue';
+import {
+    createCommentVNode,
+    defineComponent,
+    h,
+    mergeProps,
+} from 'vue';
 import { mount } from '@vue/test-utils';
 import { VCPrimitive } from '../../../src';
 
@@ -126,6 +131,35 @@ describe('VCPrimitive', () => {
         const span = wrapper.element.querySelector('span.real');
         expect(span).not.toBeNull();
         expect(span?.getAttribute('data-w')).toBe('w');
+    });
+
+    it('flows consumer attrs through inheritAttrs:false + mergeProps + VCPrimitive', () => {
+        // End-to-end check of the pattern every Card SFC uses: a themable
+        // wrapper sets `inheritAttrs: false`, merges its own theme class
+        // with the consumer's attrs, and forwards the result onto
+        // `<VCPrimitive>`. Both consumer-supplied attrs (class, data-*)
+        // AND the wrapper's theme class must land on the final element.
+        const ThemableWrapper = defineComponent({
+            name: 'ThemableWrapper',
+            inheritAttrs: false,
+            setup(_, { attrs, slots }) {
+                return () => h(
+                    VCPrimitive,
+                    mergeProps(attrs, { class: 'inner-theme-class' }),
+                    { default: () => slots.default?.() },
+                );
+            },
+        });
+
+        const wrapper = mount(ThemableWrapper, {
+            attrs: { class: 'consumer-class', 'data-x': '1' },
+            slots: { default: () => 'body' },
+        });
+
+        expect(wrapper.element.tagName).toBe('DIV');
+        expect(wrapper.element.className).toContain('consumer-class');
+        expect(wrapper.element.className).toContain('inner-theme-class');
+        expect(wrapper.element.getAttribute('data-x')).toBe('1');
     });
 
     it('passes attrs to the first non-comment child when multiple children are present', () => {
