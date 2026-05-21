@@ -29,18 +29,22 @@ function unrefElement(elRef: Ref<ElementOrComponent>): Element | null | undefine
  * `<template>` (via `asChild`).
  *
  * Mirrors reka-ui's `usePrimitiveElement` (MIT,
- * https://github.com/unovue/reka-ui) with `unrefElement` inlined so
- * `@vuecs/core` stays zero-dep beyond Vue.
+ * https://github.com/unovue/reka-ui) with two intentional vuecs deltas:
+ * - `unrefElement` is inlined so `@vuecs/core` stays zero-dep beyond Vue.
+ * - `currentElement` is typed as `Element | null | undefined` (Reka uses
+ *   `HTMLElement`). `VCPrimitive` accepts `as="svg"` from its `AsTag`
+ *   union, which resolves to `SVGElement`/`Element`, not `HTMLElement`.
+ *   This also matches `useForwardExpose`'s `currentElement` convention.
  */
 export function usePrimitiveElement<T extends ComponentPublicInstance>() {
-    const primitiveElement = ref<T>();
-    const currentElement = computed<HTMLElement | null | undefined>(() => {
+    const primitiveElement = ref<T | null>(null);
+    const currentElement = computed<Element | null | undefined>(() => {
         const raw = primitiveElement.value;
         const $el = raw?.$el as Node | null | undefined;
         if ($el && ($el.nodeName === '#text' || $el.nodeName === '#comment')) {
-            return ($el as unknown as Element).nextElementSibling as HTMLElement | null;
+            return ($el as unknown as Element).nextElementSibling;
         }
-        return unrefElement(primitiveElement as Ref<ElementOrComponent>) as HTMLElement | null | undefined;
+        return unrefElement(primitiveElement as Ref<ElementOrComponent>);
     });
 
     return {

@@ -247,14 +247,19 @@ const brandTheme = () => defineTheme({
 
 ## Using `<VCPrimitive>` for `as` / `asChild`
 
-The example above hardcodes `h('div', ...)` as the root. Most themable components want to give consumers an escape hatch: render as a different tag (`<section>`, `<article>`, `<a>`), or fall through to a custom child element entirely via the [`asChild`](/guide/primitive#the-aschild-pattern) pattern. The render target for that is **`<VCPrimitive>` from `@vuecs/core`** — a generic `as` / `asChild` building block that lives in `@vuecs/core` so you don't need a direct `reka-ui` peer dep.
+The example above hardcodes `h('div', ...)` as the root. Most themable components want to give consumers an escape hatch: render as a different tag (`<section>`, `<article>`), or as a different component entirely (`<RouterLink>`, `<NuxtLink>`). The render target for that is **`<VCPrimitive>` from `@vuecs/core`** — a generic `as` / `asChild` building block that lives in `@vuecs/core` so you don't need a direct `reka-ui` peer dep.
 
 Refactor `<MyDataTable>` to use it:
 
 ```vue
 <script lang="ts">
 import { defineComponent, h, mergeProps } from 'vue';
-import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
+import type {
+    Component,
+    ExtractPublicPropTypes,
+    PropType,
+    SlotsType,
+} from 'vue';
 import { themableProps, useComponentTheme, useThemeProps, VCPrimitive } from '@vuecs/core';
 import { myDataTableThemeDefaults } from './theme';
 import type { MyDataTableDensity, MyDataTableThemeClasses } from './types';
@@ -263,8 +268,8 @@ const myDataTableProps = {
     rows: { type: Array as PropType<Array<Record<string, unknown>>>, default: () => [] },
     density: { type: String as PropType<MyDataTableDensity>, default: undefined },
 
-    /** HTML tag to render. Use `:as-child` to compose onto an existing component. */
-    as: { type: String, default: 'div' },
+    /** HTML tag (e.g. `'section'`) or component (e.g. `RouterLink`) to render. */
+    as: { type: [String, Object] as PropType<string | Component>, default: 'div' },
     /** Render the consumer's slot child as the root (asChild pattern). */
     asChild: { type: Boolean, default: false },
 
@@ -325,16 +330,16 @@ Now the consumer can:
     <!-- Render as <section> instead -->
     <MyDataTable :rows="users" as="section" />
 
-    <!-- Render as a router link (the whole table becomes clickable) -->
-    <MyDataTable :rows="users" as-child>
-        <RouterLink :to="`/team/${groupId}`" />
-    </MyDataTable>
+    <!-- Wrap the whole table in a router link (component-form `as`) -->
+    <MyDataTable :rows="users" :as="RouterLink" :to="`/team/${groupId}`" />
 </template>
 ```
 
-The third form is the `asChild` pattern: `<VCPrimitive>` falls through to the slot child, merges the wrapper's class + attrs onto it, and renders that element instead of its own root. Consumer styling, theme classes, and the table body all compose onto the `<RouterLink>`.
+The third form passes a Vue component to `as`. `<VCPrimitive>` then renders `h(RouterLink, mergedAttrs, { default: () => <the table chrome> })` — the entire table is wrapped in a `<RouterLink>`, making it clickable. Component-form `as` requires the prop type to accept both strings and components (`type: [String, Object] as PropType<string | Component>`).
 
-Why `<VCPrimitive>` and not Reka's `Primitive`? `@vuecs/core` ports it in-tree so your library doesn't take a runtime `reka-ui` dep just to render a generic `as` element. See [Primitive (as / asChild)](/guide/primitive) for the full reference and the asChild rules around comments, multi-child slots, and class precedence.
+`<VCPrimitive>` also accepts an `asChild` prop, which falls through to the consumer's slot child and merges the wrapper's class + attrs onto it. `<MyDataTable>` declares + forwards the `asChild` prop above as plumbing, but the wrapper's render fn always supplies its own `<table>` chrome as VCPrimitive's default slot — so `asChild` on a chromed wrapper like this only takes effect if the wrapper's render fn also forwards the consumer's `slots.default` when appropriate. For most consumers, **component-form `as` is the simpler hook**; reserve `asChild` for compound parts whose entire body is consumer-supplied (e.g. the Card compound's bands). See [Primitive (as / asChild)](/guide/primitive) for the full asChild rules around comments, multi-child slots, and class precedence.
+
+Why `<VCPrimitive>` and not Reka's `Primitive`? `@vuecs/core` ports it in-tree so your library doesn't take a runtime `reka-ui` dep just to render a generic `as` element.
 
 ## Variants and behavioral defaults
 

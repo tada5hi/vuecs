@@ -35,18 +35,22 @@ export const Slot = defineComponent({
 
             const firstNonCommentChildren = children[firstNonCommentChildrenIndex];
 
-            // Remove `ref` from being inferred onto the cloned child — refs on
-            // the wrapper element flow via `useForwardExpose` / template-ref
-            // forwarding, not via the slot child.
+            // Remove `ref` from props **so cloneVNode doesn't re-normalize it
+            // against Slot's `currentRenderingInstance`**. The consumer's
+            // ref was already normalized into `vnode.ref` (top-level, with
+            // the consumer's instance attached) when their render fn called
+            // `h()`. If we left `props.ref` in place, mergeProps would carry
+            // it into `extraProps`, and cloneVNode's
+            //   `extraProps.ref ? normalizeRef(extraProps) : vnode.ref`
+            // branch would re-bind the string ref to Slot's instance
+            // instead of the consumer's. Deleting `props.ref` forces
+            // cloneVNode to keep the original `vnode.ref` — preserving the
+            // consumer's template-ref binding through the asChild clone.
             //
             // We mutate the original vnode's props in place (same as Reka).
-            // Safe in practice because Vue's compiler does not static-hoist
-            // vnodes that carry `ref` (a ref is dynamic by definition), so
-            // the vnodes we mutate are always freshly produced by the
-            // consumer's render fn per pass. Defensive shallow-cloning of
-            // `props` would diverge from upstream without buying anything
-            // observable — only worth changing if a future Vue version
-            // starts hoisting ref-bearing vnodes or memoizing slot output.
+            // Safe because Vue's compiler does not static-hoist vnodes that
+            // carry `ref` (a ref is dynamic by definition), so these vnodes
+            // are freshly produced by the consumer's render fn per pass.
             if (firstNonCommentChildren.props) {
                 delete firstNonCommentChildren.props.ref;
             }

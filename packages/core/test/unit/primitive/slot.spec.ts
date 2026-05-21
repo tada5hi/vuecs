@@ -1,6 +1,11 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
-import { defineComponent, h } from 'vue';
+import {
+    defineComponent,
+    h,
+    nextTick,
+    ref,
+} from 'vue';
 import { mount } from '@vue/test-utils';
 import { VCPrimitive } from '../../../src';
 
@@ -82,21 +87,37 @@ describe('Slot (via VCPrimitive asChild)', () => {
         expect(wrapper.element.getAttribute('data-x')).toBe('1');
     });
 
-    it('drops `ref` from the cloned child to avoid double-bind', () => {
-        const wrapper = mount(defineComponent({
+    it('binds the consumer-supplied template ref to the cloned child', async () => {
+        // Slot's `delete firstNonCommentChildren.props.ref` step exists so
+        // cloneVNode preserves the original `vnode.ref` (already normalized
+        // against the consumer's `currentRenderingInstance`) instead of
+        // re-normalizing the string ref against Slot's instance. The
+        // observable contract: a consumer's template ref on the slot child
+        // resolves to the rendered (cloned) element, on the consumer's
+        // component instance.
+        const consumerRef = ref<HTMLElement | null>(null);
+
+        const Consumer = defineComponent({
             setup() {
-                // A consumer template-ref on the child element would create
-                // a duplicate ref vs. the wrapper's own forward path. Slot
-                // deletes `props.ref` before merging.
-                return () => h(
+                return { consumerRef };
+            },
+            render() {
+                return h(
                     VCPrimitive,
-                    { asChild: true, 'data-x': '1' },
-                    { default: () => h('div', { ref: 'shouldBeDropped' }) },
+                    { asChild: true, class: 'wrap-cls' },
+                    { default: () => h('a', { ref: 'consumerRef', href: '/x' }, 'link') },
                 );
             },
-        }));
+        });
 
-        expect(wrapper.element.tagName).toBe('DIV');
-        expect(wrapper.element.getAttribute('data-x')).toBe('1');
+        const wrapper = mount(Consumer);
+        await nextTick();
+
+        // The consumer's `$refs.consumerRef` resolves to the cloned <a>,
+        // not null — i.e. the asChild flow preserves ref binding.
+        expect(consumerRef.value).not.toBeNull();
+        expect(consumerRef.value?.tagName).toBe('A');
+        // And the same element carries the wrapper's class via mergeProps.
+        expect(wrapper.element.className).toContain('wrap-cls');
     });
 });
