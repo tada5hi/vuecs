@@ -91,6 +91,18 @@ This convention applies to every Reka-wrapping component across
 approach was reverted because it hid the actual default from autocomplete
 and led to subtle prop-shape drift.)
 
+**Render target for unthemed generic elements:** when a vuecs component
+needs Reka's `as` / `asChild` semantics but doesn't wrap a themed Reka
+primitive (e.g. the Card compound bands), the inner render target is
+**`VCPrimitive` from `@vuecs/core`**, NOT `Primitive` from `reka-ui`.
+`VCPrimitive` is a line-for-line port of Reka's `Primitive` kept in
+`@vuecs/core` so `@vuecs/core` (and any component that uses it) stays
+free of a runtime `reka-ui` dep. See plan 034
+([`.agents/plans/034-vc-primitive-wrapper.md`](plans/034-vc-primitive-wrapper.md)).
+Themed Reka primitives (DialogContent, PopoverContent, StepperRoot,
+…) keep importing from `reka-ui` directly — the wrap-in-VC contract
+applies to the bare `Primitive` only.
+
 ## Theme bridge authoring — bridge what the framework exposes
 
 When writing a theme-bridge CSS file (the `assets/index.css` in

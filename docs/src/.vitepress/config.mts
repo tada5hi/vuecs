@@ -77,6 +77,7 @@ export default defineConfig({
                         { text: 'Behavioral Defaults', link: '/guide/behavioral-defaults' },
                         { text: 'Design Tokens', link: '/guide/design-tokens' },
                         { text: 'Composables', link: '/guide/composables' },
+                        { text: 'Primitive (as / asChild)', link: '/guide/primitive' },
                         { text: 'Navigation Manager', link: '/guide/navigation-manager' },
                     ],
                 },

@@ -245,6 +245,102 @@ const brandTheme = () => defineTheme({
 });
 ```
 
+## Using `<VCPrimitive>` for `as` / `asChild`
+
+The example above hardcodes `h('div', ...)` as the root. Most themable components want to give consumers an escape hatch: render as a different tag (`<section>`, `<article>`), or as a different component entirely (`<RouterLink>`, `<NuxtLink>`). The render target for that is **`<VCPrimitive>` from `@vuecs/core`** — a generic `as` / `asChild` building block that lives in `@vuecs/core` so you don't need a direct `reka-ui` peer dep.
+
+Refactor `<MyDataTable>` to use it:
+
+```vue
+<script lang="ts">
+import { defineComponent, h, mergeProps } from 'vue';
+import type {
+    Component,
+    ExtractPublicPropTypes,
+    PropType,
+    SlotsType,
+} from 'vue';
+import { themableProps, useComponentTheme, useThemeProps, VCPrimitive } from '@vuecs/core';
+import { myDataTableThemeDefaults } from './theme';
+import type { MyDataTableDensity, MyDataTableThemeClasses } from './types';
+
+const myDataTableProps = {
+    rows: { type: Array as PropType<Array<Record<string, unknown>>>, default: () => [] },
+    density: { type: String as PropType<MyDataTableDensity>, default: undefined },
+
+    /** HTML tag (e.g. `'section'`) or component (e.g. `RouterLink`) to render. */
+    as: { type: [String, Object] as PropType<string | Component>, default: 'div' },
+    /** Render the consumer's slot child as the root (asChild pattern). */
+    asChild: { type: Boolean, default: false },
+
+    ...themableProps<MyDataTableThemeClasses>(),
+};
+
+export default defineComponent({
+    name: 'MyDataTable',
+    inheritAttrs: false,
+    props: myDataTableProps,
+    slots: Object as SlotsType<{
+        header?: () => unknown;
+        row?: (props: { row: Record<string, unknown> }) => unknown;
+    }>,
+    setup(props, { attrs, slots }) {
+        const theme = useComponentTheme(
+            'myDataTable',
+            useThemeProps(props, 'density'),
+            myDataTableThemeDefaults,
+        );
+
+        return () => h(
+            VCPrimitive,
+            mergeProps(attrs, {
+                as: props.as,
+                asChild: props.asChild,
+                class: theme.value.root,
+            }),
+            {
+                default: () => h('table', [
+                    h('thead', { class: theme.value.header }, slots.header?.()),
+                    h('tbody', props.rows.map((row) => h(
+                        'tr',
+                        { class: theme.value.row },
+                        slots.row?.({ row }) ?? [],
+                    ))),
+                ]),
+            },
+        );
+    },
+});
+</script>
+```
+
+What changed:
+
+- The `as` + `asChild` props are declared on the wrapper (with concrete defaults — `'div'` and `false`), then forwarded onto `<VCPrimitive>` along with the resolved theme class.
+- `inheritAttrs: false` + `mergeProps(attrs, …)` propagates consumer-supplied attributes (`class`, `data-*`, event listeners) onto the rendered element.
+- The body of the table is the wrapper's default slot to `<VCPrimitive>`. Self-closing tags (`as="img"`, `as="input"`) short-circuit the slot automatically — not relevant for a data table but useful to know if you build atomic elements.
+
+Now the consumer can:
+
+```vue
+<template>
+    <!-- Default <div> root -->
+    <MyDataTable :rows="users" />
+
+    <!-- Render as <section> instead -->
+    <MyDataTable :rows="users" as="section" />
+
+    <!-- Wrap the whole table in a router link (component-form `as`) -->
+    <MyDataTable :rows="users" :as="RouterLink" :to="`/team/${groupId}`" />
+</template>
+```
+
+The third form passes a Vue component to `as`. `<VCPrimitive>` then renders `h(RouterLink, mergedAttrs, { default: () => <the table chrome> })` — the entire table is wrapped in a `<RouterLink>`, making it clickable. Component-form `as` requires the prop type to accept both strings and components (`type: [String, Object] as PropType<string | Component>`).
+
+`<VCPrimitive>` also accepts an `asChild` prop, which falls through to the consumer's slot child and merges the wrapper's class + attrs onto it. `<MyDataTable>` declares + forwards the `asChild` prop above as plumbing, but the wrapper's render fn always supplies its own `<table>` chrome as VCPrimitive's default slot — so `asChild` on a chromed wrapper like this only takes effect if the wrapper's render fn also forwards the consumer's `slots.default` when appropriate. For most consumers, **component-form `as` is the simpler hook**; reserve `asChild` for compound parts whose entire body is consumer-supplied (e.g. the Card compound's bands). See [Primitive (as / asChild)](/guide/primitive) for the full asChild rules around comments, multi-child slots, and class precedence.
+
+Why `<VCPrimitive>` and not Reka's `Primitive`? `@vuecs/core` ports it in-tree so your library doesn't take a runtime `reka-ui` dep just to render a generic `as` element.
+
 ## Variants and behavioral defaults
 
 The same declaration-merging pattern extends to two more axes:

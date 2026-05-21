@@ -1,8 +1,12 @@
 <script lang="ts">
 import { defineComponent, h, mergeProps } from 'vue';
 import type { ExtractPublicPropTypes, PropType } from 'vue';
-import { Primitive } from 'reka-ui';
-import { themableProps, useComponentTheme, useThemeProps } from '@vuecs/core';
+import {
+    VCPrimitive,
+    themableProps,
+    useComponentTheme,
+    useThemeProps,
+} from '@vuecs/core';
 import { provideCardContext } from './context';
 import { cardThemeDefaults } from './theme';
 import type { CardPadding, CardThemeClasses, CardVariant } from './types';
@@ -34,7 +38,7 @@ export default defineComponent({
         provideCardContext({ themeVariant: () => themeProps.themeVariant });
 
         return () => h(
-            Primitive,
+            VCPrimitive,
             mergeProps(attrs, {
                 as: props.as,
                 asChild: props.asChild,

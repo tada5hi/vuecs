@@ -1448,6 +1448,14 @@ Components ──read─────────┘ (via useComponentTheme / use
 
 Some components compose [Reka UI](https://reka-ui.com/) primitives internally for accessibility heavy lifting (focus management, keyboard nav, edge-aware rendering). Consumers don't see this — the public API (props, emits, theme classes) is the vuecs contract; Reka is an implementation detail. Today this applies to `@vuecs/pagination` (wraps `PaginationRoot` / `PaginationList` / `PaginationListItem` / `PaginationFirst|Prev|Next|Last` / `PaginationEllipsis`). The roadmap for broader Reka adoption (overlays, form-controls migration, headless composables) lives at [`.agents/plans/009-reka-ui-adoption-roadmap.md`](plans/009-reka-ui-adoption-roadmap.md). See [`.agents/references/reka-ui.md`](references/reka-ui.md) for the conceptual mapping.
 
+The one unthemed Reka primitive vuecs exposes — `Primitive` (the `as` /
+`asChild` building block) — is **ported in-tree** into `@vuecs/core` as
+`VCPrimitive` so downstream component libraries that build on top of
+vuecs don't have to take a direct `reka-ui` peer-dep just to render a
+themed generic element. Same port-don't-depend pattern as the headless
+composables section below. See plan 034
+([`.agents/plans/034-vc-primitive-wrapper.md`](plans/034-vc-primitive-wrapper.md)).
+
 ## Headless composables (@vuecs/core, Phase 2)
 
 Alongside `useComponentTheme` and `useComponentDefaults`, `@vuecs/core` exposes
@@ -1466,6 +1474,7 @@ stays zero-dep beyond Vue 3.
 | `useTypeahead(callback?)` | Accumulates keystrokes for ~1 s and focuses the next item whose text starts with the buffer. Also exports `getNextMatch` and `wrapArray` for custom matching loops |
 | `useId(deterministicId?, prefix?)` | Wraps Vue 3.5's native `useId()` with a default `vc-` prefix |
 | `useStateMachine(initial, machine)` | Tiny state machine on top of `ref()`. Unknown events leave state unchanged. Phase-3 prerequisite for `@vuecs/overlays` |
+| `usePrimitiveElement()` | Resolves a template ref through `#text` / `#comment` $el nodes to the real DOM element. Pairs with `VCPrimitive`'s `asChild` template path. See plan 034. |
 
 Source under `packages/core/src/utils/composables/`. Tests under
 `packages/core/test/unit/composables/`. All eight composables ship in
@@ -1473,6 +1482,17 @@ Source under `packages/core/src/utils/composables/`. Tests under
 roadmap. `@vuecs/navigation` consumes `useArrowNavigation` in `VCNavItems`
 to provide vertical arrow / Home / End keyboard navigation across
 sibling items at any depth.
+
+The same port-don't-depend pattern applies to the **`VCPrimitive`
+component** — the generic `<as>` / `:as-child>` building block ported
+from Reka into `@vuecs/core` under `packages/core/src/utils/primitive/`
+(tests under `packages/core/test/unit/primitive/`). Unlike the
+composables, `VCPrimitive` is a component (renders DOM) — it stays an
+explicit import (`import { VCPrimitive } from '@vuecs/core'`) rather
+than being registered globally as `<vc-primitive>` since the bare tag
+has no meaning without an `as` / `asChild` prop. Used internally by
+`@vuecs/elements`'s Card compound; exported for downstream component
+libraries authoring their own themed elements. See plan 034.
 
 ## Overlays (@vuecs/overlays, Phase 3)
 
