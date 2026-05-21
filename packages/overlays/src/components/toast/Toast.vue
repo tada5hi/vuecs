@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, h, mergeProps } from 'vue';
-import type { ExtractPublicPropTypes, PropType } from 'vue';
+import type { Component, ExtractPublicPropTypes, PropType } from 'vue';
 import { ToastRoot } from 'reka-ui';
 import { themableProps, useComponentTheme, useThemeProps } from '@vuecs/core';
 import { toastThemeDefaults } from './theme';
@@ -36,7 +36,7 @@ const toastProps = {
     /** Initial open state when `open` is undefined. */
     defaultOpen: { type: Boolean, default: true },
     /** HTML tag to render. */
-    as: { type: String, default: 'li' },
+    as: { type: [String, Object] as PropType<string | Component>, default: 'li' },
     /** Render the consumer's slot child as the root (Reka `asChild` pattern). */
     asChild: { type: Boolean, default: false },
     ...themableProps<ToastThemeClasses>(),

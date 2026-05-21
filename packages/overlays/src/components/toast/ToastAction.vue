@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, h, mergeProps } from 'vue';
-import type { ExtractPublicPropTypes } from 'vue';
+import type { Component, ExtractPublicPropTypes, PropType } from 'vue';
 import { ToastAction } from 'reka-ui';
 import { themableProps, useComponentTheme, useThemeProps } from '@vuecs/core';
 import { toastActionThemeDefaults } from './theme';
@@ -14,7 +14,7 @@ const toastActionProps = {
      */
     altText: { type: String, required: true },
     /** HTML tag to render. */
-    as: { type: String, default: 'button' },
+    as: { type: [String, Object] as PropType<string | Component>, default: 'button' },
     /** Render the consumer's slot child as the root (Reka `asChild` pattern). */
     asChild: { type: Boolean, default: false },
     ...themableProps<ToastActionThemeClasses>(),

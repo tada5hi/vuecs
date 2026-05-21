@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, h, mergeProps } from 'vue';
-import type { ExtractPublicPropTypes, PropType } from 'vue';
+import type { Component, ExtractPublicPropTypes, PropType } from 'vue';
 import { TooltipTrigger } from 'reka-ui';
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
@@ -9,7 +9,7 @@ import type { TooltipThemeClasses } from './types';
 
 const tooltipTriggerProps = {
     /** HTML tag (or component) to render as. Reka default: `'button'`. */
-    as: { type: String, default: 'button' },
+    as: { type: [String, Object] as PropType<string | Component>, default: 'button' },
     /** Render the slot content as the rendered element instead of wrapping it. */
     asChild: { type: Boolean, default: false },
     /** Per-instance theme override — flat slot key map. */
