@@ -30,7 +30,7 @@ const collapseTriggerProps = {
      */
     chevron: { type: String as PropType<CollapseChevron>, default: undefined },
     /** HTML tag (or component) to render as. Reka default: `'button'`. */
-    as: { type: String, default: 'button' },
+    as: { type: [String, Object] as PropType<string | Component>, default: 'button' },
     /** Render the consumer's slot child as the trigger (Reka `asChild` pattern). */
     asChild: { type: Boolean, default: false },
     ...themableProps<CollapseTriggerThemeClasses>(),

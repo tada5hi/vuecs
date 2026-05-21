@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, h, mergeProps } from 'vue';
-import type { ExtractPublicPropTypes } from 'vue';
+import type { Component, ExtractPublicPropTypes, PropType } from 'vue';
 import { ToastDescription } from 'reka-ui';
 import { themableProps, useComponentTheme, useThemeProps } from '@vuecs/core';
 import { toastDescriptionThemeDefaults } from './theme';
@@ -14,7 +14,7 @@ const toastDescriptionProps = {
      * `'div'`). `p` is the semantically-correct host for the toast body
      * text — overridable via `:as`.
      */
-    as: { type: String, default: 'p' },
+    as: { type: [String, Object] as PropType<string | Component>, default: 'p' },
     /** Render the consumer's slot child as the root (Reka `asChild` pattern). */
     asChild: { type: Boolean, default: false },
     ...themableProps<ToastDescriptionThemeClasses>(),

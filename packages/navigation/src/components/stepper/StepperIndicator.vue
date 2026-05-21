@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, h, mergeProps } from 'vue';
-import type { ExtractPublicPropTypes, PropType } from 'vue';
+import type { Component, ExtractPublicPropTypes, PropType } from 'vue';
 import { StepperIndicator } from 'reka-ui';
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, UseComponentThemeProps, VariantValues } from '@vuecs/core';
@@ -12,7 +12,7 @@ const stepperIndicatorProps = {
     /** Render the consumer's slot child as the indicator root (Reka `asChild` pattern). */
     asChild: { type: Boolean, default: false },
     /** HTML tag to render. */
-    as: { type: String, default: 'div' },
+    as: { type: [String, Object] as PropType<string | Component>, default: 'div' },
     /** Theme-class overrides for this component instance. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<StepperThemeClasses>>, default: undefined },
     /** Theme-variant values for this component instance. */

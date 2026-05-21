@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, h, mergeProps } from 'vue';
-import type { ExtractPublicPropTypes } from 'vue';
+import type { Component, ExtractPublicPropTypes, PropType } from 'vue';
 import { ToastTitle } from 'reka-ui';
 import { themableProps, useComponentTheme, useThemeProps } from '@vuecs/core';
 import { toastTitleThemeDefaults } from './theme';
@@ -14,7 +14,7 @@ const toastTitleProps = {
      * `'div'`). `h3` is the semantically-correct host for an in-context
      * heading within a toast — overridable via `:as`.
      */
-    as: { type: String, default: 'h3' },
+    as: { type: [String, Object] as PropType<string | Component>, default: 'h3' },
     /** Render the consumer's slot child as the root (Reka `asChild` pattern). */
     asChild: { type: Boolean, default: false },
     ...themableProps<ToastTitleThemeClasses>(),

@@ -7,6 +7,7 @@ import {
     mergeProps,
 } from 'vue';
 import type {
+    Component,
     ExtractPublicPropTypes,
     PropType,
     SlotsType,
@@ -47,7 +48,7 @@ const toasterProps = {
     /** Aria label for the viewport landmark. */
     label: { type: String, default: undefined },
     /** HTML tag to render. */
-    as: { type: String, default: 'ol' },
+    as: { type: [String, Object] as PropType<string | Component>, default: 'ol' },
     ...themableProps<ToastViewportThemeClasses>(),
 };
 

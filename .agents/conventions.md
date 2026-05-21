@@ -83,6 +83,16 @@ setup(props, { attrs }) {
    add a `Vuecs convention:` note in the JSDoc explaining why.
 5. Internal-only props (e.g. `inline` for portal opt-out, `themeClass`)
    keep their concrete defaults and still get JSDoc.
+6. **`as:` declarations widen to `[String, Object]`** — match
+   `VCPrimitive` / Reka's `Primitive`:
+   ```ts
+   as: { type: [String, Object] as PropType<string | Component>, default: 'div' },
+   ```
+   Single-type `String` rejects component values (e.g. `RouterLink`,
+   `NuxtLink`) at prop validation, silently coercing them to the
+   default. The wider declaration is what the
+   `/guide/build-themable-component` page teaches; first-party
+   components mirror it.
 
 This convention applies to every Reka-wrapping component across
 `@vuecs/overlays`, `@vuecs/forms`, `@vuecs/elements`, `@vuecs/navigation`

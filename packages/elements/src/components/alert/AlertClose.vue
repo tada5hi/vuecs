@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, h, mergeProps } from 'vue';
-import type { ExtractPublicPropTypes, PropType } from 'vue';
+import type { Component, ExtractPublicPropTypes, PropType } from 'vue';
 import { useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { alertThemeDefaults } from './theme';
@@ -8,7 +8,7 @@ import type { AlertThemeClasses } from './types';
 
 const alertCloseProps = {
     /** HTML tag to render. */
-    as: { type: String, default: 'button' },
+    as: { type: [String, Object] as PropType<string | Component>, default: 'button' },
     /**
      * Force the corner-X presentation (reads the theme's `closeIcon` slot).
      * When false (default), the slot-presence heuristic decides:
