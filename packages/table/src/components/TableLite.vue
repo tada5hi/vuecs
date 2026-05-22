@@ -17,8 +17,10 @@ import {
 import { useRowSelectionMachine } from '../composables/selection';
 import type { RowSelectionKey } from '../composables/selection';
 import type {
+    TableCellSlotProps,
     TableColumn,
     TableColumnRaw,
+    TableHeadCellSlotProps,
     TableSlotProps,
     TableThemeClasses,
 } from '../types';
@@ -99,6 +101,19 @@ export default defineComponent({
         default(props: TableSlotProps): unknown;
         caption(): unknown;
         colgroup(): unknown;
+        /**
+         * Per-column cell override. Dispatched by the columns-driver
+         * auto-render path; the key suffix matches `TableColumn['key']`.
+         * Wins over `<VCTableCell>`'s `accessor` + `formatter` auto-
+         * render. (Closes #1592.)
+         */
+        [cellSlot: `cell-${string}`]: (props: TableCellSlotProps) => unknown;
+        /**
+         * Per-column header override. Dispatched by the columns-driver
+         * auto-render path; key suffix matches `TableColumn['key']`.
+         * Wins over the default `col.label` text. (Closes #1592.)
+         */
+        [headerSlot: `header-${string}`]: (props: TableHeadCellSlotProps) => unknown;
     }>,
     setup(props, { attrs, slots }) {
         const themeProps = useThemeProps(
@@ -206,6 +221,7 @@ export default defineComponent({
                 slotChildren: slots.default?.(slotProps.value),
                 captionSlot: slots.caption,
                 colgroupSlot: slots.colgroup,
+                slots,
                 placeholderRows: skeletonRowCount,
             });
 
