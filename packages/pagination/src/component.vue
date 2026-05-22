@@ -41,11 +41,19 @@ const paginationProps = {
     /** When true, edge controls are unrendered (vs rendered-disabled) at page boundaries. Does not apply to `busy`. */
     hideDisabled: { type: Boolean, default: true },
     /**
-     * When true, the resolved label strings (First / Previous / Next /
-     * Last) are rendered as visible text next to each edge button. When
-     * false (default), edge buttons show their icon only. Reka's
+     * Forces the resolved label string (First / Previous / Next / Last)
+     * to render as visible text next to each edge button.
+     *
+     * When `false` (default), the per-button behaviour depends on
+     * whether an icon resolves for that button:
+     * - icon configured (via `firstIcon` / `prevIcon` / … or an icon
+     *   preset) → icon-only, no visible label;
+     * - no icon → falls back to the resolved label so the button
+     *   isn't empty.
+     *
+     * Set `withText: true` to render text alongside the icon. Reka's
      * `aria-label="First Page"` etc. keeps the buttons accessible
-     * either way. Has no effect on a button when a named slot (`#first`,
+     * either way. No effect on a button when a named slot (`#first`,
      * `#prev`, `#next`, `#last`) replaces its content.
      */
     withText: { type: Boolean, default: false },
@@ -213,15 +221,18 @@ export default defineComponent({
                             v-if="defaults.firstIcon"
                             :name="defaults.firstIcon"
                         />
-                        <span v-if="withText && defaults.firstLabel">{{ defaults.firstLabel }}</span>
+                        <!-- Label shows when either `withText` is forced
+                             on OR no icon resolved (text fallback so the
+                             button isn't visually empty). -->
+                        <span v-if="(withText || !defaults.firstIcon) && defaults.firstLabel">{{ defaults.firstLabel }}</span>
                         <!-- Placeholder fills Reka's default slot when
-                             neither icon nor visible label is rendered, so
-                             Reka's `<slot>First page</slot>` fallback
-                             doesn't leak into the DOM. Reka's
+                             both icon and label are suppressed, so Reka's
+                             `<slot>First page</slot>` fallback doesn't
+                             leak into the DOM. Reka's
                              `aria-label="First Page"` keeps the button
                              accessible. -->
                         <span
-                            v-if="!defaults.firstIcon && !(withText && defaults.firstLabel)"
+                            v-if="!defaults.firstIcon && !defaults.firstLabel"
                             aria-hidden="true"
                         />
                     </template>
@@ -242,9 +253,9 @@ export default defineComponent({
                             v-if="defaults.prevIcon"
                             :name="defaults.prevIcon"
                         />
-                        <span v-if="withText && defaults.prevLabel">{{ defaults.prevLabel }}</span>
+                        <span v-if="(withText || !defaults.prevIcon) && defaults.prevLabel">{{ defaults.prevLabel }}</span>
                         <span
-                            v-if="!defaults.prevIcon && !(withText && defaults.prevLabel)"
+                            v-if="!defaults.prevIcon && !defaults.prevLabel"
                             aria-hidden="true"
                         />
                     </template>
@@ -308,9 +319,9 @@ export default defineComponent({
                             v-if="defaults.nextIcon"
                             :name="defaults.nextIcon"
                         />
-                        <span v-if="withText && defaults.nextLabel">{{ defaults.nextLabel }}</span>
+                        <span v-if="(withText || !defaults.nextIcon) && defaults.nextLabel">{{ defaults.nextLabel }}</span>
                         <span
-                            v-if="!defaults.nextIcon && !(withText && defaults.nextLabel)"
+                            v-if="!defaults.nextIcon && !defaults.nextLabel"
                             aria-hidden="true"
                         />
                     </template>
@@ -331,9 +342,9 @@ export default defineComponent({
                             v-if="defaults.lastIcon"
                             :name="defaults.lastIcon"
                         />
-                        <span v-if="withText && defaults.lastLabel">{{ defaults.lastLabel }}</span>
+                        <span v-if="(withText || !defaults.lastIcon) && defaults.lastLabel">{{ defaults.lastLabel }}</span>
                         <span
-                            v-if="!defaults.lastIcon && !(withText && defaults.lastLabel)"
+                            v-if="!defaults.lastIcon && !defaults.lastLabel"
                             aria-hidden="true"
                         />
                     </template>
