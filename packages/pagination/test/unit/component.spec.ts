@@ -172,6 +172,7 @@ describe('VCPagination', () => {
                 total: 50,
                 limit: 10,
                 offset: 0,
+                hideDisabled: false,
             },
             global: { plugins: [themePlugin] },
         });
@@ -197,12 +198,57 @@ describe('VCPagination', () => {
         expect(pageButtons[0].text().trim()).toBe('1');
     });
 
-    it('renders default English text labels on edge buttons when no slots/icons provided', () => {
+    it('falls back to visible label text on edge buttons when no icon resolves', () => {
+        // No icon preset installed → `defaults.<edge>Icon` is empty.
+        // The label string falls back to visible text so the button isn't
+        // empty, even with `withText: false`.
         const wrapper = mount(VCPagination, {
             props: {
-                total: 50, 
-                limit: 10, 
-                offset: 20, 
+                total: 50,
+                limit: 10,
+                offset: 20,
+            },
+            global: { plugins: [themePlugin] },
+        });
+        expect(wrapper.find('button[aria-label="First Page"]').text()).toBe('First');
+        expect(wrapper.find('button[aria-label="Previous Page"]').text()).toBe('Previous');
+        expect(wrapper.find('button[aria-label="Next Page"]').text()).toBe('Next');
+        expect(wrapper.find('button[aria-label="Last Page"]').text()).toBe('Last');
+    });
+
+    it('renders icon-only (no label) by default when an icon resolves', () => {
+        // Icon configured per-instance — text label suppressed because
+        // `withText` defaults to `false`. Reka's `aria-label="… Page"`
+        // carries the accessible name regardless.
+        const wrapper = mount(VCPagination, {
+            props: {
+                total: 50,
+                limit: 10,
+                offset: 20,
+                firstIcon: 'lucide:chevrons-left',
+                prevIcon: 'lucide:chevron-left',
+                nextIcon: 'lucide:chevron-right',
+                lastIcon: 'lucide:chevrons-right',
+            },
+            global: { plugins: [themePlugin] },
+        });
+        expect(wrapper.find('button[aria-label="First Page"]').text()).toBe('');
+        expect(wrapper.find('button[aria-label="Previous Page"]').text()).toBe('');
+        expect(wrapper.find('button[aria-label="Next Page"]').text()).toBe('');
+        expect(wrapper.find('button[aria-label="Last Page"]').text()).toBe('');
+    });
+
+    it('withText: true forces label text alongside the icon', () => {
+        const wrapper = mount(VCPagination, {
+            props: {
+                total: 50,
+                limit: 10,
+                offset: 20,
+                withText: true,
+                firstIcon: 'lucide:chevrons-left',
+                prevIcon: 'lucide:chevron-left',
+                nextIcon: 'lucide:chevron-right',
+                lastIcon: 'lucide:chevrons-right',
             },
             global: { plugins: [themePlugin] },
         });
@@ -227,33 +273,24 @@ describe('VCPagination', () => {
         expect(wrapper.find('button[aria-label="Next Page"]').text()).toBe('Weiter');
     });
 
-    it('empty-string label suppresses the vuecs-rendered label content', () => {
-        // The default 'Previous' label appears in the button when no override
-        // is set. Setting `prevLabel: ''` suppresses vuecs's own label span;
-        // any remaining text is Reka UI's screen-reader-only "Prev page" /
-        // "Next page" affordance, which is intentional and out of scope.
-        const withDefault = mount(VCPagination, {
+    it('empty-string label + no icon suppresses vuecs label content (Reka fallback also suppressed)', () => {
+        // Setting `prevLabel: ''` AND no icon means both the icon and
+        // label branches are empty. The `aria-hidden` placeholder span
+        // fills Reka's default slot so its "Prev page" fallback doesn't
+        // leak. Reka's `aria-label="Previous Page"` still names the
+        // button.
+        const wrapper = mount(VCPagination, {
             props: {
-                total: 50, 
-                limit: 10, 
-                offset: 20, 
+                total: 50,
+                limit: 10,
+                offset: 20,
+                prevLabel: '',
             },
             global: { plugins: [themePlugin] },
         });
-        expect(withDefault.find('button[aria-label="Previous Page"]').text()).toContain('Previous');
-
-        const withEmpty = mount(VCPagination, {
-            props: {
-                total: 50, 
-                limit: 10, 
-                offset: 20, 
-                prevLabel: '', 
-            },
-            global: { plugins: [themePlugin] },
-        });
-        // 'Previous' specifically (capitalised, vuecs's contribution) is gone.
-        // Reka's sr-only "Prev page" (lowercase 'p') may remain.
-        expect(withEmpty.find('button[aria-label="Previous Page"]').text()).not.toMatch(/Previous/);
+        const prev = wrapper.find('button[aria-label="Previous Page"]');
+        expect(prev.text()).toBe('');
+        expect(prev.attributes('aria-label')).toBe('Previous Page');
     });
 
     it('full-button slot wins over icon prop and label default', () => {

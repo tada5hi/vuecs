@@ -7,12 +7,14 @@ withDefaults(defineProps<{
     limit?: number;
     busy?: boolean;
     hideDisabled?: boolean;
+    withText?: boolean;
     themeVariant?: Record<string, string | boolean>;
 }>(), {
     total: 100,
     limit: 10,
     busy: false,
-    hideDisabled: false,
+    hideDisabled: true,
+    withText: false,
     themeVariant: () => ({}),
 });
 
@@ -34,6 +36,7 @@ const load = (next: { offset: number }) => {
         :limit="limit"
         :busy="busy"
         :hide-disabled="hideDisabled"
+        :with-text="withText"
         :theme-variant="themeVariant"
         :offset="offset"
         @load="load"

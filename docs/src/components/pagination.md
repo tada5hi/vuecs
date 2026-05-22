@@ -79,7 +79,25 @@ Per-instance overrides: pass any of the four icon-name props directly. Pass `''`
 
 ## Labels (i18n)
 
-Each edge button renders an icon + text label. Defaults: `'First'`, `'Previous'`, `'Next'`, `'Last'`. Override per-instance via `firstLabel` / `prevLabel` / `nextLabel` / `lastLabel`, or globally via the [Behavioral Defaults](/guide/behavioral-defaults) system:
+Edge-button display behaviour depends on whether an icon resolves for the button:
+
+- **Icon resolved** (icon preset installed or `firstIcon` / `prevIcon` / `nextIcon` / `lastIcon` passed) → **icon-only** by default. Pass `with-text` to render the label string alongside the icon.
+- **No icon resolved** → falls back to the **label string** so the button isn't visually empty.
+
+Reka's `aria-label="First Page"` etc. keeps the buttons accessible regardless.
+
+```vue
+<!-- Icon preset installed → icon-only -->
+<VCPagination :total="100" :offset="0" :limit="10" @load="load" />
+
+<!-- Icon preset installed → icon + label -->
+<VCPagination :total="100" :offset="0" :limit="10" with-text @load="load" />
+
+<!-- No icon preset → label text fallback -->
+<VCPagination :total="100" :offset="0" :limit="10" @load="load" />
+```
+
+Label defaults: `'First'`, `'Previous'`, `'Next'`, `'Last'`. Override per-instance via `firstLabel` / `prevLabel` / `nextLabel` / `lastLabel`, or globally via the [Behavioral Defaults](/guide/behavioral-defaults) system:
 
 ```ts
 import { computed } from 'vue';
@@ -96,7 +114,7 @@ app.use(vuecs, {
 });
 ```
 
-Pass `''` to suppress the label for icon-only buttons.
+Pass `''` to a single label prop (e.g. `:prev-label="''"`) to suppress that one button's text even when `with-text` is enabled.
 
 ## Props
 
@@ -106,17 +124,18 @@ Pass `''` to suppress the label for icon-only buttons.
 | `offset` | `number` | `0` | Current offset |
 | `limit` | `number` | `0` | Items per page (must be > 0 for the component to render any pages) |
 | `busy` | `boolean` | `false` | Disable controls during loading |
-| `hideDisabled` | `boolean` | `false` | When `true`, edge controls (First/Prev at page 1, Next/Last at the last page) are unrendered instead of rendered-disabled. Does not apply to the `busy` state. |
+| `hideDisabled` | `boolean` | `true` | When `true`, edge controls (First/Prev at page 1, Next/Last at the last page) are unrendered instead of rendered-disabled. Pass `:hide-disabled="false"` to keep them rendered-disabled. Does not apply to the `busy` state. |
+| `withText` | `boolean` | `false` | When `true`, forces the resolved label string (First / Previous / Next / Last) to render as visible text next to each edge button. When `false` (default), edge buttons are icon-only **if an icon resolves** for that button; otherwise the label string is rendered as a fallback so the button isn't empty. |
 | `tag` | `string` | `'ul'` | Root element tag |
 | `itemTag` | `string` | `'li'` | Item wrapper tag |
 | `firstIcon` | `string` | (preset) | Iconify name for the First-page button. `''` suppresses. |
 | `prevIcon` | `string` | (preset) | Iconify name for the Previous-page button. `''` suppresses. |
 | `nextIcon` | `string` | (preset) | Iconify name for the Next-page button. `''` suppresses. |
 | `lastIcon` | `string` | (preset) | Iconify name for the Last-page button. `''` suppresses. |
-| `firstLabel` | `string` | `'First'` | Visible text for the First-page button. `''` suppresses. |
-| `prevLabel` | `string` | `'Previous'` | Visible text for the Previous-page button. `''` suppresses. |
-| `nextLabel` | `string` | `'Next'` | Visible text for the Next-page button. `''` suppresses. |
-| `lastLabel` | `string` | `'Last'` | Visible text for the Last-page button. `''` suppresses. |
+| `firstLabel` | `string` | `'First'` | Visible text for the First-page button when `with-text` is enabled. `''` suppresses. |
+| `prevLabel` | `string` | `'Previous'` | Visible text for the Previous-page button when `with-text` is enabled. `''` suppresses. |
+| `nextLabel` | `string` | `'Next'` | Visible text for the Next-page button when `with-text` is enabled. `''` suppresses. |
+| `lastLabel` | `string` | `'Last'` | Visible text for the Last-page button when `with-text` is enabled. `''` suppresses. |
 
 ## Slots
 
