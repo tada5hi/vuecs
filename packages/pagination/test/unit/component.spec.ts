@@ -172,6 +172,7 @@ describe('VCPagination', () => {
                 total: 50,
                 limit: 10,
                 offset: 0,
+                hideDisabled: false,
             },
             global: { plugins: [themePlugin] },
         });

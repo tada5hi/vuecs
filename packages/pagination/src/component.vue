@@ -39,7 +39,7 @@ const paginationProps = {
     /** Theme variant values. Vuecs theme concern, never forwarded to Reka. */
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
     /** When true, edge controls are unrendered (vs rendered-disabled) at page boundaries. Does not apply to `busy`. */
-    hideDisabled: { type: Boolean, default: false },
+    hideDisabled: { type: Boolean, default: true },
     /**
      * When true, the resolved label strings (First / Previous / Next /
      * Last) are rendered as visible text next to each edge button. When

@@ -13,7 +13,7 @@ withDefaults(defineProps<{
     total: 100,
     limit: 10,
     busy: false,
-    hideDisabled: false,
+    hideDisabled: true,
     withText: false,
     themeVariant: () => ({}),
 });

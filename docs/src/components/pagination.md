@@ -116,7 +116,7 @@ Pass `''` to a single label prop (e.g. `:prev-label="''"`) to suppress that one 
 | `offset` | `number` | `0` | Current offset |
 | `limit` | `number` | `0` | Items per page (must be > 0 for the component to render any pages) |
 | `busy` | `boolean` | `false` | Disable controls during loading |
-| `hideDisabled` | `boolean` | `false` | When `true`, edge controls (First/Prev at page 1, Next/Last at the last page) are unrendered instead of rendered-disabled. Does not apply to the `busy` state. |
+| `hideDisabled` | `boolean` | `true` | When `true`, edge controls (First/Prev at page 1, Next/Last at the last page) are unrendered instead of rendered-disabled. Pass `:hide-disabled="false"` to keep them rendered-disabled. Does not apply to the `busy` state. |
 | `withText` | `boolean` | `false` | When `true`, the resolved label string (First / Previous / Next / Last) is rendered as visible text next to each edge button. Defaults to icon-only. |
 | `tag` | `string` | `'ul'` | Root element tag |
 | `itemTag` | `string` | `'li'` | Item wrapper tag |

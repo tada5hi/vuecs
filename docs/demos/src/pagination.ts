@@ -36,7 +36,7 @@ announceProps(
         },
         hideDisabled: {
             type: 'boolean',
-            default: false,
+            default: true,
             section: 'State',
         },
         withText: {
@@ -61,7 +61,7 @@ announceProps(
         total: 100,
         limit: 10,
         busy: false,
-        hideDisabled: false,
+        hideDisabled: true,
         withText: false,
         'themeVariant.variant': 'outline',
         'themeVariant.size': 'md',
