@@ -293,6 +293,29 @@ describe('VCPagination', () => {
         expect(prev.attributes('aria-label')).toBe('Previous Page');
     });
 
+    it('empty consumer slot does not leak Reka fallback text', () => {
+        // A consumer passing `<template #prev></template>` (empty slot)
+        // would, under a naive `<slot v-if="$slots.prev" />` pattern,
+        // result in Reka's `<slot>Prev page</slot>` fallback firing.
+        // The wrapper uses `<slot name="prev">…fallback…</slot>` so Vue's
+        // native slot fallback (which renders when the slot returns
+        // only comment vnodes / empty array) kicks in and the icon /
+        // label / placeholder branch renders instead. Reka's
+        // `aria-label="Previous Page"` keeps the button accessible.
+        const wrapper = mount(VCPagination, {
+            props: {
+                total: 50,
+                limit: 10,
+                offset: 20,
+                prevIcon: 'lucide:chevron-left',
+            },
+            slots: { prev: '' },
+            global: { plugins: [themePlugin] },
+        });
+        const prev = wrapper.find('button[aria-label="Previous Page"]');
+        expect(prev.text()).not.toMatch(/Prev page/i);
+    });
+
     it('full-button slot wins over icon prop and label default', () => {
         const wrapper = mount(VCPagination, {
             props: {

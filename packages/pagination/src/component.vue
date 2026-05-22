@@ -212,11 +212,13 @@ export default defineComponent({
                 :class="theme.item || undefined"
             >
                 <PaginationFirst :class="theme.link || undefined">
-                    <slot
-                        v-if="$slots.first"
-                        name="first"
-                    />
-                    <template v-else>
+                    <!-- Native slot fallback: Vue treats an empty
+                         consumer `#first` slot as no-content (only
+                         comment vnodes / empty array) and renders the
+                         fallback, suppressing Reka's
+                         `<slot>First page</slot>` even when a consumer
+                         passes `<template #first></template>`. -->
+                    <slot name="first">
                         <VCIcon
                             v-if="defaults.firstIcon"
                             :name="defaults.firstIcon"
@@ -235,7 +237,7 @@ export default defineComponent({
                             v-if="!defaults.firstIcon && !defaults.firstLabel"
                             aria-hidden="true"
                         />
-                    </template>
+                    </slot>
                 </PaginationFirst>
             </component>
             <component
@@ -244,11 +246,7 @@ export default defineComponent({
                 :class="theme.item || undefined"
             >
                 <PaginationPrev :class="theme.link || undefined">
-                    <slot
-                        v-if="$slots.prev"
-                        name="prev"
-                    />
-                    <template v-else>
+                    <slot name="prev">
                         <VCIcon
                             v-if="defaults.prevIcon"
                             :name="defaults.prevIcon"
@@ -258,7 +256,7 @@ export default defineComponent({
                             v-if="!defaults.prevIcon && !defaults.prevLabel"
                             aria-hidden="true"
                         />
-                    </template>
+                    </slot>
                 </PaginationPrev>
             </component>
             <PaginationList
@@ -310,11 +308,7 @@ export default defineComponent({
                 :class="theme.item || undefined"
             >
                 <PaginationNext :class="theme.link || undefined">
-                    <slot
-                        v-if="$slots.next"
-                        name="next"
-                    />
-                    <template v-else>
+                    <slot name="next">
                         <VCIcon
                             v-if="defaults.nextIcon"
                             :name="defaults.nextIcon"
@@ -324,7 +318,7 @@ export default defineComponent({
                             v-if="!defaults.nextIcon && !defaults.nextLabel"
                             aria-hidden="true"
                         />
-                    </template>
+                    </slot>
                 </PaginationNext>
             </component>
             <component
@@ -333,11 +327,7 @@ export default defineComponent({
                 :class="theme.item || undefined"
             >
                 <PaginationLast :class="theme.link || undefined">
-                    <slot
-                        v-if="$slots.last"
-                        name="last"
-                    />
-                    <template v-else>
+                    <slot name="last">
                         <VCIcon
                             v-if="defaults.lastIcon"
                             :name="defaults.lastIcon"
@@ -347,7 +337,7 @@ export default defineComponent({
                             v-if="!defaults.lastIcon && !defaults.lastLabel"
                             aria-hidden="true"
                         />
-                    </template>
+                    </slot>
                 </PaginationLast>
             </component>
         </template>

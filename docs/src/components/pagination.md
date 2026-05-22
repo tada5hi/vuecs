@@ -122,7 +122,7 @@ Pass `''` to a single label prop (e.g. `:prev-label="''"`) to suppress that one 
 |------|------|---------|-------------|
 | `total` | `number` | `0` | Total number of items |
 | `offset` | `number` | `0` | Current offset |
-| `limit` | `number` | `0` | Items per page (must be > 0 for the component to render any pages) |
+| `limit` | `number` | `0` | Items per page. Values `<= 0` are normalised to `Math.max(total, 1)`, so the component still renders — typically as a single page covering every item. Set `limit > 0` for proper multi-page pagination. |
 | `busy` | `boolean` | `false` | Disable controls during loading |
 | `hideDisabled` | `boolean` | `true` | When `true`, edge controls (First/Prev at page 1, Next/Last at the last page) are unrendered instead of rendered-disabled. Pass `:hide-disabled="false"` to keep them rendered-disabled. Does not apply to the `busy` state. |
 | `withText` | `boolean` | `false` | When `true`, forces the resolved label string (First / Previous / Next / Last) to render as visible text next to each edge button. When `false` (default), edge buttons are icon-only **if an icon resolves** for that button; otherwise the label string is rendered as a fallback so the button isn't empty. |
