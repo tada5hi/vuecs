@@ -41,6 +41,15 @@ const paginationProps = {
     /** When true, edge controls are unrendered (vs rendered-disabled) at page boundaries. Does not apply to `busy`. */
     hideDisabled: { type: Boolean, default: false },
     /**
+     * When true, the resolved label strings (First / Previous / Next /
+     * Last) are rendered as visible text next to each edge button. When
+     * false (default), edge buttons show their icon only. Reka's
+     * `aria-label="First Page"` etc. keeps the buttons accessible
+     * either way. Has no effect on a button when a named slot (`#first`,
+     * `#prev`, `#next`, `#last`) replaces its content.
+     */
+    withText: { type: Boolean, default: false },
+    /**
      * Number of sibling page items on either side of the current
      * page in the rendered range. Forwarded to Reka `siblingCount`.
      */
@@ -204,7 +213,17 @@ export default defineComponent({
                             v-if="defaults.firstIcon"
                             :name="defaults.firstIcon"
                         />
-                        <span v-if="defaults.firstLabel">{{ defaults.firstLabel }}</span>
+                        <span v-if="withText && defaults.firstLabel">{{ defaults.firstLabel }}</span>
+                        <!-- Placeholder fills Reka's default slot when
+                             neither icon nor visible label is rendered, so
+                             Reka's `<slot>First page</slot>` fallback
+                             doesn't leak into the DOM. Reka's
+                             `aria-label="First Page"` keeps the button
+                             accessible. -->
+                        <span
+                            v-if="!defaults.firstIcon && !(withText && defaults.firstLabel)"
+                            aria-hidden="true"
+                        />
                     </template>
                 </PaginationFirst>
             </component>
@@ -223,7 +242,11 @@ export default defineComponent({
                             v-if="defaults.prevIcon"
                             :name="defaults.prevIcon"
                         />
-                        <span v-if="defaults.prevLabel">{{ defaults.prevLabel }}</span>
+                        <span v-if="withText && defaults.prevLabel">{{ defaults.prevLabel }}</span>
+                        <span
+                            v-if="!defaults.prevIcon && !(withText && defaults.prevLabel)"
+                            aria-hidden="true"
+                        />
                     </template>
                 </PaginationPrev>
             </component>
@@ -285,7 +308,11 @@ export default defineComponent({
                             v-if="defaults.nextIcon"
                             :name="defaults.nextIcon"
                         />
-                        <span v-if="defaults.nextLabel">{{ defaults.nextLabel }}</span>
+                        <span v-if="withText && defaults.nextLabel">{{ defaults.nextLabel }}</span>
+                        <span
+                            v-if="!defaults.nextIcon && !(withText && defaults.nextLabel)"
+                            aria-hidden="true"
+                        />
                     </template>
                 </PaginationNext>
             </component>
@@ -304,7 +331,11 @@ export default defineComponent({
                             v-if="defaults.lastIcon"
                             :name="defaults.lastIcon"
                         />
-                        <span v-if="defaults.lastLabel">{{ defaults.lastLabel }}</span>
+                        <span v-if="withText && defaults.lastLabel">{{ defaults.lastLabel }}</span>
+                        <span
+                            v-if="!defaults.lastIcon && !(withText && defaults.lastLabel)"
+                            aria-hidden="true"
+                        />
                     </template>
                 </PaginationLast>
             </component>

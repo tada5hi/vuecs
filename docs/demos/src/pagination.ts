@@ -35,9 +35,14 @@ announceProps(
             section: 'State', 
         },
         hideDisabled: {
-            type: 'boolean', 
-            default: false, 
-            section: 'State', 
+            type: 'boolean',
+            default: false,
+            section: 'State',
+        },
+        withText: {
+            type: 'boolean',
+            default: false,
+            section: 'State',
         },
         'themeVariant.variant': {
             type: 'enum', 
@@ -57,6 +62,7 @@ announceProps(
         limit: 10,
         busy: false,
         hideDisabled: false,
+        withText: false,
         'themeVariant.variant': 'outline',
         'themeVariant.size': 'md',
     },

@@ -197,12 +197,40 @@ describe('VCPagination', () => {
         expect(pageButtons[0].text().trim()).toBe('1');
     });
 
-    it('renders default English text labels on edge buttons when no slots/icons provided', () => {
+    it('does NOT render visible label text on edge buttons by default', () => {
+        // `withText` defaults to `false`. The label span is rendered with
+        // `v-show` so it stays in the vnode tree (suppressing Reka's
+        // `<slot>First page</slot>` fallback) but is hidden via inline
+        // `display: none`. Reka's `aria-label="… Page"` keeps the button
+        // accessible regardless.
         const wrapper = mount(VCPagination, {
             props: {
-                total: 50, 
-                limit: 10, 
-                offset: 20, 
+                total: 50,
+                limit: 10,
+                offset: 20,
+            },
+            global: { plugins: [themePlugin] },
+        });
+        const first = wrapper.find('button[aria-label="First Page"]');
+        const prev = wrapper.find('button[aria-label="Previous Page"]');
+        const next = wrapper.find('button[aria-label="Next Page"]');
+        const last = wrapper.find('button[aria-label="Last Page"]');
+        // Reka's slot fallback ('First page' / 'Prev page' / …) must not
+        // leak through, and the visible text (`.text()` ignores nodes
+        // hidden with `display: none`) must be empty.
+        expect(first.text()).toBe('');
+        expect(prev.text()).toBe('');
+        expect(next.text()).toBe('');
+        expect(last.text()).toBe('');
+    });
+
+    it('renders default English text labels on edge buttons when withText is enabled', () => {
+        const wrapper = mount(VCPagination, {
+            props: {
+                total: 50,
+                limit: 10,
+                offset: 20,
+                withText: true,
             },
             global: { plugins: [themePlugin] },
         });
@@ -212,12 +240,13 @@ describe('VCPagination', () => {
         expect(wrapper.find('button[aria-label="Last Page"]').text()).toBe('Last');
     });
 
-    it('per-instance label props override the defaults', () => {
+    it('per-instance label props override the defaults when withText is enabled', () => {
         const wrapper = mount(VCPagination, {
             props: {
                 total: 50,
                 limit: 10,
                 offset: 20,
+                withText: true,
                 prevLabel: 'Zurück',
                 nextLabel: 'Weiter',
             },
@@ -227,16 +256,17 @@ describe('VCPagination', () => {
         expect(wrapper.find('button[aria-label="Next Page"]').text()).toBe('Weiter');
     });
 
-    it('empty-string label suppresses the vuecs-rendered label content', () => {
-        // The default 'Previous' label appears in the button when no override
-        // is set. Setting `prevLabel: ''` suppresses vuecs's own label span;
-        // any remaining text is Reka UI's screen-reader-only "Prev page" /
-        // "Next page" affordance, which is intentional and out of scope.
+    it('empty-string label suppresses the vuecs-rendered label content (with withText enabled)', () => {
+        // With `withText: true` the default 'Previous' label appears.
+        // Setting `prevLabel: ''` suppresses vuecs's own label span; any
+        // remaining text is Reka UI's screen-reader-only "Prev page"
+        // affordance, which is intentional and out of scope.
         const withDefault = mount(VCPagination, {
             props: {
-                total: 50, 
-                limit: 10, 
-                offset: 20, 
+                total: 50,
+                limit: 10,
+                offset: 20,
+                withText: true,
             },
             global: { plugins: [themePlugin] },
         });
@@ -244,10 +274,11 @@ describe('VCPagination', () => {
 
         const withEmpty = mount(VCPagination, {
             props: {
-                total: 50, 
-                limit: 10, 
-                offset: 20, 
-                prevLabel: '', 
+                total: 50,
+                limit: 10,
+                offset: 20,
+                withText: true,
+                prevLabel: '',
             },
             global: { plugins: [themePlugin] },
         });

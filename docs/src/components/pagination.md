@@ -79,7 +79,17 @@ Per-instance overrides: pass any of the four icon-name props directly. Pass `''`
 
 ## Labels (i18n)
 
-Each edge button renders an icon + text label. Defaults: `'First'`, `'Previous'`, `'Next'`, `'Last'`. Override per-instance via `firstLabel` / `prevLabel` / `nextLabel` / `lastLabel`, or globally via the [Behavioral Defaults](/guide/behavioral-defaults) system:
+Edge buttons are **icon-only by default**. Pass `with-text` to render the resolved label string alongside the icon. Reka's `aria-label="First Page"` etc. keeps the buttons accessible regardless of whether the visible text is shown.
+
+```vue
+<VCPagination
+    :total="100" :offset="0" :limit="10"
+    with-text
+    @load="load"
+/>
+```
+
+Label defaults: `'First'`, `'Previous'`, `'Next'`, `'Last'`. Override per-instance via `firstLabel` / `prevLabel` / `nextLabel` / `lastLabel`, or globally via the [Behavioral Defaults](/guide/behavioral-defaults) system:
 
 ```ts
 import { computed } from 'vue';
@@ -96,7 +106,7 @@ app.use(vuecs, {
 });
 ```
 
-Pass `''` to suppress the label for icon-only buttons.
+Pass `''` to a single label prop (e.g. `:prev-label="''"`) to suppress that one button's text even when `with-text` is enabled.
 
 ## Props
 
@@ -107,16 +117,17 @@ Pass `''` to suppress the label for icon-only buttons.
 | `limit` | `number` | `0` | Items per page (must be > 0 for the component to render any pages) |
 | `busy` | `boolean` | `false` | Disable controls during loading |
 | `hideDisabled` | `boolean` | `false` | When `true`, edge controls (First/Prev at page 1, Next/Last at the last page) are unrendered instead of rendered-disabled. Does not apply to the `busy` state. |
+| `withText` | `boolean` | `false` | When `true`, the resolved label string (First / Previous / Next / Last) is rendered as visible text next to each edge button. Defaults to icon-only. |
 | `tag` | `string` | `'ul'` | Root element tag |
 | `itemTag` | `string` | `'li'` | Item wrapper tag |
 | `firstIcon` | `string` | (preset) | Iconify name for the First-page button. `''` suppresses. |
 | `prevIcon` | `string` | (preset) | Iconify name for the Previous-page button. `''` suppresses. |
 | `nextIcon` | `string` | (preset) | Iconify name for the Next-page button. `''` suppresses. |
 | `lastIcon` | `string` | (preset) | Iconify name for the Last-page button. `''` suppresses. |
-| `firstLabel` | `string` | `'First'` | Visible text for the First-page button. `''` suppresses. |
-| `prevLabel` | `string` | `'Previous'` | Visible text for the Previous-page button. `''` suppresses. |
-| `nextLabel` | `string` | `'Next'` | Visible text for the Next-page button. `''` suppresses. |
-| `lastLabel` | `string` | `'Last'` | Visible text for the Last-page button. `''` suppresses. |
+| `firstLabel` | `string` | `'First'` | Visible text for the First-page button when `with-text` is enabled. `''` suppresses. |
+| `prevLabel` | `string` | `'Previous'` | Visible text for the Previous-page button when `with-text` is enabled. `''` suppresses. |
+| `nextLabel` | `string` | `'Next'` | Visible text for the Next-page button when `with-text` is enabled. `''` suppresses. |
+| `lastLabel` | `string` | `'Last'` | Visible text for the Last-page button when `with-text` is enabled. `''` suppresses. |
 
 ## Slots
 
