@@ -297,4 +297,94 @@ describe('<VCTable> driver auto-render (plan 033 v0.2-B)', () => {
         expect(headerCells.length).toBe(1);
         expect(headerCells[0].textContent?.trim()).toBe('WRAPPED');
     });
+
+    // Issue #1592 — auto-render path must dispatch consumer
+    // `#cell-<key>` / `#header-<key>` slots, not silently drop them.
+    describe('per-column slot dispatch (issue #1592)', () => {
+        it('dispatches #cell-<key> slot for each row in the auto-body', () => {
+            const wrapper = mount(defineComponent({
+                setup() {
+                    return () => h(VCTable, {
+                        columns: columns as never,
+                        data: data as never,
+                    }, {
+                        'cell-name': (slotProps: {
+                            row: User; 
+                            value: unknown; 
+                            index: number 
+                        }) => h(
+                            'button',
+                            { class: 'edit-btn' },
+                            `edit:${slotProps.row.id}:${slotProps.value}:${slotProps.index}`,
+                        ),
+                    });
+                },
+            }), { global: { plugins: [...plugins] } });
+
+            const cells = wrapper.element.querySelectorAll('tbody td');
+            // Two columns × two rows = 4 cells; second column (name) is the slot.
+            expect(cells[1].querySelector('button.edit-btn')?.textContent).toBe('edit:1:Alice:0');
+            expect(cells[3].querySelector('button.edit-btn')?.textContent).toBe('edit:2:Bob:1');
+            // The id column (no slot) keeps the auto-rendered text value.
+            expect(cells[0].textContent).toBe('1');
+            expect(cells[2].textContent).toBe('2');
+        });
+
+        it('dispatches #header-<key> slot in the auto-header', () => {
+            const wrapper = mount(defineComponent({
+                setup() {
+                    return () => h(VCTable, {
+                        columns: columns as never,
+                        data: data as never,
+                    }, {
+                        'header-name': (slotProps: { column: { label?: string }; key: string }) => h(
+                            'span',
+                            { class: 'custom-header' },
+                            `${slotProps.key}:${slotProps.column.label}`,
+                        ),
+                    });
+                },
+            }), { global: { plugins: [...plugins] } });
+
+            const headers = wrapper.element.querySelectorAll('thead th');
+            expect(headers[0].textContent?.trim()).toBe('ID');
+            expect(headers[1].querySelector('span.custom-header')?.textContent).toBe('name:Name');
+        });
+
+        it('cell slot props expose accessor + formatter resolution', () => {
+            const cols = [
+                { key: 'id', label: 'ID' },
+                {
+                    key: 'fullName',
+                    label: 'Name',
+                    accessor: (row: User) => `Sir ${row.name}`,
+                    formatter: (ctx: { value: unknown }) => `[${ctx.value}]`,
+                },
+            ];
+            const observedValues: unknown[] = [];
+            const wrapper = mount(defineComponent({
+                setup() {
+                    return () => h(VCTable, {
+                        columns: cols as never,
+                        data: data as never,
+                    }, {
+                        'cell-fullName': ({ value }: { value: unknown }) => {
+                            observedValues.push(value);
+                            return h('span', null, String(value));
+                        },
+                    });
+                },
+            }), { global: { plugins: [...plugins] } });
+
+            // `value` is the accessor result, not the formatter output —
+            // matches TableColumnFormatterCtx.value semantics.
+            expect(observedValues).toContain('Sir Alice');
+            expect(observedValues).toContain('Sir Bob');
+            // The slot wins over `formatter` (which would have wrapped
+            // the value in brackets — no `[…]` in the rendered cell).
+            const rendered = Array.from(wrapper.element.querySelectorAll('tbody td:nth-child(2) span'))
+                .map((el) => el.textContent);
+            expect(rendered).toEqual(['Sir Alice', 'Sir Bob']);
+        });
+    });
 });

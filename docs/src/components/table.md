@@ -183,9 +183,28 @@ The walker recurses into Fragments, so `<template v-if>` /
 `<VCTableBody>` still suppresses the auto-render correctly.
 
 Auto-cells use the default cell renderer (`accessor` / `formatter`)
-documented above. Per-cell rendering control still requires
-composing the manual chrome (`<VCTableBody>` + `<VCTableRow>` +
-`<VCTableCell>` with a slot).
+documented above. For per-column custom rendering inside the
+auto-render path, pass a `#cell-<key>` slot — its render result
+replaces the default cell content for that column. A matching
+`#header-<key>` slot replaces the column's header text.
+
+```vue
+<VCTable :columns :data>
+    <template #cell-options="{ row }">
+        <button @click="edit(row)">Edit</button>
+        <button @click="remove(row)">Delete</button>
+    </template>
+    <template #header-options="{ column }">
+        <span class="text-muted">{{ column.label }}</span>
+    </template>
+</VCTable>
+```
+
+Slot props match the exported `TableCellSlotProps` (`{ row, value,
+key, column, index }`) and `TableHeadCellSlotProps` (`{ column, key,
+sort, setSort }`) types. The cell-slot `value` honors the column's
+`accessor` (so dot-paths and accessor functions work transparently);
+the slot wins over the column's `formatter` if both are set.
 
 ## Row selection
 

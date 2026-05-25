@@ -7,7 +7,14 @@ import VCTableFooter from '../components/TableFooter.vue';
 import VCTableHeadCell from '../components/TableHeadCell.vue';
 import VCTableHeader from '../components/TableHeader.vue';
 import VCTableRow from '../components/TableRow.vue';
-import type { TableColumn } from '../types';
+import type {
+    SortDirection,
+    TableCellSlotProps,
+    TableColumn,
+    TableHeadCellSlotProps,
+    TableSortState,
+} from '../types';
+import { resolveCellValue } from './render-utils';
 
 /**
  * Recursively check whether `nodes` (a slot return) contains a vnode
@@ -100,6 +107,32 @@ export function composeTableInner(opts: {
     captionSlot?: (() => unknown) | undefined;
     colgroupSlot?: (() => unknown) | undefined;
     /**
+     * Consumer's slot map. When set, the auto-render path dispatches
+     * `#cell-<key>` slots onto each `<VCTableCell>` and `#header-<key>`
+     * slots onto each `<VCTableHeadCell>`. Closes the gap between the
+     * documented `TableColumn` JSDoc (which advertises these slot
+     * names) and the auto-render runtime (which previously ignored
+     * them — see issue #1592).
+     *
+     * Typed as a permissive dynamic-key map (not Vue's `Slots` /
+     * `InternalSlots`) so callers can pass `slots` from a strictly-
+     * typed `defineComponent({ slots: SlotsType<{…}> })` setup
+     * argument without TS rejecting the assignment.
+     */
+    slots?: Record<string, ((slotProps?: unknown) => unknown) | undefined>;
+    /**
+     * Current sort state. Forwarded to the `#header-<key>` slot props
+     * (`sort` field) so consumers can render their own indicator. Only
+     * read when `slots` is provided.
+     */
+    sort?: TableSortState;
+    /**
+     * `setSort` callback. Forwarded to the `#header-<key>` slot props
+     * so a custom header can drive sort changes. Only read when
+     * `slots` is provided.
+     */
+    setSort?: (key: string, opts?: { direction?: SortDirection }) => void;
+    /**
      * When set, the body band is REPLACED by a skeleton `<tbody>`
      * with `placeholderRows × cols.length` placeholder bars. Header
      * still auto-renders from `cols` (real column labels); any
@@ -114,6 +147,9 @@ export function composeTableInner(opts: {
         slotChildren,
         captionSlot,
         colgroupSlot,
+        slots,
+        sort,
+        setSort,
         placeholderRows,
     } = opts;
 
@@ -126,9 +162,13 @@ export function composeTableInner(opts: {
     const hasBody = autoRender && containsComponent(slotChildren, VCTableBody);
 
     if (autoRender && !hasHeader) {
-        inner.push(h(VCTableHeader, null, () => h(VCTableRow, null, () => cols.map((col) => h(
-            VCTableHeadCell,
-            {
+        inner.push(h(VCTableHeader, null, () => h(VCTableRow, null, () => cols.map((col) => {
+            // Consumer `#header-<key>` slot wins over the default
+            // `col.label` text — see issue #1592. The auto-render path
+            // used to ignore these slots silently; now it dispatches
+            // them with the documented `TableHeadCellSlotProps` shape.
+            const headerSlot = slots?.[`header-${col.key}`];
+            const cellProps = {
                 key: col.key,
                 columnKey: col.key,
                 sortable: col.sortable,
@@ -138,9 +178,22 @@ export function composeTableInner(opts: {
                 // `column.class` applies to BOTH <th> and <td>; `headerClass`
                 // is the header-only additive. Vue normalizes the array.
                 class: [col.class, col.headerClass],
-            },
-            () => col.label,
-        )))));
+            };
+            if (headerSlot) {
+                const matched = sort?.find((s) => s.key === col.key);
+                const slotProps: TableHeadCellSlotProps<unknown> = {
+                    column: col,
+                    key: col.key,
+                    sort: matched ? matched.direction : null,
+                    setSort: (direction) => {
+                        if (!setSort) return;
+                        setSort(col.key, direction ? { direction } : undefined);
+                    },
+                };
+                return h(VCTableHeadCell, cellProps, () => headerSlot(slotProps));
+            }
+            return h(VCTableHeadCell, cellProps, () => col.label);
+        }))));
     }
 
     // Partition slot children so `<VCTableFooter>` always lands AFTER
@@ -190,14 +243,31 @@ export function composeTableInner(opts: {
             row: ({ row, index }: { row: unknown; index: number }) => h(
                 VCTableRow,
                 { row, index },
-                () => cols.map((col) => h(VCTableCell, {
-                    key: col.key,
-                    columnKey: col.key,
-                    isRowHeader: col.isRowHeader,
-                    stickyColumn: col.stickyColumn,
-                    dataLabel: col.label,
-                    class: [col.class, col.cellClass],
-                })),
+                () => cols.map((col) => {
+                    const cellProps = {
+                        key: col.key,
+                        columnKey: col.key,
+                        isRowHeader: col.isRowHeader,
+                        stickyColumn: col.stickyColumn,
+                        dataLabel: col.label,
+                        class: [col.class, col.cellClass],
+                    };
+                    // Consumer `#cell-<key>` slot wins over
+                    // `<VCTableCell>`'s auto-render path. Slot props
+                    // mirror `TableCellSlotProps` — see issue #1592.
+                    const cellSlot = slots?.[`cell-${col.key}`];
+                    if (cellSlot) {
+                        const slotProps: TableCellSlotProps<unknown> = {
+                            row,
+                            value: resolveCellValue(col, row),
+                            key: col.key,
+                            column: col,
+                            index,
+                        };
+                        return h(VCTableCell, cellProps, () => cellSlot(slotProps));
+                    }
+                    return h(VCTableCell, cellProps);
+                }),
             ),
         }));
     }

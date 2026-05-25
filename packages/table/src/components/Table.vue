@@ -25,8 +25,10 @@ import type {
 import { useSortMachine } from '../composables/sort';
 import type {
     SortDirection,
+    TableCellSlotProps,
     TableColumn,
     TableColumnRaw,
+    TableHeadCellSlotProps,
     TableSlotProps,
     TableSortState,
     TableThemeClasses,
@@ -162,6 +164,19 @@ export default defineComponent({
         default(props: TableSlotProps): unknown;
         caption(): unknown;
         colgroup(): unknown;
+        /**
+         * Per-column cell override. Dispatched by the columns-driver
+         * auto-render path; the key suffix matches `TableColumn['key']`.
+         * Wins over `<VCTableCell>`'s `accessor` + `formatter` auto-
+         * render. (Closes #1592.)
+         */
+        [cellSlot: `cell-${string}`]: (props: TableCellSlotProps) => unknown;
+        /**
+         * Per-column header override. Dispatched by the columns-driver
+         * auto-render path; key suffix matches `TableColumn['key']`.
+         * Wins over the default `col.label` text. (Closes #1592.)
+         */
+        [headerSlot: `header-${string}`]: (props: TableHeadCellSlotProps) => unknown;
     }>,
     setup(props, {
         attrs, 
@@ -358,6 +373,9 @@ export default defineComponent({
                 slotChildren: slots.default?.(slotProps.value),
                 captionSlot: slots.caption,
                 colgroupSlot: slots.colgroup,
+                slots,
+                sort: sortMachine.state.value,
+                setSort: sortMachine.setSort,
                 placeholderRows: skeletonRowCount,
             });
 
