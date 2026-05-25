@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.0.1](https://github.com/tada5hi/vuecs/compare/timeago-v2.0.0...timeago-v2.0.1) (2026-05-25)
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 10 updates ([#1590](https://github.com/tada5hi/vuecs/issues/1590)) ([b027606](https://github.com/tada5hi/vuecs/commit/b0276060648b010f53bfb75f856fa344b8614172))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.0.0 to ^3.1.0
+  * peerDependencies
+    * @vuecs/core bumped from ^3.0.0 to ^3.1.0
+
 ## [2.0.0](https://github.com/tada5hi/vuecs/compare/timeago-v1.1.2...timeago-v2.0.0) (2026-05-20)
 
 

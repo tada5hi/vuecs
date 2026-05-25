@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.2.0](https://github.com/tada5hi/vuecs/compare/elements-v1.1.0...elements-v1.2.0) (2026-05-25)
+
+
+### Features
+
+* **core:** port VCPrimitive into @vuecs/core, adopt in Card compound ([#1586](https://github.com/tada5hi/vuecs/issues/1586)) ([7e2b86f](https://github.com/tada5hi/vuecs/commit/7e2b86fc96391a09e8f74ce4e207ee31645654d2))
+
+
+### Bug Fixes
+
+* widen as: prop to accept components across themable components (closes [#1587](https://github.com/tada5hi/vuecs/issues/1587)) ([#1589](https://github.com/tada5hi/vuecs/issues/1589)) ([0362877](https://github.com/tada5hi/vuecs/commit/03628775b43d26c7e0226b0fc70931dbb5de1293))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.0.0 to ^3.1.0
+    * @vuecs/placeholder bumped from ^1.0.0 to ^1.0.1
+  * peerDependencies
+    * @vuecs/core bumped from ^3.0.0 to ^3.1.0
+    * @vuecs/placeholder bumped from ^1.0.0 to ^1.0.1
+
 ## [1.1.0](https://github.com/tada5hi/vuecs/compare/elements-v1.0.0...elements-v1.1.0) (2026-05-20)
 
 

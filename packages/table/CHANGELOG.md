@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.1.1](https://github.com/tada5hi/vuecs/compare/table-v1.1.0...table-v1.1.1) (2026-05-25)
+
+
+### Bug Fixes
+
+* **table:** dispatch #cell-&lt;key&gt; / #header-<key> slots in auto-render (closes [#1592](https://github.com/tada5hi/vuecs/issues/1592)) ([#1594](https://github.com/tada5hi/vuecs/issues/1594)) ([db1af1c](https://github.com/tada5hi/vuecs/commit/db1af1c0d0933a7d2858f19bbb2313810d34566c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.0.0 to ^3.1.0
+    * @vuecs/placeholder bumped from ^1.0.0 to ^1.0.1
+  * peerDependencies
+    * @vuecs/core bumped from ^3.0.0 to ^3.1.0
+    * @vuecs/placeholder bumped from ^1.0.0 to ^1.0.1
+
 ## [1.1.0](https://github.com/tada5hi/vuecs/compare/table-v1.0.0...table-v1.1.0) (2026-05-20)
 
 

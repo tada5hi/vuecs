@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.1](https://github.com/tada5hi/vuecs/compare/design-v1.0.0...design-v1.0.1) (2026-05-25)
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 10 updates ([#1590](https://github.com/tada5hi/vuecs/issues/1590)) ([b027606](https://github.com/tada5hi/vuecs/commit/b0276060648b010f53bfb75f856fa344b8614172))
+* **design:** wrap :root and .dark token blocks in [@layer](https://github.com/layer) vuecs (closes [#1595](https://github.com/tada5hi/vuecs/issues/1595)) ([#1597](https://github.com/tada5hi/vuecs/issues/1597)) ([ecd476c](https://github.com/tada5hi/vuecs/commit/ecd476ce3a37e06a5f4f84df9a48756493f60c8d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.0.0 to ^3.1.0
+
 ## 1.0.0 (2026-05-20)
 
 

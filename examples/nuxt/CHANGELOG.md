@@ -1,5 +1,32 @@
 # Changelog
 
+## [4.1.1](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v4.1.0...examples-nuxt-v4.1.1) (2026-05-25)
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 10 updates ([#1590](https://github.com/tada5hi/vuecs/issues/1590)) ([b027606](https://github.com/tada5hi/vuecs/commit/b0276060648b010f53bfb75f856fa344b8614172))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/button bumped from ^1.0.0 to ^1.0.1
+    * @vuecs/countdown bumped from ^2.0.0 to ^2.0.1
+    * @vuecs/design bumped from ^1.0.0 to ^1.0.1
+    * @vuecs/elements bumped from ^1.1.0 to ^1.2.0
+    * @vuecs/forms bumped from ^4.0.0 to ^4.0.1
+    * @vuecs/gravatar bumped from ^2.0.1 to ^2.0.2
+    * @vuecs/icons-font-awesome bumped from ^1.0.0 to ^1.0.1
+    * @vuecs/list bumped from ^1.0.0 to ^1.0.1
+    * @vuecs/navigation bumped from ^3.0.0 to ^3.0.1
+    * @vuecs/nuxt bumped from ^1.0.0 to ^1.0.1
+    * @vuecs/overlays bumped from ^1.0.0 to ^1.0.1
+    * @vuecs/pagination bumped from ^2.0.0 to ^2.1.0
+    * @vuecs/theme-tailwind bumped from ^1.1.0 to ^1.1.1
+    * @vuecs/timeago bumped from ^2.0.0 to ^2.0.1
+
 ## [4.1.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v4.0.0...examples-nuxt-v4.1.0) (2026-05-20)
 
 
