@@ -20,6 +20,39 @@ describe('installThemeManager', () => {
         expect(first).toBe(second);
     });
 
+    // #1591 — per-package install() runs first with no themes, then top-level
+    // app.use(vuecs, { themes: [...] }) must still apply.
+    it('should merge themes from a second call into the existing manager', () => {
+        const app = createApp({ render: () => h('div') });
+        // First call: simulates a per-package install with no themes.
+        installThemeManager(app);
+        // Second call: simulates app.use(vuecs, { themes: [...] }) afterwards.
+        const tailwind: Theme = { elements: { button: { classes: { root: 'btn-tailwind' } } } };
+        const manager = installThemeManager(app, { themes: [tailwind] });
+
+        expect(manager.themes).toHaveLength(1);
+        expect(manager.themes[0]).toBe(tailwind);
+    });
+
+    it('should append themes when both calls supply themes', () => {
+        const app = createApp({ render: () => h('div') });
+        const a: Theme = { elements: { button: { classes: { root: 'btn-a' } } } };
+        const b: Theme = { elements: { button: { classes: { root: 'btn-b' } } } };
+        installThemeManager(app, { themes: [a] });
+        const manager = installThemeManager(app, { themes: [b] });
+
+        expect(manager.themes).toEqual([a, b]);
+    });
+
+    it('should apply overrides from a second call to the existing manager', () => {
+        const app = createApp({ render: () => h('div') });
+        installThemeManager(app);
+        const overrides: Theme = { elements: { button: { classes: { root: 'custom' } } } };
+        const manager = installThemeManager(app, { overrides });
+
+        expect(manager.overrides).toBe(overrides);
+    });
+
     it('should store themes from options', () => {
         const app = createApp({ render: () => h('div') });
         const theme: Theme = { elements: { button: { root: 'btn' } } };

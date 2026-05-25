@@ -79,7 +79,7 @@ After slot class resolution, **variant resolution** applies:
 ### Key APIs
 
 - **`ThemeManager`** — Holds config state (themes, overrides) as `shallowRef`s, delegates to `resolveComponentTheme()` and `resolveVariantClasses()`. Supports runtime updates via `setThemes()` and `setOverrides()`.
-- **`installThemeManager(app, options)`** — Vue plugin that provides ThemeManager via `app.provide()`
+- **`installThemeManager(app, options)`** — Vue plugin that provides ThemeManager via `app.provide()`. **Install-order-safe (#1591):** if a manager already exists in the app context, the call **merges** `options.themes` (appended) and `options.overrides` (replaces) into it instead of returning early. This way `app.use(installNavigation)` running before `app.use(vuecs, { themes: [...] })` still applies the themes. The same merge-on-second-call pattern applies to `installDefaultsManager` (per-component deep merge via `DefaultsManager.mergeDefaults`) and `installConfigManager` (shallow merge of `options.config`).
 - **`injectThemeManager()`** — Retrieves ThemeManager from Vue inject
 - **`useComponentTheme(name, props, defaults)`** — Vue composable. `props` is the component's reactive props object; the composable reads `props.themeClass` and `props.themeVariant` internally. Returns `ComputedRef<T>` that recomputes when `props.themeClass`, `props.themeVariant`, or ThemeManager state changes. Throws if ThemeManager is not installed.
 - **`extend(value)`** — Marker function: merge with lower layer instead of replacing (only needed in overrides and instance props; themes always merge with defaults)

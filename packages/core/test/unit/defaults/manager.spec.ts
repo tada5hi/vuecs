@@ -10,9 +10,14 @@ type TestSubmitDefaults = {
     updateText: string;
 };
 
+type TestOtherDefaults = {
+    foo: string;
+};
+
 declare module '../../../src/defaults/types' {
     interface ComponentDefaults {
         __testSubmit?: ComponentDefaultValues<TestSubmitDefaults>;
+        __testOther?: ComponentDefaultValues<TestOtherDefaults>;
     }
 }
 
@@ -58,6 +63,38 @@ describe('DefaultsManager', () => {
 
         manager.setDefaults(undefined);
         expect(manager.get('__testSubmit')).toBeUndefined();
+    });
+
+    // #1591 — per-component deep merge so install-order doesn't drop options.
+    it('should per-component-merge via mergeDefaults() preserving keys not in the partial', () => {
+        const manager = new DefaultsManager({ defaults: { __testSubmit: { createText: 'Create', updateText: 'Update' } } });
+
+        manager.mergeDefaults({ __testSubmit: { createText: 'Erstellen' } });
+
+        expect(manager.get('__testSubmit')).toEqual({
+            createText: 'Erstellen',
+            updateText: 'Update',
+        });
+    });
+
+    it('should skip undefined fields in mergeDefaults so a partial does not clear existing values', () => {
+        const manager = new DefaultsManager({ defaults: { __testSubmit: { createText: 'Create', updateText: 'Update' } } });
+
+        manager.mergeDefaults({ __testSubmit: { createText: undefined, updateText: 'Aktualisieren' } });
+
+        expect(manager.get('__testSubmit')).toEqual({
+            createText: 'Create',
+            updateText: 'Aktualisieren',
+        });
+    });
+
+    it('should add a new component entry via mergeDefaults() without affecting others', () => {
+        const manager = new DefaultsManager({ defaults: { __testSubmit: { createText: 'Create' } } });
+
+        manager.mergeDefaults({ __testOther: { foo: 'bar' } });
+
+        expect(manager.get('__testSubmit')).toEqual({ createText: 'Create' });
+        expect(manager.get('__testOther')).toEqual({ foo: 'bar' });
     });
 
     it('should trigger reactive effects when setDefaults is called with the same reference', () => {
