@@ -174,6 +174,36 @@ Use these on text/icon elements that sit on top of a filled semantic background 
 These do not flip with dark mode. Override at the `:root` level if you want different values across the whole app.
 </details>
 
+## Overriding tokens from a cascade layer
+
+`@vuecs/design`'s `:root` and `.dark` blocks are wrapped in a named cascade layer — `@layer vuecs`. Consumers can override any token (semantic alias, scale shade, radius) from within their own cascade layer without resorting to `!important` or hoisting the override outside their layer structure.
+
+The minimal pattern is just "place your override inside any other layer, after the design import":
+
+```css
+@import "@vuecs/design";
+
+@layer base {
+    .dark {
+        --vc-color-bg: var(--vc-color-neutral-700);  /* softer dark-mode bg */
+    }
+}
+```
+
+Layer order is established at first appearance. Since `@vuecs/design` is imported first, the order ends up as `vuecs, base, …` — and `base` wins over `vuecs` per the cascade-layer spec, regardless of selector specificity.
+
+If you want an explicit order (e.g. you import vuecs after Tailwind, which itself declares `theme, base, components, utilities`), declare it once at the top of your stylesheet:
+
+```css
+@layer reset, vuecs, base, utilities;
+```
+
+Layers declared later win. The `vuecs` layer name is stable; treat it as the integration seam for any consumer-side token override.
+
+::: tip Top-level (unlayered) overrides
+You can also override from the unlayered top level — unlayered author CSS beats *all* layered rules, so `:root { --vc-color-bg: … }` outside any `@layer` still works. The cascade-layer wrap is what's new: it makes layered overrides work too. See [#1595](https://github.com/tada5hi/vuecs/issues/1595) for the rationale.
+:::
+
 ## Bridging another CSS framework
 
 If you bring your own non-Tailwind framework (Bootstrap, Bulma, Foundation, UIkit, your own design system…) and want `setColorPalette()` calls to re-tint native framework components alongside vuecs ones, write a CSS-variable bridge that maps the framework's runtime tokens onto `--vc-color-*`.

@@ -1052,6 +1052,10 @@ via a `<style id="vc-color-palette">` block, leaving layers 1-2 and 4-5 untouche
 ```
 @vuecs/design/
   assets/index.css       <- :root (concrete OKLCH defaults) + .dark + @import "./animations.css"
+                            `:root` + `.dark` blocks are wrapped in `@layer vuecs`
+                            (#1595) so consumer overrides placed inside any other
+                            cascade layer win without `!important`. animations.css
+                            stays unlayered (structural CSS rule); palettes.css too.
   assets/animations.css  <- Motion primitives — vanilla-CSS port of tw-animate-css (MIT, attributed in header)
   src/
     palette.ts                   <- applyColorPaletteCss(), bindColorPalette<T>(), COLOR_PALETTE_STYLE_ELEMENT_ID

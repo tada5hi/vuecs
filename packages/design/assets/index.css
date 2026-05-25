@@ -46,6 +46,30 @@
    for motion-only or skip this file and pull a custom subset. */
 @import "./animations.css";
 
+/* -----------------------------------------------------------------
+   Cascade layer (#1595) — `:root` and `.dark` token blocks are wrapped
+   in `@layer vuecs` so consumer overrides placed inside any
+   later-declared layer (e.g. Tailwind's `@layer base`) win without
+   resorting to `!important` or hoisting outside their own layer
+   structure.
+
+   Layer order is established at first appearance, so importing this
+   file BEFORE the consumer's own layered CSS automatically positions
+   `vuecs` ahead of `base` / `utilities` / etc. Consumers who
+   need an explicit order can declare:
+
+       @layer vuecs, base, utilities;
+       @import "@vuecs/design";
+
+   `animations.css` and the standalone `palettes.css` stay unlayered —
+   their selectors are either class-based (animation utility classes)
+   or vendor catalog values (Tailwind palette defaults) where the
+   typical override seam is `--vc-color-<scale>-*` rather than the raw
+   `--color-<palette>-*` source. See #1595.
+   ----------------------------------------------------------------- */
+
+@layer vuecs {
+
 :root {
     /* -------------------------------------------------------------
        Semantic scales — references onto the Tailwind palette catalog.
@@ -195,3 +219,5 @@
 
     --vc-color-on-warning: var(--vc-color-neutral-950);
 }
+
+} /* @layer vuecs */
