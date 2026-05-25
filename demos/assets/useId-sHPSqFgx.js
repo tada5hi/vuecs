@@ -1,1 +1,0 @@
-import{$ as e,Rt as t}from"./iframe-bridge-DuIvlupE.js";import{a as n}from"./Primitive-DW3gwFS2.js";var[r,i]=n(`ConfigProvider`),a=0;function o(n,i=`reka`){if(n)return n;let o;return o=`useId`in e?t?.():r({useId:void 0}).useId?.()??`${++a}`,i?`${i}-${o}`:o}export{r as n,o as t};
