@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.1](https://github.com/tada5hi/vuecs/compare/placeholder-v1.0.0...placeholder-v1.0.1) (2026-05-25)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.0.0 to ^3.1.0
+  * peerDependencies
+    * @vuecs/core bumped from ^3.0.0 to ^3.1.0
+
 ## 1.0.0 (2026-05-20)
 
 

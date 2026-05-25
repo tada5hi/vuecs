@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.1.0](https://github.com/tada5hi/vuecs/compare/core-v3.0.0...core-v3.1.0) (2026-05-25)
+
+
+### Features
+
+* **core:** port VCPrimitive into @vuecs/core, adopt in Card compound ([#1586](https://github.com/tada5hi/vuecs/issues/1586)) ([7e2b86f](https://github.com/tada5hi/vuecs/commit/7e2b86fc96391a09e8f74ce4e207ee31645654d2))
+
+
+### Bug Fixes
+
+* **core:** merge install options into existing manager instead of dropping them (closes [#1591](https://github.com/tada5hi/vuecs/issues/1591)) ([#1596](https://github.com/tada5hi/vuecs/issues/1596)) ([59e73f6](https://github.com/tada5hi/vuecs/commit/59e73f602d7e1d2836f64730f5699063934ddf1d))
+
 ## [3.0.0](https://github.com/tada5hi/vuecs/compare/core-v2.0.0...core-v3.0.0) (2026-05-20)
 
 

@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.1](https://github.com/tada5hi/vuecs/compare/countdown-v2.0.0...countdown-v2.0.1) (2026-05-25)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.0.0 to ^3.1.0
+  * peerDependencies
+    * @vuecs/core bumped from ^3.0.0 to ^3.1.0
+
 ## [2.0.0](https://github.com/tada5hi/vuecs/compare/countdown-v1.0.1...countdown-v2.0.0) (2026-05-20)
 
 

@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.1.0](https://github.com/tada5hi/vuecs/compare/pagination-v2.0.0...pagination-v2.1.0) (2026-05-25)
+
+
+### Features
+
+* **pagination:** smart icon/text fallback + hide edge controls at boundaries ([#1593](https://github.com/tada5hi/vuecs/issues/1593)) ([560158d](https://github.com/tada5hi/vuecs/commit/560158d822782e5b7d0c45a59e0c2939d9cea3da))
+
+
+### Bug Fixes
+
+* **pagination:** switch to native slot fallback, fix limit doc ([8ae5cba](https://github.com/tada5hi/vuecs/commit/8ae5cbab0762e6e5d0217f46964761e3c01691b9))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.0.0 to ^3.1.0
+  * peerDependencies
+    * @vuecs/core bumped from ^3.0.0 to ^3.1.0
+
 ## [2.0.0](https://github.com/tada5hi/vuecs/compare/pagination-v1.3.1...pagination-v2.0.0) (2026-05-20)
 
 

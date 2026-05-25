@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.0.1](https://github.com/tada5hi/vuecs/compare/navigation-v3.0.0...navigation-v3.0.1) (2026-05-25)
+
+
+### Bug Fixes
+
+* widen as: prop to accept components across themable components (closes [#1587](https://github.com/tada5hi/vuecs/issues/1587)) ([#1589](https://github.com/tada5hi/vuecs/issues/1589)) ([0362877](https://github.com/tada5hi/vuecs/commit/03628775b43d26c7e0226b0fc70931dbb5de1293))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.0.0 to ^3.1.0
+  * peerDependencies
+    * @vuecs/core bumped from ^3.0.0 to ^3.1.0
+
 ## [3.0.0](https://github.com/tada5hi/vuecs/compare/navigation-v2.4.1...navigation-v3.0.0) (2026-05-20)
 
 
