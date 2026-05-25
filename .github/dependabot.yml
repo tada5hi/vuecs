@@ -18,6 +18,18 @@ updates:
           prefix: "fix"
           prefix-development: "build"
           include: "scope"
+      ignore:
+          # vue-tsc is pinned to 3.2.x while tsdown's bundled
+          # `rolldown-plugin-dts@^0.25.0` declares an optional peer
+          # `vue-tsc: ~3.2.0`. Bumping vue-tsc to 3.3.x makes npm 10
+          # (used by CI) reject the install with
+          # `Missing: vue-tsc@3.2.x from lock file`. Re-allow once
+          # rolldown-plugin-dts widens the peer range OR we move off
+          # tsdown.
+          -   dependency-name: "vue-tsc"
+              update-types:
+                  - "version-update:semver-minor"
+                  - "version-update:semver-major"
       groups:
           majorProd:
               applies-to: version-updates
