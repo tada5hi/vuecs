@@ -24,8 +24,13 @@ runs:
                     node_modules
                     */*/node_modules
                 key: ${{ runner.os }}-install-${{ hashFiles('**/package-lock.json') }}
-                restore-keys: |
-                    ${{ runner.os }}-install-
+                # No `restore-keys:` — a prefix-match restore would put a stale
+                # node_modules tree (built against the previous lockfile) onto
+                # disk, and `npm ci` would then fail with
+                # `Missing: <pkg>@<old-version> from lock file` whenever the
+                # lockfile changed (e.g. a Dependabot bump). Exact-match only:
+                # lockfile changes invalidate the cache cleanly and the install
+                # step does a fresh download. Trade-off: ~30s on cold cache.
 
         -   name: Install
             shell: bash
