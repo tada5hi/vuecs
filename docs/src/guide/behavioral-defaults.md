@@ -80,7 +80,6 @@ See `VCList.noMoreContent` and `VCList.itemTextPropName` (both `default: undefin
 |-----------|-------------------|
 | `useSubmitButton()` (`submitButton`) | `createText`, `updateText`, `createIcon`, `updateIcon`, `createColor`, `updateColor` |
 | `VCFormSelect` | `placeholder` |
-| `VCFormGroup` | `validation` |
 | `VCFormCheckbox` | `labelContent` |
 | `VCFormSwitch` | `labelContent` |
 | `VCListEmpty` | `content` |

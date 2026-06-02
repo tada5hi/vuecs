@@ -102,10 +102,7 @@ describe('VCFormGroup', () => {
 
     it('should render validation messages', () => {
         const wrapper = mount(VCFormGroup, {
-            props: {
-                validation: true,
-                validationMessages: { required: 'Field is required' },
-            },
+            props: { validationMessages: { required: 'Field is required' } },
             global: { plugins: [themePlugin] },
         });
         expect(wrapper.text()).toContain('Field is required');
@@ -123,10 +120,7 @@ describe('VCFormGroup', () => {
             },
         };
         const wrapper = mount(VCFormGroup, {
-            props: {
-                validation: true,
-                validationMessages: { required: 'Required' },
-            },
+            props: { validationMessages: { required: 'Required' } },
             global: {
                 plugins: [{
                     install: (app: any) => {
@@ -153,7 +147,6 @@ describe('VCFormGroup', () => {
         };
         const wrapper = mount(VCFormGroup, {
             props: {
-                validation: true,
                 validationMessages: { hint: 'Check this' },
                 validationSeverity: 'warning',
             },
@@ -170,23 +163,27 @@ describe('VCFormGroup', () => {
         expect(wrapper.classes()).not.toContain('has-error');
     });
 
-    it('should not show validation when validation prop is false', () => {
+    it('should not render validation section when no messages and no validation slot', () => {
+        // Content-driven visibility — empty (or absent) `validationMessages` AND
+        // no `#validationGroup` / `#validationItem` slot ⇒ no `<VCValidationGroup>`
+        // is rendered at all. The previous boolean visibility toggle
+        // (`:render-validation`) was removed in favour of this.
         const wrapper = mount(VCFormGroup, {
-            props: {
-                validation: false,
-                validationMessages: { required: 'Required' },
-            },
+            props: { hintContent: 'help' },
             global: { plugins: [themePlugin] },
         });
-        expect(wrapper.text()).not.toContain('Required');
+        expect(wrapper.text()).toBe('help');
     });
 
-    it('should default validation to true when prop is omitted (3-layer fallthrough)', () => {
+    it('should render validation section when only a validation slot is provided (no messages)', () => {
+        // Slot consumers (`#validationGroup`) can render content from sources
+        // other than `messages` — the slot's presence is enough to force-render
+        // the section.
         const wrapper = mount(VCFormGroup, {
-            props: { validationMessages: { required: 'Required' } },
             global: { plugins: [themePlugin] },
+            slots: { validationGroup: () => h('span', { class: 'slot-marker' }, 'slot content') },
         });
-        expect(wrapper.text()).toContain('Required');
+        expect(wrapper.find('.slot-marker').exists()).toBe(true);
     });
 
     it('should render in order: label, content, validation, hint', () => {
@@ -194,7 +191,6 @@ describe('VCFormGroup', () => {
             props: {
                 labelContent: 'Label',
                 hintContent: 'Hint',
-                validation: true,
                 validationMessages: { req: 'Error' },
             },
             global: { plugins: [themePlugin] },
@@ -206,6 +202,201 @@ describe('VCFormGroup', () => {
         const hintPos = text.indexOf('Hint');
         expect(labelPos).toBeLessThan(errorPos);
         expect(errorPos).toBeLessThan(hintPos);
+    });
+
+    describe(':validation bundle prop', () => {
+        // The canonical bridge usage takes the return value of
+        // `@ilingo/validup-vue`'s `useFieldValidation()`, whose shape is
+        // `{ severity, messages, issues }` — the third key (`issues`) is the
+        // raw `IssueTranslation[]` escape hatch. Vuecs only consumes
+        // `severity` + `messages`; the extra key must be tolerated so
+        // structural compatibility with the bridge holds without vuecs
+        // taking a type-level dep on `@ilingo/validup-vue`.
+        it('should ignore extra keys on the bundle object (bridge compatibility)', () => {
+            const wrapper = mount(VCFormGroup, {
+                props: {
+                    validation: {
+                        severity: 'error' as const,
+                        messages: [{ key: 'required', value: 'Email is required' }],
+                        issues: [{ code: 'required' }],
+                    } as any,
+                },
+                global: { plugins: [themePlugin] },
+            });
+            expect(wrapper.text()).toContain('Email is required');
+        });
+
+        it('should render messages from the bundle', () => {
+            const wrapper = mount(VCFormGroup, {
+                props: {
+                    validation: {
+                        severity: 'error' as const,
+                        messages: [{ key: 'required', value: 'Email is required' }],
+                    },
+                },
+                global: { plugins: [themePlugin] },
+            });
+            expect(wrapper.text()).toContain('Email is required');
+        });
+
+        it('should apply error class for bundle severity=error', () => {
+            const preset = { elements: { formGroup: { classes: { root: 'fg', validationError: 'is-err' } } } };
+            const wrapper = mount(VCFormGroup, {
+                props: {
+                    validation: {
+                        severity: 'error' as const,
+                        messages: [{ key: 'k', value: 'msg' }],
+                    },
+                },
+                global: {
+                    plugins: [{
+                        install: (app: any) => {
+                            installThemeManager(app, { themes: [preset] });
+                            installDefaultsManager(app);
+                        },
+                    }],
+                },
+            });
+            expect(wrapper.classes()).toContain('is-err');
+        });
+
+        it('should apply warning class for bundle severity=warning', () => {
+            const preset = {
+                elements: {
+                    formGroup: {
+                        classes: {
+                            root: 'fg', 
+                            validationError: 'is-err', 
+                            validationWarning: 'is-warn', 
+                        }, 
+                    }, 
+                },
+            };
+            const wrapper = mount(VCFormGroup, {
+                props: {
+                    validation: {
+                        severity: 'warning' as const,
+                        messages: [{ key: 'k', value: 'msg' }],
+                    },
+                },
+                global: {
+                    plugins: [{
+                        install: (app: any) => {
+                            installThemeManager(app, { themes: [preset] });
+                            installDefaultsManager(app);
+                        },
+                    }],
+                },
+            });
+            expect(wrapper.classes()).toContain('is-warn');
+            expect(wrapper.classes()).not.toContain('is-err');
+        });
+
+        it('should not apply any severity class when bundle severity is undefined (field pristine)', () => {
+            // Legacy path defaults to error for undefined severity; bundle path
+            // treats undefined as "field is OK" and applies no class.
+            const preset = {
+                elements: {
+                    formGroup: {
+                        classes: {
+                            root: 'fg', 
+                            validationError: 'is-err', 
+                            validationWarning: 'is-warn', 
+                        }, 
+                    }, 
+                },
+            };
+            const wrapper = mount(VCFormGroup, {
+                props: { validation: { messages: [{ key: 'k', value: 'msg' }] } },
+                global: {
+                    plugins: [{
+                        install: (app: any) => {
+                            installThemeManager(app, { themes: [preset] });
+                            installDefaultsManager(app);
+                        },
+                    }],
+                },
+            });
+            expect(wrapper.classes()).not.toContain('is-err');
+            expect(wrapper.classes()).not.toContain('is-warn');
+        });
+
+        it('should not apply any severity class for bundle severity=success', () => {
+            const preset = {
+                elements: {
+                    formGroup: {
+                        classes: {
+                            root: 'fg', 
+                            validationError: 'is-err', 
+                            validationWarning: 'is-warn', 
+                        }, 
+                    }, 
+                },
+            };
+            const wrapper = mount(VCFormGroup, {
+                props: {
+                    validation: {
+                        severity: 'success' as const,
+                        messages: [{ key: 'k', value: 'msg' }],
+                    },
+                },
+                global: {
+                    plugins: [{
+                        install: (app: any) => {
+                            installThemeManager(app, { themes: [preset] });
+                            installDefaultsManager(app);
+                        },
+                    }],
+                },
+            });
+            expect(wrapper.classes()).not.toContain('is-err');
+            expect(wrapper.classes()).not.toContain('is-warn');
+        });
+
+        it('should take precedence over :validation-severity and :validation-messages', () => {
+            const wrapper = mount(VCFormGroup, {
+                props: {
+                    validation: {
+                        severity: 'error' as const,
+                        messages: [{ key: 'bundle', value: 'bundle wins' }],
+                    },
+                    validationSeverity: 'warning' as const,
+                    validationMessages: { legacy: 'legacy loses' },
+                },
+                global: { plugins: [themePlugin] },
+            });
+            expect(wrapper.text()).toContain('bundle wins');
+            expect(wrapper.text()).not.toContain('legacy loses');
+        });
+
+        it('should fall through to legacy props when :validation is null', () => {
+            const wrapper = mount(VCFormGroup, {
+                props: {
+                    validation: null,
+                    validationMessages: { req: 'legacy msg' },
+                },
+                global: { plugins: [themePlugin] },
+            });
+            expect(wrapper.text()).toContain('legacy msg');
+        });
+
+        it('should not render validation section when bundle messages are empty', () => {
+            // Bundle with empty `messages` ⇒ no section (content-driven
+            // visibility). Matches the typical "field is pristine / valid"
+            // case from `@ilingo/validup-vue`'s `useFieldValidation`, which
+            // returns `{ severity: undefined, messages: [], issues: [] }`.
+            const wrapper = mount(VCFormGroup, {
+                props: {
+                    validation: {
+                        severity: undefined,
+                        messages: [],
+                    },
+                    hintContent: 'help',
+                },
+                global: { plugins: [themePlugin] },
+            });
+            expect(wrapper.text()).toBe('help');
+        });
     });
 });
 
