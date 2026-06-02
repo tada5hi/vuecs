@@ -37,8 +37,8 @@
     },
     "devDependencies": {
         "@vuecs/core": "^3.1.0",
-        "date-fns": "^4.2.1",
-        "vue": "^3.5.34"
+        "date-fns": "^4.3.0",
+        "vue": "^3.5.35"
     },
     "peerDependencies": {
         "@vuecs/core": "^3.1.0",
