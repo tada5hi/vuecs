@@ -65,7 +65,7 @@ Resolution: when `:validation` is set (non-null), it wins. Pass `:validation="nu
 
 ## Visibility toggle: `:render-validation`
 
-The boolean that suppresses the entire validation section was renamed from `:validation` (boolean) to `:render-validation` (boolean) in 3.x — the unqualified `:validation` is now the bundle prop. The `:render-validation` toggle wins over both paths:
+The boolean that suppresses the entire validation section was renamed from `:validation` (boolean) to `:render-validation` (boolean) — the unqualified `:validation` is now the bundle prop. The `:render-validation` toggle wins over both paths:
 
 ```vue
 <!-- Section hidden regardless of bundle / legacy props -->

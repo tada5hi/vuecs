@@ -33,9 +33,9 @@ export type FormGroupThemeClasses = {
 export type FormGroupDefaults = {
     /**
      * Visibility toggle for the `<VCValidationGroup>` section. Renamed
-     * from `validation` in 3.x — `validation` now names the bundle prop
-     * (`FieldValidation`) consumed via `:validation`. Both ship on the
-     * defaults manager, so app-wide overrides continue to work.
+     * from `validation` — `validation` is now the prop name for the
+     * `FieldValidation` bundle (severity + messages). `renderValidation`
+     * is the only defaults-manager key under `formGroup`.
      */
     renderValidation: boolean;
 };
@@ -87,7 +87,10 @@ const formGroupProps = {
      *
      * Pass `null` / `undefined` to fall through to the legacy props.
      */
-    validation: { type: Object as PropType<FieldValidation | null>, default: undefined },
+    // `type: [Object, null]` not just `Object` — Vue's runtime prop
+    // validator otherwise warns on `:validation="null"`, which the
+    // contract documents as the fall-through escape hatch.
+    validation: { type: [Object, null] as PropType<FieldValidation | null>, default: undefined },
 
     /**
      * Visibility toggle for the validation messages section. When
@@ -96,8 +99,8 @@ const formGroupProps = {
      * Falls back to the global `formGroup.renderValidation` default
      * (`true`).
      *
-     * Renamed from `:validation` in 3.x — the unqualified name now
-     * carries the `FieldValidation` bundle (severity + messages).
+     * Renamed from `:validation` — the unqualified name now carries
+     * the `FieldValidation` bundle (severity + messages).
      */
     renderValidation: { type: Boolean, default: undefined },
 
@@ -176,14 +179,13 @@ export default defineComponent({
             // Validation
             if (resolvedDefaults.renderValidation) {
                 children.push(h(VCValidationGroup, {
-                    // `<VCValidationGroup>`'s `:severity` only knows `error` /
-                    // `warning`. The bundle's wider union (`success`, `undefined`)
-                    // collapses to `undefined` here so the inner component falls
-                    // back to its own default (`error`) for the slot-prop value —
-                    // class application on the root branches separately below.
-                    severity: (effectiveSeverity === ValidationSeverity.WARNING || effectiveSeverity === ValidationSeverity.ERROR) ?
-                        effectiveSeverity :
-                        undefined,
+                    // `<VCValidationGroup>`'s `:severity` now accepts the same
+                    // wider union as the `FieldValidation` bundle
+                    // (`error` / `warning` / `success` / `undefined`), so the
+                    // bundle's pristine / success states flow through to slot
+                    // consumers unchanged — no more "undefined collapses to
+                    // error" leak via the inner prop default.
+                    severity: effectiveSeverity,
                     messages: effectiveMessages || {},
                 }, {
                     ...(slots.validationGroup ? { default: slots.validationGroup } : {}),

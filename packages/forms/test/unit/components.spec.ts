@@ -209,6 +209,27 @@ describe('VCFormGroup', () => {
     });
 
     describe(':validation bundle prop', () => {
+        // The canonical bridge usage takes the return value of
+        // `@ilingo/validup-vue`'s `useFieldValidation()`, whose shape is
+        // `{ severity, messages, issues }` — the third key (`issues`) is the
+        // raw `IssueTranslation[]` escape hatch. Vuecs only consumes
+        // `severity` + `messages`; the extra key must be tolerated so
+        // structural compatibility with the bridge holds without vuecs
+        // taking a type-level dep on `@ilingo/validup-vue`.
+        it('should ignore extra keys on the bundle object (bridge compatibility)', () => {
+            const wrapper = mount(VCFormGroup, {
+                props: {
+                    validation: {
+                        severity: 'error' as const,
+                        messages: [{ key: 'required', value: 'Email is required' }],
+                        issues: [{ code: 'required' }],
+                    } as any,
+                },
+                global: { plugins: [themePlugin] },
+            });
+            expect(wrapper.text()).toContain('Email is required');
+        });
+
         it('should render messages from the bundle', () => {
             const wrapper = mount(VCFormGroup, {
                 props: {

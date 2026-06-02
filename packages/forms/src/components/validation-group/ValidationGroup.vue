@@ -29,9 +29,19 @@ declare module '@vuecs/core' {
 
 export const validationGroupThemeDefaults: ComponentThemeDefinition<ValidationGroupThemeClasses> = { classes: { item: 'form-group-hint group-required' } };
 
+/**
+ * Severity union the slot props expose. Wider than `ValidationSeverity`
+ * (`error` / `warning`) so a `<VCFormGroup :validation>` bundle whose
+ * `severity` is `'success'` or `undefined` flows through to slot
+ * consumers as-is — instead of being collapsed back to `'error'` by
+ * the prop default, which would mislead the slot rendering on
+ * pristine / valid fields.
+ */
+export type ValidationGroupSeverity = `${ValidationSeverity}` | 'success' | undefined;
+
 export type ValidationGroupDefaultSlotProps = {
     data: ValidationMessagesArrayStyle;
-    severity: `${ValidationSeverity}`;
+    severity: ValidationGroupSeverity;
     itemClass: string;
     itemTag: string;
 };
@@ -41,12 +51,24 @@ export type ValidationGroupItemSlotProps = {
     value: string;
     class: string;
     tag: string;
-    severity: `${ValidationSeverity}`;
+    severity: ValidationGroupSeverity;
 };
 
 const validationGroupProps = {
-    /** Severity used to colour the rendered messages (`error` / `warning`). */
-    severity: { type: String as PropType<`${ValidationSeverity}`>, default: ValidationSeverity.ERROR },
+    /**
+     * Severity used to colour the rendered messages. Accepts
+     * `'error' | 'warning'` (the vuecs-native vocabulary) plus
+     * `'success'` for forward-compat with validation bridges that
+     * surface a "passed" state (see `<VCFormGroup>`'s `:validation`
+     * bundle).
+     *
+     * Default is `undefined` — slot consumers receive the actual
+     * value passed by the host. The previous default of
+     * `ValidationSeverity.ERROR` is gone; if a slot template needs an
+     * error fallback when none is supplied, do it at the call site
+     * (`severity ?? 'error'`).
+     */
+    severity: { type: String as PropType<ValidationGroupSeverity>, default: undefined },
     /** Validation messages — keyed object or ordered array of `{ key, value }`. */
     messages: { type: [Object, Array] as PropType<ValidationMessages>, default: () => ({}) },
     /** HTML tag used for each rendered message. */
