@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.1.2](https://github.com/tada5hi/vuecs/compare/table-v1.1.1...table-v1.1.2) (2026-06-02)
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 8 updates ([#1604](https://github.com/tada5hi/vuecs/issues/1604)) ([aa834bb](https://github.com/tada5hi/vuecs/commit/aa834bb90e29d9adbc43aa784ccf6e2fd958c048))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.1.0 to ^3.1.1
+    * @vuecs/placeholder bumped from ^1.0.1 to ^1.0.2
+  * peerDependencies
+    * @vuecs/core bumped from ^3.1.0 to ^3.1.1
+    * @vuecs/placeholder bumped from ^1.0.1 to ^1.0.2
+
 ## [1.1.1](https://github.com/tada5hi/vuecs/compare/table-v1.1.0...table-v1.1.1) (2026-05-25)
 
 

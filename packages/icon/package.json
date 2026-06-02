@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/icon",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "type": "module",
     "description": "Iconify-backed icon component for vuecs. Wraps @iconify/vue's <Icon> with a vuecs-namespaced <VCIcon>.",
     "exports": {

@@ -1,5 +1,30 @@
 # Changelog
 
+## [5.0.0](https://github.com/tada5hi/vuecs/compare/forms-v4.0.1...forms-v5.0.0) (2026-06-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* **forms:** :validation bundle prop + FieldValidation type on VCFormGroup ([#1607](https://github.com/tada5hi/vuecs/issues/1607))
+
+### Features
+
+* **forms:** :validation bundle prop + FieldValidation type on VCFormGroup ([#1607](https://github.com/tada5hi/vuecs/issues/1607)) ([73b202d](https://github.com/tada5hi/vuecs/commit/73b202d7672db9786de591ccbe620858bb81377a))
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 8 updates ([#1604](https://github.com/tada5hi/vuecs/issues/1604)) ([aa834bb](https://github.com/tada5hi/vuecs/commit/aa834bb90e29d9adbc43aa784ccf6e2fd958c048))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.1.0 to ^3.1.1
+  * peerDependencies
+    * @vuecs/core bumped from ^3.1.0 to ^3.1.1
+
 ## [4.0.1](https://github.com/tada5hi/vuecs/compare/forms-v4.0.0...forms-v4.0.1) (2026-05-25)
 
 
