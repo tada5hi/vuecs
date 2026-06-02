@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/list",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "type": "module",
     "description": "Compound list components for vuecs (List / Header / Body / Item / ItemText / ItemActions / Footer / Loading / Empty) plus the defineList() factory + useList() injector. Successor to @vuecs/list-controls — clean break, compound API.",
     "exports": {
@@ -42,12 +42,12 @@
     },
     "devDependencies": {
         "@vue/test-utils": "^2.4.10",
-        "@vuecs/core": "^3.1.0",
+        "@vuecs/core": "^3.1.1",
         "jsdom": "^29.1.1",
         "vue": "^3.5.35"
     },
     "peerDependencies": {
-        "@vuecs/core": "^3.1.0",
+        "@vuecs/core": "^3.1.1",
         "vue": "^3.x"
     },
     "engines": {
