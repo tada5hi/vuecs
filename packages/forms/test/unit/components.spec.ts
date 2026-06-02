@@ -103,7 +103,7 @@ describe('VCFormGroup', () => {
     it('should render validation messages', () => {
         const wrapper = mount(VCFormGroup, {
             props: {
-                validation: true,
+                renderValidation: true,
                 validationMessages: { required: 'Field is required' },
             },
             global: { plugins: [themePlugin] },
@@ -124,7 +124,7 @@ describe('VCFormGroup', () => {
         };
         const wrapper = mount(VCFormGroup, {
             props: {
-                validation: true,
+                renderValidation: true,
                 validationMessages: { required: 'Required' },
             },
             global: {
@@ -153,7 +153,7 @@ describe('VCFormGroup', () => {
         };
         const wrapper = mount(VCFormGroup, {
             props: {
-                validation: true,
+                renderValidation: true,
                 validationMessages: { hint: 'Check this' },
                 validationSeverity: 'warning',
             },
@@ -170,10 +170,10 @@ describe('VCFormGroup', () => {
         expect(wrapper.classes()).not.toContain('has-error');
     });
 
-    it('should not show validation when validation prop is false', () => {
+    it('should not show validation when renderValidation prop is false', () => {
         const wrapper = mount(VCFormGroup, {
             props: {
-                validation: false,
+                renderValidation: false,
                 validationMessages: { required: 'Required' },
             },
             global: { plugins: [themePlugin] },
@@ -181,7 +181,7 @@ describe('VCFormGroup', () => {
         expect(wrapper.text()).not.toContain('Required');
     });
 
-    it('should default validation to true when prop is omitted (3-layer fallthrough)', () => {
+    it('should default renderValidation to true when prop is omitted (3-layer fallthrough)', () => {
         const wrapper = mount(VCFormGroup, {
             props: { validationMessages: { required: 'Required' } },
             global: { plugins: [themePlugin] },
@@ -194,7 +194,7 @@ describe('VCFormGroup', () => {
             props: {
                 labelContent: 'Label',
                 hintContent: 'Hint',
-                validation: true,
+                renderValidation: true,
                 validationMessages: { req: 'Error' },
             },
             global: { plugins: [themePlugin] },
@@ -206,6 +206,176 @@ describe('VCFormGroup', () => {
         const hintPos = text.indexOf('Hint');
         expect(labelPos).toBeLessThan(errorPos);
         expect(errorPos).toBeLessThan(hintPos);
+    });
+
+    describe(':validation bundle prop', () => {
+        it('should render messages from the bundle', () => {
+            const wrapper = mount(VCFormGroup, {
+                props: {
+                    validation: {
+                        severity: 'error' as const,
+                        messages: [{ key: 'required', value: 'Email is required' }],
+                    },
+                },
+                global: { plugins: [themePlugin] },
+            });
+            expect(wrapper.text()).toContain('Email is required');
+        });
+
+        it('should apply error class for bundle severity=error', () => {
+            const preset = { elements: { formGroup: { classes: { root: 'fg', validationError: 'is-err' } } } };
+            const wrapper = mount(VCFormGroup, {
+                props: {
+                    validation: {
+                        severity: 'error' as const,
+                        messages: [{ key: 'k', value: 'msg' }],
+                    },
+                },
+                global: {
+                    plugins: [{
+                        install: (app: any) => {
+                            installThemeManager(app, { themes: [preset] });
+                            installDefaultsManager(app);
+                        },
+                    }],
+                },
+            });
+            expect(wrapper.classes()).toContain('is-err');
+        });
+
+        it('should apply warning class for bundle severity=warning', () => {
+            const preset = {
+                elements: {
+                    formGroup: {
+                        classes: {
+                            root: 'fg', 
+                            validationError: 'is-err', 
+                            validationWarning: 'is-warn', 
+                        }, 
+                    }, 
+                },
+            };
+            const wrapper = mount(VCFormGroup, {
+                props: {
+                    validation: {
+                        severity: 'warning' as const,
+                        messages: [{ key: 'k', value: 'msg' }],
+                    },
+                },
+                global: {
+                    plugins: [{
+                        install: (app: any) => {
+                            installThemeManager(app, { themes: [preset] });
+                            installDefaultsManager(app);
+                        },
+                    }],
+                },
+            });
+            expect(wrapper.classes()).toContain('is-warn');
+            expect(wrapper.classes()).not.toContain('is-err');
+        });
+
+        it('should not apply any severity class when bundle severity is undefined (field pristine)', () => {
+            // Legacy path defaults to error for undefined severity; bundle path
+            // treats undefined as "field is OK" and applies no class.
+            const preset = {
+                elements: {
+                    formGroup: {
+                        classes: {
+                            root: 'fg', 
+                            validationError: 'is-err', 
+                            validationWarning: 'is-warn', 
+                        }, 
+                    }, 
+                },
+            };
+            const wrapper = mount(VCFormGroup, {
+                props: { validation: { messages: [{ key: 'k', value: 'msg' }] } },
+                global: {
+                    plugins: [{
+                        install: (app: any) => {
+                            installThemeManager(app, { themes: [preset] });
+                            installDefaultsManager(app);
+                        },
+                    }],
+                },
+            });
+            expect(wrapper.classes()).not.toContain('is-err');
+            expect(wrapper.classes()).not.toContain('is-warn');
+        });
+
+        it('should not apply any severity class for bundle severity=success', () => {
+            const preset = {
+                elements: {
+                    formGroup: {
+                        classes: {
+                            root: 'fg', 
+                            validationError: 'is-err', 
+                            validationWarning: 'is-warn', 
+                        }, 
+                    }, 
+                },
+            };
+            const wrapper = mount(VCFormGroup, {
+                props: {
+                    validation: {
+                        severity: 'success' as const,
+                        messages: [{ key: 'k', value: 'msg' }],
+                    },
+                },
+                global: {
+                    plugins: [{
+                        install: (app: any) => {
+                            installThemeManager(app, { themes: [preset] });
+                            installDefaultsManager(app);
+                        },
+                    }],
+                },
+            });
+            expect(wrapper.classes()).not.toContain('is-err');
+            expect(wrapper.classes()).not.toContain('is-warn');
+        });
+
+        it('should take precedence over :validation-severity and :validation-messages', () => {
+            const wrapper = mount(VCFormGroup, {
+                props: {
+                    validation: {
+                        severity: 'error' as const,
+                        messages: [{ key: 'bundle', value: 'bundle wins' }],
+                    },
+                    validationSeverity: 'warning' as const,
+                    validationMessages: { legacy: 'legacy loses' },
+                },
+                global: { plugins: [themePlugin] },
+            });
+            expect(wrapper.text()).toContain('bundle wins');
+            expect(wrapper.text()).not.toContain('legacy loses');
+        });
+
+        it('should fall through to legacy props when :validation is null', () => {
+            const wrapper = mount(VCFormGroup, {
+                props: {
+                    validation: null,
+                    validationMessages: { req: 'legacy msg' },
+                },
+                global: { plugins: [themePlugin] },
+            });
+            expect(wrapper.text()).toContain('legacy msg');
+        });
+
+        it('should respect renderValidation=false even when :validation is set', () => {
+            const wrapper = mount(VCFormGroup, {
+                props: {
+                    renderValidation: false,
+                    validation: {
+                        severity: 'error' as const,
+                        messages: [{ key: 'k', value: 'should be hidden' }],
+                    },
+                },
+                global: { plugins: [themePlugin] },
+            });
+            expect(wrapper.text()).not.toContain('should be hidden');
+        });
     });
 });
 

@@ -79,6 +79,7 @@ export default defineConfig({
                         { text: 'Composables', link: '/guide/composables' },
                         { text: 'Primitive (as / asChild)', link: '/guide/primitive' },
                         { text: 'Navigation Manager', link: '/guide/navigation-manager' },
+                        { text: 'Validation Feedback', link: '/guide/validation-feedback' },
                     ],
                 },
             ],

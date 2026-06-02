@@ -15,7 +15,7 @@ import type {
 } from 'vue';
 import { defineComponent, h, mergeProps } from 'vue';
 import { ValidationSeverity } from '../constants';
-import type { ValidationMessages } from '../type';
+import type { FieldValidation, ValidationMessages } from '../type';
 import {
     VCValidationGroup,
     type ValidationGroupDefaultSlotProps,
@@ -31,7 +31,13 @@ export type FormGroupThemeClasses = {
 };
 
 export type FormGroupDefaults = {
-    validation: boolean;
+    /**
+     * Visibility toggle for the `<VCValidationGroup>` section. Renamed
+     * from `validation` in 3.x — `validation` now names the bundle prop
+     * (`FieldValidation`) consumed via `:validation`. Both ship on the
+     * defaults manager, so app-wide overrides continue to work.
+     */
+    renderValidation: boolean;
 };
 
 declare module '@vuecs/core' {
@@ -53,7 +59,7 @@ export const formGroupThemeDefaults: ComponentThemeDefinition<FormGroupThemeClas
     },
 };
 
-const behavioralDefaults: FormGroupDefaults = { validation: true };
+const behavioralDefaults: FormGroupDefaults = { renderValidation: true };
 
 const formGroupProps = {
     /** When `true`/`false`, force-render or hide the label. When `undefined`, label visibility follows slot/content presence. */
@@ -70,11 +76,43 @@ const formGroupProps = {
     /** Default text rendered when no `hint` slot is provided. */
     hintContent: { type: String, default: undefined },
 
-    /** When `true`, render the validation messages section. Falls back to the global `formGroup.validation` default. */
-    validation: { type: Boolean, default: undefined },
-    /** Severity used to colour the validation messages (`error` / `warning`). */
+    /**
+     * Bundle prop accepting a `FieldValidation` (`{ severity, messages }`)
+     * — wins over `validationSeverity` + `validationMessages` when set.
+     *
+     * Canonical use is with `@ilingo/validup-vue`'s `useFieldValidation`:
+     * `<VCFormGroup :validation="useFieldValidation($v.fields.email)">`.
+     * Structural typing — vuecs and `@ilingo/validup-vue` declare matching
+     * shapes without either importing the other.
+     *
+     * Pass `null` / `undefined` to fall through to the legacy props.
+     */
+    validation: { type: Object as PropType<FieldValidation | null>, default: undefined },
+
+    /**
+     * Visibility toggle for the validation messages section. When
+     * `false`, the `<VCValidationGroup>` is suppressed regardless of
+     * whether `:validation` or `:validation-messages` carry content.
+     * Falls back to the global `formGroup.renderValidation` default
+     * (`true`).
+     *
+     * Renamed from `:validation` in 3.x — the unqualified name now
+     * carries the `FieldValidation` bundle (severity + messages).
+     */
+    renderValidation: { type: Boolean, default: undefined },
+
+    /**
+     * @deprecated Pass a `FieldValidation` via `:validation` instead.
+     * Severity used to colour the validation messages (`error` /
+     * `warning`). Ignored when `:validation` is set.
+     */
     validationSeverity: { type: String as PropType<`${ValidationSeverity}` | undefined>, default: undefined },
-    /** Validation messages — keyed object or ordered array of `{ key, value }`. */
+
+    /**
+     * @deprecated Pass a `FieldValidation` via `:validation` instead.
+     * Validation messages — keyed object or ordered array of
+     * `{ key, value }`. Ignored when `:validation` is set.
+     */
     validationMessages: { type: [Object, Array] as PropType<ValidationMessages>, default: undefined },
 
     /** Theme-class overrides for this component instance. */
@@ -123,11 +161,30 @@ export default defineComponent({
                 children.push(slots.default({}));
             }
 
+            // Bundle precedence — `:validation` (the FieldValidation bundle) wins
+            // over the legacy `:validation-severity` + `:validation-messages` props
+            // when set. `null` or `undefined` falls through to the legacy props so
+            // a consumer can clear the bundle programmatically without juggling
+            // both shapes.
+            const usingBundle = props.validation != null;
+            const bundleSeverity = usingBundle ? props.validation!.severity : undefined;
+            const effectiveSeverity = usingBundle ? bundleSeverity : props.validationSeverity;
+            const effectiveMessages: ValidationMessages | undefined = usingBundle ?
+                props.validation!.messages :
+                props.validationMessages;
+
             // Validation
-            if (resolvedDefaults.validation) {
+            if (resolvedDefaults.renderValidation) {
                 children.push(h(VCValidationGroup, {
-                    severity: props.validationSeverity,
-                    messages: props.validationMessages || {},
+                    // `<VCValidationGroup>`'s `:severity` only knows `error` /
+                    // `warning`. The bundle's wider union (`success`, `undefined`)
+                    // collapses to `undefined` here so the inner component falls
+                    // back to its own default (`error`) for the slot-prop value —
+                    // class application on the root branches separately below.
+                    severity: (effectiveSeverity === ValidationSeverity.WARNING || effectiveSeverity === ValidationSeverity.ERROR) ?
+                        effectiveSeverity :
+                        undefined,
+                    messages: effectiveMessages || {},
                 }, {
                     ...(slots.validationGroup ? { default: slots.validationGroup } : {}),
                     ...(slots.validationItem ? { item: slots.validationItem } : {}),
@@ -147,17 +204,32 @@ export default defineComponent({
                 }
             }
 
-            // Determine validation class
+            // Root validation class
+            //
+            // Asymmetric on purpose: when `effectiveSeverity` is `undefined`, the
+            // legacy path defaults to the error class (pre-bundle behaviour kept
+            // for back-compat — consumers that don't pass severity expect a red
+            // outline). The bundle path treats `undefined` as "field is OK /
+            // pristine" and applies no class — that matches the semantic from
+            // `@ilingo/validup-vue`'s `useFieldValidation`, where the severity
+            // tracks `getSeverity()`'s `error | warning | success | undefined`
+            // contract. `'success'` is reserved for forward-compat — vuecs has
+            // no `validationSuccess` theme slot yet, so it also resolves to no
+            // class today.
             let validationClass: string | undefined;
-            if (resolvedDefaults.validation && props.validationMessages) {
-                const hasMessages = Array.isArray(props.validationMessages) ?
-                    props.validationMessages.length > 0 :
-                    Object.keys(props.validationMessages).length > 0;
+            if (resolvedDefaults.renderValidation && effectiveMessages) {
+                const hasMessages = Array.isArray(effectiveMessages) ?
+                    effectiveMessages.length > 0 :
+                    Object.keys(effectiveMessages).length > 0;
 
                 if (hasMessages) {
-                    validationClass = props.validationSeverity === ValidationSeverity.WARNING ?
-                        resolved.validationWarning :
-                        resolved.validationError;
+                    if (effectiveSeverity === ValidationSeverity.WARNING) {
+                        validationClass = resolved.validationWarning;
+                    } else if (effectiveSeverity === ValidationSeverity.ERROR) {
+                        validationClass = resolved.validationError;
+                    } else if (!usingBundle) {
+                        validationClass = resolved.validationError;
+                    }
                 }
             }
 
