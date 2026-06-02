@@ -80,7 +80,6 @@ See `VCList.noMoreContent` and `VCList.itemTextPropName` (both `default: undefin
 |-----------|-------------------|
 | `useSubmitButton()` (`submitButton`) | `createText`, `updateText`, `createIcon`, `updateIcon`, `createColor`, `updateColor` |
 | `VCFormSelect` | `placeholder` |
-| `VCFormGroup` | `renderValidation` (renamed from `validation` — the unqualified name now carries the `FieldValidation` bundle prop, see [Validation feedback bridge](./validation-feedback.md)) |
 | `VCFormCheckbox` | `labelContent` |
 | `VCFormSwitch` | `labelContent` |
 | `VCListEmpty` | `content` |

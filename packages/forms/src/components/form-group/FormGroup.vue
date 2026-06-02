@@ -1,7 +1,6 @@
 <script lang="ts">
-import { useComponentDefaults, useComponentTheme } from '@vuecs/core';
+import { useComponentTheme } from '@vuecs/core';
 import type {
-    ComponentDefaultValues,
     ComponentThemeDefinition,
     ThemeClassesOverride,
     ThemeElementDefinition,
@@ -30,22 +29,9 @@ export type FormGroupThemeClasses = {
     validationWarning: string;
 };
 
-export type FormGroupDefaults = {
-    /**
-     * Visibility toggle for the `<VCValidationGroup>` section. Renamed
-     * from `validation` — `validation` is now the prop name for the
-     * `FieldValidation` bundle (severity + messages). `renderValidation`
-     * is the only defaults-manager key under `formGroup`.
-     */
-    renderValidation: boolean;
-};
-
 declare module '@vuecs/core' {
     interface ThemeElements {
         formGroup?: ThemeElementDefinition<FormGroupThemeClasses>;
-    }
-    interface ComponentDefaults {
-        formGroup?: ComponentDefaultValues<FormGroupDefaults>;
     }
 }
 
@@ -58,8 +44,6 @@ export const formGroupThemeDefaults: ComponentThemeDefinition<FormGroupThemeClas
         validationWarning: '',
     },
 };
-
-const behavioralDefaults: FormGroupDefaults = { renderValidation: true };
 
 const formGroupProps = {
     /** When `true`/`false`, force-render or hide the label. When `undefined`, label visibility follows slot/content presence. */
@@ -91,18 +75,6 @@ const formGroupProps = {
     // validator otherwise warns on `:validation="null"`, which the
     // contract documents as the fall-through escape hatch.
     validation: { type: [Object, null] as PropType<FieldValidation | null>, default: undefined },
-
-    /**
-     * Visibility toggle for the validation messages section. When
-     * `false`, the `<VCValidationGroup>` is suppressed regardless of
-     * whether `:validation` or `:validation-messages` carry content.
-     * Falls back to the global `formGroup.renderValidation` default
-     * (`true`).
-     *
-     * Renamed from `:validation` — the unqualified name now carries
-     * the `FieldValidation` bundle (severity + messages).
-     */
-    renderValidation: { type: Boolean, default: undefined },
 
     /**
      * @deprecated Pass a `FieldValidation` via `:validation` instead.
@@ -139,11 +111,9 @@ export default defineComponent({
     }>,
     setup(props, { attrs, slots }) {
         const theme = useComponentTheme('formGroup', props, formGroupThemeDefaults);
-        const defaults = useComponentDefaults('formGroup', props, behavioralDefaults);
 
         return () => {
             const resolved = theme.value;
-            const resolvedDefaults = defaults.value;
             const children: VNodeChild[] = [];
 
             // Label
@@ -176,15 +146,24 @@ export default defineComponent({
                 props.validation!.messages :
                 props.validationMessages;
 
-            // Validation
-            if (resolvedDefaults.renderValidation) {
+            const hasMessages = !!effectiveMessages && (
+                Array.isArray(effectiveMessages) ?
+                    effectiveMessages.length > 0 :
+                    Object.keys(effectiveMessages).length > 0
+            );
+            // Slot-driven rendering — consumers providing `#validationGroup` or
+            // `#validationItem` can render content from sources other than
+            // `messages` (e.g. always-visible status indicators). The slot's
+            // presence is enough signal to render the section.
+            const hasValidationSlot = !!slots.validationGroup || !!slots.validationItem;
+            const shouldRenderValidation = hasMessages || hasValidationSlot;
+
+            if (shouldRenderValidation) {
                 children.push(h(VCValidationGroup, {
-                    // `<VCValidationGroup>`'s `:severity` now accepts the same
-                    // wider union as the `FieldValidation` bundle
-                    // (`error` / `warning` / `success` / `undefined`), so the
-                    // bundle's pristine / success states flow through to slot
-                    // consumers unchanged — no more "undefined collapses to
-                    // error" leak via the inner prop default.
+                    // `<VCValidationGroup>`'s `:severity` accepts the same wider
+                    // union as the `FieldValidation` bundle (`error` / `warning` /
+                    // `success` / `undefined`), so the bundle's pristine / success
+                    // states flow through to slot consumers unchanged.
                     severity: effectiveSeverity,
                     messages: effectiveMessages || {},
                 }, {
@@ -219,19 +198,13 @@ export default defineComponent({
             // no `validationSuccess` theme slot yet, so it also resolves to no
             // class today.
             let validationClass: string | undefined;
-            if (resolvedDefaults.renderValidation && effectiveMessages) {
-                const hasMessages = Array.isArray(effectiveMessages) ?
-                    effectiveMessages.length > 0 :
-                    Object.keys(effectiveMessages).length > 0;
-
-                if (hasMessages) {
-                    if (effectiveSeverity === ValidationSeverity.WARNING) {
-                        validationClass = resolved.validationWarning;
-                    } else if (effectiveSeverity === ValidationSeverity.ERROR) {
-                        validationClass = resolved.validationError;
-                    } else if (!usingBundle) {
-                        validationClass = resolved.validationError;
-                    }
+            if (hasMessages) {
+                if (effectiveSeverity === ValidationSeverity.WARNING) {
+                    validationClass = resolved.validationWarning;
+                } else if (effectiveSeverity === ValidationSeverity.ERROR) {
+                    validationClass = resolved.validationError;
+                } else if (!usingBundle) {
+                    validationClass = resolved.validationError;
                 }
             }
 

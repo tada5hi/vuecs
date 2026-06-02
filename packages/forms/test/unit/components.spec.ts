@@ -102,10 +102,7 @@ describe('VCFormGroup', () => {
 
     it('should render validation messages', () => {
         const wrapper = mount(VCFormGroup, {
-            props: {
-                renderValidation: true,
-                validationMessages: { required: 'Field is required' },
-            },
+            props: { validationMessages: { required: 'Field is required' } },
             global: { plugins: [themePlugin] },
         });
         expect(wrapper.text()).toContain('Field is required');
@@ -123,10 +120,7 @@ describe('VCFormGroup', () => {
             },
         };
         const wrapper = mount(VCFormGroup, {
-            props: {
-                renderValidation: true,
-                validationMessages: { required: 'Required' },
-            },
+            props: { validationMessages: { required: 'Required' } },
             global: {
                 plugins: [{
                     install: (app: any) => {
@@ -153,7 +147,6 @@ describe('VCFormGroup', () => {
         };
         const wrapper = mount(VCFormGroup, {
             props: {
-                renderValidation: true,
                 validationMessages: { hint: 'Check this' },
                 validationSeverity: 'warning',
             },
@@ -170,23 +163,27 @@ describe('VCFormGroup', () => {
         expect(wrapper.classes()).not.toContain('has-error');
     });
 
-    it('should not show validation when renderValidation prop is false', () => {
+    it('should not render validation section when no messages and no validation slot', () => {
+        // Content-driven visibility — empty (or absent) `validationMessages` AND
+        // no `#validationGroup` / `#validationItem` slot ⇒ no `<VCValidationGroup>`
+        // is rendered at all. The previous boolean visibility toggle
+        // (`:render-validation`) was removed in favour of this.
         const wrapper = mount(VCFormGroup, {
-            props: {
-                renderValidation: false,
-                validationMessages: { required: 'Required' },
-            },
+            props: { hintContent: 'help' },
             global: { plugins: [themePlugin] },
         });
-        expect(wrapper.text()).not.toContain('Required');
+        expect(wrapper.text()).toBe('help');
     });
 
-    it('should default renderValidation to true when prop is omitted (3-layer fallthrough)', () => {
+    it('should render validation section when only a validation slot is provided (no messages)', () => {
+        // Slot consumers (`#validationGroup`) can render content from sources
+        // other than `messages` — the slot's presence is enough to force-render
+        // the section.
         const wrapper = mount(VCFormGroup, {
-            props: { validationMessages: { required: 'Required' } },
             global: { plugins: [themePlugin] },
+            slots: { validationGroup: () => h('span', { class: 'slot-marker' }, 'slot content') },
         });
-        expect(wrapper.text()).toContain('Required');
+        expect(wrapper.find('.slot-marker').exists()).toBe(true);
     });
 
     it('should render in order: label, content, validation, hint', () => {
@@ -194,7 +191,6 @@ describe('VCFormGroup', () => {
             props: {
                 labelContent: 'Label',
                 hintContent: 'Hint',
-                renderValidation: true,
                 validationMessages: { req: 'Error' },
             },
             global: { plugins: [themePlugin] },
@@ -384,18 +380,22 @@ describe('VCFormGroup', () => {
             expect(wrapper.text()).toContain('legacy msg');
         });
 
-        it('should respect renderValidation=false even when :validation is set', () => {
+        it('should not render validation section when bundle messages are empty', () => {
+            // Bundle with empty `messages` ⇒ no section (content-driven
+            // visibility). Matches the typical "field is pristine / valid"
+            // case from `@ilingo/validup-vue`'s `useFieldValidation`, which
+            // returns `{ severity: undefined, messages: [], issues: [] }`.
             const wrapper = mount(VCFormGroup, {
                 props: {
-                    renderValidation: false,
                     validation: {
-                        severity: 'error' as const,
-                        messages: [{ key: 'k', value: 'should be hidden' }],
+                        severity: undefined,
+                        messages: [],
                     },
+                    hintContent: 'help',
                 },
                 global: { plugins: [themePlugin] },
             });
-            expect(wrapper.text()).not.toContain('should be hidden');
+            expect(wrapper.text()).toBe('help');
         });
     });
 });

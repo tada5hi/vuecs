@@ -63,20 +63,19 @@ The class is **only** applied when `messages` is non-empty. A bundle with severi
 
 Resolution: when `:validation` is set (non-null), it wins. Pass `:validation="null"` (or omit the prop) to fall through to the legacy props — useful when the parent toggles between bundle-driven and manually-constructed feedback.
 
-## Visibility toggle: `:render-validation`
+## When the section renders
 
-The boolean that suppresses the entire validation section was renamed from `:validation` (boolean) to `:render-validation` (boolean) — the unqualified `:validation` is now the bundle prop. The `:render-validation` toggle wins over both paths:
+Content-driven, no visibility prop. The `<VCValidationGroup>` section renders iff **any** of:
 
-```vue
-<!-- Section hidden regardless of bundle / legacy props -->
-<VCFormGroup :render-validation="false" :validation="…">…</VCFormGroup>
-```
+- `:validation` is non-null and its `messages` array is non-empty.
+- `:validation-messages` (legacy) is non-empty.
+- A `#validationGroup` or `#validationItem` slot is provided — slots may render content from sources other than `messages` (e.g. always-visible status indicators), so their presence alone is enough.
 
-Falls back to the global `formGroup.renderValidation` default (`true`).
+A pristine field (`:validation="{ severity: undefined, messages: [] }"`) renders nothing. The previous `:validation` boolean visibility toggle was removed in 5.0 — visibility now follows what's actually being displayed.
 
 ## `'success'` severity — current state
 
-`FieldValidation.severity` accepts `'success'` for forward-compat with bridges that surface a "passed" state. As of `@vuecs/forms` 4.x, there's no `validationSuccess` theme slot — the class application is a no-op, but the section still renders if `messages` is non-empty (useful for "this email looks valid; we'll send confirmation" affirmative messages).
+`FieldValidation.severity` accepts `'success'` for forward-compat with bridges that surface a "passed" state. There's no `validationSuccess` theme slot yet — the class application is a no-op, but the section still renders if `messages` is non-empty (useful for "this email looks valid; we'll send confirmation" affirmative messages).
 
 If you want a success class on the root, theme it via `themeClass`:
 
