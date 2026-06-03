@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.3](https://github.com/tada5hi/vuecs/compare/theme-bulma-v1.1.2...theme-bulma-v1.1.3) (2026-06-03)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/forms bumped from ^5.0.0 to ^5.0.1
+
 ## [1.1.2](https://github.com/tada5hi/vuecs/compare/theme-bulma-v1.1.1...theme-bulma-v1.1.2) (2026-06-02)
 
 
