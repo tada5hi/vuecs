@@ -49,8 +49,8 @@ export type FormInputGroupSlotProps = {
 };
 
 const formInputProps = {
-    /** Controlled string value (v-model). */
-    modelValue: { type: String, default: '' },
+    /** Controlled string value (v-model). `null` is the documented "unset" value. */
+    modelValue: { type: [String, null] as PropType<string | null | undefined>, default: '' },
     /** Native `<input type>` attribute. */
     type: { type: String, default: 'text' },
     /** Force-render the input-group wrapper even without prepend/append content. */
@@ -93,7 +93,7 @@ export default defineComponent({
     }) {
         const theme = useComponentTheme('formInput', props, formInputThemeDefaults);
 
-        const localValue = ref(props.modelValue);
+        const localValue = ref<string | null | undefined>(props.modelValue);
         watch(() => props.modelValue, (value) => {
             localValue.value = value;
         });

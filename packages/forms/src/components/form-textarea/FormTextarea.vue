@@ -29,8 +29,8 @@ declare module '@vuecs/core' {
 export const formTextareaThemeDefaults: ComponentThemeDefinition<FormTextareaThemeClasses> = { classes: { root: '' } };
 
 const formTextareaProps = {
-    /** Controlled string value (v-model). */
-    modelValue: { type: String, default: '' },
+    /** Controlled string value (v-model). `null` is the documented "unset" value. */
+    modelValue: { type: [String, null] as PropType<string | null | undefined>, default: '' },
     /** Debounce window (ms) for `update:modelValue` emissions. `0` disables debouncing. */
     debounce: { type: Number, default: 0 },
     /** Theme-class overrides for this component instance. */
@@ -48,7 +48,7 @@ export default defineComponent({
     setup(props, { attrs, emit }) {
         const theme = useComponentTheme('formTextarea', props, formTextareaThemeDefaults);
 
-        const localValue = ref(props.modelValue);
+        const localValue = ref<string | null | undefined>(props.modelValue);
         watch(() => props.modelValue, (value) => {
             localValue.value = value;
         });
