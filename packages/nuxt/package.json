@@ -38,7 +38,7 @@
         "prepack": "npm run build"
     },
     "dependencies": {
-        "@nuxt/kit": "^4.4.6",
+        "@nuxt/kit": "^4.4.7",
         "@vueuse/core": "^14.3.0",
         "@vuecs/core": "^3.1.1",
         "@vuecs/design": "^1.0.2"
