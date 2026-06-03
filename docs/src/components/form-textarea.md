@@ -43,7 +43,7 @@ const value = ref('');
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `modelValue` | `string` | `''` | The bound value |
+| `modelValue` | `string \| null` | `''` | The bound value. `null` is accepted as the "unset" value for binding nullable entity fields |
 | `debounce` | `number` | `0` | Debounce input updates by N milliseconds |
 
 `rows`, `placeholder`, `disabled`, and any other native `<textarea>` attributes are forwarded via `attrs`.
