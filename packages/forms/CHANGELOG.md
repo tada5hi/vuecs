@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.0.1](https://github.com/tada5hi/vuecs/compare/forms-v5.0.0...forms-v5.0.1) (2026-06-03)
+
+
+### Bug Fixes
+
+* **forms:** widen VCFormInput / VCFormTextarea modelValue to accept null ([#1611](https://github.com/tada5hi/vuecs/issues/1611)) ([aa7e99a](https://github.com/tada5hi/vuecs/commit/aa7e99a8d568697f0e435a9ec59cbaae07b6b22f)), closes [#1610](https://github.com/tada5hi/vuecs/issues/1610)
+
 ## [5.0.0](https://github.com/tada5hi/vuecs/compare/forms-v4.0.1...forms-v5.0.0) (2026-06-02)
 
 

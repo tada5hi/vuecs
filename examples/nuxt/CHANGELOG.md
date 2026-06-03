@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.1.3](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v4.1.2...examples-nuxt-v4.1.3) (2026-06-03)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/forms bumped from ^5.0.0 to ^5.0.1
+    * @vuecs/theme-tailwind bumped from ^1.1.2 to ^1.1.3
+
 ## [4.1.2](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v4.1.1...examples-nuxt-v4.1.2) (2026-06-02)
 
 
