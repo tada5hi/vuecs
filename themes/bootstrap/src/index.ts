@@ -319,6 +319,20 @@ export default function bootstrapTheme(): Theme {
                 },
                 defaultVariants: { size: 'md' },
             },
+            // Severity-aware per-message colour. Bootstrap's `.text-danger`
+            // / `.text-warning` / `.text-success` utilities are `!important`,
+            // so a single class wins cleanly — no need for a default
+            // colour on `item` (messages stay neutral when no severity).
+            validationGroup: {
+                classes: { item: 'small' },
+                variants: {
+                    severity: {
+                        error: { item: 'text-danger' },
+                        warning: { item: 'text-warning' },
+                        success: { item: 'text-success' },
+                    },
+                },
+            },
             list: {
                 classes: {
                     // `position-relative` anchors `<VCListLoading :overlay>`'s

@@ -1181,4 +1181,52 @@ describe('VCValidationGroup', () => {
         });
         expect(wrapper.text()).toBe('');
     });
+
+    it('should colour each message via the severity variant', () => {
+        // The `:severity` prop is folded into `themeVariant.severity`
+        // by `useThemeProps`. With a theme that declares matching
+        // `severity` variants on `validationGroup.item`, each rendered
+        // message picks up the matching colour — so warning messages
+        // turn amber instead of inheriting the base 'red' colour that
+        // was applied unconditionally before.
+        const preset = {
+            elements: {
+                validationGroup: {
+                    classes: { item: 'msg-base' },
+                    variants: {
+                        severity: {
+                            error: { item: 'msg-error' },
+                            warning: { item: 'msg-warning' },
+                            success: { item: 'msg-success' },
+                        },
+                    },
+                },
+            },
+        };
+        const buildPlugin = () => ({
+            install: (app: any) => {
+                installThemeManager(app, { themes: [preset] });
+                installDefaultsManager(app);
+            },
+        });
+        const warningWrapper = mount(VCValidationGroup, {
+            props: {
+                severity: 'warning',
+                messages: [{ key: 'p', value: 'pending' }],
+            },
+            global: { plugins: [buildPlugin()] },
+        });
+        const item = warningWrapper.find('div');
+        expect(item.classes()).toContain('msg-warning');
+        expect(item.classes()).not.toContain('msg-error');
+
+        const errorWrapper = mount(VCValidationGroup, {
+            props: {
+                severity: 'error',
+                messages: [{ key: 'f', value: 'failed' }],
+            },
+            global: { plugins: [buildPlugin()] },
+        });
+        expect(errorWrapper.find('div').classes()).toContain('msg-error');
+    });
 });

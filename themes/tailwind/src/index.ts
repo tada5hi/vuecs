@@ -387,7 +387,23 @@ export default function tailwindTheme(): Theme {
                 },
                 defaultVariants: { size: 'md' },
             },
-            validationGroup: { classes: { item: 'text-xs text-error-600' } },
+            validationGroup: {
+                classes: { item: 'text-xs text-error-600' },
+                // Severity-aware per-message colour. The base class
+                // sets `text-error-600` as the no-severity default
+                // (back-compat with consumers who used legacy
+                // `validationMessages` without a severity). The
+                // variant overrides per active severity — `tailwind-merge`
+                // dedupes the conflicting `text-*-600` classes (last
+                // colour wins).
+                variants: {
+                    severity: {
+                        error: { item: 'text-error-600' },
+                        warning: { item: 'text-warning-600' },
+                        success: { item: 'text-success-600' },
+                    },
+                },
+            },
             list: {
                 classes: {
                     // `relative` anchors `<VCListLoading :overlay>`'s

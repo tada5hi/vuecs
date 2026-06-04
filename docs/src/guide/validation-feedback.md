@@ -114,6 +114,8 @@ When the field becomes `error`, the input picks up the theme's `formInput.varian
 | `theme-bootstrap` | `.is-invalid` | `.is-invalid` (same — Bootstrap 5 ships no soft-severity form-control utility, so `error` and `warning` collapse) | Override `formInput.variants.severity.warning` to a custom amber class if you need a real distinction |
 | `theme-bulma` | `.is-danger` | `.is-warning` | Bulma's input states tint **background + border + focus shadow** — more saturated than the Tailwind look. The HSL-channel mechanism means there's no pure-border-only variant |
 
+The validation **message text** below the input picks up the matching colour too. `<VCValidationGroup>` folds the `:severity` prop into `themeVariant.severity` so each rendered message gets the right `text-*-600` class per state. Without this layered severity, warning messages used to inherit `text-error-600` from `validationGroup.item`'s base — looking red even though the input border went amber.
+
 ### Severity covers more than just "validation failed"
 
 Severity flows from your validation source's notion of state, which typically includes more than just pass/fail. Using [`@validup/vue`](https://www.npmjs.com/package/@validup/vue)'s `getSeverity()` as a reference (see the [validup-vue source](https://github.com/tada5hi/validup/blob/master/packages/vue/src/helpers/severity.ts)):

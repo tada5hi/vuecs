@@ -355,6 +355,20 @@ export default function bulmaTheme(): Theme {
                     size: 'md',
                 },
             },
+            // Severity-aware per-message colour. Bulma's `.has-text-*`
+            // helpers paint the text colour via HSL channel vars; one
+            // wins cleanly per message, so the base item carries no
+            // colour (messages stay default when no severity is set).
+            validationGroup: {
+                classes: { item: 'is-size-7' },
+                variants: {
+                    severity: {
+                        error: { item: 'has-text-danger' },
+                        warning: { item: 'has-text-warning' },
+                        success: { item: 'has-text-success' },
+                    },
+                },
+            },
             list: {
                 classes: {
                     // `is-relative` anchors `<VCListLoading :overlay>`'s

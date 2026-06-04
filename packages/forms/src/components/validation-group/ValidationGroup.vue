@@ -1,5 +1,5 @@
 <script lang="ts">
-import { useComponentTheme } from '@vuecs/core';
+import { useComponentTheme, useThemeProps } from '@vuecs/core';
 import type {
     ComponentThemeDefinition,
     ThemeClassesOverride,
@@ -89,7 +89,19 @@ export default defineComponent({
         item: ValidationGroupItemSlotProps;
     }>,
     setup(props, { slots }) {
-        const theme = useComponentTheme('validationGroup', props, validationGroupThemeDefaults);
+        // Fold the `severity` prop into `themeVariant.severity` so the
+        // theme's `severity` variant axis paints each message in the
+        // matching colour (amber on warning, red on error, green on
+        // success). Without this every message took `validationGroup.item`'s
+        // base colour regardless of state — the FormGroup root's
+        // `validationWarning`/`validationError` class set the inherited
+        // text-color but each message's explicit `text-*-600` class won
+        // CSS specificity.
+        const theme = useComponentTheme(
+            'validationGroup',
+            useThemeProps(props, 'severity'),
+            validationGroupThemeDefaults,
+        );
 
         return () => {
             const resolved = theme.value;
