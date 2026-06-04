@@ -83,6 +83,12 @@ export const sharedRoutes: SharedRoute[] = [
         view: () => import('./views/FormCheckbox.vue').then((m) => m.default),
     },
     {
+        path: '/form-group',
+        name: 'form-group',
+        label: 'Form Group (severity)',
+        view: () => import('./views/FormGroup.vue').then((m) => m.default),
+    },
+    {
         path: '/form-input',
         name: 'form-input',
         label: 'Form Input',

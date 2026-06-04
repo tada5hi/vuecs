@@ -128,14 +128,19 @@ const elementsItems: NavigationItem[] = [
 
 const formsItems: NavigationItem[] = [
     {
-        name: 'Checkbox', 
-        type: 'link', 
-        url: '/forms/checkbox', 
+        name: 'Checkbox',
+        type: 'link',
+        url: '/forms/checkbox',
     },
     {
-        name: 'Input', 
-        type: 'link', 
-        url: '/forms/input', 
+        name: 'Group (severity)',
+        type: 'link',
+        url: '/forms/group',
+    },
+    {
+        name: 'Input',
+        type: 'link',
+        url: '/forms/input',
     },
     {
         name: 'Number', 

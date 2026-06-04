@@ -20,6 +20,7 @@ import {
     type ValidationGroupDefaultSlotProps,
     type ValidationGroupItemSlotProps,
 } from '../validation-group';
+import { provideFormGroupContext } from './context';
 
 export type FormGroupThemeClasses = {
     root: string;
@@ -111,6 +112,43 @@ export default defineComponent({
     }>,
     setup(props, { attrs, slots }) {
         const theme = useComponentTheme('formGroup', props, formGroupThemeDefaults);
+
+        // Expose the effective severity to descendant inputs via context.
+        // Mirrors the render-side `validationClass` computation exactly:
+        //
+        //   1. Bundle path (`:validation` set): return the bundle's
+        //      severity verbatim. Bundle-`undefined` means "pristine /
+        //      OK" — no fallback.
+        //   2. Legacy path with explicit `:validation-severity`: return
+        //      that.
+        //   3. Legacy path without severity but with non-empty
+        //      `:validation-messages`: fall back to `'error'`. This
+        //      matches the pre-bundle behaviour where the FormGroup root
+        //      auto-painted red when consumers passed only messages —
+        //      child inputs now match that styling instead of staying
+        //      neutral while the message goes red.
+        //   4. Otherwise: undefined.
+        //
+        // Inputs read the result and fold it into their own
+        // `themeVariant` so the input's border colour tracks validation
+        // state without per-instance wiring.
+        provideFormGroupContext({
+            severity: () => {
+                if (props.validation != null) {
+                    return props.validation.severity;
+                }
+                if (props.validationSeverity !== undefined) {
+                    return props.validationSeverity;
+                }
+                const messages = props.validationMessages;
+                const hasMessages = !!messages && (
+                    Array.isArray(messages) ?
+                        messages.length > 0 :
+                        Object.keys(messages).length > 0
+                );
+                return hasMessages ? ValidationSeverity.ERROR : undefined;
+            },
+        });
 
         return () => {
             const resolved = theme.value;

@@ -68,11 +68,21 @@ export default function bulmaTheme(): Theme {
                 },
                 // Bulma's `.input` size modifiers are `is-small` / `is-medium` /
                 // `is-large`. `md` is the unmodified default.
+                //
+                // Severity uses Bulma's native `.is-danger` / `.is-warning`
+                // input states — both paint the border + focus shadow in
+                // the matching variant color (`error` → red, `warning` →
+                // amber). Bulma already styles these as a closed set, no
+                // gap-fill needed.
                 variants: {
                     size: {
                         sm: { root: 'is-small' },
                         md: { root: '' },
                         lg: { root: 'is-large' },
+                    },
+                    severity: {
+                        error: { root: 'is-danger' },
+                        warning: { root: 'is-warning' },
                     },
                 },
                 defaultVariants: { size: 'md' },
@@ -84,6 +94,10 @@ export default function bulmaTheme(): Theme {
                         sm: { root: 'is-small' },
                         md: { root: '' },
                         lg: { root: 'is-large' },
+                    },
+                    severity: {
+                        error: { root: 'is-danger' },
+                        warning: { root: 'is-warning' },
                     },
                 },
                 defaultVariants: { size: 'md' },
@@ -176,6 +190,10 @@ export default function bulmaTheme(): Theme {
                         md: { trigger: '' },
                         lg: { trigger: 'is-large' },
                     },
+                    severity: {
+                        error: { trigger: 'is-danger' },
+                        warning: { trigger: 'is-warning' },
+                    },
                 },
                 defaultVariants: { size: 'md' },
             },
@@ -193,6 +211,12 @@ export default function bulmaTheme(): Theme {
                     selected: 'is-flex is-flex-wrap-wrap mt-2',
                     selectedItem: 'tag is-light is-rounded',
                     selectedItemRemove: 'has-text-weight-bold',
+                },
+                variants: {
+                    severity: {
+                        error: { input: 'is-danger' },
+                        warning: { input: 'is-warning' },
+                    },
                 },
             },
             // PinInputInput renders a real `<input>`; `.input` would give it
@@ -238,6 +262,10 @@ export default function bulmaTheme(): Theme {
                             increment: 'is-large',
                         },
                     },
+                    severity: {
+                        error: { input: 'is-danger' },
+                        warning: { input: 'is-warning' },
+                    },
                 },
                 defaultVariants: { size: 'md' },
             },
@@ -257,6 +285,10 @@ export default function bulmaTheme(): Theme {
                         sm: { root: 'is-small', item: 'is-size-7' },
                         md: { root: '' },
                         lg: { root: 'is-large', item: 'is-size-6' },
+                    },
+                    severity: {
+                        error: { root: 'is-danger' },
+                        warning: { root: 'is-warning' },
                     },
                 },
                 defaultVariants: { size: 'md' },
@@ -321,6 +353,20 @@ export default function bulmaTheme(): Theme {
                     variant: 'solid',
                     color: 'primary',
                     size: 'md',
+                },
+            },
+            // Severity-aware per-message colour. Bulma's `.has-text-*`
+            // helpers paint the text colour via HSL channel vars; one
+            // wins cleanly per message, so the base item carries no
+            // colour (messages stay default when no severity is set).
+            validationGroup: {
+                classes: { item: 'is-size-7' },
+                variants: {
+                    severity: {
+                        error: { item: 'has-text-danger' },
+                        warning: { item: 'has-text-warning' },
+                        success: { item: 'has-text-success' },
+                    },
                 },
             },
             list: {

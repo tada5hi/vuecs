@@ -92,6 +92,12 @@ export default function tailwindTheme(): Theme {
                 // + font-size for dense forms, `lg` scales up for primary
                 // call-to-action inputs. tailwind-merge dedupes the
                 // overlap with the default `px-3 py-2 text-sm` chrome.
+                //
+                // Severity axis is folded in from the surrounding
+                // `<VCFormGroup>`'s validation bundle (see
+                // `useFormInputThemeProps` in @vuecs/forms). `error` /
+                // `warning` repaint the border + focus ring; the default
+                // primary-focus chrome is overridden via tailwind-merge.
                 variants: {
                     size: {
                         sm: {
@@ -105,6 +111,10 @@ export default function tailwindTheme(): Theme {
                             groupAppend: 'px-4 text-base',
                             groupPrepend: 'px-4 text-base',
                         },
+                    },
+                    severity: {
+                        error: { root: 'border-error-500 focus:border-error-500 focus:ring-error-500' },
+                        warning: { root: 'border-warning-500 focus:border-warning-500 focus:ring-warning-500' },
                     },
                 },
                 defaultVariants: { size: 'md' },
@@ -172,6 +182,10 @@ export default function tailwindTheme(): Theme {
                         md: { trigger: '' },
                         lg: { trigger: 'vc-form-select-trigger-lg', item: 'py-2 pl-8 text-base!' },
                     },
+                    severity: {
+                        error: { trigger: 'border-error-500 focus:border-error-500 focus:ring-error-500' },
+                        warning: { trigger: 'border-warning-500 focus:border-warning-500 focus:ring-warning-500' },
+                    },
                 },
                 defaultVariants: { size: 'md' },
             },
@@ -187,6 +201,12 @@ export default function tailwindTheme(): Theme {
                     selected: 'mt-2 flex flex-wrap gap-1',
                     selectedItem: 'inline-flex items-center gap-1 rounded-sm border border-border bg-bg-muted px-2 py-0.5 text-xs text-fg hover:bg-bg-elevated',
                     selectedItemRemove: 'font-semibold leading-none text-fg-muted',
+                },
+                variants: {
+                    severity: {
+                        error: { input: 'border-error-500 focus:border-error-500 focus:ring-error-500' },
+                        warning: { input: 'border-warning-500 focus:border-warning-500 focus:ring-warning-500' },
+                    },
                 },
             },
             formRadio: {
@@ -247,6 +267,10 @@ export default function tailwindTheme(): Theme {
                             increment: 'w-10 text-base',
                         },
                     },
+                    severity: {
+                        error: { root: 'border-error-500 focus-within:border-error-500 focus-within:ring-error-500' },
+                        warning: { root: 'border-warning-500 focus-within:border-warning-500 focus-within:ring-warning-500' },
+                    },
                 },
                 defaultVariants: { size: 'md' },
             },
@@ -271,6 +295,10 @@ export default function tailwindTheme(): Theme {
                             item: 'px-2.5! py-1! text-sm!',
                             input: 'text-base!',
                         },
+                    },
+                    severity: {
+                        error: { root: 'border-error-500 focus-within:border-error-500 focus-within:ring-error-500' },
+                        warning: { root: 'border-warning-500 focus-within:border-warning-500 focus-within:ring-warning-500' },
                     },
                 },
                 defaultVariants: { size: 'md' },
@@ -352,10 +380,30 @@ export default function tailwindTheme(): Theme {
                         md: { root: '' },
                         lg: { root: 'px-4 py-3 text-base' },
                     },
+                    severity: {
+                        error: { root: 'border-error-500 focus:border-error-500 focus:ring-error-500' },
+                        warning: { root: 'border-warning-500 focus:border-warning-500 focus:ring-warning-500' },
+                    },
                 },
                 defaultVariants: { size: 'md' },
             },
-            validationGroup: { classes: { item: 'text-xs text-error-600' } },
+            validationGroup: {
+                classes: { item: 'text-xs text-error-600' },
+                // Severity-aware per-message colour. The base class
+                // sets `text-error-600` as the no-severity default
+                // (back-compat with consumers who used legacy
+                // `validationMessages` without a severity). The
+                // variant overrides per active severity — `tailwind-merge`
+                // dedupes the conflicting `text-*-600` classes (last
+                // colour wins).
+                variants: {
+                    severity: {
+                        error: { item: 'text-error-600' },
+                        warning: { item: 'text-warning-600' },
+                        success: { item: 'text-success-600' },
+                    },
+                },
+            },
             list: {
                 classes: {
                     // `relative` anchors `<VCListLoading :overlay>`'s

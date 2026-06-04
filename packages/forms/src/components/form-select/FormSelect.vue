@@ -1,5 +1,6 @@
 <script lang="ts">
 import { useComponentDefaults, useComponentTheme } from '@vuecs/core';
+import { useFormInputThemeProps } from '../form-group/context';
 import type {
     ComponentDefaultValues,
     ComponentThemeDefinition,
@@ -150,7 +151,7 @@ export default defineComponent({
     props: formSelectProps,
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {
-        const theme = useComponentTheme('formSelect', props, formSelectThemeDefaults);
+        const theme = useComponentTheme('formSelect', useFormInputThemeProps(props), formSelectThemeDefaults);
         const defaults = useComponentDefaults('formSelect', props, behavioralDefaults);
 
         return () => {

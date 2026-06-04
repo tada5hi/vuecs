@@ -20,6 +20,7 @@ import {
     ref,
     watch,
 } from 'vue';
+import { useFormInputThemeProps } from '../form-group/context';
 
 export type FormInputThemeClasses = {
     root: string;
@@ -49,8 +50,16 @@ export type FormInputGroupSlotProps = {
 };
 
 const formInputProps = {
-    /** Controlled string value (v-model). `null` is the documented "unset" value. */
-    modelValue: { type: [String, null] as PropType<string | null | undefined>, default: '' },
+    /**
+     * Controlled string value (v-model). `null` is the documented "unset" value.
+     *
+     * No `default` on purpose: vue-tsc strips `null`/`undefined` (via `NonNullable`)
+     * when folding a prop default into the emitted `DefaultProps`, which then
+     * intersects `$props['modelValue']` back down to `string` and breaks v-model
+     * against nullable entity fields (#1613). The render coerces `null`/`undefined`
+     * to `''`, so the empty-input behaviour is unchanged.
+     */
+    modelValue: { type: [String, null] as PropType<string | null | undefined> },
     /** Native `<input type>` attribute. */
     type: { type: String, default: 'text' },
     /** Force-render the input-group wrapper even without prepend/append content. */
@@ -91,7 +100,7 @@ export default defineComponent({
         emit,
         slots,
     }) {
-        const theme = useComponentTheme('formInput', props, formInputThemeDefaults);
+        const theme = useComponentTheme('formInput', useFormInputThemeProps(props), formInputThemeDefaults);
 
         const localValue = ref<string | null | undefined>(props.modelValue);
         watch(() => props.modelValue, (value) => {

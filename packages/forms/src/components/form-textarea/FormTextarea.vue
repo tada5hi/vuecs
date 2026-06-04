@@ -1,5 +1,6 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
+import { useFormInputThemeProps } from '../form-group/context';
 import type {
     ComponentThemeDefinition,
     ThemeClassesOverride,
@@ -29,8 +30,16 @@ declare module '@vuecs/core' {
 export const formTextareaThemeDefaults: ComponentThemeDefinition<FormTextareaThemeClasses> = { classes: { root: '' } };
 
 const formTextareaProps = {
-    /** Controlled string value (v-model). `null` is the documented "unset" value. */
-    modelValue: { type: [String, null] as PropType<string | null | undefined>, default: '' },
+    /**
+     * Controlled string value (v-model). `null` is the documented "unset" value.
+     *
+     * No `default` on purpose: vue-tsc strips `null`/`undefined` (via `NonNullable`)
+     * when folding a prop default into the emitted `DefaultProps`, which then
+     * intersects `$props['modelValue']` back down to `string` and breaks v-model
+     * against nullable entity fields (#1613). The render coerces `null`/`undefined`
+     * to `''`, so the empty-textarea behaviour is unchanged.
+     */
+    modelValue: { type: [String, null] as PropType<string | null | undefined> },
     /** Debounce window (ms) for `update:modelValue` emissions. `0` disables debouncing. */
     debounce: { type: Number, default: 0 },
     /** Theme-class overrides for this component instance. */
@@ -46,7 +55,7 @@ export default defineComponent({
     props: formTextareaProps,
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {
-        const theme = useComponentTheme('formTextarea', props, formTextareaThemeDefaults);
+        const theme = useComponentTheme('formTextarea', useFormInputThemeProps(props), formTextareaThemeDefaults);
 
         const localValue = ref<string | null | undefined>(props.modelValue);
         watch(() => props.modelValue, (value) => {

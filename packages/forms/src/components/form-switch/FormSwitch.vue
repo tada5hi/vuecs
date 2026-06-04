@@ -1,5 +1,6 @@
 <script lang="ts">
 import { useComponentDefaults, useComponentTheme, useId } from '@vuecs/core';
+import { useFormInputThemeProps } from '../form-group/context';
 import type {
     ComponentDefaultValues,
     ComponentThemeDefinition,
@@ -95,7 +96,7 @@ export default defineComponent({
         emit,
         slots,
     }) {
-        const theme = useComponentTheme('formSwitch', props, formSwitchThemeDefaults);
+        const theme = useComponentTheme('formSwitch', useFormInputThemeProps(props), formSwitchThemeDefaults);
         const defaults = useComponentDefaults('formSwitch', props, behavioralDefaults);
         // SSR-safe stable id (Vue 3.5's native `useId` under the hood) —
         // see FormCheckbox.vue.

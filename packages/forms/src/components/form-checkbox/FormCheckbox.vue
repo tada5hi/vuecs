@@ -1,5 +1,6 @@
 <script lang="ts">
 import { useComponentDefaults, useComponentTheme, useId } from '@vuecs/core';
+import { useFormInputThemeProps } from '../form-group/context';
 import type {
     ComponentDefaultValues,
     ComponentThemeDefinition,
@@ -101,7 +102,7 @@ export default defineComponent({
         emit,
         slots,
     }) {
-        const theme = useComponentTheme('formCheckbox', props, formCheckboxThemeDefaults);
+        const theme = useComponentTheme('formCheckbox', useFormInputThemeProps(props), formCheckboxThemeDefaults);
         const defaults = useComponentDefaults('formCheckbox', props, behavioralDefaults);
         // SSR-safe stable id (Vue 3.5's native `useId` under the hood).
         // Replaces a `Math.random()` fallback that caused hydration

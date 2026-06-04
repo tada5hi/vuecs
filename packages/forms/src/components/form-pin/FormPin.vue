@@ -1,5 +1,6 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
+import { useFormInputThemeProps } from '../form-group/context';
 import type {
     ComponentThemeDefinition,
     ThemeClassesOverride,
@@ -73,7 +74,7 @@ export default defineComponent({
     props: formPinProps,
     emits: ['update:modelValue', 'complete'],
     setup(props, { attrs, emit }) {
-        const theme = useComponentTheme('formPin', props, formPinThemeDefaults);
+        const theme = useComponentTheme('formPin', useFormInputThemeProps(props), formPinThemeDefaults);
 
         return () => h(
             PinInputRoot,
