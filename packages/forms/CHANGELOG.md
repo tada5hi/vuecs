@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.0](https://github.com/tada5hi/vuecs/compare/forms-v5.0.1...forms-v5.1.0) (2026-06-04)
+
+
+### Features
+
+* **forms:** propagate FormGroup severity to child inputs via context ([#1615](https://github.com/tada5hi/vuecs/issues/1615)) ([a8b6193](https://github.com/tada5hi/vuecs/commit/a8b6193e99f2263b6f40050147c37a1937e4c85f))
+
 ## [5.0.1](https://github.com/tada5hi/vuecs/compare/forms-v5.0.0...forms-v5.0.1) (2026-06-03)
 
 
