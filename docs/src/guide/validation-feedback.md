@@ -108,15 +108,34 @@ When the field becomes `error`, the input picks up the theme's `formInput.varian
 
 ### All shipping themes declare it
 
-| Theme | `error` / `warning` chrome |
-|---|---|
-| `theme-tailwind` | `border-error-500 focus:border-error-500 focus:ring-error-500` / matching `warning-*` |
-| `theme-bootstrap` | `.is-invalid` (BS5 doesn't ship a soft-severity utility, so `warning` maps to `.is-invalid` too — override if needed) |
-| `theme-bulma` | `.is-danger` / `.is-warning` |
+| Theme | `error` chrome | `warning` chrome | Notes |
+|---|---|---|---|
+| `theme-tailwind` | `border-error-500 focus:border-error-500 focus:ring-error-500` | `border-warning-500` + matching focus ring | Border + focus ring only; input background stays neutral |
+| `theme-bootstrap` | `.is-invalid` | `.is-invalid` (same — Bootstrap 5 ships no soft-severity form-control utility, so `error` and `warning` collapse) | Override `formInput.variants.severity.warning` to a custom amber class if you need a real distinction |
+| `theme-bulma` | `.is-danger` | `.is-warning` | Bulma's input states tint **background + border + focus shadow** — more saturated than the Tailwind look. The HSL-channel mechanism means there's no pure-border-only variant |
+
+### Severity covers more than just "validation failed"
+
+Severity flows from your validation source's notion of state, which typically includes more than just pass/fail. Using [`@validup/vue`](https://www.npmjs.com/package/@validup/vue)'s `getSeverity()` as a reference (see the [validup-vue source](https://github.com/tada5hi/validup/blob/master/packages/vue/src/helpers/severity.ts)):
+
+| State | Severity | What the input looks like |
+|---|---|---|
+| Field is pristine + valid | `undefined` | Default border |
+| Validators are currently running (`$pending`) | `'warning'` | Amber border, message may be empty |
+| Pristine but the schema requires a value (pre-touch hint) | `'warning'` | Amber border, no message text yet |
+| Touched + invalid (required mount failed) | `'error'` | Red border + red message |
+| Touched + invalid (only optional mounts failed) | `'warning'` | Amber border + amber message |
+| Touched + valid (passed) | `'success'` | Default border today (no theme class) — forward-compat for themes that add a green-border variant |
+
+The pending-state and pre-touch-hint cases mean the input border may colour before any message text appears. That's intentional — the border alone is the "something is up with this field" affordance.
+
+### `success` severity (forward-compat)
+
+Today none of the three shipping themes declare a `severity.success` variant — `validation.severity === 'success'` propagates through the context but produces no class change on the input (same end result as `undefined`). The wiring is in place though: any consumer theme that adds a `severity.success` entry on `formInput` (etc.) will automatically light up green borders on passed fields. The validation-message `validationSuccess` slot is on the same forward-compat track.
 
 ### Per-instance override
 
-If a specific input shouldn't follow its parent FormGroup's severity, pass `themeVariant.severity` explicitly — per-instance wins:
+If a specific input shouldn't follow its parent FormGroup's severity, pass `themeVariant.severity` explicitly — per-instance wins. Setting it to `undefined` is the "force pristine" escape hatch:
 
 ```vue
 <VCFormGroup :validation="parentBundle">
@@ -127,9 +146,17 @@ If a specific input shouldn't follow its parent FormGroup's severity, pass `them
 </VCFormGroup>
 ```
 
+### Nested FormGroups
+
+Stacking `<VCFormGroup>`s (unusual but supported) — the **inner** group's severity wins for its children, because Vue's `provide` shadows the outer key. So a `<VCFormGroup :validation="warningBundle">` inside a `<VCFormGroup :validation="errorBundle">` paints its child input amber, not red.
+
 ### Outside a FormGroup
 
 Form inputs mounted standalone (no surrounding `<VCFormGroup>`) render with their default border. The context is optional — the helper short-circuits when no parent context exists.
+
+### Toggle controls have no severity variants today
+
+`VCFormCheckbox`, `VCFormCheckboxGroup`, `VCFormSwitch`, `VCFormRadio`, `VCFormRadioGroup`, `VCFormPin`, and `VCFormSlider` consume the FormGroup context (forward-compat) but no shipping theme declares `severity` variants on them — toggles are usually too small for a meaningful border ring, and the FormGroup's message text below the control covers the UX. Themes that want amber/red toggle outlines can add their own `severity` variant entries; the wiring is already in place.
 
 ### Public API
 

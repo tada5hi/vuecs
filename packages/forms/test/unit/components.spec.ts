@@ -7,7 +7,7 @@ import {
     it,
     vi,
 } from 'vitest';
-import { h, nextTick } from 'vue';
+import { h, nextTick, ref } from 'vue';
 import { mount } from '@vue/test-utils';
 import { installDefaultsManager, installThemeManager } from '@vuecs/core';
 import { default as VCFormCheckbox } from '../../src/components/form-checkbox/FormCheckbox.vue';
@@ -495,6 +495,102 @@ describe('VCFormGroup', () => {
             const inputClasses = wrapper.find('input').classes();
             expect(inputClasses).toContain('severity-warning-class');
             expect(inputClasses).not.toContain('severity-error-class');
+        });
+
+        it('should propagate severity from the legacy :validation-severity prop', () => {
+            // Consumers still on the deprecated pre-bundle API should
+            // see the same context-driven input border colouring as
+            // bundle consumers — the context's getter falls through to
+            // `validationSeverity` when `:validation` is not set.
+            const wrapper = mount(VCFormGroup, {
+                props: {
+                    validationSeverity: 'error',
+                    validationMessages: { required: 'Required' },
+                },
+                global: { plugins: [buildPlugin()] },
+                slots: { default: () => h(VCFormInput) },
+            });
+            expect(wrapper.find('input').classes()).toContain('severity-error-class');
+        });
+
+        it('should forward-compat \'success\' severity even though shipping themes have no class for it today', () => {
+            // The context union includes 'success'. Themes can declare
+            // a `severity.success` variant; the helper plumbs it through.
+            // Light up a custom green class to verify the wiring.
+            const successPreset = {
+                elements: {
+                    formInput: {
+                        classes: { root: 'base-input' },
+                        variants: { severity: { success: { root: 'severity-success-class' } } },
+                    },
+                },
+            };
+            const wrapper = mount(VCFormGroup, {
+                props: { validation: { severity: 'success', messages: { ok: 'looks good' } } },
+                global: {
+                    plugins: [{
+                        install: (app: any) => {
+                            installThemeManager(app, { themes: [successPreset] });
+                            installDefaultsManager(app);
+                        },
+                    }],
+                },
+                slots: { default: () => h(VCFormInput) },
+            });
+            expect(wrapper.find('input').classes()).toContain('severity-success-class');
+        });
+
+        it('should react to FormGroup :validation changes after mount', async () => {
+            // Mounting with a pristine bundle, then mutating the bundle's
+            // severity, should re-render the child input with the new
+            // class — the context's function-valued severity getter
+            // tracks Vue's reactive deps through `useComponentTheme`.
+            const validation = ref<{ severity: 'error' | 'warning' | 'success' | undefined; messages: any } | null>({
+                severity: undefined,
+                messages: {},
+            });
+            const wrapper = mount(VCFormGroup, {
+                props: { validation: validation.value },
+                global: { plugins: [buildPlugin()] },
+                slots: { default: () => h(VCFormInput) },
+            });
+            // Initial state — pristine, no severity class.
+            expect(wrapper.find('input').classes()).not.toContain('severity-error-class');
+            expect(wrapper.find('input').classes()).not.toContain('severity-warning-class');
+
+            // Mutate the bundle in place (the underlying reactive that
+            // `useFieldValidation` produces does this on every $errors
+            // change — verifying the reactive chain).
+            validation.value = { severity: 'error', messages: { f: 'failed' } };
+            await wrapper.setProps({ validation: validation.value });
+            await nextTick();
+            expect(wrapper.find('input').classes()).toContain('severity-error-class');
+
+            // And again — error → warning.
+            validation.value = { severity: 'warning', messages: { p: 'pending' } };
+            await wrapper.setProps({ validation: validation.value });
+            await nextTick();
+            expect(wrapper.find('input').classes()).toContain('severity-warning-class');
+            expect(wrapper.find('input').classes()).not.toContain('severity-error-class');
+        });
+
+        it('should let an inner FormGroup override an outer one (nested groups)', () => {
+            // Stacked `<VCFormGroup>`s — the inner provider wins because
+            // Vue's `provide` shadows the outer key. Unusual layout but
+            // worth nailing down behaviour.
+            const Outer = {
+                template: `
+                    <VCFormGroup :validation="{ severity: 'error', messages: { e: 'outer' } }">
+                        <VCFormGroup :validation="{ severity: 'warning', messages: { w: 'inner' } }">
+                            <VCFormInput />
+                        </VCFormGroup>
+                    </VCFormGroup>
+                `,
+                components: { VCFormGroup, VCFormInput },
+            };
+            const wrapper = mount(Outer, { global: { plugins: [buildPlugin()] } });
+            expect(wrapper.find('input').classes()).toContain('severity-warning-class');
+            expect(wrapper.find('input').classes()).not.toContain('severity-error-class');
         });
     });
 });
