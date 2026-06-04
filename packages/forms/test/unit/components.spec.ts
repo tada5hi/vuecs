@@ -24,6 +24,7 @@ import { default as VCFormSwitch } from '../../src/components/form-switch/FormSw
 import { default as VCFormTags } from '../../src/components/form-tags/FormTags.vue';
 import { default as VCFormTextarea } from '../../src/components/form-textarea/FormTextarea.vue';
 import { default as VCValidationGroup } from '../../src/components/validation-group/ValidationGroup.vue';
+import type { FieldValidation } from '../../src/components/type';
 
 // Reka's `useSize` (used by Slider) constructs a `ResizeObserver`. jsdom does
 // not implement it. Reka's `SelectTrigger` calls `target.hasPointerCapture`
@@ -427,9 +428,12 @@ describe('VCFormGroup', () => {
         it('should propagate error severity from FormGroup to child input', () => {
             const wrapper = mount(VCFormGroup, {
                 props: {
+                    // Array-style `messages` matches the canonical
+                    // `FieldValidation` contract — what `@ilingo/validup-vue`'s
+                    // `useFieldValidation()` produces in real-world usage.
                     validation: {
                         severity: 'error',
-                        messages: { required: 'Required' },
+                        messages: [{ key: 'required', value: 'Required' }],
                     },
                 },
                 global: { plugins: [buildPlugin()] },
@@ -443,7 +447,7 @@ describe('VCFormGroup', () => {
                 props: {
                     validation: {
                         severity: 'warning',
-                        messages: { soft: 'Heads up' },
+                        messages: [{ key: 'soft', value: 'Heads up' }],
                     },
                 },
                 global: { plugins: [buildPlugin()] },
@@ -455,10 +459,10 @@ describe('VCFormGroup', () => {
         it('should not apply any severity class when bundle severity is undefined (pristine)', () => {
             const wrapper = mount(VCFormGroup, {
                 props: {
-                    // No severity — the FieldValidation bundle's "pristine /
-                    // success" state — explicitly `undefined` so the optional
-                    // chain in the input picks up no inherited severity.
-                    validation: { severity: undefined, messages: {} },
+                    // No severity + empty `messages` array — the FieldValidation
+                    // bundle's "pristine / success" state. The input picks up no
+                    // inherited severity.
+                    validation: { severity: undefined, messages: [] },
                 },
                 global: { plugins: [buildPlugin()] },
                 slots: { default: () => h(VCFormInput) },
@@ -481,7 +485,7 @@ describe('VCFormGroup', () => {
                 props: {
                     validation: {
                         severity: 'error',
-                        messages: { e: 'parent says error' },
+                        messages: [{ key: 'e', value: 'parent says error' }],
                     },
                 },
                 global: { plugins: [buildPlugin()] },
@@ -495,6 +499,42 @@ describe('VCFormGroup', () => {
             const inputClasses = wrapper.find('input').classes();
             expect(inputClasses).toContain('severity-warning-class');
             expect(inputClasses).not.toContain('severity-error-class');
+        });
+
+        it('should treat per-instance themeVariant.severity: undefined as an explicit opt-out', () => {
+            // Documented escape hatch — passing `severity: undefined`
+            // explicitly (any key, even with undefined value) opts the
+            // input out of inheriting the FormGroup's severity. Pins
+            // down the `'severity' in own` check; switching to
+            // `own.severity !== undefined` would silently regress this.
+            const wrapper = mount(VCFormGroup, {
+                props: {
+                    validation: {
+                        severity: 'error',
+                        messages: [{ key: 'e', value: 'parent says error' }],
+                    },
+                },
+                global: { plugins: [buildPlugin()] },
+                slots: { default: () => h(VCFormInput, { themeVariant: { severity: undefined } }) },
+            });
+            const inputClasses = wrapper.find('input').classes();
+            expect(inputClasses).not.toContain('severity-error-class');
+            expect(inputClasses).not.toContain('severity-warning-class');
+        });
+
+        it('should fall back to error severity for legacy :validation-messages with no explicit :validation-severity', () => {
+            // FormGroup's render-side `validationClass` computation falls
+            // back to the error class when consumers use the legacy props
+            // path with non-empty `validationMessages` but no
+            // `validationSeverity`. The context mirrors that fallback so
+            // the child input border tracks the (red) FormGroup root
+            // instead of staying neutral.
+            const wrapper = mount(VCFormGroup, {
+                props: { validationMessages: { required: 'Required' } },
+                global: { plugins: [buildPlugin()] },
+                slots: { default: () => h(VCFormInput) },
+            });
+            expect(wrapper.find('input').classes()).toContain('severity-error-class');
         });
 
         it('should propagate severity from the legacy :validation-severity prop', () => {
@@ -526,7 +566,12 @@ describe('VCFormGroup', () => {
                 },
             };
             const wrapper = mount(VCFormGroup, {
-                props: { validation: { severity: 'success', messages: { ok: 'looks good' } } },
+                props: {
+                    validation: {
+                        severity: 'success',
+                        messages: [{ key: 'ok', value: 'looks good' }],
+                    },
+                },
                 global: {
                     plugins: [{
                         install: (app: any) => {
@@ -545,9 +590,9 @@ describe('VCFormGroup', () => {
             // severity, should re-render the child input with the new
             // class — the context's function-valued severity getter
             // tracks Vue's reactive deps through `useComponentTheme`.
-            const validation = ref<{ severity: 'error' | 'warning' | 'success' | undefined; messages: any } | null>({
+            const validation = ref<FieldValidation | null>({
                 severity: undefined,
-                messages: {},
+                messages: [],
             });
             const wrapper = mount(VCFormGroup, {
                 props: { validation: validation.value },
@@ -561,13 +606,13 @@ describe('VCFormGroup', () => {
             // Mutate the bundle in place (the underlying reactive that
             // `useFieldValidation` produces does this on every $errors
             // change — verifying the reactive chain).
-            validation.value = { severity: 'error', messages: { f: 'failed' } };
+            validation.value = { severity: 'error', messages: [{ key: 'f', value: 'failed' }] };
             await wrapper.setProps({ validation: validation.value });
             await nextTick();
             expect(wrapper.find('input').classes()).toContain('severity-error-class');
 
             // And again — error → warning.
-            validation.value = { severity: 'warning', messages: { p: 'pending' } };
+            validation.value = { severity: 'warning', messages: [{ key: 'p', value: 'pending' }] };
             await wrapper.setProps({ validation: validation.value });
             await nextTick();
             expect(wrapper.find('input').classes()).toContain('severity-warning-class');
@@ -580,8 +625,8 @@ describe('VCFormGroup', () => {
             // worth nailing down behaviour.
             const Outer = {
                 template: `
-                    <VCFormGroup :validation="{ severity: 'error', messages: { e: 'outer' } }">
-                        <VCFormGroup :validation="{ severity: 'warning', messages: { w: 'inner' } }">
+                    <VCFormGroup :validation="{ severity: 'error', messages: [{ key: 'e', value: 'outer' }] }">
+                        <VCFormGroup :validation="{ severity: 'warning', messages: [{ key: 'w', value: 'inner' }] }">
                             <VCFormInput />
                         </VCFormGroup>
                     </VCFormGroup>

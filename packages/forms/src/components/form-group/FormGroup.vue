@@ -114,10 +114,22 @@ export default defineComponent({
         const theme = useComponentTheme('formGroup', props, formGroupThemeDefaults);
 
         // Expose the effective severity to descendant inputs via context.
-        // Same precedence as the render-side computation: bundle wins over
-        // the legacy `:validationSeverity` prop; bundle-`undefined` means
-        // "pristine / OK" (no severity), legacy-`undefined` falls through
-        // to the prop. Inputs read this and fold it into their own
+        // Mirrors the render-side `validationClass` computation exactly:
+        //
+        //   1. Bundle path (`:validation` set): return the bundle's
+        //      severity verbatim. Bundle-`undefined` means "pristine /
+        //      OK" — no fallback.
+        //   2. Legacy path with explicit `:validation-severity`: return
+        //      that.
+        //   3. Legacy path without severity but with non-empty
+        //      `:validation-messages`: fall back to `'error'`. This
+        //      matches the pre-bundle behaviour where the FormGroup root
+        //      auto-painted red when consumers passed only messages —
+        //      child inputs now match that styling instead of staying
+        //      neutral while the message goes red.
+        //   4. Otherwise: undefined.
+        //
+        // Inputs read the result and fold it into their own
         // `themeVariant` so the input's border colour tracks validation
         // state without per-instance wiring.
         provideFormGroupContext({
@@ -125,7 +137,16 @@ export default defineComponent({
                 if (props.validation != null) {
                     return props.validation.severity;
                 }
-                return props.validationSeverity;
+                if (props.validationSeverity !== undefined) {
+                    return props.validationSeverity;
+                }
+                const messages = props.validationMessages;
+                const hasMessages = !!messages && (
+                    Array.isArray(messages) ?
+                        messages.length > 0 :
+                        Object.keys(messages).length > 0
+                );
+                return hasMessages ? ValidationSeverity.ERROR : undefined;
             },
         });
 

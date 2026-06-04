@@ -46,7 +46,7 @@ const value = ref('');
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `modelValue` | `string \| null` | — | The bound value. `null`/`undefined` are accepted as the "unset" value (renders empty) for binding nullable entity fields |
+| `modelValue` | `string \| null \| undefined` | — | The bound value. `null`/`undefined` are accepted as the "unset" value (renders empty) for binding nullable entity fields |
 | `type` | `string` | `'text'` | Native input type |
 | `debounce` | `number` | `0` | Debounce input updates by N milliseconds |
 | `group` | `boolean` | `false` | Render with input-group prepend/append wrappers |
