@@ -20,6 +20,7 @@ import {
     type ValidationGroupDefaultSlotProps,
     type ValidationGroupItemSlotProps,
 } from '../validation-group';
+import { provideFormGroupContext } from './context';
 
 export type FormGroupThemeClasses = {
     root: string;
@@ -111,6 +112,22 @@ export default defineComponent({
     }>,
     setup(props, { attrs, slots }) {
         const theme = useComponentTheme('formGroup', props, formGroupThemeDefaults);
+
+        // Expose the effective severity to descendant inputs via context.
+        // Same precedence as the render-side computation: bundle wins over
+        // the legacy `:validationSeverity` prop; bundle-`undefined` means
+        // "pristine / OK" (no severity), legacy-`undefined` falls through
+        // to the prop. Inputs read this and fold it into their own
+        // `themeVariant` so the input's border colour tracks validation
+        // state without per-instance wiring.
+        provideFormGroupContext({
+            severity: () => {
+                if (props.validation != null) {
+                    return props.validation.severity;
+                }
+                return props.validationSeverity;
+            },
+        });
 
         return () => {
             const resolved = theme.value;

@@ -398,6 +398,105 @@ describe('VCFormGroup', () => {
             expect(wrapper.text()).toBe('help');
         });
     });
+
+    describe('severity context propagation', () => {
+        // Theme with severity variants that paint a unique class on the
+        // input's root — used as a fingerprint to verify the FormGroup's
+        // severity flows down to the input.
+        const severityPreset = {
+            elements: {
+                formInput: {
+                    classes: { root: 'base-input' },
+                    variants: {
+                        severity: {
+                            error: { root: 'severity-error-class' },
+                            warning: { root: 'severity-warning-class' },
+                        },
+                    },
+                },
+            },
+        };
+
+        const buildPlugin = () => ({
+            install: (app: any) => {
+                installThemeManager(app, { themes: [severityPreset] });
+                installDefaultsManager(app);
+            },
+        });
+
+        it('should propagate error severity from FormGroup to child input', () => {
+            const wrapper = mount(VCFormGroup, {
+                props: {
+                    validation: {
+                        severity: 'error',
+                        messages: { required: 'Required' },
+                    },
+                },
+                global: { plugins: [buildPlugin()] },
+                slots: { default: () => h(VCFormInput) },
+            });
+            expect(wrapper.find('input').classes()).toContain('severity-error-class');
+        });
+
+        it('should propagate warning severity from FormGroup to child input', () => {
+            const wrapper = mount(VCFormGroup, {
+                props: {
+                    validation: {
+                        severity: 'warning',
+                        messages: { soft: 'Heads up' },
+                    },
+                },
+                global: { plugins: [buildPlugin()] },
+                slots: { default: () => h(VCFormInput) },
+            });
+            expect(wrapper.find('input').classes()).toContain('severity-warning-class');
+        });
+
+        it('should not apply any severity class when bundle severity is undefined (pristine)', () => {
+            const wrapper = mount(VCFormGroup, {
+                props: {
+                    // No severity — the FieldValidation bundle's "pristine /
+                    // success" state — explicitly `undefined` so the optional
+                    // chain in the input picks up no inherited severity.
+                    validation: { severity: undefined, messages: {} },
+                },
+                global: { plugins: [buildPlugin()] },
+                slots: { default: () => h(VCFormInput) },
+            });
+            const inputClasses = wrapper.find('input').classes();
+            expect(inputClasses).not.toContain('severity-error-class');
+            expect(inputClasses).not.toContain('severity-warning-class');
+        });
+
+        it('should not inherit severity when input is mounted outside a FormGroup', () => {
+            const wrapper = mount(VCFormInput, { global: { plugins: [buildPlugin()] } });
+            const inputClasses = wrapper.find('input').classes();
+            expect(inputClasses).toContain('base-input');
+            expect(inputClasses).not.toContain('severity-error-class');
+            expect(inputClasses).not.toContain('severity-warning-class');
+        });
+
+        it('should let per-instance themeVariant.severity override the inherited one', () => {
+            const wrapper = mount(VCFormGroup, {
+                props: {
+                    validation: {
+                        severity: 'error',
+                        messages: { e: 'parent says error' },
+                    },
+                },
+                global: { plugins: [buildPlugin()] },
+                slots: {
+                    // Per-instance forces 'warning' — should win over the
+                    // FormGroup's 'error' context per the documented
+                    // "per-instance wins" contract.
+                    default: () => h(VCFormInput, { themeVariant: { severity: 'warning' } }),
+                },
+            });
+            const inputClasses = wrapper.find('input').classes();
+            expect(inputClasses).toContain('severity-warning-class');
+            expect(inputClasses).not.toContain('severity-error-class');
+        });
+    });
 });
 
 describe('VCFormInput', () => {

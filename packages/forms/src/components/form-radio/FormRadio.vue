@@ -1,5 +1,6 @@
 <script lang="ts">
 import { useComponentDefaults, useComponentTheme, useId } from '@vuecs/core';
+import { useFormInputThemeProps } from '../form-group/context';
 import type {
     ComponentDefaultValues,
     ComponentThemeDefinition,
@@ -93,7 +94,7 @@ export default defineComponent({
         indicator: FormRadioIndicatorSlotProps;
     }>,
     setup(props, { attrs, slots }) {
-        const theme = useComponentTheme('formRadio', props, formRadioThemeDefaults);
+        const theme = useComponentTheme('formRadio', useFormInputThemeProps(props), formRadioThemeDefaults);
         const defaults = useComponentDefaults('formRadio', props, behavioralDefaults);
         // SSR-safe stable id (Vue 3.5's native `useId` under the hood) —
         // see FormCheckbox.vue.

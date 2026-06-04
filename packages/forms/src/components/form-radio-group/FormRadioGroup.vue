@@ -1,5 +1,6 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
+import { useFormInputThemeProps } from '../form-group/context';
 import type {
     ComponentThemeDefinition,
     ThemeClassesOverride,
@@ -70,7 +71,7 @@ export default defineComponent({
         emit,
         slots,
     }) {
-        const theme = useComponentTheme('formRadioGroup', props, formRadioGroupThemeDefaults);
+        const theme = useComponentTheme('formRadioGroup', useFormInputThemeProps(props), formRadioGroupThemeDefaults);
 
         return () => h(
             RadioGroupRoot,

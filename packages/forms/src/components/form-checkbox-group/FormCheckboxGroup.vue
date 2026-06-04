@@ -1,5 +1,6 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
+import { useFormInputThemeProps } from '../form-group/context';
 import type {
     ComponentThemeDefinition,
     ThemeClassesOverride,
@@ -64,7 +65,7 @@ export default defineComponent({
         emit,
         slots,
     }) {
-        const theme = useComponentTheme('formCheckboxGroup', props, formCheckboxGroupThemeDefaults);
+        const theme = useComponentTheme('formCheckboxGroup', useFormInputThemeProps(props), formCheckboxGroupThemeDefaults);
 
         return () => h(
             CheckboxGroupRoot,

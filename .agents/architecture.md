@@ -229,7 +229,7 @@ unless the variant is structural (e.g. orientation-driven layout).
 | TableHeadCell | `align` / `stickyColumn` / `sorted` | left/center/right × boolean × asc/desc/none | `sorted` drives the indicator span + `aria-sort` |
 | TableEmpty | `filtered` | boolean | Distinct copy / style for empty-after-filter vs empty-no-data |
 | TableLoading | `overlay` | boolean | In-table band default vs absolute overlay for refresh-feedback |
-| FormInput / FormTextarea / FormSelect / FormNumber / FormTags | `size` | sm/md/lg | theme-tailwind uses padding+font utilities; theme-bootstrap uses `form-control-{sm,lg}` (and input-group-{sm,lg} for groups) |
+| FormInput / FormTextarea / FormSelect / FormNumber / FormTags / FormSelectSearch | `size` × `severity` | sm/md/lg × error/warning | theme-tailwind uses padding+font utilities + `border-error/warning-500` rings; theme-bootstrap uses `form-control-{sm,lg}` (+ `is-invalid` for both severities — BS5 doesn't ship a soft variant); theme-bulma uses `is-small/large` + native `is-danger`/`is-warning`. `severity` is folded in automatically from the surrounding `<VCFormGroup>` via `provideFormGroupContext` — no per-input wiring. |
 | FormCheckbox / FormSwitch / FormRadio | `size` | sm/md/lg | theme-bootstrap uses `vc-form-{checkbox,switch,radio}-{sm,lg}` helpers from @vuecs/forms structural CSS |
 | Modal | `size` | sm/md/lg/xl | theme-tailwind uses `max-w-*`; theme-bootstrap uses `modal-{sm,lg,xl}` |
 | Popover / HoverCard | `size` | sm/md/lg | Width + padding tier |

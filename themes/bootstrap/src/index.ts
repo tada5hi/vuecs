@@ -21,11 +21,22 @@ export default function bootstrapTheme(): Theme {
                 // Bootstrap's `.form-control-{sm,lg}` modifies padding +
                 // font-size on top of `.form-control`. There's no `-md`
                 // class — md IS the default.
+                //
+                // Severity uses Bootstrap's native `.is-invalid` /
+                // `.is-warning`-style helpers — but Bootstrap 5 only
+                // ships `.is-invalid` + `.is-valid`. We map `warning` →
+                // `.is-invalid` (close-enough red) and leave a comment;
+                // BS doesn't really have a soft-severity slot. Consumers
+                // wanting a true amber state can override.
                 variants: {
                     size: {
                         sm: { root: 'form-control-sm', group: 'input-group-sm' },
                         md: { root: '' },
                         lg: { root: 'form-control-lg', group: 'input-group-lg' },
+                    },
+                    severity: {
+                        error: { root: 'is-invalid' },
+                        warning: { root: 'is-invalid' },
                     },
                 },
                 defaultVariants: { size: 'md' },
@@ -99,6 +110,10 @@ export default function bootstrapTheme(): Theme {
                         md: { trigger: '' },
                         lg: { trigger: 'form-control-lg' },
                     },
+                    severity: {
+                        error: { trigger: 'is-invalid' },
+                        warning: { trigger: 'is-invalid' },
+                    },
                 },
                 defaultVariants: { size: 'md' },
             },
@@ -119,6 +134,12 @@ export default function bootstrapTheme(): Theme {
                     selected: 'd-flex flex-wrap gap-1 mt-2',
                     selectedItem: 'badge bg-secondary-subtle text-body border d-inline-flex align-items-center gap-1',
                     selectedItemRemove: 'fw-bold',
+                },
+                variants: {
+                    severity: {
+                        error: { input: 'is-invalid' },
+                        warning: { input: 'is-invalid' },
+                    },
                 },
             },
             formRadio: {
@@ -173,18 +194,22 @@ export default function bootstrapTheme(): Theme {
                 variants: {
                     size: {
                         sm: {
-                            root: 'input-group-sm', 
-                            input: 'form-control-sm', 
-                            decrement: 'btn-sm', 
-                            increment: 'btn-sm', 
+                            root: 'input-group-sm',
+                            input: 'form-control-sm',
+                            decrement: 'btn-sm',
+                            increment: 'btn-sm',
                         },
                         md: { root: '' },
                         lg: {
-                            root: 'input-group-lg', 
-                            input: 'form-control-lg', 
-                            decrement: 'btn-lg', 
-                            increment: 'btn-lg', 
+                            root: 'input-group-lg',
+                            input: 'form-control-lg',
+                            decrement: 'btn-lg',
+                            increment: 'btn-lg',
                         },
+                    },
+                    severity: {
+                        error: { input: 'is-invalid' },
+                        warning: { input: 'is-invalid' },
                     },
                 },
                 defaultVariants: { size: 'md' },
@@ -206,6 +231,10 @@ export default function bootstrapTheme(): Theme {
                         sm: { root: 'form-control-sm p-1', item: 'small' },
                         md: { root: '' },
                         lg: { root: 'form-control-lg p-3', item: 'fs-6' },
+                    },
+                    severity: {
+                        error: { root: 'is-invalid' },
+                        warning: { root: 'is-invalid' },
                     },
                 },
                 defaultVariants: { size: 'md' },
@@ -282,6 +311,10 @@ export default function bootstrapTheme(): Theme {
                         sm: { root: 'form-control-sm' },
                         md: { root: '' },
                         lg: { root: 'form-control-lg' },
+                    },
+                    severity: {
+                        error: { root: 'is-invalid' },
+                        warning: { root: 'is-invalid' },
                     },
                 },
                 defaultVariants: { size: 'md' },

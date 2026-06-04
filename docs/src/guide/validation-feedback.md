@@ -91,3 +91,56 @@ A dedicated `validationSuccess` slot may ship later if demand materializes.
 ## Severity types
 
 Vuecs's `ValidationSeverity` enum stays `'error' | 'warning'` for the legacy `:validation-severity` prop. The `FieldValidation` shape's wider union (`'error' | 'warning' | 'success'`) is the bridge-facing type; the two coexist intentionally — the enum is the vuecs-native vocabulary, the bundle accepts whatever a validation library naturally produces.
+
+## Severity flows down to the child input
+
+`<VCFormGroup>` provides its resolved severity through a Vue context (`provideFormGroupContext`) and every form-input component in `@vuecs/forms` (`VCFormInput`, `VCFormTextarea`, `VCFormSelect`, `VCFormSelectSearch`, `VCFormNumber`, `VCFormTags`, `VCFormCheckbox`, `VCFormSwitch`, `VCFormRadio`, `VCFormPin`, `VCFormSlider`, plus the matching `*Group`s) reads it and folds it into its own `themeVariant.severity`.
+
+What that means in practice: if your theme declares a `severity` variant on a form-input element, just wrapping the input in `<VCFormGroup :validation>` is enough to repaint the input's border / focus ring to match the validation state. **No per-input wiring required.**
+
+```vue
+<VCFormGroup :validation="useFieldValidation($v.fields.email)">
+  <VCFormInput v-model="$v.fields.email.$model" />
+</VCFormGroup>
+```
+
+When the field becomes `error`, the input picks up the theme's `formInput.variants.severity.error` classes (e.g. red border + red focus ring in `theme-tailwind`). When it becomes `warning`, the `warning` cell. When pristine (`severity: undefined`), no override — the input renders with its default border.
+
+### All shipping themes declare it
+
+| Theme | `error` / `warning` chrome |
+|---|---|
+| `theme-tailwind` | `border-error-500 focus:border-error-500 focus:ring-error-500` / matching `warning-*` |
+| `theme-bootstrap` | `.is-invalid` (BS5 doesn't ship a soft-severity utility, so `warning` maps to `.is-invalid` too — override if needed) |
+| `theme-bulma` | `.is-danger` / `.is-warning` |
+
+### Per-instance override
+
+If a specific input shouldn't follow its parent FormGroup's severity, pass `themeVariant.severity` explicitly — per-instance wins:
+
+```vue
+<VCFormGroup :validation="parentBundle">
+  <!-- Inherits parent severity -->
+  <VCFormInput v-model="state.email" />
+  <!-- Explicit override; ignores the FormGroup context -->
+  <VCFormInput v-model="state.note" :theme-variant="{ severity: undefined }" />
+</VCFormGroup>
+```
+
+### Outside a FormGroup
+
+Form inputs mounted standalone (no surrounding `<VCFormGroup>`) render with their default border. The context is optional — the helper short-circuits when no parent context exists.
+
+### Public API
+
+The plumbing is exported for downstream component libraries that want to build their own form-input variants on the same context:
+
+```ts
+import {
+    provideFormGroupContext,
+    useFormGroupContext,
+    useFormInputThemeProps,
+} from '@vuecs/forms';
+```
+
+`useFormInputThemeProps(props)` is the helper every shipped input uses — pass it as the second arg to `useComponentTheme()` and your input picks up the inherited severity automatically.

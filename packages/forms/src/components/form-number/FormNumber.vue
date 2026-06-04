@@ -1,5 +1,6 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
+import { useFormInputThemeProps } from '../form-group/context';
 import type {
     ComponentThemeDefinition,
     ThemeClassesOverride,
@@ -82,7 +83,7 @@ export default defineComponent({
     props: formNumberProps,
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {
-        const theme = useComponentTheme('formNumber', props, formNumberThemeDefaults);
+        const theme = useComponentTheme('formNumber', useFormInputThemeProps(props), formNumberThemeDefaults);
 
         return () => h(
             NumberFieldRoot,
