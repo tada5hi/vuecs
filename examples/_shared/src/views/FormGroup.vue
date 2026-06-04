@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
     type FieldValidation,
+    type FormOption,
     VCFormGroup,
     VCFormInput,
     VCFormSelect,
@@ -32,6 +33,15 @@ defineProps<{
 const value = ref('hello');
 const description = ref('');
 const role = ref<string | undefined>(undefined);
+
+// Setup-side const, matching the canonical FormSelect demo's
+// pattern. Inline `:options="[…]"` in the template also works, but
+// hoisting keeps the array reference stable across renders.
+const roles: FormOption[] = [
+    { value: 'admin', label: 'Administrator' },
+    { value: 'user', label: 'User' },
+    { value: 'guest', label: 'Guest' },
+];
 
 type State = 'pristine' | 'warning' | 'error' | 'success';
 const stateOrder: State[] = ['pristine', 'warning', 'error', 'success'];
@@ -142,11 +152,8 @@ const bundle = computed<FieldValidation | null>(() => {
         >
             <VCFormSelect
                 v-model="role"
-                :options="[
-                    { value: 'admin', label: 'Administrator' },
-                    { value: 'user', label: 'User' },
-                    { value: 'guest', label: 'Guest' },
-                ]"
+                :options="roles"
+                placeholder="-- Pick a role --"
                 :theme-variant="themeVariant"
             />
         </VCFormGroup>
