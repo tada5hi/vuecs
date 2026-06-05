@@ -1,5 +1,20 @@
 # Changelog
 
+## [4.2.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v4.1.3...examples-nuxt-v4.2.0) (2026-06-04)
+
+
+### Features
+
+* **forms:** propagate FormGroup severity to child inputs via context ([#1615](https://github.com/tada5hi/vuecs/issues/1615)) ([a8b6193](https://github.com/tada5hi/vuecs/commit/a8b6193e99f2263b6f40050147c37a1937e4c85f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/forms bumped from ^5.0.1 to ^5.1.0
+    * @vuecs/theme-tailwind bumped from ^1.1.3 to ^1.2.0
+
 ## [4.1.3](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v4.1.2...examples-nuxt-v4.1.3) (2026-06-03)
 
 
