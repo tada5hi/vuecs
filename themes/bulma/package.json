@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/theme-bulma",
-    "version": "1.2.0",
+    "version": "2.0.0",
     "type": "module",
     "description": "Bulma theme for vuecs components. Targets Bulma 1.0+ (CSS-variable-based theming); the version number tracks vuecs theme breaking changes, not Bulma's.",
     "exports": {
@@ -55,7 +55,7 @@
         "@vuecs/forms": "^5.1.0",
         "@vuecs/gravatar": "^2.0.3",
         "@vuecs/list": "^1.0.2",
-        "@vuecs/navigation": "^3.0.2",
+        "@vuecs/navigation": "^4.0.0",
         "@vuecs/overlays": "^1.0.2",
         "@vuecs/pagination": "^2.1.1",
         "@vuecs/placeholder": "^1.0.2",

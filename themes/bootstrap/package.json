@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/theme-bootstrap",
-    "version": "4.2.0",
+    "version": "5.0.0",
     "type": "module",
     "description": "Bootstrap theme for vuecs components. Currently targets Bootstrap 5; the version number tracks vuecs theme breaking changes, not Bootstrap's.",
     "exports": {
@@ -48,7 +48,7 @@
         "@vuecs/forms": "^5.1.0",
         "@vuecs/gravatar": "^2.0.3",
         "@vuecs/list": "^1.0.2",
-        "@vuecs/navigation": "^3.0.2",
+        "@vuecs/navigation": "^4.0.0",
         "@vuecs/overlays": "^1.0.2",
         "@vuecs/pagination": "^2.1.1",
         "@vuecs/placeholder": "^1.0.2",
