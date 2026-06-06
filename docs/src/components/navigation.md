@@ -127,6 +127,16 @@ A dropdown bar is a **single** Reka `NavigationMenu` root. The flyout panel is p
 
 Both feed the `navigation` theme's variant system. Themes override the accent via the `navigation` variant slot classes.
 
+## Custom container / item tags
+
+By default the nav renders a `<ul>` list whose items are `<li>` elements. Override the tags (a string or a component) with `as` (the list container) and `itemAs` (each item wrapper):
+
+```vue
+<VCNavItems :data="items" as="nav" item-as="div" />
+```
+
+Both props are forwarded **unchanged to every nesting level**, so a collapse submenu renders the same tags as its parent. They are honored in **collapse mode only** — a `dropdown` submenu keeps Reka's `NavigationMenu` primitives (its accessibility machinery requires its own elements), so `as` / `itemAs` don't apply to the dropdown bar or its flyout root.
+
 ## Active state
 
 Active state is path-scored, with three distinct concepts surfaced on normalized items / registry entries:

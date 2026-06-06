@@ -3,6 +3,7 @@ import type { ThemeClassesOverride, UseComponentThemeProps, VariantValues } from
 import type { LinkProperties } from '@vuecs/link';
 import { VCLink } from '@vuecs/link';
 import type {
+    Component,
     ExtractPublicPropTypes,
     PropType,
     SlotsType,
@@ -68,6 +69,24 @@ const navItemProps = {
     submenu: {
         type: String as PropType<NavigationSubmenuMode>,
         default: 'collapse',
+    },
+    /**
+     * The tag (or component) this item renders as — its own wrapper
+     * (`<li>` by default). Receives `<VCNavItems>`' `itemAs`. Honored in
+     * collapse mode only.
+     */
+    as: {
+        type: [String, Object] as PropType<string | Component>,
+        default: 'li',
+    },
+    /**
+     * The list-container tag for this item's nested submenu
+     * `<VCNavItems>` (`<ul>` by default). Receives `<VCNavItems>`' `as`.
+     * Honored in collapse mode only.
+     */
+    itemsAs: {
+        type: [String, Object] as PropType<string | Component>,
+        default: 'ul',
     },
     themeClass: {
         type: Object as PropType<ThemeClassesOverride<NavigationThemeClasses>>,
@@ -225,6 +244,8 @@ export const VCNavItem = defineComponent({
                 variant: props.variant,
                 orientation: props.orientation,
                 submenu: props.submenu === 'dropdown' ? 'collapse' : props.submenu,
+                as: props.itemsAs,
+                itemAs: props.as,
                 themeClass: props.themeClass,
                 themeVariant: props.themeVariant,
             });
@@ -244,7 +265,7 @@ export const VCNavItem = defineComponent({
                 if (isDropdown) {
                     return h(NavigationMenuItem, { class: [resolved.item] }, { default: () => body });
                 }
-                return h('li', { class: [resolved.item] }, [body]);
+                return h(props.as, { class: [resolved.item] }, [body]);
             }
 
             // type: link (no children)
@@ -263,7 +284,7 @@ export const VCNavItem = defineComponent({
                     });
                 }
 
-                return h('li', {
+                return h(props.as, {
                     class: [resolved.item, { active: data.value.active }],
                     'data-active': data.value.active ? '' : undefined,
                 }, [leaf]);
@@ -284,7 +305,7 @@ export const VCNavItem = defineComponent({
                         'data-active': isActive ? '' : undefined,
                     }, { default: () => body });
                 }
-                return h('li', {
+                return h(props.as, {
                     class: [resolved.item, resolved.itemNested, { active: isActive }],
                     'data-active': isActive ? '' : undefined,
                 }, [body]);
@@ -323,7 +344,7 @@ export const VCNavItem = defineComponent({
 
             // collapse: inline Reka Collapsible
             return h(CollapsibleRoot, {
-                as: 'li',
+                as: props.as,
                 class: [
                     resolved.item,
                     resolved.itemNested,

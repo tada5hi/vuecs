@@ -7,6 +7,7 @@ import {
 } from '@vuecs/core';
 import type { ThemeClassesOverride, UseComponentThemeProps, VariantValues } from '@vuecs/core';
 import type {
+    Component,
     ExtractPublicPropTypes,
     PropType,
     SlotsType,
@@ -89,6 +90,19 @@ const navItemsProps = {
      * orientation (horizontal → dropdown, otherwise collapse).
      */
     submenu: { type: String as PropType<NavigationSubmenu>, default: 'auto' },
+    /**
+     * The tag (or component) for this nav's list container. Defaults to
+     * `'ul'`. Forwarded unchanged to every nesting level so the whole tree
+     * renders the same container tag. Honored in collapse mode only —
+     * dropdown mode keeps Reka's NavigationMenu primitives.
+     */
+    as: { type: [String, Object] as PropType<string | Component>, default: 'ul' },
+    /**
+     * The tag (or component) for each item wrapper. Defaults to `'li'`.
+     * Forwarded unchanged to every nesting level. Honored in collapse mode
+     * only — dropdown mode keeps Reka's NavigationMenu primitives.
+     */
+    itemAs: { type: [String, Object] as PropType<string | Component>, default: 'li' },
     themeClass: { type: Object as PropType<ThemeClassesOverride<NavigationThemeClasses>>, default: undefined },
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };
@@ -279,6 +293,8 @@ export const VCNavItems = defineComponent({
                             variant: props.variant,
                             orientation: props.orientation,
                             submenu: submenuMode.value,
+                            as: props.itemAs,
+                            itemsAs: props.as,
                             themeClass: props.themeClass,
                             themeVariant: props.themeVariant,
                         },
@@ -309,7 +325,7 @@ export const VCNavItems = defineComponent({
             const isRoot = !isNested.value;
 
             return h(
-                'ul',
+                props.as,
                 {
                     class: resolvedTheme.group || undefined,
                     ...(isRoot ?

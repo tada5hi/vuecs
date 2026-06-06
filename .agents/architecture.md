@@ -1521,6 +1521,24 @@ for each mount so the panel re-renders its links every time it reopens.
 `vue-router` import), so router-free apps degrade to `undefined`.
 `vue-router` is an optional peer dependency.
 
+**Container / item tags (`as` / `itemAs`)**: `<VCNavItems>` renders a
+`<ul>` whose items are `<li>` by default. The `as` prop (default `'ul'`,
+the list container) and `itemAs` prop (default `'li'`, each item wrapper)
+override both — string tag or component, widened to `[String, Object]`
+per the wrap convention. `<VCNavItem>` carries the **mirror** pair so the
+`as` prop always names the element *that* component renders: `<VCNavItem>`'s
+`as` (default `'li'`) is its own wrapper (the separator / leaf / sub-slot
+wrapper and the collapse `CollapsibleRoot`'s `as`), and `itemsAs`
+(default `'ul'`) is the container tag for its nested submenu list. The two
+pairs cross at each forwarding boundary: `<VCNavItems>` passes its `itemAs`
+→ `<VCNavItem>`'s `as` and its `as` → `<VCNavItem>`'s `itemsAs`; in
+`renderChildren()` the nested `<VCNavItems>` receives `as ← itemsAs` and
+`itemAs ← as`. So every nesting level renders the same tags while each
+component's `as` describes its own root element. Honored in **collapse
+mode only** — dropdown mode keeps Reka's `NavigationMenuRoot` / `List` /
+`Item` primitives untouched (their hover/focus machinery requires their
+own elements).
+
 ## Component Rendering
 
 Components use TypeScript render functions (not `.vue` SFCs) via `defineComponent` + `h()`. This avoids the Vue template compiler dependency in most packages. The `@vitejs/plugin-vue` plugin is only enabled for packages that contain `.vue` files (forms, pagination, overlays).
