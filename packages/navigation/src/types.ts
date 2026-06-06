@@ -74,8 +74,7 @@ export type NavigationResolverContext<
  */
 export type NavigationResolver<
     META = any,
-> = NavigationItem<META>[] |
-    ((ctx: NavigationResolverContext<META>) =>
+> = ((ctx: NavigationResolverContext<META>) =>
         NavigationItem<META>[] | Promise<NavigationItem<META>[] | undefined> | undefined);
 
 export type Options = CoreOptions;

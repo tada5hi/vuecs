@@ -63,7 +63,7 @@ const navItemsProps = {
      * and, if so, renders that parent's already-scored children as-is.
      */
     data: {
-        type: [Array, Function] as PropType<NavigationResolver>,
+        type: [Array, Function] as PropType<NavigationItem[] | NavigationResolver>,
         default: undefined,
     },
     /** Opt in to publishing this nav's resolved output into the registry. */
