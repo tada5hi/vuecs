@@ -27,7 +27,6 @@ import installPlaceholder from '@vuecs/placeholder';
 import installTimeago from '@vuecs/timeago';
 import { de } from 'date-fns/locale';
 import { defineNuxtPlugin } from '#app';
-import { findNavigationItems } from '~/config/layout';
 
 // Register the Font Awesome 6 Solid collection with Iconify so <VCIcon>
 // can resolve the names that @vuecs/icons-font-awesome provides
@@ -52,7 +51,9 @@ export default defineNuxtPlugin((ctx) => {
     ctx.vueApp.use(installList);
     ctx.vueApp.use(installTimeago, { locales: { de } });
 
-    installNavigation(ctx.vueApp, { items: ({ level, parent }) => findNavigationItems(level, parent) });
+    // Registry-only install — no items here. Each <VCNavItems> owns its
+    // items via :data; navs opt into publishing via registry + registry-id.
+    installNavigation(ctx.vueApp, {});
 
     ctx.vueApp.use(installPagination);
     ctx.vueApp.use(installPlaceholder);

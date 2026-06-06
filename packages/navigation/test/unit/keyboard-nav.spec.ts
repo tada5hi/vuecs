@@ -8,25 +8,19 @@ import {
 import type { App } from 'vue';
 import { mount } from '@vue/test-utils';
 import { installDefaultsManager, installThemeManager } from '@vuecs/core';
-import {
-    NavigationManager,
-    VCNavItems,
-    provideNavigationManager,
-} from '../../src';
+import { VCNavItems } from '../../src';
 
 async function buildApp() {
-    const manager = new NavigationManager({
-        items: [
-            { name: 'Home', url: '#home' },
-            { name: 'Foo', url: '#foo' },
-            { name: 'Bar', url: '#bar' },
-        ],
-    });
-    await manager.build({ path: '#home' });
-
     const App = defineComponent({
         setup() {
-            return () => h(VCNavItems);
+            return () => h(VCNavItems, {
+                data: [
+                    { name: 'Home', url: '#home' },
+                    { name: 'Foo', url: '#foo' },
+                    { name: 'Bar', url: '#bar' },
+                ],
+                path: '#home',
+            });
         },
     });
 
@@ -36,7 +30,6 @@ async function buildApp() {
                 install(app: App) {
                     installThemeManager(app, {});
                     installDefaultsManager(app, {});
-                    provideNavigationManager(manager, app);
                 },
             }],
         },

@@ -7,18 +7,12 @@
 
 import type { NavigationItem, NavigationItemNormalized } from '../types';
 
-type NormalizeItemOptions = {
-    level: number
-};
-
 function normalizeItemIF(
     item: NavigationItem,
-    defaults: NormalizeItemOptions,
     trace: string[],
 ) : NavigationItemNormalized {
     const output : NavigationItemNormalized = {
         ...item,
-        level: defaults.level,
         children: [],
         trace: [
             ...trace,
@@ -32,7 +26,7 @@ function normalizeItemIF(
     }
 
     for (let i = 0; i < item.children.length; i++) {
-        output.children.push(normalizeItemIF(item.children[i], defaults, output.trace));
+        output.children.push(normalizeItemIF(item.children[i], output.trace));
     }
 
     return output;
@@ -40,14 +34,12 @@ function normalizeItemIF(
 
 export function normalizeItem(
     item: NavigationItem,
-    defaults: NormalizeItemOptions,
 ) : NavigationItemNormalized {
-    return normalizeItemIF(item, defaults, []);
+    return normalizeItemIF(item, []);
 }
 
 export function normalizeItems(
     items: NavigationItem[],
-    options: NormalizeItemOptions,
 ) : NavigationItemNormalized[] {
-    return items.map((item) => normalizeItem(item, options));
+    return items.map((item) => normalizeItem(item));
 }

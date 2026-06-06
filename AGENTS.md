@@ -43,7 +43,7 @@ npm run lint:fix       # Auto-fix lint issues
 | `@vuecs/icon` | `<VCIcon>` component — thin Iconify wrapper for vuecs's icon-string-prop slots and consumer slot content | 0.0.0 |
 | `@vuecs/link` | Router-aware link component (vue-router/nuxt) | 1.0.1 |
 | `@vuecs/list` | Compound list (List / Body / Item / Empty / Loading) + `defineList()` factory + `useList()` / `useListItem()` injectors + built-in `v-model:selection` (single / multi, ARIA listbox). Header / footer / item-text / item-actions are consumer markup driven by slot-prop class strings. Successor to `@vuecs/list-controls` — clean break (plan 027). | 0.0.0 |
-| `@vuecs/navigation` | Multi-level navigation with NavigationManager + `<VCStepper>` compound for multi-step wizards | 2.4.1 |
+| `@vuecs/navigation` | Multi-level navigation — per-call-site `:data` items + a shared reactive registry for dependent navs (plan 037, 3.0 clean break, no NavigationManager) + `<VCStepper>` compound for multi-step wizards | 2.4.1 |
 | `@vuecs/nuxt` | Theme-agnostic Nuxt module — auto-imports `@vuecs/design` tokens, ships SSR-safe color-mode + palette plugins (`useColorMode` / `useColorPalette` auto-imports). Dispatches palette + colorMode runtime hooks through whichever themes the consumer installs (plan 025). Optional `themes: string[]` config auto-generates a plugin that installs listed theme packages. | 0.0.0 |
 | `@vuecs/overlays` | Compound overlays on Reka primitives — Modal (+ `useModal()` view-stack composable), Popover, HoverCard, Tooltip, DropdownMenu, ContextMenu, Toast (+ `useToast()` shared queue composable, plan 029) | 0.0.0 |
 | `@vuecs/pagination` | Pagination component | 1.3.1 |
@@ -92,7 +92,7 @@ All four mount the same demo views from `examples/_shared/` (private workspace p
 ## Detailed Guides
 
 - **[Project Structure](.agents/structure.md)** — Monorepo layout, package organization, nested core re-exports, build outputs, and docs site layout
-- **[Architecture](.agents/architecture.md)** — Vue plugin pattern, theme system, NavigationManager, and theme architecture
+- **[Architecture](.agents/architecture.md)** — Vue plugin pattern, theme system, navigation registry/resolver, and theme architecture
 - **[Testing](.agents/testing.md)** — Jest setup, test locations, and coverage
 - **[Conventions](.agents/conventions.md)** — Commit messages, linting, release-please, CI/CD, and **documentation update rules**
 

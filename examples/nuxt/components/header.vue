@@ -1,8 +1,10 @@
 <script lang="ts">
 import { VCGravatar } from '@vuecs/gravatar';
 import { VCNavItems } from '@vuecs/navigation';
+import type { NavigationResolverContext } from '@vuecs/navigation';
 import { ref } from 'vue';
 import { defineNuxtComponent, useColorMode } from '#imports';
+import { primaryItems, sideItemsFor } from '~/config/layout';
 
 export default defineNuxtComponent({
     components: {
@@ -17,11 +19,19 @@ export default defineNuxtComponent({
             displayNav.value = !displayNav.value;
         };
 
+        // The mobile drawer's sidebar nav is dependent — it reads the
+        // header nav's published active section, same as the desktop
+        // sidebar component.
+        const mobileSideResolver = ({ registry }: NavigationResolverContext) =>
+            sideItemsFor(registry('top').activeTrail.value[0]?.name);
+
         return {
             toggleNav,
             displayNav,
             colorMode: resolved,
             toggleColorMode,
+            primaryItems,
+            mobileSideResolver,
         };
     },
 });
@@ -49,7 +59,9 @@ export default defineNuxtComponent({
             <VCNavItems
                 class="ml-4 hidden md:flex"
                 :theme-class="{ group: 'flex items-center gap-1' }"
-                :level="0"
+                :data="primaryItems"
+                registry
+                registry-id="top"
             />
 
             <button
@@ -81,11 +93,11 @@ export default defineNuxtComponent({
         >
             <VCNavItems
                 :theme-class="{ group: 'flex flex-col gap-0.5' }"
-                :level="0"
+                :data="primaryItems"
             />
             <VCNavItems
                 :theme-class="{ group: 'mt-2 flex flex-col gap-0.5 border-t border-border pt-2' }"
-                :level="1"
+                :data="mobileSideResolver"
             />
         </div>
     </header>

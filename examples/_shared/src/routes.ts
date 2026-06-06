@@ -191,6 +191,12 @@ export const sharedRoutes: SharedRoute[] = [
         view: () => import('./views/ModalViewStack.vue').then((m) => m.default),
     },
     {
+        path: '/navigation',
+        name: 'navigation',
+        label: 'Navigation',
+        view: () => import('./views/Navigation.vue').then((m) => m.default),
+    },
+    {
         path: '/pagination',
         name: 'pagination',
         label: 'Pagination',

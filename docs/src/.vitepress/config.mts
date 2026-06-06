@@ -78,7 +78,7 @@ export default defineConfig({
                         { text: 'Design Tokens', link: '/guide/design-tokens' },
                         { text: 'Composables', link: '/guide/composables' },
                         { text: 'Primitive (as / asChild)', link: '/guide/primitive' },
-                        { text: 'Navigation Manager', link: '/guide/navigation-manager' },
+                        { text: 'Navigation', link: '/guide/navigation' },
                         { text: 'Validation Feedback', link: '/guide/validation-feedback' },
                     ],
                 },
