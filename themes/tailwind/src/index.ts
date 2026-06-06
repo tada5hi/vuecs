@@ -470,12 +470,23 @@ export default function tailwindTheme(): Theme {
                     linkRoot: 'font-medium text-fg',
                     linkIcon: 'inline-flex h-4 w-4 shrink-0 items-center justify-center',
                     linkText: 'flex-1 truncate',
+                    trigger: 'flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-sm text-fg no-underline hover:bg-bg-muted',
+                    content: 'block pl-3 text-fg',
+                    viewport: 'relative block',
                 },
                 variants: {
                     size: {
-                        sm: { link: 'px-2 py-1 text-xs', linkIcon: 'h-3 w-3' },
+                        sm: {
+                            link: 'px-2 py-1 text-xs', 
+                            linkIcon: 'h-3 w-3', 
+                            trigger: 'px-2 py-1 text-xs', 
+                        },
                         md: { link: '' },
-                        lg: { link: 'px-4 py-3 text-base', linkIcon: 'h-5 w-5' },
+                        lg: {
+                            link: 'px-4 py-3 text-base', 
+                            linkIcon: 'h-5 w-5', 
+                            trigger: 'px-4 py-3 text-base', 
+                        },
                     },
                 },
                 defaultVariants: { size: 'md' },

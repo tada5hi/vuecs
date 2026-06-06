@@ -417,12 +417,17 @@ export default function bulmaTheme(): Theme {
                 classes: {
                     group: 'menu-list',
                     link: '',
+                    // The structural `.vc-nav-trigger` resets the native
+                    // <button>; Bulma's menu links carry no base class, so the
+                    // trigger only needs sizing parity via the size variant.
+                    trigger: '',
+                    content: 'pl-3',
                 },
                 variants: {
                     size: {
-                        sm: { link: 'is-size-7' },
+                        sm: { link: 'is-size-7', trigger: 'is-size-7' },
                         md: { link: '' },
-                        lg: { link: 'is-size-6' },
+                        lg: { link: 'is-size-6', trigger: 'is-size-6' },
                     },
                 },
                 defaultVariants: { size: 'md' },

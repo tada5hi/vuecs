@@ -381,12 +381,17 @@ export default function bootstrapTheme(): Theme {
                 classes: {
                     group: 'nav-items',
                     link: 'nav-link',
+                    // The structural `.vc-nav-trigger` already resets the
+                    // native <button> chrome; `.nav-link` layers Bootstrap's
+                    // link styling on top.
+                    trigger: 'nav-link',
+                    content: 'ps-3',
                 },
                 variants: {
                     size: {
-                        sm: { link: 'small py-1 px-2' },
+                        sm: { link: 'small py-1 px-2', trigger: 'small py-1 px-2' },
                         md: { link: '' },
-                        lg: { link: 'fs-6 py-3 px-4' },
+                        lg: { link: 'fs-6 py-3 px-4', trigger: 'fs-6 py-3 px-4' },
                     },
                 },
                 defaultVariants: { size: 'md' },

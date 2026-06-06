@@ -17,9 +17,12 @@
             <code class="rounded bg-bg-muted px-1.5 py-0.5 text-sm">@vuecs-examples/shared</code>,
             the same workspace package consumed by the Tailwind / Bootstrap / Bulma vanilla
             Vue example apps under <code class="rounded bg-bg-muted px-1.5 py-0.5 text-sm">examples/</code>.
-            The header and sidebar are driven by
+            The header and sidebar are two independent
             <code class="rounded bg-bg-muted px-1.5 py-0.5 text-sm">@vuecs/navigation</code>
-            via <code class="rounded bg-bg-muted px-1.5 py-0.5 text-sm">findNavigationItems()</code>
+            call sites — the header publishes its resolved output into the registry under
+            <code class="rounded bg-bg-muted px-1.5 py-0.5 text-sm">top</code>, and the sidebar
+            derives its own item list from the header's active section via
+            <code class="rounded bg-bg-muted px-1.5 py-0.5 text-sm">sideItemsFor()</code>
             in <code class="rounded bg-bg-muted px-1.5 py-0.5 text-sm">config/layout/module.ts</code>.
         </p>
     </div>

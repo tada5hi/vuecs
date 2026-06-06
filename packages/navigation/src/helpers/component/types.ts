@@ -9,6 +9,13 @@ export type NavigationThemeClasses = {
     linkRoot: string;
     linkIcon: string;
     linkText: string;
+
+    /** Group title that opens a submenu (Collapsible / NavigationMenu trigger). */
+    trigger: string;
+    /** Submenu panel (CollapsibleContent / NavigationMenuContent). */
+    content: string;
+    /** Edge-aware flyout host for the dropdown submenu (NavigationMenuViewport). */
+    viewport: string;
 };
 
 declare module '@vuecs/core' {

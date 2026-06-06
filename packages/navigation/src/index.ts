@@ -3,7 +3,7 @@ import type { App, Plugin } from 'vue';
 
 import '../assets/index.css';
 import './vue';
-import { NavigationManager, provideNavigationManager } from './manager';
+import { NavigationRegistry, provideNavigationRegistry } from './registry';
 
 import {
     VCNavItem,
@@ -19,12 +19,11 @@ import {
 import type { Options } from './types';
 
 export * from './components';
-export * from './manager';
+export * from './registry';
 export * from './types';
 
 export function install(instance: App, options: Options = {}): void {
-    const manager = new NavigationManager({ items: options.items ?? [] });
-    provideNavigationManager(manager, instance);
+    provideNavigationRegistry(new NavigationRegistry(), instance);
 
     installThemeManager(instance, options);
     installDefaultsManager(instance, options);

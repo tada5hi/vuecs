@@ -11,9 +11,12 @@ function resetItemsByTraceIF(
         item.display = true;
 
         if (isEqual) {
+            item.activeWithin = false;
             item.displayChildren = true;
         } else {
-            item.displayChildren = isTracePartOf(item.trace, trace);
+            const isAncestor = isTracePartOf(item.trace, trace);
+            item.activeWithin = isAncestor;
+            item.displayChildren = isAncestor;
         }
 
         item.children = resetItemsByTraceIF(item.children, trace);

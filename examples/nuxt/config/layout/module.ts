@@ -1,20 +1,19 @@
-import type {
-    NavigationItem,
-    NavigationItemNormalized,
-} from '@vuecs/navigation';
+import type { NavigationItem } from '@vuecs/navigation';
 
 /*
- * Navigation config — drives both the top header (level 0) and the
- * left sidebar (level 1) via a single `<VCNavItems>` instance per
- * level. NavigationManager calls `findNavigationItems(level, parent)`
- * once per level per parent; the sidebar's children arrays nest one
- * more layer so the multi-level rendering path of `<VCNavItems>` is
- * exercised. Different top-level entries return different sidebar
- * items via the `parent` arg — Home shows the component catalog,
- * Admin shows admin links.
+ * Navigation config — drives the top header and the left sidebar as TWO
+ * independent `<VCNavItems>` call sites:
+ *
+ *   - The header nav owns `primaryItems` and publishes its resolved
+ *     output into the registry under the id `top`.
+ *   - The sidebar nav is *dependent*: its resolver reads
+ *     `registry('top').activeTrail` to learn which top section is active,
+ *     then supplies its OWN item list via `sideItemsFor(name)`. It never
+ *     borrows the header's `.children` subtree — each call site owns the
+ *     items it renders.
  */
 
-const primaryItems: NavigationItem[] = [
+export const primaryItems: NavigationItem[] = [
     {
         name: 'Home',
         icon: 'fa6-solid:house',
@@ -204,9 +203,14 @@ const listItems: NavigationItem[] = [
 
 const navigationItems: NavigationItem[] = [
     {
-        name: 'Stepper', 
-        type: 'link', 
-        url: '/navigation/stepper', 
+        name: 'Nav Items',
+        type: 'link',
+        url: '/navigation/items',
+    },
+    {
+        name: 'Stepper',
+        type: 'link',
+        url: '/navigation/stepper',
     },
 ];
 
@@ -253,11 +257,11 @@ const overlaysItems: NavigationItem[] = [
     },
 ];
 
-// Sidebar list shown under "Home" (level 1, default branch). Mixes
-// flat links (the six standalone components) with nested groups
-// (Elements / Forms / List / Navigation / Overlays — each expands to
-// its own children so `<VCNavItems>`'s multi-level rendering path is
-// exercised).
+// Sidebar list shown when the "Home" top section is active. Mixes flat
+// links (the standalone components) with nested groups (Elements / Forms
+// / List / Navigation / Overlays — each expands its own children inline
+// as a collapse submenu, so `<VCNavItems>`'s multi-level rendering path
+// is exercised).
 const secondaryDefaultItems: NavigationItem[] = [
     {
         name: 'Home',
@@ -306,10 +310,9 @@ const secondaryDefaultItems: NavigationItem[] = [
     },
 ];
 
-// Sidebar list shown under "Admin" (level 1, admin branch).
-// Demonstrates that `<VCNavItems>` returns different items per
-// top-level parent — switching from Home to Admin in the header
-// swaps the entire sidebar.
+// Sidebar list shown when the "Admin" top section is active.
+// Demonstrates that the dependent sidebar swaps its entire item list
+// based on which top section the header reports as active.
 const secondaryAdminItems: NavigationItem[] = [
     {
         name: 'Admin',
@@ -323,21 +326,16 @@ const secondaryAdminItems: NavigationItem[] = [
     },
 ];
 
-export async function findNavigationItems(
-    level: number,
-    parent?: NavigationItemNormalized,
-): Promise<NavigationItem[]> {
-    if (level === 0) {
-        return primaryItems;
+/**
+ * Map the active top-section name (read from the header nav's published
+ * `activeTrail[0]`) to the sidebar's own item list. The sidebar's
+ * resolver calls this — it derives its items, never renders another
+ * nav's children.
+ */
+export function sideItemsFor(activeSection?: string): NavigationItem[] {
+    if (activeSection === 'Admin') {
+        return secondaryAdminItems;
     }
 
-    if (level === 1) {
-        if (parent?.name === 'Admin') {
-            return secondaryAdminItems;
-        }
-
-        return secondaryDefaultItems;
-    }
-
-    return [];
+    return secondaryDefaultItems;
 }

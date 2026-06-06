@@ -1,12 +1,15 @@
 import type { NavigationItemNormalized } from '../types';
 
-export type NavItemSelectFn<META = any> = (
-    value: NavigationItemNormalized<META>,
-) => Promise<void>;
+/**
+ * Invoke to select this item: its trace is folded into the owning root
+ * `<VCNavItems>`'s active state and republished through the registry.
+ * The leaf link calls this on click; expose it on custom `#link` slots
+ * to drive url-less section switchers from bespoke markup.
+ */
+export type NavItemSelectFn = () => void;
 
-export type NavItemToggleFn<META = any> = (
-    value: NavigationItemNormalized<META>,
-) => Promise<void>;
+/** Invoke to toggle this item's expanded state. */
+export type NavItemToggleFn = () => void;
 
 export type NavItemSeparatorSlotProps<META = any> = {
     data: NavigationItemNormalized<META>;
@@ -14,14 +17,14 @@ export type NavItemSeparatorSlotProps<META = any> = {
 
 export type NavItemLinkSlotProps<META = any> = {
     data: NavigationItemNormalized<META>;
-    select: NavItemSelectFn<META>;
+    select: NavItemSelectFn;
     isActive?: boolean;
 };
 
 export type NavItemSubSlotProps<META = any> = {
     data: NavigationItemNormalized<META>;
-    select: NavItemSelectFn<META>;
-    toggle: NavItemToggleFn<META>;
+    select: NavItemSelectFn;
+    toggle: NavItemToggleFn;
 };
 
 export type NavItemSubTitleSlotProps<META = any> = NavItemSubSlotProps<META>;

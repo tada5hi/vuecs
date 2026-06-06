@@ -1,6 +1,6 @@
 # Navigation
 
-Multi-level navigation. Items are configured at plugin-install time and rendered by `<VCNavItems>`. A shared `NavigationManager` (provided by the plugin) tracks the active item per level and emits update events as the user navigates. See [Navigation Manager](/guide/navigation-manager) for the full state model.
+Multi-level navigation. Every `<VCNavItems>` call site **owns its own items** via the `:resolver` prop — a plain array, a sync function, or an async function. There is no install-time item list and no shared manager; the plugin provides only an empty reactive **registry** that navs can opt into publishing to / reading from. See the [Navigation guide](/guide/navigation) for the full model.
 
 ```bash
 npm install @vuecs/navigation
@@ -14,9 +14,18 @@ import { createApp } from 'vue';
 import navigation from '@vuecs/navigation';
 import App from './App.vue';
 
-const items = [
-    { name: 'Home',     url: '/' },
-    { name: 'Docs',     url: '/docs' },
+// Registry-only install — no items here.
+createApp(App).use(navigation, {}).mount('#app');
+```
+
+```vue
+<script setup lang="ts">
+import { VCNavItems } from '@vuecs/navigation';
+import type { NavigationItem } from '@vuecs/navigation';
+
+const items: NavigationItem[] = [
+    { name: 'Home', url: '/' },
+    { name: 'Docs', url: '/docs' },
     {
         name: 'Settings',
         children: [
@@ -25,58 +34,113 @@ const items = [
         ],
     },
 ];
-
-createApp(App).use(navigation, { items }).mount('#app');
-```
-
-```vue
-<script setup lang="ts">
-import { VCNavItems } from '@vuecs/navigation';
 </script>
 
 <template>
-    <!-- Renders the top-level items registered at install time. -->
-    <VCNavItems :level="0" />
+    <VCNavItems :resolver="items" />
 </template>
 ```
 
-To render items inline (without registering them at install time), pass `:data` directly with normalized items.
+The nav normalizes the items, scores each against the current path, and marks exactly one best match active. When `:path` is omitted it **softly reads the current `vue-router` route** (via the `$route` global property) if a router is installed; router-free apps simply get no active item until you pass `:path` yourself.
+
+::: tip Children render in place
+A nav item's direct children render **only** as that item's own submenu — a dropdown for horizontal navs, an indented collapse for vertical navs. They are never lifted out and rendered by a different `<VCNavItems>`. Every call site supplies its own items.
+:::
+
+## Resolver forms
+
+```vue
+<!-- 1. plain array -->
+<VCNavItems :resolver="items" />
+
+<!-- 2. sync function — receives the resolver context -->
+<VCNavItems :resolver="({ path }) => itemsFor(path)" />
+
+<!-- 3. async function — the nav re-runs it and renders the result -->
+<VCNavItems :resolver="async () => (await fetchMenu())" />
+```
+
+A function resolver receives a `NavigationResolverContext`:
+
+```ts
+type NavigationResolverContext<META = any> = {
+    path: string | undefined;                          // current active-match path
+    registry: (id: string) => NavigationRegistryEntry; // reactive, empty-safe
+};
+```
+
+Reactive reads inside the resolver (before the first `await`) are tracked automatically — the nav re-runs whenever they change. For state read **after** an `await` in an async resolver, list those sources in the `:watch` prop so they still retrigger.
+
+```vue
+<VCNavItems
+    :resolver="async () => loadFor(section.value)"
+    :watch="[section]"
+/>
+```
+
+## Dependent navs (the registry)
+
+A nav opts into **publishing** its resolved output by adding `registry` + a `registry-id`. Another nav **reads** it via the resolver context's `registry(id)` and derives its own list — it never borrows the published nav's `children`.
+
+```vue
+<!-- Header: publishes its output under the id "top" -->
+<VCNavItems :resolver="primaryItems" registry registry-id="top" />
+
+<!-- Sidebar: dependent — derives its OWN items from the active top section -->
+<VCNavItems :resolver="({ registry }) => sideItemsFor(registry('top').activeTrail.value[0]?.name)" />
+```
+
+Registration is lifecycle-bound (auto-deregisters on unmount) and ownership-token guarded, so a route handoff (Vue mounts the new page before unmounting the old) doesn't let a departing nav evict the incoming occupant.
+
+A `NavigationRegistryEntry` exposes three reactive handles:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `items` | `Ref<NavigationItemNormalized[]>` | Full resolved tree. Each item carries `.active` (exact current item) and `.activeWithin` (ancestor on the active branch). |
+| `active` | `ComputedRef<NavigationItemNormalized[]>` | Exact active leaf item(s). Single-active consumers read `active.value[0]`. |
+| `activeTrail` | `ComputedRef<NavigationItemNormalized[]>` | Ordered active trail, root → leaf. `activeTrail.value[0]` is the active top-level section; `.at(-1)` is the active leaf. |
+
+Reads are **empty-safe**: `registry(id)` returns a stable empty entry even before any nav publishes that id, and the reader lights up the moment an occupant registers.
+
+## Submenu presentation
+
+Items with children render a submenu whose presentation is controlled by `submenu`:
+
+| Value | Effect |
+|-------|--------|
+| `auto` (default) | Horizontal orientation → `dropdown`; otherwise → `collapse`. |
+| `collapse` | Indented, in-place expand/collapse (Reka `Collapsible`). |
+| `dropdown` | Flyout menu (Reka `NavigationMenu`) with hover-grace + edge-aware content. |
+
+An active descendant auto-opens its parent branch.
+
+## Variants
+
+| Prop | Values | Default | Effect |
+|------|--------|---------|--------|
+| `variant` | `list`, `pills` | `list` | `pills` renders each item as a rounded pill. |
+| `orientation` | `horizontal`, `vertical` | `horizontal` | `vertical` stacks items in a column. |
+
+Both feed the `navigation` theme's variant system. Themes override the accent via the `navigation` variant slot classes.
 
 ## Active state
 
-`@vuecs/navigation` watches the current `vue-router` route. When the route matches an item's `url` (or its optional `activeMatch` regex), the item is added to `itemsActive` at its level — and the rendered `<a>` element receives `router-link-active` / `router-link-exact-active` classes from `vue-router` directly. Style them via the `navLink` theme element. See [theme-tailwind](/themes/tailwind) for an example.
+Active state is path-scored, with three distinct concepts surfaced on normalized items / registry entries:
 
-## Manager API
+- **`active`** — the exact current leaf (one best match, not a prefix match — so `/robots` does not stay lit on `/robots/add`).
+- **`activeWithin`** — an ancestor of the active branch; drives parent highlight.
+- **`activeTrail`** — the ordered root → leaf chain.
 
-For programmatic control, inject the manager:
+The active link receives the explicit `active` class, so a single `.active` selector styles it. Style via the `navLink` theme element — see [theme-tailwind](/themes/tailwind).
 
-```ts
-import { injectNavigationManager } from '@vuecs/navigation';
-import type { NavigationItemNormalized } from '@vuecs/navigation';
-
-const manager = injectNavigationManager();
-
-// Select an item at a level (e.g. activate "Settings" at the root)
-await manager.select(0, settingsItem as NavigationItemNormalized);
-
-// Toggle the expansion of a parent item
-await manager.toggle(0, settingsItem as NavigationItemNormalized);
-```
-
-| Method | Signature | Description |
-|--------|-----------|-------------|
-| `select(level, item)` | `(number, NavigationItemNormalized) => Promise<void>` | Make `item` the active item at `level`. Children below are rebuilt. |
-| `toggle(level, item)` | `(number, NavigationItemNormalized) => Promise<void>` | Toggle `item`'s expansion at `level`. Same item twice collapses. |
-| `getItems(level)` | `(number) => NavigationItemNormalized[]` | Read the currently visible items at the given level. |
-
-The manager extends `EventEmitter` and emits `built`, `updated`, and per-level events — useful for reacting to route changes outside the rendered tree.
+A leaf item with **no `url`** becomes a *section switcher*: clicking it selects the item (folding it into `active` / `activeTrail` and republishing through the registry) instead of navigating. A later navigation supersedes the selection. See [Selecting without navigating](/guide/navigation#selecting-without-navigating).
 
 ## NavigationItem shape
 
 ```ts
 type NavigationItem<META = any> = {
     name: string;          // required
-    url?: string;          // route to navigate to (matches against router for active state)
+    url?: string;          // route to navigate to (matched for active state)
     urlTarget?: string;    // anchor target (e.g. '_blank')
     default?: boolean;     // first-paint default
     type?: string;         // ElementType — for non-link items
@@ -90,19 +154,22 @@ type NavigationItem<META = any> = {
 };
 ```
 
-There is no required `id` field — items are identified by their position (level + name) within the tree.
+There is no required `id` field — items are identified by their `trace` (the array of names from root to leaf) within the tree.
 
 ## Slot props
 
-`<VCNavItems>` exposes a typed `item` slot for rendering each item:
-
 ```ts
-import type { NavItemLinkSlotProps, NavItemsItemSlotProps } from '@vuecs/navigation';
+import type {
+    NavItemsItemSlotProps,
+    NavItemLinkSlotProps,
+    NavItemTextSlotProps,
+    NavItemIconSlotProps,
+} from '@vuecs/navigation';
 ```
 
-`@vuecs/navigation` also exports `NavItemLinkSlotProps`, `NavItemTextSlotProps`, `NavItemIconSlotProps` for typing slot consumers in render functions.
+`<VCNavItems>` exposes a typed `item` slot for rendering each item; the link / text / icon slot-prop types are exported for typing slot consumers in render functions.
 
 ## See also
 
-- [Navigation Manager](/guide/navigation-manager) — full state model
+- [Navigation guide](/guide/navigation) — resolver + registry model
 - [Link](/components/link)
