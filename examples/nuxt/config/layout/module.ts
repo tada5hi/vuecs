@@ -17,7 +17,6 @@ export const primaryItems: NavigationItem[] = [
     {
         name: 'Home',
         icon: 'fa6-solid:house',
-        url: '/',
     },
     {
         name: 'Admin',
@@ -142,62 +141,62 @@ const formsItems: NavigationItem[] = [
         url: '/forms/input',
     },
     {
-        name: 'Number', 
-        type: 'link', 
-        url: '/forms/number', 
+        name: 'Number',
+        type: 'link',
+        url: '/forms/number',
     },
     {
-        name: 'Pin', 
-        type: 'link', 
-        url: '/forms/pin', 
+        name: 'Pin',
+        type: 'link',
+        url: '/forms/pin',
     },
     {
-        name: 'Radio', 
-        type: 'link', 
-        url: '/forms/radio', 
+        name: 'Radio',
+        type: 'link',
+        url: '/forms/radio',
     },
     {
-        name: 'Select', 
-        type: 'link', 
-        url: '/forms/select', 
+        name: 'Select',
+        type: 'link',
+        url: '/forms/select',
     },
     {
-        name: 'Select Search', 
-        type: 'link', 
-        url: '/forms/select-search', 
+        name: 'Select Search',
+        type: 'link',
+        url: '/forms/select-search',
     },
     {
-        name: 'Select Search (Multiple)', 
-        type: 'link', 
-        url: '/forms/select-search-multiple', 
+        name: 'Select Search (Multiple)',
+        type: 'link',
+        url: '/forms/select-search-multiple',
     },
     {
-        name: 'Slider', 
-        type: 'link', 
-        url: '/forms/slider', 
+        name: 'Slider',
+        type: 'link',
+        url: '/forms/slider',
     },
     {
-        name: 'Switch', 
-        type: 'link', 
-        url: '/forms/switch', 
+        name: 'Switch',
+        type: 'link',
+        url: '/forms/switch',
     },
     {
-        name: 'Tags', 
-        type: 'link', 
-        url: '/forms/tags', 
+        name: 'Tags',
+        type: 'link',
+        url: '/forms/tags',
     },
     {
-        name: 'Textarea', 
-        type: 'link', 
-        url: '/forms/textarea', 
+        name: 'Textarea',
+        type: 'link',
+        url: '/forms/textarea',
     },
 ];
 
 const listItems: NavigationItem[] = [
     {
-        name: 'List', 
-        type: 'link', 
-        url: '/list/list', 
+        name: 'List',
+        type: 'link',
+        url: '/list/list',
     },
 ];
 
@@ -216,29 +215,29 @@ const navigationItems: NavigationItem[] = [
 
 const overlaysItems: NavigationItem[] = [
     {
-        name: 'Context Menu', 
-        type: 'link', 
-        url: '/overlays/context-menu', 
+        name: 'Context Menu',
+        type: 'link',
+        url: '/overlays/context-menu',
     },
     {
-        name: 'Dropdown Menu', 
-        type: 'link', 
-        url: '/overlays/dropdown-menu', 
+        name: 'Dropdown Menu',
+        type: 'link',
+        url: '/overlays/dropdown-menu',
     },
     {
-        name: 'Hover Card', 
-        type: 'link', 
-        url: '/overlays/hover-card', 
+        name: 'Hover Card',
+        type: 'link',
+        url: '/overlays/hover-card',
     },
     {
-        name: 'Modal', 
-        type: 'link', 
-        url: '/overlays/modal', 
+        name: 'Modal',
+        type: 'link',
+        url: '/overlays/modal',
     },
     {
-        name: 'Modal View Stack', 
-        type: 'link', 
-        url: '/overlays/modal-view-stack', 
+        name: 'Modal View Stack',
+        type: 'link',
+        url: '/overlays/modal-view-stack',
     },
     {
         name: 'Popover',

@@ -1490,7 +1490,25 @@ also exposed on the `#link` slot props for bespoke markup.
 **Submenu presentation**: items with children render in place —
 `submenu="collapse"` (indented Reka `Collapsible`), `submenu="dropdown"`
 (Reka `NavigationMenu` flyout), or `auto` (horizontal → dropdown,
-otherwise collapse).
+otherwise collapse). A dropdown bar is a **single** `NavigationMenuRoot`:
+`<VCNavItem>`'s `renderChildren()` renders a flyout panel's contents in
+`collapse` mode (`submenu: props.submenu === 'dropdown' ? 'collapse' :
+props.submenu`), NOT by recursing with `submenu="dropdown"`. Nesting a
+second `NavigationMenuRoot` inside a flyout's `NavigationMenuContent`
+breaks Reka's hover state machine — the panel opens on the first hover
+and never reopens — so a group nested inside a flyout degrades to an
+inline collapsible instead of a buggy sub-root. (Proper multi-level
+flyouts would need Reka's `NavigationMenuSub`, which vuecs does not wire
+today.) The structural absolute-flyout CSS lives under the
+`[data-reka-navigation-menu]` marker in `assets/index.css`, scoping it
+entirely off the collapse/vertical path. Both the dropdown
+`NavigationMenuContent` and the collapse `CollapsibleContent` slots are
+fed a **per-mount thunk** (`{ default: () => renderChildren() }`), NOT a
+pre-computed VNode. Reka's content primitives use `unmountOnHide`, so
+they unmount on close and remount on reopen; a VNode can only be
+rendered once, so handing back a captured `children` tree mounts an
+empty flyout on the second open. The thunk re-runs `renderChildren()`
+for each mount so the panel re-renders its links every time it reopens.
 
 **Path source**: when `:path` is omitted, the nav softly reads
 `vue-router`'s `$route` global property inside a computed (no static

@@ -203,11 +203,20 @@ export const VCNavItem = defineComponent({
                 });
             }
 
+            // A dropdown group's flyout panel is plain content — a list of
+            // links — NOT another menu bar. Recursing with `submenu="dropdown"`
+            // would nest a second `NavigationMenuRoot` inside this root's
+            // `NavigationMenuContent`; Reka's NavigationMenu is built around a
+            // SINGLE root per bar, and nesting roots breaks the hover state
+            // machine (the panel only opens on the first hover and never
+            // reopens). Rendering the panel contents in `collapse` mode keeps
+            // them a plain `<ul>` of links, so deeper groups degrade to inline
+            // collapsibles within the flyout instead of buggy sub-roots.
             return h(itemsNode, {
                 data: data.value.children,
                 variant: props.variant,
                 orientation: props.orientation,
-                submenu: props.submenu,
+                submenu: props.submenu === 'dropdown' ? 'collapse' : props.submenu,
                 themeClass: props.themeClass,
                 themeVariant: props.themeVariant,
             });
@@ -281,8 +290,6 @@ export const VCNavItem = defineComponent({
                 }) :
                 renderTitleInner(resolved);
 
-            const children = renderChildren();
-
             // dropdown: Reka NavigationMenu flyout
             if (isDropdown) {
                 return h(NavigationMenuItem, {
@@ -295,7 +302,13 @@ export const VCNavItem = defineComponent({
                             'data-vc-collection-item': '',
                             'data-active': isActive ? '' : undefined,
                         }, { default: () => title }),
-                        h(NavigationMenuContent, { class: resolved.content || undefined }, { default: () => children }),
+                        // Re-invoke `renderChildren()` per mount: Reka's
+                        // NavigationMenuContent unmounts on close and remounts on
+                        // reopen (unmountOnHide). A VNode can only be rendered
+                        // once, so handing back a pre-computed tree renders an
+                        // EMPTY flyout on the second open. The thunk produces a
+                        // fresh subtree each time the content mounts.
+                        h(NavigationMenuContent, { class: resolved.content || undefined }, { default: () => renderChildren() }),
                     ],
                 });
             }
@@ -320,7 +333,7 @@ export const VCNavItem = defineComponent({
                         'data-vc-collection-item': '',
                         'data-active': isActive ? '' : undefined,
                     }, { default: () => title }),
-                    h(CollapsibleContent, { class: resolved.content || undefined }, { default: () => children }),
+                    h(CollapsibleContent, { class: resolved.content || undefined }, { default: () => renderChildren() }),
                 ],
             });
         };

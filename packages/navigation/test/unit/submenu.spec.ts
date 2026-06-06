@@ -5,6 +5,7 @@ import {
     describe,
     expect,
     it,
+    vi,
 } from 'vitest';
 import {
     defineComponent,
@@ -56,6 +57,38 @@ const items: NavigationItem[] = [
         ],
     },
 ];
+
+// Two sibling groups for the "hover A, then B, then A again" reopen guard.
+const twoGroups: NavigationItem[] = [
+    {
+        name: 'GroupA',
+        children: [
+            { name: 'A1', url: '/a/1' },
+            { name: 'A2', url: '/a/2' },
+        ],
+    },
+    {
+        name: 'GroupB',
+        children: [
+            { name: 'B1', url: '/b/1' },
+            { name: 'B2', url: '/b/2' },
+        ],
+    },
+];
+
+function pointer(el: Element, type: string) {
+    el.dispatchEvent(new PointerEvent(type, { bubbles: true, pointerType: 'mouse' } as PointerEventInit));
+}
+
+// The currently-open flyout's child link labels (a closed flyout unmounts
+// its content under Reka's unmountOnHide, so only the open one has links).
+function openFlyoutLinks(root: Element): string[] {
+    const contents = Array.from(root.querySelectorAll('.vc-nav-content'));
+    const open = contents.find((c) => c.querySelector('.vc-nav-link'));
+    return open ?
+        Array.from(open.querySelectorAll('.vc-nav-link')).map((l) => (l.textContent || '').trim()) :
+        [];
+}
 
 describe('VCNavItems submenu presentation', () => {
     beforeAll(() => {
@@ -143,5 +176,78 @@ describe('VCNavItems submenu presentation', () => {
         await nextTick();
 
         expect((wrapper.element as HTMLElement).tagName).toBe('UL');
+    });
+
+    it('dropdown: a group flyout renders plain content, NOT a nested NavigationMenuRoot', async () => {
+        // Reka's NavigationMenu is built around a SINGLE root per bar.
+        // Recursing the flyout panel in dropdown mode would nest a second
+        // `NavigationMenuRoot` inside this root's content, which breaks the
+        // hover state machine (the panel only opens on the first hover and
+        // never reopens). The flyout children must render as a plain <ul>.
+        vi.useFakeTimers();
+        try {
+            const wrapper = buildApp({ items, orientation: 'horizontal' });
+            await nextTick();
+
+            // The owning root is the only NavigationMenu marker in the tree —
+            // the marker lives on `wrapper.element` itself (the <nav>), so the
+            // descendant query must find none.
+            expect((wrapper.element as HTMLElement).matches('[data-reka-navigation-menu]')).toBe(true);
+            expect(wrapper.element.querySelectorAll('[data-reka-navigation-menu]').length).toBe(0);
+
+            // Hover the group trigger to open the flyout (Reka unmounts it
+            // while closed, so it must be opened to inspect its contents).
+            const trigger = wrapper.element.querySelector('.vc-nav-trigger') as HTMLElement;
+            trigger.dispatchEvent(new PointerEvent('pointerenter', { bubbles: true, pointerType: 'mouse' } as PointerEventInit));
+            trigger.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerType: 'mouse' } as PointerEventInit));
+            vi.advanceTimersByTime(500);
+            await nextTick();
+            await nextTick();
+            await nextTick();
+
+            // The flyout content mounts its child links as a plain list, with
+            // no nested NavigationMenu root inside it.
+            const flyout = wrapper.element.querySelector('.vc-nav-content') as HTMLElement;
+            expect(flyout).not.toBeNull();
+            expect(flyout.querySelector('.vc-nav-items')).not.toBeNull();
+            expect(flyout.querySelector('[data-reka-navigation-menu]')).toBeNull();
+        } finally {
+            vi.useRealTimers();
+        }
+    });
+
+    it('dropdown: hovering A → B → A re-shows each group\'s own children (reopen guard)', async () => {
+        // Regression for "the dropdown only opens on first hover / the list is
+        // empty on the second item": each flyout must remount its own children
+        // every time it opens, not be consumed/emptied by the first open.
+        vi.useFakeTimers();
+        try {
+            const wrapper = buildApp({ items: twoGroups, orientation: 'horizontal' });
+            await nextTick();
+
+            const triggers = wrapper.element.querySelectorAll('.vc-nav-trigger');
+            const a = triggers[0] as HTMLElement;
+            const b = triggers[1] as HTMLElement;
+
+            const open = async (trigger: HTMLElement) => {
+                pointer(trigger, 'pointerenter');
+                pointer(trigger, 'pointermove');
+                vi.advanceTimersByTime(500);
+                await nextTick(); await nextTick(); await nextTick();
+            };
+
+            await open(a);
+            expect(openFlyoutLinks(wrapper.element)).toEqual(['A1', 'A2']);
+
+            pointer(a, 'pointerleave');
+            await open(b);
+            expect(openFlyoutLinks(wrapper.element)).toEqual(['B1', 'B2']);
+
+            pointer(b, 'pointerleave');
+            await open(a);
+            expect(openFlyoutLinks(wrapper.element)).toEqual(['A1', 'A2']);
+        } finally {
+            vi.useRealTimers();
+        }
     });
 });

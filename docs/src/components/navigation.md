@@ -114,6 +114,10 @@ Items with children render a submenu whose presentation is controlled by `submen
 
 An active descendant auto-opens its parent branch.
 
+::: tip Nested groups inside a dropdown flyout
+A dropdown bar is a **single** Reka `NavigationMenu` root. The flyout panel is plain content — a list of links — so a group nested *inside* a flyout renders as an inline `collapse` (an expandable sub-list) rather than a second nested flyout. This keeps the hover state machine intact (one root per bar); a deeper dropdown-in-dropdown would break reopen-on-hover.
+:::
+
 ## Variants
 
 | Prop | Values | Default | Effect |

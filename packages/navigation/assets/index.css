@@ -86,6 +86,63 @@
 }
 
 /*
+ * Dropdown submenu mode (submenu="dropdown", or horizontal `auto`). The list
+ * is rendered inside Reka's NavigationMenuRoot, which emits the
+ * `[data-reka-navigation-menu]` marker — so scoping every rule below to that
+ * marker keeps them entirely off the collapse / vertical path (which renders a
+ * plain <ul> with no marker).
+ *
+ * Two structural concerns live here:
+ *   1. The top-level items must flow horizontally (a menu bar), not stack —
+ *      themes bake a `flex-col` into the base group class for the list look,
+ *      and these rules (unlayered, specificity 0,2,0) override it for dropdowns.
+ *   2. The content panel must be an ABSOLUTE flyout, not an in-flow block.
+ *      Rendering it inline reflows the layout under the cursor the moment it
+ *      opens, which makes the trigger lose hover and the menu only ever open
+ *      on the first pointer-enter. Lifting the panel out of flow fixes the
+ *      "only opens on first hover" bug.
+ *
+ * Layout + positioning are structural; the panel chrome falls back to the
+ * design tokens so an un-themed dropdown is still legible, and themes layer
+ * their own colors via the `content` slot on top.
+ */
+[data-reka-navigation-menu] .vc-nav-items {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+[data-reka-navigation-menu] .vc-nav-item {
+    position: relative;
+}
+
+[data-reka-navigation-menu] .vc-nav-content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 50;
+    min-width: max-content;
+    margin-top: 0.25rem;
+    padding: 0.25rem;
+    background: var(--vc-color-bg, #ffffff);
+    border: 1px solid var(--vc-color-border, rgba(0, 0, 0, 0.1));
+    border-radius: var(--vc-radius-md, 0.375rem);
+    box-shadow:
+        0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+/* Items inside a flyout panel stack vertically again (it's a column of
+   links, not a second menu bar). Higher specificity (0,3,0) than the
+   horizontal base rule above. */
+[data-reka-navigation-menu] .vc-nav-content .vc-nav-items {
+    flex-direction: column;
+    align-items: stretch;
+    flex-wrap: nowrap;
+}
+
+/*
  * `pills` variant (VCNavItems variant="pills") — the nav-pills look: each
  * item is a separate rounded pill. Layout, padding and radius are structural;
  * the hover / active fill uses a currentColor-derived tint so the selected
