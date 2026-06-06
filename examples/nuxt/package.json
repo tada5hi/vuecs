@@ -40,16 +40,16 @@
         "@vuecs/icons-font-awesome": "^1.0.2",
         "@vuecs/link": "^2.0.1",
         "@vuecs/list": "^1.0.2",
-        "@vuecs/navigation": "^3.0.2",
+        "@vuecs/navigation": "^4.0.0",
         "@vuecs/nuxt": "^1.0.2",
         "@vuecs/overlays": "^1.0.2",
         "@vuecs/pagination": "^2.1.1",
-        "@vuecs/theme-tailwind": "^1.2.0",
+        "@vuecs/theme-tailwind": "^2.0.0",
         "@vuecs/timeago": "^2.0.2",
         "nuxt": "4.4.6",
         "tailwindcss": "^4.3.0",
         "vue": "^3.5.35",
         "vue-router": "^5.1.0"
     },
-    "version": "4.2.0"
+    "version": "5.0.0"
 }

@@ -1,5 +1,23 @@
 # Changelog
 
+## [5.0.0](https://github.com/tada5hi/vuecs/compare/theme-bootstrap-v4.2.0...theme-bootstrap-v5.0.0) (2026-06-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* **navigation:** @vuecs/navigation 3.0 removes NavigationManager and the install-time item list. install() now provides only an empty reactive registry. Each <VCNavItems> owns its items via the :resolver prop (array, sync, or async fn); navs opt into publishing via registry + registry-id, and dependent navs read another nav's state via the resolver context's registry(id).
+
+### Features
+
+* **navigation:** per-call-site :data prop + registry (plan 037) ([#1618](https://github.com/tada5hi/vuecs/issues/1618)) ([6476683](https://github.com/tada5hi/vuecs/commit/64766833bce92bfbac658879f34655679d400a98))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/navigation bumped from ^3.0.2 to ^4.0.0
+
 ## [4.2.0](https://github.com/tada5hi/vuecs/compare/theme-bootstrap-v4.1.3...theme-bootstrap-v4.2.0) (2026-06-04)
 
 

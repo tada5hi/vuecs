@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/navigation",
-    "version": "3.0.2",
+    "version": "4.0.0",
     "type": "module",
     "description": "A package for multi level navigations.",
     "exports": {

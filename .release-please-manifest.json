@@ -9,17 +9,17 @@
     "packages/icon": "1.0.1",
     "packages/link": "2.0.1",
     "packages/list": "1.0.2",
-    "packages/navigation": "3.0.2",
+    "packages/navigation": "4.0.0",
     "packages/nuxt": "1.0.2",
     "packages/overlays": "1.0.2",
     "packages/pagination": "2.1.1",
     "packages/placeholder": "1.0.2",
     "packages/table": "1.1.2",
-    "themes/bootstrap": "4.2.0",
-    "themes/bulma": "1.2.0",
-    "themes/tailwind": "1.2.0",
+    "themes/bootstrap": "5.0.0",
+    "themes/bulma": "2.0.0",
+    "themes/tailwind": "2.0.0",
     "icons/font-awesome": "1.0.2",
     "icons/lucide": "1.0.2",
     "packages/timeago": "2.0.2",
-    "examples/nuxt": "4.2.0"
+    "examples/nuxt": "5.0.0"
 }
