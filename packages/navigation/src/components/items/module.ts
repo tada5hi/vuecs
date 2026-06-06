@@ -198,8 +198,13 @@ export const VCNavItems = defineComponent({
 
         // --- resolver + reactivity (root mode only; nested bypasses) ---
         const raw = ref<NavigationItem[]>([]);
+        // Monotonic run token: overlapping async resolvers can settle out of
+        // order, so only the latest invocation is allowed to write `raw.value`
+        // — a slower earlier run must not clobber a fresher result.
+        let runToken = 0;
 
         async function run() {
+            const token = ++runToken;
             const value = typeof props.data === 'function' ?
                 props.data({
                     path: currentPath.value,
@@ -207,7 +212,24 @@ export const VCNavItems = defineComponent({
                 }) :
                 (props.data ?? []);
 
-            raw.value = isPromise(value) ? ((await value) ?? []) : (value ?? []);
+            if (!isPromise(value)) {
+                raw.value = value ?? [];
+                return;
+            }
+
+            try {
+                const awaited = (await value) ?? [];
+                if (token === runToken) {
+                    raw.value = awaited;
+                }
+            } catch (error) {
+                // Without this, a rejected resolver surfaces as an unhandled
+                // rejection from the watcher effect. Only the latest run logs.
+                if (token === runToken) {
+                    // eslint-disable-next-line no-console
+                    console.error('[vuecs] <VCNavItems> resolver rejected:', error);
+                }
+            }
         }
 
         if (!isNested.value) {

@@ -8,7 +8,7 @@ The guide section covers the concepts behind vuecs in depth. Read these once, an
 - **[Variants](/guide/variants)** — structured variants, compound variants, and the merge rules across layers.
 - **[Behavioral Defaults](/guide/behavioral-defaults)** — the parallel resolution system for non-class props (button text, placeholders, content strings) — the i18n hook.
 - **[Design Tokens](/guide/design-tokens)** — `@vuecs/design`, the CSS custom-property layer underneath the class system.
-- **[Navigation](/guide/navigation)** — `@vuecs/navigation`'s per-call-site `:resolver` items, the shared reactive registry for dependent navs, and soft `vue-router` integration.
+- **[Navigation](/guide/navigation)** — `@vuecs/navigation`'s per-call-site `:data` items, the shared reactive registry for dependent navs, and soft `vue-router` integration.
 
 ## Mental model
 

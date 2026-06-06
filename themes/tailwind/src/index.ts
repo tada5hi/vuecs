@@ -477,15 +477,15 @@ export default function tailwindTheme(): Theme {
                 variants: {
                     size: {
                         sm: {
-                            link: 'px-2 py-1 text-xs', 
-                            linkIcon: 'h-3 w-3', 
-                            trigger: 'px-2 py-1 text-xs', 
+                            link: 'px-2 py-1 text-xs',
+                            linkIcon: 'h-3 w-3',
+                            trigger: 'px-2 py-1 text-xs',
                         },
                         md: { link: '' },
                         lg: {
-                            link: 'px-4 py-3 text-base', 
-                            linkIcon: 'h-5 w-5', 
-                            trigger: 'px-4 py-3 text-base', 
+                            link: 'px-4 py-3 text-base',
+                            linkIcon: 'h-5 w-5',
+                            trigger: 'px-4 py-3 text-base',
                         },
                     },
                 },

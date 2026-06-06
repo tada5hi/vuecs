@@ -119,6 +119,69 @@ export function sideItemsFor(activeSection?: string): NavigationItem[] {
 
 The sidebar owns `defaultItems` / `adminItems`; it only borrows the *name* of the active section from the header — never the header's children.
 
+## Migrating from 2.x
+
+3.0 is a clean break. The `NavigationManager`, the install-time `items` option, and the `:level` / tier concept are all gone — each `<VCNavItems>` now owns its items via `:data`, and dependent navs talk through the registry.
+
+### Removed API
+
+| 2.x symbol | 3.0 replacement |
+|---|---|
+| `install(app, { items: ({ level, parent }) => … })` | `install(app, {})` — registry only; items live on each `<VCNavItems :data>` |
+| `injectNavigationManager()` | removed — no manager |
+| `manager.reset()` + `manager.build({ path })` | automatic: the nav reads `$route` and re-runs resolvers reactively. Imperative refresh → `refresh()` on the component instance |
+| `<VCNavItems :level="0|1">` | one `<VCNavItems :data>` per call site |
+| `NavigationItemNormalized` (as a `getItems` arg) | still exported (registry entries surface it), but the `getItems(level, parent)` signature is gone |
+
+`NavigationItem` (shape, `meta`, `type: 'separator'`, `activeMatch`, `children`) is unchanged.
+
+### Install
+
+```ts
+// 2.x
+import { install as installNavigation, injectNavigationManager } from '@vuecs/navigation';
+app.use(installNavigation, { items: ({ level, parent }) => navigation.getItems(level, parent) });
+const manager = injectNavigationManager(app);
+router.afterEach(async (to) => {
+    manager.reset();
+    await manager.build({ path: to.fullPath });
+});
+
+// 3.0 — registry only; the route hook disappears entirely
+app.use(navigation, {});
+```
+
+### Header + sidebar call-sites
+
+```vue
+<!-- 2.x: the manager fed `level` (and the active parent) to getItems -->
+<VCNavItems :level="0" />   <!-- header -->
+<VCNavItems :level="1" />   <!-- sidebar, switched by the active level-0 parent -->
+
+<!-- 3.0: each owns its items; the sidebar reads the header's published state -->
+<VCNavItems :data="topItems" registry registry-id="top" />
+<VCNavItems
+    :data="({ registry }) => sideItemsFor(registry('top').activeTrail.value[0]?.name)"
+/>
+```
+
+The old `parent.name === 'Admin'` branch in `getItems(1, parent)` becomes the [two-call-site pattern](#two-call-site-pattern-header--sidebar): give the header's section items **no `url`** so a click *selects* them (see [Selecting without navigating](#selecting-without-navigating)), publish via `registry`, and key the sidebar off `registry('top').activeTrail`.
+
+### Auth/permission-filtered menus
+
+Move the 2.x `reduce`/`reduceItem` filtering straight into the `:data` resolver. Reactive reads **before** the first `await` retrigger automatically; an `await`ed permission check reads state the auto-tracker can't see past, so list those sources in `:watch` or the menu won't refresh on login/logout:
+
+```vue
+<VCNavItems
+    :data="async () => filterByPermission(topItems)"
+    :watch="[() => store.loggedIn]"
+    registry
+    registry-id="top"
+/>
+```
+
+For an imperative rebuild (e.g. after a permission-cache change), grab a template ref and call `navRef.value.refresh()` — the 3.0 stand-in for `manager.build()`.
+
 ## See also
 
 - [Components → Navigation](/components/navigation) — component reference
