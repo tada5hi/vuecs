@@ -3,7 +3,7 @@
 `@vuecs/navigation` inverts the usual "central store" model. There is **no NavigationManager** and no install-time item list. Instead:
 
 - The plugin provides **only an empty reactive registry**.
-- Each `<VCNavItems>` **owns its items** via the `:resolver` prop.
+- Each `<VCNavItems>` **owns its items** via the `:data` prop.
 - A nav opts into **publishing** its resolved output to the registry; other navs **read** it and derive their own lists.
 
 This keeps every call site self-contained: a nav is either *independent* (it resolves its own items with no registry read) or *dependent* (it derives its own list by keying off another nav's published state). A nav never renders another nav's `children` subtree.
@@ -17,20 +17,20 @@ import navigation from '@vuecs/navigation';
 app.use(navigation, {});
 ```
 
-## Owning items: `:resolver`
+## Owning items: `:data`
 
-The `:resolver` prop is the single source of a nav's items. It accepts a plain array, a sync function, or an async function:
+The `:data` prop is the single source of a nav's items. It accepts a plain array, a sync function, or an async function:
 
 ```vue
-<VCNavItems :resolver="items" />
-<VCNavItems :resolver="({ path }) => itemsFor(path)" />
-<VCNavItems :resolver="async () => (await fetchMenu())" />
+<VCNavItems :data="items" />
+<VCNavItems :data="({ path }) => itemsFor(path)" />
+<VCNavItems :data="async () => (await fetchMenu())" />
 ```
 
 A function resolver receives a `NavigationResolverContext` (`{ path, registry }`) and may read reactive state freely. Reads **before the first `await`** are tracked automatically — the nav re-runs the resolver whenever they change. For state read **after** an `await`, list those sources in `:watch` so they still retrigger:
 
 ```vue
-<VCNavItems :resolver="async () => loadFor(section.value)" :watch="[section]" />
+<VCNavItems :data="async () => loadFor(section.value)" :watch="[section]" />
 ```
 
 An imperative `refresh()` is exposed on the component instance for manual re-runs.
@@ -40,7 +40,7 @@ An imperative `refresh()` is exposed on the component instance for manual re-run
 The registry is a reactive, app-wide map keyed by string id. A nav publishes by adding `registry` + `registry-id`:
 
 ```vue
-<VCNavItems :resolver="primaryItems" registry registry-id="top" />
+<VCNavItems :data="primaryItems" registry registry-id="top" />
 ```
 
 Publishing is **lifecycle-bound** (auto-deregister on unmount) and **ownership-token guarded**: each publishing nav holds a private token, and a nav can only release the id it currently occupies. During a route handoff — where Vue mounts the incoming page before unmounting the outgoing one — the departing nav holds a stale token and cannot evict the new occupant. Reassigning an occupied id logs a dev warning.
@@ -51,7 +51,7 @@ A dependent nav reads via the resolver context's `registry(id)`:
 
 ```vue
 <VCNavItems
-    :resolver="({ registry }) => sideItemsFor(registry('top').activeTrail.value[0]?.name)"
+    :data="({ registry }) => sideItemsFor(registry('top').activeTrail.value[0]?.name)"
 />
 ```
 
@@ -97,11 +97,11 @@ The canonical layout: a header nav publishes its top-level sections, and a sideb
 
 ```vue
 <!-- Header -->
-<VCNavItems :resolver="primaryItems" registry registry-id="top" />
+<VCNavItems :data="primaryItems" registry registry-id="top" />
 
 <!-- Sidebar (dependent) -->
 <VCNavItems
-    :resolver="({ registry }) => sideItemsFor(registry('top').activeTrail.value[0]?.name)"
+    :data="({ registry }) => sideItemsFor(registry('top').activeTrail.value[0]?.name)"
 />
 ```
 

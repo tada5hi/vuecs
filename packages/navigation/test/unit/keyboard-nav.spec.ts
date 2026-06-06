@@ -14,7 +14,7 @@ async function buildApp() {
     const App = defineComponent({
         setup() {
             return () => h(VCNavItems, {
-                resolver: [
+                data: [
                     { name: 'Home', url: '#home' },
                     { name: 'Foo', url: '#foo' },
                     { name: 'Bar', url: '#bar' },

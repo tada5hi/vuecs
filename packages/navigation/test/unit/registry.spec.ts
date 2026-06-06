@@ -23,7 +23,6 @@ import type { NavigationItemNormalized, NavigationRegistryEntry } from '../../sr
 function item(name: string, active = false): NavigationItemNormalized {
     return {
         name,
-        level: 0,
         children: [],
         trace: [name],
         meta: {},

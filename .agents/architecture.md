@@ -1427,12 +1427,17 @@ core inversion is:
 - `install(app, options)` provides ONLY an **empty reactive registry**
   (`provideNavigationRegistry(new NavigationRegistry(), app)`). `Options`
   carries no `items`. The `@posva/event-emitter` dependency is gone.
-- Each `<VCNavItems>` **owns its items** via the `:resolver` prop — a
-  plain `NavigationItem[]`, a sync fn, or an async fn. A fn receives a
-  `NavigationResolverContext` (`{ path, registry }`). Reactive reads
-  before the first `await` retrigger the resolver automatically
-  (`watchEffect`); state read after an `await` needs the `:watch` prop.
-  `refresh()` is exposed for imperative re-runs.
+- Each `<VCNavItems>` **owns its items** via the single `:data` prop — a
+  plain `NavigationItem[]`, a sync fn, or an async fn (`NavigationResolver`).
+  A fn receives a `NavigationResolverContext` (`{ path, registry }`).
+  Reactive reads before the first `await` retrigger the resolver
+  automatically (`watchEffect`); state read after an `await` needs the
+  `:watch` prop. `refresh()` is exposed for imperative re-runs. When
+  `:data` is omitted, the nav is a **nested submenu renderer**: it injects
+  its parent `<VCNavItem>`'s already-scored children (via
+  `NAVIGATION_NODES_KEY`) and renders them as-is, skipping
+  resolve / score / select / registry. An explicit `:data` always wins
+  (treated as a resolving root even when nested in markup).
 - A nav opts into **publishing** its resolved output via `registry` +
   `registry-id`. Other navs **read** it through the resolver context's
   `registry(id)` and derive their OWN list — they NEVER render another
@@ -1482,7 +1487,8 @@ sidebar without navigating (the `examples/nuxt` header → sidebar pair).
 A real navigation supersedes the selection: when `currentPath` changes
 the root clears `selectedTrace`, handing active state back to path
 matching. Only the root nav provides the bridge; nested `<VCNavItems>`
-(rendering a parent's `.children` via `data`) let the click bubble up
+(rendering a parent's injected `.children` via `NAVIGATION_NODES_KEY`)
+let the click bubble up
 to their owning root, so each root nav has its own selection scope and
 the registry stays the only cross-nav channel. The `select` callback is
 also exposed on the `#link` slot props for bespoke markup.
@@ -1855,7 +1861,7 @@ continuous run; the Tailwind theme matches.
 
 `@vuecs/navigation`'s install takes no item list at all (plan 037) — a
 consumer always calls `app.use(navigation, {})`, and each `<VCNavItems>`
-supplies its own items via `:resolver`. A stepper-only consumer simply
+supplies its own items via `:data`. A stepper-only consumer simply
 never mounts a `<VCNavItems>`.
 
 Theme entries ship in `@vuecs/theme-tailwind` (uses

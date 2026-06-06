@@ -4,7 +4,7 @@ import type { NavigationItem } from '@vuecs/navigation';
 import { ref } from 'vue';
 
 // Standalone usage — no registry needed. VCNavItems takes its items via the
-// `:resolver` prop (here a plain array) + the current `path`, normalizes
+// `:data` prop (here a plain array) + the current `path`, normalizes
 // internally, scores each item against the path, and marks exactly one best
 // match active. The index item ("/robots") no longer stays lit on the child
 // route ("/robots/add") the way a prefix match would.
@@ -29,10 +29,36 @@ const menuItems: NavigationItem[] = [
     },
 ];
 
+// Multi-level dropdown. A dropdown bar is a SINGLE Reka NavigationMenu
+// root, so a group nested *inside* a flyout panel can't be a second
+// flyout — it degrades to an inline `collapse` (an expandable sub-list)
+// within the flyout. Here "Manage" opens a flyout whose "Advanced" child
+// is itself a group: it renders as a collapsible sub-section inside the
+// "Manage" panel.
+const multiLevelItems: NavigationItem[] = [
+    { name: 'Overview', url: '/robots' },
+    {
+        name: 'Manage',
+        icon: 'fa6-solid:gear',
+        children: [
+            { name: 'Add', url: '/robots/add' },
+            { name: 'Settings', url: '/robots/settings' },
+            {
+                name: 'Advanced',
+                icon: 'fa6-solid:sliders',
+                children: [
+                    { name: 'Logs', url: '/robots/logs' },
+                    { name: 'Tokens', url: '/robots/tokens' },
+                ],
+            },
+        ],
+    },
+];
+
 // The docs site has no router, so we simulate the active route with a ref the
 // buttons below mutate — in a real app you'd pass `useRoute().path`.
 const path = ref('/robots/add');
-const paths = ['/robots', '/robots/add', '/robots/settings'];
+const paths = ['/robots', '/robots/add', '/robots/settings', '/robots/logs', '/robots/tokens'];
 </script>
 
 <template>
@@ -62,7 +88,7 @@ const paths = ['/robots', '/robots/add', '/robots/settings'];
         <div>
             <h6>List variant (default)</h6>
             <VCNavItems
-                :resolver="items"
+                :data="items"
                 :path="path"
             />
         </div>
@@ -70,7 +96,7 @@ const paths = ['/robots', '/robots/add', '/robots/settings'];
         <div>
             <h6>Pills variant — horizontal</h6>
             <VCNavItems
-                :resolver="items"
+                :data="items"
                 :path="path"
                 variant="pills"
             />
@@ -80,7 +106,7 @@ const paths = ['/robots', '/robots/add', '/robots/settings'];
             <h6>Pills variant — vertical</h6>
             <div style="max-width: 16rem;">
                 <VCNavItems
-                    :resolver="items"
+                    :data="items"
                     :path="path"
                     variant="pills"
                     orientation="vertical"
@@ -91,7 +117,17 @@ const paths = ['/robots', '/robots/add', '/robots/settings'];
         <div>
             <h6>Dropdown submenu — horizontal</h6>
             <VCNavItems
-                :resolver="menuItems"
+                :data="menuItems"
+                :path="path"
+                orientation="horizontal"
+                submenu="dropdown"
+            />
+        </div>
+
+        <div>
+            <h6>Multi-level dropdown — horizontal</h6>
+            <VCNavItems
+                :data="multiLevelItems"
                 :path="path"
                 orientation="horizontal"
                 submenu="dropdown"
@@ -102,7 +138,7 @@ const paths = ['/robots', '/robots/add', '/robots/settings'];
             <h6>Collapse submenu — vertical</h6>
             <div style="max-width: 16rem;">
                 <VCNavItems
-                    :resolver="menuItems"
+                    :data="menuItems"
                     :path="path"
                     orientation="vertical"
                     submenu="collapse"

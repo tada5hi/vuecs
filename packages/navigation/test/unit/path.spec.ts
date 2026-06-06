@@ -32,7 +32,7 @@ function buildRouter() {
 
 const App = defineComponent({
     setup() {
-        return () => h(VCNavItems, { resolver: items });
+        return () => h(VCNavItems, { data: items });
     },
 });
 
@@ -100,7 +100,7 @@ describe('VCNavItems path source', () => {
 
         const PinnedApp = defineComponent({
             setup() {
-                return () => h(VCNavItems, { resolver: items, path: '/home' });
+                return () => h(VCNavItems, { data: items, path: '/home' });
             },
         });
 

@@ -30,7 +30,7 @@ const items: NavigationItem[] = [
 ];
 
 function resolveFor(path: string) {
-    const normalized = normalizeItems(items, { level: 0 });
+    const normalized = normalizeItems(items);
     const [match] = findBestItemMatches(normalized, { path });
     const trace = match ? match.trace : [];
     resetItemsByTrace(normalized, trace);

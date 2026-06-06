@@ -16,7 +16,6 @@ export type NavigationSubmenuMode = 'collapse' | 'dropdown';
 export type NavigationItem<
     META = any,
 > = {
-    level?: number;
     name: string;
 
     url?: string;
@@ -41,11 +40,9 @@ export type NavigationItem<
 export type NavigationItemNormalized<
     META = any,
 > = Omit<NavigationItem<META>, 'name' |
-    'level' |
     'children' |
     'meta'> & {
         name: string;
-        level: number;
         children: NavigationItemNormalized<META>[];
 
         /** Ancestor of the active leaf (excludes the exact active item). */

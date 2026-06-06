@@ -50,14 +50,14 @@ describe('cross-nav registry', () => {
             h(VCNavItems, {
                 registry: true,
                 registryId: 'primary',
-                resolver: [
+                data: [
                     { name: 'Resources', url: '/resources' },
                     { name: 'Settings', url: '/settings' },
                 ] as NavigationItem[],
             }),
             // consumer — derives its items from the producer's published output
             h(VCNavItems, {
-                resolver: (ctx: NavigationResolverContext) => ctx.registry('primary')
+                data: (ctx: NavigationResolverContext) => ctx.registry('primary')
                     .items.value
                     .map((i) => ({ name: `sub:${i.name}`, url: `${i.url}/sub` })),
             }),
@@ -77,7 +77,7 @@ describe('cross-nav registry', () => {
             h(VCNavItems, {
                 registry: true,
                 registryId: 'primary',
-                resolver: () => (loggedIn.value ?
+                data: () => (loggedIn.value ?
                     [
                         { name: 'A', url: '/a' },
                         { name: 'B', url: '/b' },
@@ -85,7 +85,7 @@ describe('cross-nav registry', () => {
                     [{ name: 'A', url: '/a' }]),
             }),
             h(VCNavItems, {
-                resolver: (ctx: NavigationResolverContext) => ctx.registry('primary')
+                data: (ctx: NavigationResolverContext) => ctx.registry('primary')
                     .items.value
                     .map((i) => ({ name: `sub:${i.name}`, url: `${i.url}/sub` })),
             }),
@@ -110,11 +110,11 @@ describe('cross-nav registry', () => {
                 h(VCNavItems, {
                     registry: true,
                     registryId: 'primary',
-                    resolver: [{ name: 'A', url: '/a' }] as NavigationItem[],
+                    data: [{ name: 'A', url: '/a' }] as NavigationItem[],
                 }) :
                 null,
             h(VCNavItems, {
-                resolver: (ctx: NavigationResolverContext) => ctx.registry('primary')
+                data: (ctx: NavigationResolverContext) => ctx.registry('primary')
                     .items.value
                     .map((i) => ({ name: `sub:${i.name}`, url: `${i.url}/sub` })),
             }),

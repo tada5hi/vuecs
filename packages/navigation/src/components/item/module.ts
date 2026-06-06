@@ -13,6 +13,7 @@ import {
     defineComponent,
     h,
     inject,
+    provide,
     ref,
     resolveComponent,
     toRef,
@@ -43,7 +44,7 @@ import type {
     NavItemSubTitleSlotProps,
 } from '../type';
 import { navigationThemeDefaults } from '../items/theme';
-import { NAVIGATION_SELECT_KEY } from '../select-context';
+import { NAVIGATION_NODES_KEY, NAVIGATION_SELECT_KEY } from '../select-context';
 
 const navItemProps = {
     data: {
@@ -110,6 +111,12 @@ export const VCNavItem = defineComponent({
         const data = toRef(props, 'data');
         const hasChildren = computed(() => data.value.children &&
             data.value.children.length > 0);
+
+        // Channel this item's already-scored children down to the nested
+        // `<VCNavItems>` that renders its submenu, so the child list renders
+        // them as-is instead of re-resolving / re-scoring a subtree. Scoped
+        // per item — each `<VCNavItem>` re-provides its own children.
+        provide(NAVIGATION_NODES_KEY, computed(() => data.value.children));
 
         // Local expand state — seeded from the resolved `displayChildren`
         // (driven by active-trail matching upstream) and resynced whenever
@@ -212,8 +219,9 @@ export const VCNavItem = defineComponent({
             // reopens). Rendering the panel contents in `collapse` mode keeps
             // them a plain `<ul>` of links, so deeper groups degrade to inline
             // collapsibles within the flyout instead of buggy sub-roots.
+            // No `data`: the nested list reads this item's children via the
+            // NAVIGATION_NODES_KEY inject provided in setup above.
             return h(itemsNode, {
-                data: data.value.children,
                 variant: props.variant,
                 orientation: props.orientation,
                 submenu: props.submenu === 'dropdown' ? 'collapse' : props.submenu,

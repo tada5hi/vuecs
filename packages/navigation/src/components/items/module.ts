@@ -19,6 +19,7 @@ import {
     defineComponent,
     getCurrentInstance,
     h,
+    inject,
     onMounted,
     onUnmounted,
     provide,
@@ -46,25 +47,22 @@ import {
 } from '../../helpers';
 import { NavigationRegistry, tryInjectNavigationRegistry } from '../../registry';
 import { VCNavItem } from '../item';
-import { NAVIGATION_SELECT_KEY } from '../select-context';
+import { NAVIGATION_NODES_KEY, NAVIGATION_SELECT_KEY } from '../select-context';
 import type { NavItemsItemSlotProps } from '../type';
 import { navigationThemeDefaults } from './theme';
 
 const navItemsProps = {
-    level: { type: Number, default: 0 },
-    /**
-     * Internal: pre-normalized children handed down by a parent
-     * `<VCNavItem>`. When set, this instance renders as-is and does NOT
-     * resolve / score (tree-wide scoring stays at the top-level nav).
-     */
-    data: { type: Array as PropType<NavigationItemNormalized[]>, default: undefined },
     /**
      * The source of this nav's items. Plain array, sync fn, or async fn.
      * A fn receives a NavigationResolverContext and may read reactive
      * state freely — the nav re-runs it automatically when that state
      * changes.
+     *
+     * When omitted, the nav checks whether it is a nested submenu of a
+     * parent `<VCNavItem>` (via the {@link NAVIGATION_NODES_KEY} inject)
+     * and, if so, renders that parent's already-scored children as-is.
      */
-    resolver: {
+    data: {
         type: [Array, Function] as PropType<NavigationResolver>,
         default: undefined,
     },
@@ -155,15 +153,23 @@ export const VCNavItems = defineComponent({
             return route?.path;
         });
 
+        // Nested submenu detection: a parent `<VCNavItem>` provides its
+        // already-scored children via NAVIGATION_NODES_KEY. When this nav
+        // has no own `data` and such nodes are present, it is a nested
+        // renderer — it skips resolving / scoring / select / registry and
+        // just renders the provided subtree. An explicit `data` always
+        // wins (treated as a resolving root even when nested in markup).
+        const injectedNodes = inject(NAVIGATION_NODES_KEY, null);
+        const isNested = computed(() => typeof props.data === 'undefined' && injectedNodes !== null);
+
         // --- click-driven selection (url-less section switchers) ---
         // A url-less item can't navigate, so a click "selects" it instead:
         // we record its trace and fold it into active-state derivation
         // below, publishing it through the registry like a route change.
-        // Only the root nav (resolver mode; `data` undefined) holds this
-        // state and provides the bridge — nested `<VCNavItems>` (data set)
-        // let the click bubble up to their owning root.
+        // Only a root nav holds this state and provides the bridge —
+        // nested `<VCNavItems>` let the click bubble up to their owning root.
         const selectedTrace = ref<string[] | null>(null);
-        if (typeof props.data === 'undefined') {
+        if (!isNested.value) {
             provide(NAVIGATION_SELECT_KEY, {
                 select: (item) => {
                     selectedTrace.value = item.trace;
@@ -176,21 +182,21 @@ export const VCNavItems = defineComponent({
             });
         }
 
-        // --- resolver + reactivity (resolver mode only; `data` bypasses) ---
+        // --- resolver + reactivity (root mode only; nested bypasses) ---
         const raw = ref<NavigationItem[]>([]);
 
         async function run() {
-            const value = typeof props.resolver === 'function' ?
-                props.resolver({
+            const value = typeof props.data === 'function' ?
+                props.data({
                     path: currentPath.value,
                     registry: (id: string) => registry.get(id),
                 }) :
-                (props.resolver ?? []);
+                (props.data ?? []);
 
             raw.value = isPromise(value) ? ((await value) ?? []) : (value ?? []);
         }
 
-        if (typeof props.data === 'undefined') {
+        if (!isNested.value) {
             // Auto-track: reactive reads in `run` BEFORE the first await retrigger it.
             watchEffect(run);
             // Escape hatch for state read AFTER an await:
@@ -204,11 +210,11 @@ export const VCNavItems = defineComponent({
 
         // --- normalized + tree-wide scored derivation ---
         const resolved = computed<{ items: NavigationItemNormalized[]; trace: string[] }>(() => {
-            if (typeof props.data !== 'undefined') {
-                return { items: props.data, trace: [] };
+            if (isNested.value && injectedNodes) {
+                return { items: injectedNodes.value, trace: [] };
             }
 
-            const normalized = normalizeItems(raw.value, { level: props.level });
+            const normalized = normalizeItems(raw.value);
             const [match] = findBestItemMatches(normalized, { path: currentPath.value });
             // A click-driven selection (url-less switcher) overrides the
             // path match until the next real navigation clears it.
@@ -218,16 +224,16 @@ export const VCNavItems = defineComponent({
             return { items: normalized, trace };
         });
 
-        const items = computed(() => resolved.value.items);
-        const active = computed(() => flattenWhere(items.value, (item) => !!item.active));
-        const activeTrail = computed(() => collectTrail(items.value, resolved.value.trace));
+        const tree = computed(() => resolved.value.items);
+        const active = computed(() => flattenWhere(tree.value, (item) => !!item.active));
+        const activeTrail = computed(() => collectTrail(tree.value, resolved.value.trace));
 
         // --- registry publish (opt-in, lifecycle-bound) ---
         if (props.registry) {
             let unsubscribeFn : (() => void) | undefined;
 
             const entry = {
-                items,
+                items: tree,
                 active,
                 activeTrail,
             };
@@ -255,8 +261,8 @@ export const VCNavItems = defineComponent({
             const resolvedTheme = theme.value;
             const vNodes: VNodeArrayChildren = [];
 
-            for (let i = 0; i < items.value.length; i++) {
-                const item = items.value[i];
+            for (let i = 0; i < tree.value.length; i++) {
+                const item = tree.value[i];
                 if (!item.display && !item.displayChildren) {
                     continue;
                 }
@@ -300,7 +306,7 @@ export const VCNavItems = defineComponent({
                 );
             }
 
-            const isRoot = props.level === 0 && typeof props.data === 'undefined';
+            const isRoot = !isNested.value;
 
             return h(
                 'ul',

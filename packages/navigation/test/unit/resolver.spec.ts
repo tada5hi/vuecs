@@ -45,7 +45,7 @@ function linkCount(root: Element): number {
 describe('VCNavItems resolver', () => {
     it('resolves a plain array resolver', async () => {
         const wrapper = buildApp({
-            resolver: [
+            data: [
                 { name: 'Overview', url: '/robots' },
                 { name: 'Add', url: '/robots/add' },
             ] as NavigationItem[],
@@ -62,7 +62,7 @@ describe('VCNavItems resolver', () => {
             { name: 'Settings', url: '/robots/settings' },
         ];
 
-        const wrapper = buildApp({ resolver });
+        const wrapper = buildApp({ data: resolver });
         await nextTick();
 
         expect(linkCount(wrapper.element)).toBe(3);
@@ -73,7 +73,7 @@ describe('VCNavItems resolver', () => {
             { name: 'Overview', url: '/robots' },
         ];
 
-        const wrapper = buildApp({ resolver });
+        const wrapper = buildApp({ data: resolver });
         await nextTick();
         await nextTick();
 
@@ -91,7 +91,7 @@ describe('VCNavItems resolver', () => {
                 { name: 'Login', url: '/login' },
             ]);
 
-        const wrapper = buildApp({ resolver });
+        const wrapper = buildApp({ data: resolver });
         await nextTick();
         expect(linkCount(wrapper.element)).toBe(1);
 
@@ -114,7 +114,7 @@ describe('VCNavItems resolver', () => {
                 [];
         };
 
-        const wrapper = buildApp({ resolver, watch: [token] });
+        const wrapper = buildApp({ data: resolver, watch: [token] });
         await nextTick();
         await nextTick();
         expect(linkCount(wrapper.element)).toBe(0);
@@ -136,7 +136,7 @@ describe('VCNavItems resolver', () => {
         const exposed = ref<{ refresh: () => Promise<void> } | null>(null);
         const App = defineComponent({
             setup() {
-                return () => h(VCNavItems, { resolver, ref: exposed });
+                return () => h(VCNavItems, { data: resolver, ref: exposed });
             },
         });
         mount(App, {

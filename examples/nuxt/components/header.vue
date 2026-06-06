@@ -59,7 +59,7 @@ export default defineNuxtComponent({
             <VCNavItems
                 class="ml-4 hidden md:flex"
                 :theme-class="{ group: 'flex items-center gap-1' }"
-                :resolver="primaryItems"
+                :data="primaryItems"
                 registry
                 registry-id="top"
             />
@@ -93,11 +93,11 @@ export default defineNuxtComponent({
         >
             <VCNavItems
                 :theme-class="{ group: 'flex flex-col gap-0.5' }"
-                :resolver="primaryItems"
+                :data="primaryItems"
             />
             <VCNavItems
                 :theme-class="{ group: 'mt-2 flex flex-col gap-0.5 border-t border-border pt-2' }"
-                :resolver="mobileSideResolver"
+                :data="mobileSideResolver"
             />
         </div>
     </header>

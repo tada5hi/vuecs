@@ -27,7 +27,7 @@ function buildApp(options: MountOptions) {
     const App = defineComponent({
         setup() {
             return () => h(VCNavItems, {
-                resolver: options.items,
+                data: options.items,
                 path: options.path,
                 orientation: options.orientation,
                 submenu: options.submenu,

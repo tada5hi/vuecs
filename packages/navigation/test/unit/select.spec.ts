@@ -26,7 +26,7 @@ describe('VCNavItems click-driven selection', () => {
         const App = defineComponent({
             setup() {
                 return () => h(VCNavItems, {
-                    resolver: [
+                    data: [
                         { name: 'Home', url: '/' },
                         { name: 'Admin', activeMatch: '/admin/' },
                     ] as NavigationItem[],
@@ -63,7 +63,7 @@ describe('VCNavItems click-driven selection', () => {
             setup() {
                 return () => h('div', [
                     h(VCNavItems, {
-                        resolver: [
+                        data: [
                             { name: 'Home', url: '/' },
                             { name: 'Admin', activeMatch: '/admin/' },
                         ] as NavigationItem[],
@@ -72,7 +72,7 @@ describe('VCNavItems click-driven selection', () => {
                         registryId: 'top',
                     }),
                     h(VCNavItems, {
-                        resolver: ({ registry }: NavigationResolverContext) => (
+                        data: ({ registry }: NavigationResolverContext) => (
                             registry('top').activeTrail.value[0]?.name === 'Admin' ?
                                 [{ name: 'Realms', url: '/admin/realms' }] :
                                 [{ name: 'Button', url: '/button' }]

@@ -1,6 +1,6 @@
 # Navigation
 
-Multi-level navigation. Every `<VCNavItems>` call site **owns its own items** via the `:resolver` prop — a plain array, a sync function, or an async function. There is no install-time item list and no shared manager; the plugin provides only an empty reactive **registry** that navs can opt into publishing to / reading from. See the [Navigation guide](/guide/navigation) for the full model.
+Multi-level navigation. Every `<VCNavItems>` call site **owns its own items** via the `:data` prop — a plain array, a sync function, or an async function. There is no install-time item list and no shared manager; the plugin provides only an empty reactive **registry** that navs can opt into publishing to / reading from. See the [Navigation guide](/guide/navigation) for the full model.
 
 ```bash
 npm install @vuecs/navigation
@@ -37,7 +37,7 @@ const items: NavigationItem[] = [
 </script>
 
 <template>
-    <VCNavItems :resolver="items" />
+    <VCNavItems :data="items" />
 </template>
 ```
 
@@ -51,13 +51,13 @@ A nav item's direct children render **only** as that item's own submenu — a dr
 
 ```vue
 <!-- 1. plain array -->
-<VCNavItems :resolver="items" />
+<VCNavItems :data="items" />
 
 <!-- 2. sync function — receives the resolver context -->
-<VCNavItems :resolver="({ path }) => itemsFor(path)" />
+<VCNavItems :data="({ path }) => itemsFor(path)" />
 
 <!-- 3. async function — the nav re-runs it and renders the result -->
-<VCNavItems :resolver="async () => (await fetchMenu())" />
+<VCNavItems :data="async () => (await fetchMenu())" />
 ```
 
 A function resolver receives a `NavigationResolverContext`:
@@ -73,7 +73,7 @@ Reactive reads inside the resolver (before the first `await`) are tracked automa
 
 ```vue
 <VCNavItems
-    :resolver="async () => loadFor(section.value)"
+    :data="async () => loadFor(section.value)"
     :watch="[section]"
 />
 ```
@@ -84,10 +84,10 @@ A nav opts into **publishing** its resolved output by adding `registry` + a `reg
 
 ```vue
 <!-- Header: publishes its output under the id "top" -->
-<VCNavItems :resolver="primaryItems" registry registry-id="top" />
+<VCNavItems :data="primaryItems" registry registry-id="top" />
 
 <!-- Sidebar: dependent — derives its OWN items from the active top section -->
-<VCNavItems :resolver="({ registry }) => sideItemsFor(registry('top').activeTrail.value[0]?.name)" />
+<VCNavItems :data="({ registry }) => sideItemsFor(registry('top').activeTrail.value[0]?.name)" />
 ```
 
 Registration is lifecycle-bound (auto-deregisters on unmount) and ownership-token guarded, so a route handoff (Vue mounts the new page before unmounting the old) doesn't let a departing nav evict the incoming occupant.

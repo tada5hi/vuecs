@@ -52,7 +52,7 @@ export default defineNuxtPlugin((ctx) => {
     ctx.vueApp.use(installTimeago, { locales: { de } });
 
     // Registry-only install — no items here. Each <VCNavItems> owns its
-    // items via :resolver; navs opt into publishing via registry + registry-id.
+    // items via :data; navs opt into publishing via registry + registry-id.
     installNavigation(ctx.vueApp, {});
 
     ctx.vueApp.use(installPagination);
