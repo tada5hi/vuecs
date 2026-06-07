@@ -33,6 +33,7 @@ const props = withDefaults(defineProps<{
     multiSort?: boolean;
     busy?: boolean;
     placeholder?: boolean;
+    expansionMode?: 'single' | 'multi';
 }>(), {
     density: 'normal',
     striped: false,
@@ -44,6 +45,7 @@ const props = withDefaults(defineProps<{
     multiSort: false,
     busy: false,
     placeholder: false,
+    expansionMode: 'multi',
 });
 
 // Local mirror of the `multiSort` prop. The docs-site playground
@@ -60,6 +62,12 @@ const selection = ref<number | number[] | null>(null);
 // sortable headers actually reorder the second table without
 // affecting the first one.
 const terseSort = ref<TableSortState>([]);
+// v-model for the expansion demo. Initial state shows row 2 open via
+// the `_expanded` row-meta seed (see `expansionData` below), so the
+// demo lands rendered as soon as the page paints — without it the
+// expansion section looks visually identical to the basic driver
+// table on first load.
+const expanded = ref<number | number[] | null>(null);
 
 const columns: TableColumn<User>[] = [
     {
@@ -83,6 +91,37 @@ const columns: TableColumn<User>[] = [
         label: 'Created',
         sortable: true,
         class: 'w-32',
+    },
+];
+
+// Separate dataset for the expansion demo so the `_expanded: true`
+// row-meta seed doesn't bleed into the basic driver table (which
+// would visually shift on first paint with no explanation).
+const expansionData: WithRowMeta<User & { _expanded?: boolean; bio: string }>[] = [
+    {
+        id: 1,
+        name: 'Alice',
+        email: 'alice@example.com',
+        role: 'admin',
+        createdAt: '2026-01-15',
+        bio: 'Founding admin. Owns the billing pipeline + the on-call rotation.',
+    },
+    {
+        id: 2,
+        name: 'Bob',
+        email: 'bob@example.com',
+        role: 'editor',
+        createdAt: '2026-02-03',
+        bio: 'Content lead. Manages the editorial workflow and CMS templates.',
+        _expanded: true,
+    },
+    {
+        id: 3,
+        name: 'Carol',
+        email: 'carol@example.com',
+        role: 'viewer',
+        createdAt: '2026-02-19',
+        bio: 'External auditor. Read-only access to the public reporting tables.',
     },
 ];
 
@@ -301,6 +340,47 @@ const sortSummary = computed(() => sort.value
                 :hover="hover"
                 :responsive="responsive"
             />
+        </div>
+
+        <!--
+            Expandable rows (plan 038). Driver-mode `:expandable` adds
+            a leading chevron trigger column; the `#expansion` slot
+            renders the per-row panel. v-model:expanded carries the
+            open-key set (multi mode) or bare key (single mode). The
+            `_expanded: true` flag on Bob's row seeds the demo open on
+            first paint so the panel is visible without interaction.
+        -->
+        <div style="padding-top: 0.5rem; border-top: 1px dashed var(--vc-color-border);">
+            <span style="font-size: 0.75rem; color: var(--vc-color-fg-muted);">
+                expandable rows — `:expandable` + `#expansion` slot ({{ expansionMode }} mode)
+            </span>
+            <VCTable
+                v-model:expanded="expanded"
+                :columns="[{ key: 'name', isRowHeader: true }, { key: 'email' }, { key: 'role' }]"
+                :data="expansionData"
+                :density="density"
+                :striped="striped"
+                :bordered="bordered"
+                :hover="hover"
+                :responsive="responsive"
+                :expansion-mode="expansionMode"
+                expandable
+            >
+                <template #expansion="{ row }">
+                    <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <strong>{{ (row as { name: string }).name }}</strong>
+                        <span style="font-size: 0.875rem;">
+                            {{ (row as { bio: string }).bio }}
+                        </span>
+                        <span style="font-size: 0.75rem; color: var(--vc-color-fg-muted);">
+                            Joined {{ (row as { createdAt: string }).createdAt }}
+                        </span>
+                    </div>
+                </template>
+            </VCTable>
+            <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--vc-color-fg-muted);">
+                Expanded keys: <strong>{{ JSON.stringify(expanded) }}</strong>
+            </div>
         </div>
 
         <!-- Empty / loading states -->
