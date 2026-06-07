@@ -160,9 +160,14 @@ const tableProps = {
      * Controlled set of expanded row keys. Use `v-model:expanded`.
      * Matches `getRowKey` resolution; defaults to `[]`. Pass a single
      * key array (`[rowKey]`) for one-row open, `[]` to collapse all.
+     *
+     * In `:expansion-mode="single"` the v-model carries a bare key
+     * (or `null` for "no row open") — the prop type allows the
+     * `null` shape so a `ref<RowSelectionKey | null>(null)` round-trip
+     * doesn't trigger Vue prop-type warnings.
      */
     expanded: {
-        type: [String, Number, Array] as PropType<RowSelectionKey | RowSelectionKey[]>,
+        type: [String, Number, Array, null] as PropType<RowSelectionKey | RowSelectionKey[] | null>,
         default: () => [],
     },
     /**

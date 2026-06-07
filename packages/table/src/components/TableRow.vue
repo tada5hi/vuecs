@@ -186,7 +186,16 @@ export default defineComponent({
         const expansionMode = computed<'controlled' | 'table' | 'internal' | 'off'>(() => {
             if (!props.expandable) return 'off';
             if (props.open !== undefined) return 'controlled';
-            if (ctx?.expansion && ctx.expandable.value) return 'table';
+            // Table-level state requires a stable index (the table's
+            // expansion machine resolves the key via `keyAt(index)`).
+            // Manual rows without `:index` fall back to internal state
+            // — they can still expand via `:open` controlled mode or
+            // the `_expanded` row-meta seed.
+            if (
+                ctx?.expansion &&
+                ctx.expandable.value &&
+                props.index !== undefined
+            ) return 'table';
             return 'internal';
         });
 
@@ -229,11 +238,20 @@ export default defineComponent({
             panelId,
         } : null;
 
-        // Provide row context for child cells (needed for cellVariants resolution).
-        if (props.index !== undefined) {
+        // Provide row context for child cells. Required for:
+        //   - cellVariants resolution on `<VCTableCell>` (needs row data + index)
+        //   - `<VCTableExpandTrigger>` to read expansion state
+        //
+        // When `:index` is missing but the row is expandable, we still
+        // provide context so manual rows (Shape B with no index, e.g.
+        // a controlled `<VCTableRow expandable :open>`) keep working.
+        // Cell-variant resolution that depends on a real index will
+        // see `-1` and skip — that's a documented limitation for
+        // index-less manual rows.
+        if (props.index !== undefined || expansionState !== null) {
             provideTableRowContext({
                 row: toRef(props, 'row'),
-                index: toRef(props, 'index') as unknown as import('vue').Ref<number>,
+                index: computed(() => props.index ?? -1) as unknown as import('vue').Ref<number>,
                 rowVariant,
                 cellVariants,
                 focused,
@@ -486,13 +504,22 @@ export default defineComponent({
                 [h(VCTableExpandTrigger)],
             ) : null;
 
+            // Flatten the trigger cell into the data-slot children so
+            // the `<td>` nodes are direct row children. Nesting an
+            // array would force Vue to wrap the inner list in a
+            // Fragment + extra comment vnodes inside the `<tr>`.
+            // `dataSlotChildren` may itself be an array or a single
+            // vnode — normalize before splicing.
             let cells: unknown;
+            const dataChildren = Array.isArray(dataSlotChildren) ?
+                dataSlotChildren :
+                [dataSlotChildren];
             if (triggerCell === null) {
-                cells = dataSlotChildren;
+                cells = dataChildren;
             } else if (triggerPlacement === 'trailing') {
-                cells = [dataSlotChildren, triggerCell];
+                cells = [...dataChildren, triggerCell];
             } else {
-                cells = [triggerCell, dataSlotChildren];
+                cells = [triggerCell, ...dataChildren];
             }
 
             const dataRow = h(

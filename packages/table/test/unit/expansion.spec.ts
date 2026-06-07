@@ -233,21 +233,24 @@ describe('<VCTable> expansion (plan 038 v2-A)', () => {
         expect((lastEmit as (string | number)[])).toContain(2);
     });
 
-    it('bumps colspan by +1 for <VCTableEmpty> when :expandable is on', () => {
+    it('bumps colspan by +1 on <VCTableEmpty> when :expandable is on', async () => {
+        const { VCTableEmpty } = await import('../../src');
         const wrapper = mount(defineComponent({
             setup() {
                 return () => h(VCTable, {
                     columns: [{ key: 'name' }, { key: 'email' }] as never,
                     data: [] as never,
                     expandable: true,
-                });
+                }, { default: () => h(VCTableEmpty, null, () => 'Nothing here') });
             },
         }), { global: { plugins: [...plugins] } });
 
-        // 2 data columns + 1 trigger column = colspan 3 on the empty cell
-        // (when an explicit VCTableEmpty is supplied — here we just check
-        // that the header has 3 cells, which is the corresponding visual)
-        expect(wrapper.element.querySelectorAll('thead th').length).toBe(3);
+        // 2 data columns + 1 trigger column → colspan 3 on the
+        // empty-band cell. (Asserting the rendered `<td colspan>`
+        // catches a colspan-bump regression directly, not just a
+        // header-cell-count proxy.)
+        const emptyCell = wrapper.element.querySelector('tbody td');
+        expect(emptyCell?.getAttribute('colspan')).toBe('3');
     });
 
     // ──────────────────────────────────────────────────────────────────

@@ -43,18 +43,19 @@
         "test": "vitest --config test/vitest.config.ts --run",
         "test:coverage": "vitest --config test/vitest.config.ts --run --coverage"
     },
+    "dependencies": {
+        "reka-ui": "^2.9.8"
+    },
     "devDependencies": {
         "@vue/test-utils": "^2.4.10",
         "@vuecs/core": "^3.1.1",
         "@vuecs/placeholder": "^1.0.2",
         "jsdom": "^29.1.1",
-        "reka-ui": "^2.9.8",
         "vue": "^3.5.35"
     },
     "peerDependencies": {
         "@vuecs/core": "^3.1.1",
         "@vuecs/placeholder": "^1.0.2",
-        "reka-ui": "^2.9.8",
         "vue": "^3.x"
     },
     "engines": {

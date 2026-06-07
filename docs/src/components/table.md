@@ -91,7 +91,7 @@ const data: User[] = [
 | `maxHeight` | `string` | `undefined` | CSS length applied to the scroll container's `max-height`. |
 | `rowClickable` | `boolean` | `false` | Opt-in: each row becomes focusable + clickable. Emits `@row-click`; row keyboard nav activates. |
 | `expandable` | `boolean` | `false` | Enable per-row expansion panels (see [Expandable rows](#expandable-rows)). |
-| `expanded` | `RowSelectionKey \| RowSelectionKey[]` | `[]` | Controlled expansion state. Use `v-model:expanded`. |
+| `expanded` | `RowSelectionKey \| RowSelectionKey[] \| null` | `[]` | Controlled expansion state. Use `v-model:expanded`. Multi-mode carries an array; single-mode carries a bare key or `null` for "no row open". |
 | `expansionMode` | `'single' \| 'multi'` | `'multi'` | Accordion (single) vs unrestricted (multi) expansion. |
 | `expandableTrigger` | `'leading' \| 'trailing' \| 'none'` | `'leading'` | Where to place the auto-injected trigger column. `'none'` opts out (consumer places `<VCTableExpandTrigger>` inside a data cell). |
 | `density` | `'compact' \| 'normal' \| 'spacious'` | `'normal'` | Theme variant shorthand. |
@@ -355,8 +355,11 @@ const users = [
 ];
 ```
 
-The seed runs ONCE at mount. In `'single'` mode, multiple seeds emit
-a dev warning and only the first wins.
+The seed runs ONCE on the first non-empty data pass — so the canonical
+async pattern (`data: []` then `data: [...]` after fetch) seeds correctly
+once the rows arrive, not silently at mount against the initial empty
+array. In `'single'` mode, multiple seeds emit a dev warning and only
+the first wins.
 
 ### Custom trigger placement
 

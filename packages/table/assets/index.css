@@ -285,11 +285,15 @@
 }
 
 .vc-table-row-expansion-panel[data-state="open"] {
-    animation: vc-table-row-expansion-open 200ms ease-out;
+    animation: vc-table-row-expansion-open 200ms ease-out forwards;
 }
 
 .vc-table-row-expansion-panel[data-state="closed"] {
-    animation: vc-table-row-expansion-close 200ms ease-in;
+    /* `forwards` retains the final `height: 0` so the panel doesn't
+     * snap back to `auto` between animationend and Reka Presence's
+     * unmount — without this, a visible flash can show the full panel
+     * height for one frame before the element is removed. */
+    animation: vc-table-row-expansion-close 200ms ease-in forwards;
 }
 
 .vc-table-row-expansion-panel-inner {

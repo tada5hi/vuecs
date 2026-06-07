@@ -191,7 +191,7 @@ export function composeTableInner(opts: {
     // `<VCTableHeadCell aria-hidden>` or switching to auto-header.
     if (
         process.env.NODE_ENV !== 'production' &&
-        autoRender && hasHeader && injectTrigger
+        autoRender && hasHeader && !hasBody && injectTrigger
     ) {
         // eslint-disable-next-line no-console
         console.warn(
@@ -245,10 +245,14 @@ export function composeTableInner(opts: {
             });
 
             // Place the trigger header cell at the configured edge.
+            // Flatten so the `<th>` nodes are direct row children —
+            // nesting `[dataHeaders, triggerHeaderCell]` would force
+            // Vue to wrap the inner array in a Fragment + extra
+            // comment vnodes inside the `<tr>`.
             if (triggerHeaderCell === null) return dataHeaders;
             return expandableTrigger === 'trailing' ?
-                [dataHeaders, triggerHeaderCell] :
-                [triggerHeaderCell, dataHeaders];
+                [...dataHeaders, triggerHeaderCell] :
+                [triggerHeaderCell, ...dataHeaders];
         })));
     }
 
