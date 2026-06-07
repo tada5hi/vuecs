@@ -2433,15 +2433,96 @@ inverts on hover and `.table-success/-warning/-danger` use Bootstrap's
 runtime variables, both of which bridge correctly through
 `--bs-*` → `--vc-color-*`.
 
+### Expandable rows (plan 038 v2-A)
+
+Per-row expansion panels for inline entity detail (log payloads,
+audit trails, comment threads). `<VCTable :expandable>` enables the
+feature; each rendered row becomes a Vue Fragment of two `<tr>`: the
+data row + a sibling `<tr><td colspan="N">` containing the
+ResizeObserver-measured animated panel. A `#expansion="{ row, index }"`
+scoped slot drives the panel content; an auto-injected leading (or
+trailing) trigger column carries a chevron `<button>` with the
+W3C disclosure pattern (`aria-expanded` + `aria-controls`).
+
+**Public surface additions on `<VCTable>`:**
+
+| Prop | Default | Purpose |
+|---|---|---|
+| `expandable` | `false` | Master opt-in. Drives `colspan` bump + auto-trigger injection. |
+| `expanded` | `[]` | Controlled key array. `v-model:expanded`. |
+| `expansionMode` | `'multi'` | `'single'` = accordion. |
+| `expandableTrigger` | `'leading'` | `'leading'` / `'trailing'` / `'none'`. |
+
+**New exposed components:**
+
+- `<VCTableExpandTrigger>` — the chevron `<button>`. Auto-injected
+  when `:expandableTrigger !== 'none'`; consumer-placed when
+  `'none'`. Reads expansion state from row context; dev-warns when
+  mounted outside an `:expandable` row.
+- `<VCTableRowExpansion>` — internal (mounted by `<VCTableRow>`'s
+  render fn). Exported for type-import only.
+
+**State machine.** Reuses `useSelectionMachine` from `@vuecs/core` —
+the "set of currently open row keys" semantic generalises directly.
+Two independent instances live on the `TableContext`: `selection`
+(plan 033 v1.x-A) + `expansion` (plan 038). Both use the same
+`getRowKey` resolution.
+
+**Three-tier per-row state resolution** (in `<VCTableRow>`):
+1. Bound `:open` prop → fully controlled, emits `update:open`,
+   detached from table-level state.
+2. Parent `<VCTable :expandable>` provides the expansion machine →
+   read/write via `selectionKey` lookup.
+3. Else → internal `ref(false)`, seeded ONCE from `row._expanded`.
+
+`<VCTableLite>` provides `expansion: undefined` on its context, so
+rows in a Lite host fall back to controlled `:open` or internal
+state.
+
+**Animation.** ResizeObserver-measured height — no max-height
+sentinel. The inner content `<div>` is observed; the outer animated
+wrapper consumes the measurement via inline
+`--vc-table-row-expansion-height` CSS variable. SSR-safe (`typeof
+ResizeObserver !== 'undefined'` guard); first-paint mitigated via
+synchronous `offsetHeight` read at mount. Keyframes live in
+`packages/table/assets/index.css`; `prefers-reduced-motion: reduce`
+collapses duration to 1ms.
+
+**ARIA.** Disclosure pattern only — trigger carries `aria-expanded`
++ `aria-controls`, panel carries `id` + `aria-labelledby`. NO
+`role="region"` on the panel (would create landmark noise for short
+detail panels; consumers can add it on their own slot content when
+appropriate).
+
+**Composition with selection.** Trigger button clicks `stopPropagation()`
+the row-click event AND are filtered by `filterRowClickEvent` (which
+already skips `<button>`-originated clicks), so neither selection
+toggle nor `@row-click` fires. Selection and expansion are orthogonal
+axes — a row can be selected AND expanded independently (Gmail-style).
+
+**Theme keys.** `tableRowExpansion` (slots: `root` / `cell` / `panel`
+/ `panelInner`), `tableExpandTrigger` (slots: `root` / `icon`),
+`tableExpandTriggerCell` (slot: `root`). Shipped across all three
+themes (`tailwind` / `bootstrap` / `bulma`).
+
+**Behavioral defaults.** `tableExpandTrigger.expandLabel` /
+`collapseLabel` / `chevronIcon` — overridable via
+`app.use(vuecs, { defaults: { tableExpandTrigger: { ... } } })` for
+i18n. Lucide + Font Awesome icon presets ship `chevronIcon` defaults.
+
+**New peer dep.** `reka-ui` is now a peer dep of `@vuecs/table`
+(first time — previously zero-Reka). Justified by `<Presence>`
+being the right primitive for the unmount-delay pattern; rolling
+our own would re-invent half of `reka-ui`.
+
 ### Out of scope for v0.1
 
-Selection v-model + listbox / treegrid a11y (deferred to v1.x —
-`<VCList>`'s selection precedent applies, but tables need a different
-a11y model and authup doesn't use it today); expandable rows + nested
-tables; virtual scrolling (tanstack-virtual on top of the compound is
-the doctrinal path); drag-and-drop column reordering; the
-`Simple`/`Lite`/Full three-tier layering (consider for v0.2 — adding
-later is non-breaking).
+Virtual scrolling (tanstack-virtual on top of the compound is the
+doctrinal path); drag-and-drop column reordering; pivot /
+aggregate / grouping (different compound entirely). Nested tables
+within an expansion are unsupported as a primitive but consumers
+can compose any markup including another `<VCTable>` inside the
+`#expansion` slot.
 
 ## Visual regression CI (@vuecs-tests/visual-regression, plan 015 P2)
 

@@ -10,6 +10,8 @@ export { default as VCTableEmpty } from './TableEmpty.vue';
 export { default as VCTableLoading } from './TableLoading.vue';
 export { VCTablePlaceholder } from './TablePlaceholder';
 export { default as VCTableSortIndicators } from './TableSortIndicators.vue';
+export { default as VCTableExpandTrigger } from './TableExpandTrigger.vue';
+export { default as VCTableRowExpansion } from './TableRowExpansion.vue';
 
 export type { TableProps } from './Table.vue';
 export type { TableLiteProps } from './TableLite.vue';
@@ -22,6 +24,8 @@ export type { TableHeadCellProps } from './TableHeadCell.vue';
 export type { TableEmptyProps } from './TableEmpty.vue';
 export type { TableLoadingProps } from './TableLoading.vue';
 export type { TablePlaceholderProps } from './TablePlaceholder';
+export type { TableExpandTriggerProps } from './TableExpandTrigger.vue';
+export type { TableRowExpansionProps } from './TableRowExpansion.vue';
 export type {
     TableSortIndicatorsAddSlotProps,
     TableSortIndicatorsChipSlotProps,

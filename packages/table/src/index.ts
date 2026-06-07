@@ -11,6 +11,7 @@ import {
     VCTableBody,
     VCTableCell,
     VCTableEmpty,
+    VCTableExpandTrigger,
     VCTableFooter,
     VCTableHeadCell,
     VCTableHeader,
@@ -18,6 +19,7 @@ import {
     VCTableLoading,
     VCTablePlaceholder,
     VCTableRow,
+    VCTableRowExpansion,
     VCTableSortIndicators,
 } from './components';
 
@@ -47,6 +49,8 @@ export function install(app: App, options: Options = {}): void {
         VCTableLoading,
         VCTablePlaceholder,
         VCTableSortIndicators,
+        VCTableExpandTrigger,
+        VCTableRowExpansion,
     }).forEach(([name, component]) => {
         app.component(name, component);
     });

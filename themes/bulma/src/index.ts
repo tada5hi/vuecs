@@ -1092,6 +1092,21 @@ export default function bulmaTheme(): Theme {
                 },
             },
             placeholderWrapper: { classes: { root: 'is-relative' } },
+            tableRowExpansion: {
+                classes: {
+                    root: 'has-background-light',
+                    cell: 'p-0',
+                    panel: '',
+                    panelInner: 'px-4 py-3',
+                },
+            },
+            tableExpandTrigger: {
+                classes: {
+                    root: 'button is-small is-ghost p-1 has-text-grey',
+                    icon: 'is-size-7',
+                },
+            },
+            tableExpandTriggerCell: { classes: { root: 'has-text-centered' } },
         },
         /*
          * Theme-runtime hook (plan 021): mirror the resolved color mode

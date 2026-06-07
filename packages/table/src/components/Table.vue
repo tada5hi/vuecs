@@ -2,6 +2,7 @@
 import {
     computed,
     defineComponent,
+    getCurrentInstance,
     h,
     mergeProps,
     ref,
@@ -28,6 +29,8 @@ import type {
     TableCellSlotProps,
     TableColumn,
     TableColumnRaw,
+    TableExpandableTrigger,
+    TableExpansionSlotProps,
     TableHeadCellSlotProps,
     TableSlotProps,
     TableSortState,
@@ -43,6 +46,11 @@ const tableThemeDefaults = {
         scrollContainer: 'vc-table-scroll-container',
     },
 };
+
+// Local alias to avoid a multi-line type cast at the call site
+// (operator-linebreak lint friction). The slot signature mirrors
+// `TableExpansionSlotProps` but with `unknown` row type.
+type ExpansionSlotFn = (slotProps: { row: unknown; index: number }) => unknown;
 
 const tableProps = {
     /** Row data array. */
@@ -140,6 +148,40 @@ const tableProps = {
      * as the per-row column label.
      */
     responsive: { type: Boolean, default: false },
+    /**
+     * Enable per-row expansion panels (plan 038). Each rendered row
+     * gets an auto-injected trigger cell (at the position given by
+     * `:expandableTrigger`); the expansion panel content comes from
+     * the table's `#expansion` scoped slot (driver mode) or each row's
+     * own `#expansion` slot (manual / Shape B).
+     */
+    expandable: { type: Boolean, default: false },
+    /**
+     * Controlled set of expanded row keys. Use `v-model:expanded`.
+     * Matches `getRowKey` resolution; defaults to `[]`. Pass a single
+     * key array (`[rowKey]`) for one-row open, `[]` to collapse all.
+     */
+    expanded: {
+        type: [String, Number, Array] as PropType<RowSelectionKey | RowSelectionKey[]>,
+        default: () => [],
+    },
+    /**
+     * Expansion mode. `'multi'` (default) allows multiple rows open at
+     * once. `'single'` makes the expansion behave like an accordion —
+     * opening a new row collapses the previously-open one.
+     */
+    expansionMode: { type: String as PropType<'single' | 'multi'>, default: 'multi' },
+    /**
+     * Where to place the auto-injected trigger column.
+     * - `'leading'` (default) — prepended before all data columns.
+     * - `'trailing'` — appended after the last data column.
+     * - `'none'` — no auto-injection; consumer places
+     *   `<VCTableExpandTrigger>` inside a data cell.
+     */
+    expandableTrigger: {
+        type: String as PropType<TableExpandableTrigger>,
+        default: 'leading',
+    },
     /** Density shorthand for `themeVariant.density`. */
     density: { type: String as PropType<'compact' | 'normal' | 'spacious'>, default: undefined },
     /** Alternating row backgrounds — shorthand for `themeVariant.striped`. */
@@ -159,7 +201,7 @@ export default defineComponent({
     name: 'VCTable',
     inheritAttrs: false,
     props: tableProps,
-    emits: ['update:sort', 'update:selection', 'row-click'],
+    emits: ['update:sort', 'update:selection', 'update:expanded', 'row-click'],
     slots: Object as SlotsType<{
         default(props: TableSlotProps): unknown;
         caption(): unknown;
@@ -177,12 +219,34 @@ export default defineComponent({
          * Wins over the default `col.label` text. (Closes #1592.)
          */
         [headerSlot: `header-${string}`]: (props: TableHeadCellSlotProps) => unknown;
+        /**
+         * Per-row expansion panel content (plan 038). Bridged through
+         * the auto-render path to each row's own `#expansion` slot;
+         * receives the row data + index.
+         */
+        expansion(props: TableExpansionSlotProps): unknown;
     }>,
     setup(props, {
-        attrs, 
-        slots, 
-        emit, 
+        attrs,
+        slots,
+        emit,
     }) {
+        // Detect whether the consumer bound `v-model:expanded` (or
+        // wired `@update:expanded` directly). Used to distinguish
+        // "consumer wants empty initial state" (bound v-model with
+        // `ref([])`) from "consumer didn't opt into expansion v-model
+        // at all" (prop falls through to default). Without this
+        // signal, an explicit `:expanded="[]"` to collapse all rows
+        // would silently fall back to stale internal state.
+        //
+        // Vue's `emits` declaration removes the listener from `attrs`,
+        // so we read from `vnode.props` instead — the parent's raw
+        // VNode props preserve the listener regardless of how the
+        // child declares its event API.
+        const vmInstance = getCurrentInstance();
+        const hasExpandedVModel = !!(
+            vmInstance?.vnode.props && 'onUpdate:expanded' in vmInstance.vnode.props
+        );
         const themeProps = useThemeProps(
             props,
             'density',
@@ -232,8 +296,17 @@ export default defineComponent({
             unregister: () => { childCellCount.value = Math.max(0, childCellCount.value - 1); },
         });
         const colspan = computed(() => {
-            if (columns.value.length > 0) return columns.value.length;
-            return Math.max(1, childCellCount.value);
+            const base = columns.value.length > 0 ?
+                columns.value.length :
+                Math.max(1, childCellCount.value);
+            // Auto-injected expansion trigger adds +1 to the spanning
+            // colspan so `<VCTableEmpty>` / `<VCTableLoading>` /
+            // expansion panels span the FULL rendered width (including
+            // the trigger column). When `:expandableTrigger="none"`
+            // the consumer keeps the trigger inside a data cell, so
+            // no bump is needed.
+            const triggerBump = props.expandable && props.expandableTrigger !== 'none' ? 1 : 0;
+            return base + triggerBump;
         });
         watch(
             () => columns.value.length > 0,
@@ -304,6 +377,145 @@ export default defineComponent({
             },
         });
 
+        // ──────────────────────────────────────────────────────────────────
+        // Expansion machine (plan 038) — reuses the shared
+        // `useSelectionMachine` from `@vuecs/core`. The "selection"
+        // semantic generalizes to "set of currently open row keys": a
+        // single-mode machine acts as an accordion, multi-mode allows
+        // any number of rows open at once.
+        // ──────────────────────────────────────────────────────────────────
+
+        // Local mirror of the expansion state used when the consumer
+        // didn't bind `v-model:expanded`. Stored in the canonical
+        // shape per mode (bare key | null for single, array for multi)
+        // so reads from `expansionValue` don't need re-normalization.
+        const initialExpansionInternal = (): RowSelectionKey | RowSelectionKey[] | null => {
+            const init = props.expanded;
+            if (props.expansionMode === 'single') {
+                if (typeof init === 'string' || typeof init === 'number') return init;
+                if (Array.isArray(init) && init.length > 0) return init[0];
+                return null;
+            }
+            if (Array.isArray(init)) return init;
+            if (typeof init === 'string' || typeof init === 'number') return [init];
+            return [];
+        };
+        const expansionInternal = ref<RowSelectionKey | RowSelectionKey[] | null>(
+            initialExpansionInternal(),
+        );
+
+        // Normalize an incoming value to the machine's expected shape
+        // per mode (single: bare key | null; multi: array). The machine
+        // compares `value.value === key` in single mode, so feeding it
+        // a wrapped array would never match (bug fix vs. original
+        // expansionValue that wrapped bare keys for both modes).
+        const normalizeForMachine = (
+            source: RowSelectionKey | RowSelectionKey[] | null | undefined,
+            mode: RowSelectionMode,
+        ): RowSelectionValue<RowSelectionMode> | null => {
+            if (mode === 'single') {
+                if (typeof source === 'string' || typeof source === 'number') return source;
+                if (Array.isArray(source)) return source.length > 0 ? source[0] : null;
+                return null;
+            }
+            if (Array.isArray(source)) return source;
+            if (typeof source === 'string' || typeof source === 'number') return [source];
+            return [];
+        };
+
+        // Effective expansion state for the machine to read. When
+        // v-model is bound, the consumer's prop is authoritative
+        // (including empty `[]` for "collapse all"). When unbound,
+        // the local internal mirror takes over.
+        const expansionValue = computed<RowSelectionValue<RowSelectionMode> | null>(() => {
+            if (!props.expandable) return null;
+            const source = hasExpandedVModel ? props.expanded : expansionInternal.value;
+            return normalizeForMachine(source as never, props.expansionMode);
+        });
+
+        // Seed expansion from `row._expanded` row-meta flags the FIRST
+        // time data becomes non-empty. The original `onMounted` seed
+        // missed the canonical async pattern (`data: []` → fetch →
+        // `data: [...]`) because mount fired against the empty array.
+        // A watcher with `immediate: true` handles both sync and
+        // async data — `seedAttempted` ensures one-shot semantics.
+        let seedAttempted = false;
+        const trySeed = () => {
+            if (seedAttempted || !props.expandable) return;
+            const view = visibleData.value;
+            if (view.length === 0) return;
+            const seeds: RowSelectionKey[] = [];
+            for (const [i, row] of view.entries()) {
+                if (
+                    row && typeof row === 'object' &&
+                    (row as Record<string, unknown>)._expanded === true
+                ) {
+                    seeds.push(getRowKey(row, i));
+                }
+            }
+            seedAttempted = true;
+            if (seeds.length === 0) return;
+            // Skip the seed when the consumer already established an
+            // initial expanded state — explicit beats implicit.
+            const currentValue = hasExpandedVModel ? props.expanded : expansionInternal.value;
+            const currentIsEmpty = currentValue == null ||
+                (Array.isArray(currentValue) && currentValue.length === 0);
+            if (!currentIsEmpty) return;
+            let finalSeed = seeds;
+            if (props.expansionMode === 'single' && seeds.length > 1) {
+                if (process.env.NODE_ENV !== 'production') {
+                    // eslint-disable-next-line no-console
+                    console.warn(
+                        '[VCTable] :expansion-mode="single" but multiple rows carry _expanded: true — using the first.',
+                    );
+                }
+                finalSeed = [seeds[0]];
+            }
+            const writeBack = props.expansionMode === 'single' ? finalSeed[0] : finalSeed;
+            if (hasExpandedVModel) {
+                emit('update:expanded', writeBack);
+            } else {
+                expansionInternal.value = writeBack;
+                // Echo to consumer listeners that exist outside v-model
+                // (handlers attached directly via `@update:expanded`
+                // are caught by `hasExpandedVModel`; only `null` here
+                // means truly no listener — safe no-op anyway).
+            }
+        };
+        watch(visibleData, () => { trySeed(); }, { immediate: true });
+
+        const expansionMode = computed<RowSelectionMode | undefined>(() => {
+            if (!props.expandable) return undefined;
+            return props.expansionMode;
+        });
+
+        const expansion = useRowSelectionMachine({
+            mode: expansionMode,
+            value: expansionValue,
+            emit: (next) => {
+                // Guard against late emits after `:expandable` flipped
+                // off (the machine should be no-op in that case, but
+                // belt-and-braces against any setValue() call path).
+                if (!props.expandable) return;
+                // Mirror to local state in the canonical per-mode
+                // shape so subsequent reads of `expansionValue` (when
+                // no v-model is bound) see the updated set.
+                if (!hasExpandedVModel) {
+                    if (next === null) {
+                        expansionInternal.value = props.expansionMode === 'single' ? null : [];
+                    } else {
+                        expansionInternal.value = next;
+                    }
+                }
+                emit('update:expanded', next);
+            },
+            keyAt: (index) => {
+                const view = visibleData.value;
+                if (index < 0 || index >= view.length) return undefined;
+                return getRowKey(view[index], index);
+            },
+        });
+
         provideTableContext({
             // When `:client-sort` is on, descendants see the sorted view
             // — `<VCTableBody>` iterates `ctx.data`, so threading the
@@ -337,6 +549,9 @@ export default defineComponent({
             colspan,
             emitRowClick,
             wrapperEl,
+            expandable: toRef(props, 'expandable'),
+            expandableTrigger: toRef(props, 'expandableTrigger'),
+            expansion,
         });
 
         const slotProps = computed<TableSlotProps>(() => ({
@@ -377,6 +592,9 @@ export default defineComponent({
                 sort: sortMachine.state.value,
                 setSort: sortMachine.setSort,
                 placeholderRows: skeletonRowCount,
+                expandable: props.expandable,
+                expandableTrigger: props.expandableTrigger,
+                expansionSlot: slots.expansion as ExpansionSlotFn | undefined,
             });
 
             // `attrs` always forward to the `<table>` itself — consumers'

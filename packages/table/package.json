@@ -2,7 +2,7 @@
     "name": "@vuecs/table",
     "version": "1.1.2",
     "type": "module",
-    "description": "Compound table for vuecs (Table / Header / Body / Footer / Row / Cell / HeadCell / Empty / Loading) + columns/data driver with sortable headers, row-meta variants, and row keyboard navigation. Semantic-HTML compound — no Reka primitive dependency.",
+    "description": "Compound table for vuecs (Table / Header / Body / Footer / Row / Cell / HeadCell / Empty / Loading / ExpandTrigger / RowExpansion) + columns/data driver with sortable headers, row-meta variants, row keyboard navigation, and expandable-row panels.",
     "exports": {
         "./package.json": "./package.json",
         ".": {
@@ -48,11 +48,13 @@
         "@vuecs/core": "^3.1.1",
         "@vuecs/placeholder": "^1.0.2",
         "jsdom": "^29.1.1",
+        "reka-ui": "^2.9.8",
         "vue": "^3.5.35"
     },
     "peerDependencies": {
         "@vuecs/core": "^3.1.1",
         "@vuecs/placeholder": "^1.0.2",
+        "reka-ui": "^2.9.8",
         "vue": "^3.x"
     },
     "engines": {

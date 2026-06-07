@@ -248,6 +248,29 @@ export type TablePlaceholderThemeClasses = {
     cell: string;
 };
 
+export type TableRowExpansionThemeClasses = {
+    /** The expansion `<tr>` (sibling of the data `<tr>`). */
+    root: string;
+    /** The `<td colspan="N">` inside the expansion row. */
+    cell: string;
+    /** The animated wrapper `<div>` (carries `data-state` + inline `height` from the ResizeObserver). */
+    panel: string;
+    /** The inner content wrapper `<div>` (measured by the ResizeObserver; consumer-supplied slot content lives here). */
+    panelInner: string;
+};
+
+export type TableExpandTriggerThemeClasses = {
+    /** The trigger `<button>` element. */
+    root: string;
+    /** The auto-injected chevron `<VCIcon>` inside the button (when `chevron === 'auto'`). */
+    icon: string;
+};
+
+export type TableExpandTriggerCellThemeClasses = {
+    /** The auto-injected leading (or trailing) `<td>` wrapping the trigger button. */
+    root: string;
+};
+
 export type TableSortIndicatorsThemeClasses = {
     /** The bar container `<div>`. */
     root: string;
@@ -297,6 +320,9 @@ declare module '@vuecs/core' {
         tableLoading?: ThemeElementDefinition<TableLoadingThemeClasses>;
         tablePlaceholder?: ThemeElementDefinition<TablePlaceholderThemeClasses>;
         tableSortIndicators?: ThemeElementDefinition<TableSortIndicatorsThemeClasses>;
+        tableRowExpansion?: ThemeElementDefinition<TableRowExpansionThemeClasses>;
+        tableExpandTrigger?: ThemeElementDefinition<TableExpandTriggerThemeClasses>;
+        tableExpandTriggerCell?: ThemeElementDefinition<TableExpandTriggerCellThemeClasses>;
     }
 }
 
@@ -331,3 +357,15 @@ export type TableHeadCellSlotProps<Row = unknown> = {
     sort: SortDirection | null;
     setSort: (direction?: SortDirection) => void;
 };
+
+export type TableExpansionSlotProps<Row = unknown> = {
+    row: Row;
+    index: number;
+};
+
+/**
+ * Where the auto-injected trigger column lives. `'none'` opts out of
+ * the auto-injection entirely — the consumer is expected to place a
+ * `<VCTableExpandTrigger>` somewhere inside the row's data cells.
+ */
+export type TableExpandableTrigger = 'leading' | 'trailing' | 'none';

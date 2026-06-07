@@ -31,6 +31,7 @@ export default function fontAwesomeIcons(): Icon {
                 updateIcon: 'fa6-solid:floppy-disk',
             },
             collapseTrigger: { chevronIcon: 'fa6-solid:chevron-down' },
+            tableExpandTrigger: { chevronIcon: 'fa6-solid:chevron-down' },
             alert: {
                 infoIcon: 'fa6-solid:circle-info',
                 successIcon: 'fa6-solid:circle-check',
