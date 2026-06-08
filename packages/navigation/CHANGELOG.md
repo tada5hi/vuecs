@@ -1,5 +1,21 @@
 # Changelog
 
+## [4.0.1](https://github.com/tada5hi/vuecs/compare/navigation-v4.0.0...navigation-v4.0.1) (2026-06-08)
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 14 updates ([#1616](https://github.com/tada5hi/vuecs/issues/1616)) ([cce3b23](https://github.com/tada5hi/vuecs/commit/cce3b2350619a4e6e30ca6c0d5fae4ca3d24d810))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.1.1 to ^3.1.2
+  * peerDependencies
+    * @vuecs/core bumped from ^3.1.1 to ^3.1.2
+
 ## [4.0.0](https://github.com/tada5hi/vuecs/compare/navigation-v3.0.2...navigation-v4.0.0) (2026-06-06)
 
 

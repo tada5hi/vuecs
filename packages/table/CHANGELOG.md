@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.2.0](https://github.com/tada5hi/vuecs/compare/table-v1.1.2...table-v1.2.0) (2026-06-08)
+
+
+### Features
+
+* **table:** expandable rows + #expansion slot (plan 038) ([#1621](https://github.com/tada5hi/vuecs/issues/1621)) ([79904ac](https://github.com/tada5hi/vuecs/commit/79904ac20d12bcf436c372c55484e5b184e7f735))
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 14 updates ([#1616](https://github.com/tada5hi/vuecs/issues/1616)) ([cce3b23](https://github.com/tada5hi/vuecs/commit/cce3b2350619a4e6e30ca6c0d5fae4ca3d24d810))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.1.1 to ^3.1.2
+    * @vuecs/placeholder bumped from ^1.0.2 to ^1.0.3
+  * peerDependencies
+    * @vuecs/core bumped from ^3.1.1 to ^3.1.2
+    * @vuecs/placeholder bumped from ^1.0.2 to ^1.0.3
+
 ## [1.1.2](https://github.com/tada5hi/vuecs/compare/table-v1.1.1...table-v1.1.2) (2026-06-02)
 
 

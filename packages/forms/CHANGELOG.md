@@ -1,5 +1,22 @@
 # Changelog
 
+## [5.1.1](https://github.com/tada5hi/vuecs/compare/forms-v5.1.0...forms-v5.1.1) (2026-06-08)
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 14 updates ([#1616](https://github.com/tada5hi/vuecs/issues/1616)) ([cce3b23](https://github.com/tada5hi/vuecs/commit/cce3b2350619a4e6e30ca6c0d5fae4ca3d24d810))
+* **forms:** square input-group adjacent corners ([#1622](https://github.com/tada5hi/vuecs/issues/1622)) ([28245f9](https://github.com/tada5hi/vuecs/commit/28245f99791d451c1b594c0a521eb2febd0d15e3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.1.1 to ^3.1.2
+  * peerDependencies
+    * @vuecs/core bumped from ^3.1.1 to ^3.1.2
+
 ## [5.1.0](https://github.com/tada5hi/vuecs/compare/forms-v5.0.1...forms-v5.1.0) (2026-06-04)
 
 

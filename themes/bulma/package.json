@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/theme-bulma",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "type": "module",
     "description": "Bulma theme for vuecs components. Targets Bulma 1.0+ (CSS-variable-based theming); the version number tracks vuecs theme breaking changes, not Bulma's.",
     "exports": {
@@ -47,19 +47,19 @@
         "palette-catalog:check": "tsx scripts/build-palette-catalog.ts --check"
     },
     "devDependencies": {
-        "@vuecs/button": "^1.0.2",
-        "@vuecs/core": "^3.1.1",
-        "@vuecs/countdown": "^2.0.2",
-        "@vuecs/design": "^1.0.2",
-        "@vuecs/elements": "^1.2.1",
-        "@vuecs/forms": "^5.1.0",
-        "@vuecs/gravatar": "^2.0.3",
-        "@vuecs/list": "^1.0.2",
-        "@vuecs/navigation": "^4.0.0",
-        "@vuecs/overlays": "^1.0.2",
-        "@vuecs/pagination": "^2.1.1",
-        "@vuecs/placeholder": "^1.0.2",
-        "@vuecs/timeago": "^2.0.2",
+        "@vuecs/button": "^1.0.3",
+        "@vuecs/core": "^3.1.2",
+        "@vuecs/countdown": "^2.0.3",
+        "@vuecs/design": "^1.0.3",
+        "@vuecs/elements": "^1.2.2",
+        "@vuecs/forms": "^5.1.1",
+        "@vuecs/gravatar": "^2.0.4",
+        "@vuecs/list": "^1.0.3",
+        "@vuecs/navigation": "^4.0.1",
+        "@vuecs/overlays": "^1.0.3",
+        "@vuecs/pagination": "^2.1.2",
+        "@vuecs/placeholder": "^1.0.3",
+        "@vuecs/timeago": "^2.0.3",
         "@vueuse/core": "^14.3.0",
         "culori": "^4.0.1",
         "tailwindcss": "^4.3.0",
@@ -67,8 +67,8 @@
         "vue": "^3.5.35"
     },
     "peerDependencies": {
-        "@vuecs/core": "^3.1.1",
-        "@vuecs/design": "^1.0.2",
+        "@vuecs/core": "^3.1.2",
+        "@vuecs/design": "^1.0.3",
         "@vueuse/core": "^13.0.0 || ^14.0.0",
         "vue": "^3.x"
     },
