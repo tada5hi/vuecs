@@ -3,7 +3,7 @@ import { VCGravatar } from '@vuecs/gravatar';
 import { VCNavItems } from '@vuecs/navigation';
 import type { NavigationResolverContext } from '@vuecs/navigation';
 import { ref } from 'vue';
-import { defineNuxtComponent, useColorMode } from '#imports';
+import { defineNuxtComponent, useColorMode, useLocaleManager } from '#imports';
 import { primaryItems, sideItemsFor } from '~/config/layout';
 
 export default defineNuxtComponent({
@@ -14,6 +14,10 @@ export default defineNuxtComponent({
     setup() {
         const displayNav = ref(false);
         const { resolved, toggle: toggleColorMode } = useColorMode();
+        // Cookie-backed, SSR-safe locale source from @vuecs/nuxt. `source`
+        // is a writable Ref<string | 'auto'> — selecting "Auto" hands
+        // resolution back to Accept-Language (server) / navigator (client).
+        const { source: localeSource } = useLocaleManager();
 
         const toggleNav = () => {
             displayNav.value = !displayNav.value;
@@ -30,6 +34,7 @@ export default defineNuxtComponent({
             displayNav,
             colorMode: resolved,
             toggleColorMode,
+            localeSource,
             primaryItems,
             mobileSideResolver,
         };
@@ -64,10 +69,32 @@ export default defineNuxtComponent({
                 registry-id="top"
             />
 
+            <select
+                v-model="localeSource"
+                :class="[
+                    'ml-auto h-9 rounded-md px-2 text-sm',
+                    'border border-border bg-bg text-fg hover:bg-bg-muted',
+                ]"
+                aria-label="Select language"
+            >
+                <option value="auto">
+                    🌐 Auto
+                </option>
+                <option value="en-US">
+                    English
+                </option>
+                <option value="de-DE">
+                    Deutsch
+                </option>
+                <option value="fr-FR">
+                    Français
+                </option>
+            </select>
+
             <button
                 type="button"
                 :class="[
-                    'ml-auto inline-flex h-9 w-9 items-center justify-center rounded-md',
+                    'inline-flex h-9 w-9 items-center justify-center rounded-md',
                     'border border-border text-fg hover:bg-bg-muted',
                 ]"
                 :aria-label="colorMode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"

@@ -20,6 +20,7 @@ export default defineNuxtConfig({
         '@vuecs/icon': path.join(__dirname, '..', '..', 'packages', 'icon', 'src'),
         '@vuecs/list': path.join(__dirname, '..', '..', 'packages', 'list', 'src'),
         '@vuecs/link': path.join(__dirname, '..', '..', 'packages', 'link', 'src'),
+        '@vuecs/locale': path.join(__dirname, '..', '..', 'packages', 'locale', 'src'),
         '@vuecs/navigation': path.join(__dirname, '..', '..', 'packages', 'navigation', 'src'),
         '@vuecs/overlays': path.join(__dirname, '..', '..', 'packages', 'overlays', 'src'),
         '@vuecs/pagination': path.join(__dirname, '..', '..', 'packages', 'pagination', 'src'),
