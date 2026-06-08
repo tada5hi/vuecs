@@ -8,7 +8,10 @@ import type { ComputedRef, Ref } from 'vue';
  * `'system'`), which defers resolution to the browser's navigator
  * language and falls back to {@link BindLocaleOptions.fallback}.
  */
-export type LocaleSource = string | 'auto';
+// `string & {}` keeps the `'auto'` sentinel visible in autocomplete while
+// still accepting any BCP-47 tag — a bare `string | 'auto'` collapses to
+// `string` and loses the hint.
+export type LocaleSource = (string & {}) | 'auto';
 
 export type BindLocaleOptions = {
     /**

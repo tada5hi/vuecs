@@ -9,11 +9,26 @@ import { defineNuxtPlugin, useCookie, useHead, useRequestHeaders, useRuntimeConf
 
 type NuxtAppLike = { vueApp: App };
 
-/** Extract the primary tag from an `Accept-Language` header value. */
+/**
+ * Resolve the most-preferred tag from an `Accept-Language` header,
+ * honoring `q=` weights (default `q=1`). `*` is ignored.
+ */
 function parseAcceptLanguage(header?: string | null): string | undefined {
     if (!header) return undefined;
-    const first = header.split(',')[0]?.split(';')[0]?.trim();
-    return first && first !== '*' ? first : undefined;
+
+    const ranked = header
+        .split(',')
+        .map((part) => {
+            const [tag, ...params] = part.trim().split(';');
+            const qParam = params.find((p) => p.trim().startsWith('q='));
+            const q = qParam ? Number.parseFloat(qParam.trim().slice(2)) : 1;
+            return { tag: tag.trim(), q: Number.isNaN(q) ? 0 : q };
+        })
+        .filter((entry) => entry.tag.length > 0 && entry.tag !== '*')
+        // Stable sort preserves header order for equal weights.
+        .sort((a, b) => b.q - a.q);
+
+    return ranked.length > 0 ? ranked[0].tag : undefined;
 }
 
 /**

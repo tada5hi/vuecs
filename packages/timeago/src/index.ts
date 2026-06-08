@@ -29,7 +29,10 @@ export function install(app: App, options: Options = {}): void {
     // default — the locale resolves through core's `Config['locale']`
     // (default `en-US`), driveable globally by `app.use(vuecs, { config })`
     // or the `@vuecs/locale` plugin.
-    if (options.locale) {
+    //
+    // An explicit `options.config.locale` (the canonical core API) wins
+    // over the legacy shorthand if a caller passes both.
+    if (options.locale && (!options.config || options.config.locale === undefined)) {
         installConfigManager(app, { config: { locale: options.locale } });
     }
 

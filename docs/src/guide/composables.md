@@ -171,7 +171,7 @@ const locale = useLocale();        // ComputedRef<string>
 const locale = useLocale('de-DE'); // custom fallback when config has no value
 ```
 
-To *write* the locale globally, set the config key — `app.use(vuecs, { config: { locale } })` or `setConfig({ locale })` at runtime — or use [`@vuecs/locale`](#vuecs-locale) for browser detection + override + reset.
+To *write* the locale globally, set the config key — `app.use(vuecs, { config: { locale } })` or `setConfig({ locale })` at runtime — or use [`@vuecs/locale`](/components/locale) for browser detection + override + reset.
 
 ## `@vuecs/locale`
 

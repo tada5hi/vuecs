@@ -16,7 +16,7 @@ import type { ComputedRef } from 'vue';
 import localePlugin from '../../src';
 import { installLocale } from '../../src/install';
 import { useLocaleManager } from '../../src/composable';
-import type { UseLocaleReturn } from '../../src/types';
+import type { LocaleSource, UseLocaleReturn } from '../../src/types';
 
 function setNavigatorLanguage(value: string | undefined) {
     Object.defineProperty(window.navigator, 'language', {
