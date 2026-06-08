@@ -55,6 +55,24 @@ const value = ref('');
 
 `placeholder`, `disabled`, etc. are forwarded to the native `<input>` via `attrs`.
 
+## Input group
+
+When a prepend and/or append is present (via the `groupPrepend` / `groupAppend`
+props or the `#groupPrepend` / `#groupAppend` slots), the input automatically
+squares the corner(s) touching the addon so the group reads as one seamless
+control — no consumer override needed.
+
+The squared corners are theme-owned via two `formInput` theme classes, applied
+to the `<input>` in addition to `root`:
+
+| Slot | Applied when | theme-tailwind value |
+|------|--------------|----------------------|
+| `rootGroupStart` | a prepend is present | `rounded-l-none` |
+| `rootGroupEnd` | an append is present | `rounded-r-none` |
+
+Override them per instance via `:theme-class`, or globally via theme overrides,
+to change how the seam is squared.
+
 ## Events
 
 | Event | Payload | Description |

@@ -84,6 +84,8 @@ export default function tailwindTheme(): Theme {
             formInput: {
                 classes: {
                     root: 'block w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-fg shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:bg-bg-muted',
+                    rootGroupStart: 'rounded-l-none',
+                    rootGroupEnd: 'rounded-r-none',
                     group: 'flex items-stretch',
                     groupAppend: 'inline-flex items-center rounded-r-md border border-l-0 border-border bg-bg-muted px-3 text-sm text-fg-muted',
                     groupPrepend: 'inline-flex items-center rounded-l-md border border-r-0 border-border bg-bg-muted px-3 text-sm text-fg-muted',

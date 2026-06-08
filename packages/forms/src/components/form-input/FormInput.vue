@@ -24,6 +24,10 @@ import { useFormInputThemeProps } from '../form-group/context';
 
 export type FormInputThemeClasses = {
     root: string;
+    /** Applied to the `<input>` (in addition to `root`) when a prepend is present — squares the adjacent corner so the group reads as one element. */
+    rootGroupStart: string;
+    /** Applied to the `<input>` (in addition to `root`) when an append is present — squares the adjacent corner so the group reads as one element. */
+    rootGroupEnd: string;
     group: string;
     groupAppend: string;
     groupPrepend: string;
@@ -38,6 +42,12 @@ declare module '@vuecs/core' {
 export const formInputThemeDefaults: ComponentThemeDefinition<FormInputThemeClasses> = {
     classes: {
         root: 'vc-form-input',
+        // Structural corner-squaring is handled positionally by
+        // form-input.css (`:first-child` / `:last-child`); these slots stay
+        // empty by default and let class-string themes (e.g. theme-tailwind)
+        // square the adjacent corner explicitly when no structural CSS loads.
+        rootGroupStart: '',
+        rootGroupEnd: '',
         group: 'vc-form-input-group',
         groupAppend: 'vc-form-input-group-append',
         groupPrepend: 'vc-form-input-group-prepend',
@@ -128,6 +138,9 @@ export default defineComponent({
             const resolved = theme.value;
             const children: VNodeChild[] = [];
 
+            const hasPrepend = !!(slots.groupPrepend || props.groupPrepend);
+            const hasAppend = !!(slots.groupAppend || props.groupAppend);
+
             // Group prepend
             if (slots.groupPrepend) {
                 children.push(slots.groupPrepend({ class: resolved.groupPrepend, tag: 'div' }));
@@ -135,10 +148,15 @@ export default defineComponent({
                 children.push(h('div', { class: resolved.groupPrepend || undefined }, [props.groupPrependContent]));
             }
 
-            // Input element
+            // Input element — square the corner(s) adjacent to a group element
+            // so the input reads as one piece with the prepend/append.
             children.push(h('input', mergeProps({
                 type: props.type,
-                class: resolved.root || undefined,
+                class: [
+                    resolved.root,
+                    hasPrepend ? resolved.rootGroupStart : undefined,
+                    hasAppend ? resolved.rootGroupEnd : undefined,
+                ],
                 onInput,
                 value: localValue.value,
             }, attrs)));
