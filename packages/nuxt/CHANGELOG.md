@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.1.0](https://github.com/tada5hi/vuecs/compare/nuxt-v1.0.3...nuxt-v1.1.0) (2026-06-08)
+
+
+### Features
+
+* **locale:** browser-aware locale source + core useLocale() + SSR ([#1624](https://github.com/tada5hi/vuecs/issues/1624)) ([9b50f21](https://github.com/tada5hi/vuecs/commit/9b50f21efe43309875fcb7b532d031d223e8f316))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @vuecs/core bumped from ^3.1.2 to ^3.2.0
+    * @vuecs/design bumped from ^1.0.3 to ^1.0.4
+    * @vuecs/locale bumped from ^0.0.0 to ^1.0.0
+
 ## [1.0.3](https://github.com/tada5hi/vuecs/compare/nuxt-v1.0.2...nuxt-v1.0.3) (2026-06-08)
 
 

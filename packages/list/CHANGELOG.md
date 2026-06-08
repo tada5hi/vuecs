@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.4](https://github.com/tada5hi/vuecs/compare/list-v1.0.3...list-v1.0.4) (2026-06-08)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.1.2 to ^3.2.0
+  * peerDependencies
+    * @vuecs/core bumped from ^3.1.2 to ^3.2.0
+
 ## [1.0.3](https://github.com/tada5hi/vuecs/compare/list-v1.0.2...list-v1.0.3) (2026-06-08)
 
 

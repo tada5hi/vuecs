@@ -1,5 +1,32 @@
 # Changelog
 
+## [6.1.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v6.0.0...examples-nuxt-v6.1.0) (2026-06-08)
+
+
+### Features
+
+* **locale:** browser-aware locale source + core useLocale() + SSR ([#1624](https://github.com/tada5hi/vuecs/issues/1624)) ([9b50f21](https://github.com/tada5hi/vuecs/commit/9b50f21efe43309875fcb7b532d031d223e8f316))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/button bumped from ^1.0.3 to ^1.0.4
+    * @vuecs/countdown bumped from ^2.0.3 to ^2.0.4
+    * @vuecs/design bumped from ^1.0.3 to ^1.0.4
+    * @vuecs/elements bumped from ^1.2.2 to ^1.2.3
+    * @vuecs/forms bumped from ^5.1.1 to ^5.2.0
+    * @vuecs/gravatar bumped from ^2.0.4 to ^2.0.5
+    * @vuecs/icons-font-awesome bumped from ^1.1.0 to ^1.1.1
+    * @vuecs/list bumped from ^1.0.3 to ^1.0.4
+    * @vuecs/navigation bumped from ^4.0.1 to ^4.0.2
+    * @vuecs/nuxt bumped from ^1.0.3 to ^1.1.0
+    * @vuecs/overlays bumped from ^1.0.3 to ^1.0.4
+    * @vuecs/pagination bumped from ^2.1.2 to ^2.1.3
+    * @vuecs/theme-tailwind bumped from ^3.0.0 to ^4.0.0
+    * @vuecs/timeago bumped from ^2.0.3 to ^2.1.0
+
 ## [6.0.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v5.0.0...examples-nuxt-v6.0.0) (2026-06-08)
 
 

@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.0.2](https://github.com/tada5hi/vuecs/compare/navigation-v4.0.1...navigation-v4.0.2) (2026-06-08)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.1.2 to ^3.2.0
+  * peerDependencies
+    * @vuecs/core bumped from ^3.1.2 to ^3.2.0
+
 ## [4.0.1](https://github.com/tada5hi/vuecs/compare/navigation-v4.0.0...navigation-v4.0.1) (2026-06-08)
 
 

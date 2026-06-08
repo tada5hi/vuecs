@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.1.1](https://github.com/tada5hi/vuecs/compare/icons-font-awesome-v1.1.0...icons-font-awesome-v1.1.1) (2026-06-08)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.1.2 to ^3.2.0
+  * peerDependencies
+    * @vuecs/core bumped from ^3.1.2 to ^3.2.0
+
 ## [1.1.0](https://github.com/tada5hi/vuecs/compare/icons-font-awesome-v1.0.2...icons-font-awesome-v1.1.0) (2026-06-08)
 
 

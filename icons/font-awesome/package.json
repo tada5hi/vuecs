@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/icons-font-awesome",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "type": "module",
     "description": "Font Awesome icon preset for vuecs — maps semantic-slot defaults (pagination prev/next/first/last, submit-button create/update, ...) to Font Awesome 6 Solid Iconify names. Successor to @vuecs/theme-font-awesome.",
     "exports": {
@@ -39,10 +39,10 @@
         "build": "rimraf dist && npm run build:js && npm run build:types"
     },
     "devDependencies": {
-        "@vuecs/core": "^3.1.2"
+        "@vuecs/core": "^3.2.0"
     },
     "peerDependencies": {
-        "@vuecs/core": "^3.1.2"
+        "@vuecs/core": "^3.2.0"
     },
     "engines": {
         "node": ">=22.0.0"

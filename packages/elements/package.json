@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/elements",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "type": "module",
     "description": "Atomic, presentation-only UI elements for vuecs (Separator, Tag, Tags, Avatar, AspectRatio, VisuallyHidden, Badge).",
     "exports": {
@@ -51,14 +51,14 @@
     },
     "devDependencies": {
         "@vue/test-utils": "^2.4.11",
-        "@vuecs/core": "^3.1.2",
-        "@vuecs/placeholder": "^1.0.3",
+        "@vuecs/core": "^3.2.0",
+        "@vuecs/placeholder": "^1.0.4",
         "jsdom": "^29.0.2",
         "vue": "^3.5.35"
     },
     "peerDependencies": {
-        "@vuecs/core": "^3.1.2",
-        "@vuecs/placeholder": "^1.0.3",
+        "@vuecs/core": "^3.2.0",
+        "@vuecs/placeholder": "^1.0.4",
         "vue": "^3.x"
     },
     "engines": {
