@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.2.2](https://github.com/tada5hi/vuecs/compare/elements-v1.2.1...elements-v1.2.2) (2026-06-08)
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 14 updates ([#1616](https://github.com/tada5hi/vuecs/issues/1616)) ([cce3b23](https://github.com/tada5hi/vuecs/commit/cce3b2350619a4e6e30ca6c0d5fae4ca3d24d810))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.1.1 to ^3.1.2
+    * @vuecs/placeholder bumped from ^1.0.2 to ^1.0.3
+  * peerDependencies
+    * @vuecs/core bumped from ^3.1.1 to ^3.1.2
+    * @vuecs/placeholder bumped from ^1.0.2 to ^1.0.3
+
 ## [1.2.1](https://github.com/tada5hi/vuecs/compare/elements-v1.2.0...elements-v1.2.1) (2026-06-02)
 
 

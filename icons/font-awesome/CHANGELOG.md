@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.1.0](https://github.com/tada5hi/vuecs/compare/icons-font-awesome-v1.0.2...icons-font-awesome-v1.1.0) (2026-06-08)
+
+
+### Features
+
+* **table:** expandable rows + #expansion slot (plan 038) ([#1621](https://github.com/tada5hi/vuecs/issues/1621)) ([79904ac](https://github.com/tada5hi/vuecs/commit/79904ac20d12bcf436c372c55484e5b184e7f735))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.1.1 to ^3.1.2
+  * peerDependencies
+    * @vuecs/core bumped from ^3.1.1 to ^3.1.2
+
 ## [1.0.2](https://github.com/tada5hi/vuecs/compare/icons-font-awesome-v1.0.1...icons-font-awesome-v1.0.2) (2026-06-02)
 
 
