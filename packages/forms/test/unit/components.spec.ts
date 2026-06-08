@@ -857,6 +857,15 @@ describe('VCFormSelect', () => {
         await nextTick();
     };
 
+    const closeSelect = async (wrapper: ReturnType<typeof mount>) => {
+        // Reka's Select closes on Escape — its keydown handler flips
+        // `data-state` to "closed", unmounting the portal content
+        // (`unmountOnHide`).
+        await wrapper.find('button[role="combobox"]').trigger('keydown', { key: 'Escape' });
+        await nextTick();
+        await nextTick();
+    };
+
     it('should render a button trigger with role="combobox"', () => {
         const wrapper = mount(VCFormSelect, {
             props: { options },
@@ -998,6 +1007,37 @@ describe('VCFormSelect', () => {
         const emitted = wrapper.emitted('update:modelValue');
         expect(emitted).toBeTruthy();
         expect(emitted![0]).toEqual(['2']);
+    });
+
+    // Behavioral contract: options must survive a close → reopen cycle. Reka's
+    // SelectContent uses `unmountOnHide`, so it unmounts on close and remounts
+    // on reopen; the outer VCFormSelect render does NOT re-run on toggle (open
+    // state lives inside Reka's SelectRoot), so the viewport slot rebuilds its
+    // option VNodes per mount (`() => renderItems()`) instead of capturing a
+    // pre-built array — matching the VCNavItem flyout doctrine (commit
+    // b08706d7). NOTE: Vue 3.5 defensively clones reused VNodes, so this
+    // asserts the user-visible contract but does not by itself fail against a
+    // captured array.
+    it('should re-render every option after close + reopen (unmountOnHide)', async () => {
+        const wrapper = mount(VCFormSelect, {
+            props: { options },
+            global: { plugins: [themePlugin] },
+            attachTo: document.body,
+        });
+
+        await openSelect(wrapper);
+        expect(document.body.querySelectorAll('[role="option"]').length).toBe(2);
+
+        await closeSelect(wrapper);
+        // Closed: Reka unmounts the portal content.
+        expect(document.body.querySelectorAll('[role="option"]').length).toBe(0);
+
+        // Reopen: the options must come back — not an empty panel.
+        await openSelect(wrapper);
+        const items = document.body.querySelectorAll('[role="option"]');
+        expect(items.length).toBe(2);
+        expect(items[0].textContent).toContain('Option 1');
+        expect(items[1].textContent).toContain('Option 2');
     });
 });
 
