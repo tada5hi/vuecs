@@ -1060,6 +1060,21 @@ export default function bootstrapTheme(): Theme {
                 },
             },
             placeholderWrapper: { classes: { root: 'position-relative' } },
+            tableRowExpansion: {
+                classes: {
+                    root: 'bg-body-tertiary',
+                    cell: 'p-0',
+                    panel: 'overflow-hidden',
+                    panelInner: 'px-3 py-2',
+                },
+            },
+            tableExpandTrigger: {
+                classes: {
+                    root: 'btn btn-link p-1 d-inline-flex align-items-center justify-content-center text-body-secondary',
+                    icon: 'small',
+                },
+            },
+            tableExpandTriggerCell: { classes: { root: 'text-center align-middle' } },
         },
         /*
          * Theme-runtime hook (plan 021): mirror the resolved color mode

@@ -196,6 +196,13 @@ export default defineComponent({
             interactiveRows: ref(new Set()),
             registerInteractiveRow: () => {},
             unregisterInteractiveRow: () => {},
+            // Lite doesn't ship a table-level expansion machine; rows
+            // that want expansion in a Lite host opt in via per-row
+            // `:open` controlled mode or rely on the internal-state
+            // fallback. (plan 038)
+            expandable: computed(() => false),
+            expandableTrigger: computed(() => 'leading' as const),
+            expansion: undefined,
         });
 
         const slotProps = computed<TableSlotProps>(() => ({

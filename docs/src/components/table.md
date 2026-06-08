@@ -90,6 +90,10 @@ const data: User[] = [
 | `stickyHeader` | `boolean` | `false` | Stick the `<thead>` to the top of the scroll container. Requires `:scrollable`. |
 | `maxHeight` | `string` | `undefined` | CSS length applied to the scroll container's `max-height`. |
 | `rowClickable` | `boolean` | `false` | Opt-in: each row becomes focusable + clickable. Emits `@row-click`; row keyboard nav activates. |
+| `expandable` | `boolean` | `false` | Enable per-row expansion panels (see [Expandable rows](#expandable-rows)). |
+| `expanded` | `RowSelectionKey \| RowSelectionKey[] \| null` | `[]` | Controlled expansion state. Use `v-model:expanded`. Multi-mode carries an array; single-mode carries a bare key or `null` for "no row open". |
+| `expansionMode` | `'single' \| 'multi'` | `'multi'` | Accordion (single) vs unrestricted (multi) expansion. |
+| `expandableTrigger` | `'leading' \| 'trailing' \| 'none'` | `'leading'` | Where to place the auto-injected trigger column. `'none'` opts out (consumer places `<VCTableExpandTrigger>` inside a data cell). |
 | `density` | `'compact' \| 'normal' \| 'spacious'` | `'normal'` | Theme variant shorthand. |
 | `striped` / `bordered` / `hover` | `boolean` | `undefined` | Theme variant shorthands. |
 
@@ -295,6 +299,125 @@ input becomes a `radio`. With selection disabled entirely, both fall
 back to the default slot so consumers can keep the column in place
 without losing layout. `aria-label` defaults to `'Select all rows'` /
 `'Select row'` — override via `:selector-aria-label` for i18n.
+
+## Expandable rows
+
+Per-row expansion panels for inline entity detail — log payloads,
+audit trails, comment threads, debug data — without a separate route.
+Each expanded row mounts as a Vue Fragment of two `<tr>`: the data
+row + a sibling `<tr><td colspan="N">` containing the panel content.
+
+Set `:expandable` on `<VCTable>` and provide an `#expansion` scoped
+slot. The driver auto-injects a leading trigger column with a chevron
+button; click to toggle.
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { VCTable } from '@vuecs/table';
+
+const expanded = ref<(string | number)[]>([]);
+const users = [
+    { id: 1, name: 'Alice', email: 'alice@example.com' },
+    { id: 2, name: 'Bob', email: 'bob@example.com' },
+];
+</script>
+
+<template>
+  <VCTable
+    v-model:expanded="expanded"
+    :columns="[{ key: 'name' }, { key: 'email' }]"
+    :data="users"
+    expandable>
+    <template #expansion="{ row }">
+      <p><strong>{{ row.name }}</strong> &lt;{{ row.email }}&gt;</p>
+      <p>Last seen: just now</p>
+    </template>
+  </VCTable>
+</template>
+```
+
+### Single (accordion) vs multi
+
+`:expansion-mode="'multi'"` (default) lets any number of rows open
+simultaneously. `:expansion-mode="'single'"` collapses the previously-
+open row when a new one opens — the accordion pattern.
+
+### Initial state via `_expanded`
+
+Mirrors the `_rowVariant` row-meta pattern. Mark a row open by
+default with `_expanded: true` on the row payload:
+
+```ts
+const users = [
+    { id: 1, name: 'Alice' },
+    { id: 2, name: 'Bob', _expanded: true }, // starts open
+];
+```
+
+The seed runs ONCE on the first non-empty data pass — so the canonical
+async pattern (`data: []` then `data: [...]` after fetch) seeds correctly
+once the rows arrive, not silently at mount against the initial empty
+array. In `'single'` mode, multiple seeds emit a dev warning and only
+the first wins.
+
+### Custom trigger placement
+
+Pass `:expandable-trigger="'none'"` to opt out of the auto-injected
+column, then place `<VCTableExpandTrigger>` anywhere inside a data
+cell. The trigger reads its expansion state from the surrounding
+row's context — it just needs to be a descendant of an `expandable`
+`<VCTableRow>`.
+
+```vue
+<VCTable :columns :data expandable expandable-trigger="none">
+  <template #cell-name="{ row }">
+    <VCTableExpandTrigger />
+    {{ row.name }}
+  </template>
+  <template #expansion="{ row }">
+    <pre>{{ JSON.stringify(row, null, 2) }}</pre>
+  </template>
+</VCTable>
+```
+
+### Persistence across data refresh
+
+`v-model:expanded` persists across re-renders when the bound ref
+lives outside your data-fetching scope (e.g. on a Pinia store or in
+page-level setup). When a row whose key is in `:expanded` gets
+filtered out, the key is kept — so re-adding the row re-expands it
+automatically. Mirrors `:selection` behaviour.
+
+### Animation
+
+The expansion panel animates open via a `ResizeObserver`-measured
+height. No max-height ceiling — any panel height works correctly.
+Animations respect `prefers-reduced-motion: reduce`.
+
+### Manual / Shape B usage
+
+When writing rows by hand (without the `:columns` driver), each
+`<VCTableRow>` gets its own `:expandable` opt-in + `#expansion` slot:
+
+```vue
+<VCTable>
+  <VCTableHeader> … </VCTableHeader>
+  <VCTableBody>
+    <VCTableRow v-for="(row, index) in users" :row :index expandable>
+      <VCTableCell>{{ row.name }}</VCTableCell>
+      <template #expansion>
+        <p>Details for {{ row.name }}</p>
+      </template>
+    </VCTableRow>
+  </VCTableBody>
+</VCTable>
+```
+
+A standalone row can also be controlled per-instance via `:open` +
+`@update:open` — useful when the row sits outside any
+`<VCTable :expandable>` (e.g. tanstack-table wrappers) or when you
+want fully-local state.
 
 ## `<VCTableLite>` — slim escape hatch
 

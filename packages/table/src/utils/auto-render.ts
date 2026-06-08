@@ -11,6 +11,7 @@ import type {
     SortDirection,
     TableCellSlotProps,
     TableColumn,
+    TableExpandableTrigger,
     TableHeadCellSlotProps,
     TableSortState,
 } from '../types';
@@ -141,6 +142,22 @@ export function composeTableInner(opts: {
      * skeleton fully owns the rows region while loading.
      */
     placeholderRows?: number | undefined;
+    /**
+     * `<VCTable :expandable>` opt-in (plan 038). When true, the
+     * auto-rendered header gets a leading/trailing placeholder `<th>`
+     * for the trigger column, and each auto-rendered `<VCTableRow>`
+     * is mounted with `expandable={true}` + the `#expansion` slot
+     * bridge.
+     */
+    expandable?: boolean;
+    /**
+     * Trigger placement when `expandable` is on. `'none'` skips both
+     * the placeholder `<th>` and the trigger-cell auto-injection
+     * (consumer places `<VCTableExpandTrigger>` inside a data cell).
+     */
+    expandableTrigger?: TableExpandableTrigger;
+    /** `#expansion` slot from `<VCTable>`, forwarded into each auto-rendered row. */
+    expansionSlot?: ((slotProps: { row: unknown; index: number }) => unknown) | undefined;
 }): unknown[] {
     const {
         cols,
@@ -151,7 +168,12 @@ export function composeTableInner(opts: {
         sort,
         setSort,
         placeholderRows,
+        expandable = false,
+        expandableTrigger = 'leading',
+        expansionSlot,
     } = opts;
+
+    const injectTrigger = expandable && expandableTrigger !== 'none';
 
     const inner: unknown[] = [];
     if (captionSlot) inner.push(h('caption', null, captionSlot() as never));
@@ -161,39 +183,77 @@ export function composeTableInner(opts: {
     const hasHeader = autoRender && containsComponent(slotChildren, VCTableHeader);
     const hasBody = autoRender && containsComponent(slotChildren, VCTableBody);
 
+    // Misalignment guard (plan 038): when the consumer writes a manual
+    // `<VCTableHeader>` AND opts into expandable rows (driver mode),
+    // the body's auto-injected trigger column will out-count the
+    // consumer's header columns by one. Dev-warn so the misalignment
+    // is visible — fixing it requires either consumer-side
+    // `<VCTableHeadCell aria-hidden>` or switching to auto-header.
+    if (
+        process.env.NODE_ENV !== 'production' &&
+        autoRender && hasHeader && !hasBody && injectTrigger
+    ) {
+        // eslint-disable-next-line no-console
+        console.warn(
+            `[VCTable] :expandable is on with a manual <VCTableHeader>. The auto-injected body trigger column will not have a matching header cell. Add a \`<VCTableHeadCell aria-hidden="true" />\` at the same edge (:expandable-trigger="${expandableTrigger ?? 'leading'}") OR omit the manual <VCTableHeader> to let the driver auto-render align both bands.`,
+        );
+    }
+
     if (autoRender && !hasHeader) {
-        inner.push(h(VCTableHeader, null, () => h(VCTableRow, null, () => cols.map((col) => {
+        // Render a single empty `<th>` placeholder for the auto-injected
+        // trigger column. Carries `aria-hidden="true"` so screen readers
+        // don't announce an empty column header; structural CSS sizes
+        // it to `width: 1%; white-space: nowrap` so it shrinks to
+        // chevron-button width.
+        const triggerHeaderCell = injectTrigger ? h(VCTableHeadCell, {
+            class: 'vc-table-expand-trigger-header',
+            'aria-hidden': 'true',
+        }) : null;
+
+        inner.push(h(VCTableHeader, null, () => h(VCTableRow, null, () => {
+            const dataHeaders = cols.map((col) => {
             // Consumer `#header-<key>` slot wins over the default
             // `col.label` text — see issue #1592. The auto-render path
             // used to ignore these slots silently; now it dispatches
             // them with the documented `TableHeadCellSlotProps` shape.
-            const headerSlot = slots?.[`header-${col.key}`];
-            const cellProps = {
-                key: col.key,
-                columnKey: col.key,
-                sortable: col.sortable,
-                stickyColumn: col.stickyColumn,
-                title: col.headerTitle,
-                abbr: col.headerAbbr,
-                // `column.class` applies to BOTH <th> and <td>; `headerClass`
-                // is the header-only additive. Vue normalizes the array.
-                class: [col.class, col.headerClass],
-            };
-            if (headerSlot) {
-                const matched = sort?.find((s) => s.key === col.key);
-                const slotProps: TableHeadCellSlotProps<unknown> = {
-                    column: col,
+                const headerSlot = slots?.[`header-${col.key}`];
+                const cellProps = {
                     key: col.key,
-                    sort: matched ? matched.direction : null,
-                    setSort: (direction) => {
-                        if (!setSort) return;
-                        setSort(col.key, direction ? { direction } : undefined);
-                    },
+                    columnKey: col.key,
+                    sortable: col.sortable,
+                    stickyColumn: col.stickyColumn,
+                    title: col.headerTitle,
+                    abbr: col.headerAbbr,
+                    // `column.class` applies to BOTH <th> and <td>; `headerClass`
+                    // is the header-only additive. Vue normalizes the array.
+                    class: [col.class, col.headerClass],
                 };
-                return h(VCTableHeadCell, cellProps, () => headerSlot(slotProps));
-            }
-            return h(VCTableHeadCell, cellProps, () => col.label);
-        }))));
+                if (headerSlot) {
+                    const matched = sort?.find((s) => s.key === col.key);
+                    const slotProps: TableHeadCellSlotProps<unknown> = {
+                        column: col,
+                        key: col.key,
+                        sort: matched ? matched.direction : null,
+                        setSort: (direction) => {
+                            if (!setSort) return;
+                            setSort(col.key, direction ? { direction } : undefined);
+                        },
+                    };
+                    return h(VCTableHeadCell, cellProps, () => headerSlot(slotProps));
+                }
+                return h(VCTableHeadCell, cellProps, () => col.label);
+            });
+
+            // Place the trigger header cell at the configured edge.
+            // Flatten so the `<th>` nodes are direct row children —
+            // nesting `[dataHeaders, triggerHeaderCell]` would force
+            // Vue to wrap the inner array in a Fragment + extra
+            // comment vnodes inside the `<tr>`.
+            if (triggerHeaderCell === null) return dataHeaders;
+            return expandableTrigger === 'trailing' ?
+                [...dataHeaders, triggerHeaderCell] :
+                [triggerHeaderCell, ...dataHeaders];
+        })));
     }
 
     // Partition slot children so `<VCTableFooter>` always lands AFTER
@@ -240,35 +300,51 @@ export function composeTableInner(opts: {
 
     if (autoRender && !hasBody) {
         inner.push(h(VCTableBody, null, {
-            row: ({ row, index }: { row: unknown; index: number }) => h(
-                VCTableRow,
-                { row, index },
-                () => cols.map((col) => {
-                    const cellProps = {
-                        key: col.key,
-                        columnKey: col.key,
-                        isRowHeader: col.isRowHeader,
-                        stickyColumn: col.stickyColumn,
-                        dataLabel: col.label,
-                        class: [col.class, col.cellClass],
-                    };
-                    // Consumer `#cell-<key>` slot wins over
-                    // `<VCTableCell>`'s auto-render path. Slot props
-                    // mirror `TableCellSlotProps` — see issue #1592.
-                    const cellSlot = slots?.[`cell-${col.key}`];
-                    if (cellSlot) {
-                        const slotProps: TableCellSlotProps<unknown> = {
-                            row,
-                            value: resolveCellValue(col, row),
+            row: ({ row, index }: { row: unknown; index: number }) => {
+                const rowProps = expandable ? {
+                    row,
+                    index,
+                    expandable: true,
+                    expandableTrigger,
+                } : { row, index };
+                const rowSlots: Record<string, (slotProps?: unknown) => unknown> = {
+                    default: () => cols.map((col) => {
+                        const cellProps = {
                             key: col.key,
-                            column: col,
-                            index,
+                            columnKey: col.key,
+                            isRowHeader: col.isRowHeader,
+                            stickyColumn: col.stickyColumn,
+                            dataLabel: col.label,
+                            class: [col.class, col.cellClass],
                         };
-                        return h(VCTableCell, cellProps, () => cellSlot(slotProps));
-                    }
-                    return h(VCTableCell, cellProps);
-                }),
-            ),
+                        // Consumer `#cell-<key>` slot wins over
+                        // `<VCTableCell>`'s auto-render path. Slot props
+                        // mirror `TableCellSlotProps` — see issue #1592.
+                        const cellSlot = slots?.[`cell-${col.key}`];
+                        if (cellSlot) {
+                            const slotProps: TableCellSlotProps<unknown> = {
+                                row,
+                                value: resolveCellValue(col, row),
+                                key: col.key,
+                                column: col,
+                                index,
+                            };
+                            return h(VCTableCell, cellProps, () => cellSlot(slotProps));
+                        }
+                        return h(VCTableCell, cellProps);
+                    }),
+                };
+                // Bridge the table-level `#expansion` slot through to
+                // each row's own `#expansion` slot. Only emit the slot
+                // when the consumer provided one — Vue treats `slots`
+                // record entries as always-defined.
+                if (expandable && expansionSlot) {
+                    rowSlots.expansion = (slotProps) => expansionSlot(
+                        slotProps as { row: unknown; index: number },
+                    );
+                }
+                return h(VCTableRow, rowProps, rowSlots);
+            },
         }));
     }
 

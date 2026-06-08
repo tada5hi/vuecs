@@ -31,6 +31,7 @@ export default function lucideIcons(): Icon {
                 updateIcon: 'lucide:save',
             },
             collapseTrigger: { chevronIcon: 'lucide:chevron-down' },
+            tableExpandTrigger: { chevronIcon: 'lucide:chevron-down' },
             alert: {
                 infoIcon: 'lucide:info',
                 successIcon: 'lucide:circle-check',

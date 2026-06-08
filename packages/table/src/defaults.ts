@@ -12,6 +12,15 @@ export type TableLoadingDefaults = {
     content: string;
 };
 
+export type TableExpandTriggerDefaults = {
+    /** `aria-label` painted on the trigger button while the row is collapsed. */
+    expandLabel: string;
+    /** `aria-label` painted on the trigger button while the row is expanded. */
+    collapseLabel: string;
+    /** Iconify name for the auto-injected chevron icon. Usually wired by `@vuecs/icons-lucide`. */
+    chevronIcon: string;
+};
+
 export type TableSortIndicatorsDefaults = {
     /** Leading label rendered before the chip list. */
     label: string;
@@ -39,6 +48,7 @@ declare module '@vuecs/core' {
     interface ComponentDefaults {
         tableEmpty?: ComponentDefaultValues<TableEmptyDefaults>;
         tableLoading?: ComponentDefaultValues<TableLoadingDefaults>;
+        tableExpandTrigger?: ComponentDefaultValues<TableExpandTriggerDefaults>;
         tableSortIndicators?: ComponentDefaultValues<TableSortIndicatorsDefaults>;
     }
 }

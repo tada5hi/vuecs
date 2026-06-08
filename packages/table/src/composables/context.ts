@@ -3,6 +3,7 @@ import { inject, provide } from 'vue';
 import type {
     SortDirection,
     TableColumn,
+    TableExpandableTrigger,
     TableSortState,
 } from '../types';
 import type { RowSelectionKey, RowSelectionState } from './selection';
@@ -83,6 +84,30 @@ export type TableContext<Row = unknown> = {
     interactiveRows: Ref<Set<number>>;
     registerInteractiveRow(index: number): void;
     unregisterInteractiveRow(index: number): void;
+    /**
+     * `true` when `<VCTable :expandable>` is set. Per-row
+     * `<VCTableRow>` reads this (plus its own `:expandable`) to
+     * decide whether to mount the expansion fragment + read state
+     * from the table-level machine. Forwarded into `colspan`
+     * resolution so the trigger column adds +1 to `<VCTableEmpty>` /
+     * `<VCTableLoading>` spans.
+     */
+    expandable: Ref<boolean>;
+    /**
+     * Default trigger-column placement. Per-row `<VCTableRow
+     * :expandableTrigger>` wins over this; both default to
+     * `'leading'`.
+     */
+    expandableTrigger: Ref<TableExpandableTrigger>;
+    /**
+     * Table-level expansion state machine. Always provided when
+     * `<VCTable>` is the host (the machine is a no-op when
+     * `:expandable` is false). `<VCTableLite>` provides `undefined`.
+     * Implemented via the shared `useSelectionMachine` from
+     * `@vuecs/core` — the "selection" semantic generalizes to
+     * "set of currently open row keys".
+     */
+    expansion: RowSelectionState | undefined;
 };
 
 const TABLE_CONTEXT_KEY: InjectionKey<TableContext<unknown>> = Symbol('vcTableContext');
@@ -99,6 +124,29 @@ export function useTable<Row = unknown>(): TableContext<Row> | null {
 // Row-scope context (provided by <VCTableRow> inside <VCTableBody>'s iteration)
 // ──────────────────────────────────────────────────────────────────────────
 
+/**
+ * Per-row expansion state, attached to `TableRowContext.expansion` when
+ * the row is `:expandable`. Null otherwise — components like
+ * `<VCTableExpandTrigger>` panic with a dev warning when this is null
+ * (i.e. they were mounted outside an expandable row).
+ *
+ * `open` is reactive; `triggerId` / `panelId` are stable across the
+ * row's lifetime (used for ARIA `aria-controls` / `aria-labelledby`
+ * linkage between the trigger and the expansion panel).
+ */
+export type TableRowExpansionState = {
+    /**
+     * Reactive read of the row's open state. `ComputedRef<boolean>` is
+     * structurally a `Ref<boolean>` for reads; the explicit union makes
+     * the read-only intent clear at the type level (callers should not
+     * mutate `.value` — flip state via `toggle()` instead).
+     */
+    open: Readonly<Ref<boolean>>;
+    toggle: () => void;
+    triggerId: string;
+    panelId: string;
+};
+
 export type TableRowContext<Row = unknown> = {
     row: Ref<Row>;
     index: Ref<number>;
@@ -112,6 +160,12 @@ export type TableRowContext<Row = unknown> = {
     selectionKey: Ref<RowSelectionKey>;
     /** `true` when the parent table's selection includes this row. */
     selected: Ref<boolean>;
+    /**
+     * Per-row expansion state. `null` when the row isn't `:expandable`
+     * — components that need to toggle expansion (the trigger button)
+     * dev-warn and no-op when this is null.
+     */
+    expansion: TableRowExpansionState | null;
 };
 
 const TABLE_ROW_CONTEXT_KEY: InjectionKey<TableRowContext<unknown>> = Symbol('vcTableRowContext');

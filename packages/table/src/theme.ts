@@ -3,11 +3,14 @@ import type {
     TableBodyThemeClasses,
     TableCellThemeClasses,
     TableEmptyThemeClasses,
+    TableExpandTriggerCellThemeClasses,
+    TableExpandTriggerThemeClasses,
     TableFooterThemeClasses,
     TableHeadCellThemeClasses,
     TableHeaderThemeClasses,
     TableLoadingThemeClasses,
     TablePlaceholderThemeClasses,
+    TableRowExpansionThemeClasses,
     TableRowThemeClasses,
     TableSortIndicatorsThemeClasses,
     TableThemeClasses,
@@ -56,6 +59,24 @@ export const tablePlaceholderThemeDefaults: ComponentThemeDefinition<TablePlaceh
         cell: 'vc-table-placeholder-cell',
     },
 };
+
+export const tableRowExpansionThemeDefaults: ComponentThemeDefinition<TableRowExpansionThemeClasses> = {
+    classes: {
+        root: 'vc-table-row-expansion',
+        cell: 'vc-table-row-expansion-cell',
+        panel: 'vc-table-row-expansion-panel',
+        panelInner: 'vc-table-row-expansion-panel-inner',
+    },
+};
+
+export const tableExpandTriggerThemeDefaults: ComponentThemeDefinition<TableExpandTriggerThemeClasses> = {
+    classes: {
+        root: 'vc-table-expand-trigger',
+        icon: 'vc-table-expand-trigger-icon',
+    },
+};
+
+export const tableExpandTriggerCellThemeDefaults: ComponentThemeDefinition<TableExpandTriggerCellThemeClasses> = { classes: { root: 'vc-table-expand-trigger-cell' } };
 
 export const tableSortIndicatorsThemeDefaults: ComponentThemeDefinition<TableSortIndicatorsThemeClasses> = {
     classes: {

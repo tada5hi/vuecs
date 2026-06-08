@@ -1156,6 +1156,21 @@ export default function tailwindTheme(): Theme {
                 },
             },
             placeholderWrapper: { classes: { root: 'relative' } },
+            tableRowExpansion: {
+                classes: {
+                    root: 'bg-bg-muted/40',
+                    cell: 'p-0',
+                    panel: 'overflow-hidden',
+                    panelInner: 'px-4 py-3 text-fg',
+                },
+            },
+            tableExpandTrigger: {
+                classes: {
+                    root: 'inline-flex items-center justify-center rounded p-1 text-fg-muted hover:bg-bg-muted hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
+                    icon: 'h-4 w-4 transition-transform duration-200',
+                },
+            },
+            tableExpandTriggerCell: { classes: { root: 'w-px whitespace-nowrap text-center align-middle' } },
         },
     };
 }

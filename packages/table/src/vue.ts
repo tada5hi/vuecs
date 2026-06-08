@@ -2,6 +2,7 @@ import type VCTable from './components/Table.vue';
 import type VCTableBody from './components/TableBody.vue';
 import type VCTableCell from './components/TableCell.vue';
 import type VCTableEmpty from './components/TableEmpty.vue';
+import type VCTableExpandTrigger from './components/TableExpandTrigger.vue';
 import type VCTableFooter from './components/TableFooter.vue';
 import type VCTableHeadCell from './components/TableHeadCell.vue';
 import type VCTableHeader from './components/TableHeader.vue';
@@ -9,6 +10,7 @@ import type VCTableLite from './components/TableLite.vue';
 import type VCTableLoading from './components/TableLoading.vue';
 import type { VCTablePlaceholder } from './components/TablePlaceholder';
 import type VCTableRow from './components/TableRow.vue';
+import type VCTableRowExpansion from './components/TableRowExpansion.vue';
 import type VCTableSortIndicators from './components/TableSortIndicators.vue';
 
 declare module '@vue/runtime-core' {
@@ -25,5 +27,7 @@ declare module '@vue/runtime-core' {
         VCTableLoading: typeof VCTableLoading;
         VCTablePlaceholder: typeof VCTablePlaceholder;
         VCTableSortIndicators: typeof VCTableSortIndicators;
+        VCTableExpandTrigger: typeof VCTableExpandTrigger;
+        VCTableRowExpansion: typeof VCTableRowExpansion;
     }
 }

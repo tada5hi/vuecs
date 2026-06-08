@@ -226,3 +226,96 @@
 .vc-table-placeholder-cell .vc-placeholder {
     display: block;
 }
+
+/* ──────────────────────────────────────────────────────────────────
+ * Expandable rows (plan 038)
+ *
+ * The expansion `<tr>` itself stays unstyled — animation lives on the
+ * inner panel `<div>`. Two `<div>`s are required: the outer wrapper
+ * gets the animated `height` (driven by `--vc-table-row-expansion-height`,
+ * written inline by `<VCTableRowExpansion>`'s ResizeObserver); the
+ * inner `<div>` is the unconstrained measurement target.
+ *
+ * Trigger column shrinks to chevron-button width via `width: 1%` +
+ * `white-space: nowrap` — the standard "as narrow as content" trick
+ * for `<table>` layouts.
+ * ────────────────────────────────────────────────────────────────── */
+
+.vc-table-expand-trigger-cell,
+.vc-table-expand-trigger-header {
+    width: 1%;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.vc-table-expand-trigger {
+    background: transparent;
+    border: 0;
+    padding: 0.25rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+    line-height: 1;
+}
+
+.vc-table-expand-trigger-icon {
+    transition: transform 200ms ease;
+    width: 1em;
+    height: 1em;
+}
+
+.vc-table-expand-trigger[aria-expanded="true"] .vc-table-expand-trigger-icon {
+    transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vc-table-expand-trigger-icon {
+        transition: none;
+    }
+}
+
+.vc-table-row-expansion-cell {
+    padding: 0;
+}
+
+.vc-table-row-expansion-panel {
+    overflow: hidden;
+}
+
+.vc-table-row-expansion-panel[data-state="open"] {
+    animation: vc-table-row-expansion-open 200ms ease-out forwards;
+}
+
+.vc-table-row-expansion-panel[data-state="closed"] {
+    /* `forwards` retains the final `height: 0` so the panel doesn't
+     * snap back to `auto` between animationend and Reka Presence's
+     * unmount — without this, a visible flash can show the full panel
+     * height for one frame before the element is removed. */
+    animation: vc-table-row-expansion-close 200ms ease-in forwards;
+}
+
+.vc-table-row-expansion-panel-inner {
+    /* Padding-bearing host for consumer slot content. Themes that want
+     * a different padding scale override this rule via the
+     * `tableRowExpansion.panelInner` slot. */
+    padding: 0.75rem 1rem;
+}
+
+@keyframes vc-table-row-expansion-open {
+    from { height: 0; opacity: 0; }
+    to { height: var(--vc-table-row-expansion-height); opacity: 1; }
+}
+
+@keyframes vc-table-row-expansion-close {
+    from { height: var(--vc-table-row-expansion-height); opacity: 1; }
+    to { height: 0; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vc-table-row-expansion-panel[data-state="open"],
+    .vc-table-row-expansion-panel[data-state="closed"] {
+        animation-duration: 1ms;
+    }
+}
