@@ -68,6 +68,12 @@ vuecs ships its components across separate packages — install only what you us
 |-----------|-------|
 | [List](/components/list) | Compound list (List/Header/Body/Item/Footer/Loading/NoMore) + `useList()` |
 
+## @vuecs/locale
+
+| Composable | Notes |
+|-----------|-------|
+| [Locale](/components/locale) | Browser-language-aware, resettable locale source — `useLocaleManager()` + `useLocale()`; bridges into core config |
+
 ## @vuecs/navigation
 
 | Component | Notes |

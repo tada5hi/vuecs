@@ -1,9 +1,10 @@
 # Composables
 
-vuecs ships two families of Vue composables:
+vuecs ships several families of Vue composables:
 
-- **`@vuecs/core`** — primitives for building component wrappers (forwarders, focus / typeahead helpers, ID generation, state machines). Zero runtime deps beyond Vue 3.
+- **`@vuecs/core`** — primitives for building component wrappers (forwarders, focus / typeahead helpers, ID generation, state machines) plus `useLocale()`. Zero runtime deps beyond Vue 3.
 - **`@vuecs/design`** — runtime color-mode state + theme-aware `useColorPalette()` (dispatches through whichever themes the app installs).
+- **`@vuecs/locale`** — browser-language-aware locale source with override + reset (`useLocaleManager()` / `bindLocale()`).
 
 Both families run in any Vue 3 setup — VitePress, plain Vite, Astro, non-Nuxt SSR. The Nuxt module thin-wraps the design composables with cookie-backed storage for true SSR persistence.
 
@@ -158,6 +159,46 @@ setup() {
 ```
 
 See [Primitive (as / asChild)](/guide/primitive#useprimitiveelement) for the full reference. For wrappers that also expose the inner ref to parents, reach for `useForwardExpose()` above instead.
+
+### `useLocale()`
+
+Reactive read-only accessor for the active BCP-47 locale, resolved through `@vuecs/core`'s cross-cutting config (`Config['locale']`, default `en-US`). This is what locale-aware components (e.g. `@vuecs/timeago`) consume. It works with or without the `@vuecs/locale` plugin installed — the *source* of the value is config, which accepts any `MaybeRef` (a static string, a `vue-i18n` locale ref, or `@vuecs/locale`'s navigator-backed source).
+
+```ts
+import { useLocale } from '@vuecs/core';
+
+const locale = useLocale();        // ComputedRef<string>
+const locale = useLocale('de-DE'); // custom fallback when config has no value
+```
+
+To *write* the locale globally, set the config key — `app.use(vuecs, { config: { locale } })` or `setConfig({ locale })` at runtime — or use [`@vuecs/locale`](#vuecs-locale) for browser detection + override + reset.
+
+## `@vuecs/locale`
+
+`@vuecs/locale` owns the locale **source**: browser-language detection (via `@vueuse/core`'s `useNavigatorLanguage`), an explicit override, and a reset path. The install plugin bridges the resolved value into `@vuecs/core`'s config, so `useLocale()` (above) picks it up. See the [Locale page](/components/locale) for the full setup.
+
+### `useLocaleManager()` (from `@vuecs/locale`)
+
+The control surface for the locale source. Apply a backend-saved preference with `set()` and hand resolution back to the browser with `reset()`.
+
+```ts
+import { useLocaleManager } from '@vuecs/locale';
+
+const { source, resolved, isAuto, set, reset } = useLocaleManager();
+
+set('de-DE'); // explicit override
+reset();      // → 'auto' → browser language → fallback
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `source` | `Ref<string \| 'auto'>` | The writable source — a BCP-47 tag or the `'auto'` sentinel |
+| `resolved` | `ComputedRef<string>` | Resolved concrete tag: override → navigator → fallback |
+| `isAuto` | `ComputedRef<boolean>` | Whether the source currently defers to the browser |
+| `set(locale)` | `(string) => void` | Apply an explicit override |
+| `reset()` | `() => void` | Reset to the configured `initial` (usually `'auto'`) |
+
+`bindLocale(source, options)` is the lower-level building block (parallels `bindColorMode`) — pass any `Ref<LocaleSource>` (e.g. a cookie-backed ref for SSR) and it returns the same surface without the plugin's storage or config bridge.
 
 ## `@vuecs/design`
 

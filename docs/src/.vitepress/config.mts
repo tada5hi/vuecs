@@ -157,6 +157,12 @@ export default defineConfig({
                     ],
                 },
                 {
+                    text: '@vuecs/locale',
+                    items: [
+                        { text: 'Locale', link: '/components/locale' },
+                    ],
+                },
+                {
                     text: '@vuecs/navigation',
                     items: [
                         { text: 'Navigation', link: '/components/navigation' },
