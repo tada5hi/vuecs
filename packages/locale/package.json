@@ -1,0 +1,59 @@
+{
+    "name": "@vuecs/locale",
+    "version": "0.0.0",
+    "type": "module",
+    "description": "Browser-language-aware, resettable locale source for vuecs — bridges into @vuecs/core's config.",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "keywords": [
+        "vuecs",
+        "locale",
+        "i18n",
+        "language",
+        "navigator",
+        "vue"
+    ],
+    "author": {
+        "name": "Peter Placzek",
+        "email": "contact@tada5hi.net",
+        "url": "https://tada5hi.net"
+    },
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tada5hi/vuecs.git",
+        "directory": "packages/locale"
+    },
+    "scripts": {
+        "build:js": "tsdown",
+        "build:types": "tsc --emitDeclarationOnly -p tsconfig.build.json",
+        "build": "rimraf dist && npm run build:js && npm run build:types",
+        "test": "vitest --config test/vitest.config.ts --run",
+        "test:coverage": "vitest --config test/vitest.config.ts --run --coverage"
+    },
+    "devDependencies": {
+        "@vuecs/core": "^3.1.2",
+        "@vueuse/core": "^14.3.0",
+        "jsdom": "^29.1.1",
+        "vue": "^3.5.35"
+    },
+    "peerDependencies": {
+        "@vuecs/core": "^3.1.2",
+        "@vueuse/core": "^13.0.0 || ^14.0.0",
+        "vue": "^3.x"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

@@ -25,7 +25,7 @@ import installOverlays from '@vuecs/overlays';
 import installPagination from '@vuecs/pagination';
 import installPlaceholder from '@vuecs/placeholder';
 import installTimeago from '@vuecs/timeago';
-import { de } from 'date-fns/locale';
+import { de, fr } from 'date-fns/locale';
 import { defineNuxtPlugin } from '#app';
 
 // Register the Font Awesome 6 Solid collection with Iconify so <VCIcon>
@@ -49,7 +49,10 @@ export default defineNuxtPlugin((ctx) => {
     ctx.vueApp.use(installGravatar);
     ctx.vueApp.use(installLink);
     ctx.vueApp.use(installList);
-    ctx.vueApp.use(installTimeago, { locales: { de } });
+    // Keyed by the BCP-47 tags the locale switcher emits so date-fns
+    // localizes the relative-time output. The active locale comes from
+    // @vuecs/nuxt's cookie-backed locale plugin (Config['locale']).
+    ctx.vueApp.use(installTimeago, { locales: { 'de-DE': de, 'fr-FR': fr } });
 
     // Registry-only install — no items here. Each <VCNavItems> owns its
     // items via :data; navs opt into publishing via registry + registry-id.

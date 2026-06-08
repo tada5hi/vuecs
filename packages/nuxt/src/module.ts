@@ -102,6 +102,37 @@ export interface ColorPaletteOptions {
     value?: Partial<Record<SemanticScaleName, ColorPaletteName>>;
 }
 
+export interface LocaleOptions {
+    /**
+     * Name of the cookie used to persist the selected locale source. The
+     * cookie is the SSR transport — read on the server so first paint
+     * matches the user's persisted locale (no hydration mismatch for a
+     * concrete saved locale).
+     *
+     * @default 'vc-locale'
+     */
+    cookieName?: string;
+
+    /**
+     * Initial locale source when no cookie is present. A BCP-47 tag, or
+     * `'auto'` to detect the browser language (the server resolves
+     * `'auto'` from the request's `Accept-Language` header; the client
+     * from `navigator.language`).
+     *
+     * @default 'auto'
+     */
+    value?: string;
+
+    /**
+     * Concrete fallback used when the source is `'auto'` but no browser
+     * language can be determined (no `Accept-Language` header on the
+     * server, unsupported navigator on the client).
+     *
+     * @default 'en-US'
+     */
+    fallback?: string;
+}
+
 export interface ModuleOptions {
     /**
      * Auto-import `@vuecs/design/index.css` as part of the Nuxt
@@ -182,6 +213,31 @@ export interface ModuleOptions {
      * explicitly to diverge (e.g. shorter palette retention).
      */
     paletteCookie?: CookieOptions;
+
+    /**
+     * Locale integration. When enabled (default), this module registers
+     * an SSR-safe, cookie-backed locale source. It bridges the resolved
+     * locale into `@vuecs/core`'s `Config['locale']` (so `useLocale()`
+     * and locale-aware components — e.g. `@vuecs/timeago` — resolve
+     * correctly during SSR) and emits `<html lang>` on first paint.
+     *
+     * Auto-imports `useLocale()` (read) and `useLocaleManager()`
+     * (`set` / `reset` control).
+     *
+     * Set to `false` to skip — useful if your i18n library (e.g. ilingo,
+     * vue-i18n) already owns the active locale; in that case feed its
+     * locale ref to `app.use(vuecs, { config: { locale } })` directly.
+     * Pass an object to tweak the cookie name, initial value, or fallback.
+     *
+     * @default true
+     */
+    locale?: boolean | LocaleOptions;
+
+    /**
+     * Cookie attributes applied to the **locale** cookie. When unset,
+     * inherits from `cookie`. Set explicitly to diverge.
+     */
+    localeCookie?: CookieOptions;
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -193,6 +249,7 @@ export default defineNuxtModule<ModuleOptions>({
         injectTokens: true,
         colorMode: true,
         colorPalette: true,
+        locale: true,
     },
     setup(options, nuxt) {
         const resolver = createResolver(import.meta.url);
@@ -222,6 +279,16 @@ export default defineNuxtModule<ModuleOptions>({
                 {}),
         };
 
+        const localeEnabled = options.locale !== false;
+        const localeOptions: Required<LocaleOptions> = {
+            cookieName: 'vc-locale',
+            value: 'auto',
+            fallback: 'en-US',
+            ...(typeof options.locale === 'object' && options.locale !== null ?
+                options.locale :
+                {}),
+        };
+
         // Documented defaults match the doc-site claim of 1y / lax. Spread
         // the user-provided cookie options on top so they win per-key.
         const cookieOptions: CookieOptions = {
@@ -239,6 +306,16 @@ export default defineNuxtModule<ModuleOptions>({
         const paletteCookieOptions: CookieOptions = {
             ...cookieOptions,
             ...(options.paletteCookie || {}),
+        };
+
+        /*
+         * Locale cookie attributes default to the color-mode cookie's
+         * attributes (consistent retention across UI-state cookies).
+         * Override per-key via `localeCookie`.
+         */
+        const localeCookieOptions: CookieOptions = {
+            ...cookieOptions,
+            ...(options.localeCookie || {}),
         };
 
         // Merge into any existing public.vuecs config (set by the user
@@ -260,8 +337,15 @@ export default defineNuxtModule<ModuleOptions>({
                     cookieName: colorPaletteOptions.cookieName,
                     value: colorPaletteOptions.value,
                 },
+                locale: {
+                    enabled: localeEnabled,
+                    cookieName: localeOptions.cookieName,
+                    value: localeOptions.value,
+                    fallback: localeOptions.fallback,
+                },
                 cookie: cookieOptions,
                 paletteCookie: paletteCookieOptions,
+                localeCookie: localeCookieOptions,
             },
         };
 
@@ -329,6 +413,24 @@ export default defineNuxtPlugin({
                 name: 'useColorPalette',
                 from: resolver.resolve('./runtime/composables/useColorPalette'),
             });
+        }
+
+        if (localeEnabled) {
+            // Universal plugin (server + client): the Config bridge must
+            // exist even when the consumer never calls useLocaleManager(),
+            // because locale-aware components read `useLocale()` directly.
+            addPlugin({ src: resolver.resolve('./runtime/plugins/locale') });
+
+            addImports([
+                {
+                    name: 'useLocale',
+                    from: resolver.resolve('./runtime/composables/locale'),
+                },
+                {
+                    name: 'useLocaleManager',
+                    from: resolver.resolve('./runtime/composables/locale'),
+                },
+            ]);
         }
     },
 });

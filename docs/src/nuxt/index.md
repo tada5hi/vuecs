@@ -8,6 +8,7 @@ once the runtime dispatch became fully theme-agnostic.
 - Auto-injects design tokens from `@vuecs/design`.
 - Ships SSR-safe color-mode handling (`useColorMode()` auto-import).
 - Ships SSR-safe palette handling (`useColorPalette()` auto-import).
+- Ships SSR-safe locale handling (`useLocale()` / `useLocaleManager()` auto-imports).
 - Optional `themes: string[]` config auto-generates a plugin that
   installs listed theme packages — no user-plugin needed for the
   common case.
@@ -47,10 +48,10 @@ export default defineNuxtConfig({
 
 ## What you get
 
-- **Auto-imported composables** — `useColorMode()` and `useColorPalette()`. No explicit imports needed.
-- **SSR plugins** — emit the palette `<style>` block + `<html class="dark">` + any per-theme `data-*` attributes (e.g. `data-bs-theme` from theme-bootstrap) before first paint.
+- **Auto-imported composables** — `useColorMode()`, `useColorPalette()`, `useLocale()` and `useLocaleManager()`. No explicit imports needed.
+- **SSR plugins** — emit the palette `<style>` block + `<html class="dark">` + `<html lang>` + any per-theme `data-*` attributes (e.g. `data-bs-theme` from theme-bootstrap) before first paint.
 - **Auto CSS injection** — `@vuecs/design`'s `assets/index.css` is registered as a Nuxt CSS source.
-- **Cookie-backed state** — `vc-color-mode` and `vc-color-palette` cookies persist user choices; the server reads them for SSR.
+- **Cookie-backed state** — `vc-color-mode`, `vc-color-palette` and `vc-locale` cookies persist user choices; the server reads them for SSR.
 - **Theme-agnostic dispatch** — the palette + color-mode runtime walks installed themes' `palette.handle` / `colorMode.handle` hooks. Same module, every theme.
 
 ## `@vuecs/nuxt` module options
@@ -65,8 +66,13 @@ export default defineNuxtConfig({
 | `colorPalette` | `boolean \| object` | `true` | Enable the bundled palette composable + SSR plugin |
 | `colorPalette.cookieName` | `string` | `'vc-color-palette'` | Cookie name used to persist the palette |
 | `colorPalette.value` | `Partial<Record<SemanticScaleName, ColorPaletteName>>` | `{}` | Initial palette assignment, applied via SSR |
+| `locale` | `boolean \| object` | `true` | Enable the bundled cookie-backed locale composables + SSR plugin |
+| `locale.cookieName` | `string` | `'vc-locale'` | Cookie name used to persist the locale source |
+| `locale.value` | `string` | `'auto'` | Initial source; `'auto'` detects via `Accept-Language` (server) / `navigator` (client) |
+| `locale.fallback` | `string` | `'en-US'` | Concrete tag when `'auto'` and no browser language is available |
 | `cookie` | `CookieOptions` | `{ maxAge: 1y, sameSite: 'lax', path: '/' }` | Cookie attributes for the **color-mode** cookie |
 | `paletteCookie` | `CookieOptions` | inherits `cookie` | Cookie attributes for the **palette** cookie (defaults to `cookie` per-key) |
+| `localeCookie` | `CookieOptions` | inherits `cookie` | Cookie attributes for the **locale** cookie (defaults to `cookie` per-key) |
 
 ### Cookie configuration
 
@@ -134,6 +140,7 @@ or any factory that needs arguments.
 
 - [`useColorPalette`](/nuxt/use-palette) — runtime palette switching
 - [`useColorMode`](/nuxt/use-color-mode) — SSR-safe dark/light/system toggle
+- [`useLocale` / `useLocaleManager`](/components/locale) — SSR-safe locale (read + control)
 
 ## Why not @nuxtjs/color-mode?
 

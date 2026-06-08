@@ -51,6 +51,12 @@ const generalItems: NavigationItem[] = [
         url: '/link',
     },
     {
+        name: 'Locale',
+        type: 'link',
+        icon: 'fa6-solid:language',
+        url: '/locale',
+    },
+    {
         name: 'Pagination',
         type: 'link',
         icon: 'fa6-solid:road',

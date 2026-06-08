@@ -1,4 +1,5 @@
 export * from './composable';
+export * from './locale';
 export * from './install';
 export * from './manager';
 export * from './provider';

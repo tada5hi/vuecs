@@ -154,18 +154,30 @@ export default defineComponent({
         const theme = useComponentTheme('formSelect', useFormInputThemeProps(props), formSelectThemeDefaults);
         const defaults = useComponentDefaults('formSelect', props, behavioralDefaults);
 
-        return () => {
-            const resolved = theme.value;
-            const { placeholder } = defaults.value;
-
+        // Build the option VNodes fresh on every invocation. Reka's
+        // SelectContent uses `unmountOnHide` — it unmounts on close and
+        // remounts on reopen — and a VNode renders only once, so handing
+        // SelectViewport a captured array would mount an EMPTY dropdown on the
+        // second open. Calling this inside the viewport's slot thunk re-creates
+        // the items on every mount. Same per-mount-thunk fix as VCNavItem's
+        // flyout content (commit b08706d7) and VCDropdownMenuContent.
+        const renderItems = (): VNodeChild[] => {
+            const classes = theme.value;
             const items: VNodeChild[] = [];
             for (const item of props.options) {
                 if (isFormOptionGroup(item)) {
-                    items.push(renderGroup(item, resolved));
+                    items.push(renderGroup(item, classes));
                 } else {
-                    items.push(renderItem(item, resolved));
+                    items.push(renderItem(item, classes));
                 }
             }
+
+            return items;
+        };
+
+        return () => {
+            const resolved = theme.value;
+            const { placeholder } = defaults.value;
 
             return h(SelectRoot, {
                 name: props.name,
@@ -183,7 +195,7 @@ export default defineComponent({
                     ]),
                     h(SelectPortal, null, () => [
                         h(SelectContent, { class: resolved.content || undefined, position: 'popper' }, () => [
-                            h(SelectViewport, { class: resolved.viewport || undefined }, () => items),
+                            h(SelectViewport, { class: resolved.viewport || undefined }, () => renderItems()),
                         ]),
                     ]),
                 ],
