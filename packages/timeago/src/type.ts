@@ -21,7 +21,9 @@ export type InjectionContext = {
 
 type Options = CoreOptions & {
     /**
-     * default: en
+     * Initial active locale. Bridged into `@vuecs/core`'s `Config['locale']`
+     * (read by the component via `useLocale()`). When omitted, the locale
+     * resolves through core's config default (`en-US`).
      */
     locale?: string,
     /**

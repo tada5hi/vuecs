@@ -1,4 +1,4 @@
-import { useComponentTheme } from '@vuecs/core';
+import { useComponentTheme, useLocale } from '@vuecs/core';
 import type {
     ComponentThemeDefinition,
     ThemeClassesOverride,
@@ -16,7 +16,6 @@ import {
     toRef,
     watch,
 } from 'vue';
-import { injectLocale } from './locale';
 import { injectLocales } from './locales';
 import type { Converter, ConverterOptions } from './type';
 import { convert, injectConverter } from './converter';
@@ -63,7 +62,7 @@ export const VCTimeago = defineComponent({
         const titleProp = toRef(props, 'title');
         const autoUpdateProp = toRef(props, 'autoUpdate');
 
-        const locale = injectLocale();
+        const locale = useLocale();
         const locales = injectLocales() || {};
 
         let converter = injectConverter();
