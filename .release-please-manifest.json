@@ -9,6 +9,7 @@
     "packages/icon": "1.0.1",
     "packages/link": "2.0.1",
     "packages/list": "1.0.3",
+    "packages/locale": "0.0.0",
     "packages/navigation": "4.0.1",
     "packages/nuxt": "1.0.3",
     "packages/overlays": "1.0.3",

@@ -14,6 +14,7 @@
         "packages/icon": {"component": "icon" },
         "packages/link": {"component": "link" },
         "packages/list": {"component": "list" },
+        "packages/locale": {"component": "locale" },
         "packages/navigation": {"component": "navigation" },
         "packages/nuxt": {"component": "nuxt" },
         "packages/overlays": {"component": "overlays" },
