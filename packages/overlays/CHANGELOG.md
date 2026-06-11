@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/tada5hi/vuecs/compare/overlays-v1.0.4...overlays-v1.1.0) (2026-06-11)
+
+
+### Features
+
+* **overlays:** first-class closePolicy on VCModalContent ([#1632](https://github.com/tada5hi/vuecs/issues/1632)) ([34ef85f](https://github.com/tada5hi/vuecs/commit/34ef85fd7d3bd040b546940705ddbf935a44c8fb))
+
 ## [1.0.4](https://github.com/tada5hi/vuecs/compare/overlays-v1.0.3...overlays-v1.0.4) (2026-06-08)
 
 

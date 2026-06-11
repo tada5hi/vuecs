@@ -1,5 +1,15 @@
 # Changelog
 
+## [7.0.1](https://github.com/tada5hi/vuecs/compare/theme-bootstrap-v7.0.0...theme-bootstrap-v7.0.1) (2026-06-11)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/forms bumped from ^5.2.0 to ^5.2.1
+    * @vuecs/overlays bumped from ^1.0.4 to ^1.1.0
+
 ## [7.0.0](https://github.com/tada5hi/vuecs/compare/theme-bootstrap-v6.0.0...theme-bootstrap-v7.0.0) (2026-06-08)
 
 
