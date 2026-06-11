@@ -173,3 +173,9 @@ import {
 ```
 
 `useFormInputThemeProps(props)` is the helper every shipped input uses — pass it as the second arg to `useComponentTheme()` and your input picks up the inherited severity automatically.
+
+## See also
+
+- [Variants](/guide/variants) — `severity` is a regular variant axis on the form-input theme elements
+- [`<VCFormInput>`](/components/form-input) — the canonical severity-aware input
+- [Theme System](/guide/theme-system) — overriding the `validationError` / `validationWarning` slot classes

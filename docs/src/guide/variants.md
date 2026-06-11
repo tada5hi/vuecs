@@ -93,10 +93,11 @@ the active theme package. The most common axes:
 
 | Axis | Values | Components |
 |---|---|---|
-| `size` | `sm` / `md` / `lg` (modal also `xl`) | Button, Badge, Tag, Avatar, Pagination, FormInput, FormTextarea, FormSelect, FormNumber, FormCheckbox, FormSwitch, FormRadio, FormTags, Modal, Popover, HoverCard, Tooltip, DropdownMenu, ContextMenu, Navigation, Stepper |
-| `density` | `compact` / `normal` / `spacious` | List, ListItem |
-| `variant` | varies — usually `solid` / `outline` / `soft` / `ghost` (+ `link` on Button) | Button, Badge, Pagination |
-| `color` | `primary` / `neutral` / `success` / `warning` / `error` / `info` | Button, Badge |
+| `size` | `sm` / `md` / `lg` (modal also `xl`) | Button, Badge, Tag, Avatar, Alert, Pagination, FormInput, FormTextarea, FormSelect, FormSelectSearch, FormNumber, FormCheckbox, FormSwitch, FormRadio, FormTags, Modal, Popover, HoverCard, Tooltip, DropdownMenu, ContextMenu, Navigation, Stepper |
+| `density` | `compact` / `normal` / `spacious` | List, ListItem, Table |
+| `variant` | varies — usually `solid` / `outline` / `soft` / `ghost` (+ `link` on Button; `elevated` on Card) | Button, Badge, Alert, Card, Toast, Pagination |
+| `color` | `primary` / `neutral` / `success` / `warning` / `error` / `info` | Button, Badge, Alert, Toast |
+| `severity` | `error` / `warning` | Form inputs — folded in automatically from a surrounding `<VCFormGroup>`; see [Validation Feedback](/guide/validation-feedback) |
 
 You can flip these live in the docs site demos via the toolbar above
 each `<Playground>` block — open the [pagination

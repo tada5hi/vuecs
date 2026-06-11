@@ -6,7 +6,7 @@ vuecs ships several families of Vue composables:
 - **`@vuecs/design`** — runtime color-mode state + theme-aware `useColorPalette()` (dispatches through whichever themes the app installs).
 - **`@vuecs/locale`** — browser-language-aware locale source with override + reset (`useLocaleManager()` / `bindLocale()`).
 
-Both families run in any Vue 3 setup — VitePress, plain Vite, Astro, non-Nuxt SSR. The Nuxt module thin-wraps the design composables with cookie-backed storage for true SSR persistence.
+All three families run in any Vue 3 setup — VitePress, plain Vite, Astro, non-Nuxt SSR. The Nuxt module thin-wraps the design composables with cookie-backed storage for true SSR persistence.
 
 ## `@vuecs/core`
 
@@ -143,7 +143,7 @@ const { state, dispatch } = useStateMachine('closed', {
 dispatch('OPEN'); // state.value === 'open'
 ```
 
-Shipped as a Phase-3 prerequisite for the upcoming `@vuecs/overlays` package (open/closed transitions for modals, popovers, etc.).
+Used internally by `@vuecs/overlays` for open/closed transitions (modals, popovers, etc.); exported for consumers building their own stateful widgets.
 
 ### `usePrimitiveElement()`
 
@@ -167,9 +167,10 @@ Reactive read-only accessor for the active BCP-47 locale, resolved through `@vue
 ```ts
 import { useLocale } from '@vuecs/core';
 
-const locale = useLocale();        // ComputedRef<string>
-const locale = useLocale('de-DE'); // custom fallback when config has no value
+const locale = useLocale(); // ComputedRef<string> — falls back to 'en-US'
 ```
+
+The signature is `useLocale(fallback?: string)`, but core registers `en-US` as a config-level default, so a custom `fallback` argument only takes effect when that registration is absent.
 
 To *write* the locale globally, set the config key — `app.use(vuecs, { config: { locale } })` or `setConfig({ locale })` at runtime — or use [`@vuecs/locale`](/components/locale) for browser detection + override + reset.
 

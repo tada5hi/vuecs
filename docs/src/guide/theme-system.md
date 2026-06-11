@@ -81,7 +81,7 @@ The returned `ComputedRef` recomputes when any of the following change:
 - `props.themeClass` or `props.themeVariant` (instance layer)
 - `ThemeManager` state (themes/overrides changed via `setThemes()`/`setOverrides()`)
 
-Theme switching at runtime (e.g. swapping Bootstrap v5 → Tailwind) is supported but rare; palette switching via `setColorPalette()` is more common and **does not** require theme re-resolution — it operates on the design-token layer below.
+Theme switching at runtime (e.g. swapping Bootstrap → Tailwind) is supported but rare; palette switching via `setColorPalette()` is more common and **does not** require theme re-resolution — it operates on the design-token layer below.
 
 ## Type-safe slot keys
 

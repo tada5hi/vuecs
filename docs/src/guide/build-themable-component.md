@@ -337,7 +337,12 @@ Now the consumer can:
 
 The third form passes a Vue component to `as`. `<VCPrimitive>` then renders `h(RouterLink, mergedAttrs, { default: () => <the table chrome> })` — the entire table is wrapped in a `<RouterLink>`, making it clickable. Component-form `as` requires the prop type to accept both strings and components (`type: [String, Object] as PropType<string | Component>`).
 
-`<VCPrimitive>` also accepts an `asChild` prop, which falls through to the consumer's slot child and merges the wrapper's class + attrs onto it. `<MyDataTable>` declares + forwards the `asChild` prop above as plumbing, but the wrapper's render fn always supplies its own `<table>` chrome as VCPrimitive's default slot — so `asChild` on a chromed wrapper like this only takes effect if the wrapper's render fn also forwards the consumer's `slots.default` when appropriate. For most consumers, **component-form `as` is the simpler hook**; reserve `asChild` for compound parts whose entire body is consumer-supplied (e.g. the Card compound's bands). See [Primitive (as / asChild)](/guide/primitive) for the full asChild rules around comments, multi-child slots, and class precedence.
+`<VCPrimitive>` also accepts an `asChild` prop: instead of rendering its own element, it falls through to the consumer's slot child and merges the wrapper's class + attrs onto it. Two things to know before reaching for it:
+
+- **On a chromed wrapper like `<MyDataTable>`, `asChild` is plumbing, not a feature.** The render fn always supplies its own `<table>` chrome as VCPrimitive's default slot, so the prop only takes effect if the render fn also forwards the consumer's `slots.default` when appropriate.
+- **Component-form `as` is the simpler hook for most consumers.** Reserve `asChild` for compound parts whose entire body is consumer-supplied — the Card compound's bands are the canonical example.
+
+See [Primitive (as / asChild)](/guide/primitive) for the full `asChild` rules around comments, multi-child slots, and class precedence.
 
 Why `<VCPrimitive>` and not Reka's `Primitive`? `@vuecs/core` ports it in-tree so your library doesn't take a runtime `reka-ui` dep just to render a generic `as` element.
 

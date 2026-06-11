@@ -54,4 +54,5 @@ If you want to use Bootstrap's stock colors as-is and don't need vuecs's `--vc-c
 ## See also
 
 - [Design Tokens](/guide/design-tokens) — what the bridge maps onto
+- [Bridging CSS Frameworks](/guide/bridging-css-frameworks) — the same pattern for additional CSS frameworks
 - [Theme System](/guide/theme-system) — layered resolution

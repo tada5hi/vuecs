@@ -37,8 +37,12 @@ type ThemeConfig = {
     extends?: Theme | Theme[];
     elements?: Partial<ThemeElements>;
     classesMergeFn?: ClassesMergeFn;
-    colorMode?: { apply: (doc: Document, mode: 'light' | 'dark') => void };
-    palette?: { render: (palette: Record<string, string>) => string; names?: readonly string[] };
+    colorMode?: { handle: (doc: Document, mode: 'light' | 'dark') => void };
+    palette?: {
+        handle: (palette: Record<string, string>) => string;
+        names?: readonly string[];
+        scaleAliases?: Record<string, string>;
+    };
 };
 
 function defineTheme(config: ThemeConfig): Theme;
@@ -59,10 +63,10 @@ For each component name across the chain:
 | `compoundVariants` | Concatenate from all chain layers |
 | `defaultVariants` | Shallow merge per key (later wins) |
 | `classesMergeFn` | Last-wins across the chain |
-| `colorMode.apply` | Compose: each layer's apply runs in chain order |
-| `palette.render` / `palette.names` | Last-wins (one renderer owns the runtime `<style>` block) |
+| `colorMode.handle` | Compose: each layer's handler runs in chain order |
+| `palette.handle` / `palette.names` / `palette.scaleAliases` | Last-wins (one renderer owns the runtime `<style>` block) |
 
-The `colorMode` and `palette` slots are reserved for plan 021's runtime hooks. They type-check today but are no-ops until that plan ships.
+The `colorMode` and `palette` slots are the theme-attached runtime hooks behind color-mode mirroring (`data-bs-theme`, `data-theme`) and runtime palette rendering — `useColorMode()` / `useColorPalette()` from `@vuecs/design` dispatch through whichever themes are installed. See [Design Tokens](/guide/design-tokens#runtime-palette-switching) and [Composables](/guide/composables#vuecs-design).
 
 ## When to use it
 

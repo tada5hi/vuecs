@@ -4,7 +4,7 @@
 
 ## Why a second system?
 
-The theme system handles CSS classes. But things like the `useSubmitButton()` composable's "Create" / "Update" labels (`submitButton` defaults), `<VCFormSelect>`'s placeholder option text, and `<VCListItem>`'s `textPropName` aren't classes — they're plain values. Putting them through the theme resolver would conflate two different concerns. So they get their own manager with the same shape.
+The theme system handles CSS classes. But things like the `useSubmitButton()` composable's "Create" / "Update" labels (`submitButton` defaults), `<VCFormSelect>`'s placeholder option text, and `<VCListEmpty>`'s empty-state `content` aren't classes — they're plain values. Putting them through the theme resolver would conflate two different concerns. So they get their own manager with the same shape.
 
 ## Resolution layers
 
@@ -70,21 +70,29 @@ const submit = useSubmitButton({ isEditing: () => false });
 
 ## Composite components — important
 
-When a composite component (e.g. `VCList`) forwards behavioral props to a child component whose prop is resolved via `useComponentDefaults`, the composite's own Vue `prop.default` must be `undefined`. Otherwise, the composite always wins layer 1 on the child and shadows the child's global defaults entirely.
+When a composite component forwards behavioral props to a child component whose prop is resolved via `useComponentDefaults`, the composite's own Vue `prop.default` must be `undefined`. Otherwise, the composite always wins layer 1 on the child and shadows the child's global defaults entirely.
 
-See `VCList.noMoreContent` and `VCList.itemTextPropName` (both `default: undefined`) for the canonical pattern.
+There is no in-tree example today — the compound rewrite of `@vuecs/list` eliminated this category of forwarding (each part now reads from context directly). Reach for the pattern when wrapping a vuecs component in your own composite that forwards behavioral props.
 
-## Migrated components
+## Components with configurable defaults
 
-| Component | Configurable keys |
+| Component / hook (`ComponentDefaults` key) | Configurable keys |
 |-----------|-------------------|
 | `useSubmitButton()` (`submitButton`) | `createText`, `updateText`, `createIcon`, `updateIcon`, `createColor`, `updateColor` |
-| `VCFormSelect` | `placeholder` |
-| `VCFormCheckbox` | `labelContent` |
-| `VCFormSwitch` | `labelContent` |
-| `VCListEmpty` | `content` |
+| `VCAlert` (`alert`) | `primaryIcon`, `neutralIcon`, `infoIcon`, `successIcon`, `warningIcon`, `errorIcon` |
+| `VCCollapseTrigger` (`collapseTrigger`) | `chevronIcon` |
+| `VCFormCheckbox` (`formCheckbox`) | `labelContent` |
+| `VCFormRadio` (`formRadio`) | `labelContent` |
+| `VCFormSelect` (`formSelect`) | `placeholder` |
+| `VCFormSwitch` (`formSwitch`) | `labelContent` |
+| `VCListEmpty` (`listEmpty`) | `content` |
+| `VCPagination` (`pagination`) | `firstIcon`, `prevIcon`, `nextIcon`, `lastIcon`, `firstLabel`, `prevLabel`, `nextLabel`, `lastLabel` |
+| `VCTableEmpty` (`tableEmpty`) | `content`, `filteredContent` |
+| `VCTableLoading` (`tableLoading`) | `content` |
+| `VCTableExpandTrigger` (`tableExpandTrigger`) | `expandLabel`, `collapseLabel`, `chevronIcon` |
+| `VCTableSortIndicators` (`tableSortIndicators`) | `label`, `emptyContent`, `addLabel`, `clearLabel`, `removeAriaLabel`, `toggleAscTitle`, `toggleDescTitle`, `arrowAsc`, `arrowDesc`, `removeGlyph` |
 
-Each component's Vue `prop.default` is `undefined`; the effective default lives in the `behavioralDefaults` constant inside the component.
+Each component's Vue `prop.default` is `undefined`; the effective default lives in the `behavioralDefaults` constant inside the component. The icon-name keys (`alert.*Icon`, `collapseTrigger.chevronIcon`, `pagination.*Icon`, `tableExpandTrigger.chevronIcon`, `submitButton.*Icon`) are also populated by [icon presets](/getting-started/icons) — `icons: [lucide()]` fills them in one go; per-key `defaults` entries win over the preset.
 
 ## Type-safe keys
 

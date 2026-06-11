@@ -85,5 +85,6 @@ If you want to use Bulma's stock colors as-is and don't need vuecs's `--vc-color
 
 ## See also
 
-- [Design Tokens](/guide/design-tokens) — what the bridge maps onto, including the bridging guide for additional CSS frameworks
+- [Design Tokens](/guide/design-tokens) — what the bridge maps onto
+- [Bridging CSS Frameworks](/guide/bridging-css-frameworks) — the bridging guide for additional CSS frameworks
 - [Theme System](/guide/theme-system) — layered resolution

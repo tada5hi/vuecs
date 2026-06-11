@@ -71,13 +71,24 @@ export default defineConfig({
                     items: [
                         { text: 'Overview', link: '/guide/' },
                         { text: 'Theme System', link: '/guide/theme-system' },
-                        { text: 'Composing Themes', link: '/guide/composing-themes' },
-                        { text: 'Build Your Own Themable Component', link: '/guide/build-themable-component' },
                         { text: 'Variants', link: '/guide/variants' },
                         { text: 'Behavioral Defaults', link: '/guide/behavioral-defaults' },
                         { text: 'Design Tokens', link: '/guide/design-tokens' },
                         { text: 'Composables', link: '/guide/composables' },
+                    ],
+                },
+                {
+                    text: 'Authoring',
+                    items: [
+                        { text: 'Build Your Own Themable Component', link: '/guide/build-themable-component' },
                         { text: 'Primitive (as / asChild)', link: '/guide/primitive' },
+                        { text: 'Composing Themes', link: '/guide/composing-themes' },
+                        { text: 'Bridging CSS Frameworks', link: '/guide/bridging-css-frameworks' },
+                    ],
+                },
+                {
+                    text: 'Deep Dives',
+                    items: [
                         { text: 'Navigation', link: '/guide/navigation' },
                         { text: 'Validation Feedback', link: '/guide/validation-feedback' },
                     ],
