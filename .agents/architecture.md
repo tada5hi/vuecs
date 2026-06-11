@@ -1752,11 +1752,14 @@ matching `*Portal` so consumers don't have to compose them manually
         Modal.vue           <- DialogRoot wrapper (v-model:open)
         ModalTrigger.vue    <- DialogTrigger
         ModalContent.vue    <- DialogPortal + DialogOverlay + DialogContent
+                               + `closePolicy` prop ('always' | 'no-escape' | 'no-outside' | 'never', #1630):
+                               prevents Reka's escapeKeyDown / interactOutside per policy; raw events
+                               keep firing for per-site conditional guards
         ModalTitle.vue
         ModalDescription.vue
         ModalClose.vue        <- close trigger; slotless OR `icon` prop → theme `closeIcon` (corner-X); otherwise neutral `close`
         theme.ts            <- shared modalThemeDefaults (single source for all parts)
-        types.ts            <- ModalThemeClasses + ThemeElements augmentation
+        types.ts            <- ModalClosePolicy + ModalThemeClasses + ThemeElements augmentation
         use-modal.ts        <- useModal() view-stack composable (issue #1480)
         index.ts
       popover/                <- Popover / Trigger / Content / Arrow / Close (with `icon` prop)
