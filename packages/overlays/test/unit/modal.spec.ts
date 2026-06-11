@@ -103,3 +103,153 @@ describe('<VCModal>', () => {
         expect(open.value).toBe(true);
     });
 });
+
+describe('<VCModalContent> closePolicy', () => {
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
+
+    function buildPolicyApp(open = ref(true), closePolicy?: string) {
+        const App = defineComponent({
+            setup() {
+                return () => h(VCModal, {
+                    open: open.value,
+                    'onUpdate:open': (v: boolean) => { open.value = v; },
+                }, {
+                    default: () => [
+                        h(VCModalContent, {
+                            inline: true, 
+                            closePolicy, 
+                            'data-testid': 'content', 
+                        }, {
+                            default: () => [
+                                h(VCModalTitle, () => 'Hello'),
+                                h(VCModalDescription, () => 'Body'),
+                                h(VCModalClose, { 'data-testid': 'close' }, () => 'Close'),
+                            ],
+                        }),
+                    ],
+                });
+            },
+        });
+
+        return mount(App, {
+            global: { plugins: [[vuecsOverlays, {}]] },
+            attachTo: document.body,
+        });
+    }
+
+    const pressEscape = () => {
+        document.dispatchEvent(new KeyboardEvent('keydown', {
+            key: 'Escape',
+            bubbles: true,
+            cancelable: true,
+        }));
+    };
+
+    it('closes on Escape with the default policy', async () => {
+        const open = ref(true);
+        buildPolicyApp(open);
+        await nextTick();
+        await nextTick();
+
+        pressEscape();
+        await nextTick();
+
+        expect(open.value).toBe(false);
+    });
+
+    it("keeps open on Escape with closePolicy 'no-escape'", async () => {
+        const open = ref(true);
+        buildPolicyApp(open, 'no-escape');
+        await nextTick();
+        await nextTick();
+
+        pressEscape();
+        await nextTick();
+
+        expect(open.value).toBe(true);
+    });
+
+    it("keeps open on Escape with closePolicy 'never'", async () => {
+        const open = ref(true);
+        buildPolicyApp(open, 'never');
+        await nextTick();
+        await nextTick();
+
+        pressEscape();
+        await nextTick();
+
+        expect(open.value).toBe(true);
+    });
+
+    it("still closes via VCModalClose with closePolicy 'never'", async () => {
+        const open = ref(true);
+        buildPolicyApp(open, 'never');
+        await nextTick();
+        await nextTick();
+
+        const close = document.body.querySelector<HTMLElement>('[data-testid="close"]');
+        expect(close).not.toBeNull();
+        close!.click();
+        await nextTick();
+
+        expect(open.value).toBe(false);
+    });
+
+    const pointerDownOutside = async () => {
+        // Reka's DismissableLayer attaches its document-level `pointerdown`
+        // listener via setTimeout(0) after mount — wait one macrotask so the
+        // listener is actually registered before dispatching.
+        await new Promise((resolve) => { setTimeout(resolve, 1); });
+        document.body.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true }));
+    };
+
+    it('closes on outside pointerdown with the default policy', async () => {
+        const open = ref(true);
+        buildPolicyApp(open);
+        await nextTick();
+        await nextTick();
+
+        await pointerDownOutside();
+        await nextTick();
+
+        expect(open.value).toBe(false);
+    });
+
+    it("keeps open on outside pointerdown with closePolicy 'no-outside'", async () => {
+        const open = ref(true);
+        buildPolicyApp(open, 'no-outside');
+        await nextTick();
+        await nextTick();
+
+        await pointerDownOutside();
+        await nextTick();
+
+        expect(open.value).toBe(true);
+    });
+
+    it("keeps open on outside pointerdown with closePolicy 'never'", async () => {
+        const open = ref(true);
+        buildPolicyApp(open, 'never');
+        await nextTick();
+        await nextTick();
+
+        await pointerDownOutside();
+        await nextTick();
+
+        expect(open.value).toBe(true);
+    });
+
+    it("still closes on Escape with closePolicy 'no-outside'", async () => {
+        const open = ref(true);
+        buildPolicyApp(open, 'no-outside');
+        await nextTick();
+        await nextTick();
+
+        pressEscape();
+        await nextTick();
+
+        expect(open.value).toBe(false);
+    });
+});

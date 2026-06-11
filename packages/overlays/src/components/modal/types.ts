@@ -1,5 +1,18 @@
 import type { ThemeElementDefinition } from '@vuecs/core';
 
+/**
+ * Dismissal policy for `<VCModalContent>` — which built-in close
+ * interactions are honored. Explicit triggers (`<VCModalClose>`, the
+ * corner-X, programmatic `v-model:open` writes) always work.
+ *
+ * - `always` — Escape and outside interaction both close (Reka default).
+ * - `no-escape` — Escape is ignored; outside interaction still closes.
+ * - `no-outside` — outside interaction is ignored; Escape still closes.
+ * - `never` — neither closes (busy overlays, modals holding in-progress
+ *   form input).
+ */
+export type ModalClosePolicy = 'always' | 'no-escape' | 'no-outside' | 'never';
+
 export type ModalThemeClasses = {
     /** Backdrop / overlay layer behind the dialog content. */
     overlay: string;

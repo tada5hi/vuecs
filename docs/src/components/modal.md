@@ -214,13 +214,40 @@ const showItem = (id: number) => {
 
 `@vuecs/theme-tailwind` ships pre-built styling for every key with light/dark mode and `data-state="open|closed"` animation hooks.
 
+## Non-dismissible modals
+
+By default a modal closes on Escape and on interaction outside the panel (Reka's Dialog behavior). For busy overlays or modals holding in-progress form input, set `closePolicy` on `<VCModalContent>` instead of hand-rolling event guards:
+
+```vue
+<!-- Survives Escape AND outside clicks — only explicit triggers close -->
+<VCModalContent close-policy="never">…</VCModalContent>
+
+<!-- Outside clicks ignored; Escape still closes -->
+<VCModalContent close-policy="no-outside">…</VCModalContent>
+```
+
+| Value | Escape closes | Outside interaction closes |
+|---|---|---|
+| `'always'` (default) | ✅ | ✅ |
+| `'no-escape'` | ❌ | ✅ |
+| `'no-outside'` | ✅ | ❌ |
+| `'never'` | ❌ | ❌ |
+
+Explicit triggers always work regardless of policy — `<VCModalClose>`, the corner-X, and programmatic `v-model:open` writes. The raw Reka events (`@escape-key-down`, `@interact-outside`) keep firing alongside the policy, so per-site conditional logic (e.g. "block dismissal only while saving") remains possible:
+
+```vue
+<VCModalContent @escape-key-down="(e) => saving && e.preventDefault()">
+```
+
+The `ModalClosePolicy` type is exported from `@vuecs/overlays`.
+
 ## Accessibility
 
 The Reka Dialog primitives provide:
 
 - **Focus trap** — focus stays inside `<VCModalContent>` while open and restores to the trigger on close.
 - **Scroll lock** — body scroll is disabled while a modal is open (`modal: true` mode).
-- **Escape key** — closes the modal. Combine with `useModal()`'s `popView()` for view-stack flows by intercepting `update:open` to call `popView` while `hasHistory` is true.
+- **Escape key** — closes the modal (suppressible via [`closePolicy`](#non-dismissible-modals)). Combine with `useModal()`'s `popView()` for view-stack flows by intercepting `update:open` to call `popView` while `hasHistory` is true.
 - **ARIA** — `role="dialog"`, `aria-modal`, `aria-labelledby` (linked to `<VCModalTitle>`), `aria-describedby` (linked to `<VCModalDescription>`).
 
 ## Animations
@@ -279,6 +306,7 @@ Floating dialog panel. Bundles `DialogPortal` + `DialogOverlay` + `DialogContent
 |---|---|---|---|
 | `inline` | `boolean` | `false` | Skip the `DialogPortal` and render where the component sits in the DOM. Useful for testing or custom mounting. |
 | `hideOverlay` | `boolean` | `false` | Skip the backdrop element. |
+| `closePolicy` | `'always' \| 'no-escape' \| 'no-outside' \| 'never'` | `'always'` | Which built-in dismissal interactions are honored — see [Non-dismissible modals](#non-dismissible-modals). |
 | `themeClass` | `Partial<ModalThemeClasses>` | `undefined` | Per-instance theme override. |
 | `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |
 
