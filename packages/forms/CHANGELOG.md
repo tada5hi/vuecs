@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.2.1](https://github.com/tada5hi/vuecs/compare/forms-v5.2.0...forms-v5.2.1) (2026-06-11)
+
+
+### Bug Fixes
+
+* **forms:** stabilize checkbox baseline across indicator mount ([#1631](https://github.com/tada5hi/vuecs/issues/1631)) ([8523538](https://github.com/tada5hi/vuecs/commit/8523538c8d5d5579cf37d1dcd8e28eaecddc5475)), closes [#1628](https://github.com/tada5hi/vuecs/issues/1628) [#1629](https://github.com/tada5hi/vuecs/issues/1629)
+
 ## [5.2.0](https://github.com/tada5hi/vuecs/compare/forms-v5.1.1...forms-v5.2.0) (2026-06-08)
 
 
