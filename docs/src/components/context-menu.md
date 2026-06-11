@@ -132,6 +132,7 @@ Root component. Wraps `ContextMenuRoot`.
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `modal` | `boolean` | `true` | Block interaction with content outside while open. |
+| `pressOpenDelay` | `number` | `700` | Delay (ms) from press-down until the menu opens (touch / press-and-hold). |
 | `dir` | `'ltr' \| 'rtl' \| undefined` | `undefined` | Reading direction. Falls back to the inherited `useConfig('dir')` value. |
 
 | Emit | Payload | Description |

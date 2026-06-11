@@ -51,7 +51,7 @@ const tags = ref<string[]>(['vue', 'reka', 'tailwind']);
 | `placeholder` | `string` | `undefined` | Input placeholder when empty |
 | `disabled` | `boolean` | `false` | Disable interaction |
 | `required` | `boolean` | `false` | Form-required attribute |
-| `max` | `number` | `undefined` | Max number of tags allowed |
+| `max` | `number` | `0` | Max number of tags allowed (`0` = unlimited) |
 | `addOnPaste` | `boolean` | `false` | Split pasted strings on `delimiter` and add each as a tag |
 | `addOnTab` | `boolean` | `false` | Commit the current input as a tag on `Tab` |
 | `addOnBlur` | `boolean` | `true` | Commit on input blur |

@@ -60,8 +60,8 @@ Single animated bar — the building block.
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `width` | `string \| number` | `'100%'` | Width — CSS length (`'12rem'`) or number interpreted as percentage (`60` → `'60%'`). Negative numbers clamp to `0`. |
-| `size` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | `'md'` | Size tier — drives the bar height via the `size` theme variant. |
-| `shape` | `'rect' \| 'pill' \| 'circle'` | `'rect'` | Bar shape. `pill` rounds the ends (button / badge skeletons); `circle` forces 1:1 aspect (avatar skeletons — pair with a fixed `:width`). |
+| `size` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | theme default (`md`) | Size tier — drives the bar height via the `size` theme variant. |
+| `shape` | `'rect' \| 'pill' \| 'circle'` | theme default (`rect`) | Bar shape. `pill` rounds the ends (button / badge skeletons); `circle` forces 1:1 aspect (avatar skeletons — pair with a fixed `:width`). |
 | `animation` | `'wave' \| 'glow' \| 'none'` | `'wave'` | Shimmer animation. `none` disables the animation (e.g. for reduced-motion callers). |
 | `duration` | `string` | `undefined` | Override the shimmer duration (`'500ms'`, `'4s'`). Defaults to the theme's value (typically `2s`). |
 | `tag` | `string` | `'span'` | Element to render as. |

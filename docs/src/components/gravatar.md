@@ -50,7 +50,7 @@ import { VCGravatar } from '@vuecs/gravatar';
   </template>
 </Demo>
 
-## Props (selection)
+## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
@@ -59,8 +59,13 @@ import { VCGravatar } from '@vuecs/gravatar';
 | `size` | `number` | `80` | Resolution served by Gravatar (URL `?s=` parameter, range 1–2048). **Does not** control rendered size — match it to your displayed dimensions (or 2× for retina) to avoid up/down-scaling. |
 | `displaySize` | `'sm' \| 'md' \| 'lg'` | `undefined` | Visual size — forwards to `<VCAvatar :size>`. `sm` ≈ 32px, `md` ≈ 40px, `lg` ≈ 56px. Omit to fall back to the structural `vc-gravatar` 5rem (80px) baseline. Pair with a matching `size` (URL resolution) for crisp rendering: `<VCGravatar :size="80" display-size="md">`. |
 | `defaultImg` | `string` | `'retro'` | Gravatar's built-in placeholder when the email has no associated avatar (`mp`, `identicon`, `monsterid`, `wavatar`, `retro`, `robohash`, `blank`) |
+| `rating` | `string` | `'g'` | Gravatar's `r=` parameter — content rating filter (`g`, `pg`, `r`, `x`) |
 | `alt` | `string` | `'Avatar'` | Alt text for the rendered image |
+| `protocol` | `string` | `''` | URL protocol prefix (e.g. `'https'`). Empty means protocol-relative |
+| `hostname` | `string` | `'www.gravatar.com'` | Gravatar service host — override for self-hosted Gravatar-compatible services |
 | `delayMs` | `number` | `undefined` | Delay (ms) before the `#fallback` slot appears on network failure. Only strictly positive values are forwarded to `<VCAvatar>` (its underlying Reka `AvatarFallback` treats `0` as "wait forever"); omit to render the fallback immediately. |
+| `themeClass` | `Partial<GravatarThemeClasses>` | `undefined` | Per-instance theme override — composed onto the `<VCAvatar>` wrapper via `extend()` |
+| `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values |
 
 ## Slots
 

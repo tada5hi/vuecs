@@ -183,6 +183,38 @@ import type {
 
 `<VCNavItems>` exposes a typed `item` slot for rendering each item; the link / text / icon slot-prop types are exported for typing slot consumers in render functions.
 
+## API Reference
+
+### `<VCNavItems>`
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `data` | `NavigationItem[] \| NavigationResolver` | `undefined` | The source of this nav's items — plain array, sync fn, or async fn (receives a `NavigationResolverContext`). When omitted, the nav renders a parent `<VCNavItem>`'s already-scored children as a nested submenu. |
+| `registry` | `boolean` | `false` | Opt in to publishing this nav's resolved output into the registry. |
+| `registryId` | `string` | `undefined` | The key under which to publish. Required when `registry` is true. |
+| `path` | `string` | `undefined` | Current path for active-state matching. When omitted, the nav softly reads vue-router's current route (via `$route`) if a router is installed; router-free apps get `undefined`. |
+| `watch` | `WatchSource[]` | `undefined` | Extra reactive deps that retrigger the resolver — for state read only after the first `await` in an async resolver. |
+| `variant` | `string` | `'list'` (theme default) | Theme variant shorthand (`list` / `pills`). |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` (theme default) | Layout direction; also feeds the theme variant system. |
+| `submenu` | `'auto' \| 'collapse' \| 'dropdown'` | `'auto'` | How items with children render their submenu. `auto` derives from orientation (horizontal → dropdown, otherwise collapse). |
+| `as` | `string \| Component` | `'ul'` | List-container tag (or component). Forwarded unchanged to every nesting level. Honored in collapse mode only. |
+| `itemAs` | `string \| Component` | `'li'` | Item-wrapper tag (or component). Forwarded unchanged to every nesting level. Honored in collapse mode only. |
+| `themeClass` | `Partial<NavigationThemeClasses>` | `undefined` | Per-instance theme override. |
+| `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |
+
+### `<VCNavItem>`
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `data` | `NavigationItemNormalized` | required | The normalized item this component renders. |
+| `variant` | `string` | `undefined` | Theme variant shorthand — handed down by the parent `<VCNavItems>`. |
+| `orientation` | `'horizontal' \| 'vertical'` | `undefined` | Layout direction — handed down by the parent `<VCNavItems>`. |
+| `submenu` | `'collapse' \| 'dropdown'` | `'collapse'` | Resolved submenu presentation handed down by the parent `<VCNavItems>`. `collapse` renders groups as an inline Reka `Collapsible`; `dropdown` renders them as Reka `NavigationMenu` flyouts. |
+| `as` | `string \| Component` | `'li'` | The tag (or component) this item renders as — its own wrapper. Receives `<VCNavItems>`'s `itemAs`. Honored in collapse mode only. |
+| `itemsAs` | `string \| Component` | `'ul'` | The list-container tag for this item's nested submenu `<VCNavItems>`. Receives `<VCNavItems>`'s `as`. Honored in collapse mode only. |
+| `themeClass` | `Partial<NavigationThemeClasses>` | `undefined` | Per-instance theme override. |
+| `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |
+
 ## See also
 
 - [Navigation guide](/guide/navigation) — resolver + registry model

@@ -113,7 +113,7 @@ The group also enables roving focus (arrow keys to move between children) by def
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `modelValue` | `boolean \| 'indeterminate' \| null` | `undefined` | Checked state. Pass `'indeterminate'` for tri-state. |
-| `value` | `unknown` | `undefined` | Value pushed onto the parent `<VCFormCheckboxGroup>`'s array v-model |
+| `value` | `unknown` | `'on'` | Value pushed onto the parent `<VCFormCheckboxGroup>`'s array v-model |
 | `disabled` | `boolean` | `false` | Disables interaction; reflected as `data-disabled` |
 | `required` | `boolean` | `false` | Native form-required attribute |
 | `name` | `string` | `undefined` | Form-submission name |
@@ -134,6 +134,13 @@ The group also enables roving focus (arrow keys to move between children) by def
 | `disabled` | `boolean` | `false` | Disable every child |
 | `required` | `boolean` | `false` | Form-required attribute |
 | `name` | `string` | `undefined` | Form-submission name |
+
+## Slots (`<VCFormCheckbox>`)
+
+| Slot | Slot props | Description |
+|------|------------|-------------|
+| `label` | `{ class, id }` | Custom label markup. `class` is the resolved `label` theme class; `id` matches the checkbox's `for` target. Replaces the default `<label>` |
+| `indicator` | `{ class }` | Custom checkmark content. `class` is the resolved `indicator` theme class |
 
 ## See also
 

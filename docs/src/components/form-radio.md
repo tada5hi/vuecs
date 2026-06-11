@@ -60,6 +60,12 @@ For declarative use, pass `:options="FormOption[]"` to the group instead of comp
 />
 ```
 
+## Behavioral defaults
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `labelContent` | `'Option'` | Label text when neither `label-content` prop nor `#label` slot is provided |
+
 ## Props (`<VCFormRadio>`)
 
 | Prop | Type | Default | Description |
@@ -83,6 +89,13 @@ For declarative use, pass `:options="FormOption[]"` to the group instead of comp
 | `disabled` | `boolean` | `false` | Disable every item |
 | `required` | `boolean` | `false` | Form-required attribute |
 | `name` | `string` | `undefined` | Form-submission name |
+
+## Slots (`<VCFormRadio>`)
+
+| Slot | Slot props | Description |
+|------|------------|-------------|
+| `label` | `{ class, id }` | Custom label markup. `class` is the resolved `label` theme class; `id` matches the radio's `for` target. Replaces the default `<label>` |
+| `indicator` | `{ class }` | Custom selected-state indicator content. `class` is the resolved `indicator` theme class |
 
 ## Events
 

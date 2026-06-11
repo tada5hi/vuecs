@@ -126,6 +126,8 @@ Pass `''` to a single label prop (e.g. `:prev-label="''"`) to suppress that one 
 | `busy` | `boolean` | `false` | Disable controls during loading |
 | `hideDisabled` | `boolean` | `true` | When `true`, edge controls (First/Prev at page 1, Next/Last at the last page) are unrendered instead of rendered-disabled. Pass `:hide-disabled="false"` to keep them rendered-disabled. Does not apply to the `busy` state. |
 | `withText` | `boolean` | `false` | When `true`, forces the resolved label string (First / Previous / Next / Last) to render as visible text next to each edge button. When `false` (default), edge buttons are icon-only **if an icon resolves** for that button; otherwise the label string is rendered as a fallback so the button isn't empty. |
+| `siblingCount` | `number` | `1` | Number of sibling page items shown on either side of the current page; forwarded to Reka `siblingCount`. |
+| `showEdges` | `boolean` | `true` | Render First/Last edge buttons; forwarded to Reka `showEdges`. |
 | `tag` | `string` | `'ul'` | Root element tag |
 | `itemTag` | `string` | `'li'` | Item wrapper tag |
 | `firstIcon` | `string` | (preset) | Iconify name for the First-page button. `''` suppresses. |
@@ -136,6 +138,8 @@ Pass `''` to a single label prop (e.g. `:prev-label="''"`) to suppress that one 
 | `prevLabel` | `string` | `'Previous'` | Visible text for the Previous-page button when `with-text` is enabled. `''` suppresses. |
 | `nextLabel` | `string` | `'Next'` | Visible text for the Next-page button when `with-text` is enabled. `''` suppresses. |
 | `lastLabel` | `string` | `'Last'` | Visible text for the Last-page button when `with-text` is enabled. `''` suppresses. |
+| `themeClass` | `Partial<PaginationThemeClasses>` | `undefined` | Per-instance theme override. |
+| `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |
 
 ## Slots
 

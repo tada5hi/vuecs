@@ -122,6 +122,12 @@ Filtering matches the `label` field with a case-insensitive `RegExp`. The option
 | `disabled` | `boolean` | `false` | Disable the input |
 | `closeOnSelect` | `boolean \| undefined` | `undefined` (mode-default) | Close the dropdown after a pick. Default: single closes, multi stays open. Set explicitly to override. |
 
+## Slots
+
+| Slot | Slot props | Description |
+|------|------------|-------------|
+| `selected` | `{ items, toggle }` | Custom selected-chips markup (rendered in multi-select mode only). `items` is the currently selected `FormOption[]`; invoke `toggle(option)` to deselect an option. Replaces the default removable chip buttons |
+
 ## Events
 
 | Event | Payload | Description |

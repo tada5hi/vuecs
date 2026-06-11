@@ -117,6 +117,7 @@ App-level configuration. Wrap once near the app root (or around a specific subtr
 | `skipDelayDuration` | `number` | `300` | Window after a tooltip closes during which sibling tooltips skip the delay (so a row of icon-buttons feels snappy). |
 | `disableHoverableContent` | `boolean` | `false` | Disable hovering-only opens (focus still works). |
 | `disableClosingTrigger` | `boolean` | `false` | Don't close the tooltip when the trigger is clicked. |
+| `ignoreNonKeyboardFocus` | `boolean` | `false` | Treat non-keyboard focus events as not focusing the trigger. |
 
 ### `<VCTooltip>`
 

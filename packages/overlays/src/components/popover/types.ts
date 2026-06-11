@@ -14,7 +14,8 @@ export type PopoverThemeClasses = {
     close: string;
     /**
      * Corner-X close button. Carries absolute positioning + sizing so it
-     * docks into the popover's top-right corner. Used by `<VCPopoverCloseIcon>`.
+     * docks into the popover's top-right corner. Used by the corner-X
+     * presentation of `<VCPopoverClose>` (slotless or with the `icon` prop).
      */
     closeIcon: string;
 };

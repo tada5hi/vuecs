@@ -25,7 +25,8 @@ export type ModalThemeClasses = {
     close: string;
     /**
      * Corner-X close button. Carries absolute positioning + sizing so it
-     * docks into the dialog's top-right corner. Used by `<VCModalCloseIcon>`.
+     * docks into the dialog's top-right corner. Used by the corner-X
+     * presentation of `<VCModalClose>` (slotless or with the `icon` prop).
      */
     closeIcon: string;
     /** "Back" button shown when the view stack has history. */

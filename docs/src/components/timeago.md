@@ -85,6 +85,8 @@ reset();      // back to the browser language
 | `autoUpdate` | `number \| boolean` | `true` | Refresh interval in seconds (`true` = 60s, `false` = off) |
 | `converter` | `Converter` | built-in | Custom relative-time formatter |
 | `converterOptions` | `ConverterOptions` | — | `{ includeSeconds, addSuffix }` for the built-in converter |
+| `themeClass` | `Partial<TimeagoThemeClasses>` | `undefined` | Per-instance theme override |
+| `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values |
 
 ## See also
 

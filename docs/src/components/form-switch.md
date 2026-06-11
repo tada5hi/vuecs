@@ -89,7 +89,7 @@ Replace the default thumb element via the `#thumb` slot. The slot receives `clas
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `modelValue` | `boolean \| null` | `undefined` | Switch state |
-| `value` | `string` | `undefined` | Form-submission value (sent when checked) |
+| `value` | `string` | `'on'` | Form-submission value (sent when checked) |
 | `disabled` | `boolean` | `false` | Disables interaction; reflected as `data-disabled` |
 | `required` | `boolean` | `false` | Native form-required attribute |
 | `name` | `string` | `undefined` | Form-submission name |
@@ -98,6 +98,13 @@ Replace the default thumb element via the `#thumb` slot. The slot receives `clas
 | `labelContent` | `string` | (defaults system) | Inline label text — bypasses the `#label` slot |
 | `themeClass` | `Partial<FormSwitchThemeClasses>` | `undefined` | Per-instance theme overrides |
 | `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values |
+
+## Slots
+
+| Slot | Slot props | Description |
+|------|------------|-------------|
+| `label` | `{ class, id }` | Custom label markup. `class` is the resolved `label` theme class; `id` matches the switch's `for` target. Replaces the default `<label>` |
+| `thumb` | `{ class }` | Custom thumb content. `class` is the resolved `thumb` theme class |
 
 ## See also
 

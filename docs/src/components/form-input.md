@@ -55,6 +55,13 @@ const value = ref('');
 
 `placeholder`, `disabled`, etc. are forwarded to the native `<input>` via `attrs`.
 
+## Slots
+
+| Slot | Slot props | Description |
+|------|------------|-------------|
+| `groupPrepend` | `{ class, tag }` | Custom prepend addon markup. `class` is the resolved `groupPrepend` theme class; `tag` is the suggested wrapper tag (`'div'`). Replaces the `groupPrependContent` default |
+| `groupAppend` | `{ class, tag }` | Custom append addon markup. `class` is the resolved `groupAppend` theme class; `tag` is the suggested wrapper tag (`'div'`). Replaces the `groupAppendContent` default |
+
 ## Input group
 
 When a prepend and/or append is present (via the `groupPrepend` / `groupAppend`

@@ -90,6 +90,8 @@ import {
 |---|---|---|---|
 | `as` | `string` | `'a'` | HTML tag to render. |
 | `asChild` | `boolean` | `false` | Render via the default slot's child element. |
+| `themeClass` | `Partial<HoverCardThemeClasses>` | `undefined` | Per-instance theme override. |
+| `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |
 
 ### `<VCHoverCardContent>`
 
@@ -101,6 +103,8 @@ import {
 | `align` | `'start' \| 'center' \| 'end'` | `'center'` | Alignment along the chosen side. |
 | `alignOffset` | `number` | `0` | Offset in pixels along the alignment axis. |
 | `avoidCollisions` | `boolean` | `true` | Flip / shift to stay inside the viewport. |
+| `themeClass` | `Partial<HoverCardThemeClasses>` | `undefined` | Per-instance theme override. |
+| `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |
 
 ### `<VCHoverCardArrow>`
 
@@ -108,3 +112,5 @@ import {
 |---|---|---|---|
 | `width` | `number` | `10` | Arrow width in pixels. |
 | `height` | `number` | `5` | Arrow height in pixels. |
+| `themeClass` | `Partial<HoverCardThemeClasses>` | `undefined` | Per-instance theme override. |
+| `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |

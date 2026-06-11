@@ -93,7 +93,7 @@ import {
 | `content` | `vc-popover-content` | Floating panel; supports `data-state="open\|closed"` for animation. |
 | `arrow` | `vc-popover-arrow` | |
 | `close` | `vc-popover-close` | Neutral baseline for `<VCPopoverClose>` — composes with consumer classes. |
-| `closeIcon` | `vc-popover-close-icon` | Corner-X positioning + sizing for `<VCPopoverCloseIcon>`. |
+| `closeIcon` | `vc-popover-close-icon` | Corner-X positioning + sizing for `<VCPopoverClose />` (slotless) / `<VCPopoverClose icon>`. |
 
 ## Accessibility
 

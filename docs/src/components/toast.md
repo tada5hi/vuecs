@@ -346,6 +346,28 @@ Action button rendered inside a toast. Wraps `ToastAction`.
 | `as` | `string` | `'button'` | HTML tag to render. |
 | `asChild` | `boolean` | `false` | Render via the default slot's child element. |
 
+### `<VCToastTitle>`
+
+Toast heading. Wraps `ToastTitle`.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `as` | `string` | `'h3'` | HTML tag to render. Vuecs convention — `h3` is the semantically-correct host for an in-context heading within a toast (Reka's default is `'div'`). |
+| `asChild` | `boolean` | `false` | Render via the default slot's child element. |
+| `themeClass` | `Partial<ToastTitleThemeClasses>` | `undefined` | Per-instance theme override. |
+| `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |
+
+### `<VCToastDescription>`
+
+Toast body text. Wraps `ToastDescription`.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `as` | `string` | `'p'` | HTML tag to render. Vuecs convention — `p` is the semantically-correct host for the toast body text (Reka's default is `'div'`). |
+| `asChild` | `boolean` | `false` | Render via the default slot's child element. |
+| `themeClass` | `Partial<ToastDescriptionThemeClasses>` | `undefined` | Per-instance theme override. |
+| `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |
+
 ### `<VCToastClose>`
 
 Close button. Wraps `ToastClose`.

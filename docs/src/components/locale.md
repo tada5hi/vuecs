@@ -62,14 +62,20 @@ console.log(isAuto.value);    // true when deferring to the browser
 ## Reading the locale
 
 Component authors should read the locale via `useLocale()` from
-`@vuecs/core` — it works whether or not `@vuecs/locale` is installed
-(falling back to the config default `en-US`):
+`@vuecs/core` — it works whether or not `@vuecs/locale` is installed,
+resolving to the config default `en-US` when nothing else is configured:
 
 ```ts
 import { useLocale } from '@vuecs/core';
 
-const locale = useLocale(); // ComputedRef<string>
+const locale = useLocale(); // ComputedRef<string> — falls back to 'en-US'
 ```
+
+The signature is `useLocale(fallback?: string)`, but note that core
+registers `en-US` as a config-level default, so a custom `fallback`
+argument only takes effect when that registration is absent — in
+practice the resolved value comes from consumer config or the `en-US`
+default.
 
 ## Without the plugin
 

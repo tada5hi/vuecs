@@ -76,7 +76,7 @@ Use `:as-child` to render `<VCCard>` (or any part) as a passed slot child. Combi
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `variant` | `'outline' \| 'soft' \| 'elevated'` | `'outline'` (theme default) | Visual treatment — border vs tinted fill vs shadow. |
-| `padding` | `'compact' \| 'normal' \| 'spacious'` | `'normal'` | Inner padding scale; propagates to every band via context. |
+| `padding` | `'compact' \| 'normal' \| 'spacious'` | `'normal'` (theme default) | Inner padding scale; propagates to every band via context. |
 | `interactive` | `boolean` | `false` | Adds hover + focus-within rings, suitable for link-cards. |
 | `as` | `string` | `'div'` | HTML tag to render. |
 | `asChild` | `boolean` | `false` | Render the consumer's slot child as the root (Reka `asChild` pattern). |

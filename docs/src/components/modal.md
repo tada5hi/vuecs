@@ -209,7 +209,7 @@ const showItem = (id: number) => {
 | `footer` | `vc-modal-footer` | Footer layout container (consumer-composed). |
 | `trigger` | `vc-modal-trigger` | Trigger button. |
 | `close` | `vc-modal-close` | Generic close trigger (`<VCModalClose>`). Neutral baseline so consumer classes compose cleanly. |
-| `closeIcon` | `vc-modal-close-icon` | Corner-X positioning + sizing for `<VCModalCloseIcon>`. |
+| `closeIcon` | `vc-modal-close-icon` | Corner-X positioning + sizing for `<VCModalClose />` (slotless) / `<VCModalClose icon>`. |
 | `back` | `vc-modal-back` | Optional view-stack back button. |
 
 `@vuecs/theme-tailwind` ships pre-built styling for every key with light/dark mode and `data-state="open|closed"` animation hooks.

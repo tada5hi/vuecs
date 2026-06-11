@@ -114,7 +114,27 @@ const steps = [
 | `step` | `number` | required | 1-based step index. |
 | `disabled` | `boolean` | `false` | Block interaction with this step. |
 | `completed` | `boolean` | `false` | Force completion state. Reka still derives completion from the active step; pass `true` to override. |
+| `themeClass` | `Partial<StepperThemeClasses>` | `undefined` | Per-instance theme override. |
+| `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |
 
 | Slot props | Description |
 |---|---|
 | `state` | `'active' \| 'completed' \| 'inactive'` |
+
+### Step parts
+
+`<VCStepperTrigger>` / `<VCStepperIndicator>` / `<VCStepperTitle>` /
+`<VCStepperDescription>` / `<VCStepperSeparator>` share the same prop
+shape: `as` (element / component to render as), `asChild` (`boolean`,
+`false` — render the consumer's slot child as the root, Reka `asChild`
+pattern), `themeClass` (`Partial<StepperThemeClasses>`, `undefined`),
+and `themeVariant` (`Record<string, string \| boolean>`, `undefined`).
+Only the `as` default differs per part:
+
+| Component | `as` default |
+|---|---|
+| `VCStepperTrigger` | `'button'` |
+| `VCStepperIndicator` | `'div'` |
+| `VCStepperTitle` | `'h4'` |
+| `VCStepperDescription` | `'p'` |
+| `VCStepperSeparator` | `'div'` |

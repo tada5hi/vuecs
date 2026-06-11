@@ -84,8 +84,8 @@ const data: User[] = [
 | `data` | `Row[]` | `[]` | Row payload. |
 | `columns` | `TableColumnRaw<Row>[]` | `undefined` | Column definitions (object form or bare-string shorthand). When omitted, columns are derived from `Object.keys(data[0])`. |
 | `busy` | `boolean` | `false` | Sets `aria-busy="true"` on the `<table>` and gates the loading-band render. |
-| `sort` | `{ key, direction } \| null` | `null` | Controlled sort state. Use `v-model:sort`. |
-| `mustSort` | `boolean` | `false` | When true, the cycle skips the `null` step (`null → asc → desc → asc`). |
+| `sort` | `SortDescriptor[]` | `[]` | Controlled sort state. Use `v-model:sort`. Empty array means "no sort"; single-column sort is an array of length 1. |
+| `mustSort` | `boolean` | `false` | When true, the cycle skips the empty step (`[] → asc → desc → asc`). |
 | `scrollable` | `boolean` | `false` | Wrap the `<table>` in an overflow scroll container. |
 | `stickyHeader` | `boolean` | `false` | Stick the `<thead>` to the top of the scroll container. Requires `:scrollable`. |
 | `maxHeight` | `string` | `undefined` | CSS length applied to the scroll container's `max-height`. |
@@ -210,6 +210,11 @@ sort, setSort }`) types. The cell-slot `value` honors the column's
 `accessor` (so dot-paths and accessor functions work transparently);
 the slot wins over the column's `formatter` if both are set.
 
+`<VCTable>` (and `<VCTableLite>`) also accept `#caption` and
+`#colgroup` slots — their content renders inside a `<caption>` /
+`<colgroup>` element at the top of the `<table>`, before the header
+band.
+
 ## Row selection
 
 `<VCTable :selection-mode>` enables row selection with the W3C ARIA
@@ -243,11 +248,11 @@ const data: User[] = [/* ... */];
 </template>
 ```
 
-| Prop | Type | Description |
-|---|---|---|
-| `selectionMode` | `'single' \| 'multi'` | Enables the grid pattern. `undefined` keeps the plain-table semantics. |
-| `selection` | `RowSelectionKey \| RowSelectionKey[] \| null` | Controlled selection state. Use `v-model:selection`. |
-| `getRowKey` | `(row, index) => RowSelectionKey` | Resolve the selection key per row. Defaults to `row.id ?? index`. |
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `selectionMode` | `'single' \| 'multi'` | `undefined` | Enables the grid pattern. `undefined` keeps the plain-table semantics. |
+| `selection` | `RowSelectionKey \| RowSelectionKey[] \| null` | `null` | Controlled selection state. Use `v-model:selection`. |
+| `getRowKey` | `(row, index) => RowSelectionKey` | `undefined` | Resolve the selection key per row. When unset, falls back to `row.id ?? index`. |
 
 **Click semantics in multi mode:**
 
@@ -674,6 +679,9 @@ columns-driver setup), reach for the explicit `<VCTablePlaceholder>` +
 | `tableCell` | `root` |
 | `tableHeadCell` | `root`, `sortIcon` |
 | `tableLoading` | `root`, `overlay` |
+| `tableRowExpansion` | `root`, `cell`, `panel`, `panelInner` |
+| `tableExpandTrigger` | `root`, `icon` |
+| `tableExpandTriggerCell` | `root` |
 | `tablePlaceholder` | `root`, `header`, `body`, `footer`, `row`, `cell` |
 | `tableSortIndicators` | `root`, `label`, `empty`, `chip`, `chipToggle`, `chipPosition`, `chipLabel`, `chipArrow`, `chipRemove`, `addWrapper`, `add`, `clear` |
 

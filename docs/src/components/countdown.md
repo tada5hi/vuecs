@@ -50,7 +50,25 @@ const time = 3600 * 1000;
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `time` | `number` | — | Time in milliseconds to count down |
+| `time` | `number` | `0` | Time in milliseconds to count down |
+| `autoStart` | `boolean` | `true` | Start the countdown automatically on mount and whenever `time` / `now` change |
+| `emitEvents` | `boolean` | `true` | Emit the `start` / `progress` / `abort` / `end` events (set `false` to silence them) |
+| `interval` | `number` | `1000` | Update interval in milliseconds between `progress` ticks |
+| `now` | `() => number` | `() => Date.now()` | Returns the current timestamp — used to compute the end time and to re-sync after the tab regains visibility |
+| `tag` | `string` | `'span'` | HTML tag to render |
+| `themeClass` | `Partial<CountdownThemeClasses>` | `undefined` | Per-instance theme override |
+| `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values |
+
+## Events
+
+All events are suppressed when `emitEvents` is `false`.
+
+| Event | Payload | Description |
+|-------|---------|-------------|
+| `start` | — | Countdown started — via `autoStart` or an explicit `start()` call |
+| `progress` | `Omit<CountdownSlotProps, 'isCounting'>` | Fires on every `interval` tick while time remains, with the remaining time broken down (`{ days, hours, minutes, seconds, milliseconds, totalDays, totalHours, totalMinutes, totalSeconds, totalMilliseconds }`) |
+| `abort` | — | Countdown stopped early via `abort()` |
+| `end` | — | Countdown reached zero (naturally or via `end()`) |
 
 ## Slots
 

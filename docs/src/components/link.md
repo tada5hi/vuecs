@@ -56,12 +56,21 @@ For external links, set `href` directly and leave `to` empty — the component r
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `to` | `string \| RouteLocationRaw` | — | vue-router target. Triggers `<RouterLink>` / `<NuxtLink>` rendering when set |
+| `to` | `string \| Record<string, any>` | — | vue-router target. Triggers `<RouterLink>` / `<NuxtLink>` rendering when set; the object form is a vue-router `RouteLocationRaw`-compatible location |
 | `href` | `string` | — | Plain anchor URL — used when no `to` is provided, or appended with `query` |
 | `target` | `string` | `'_self'` | Anchor target — applied only on the plain-`<a>` render path |
 | `prefetch` | `boolean` | `true` | Forwarded to `<NuxtLink>` |
 | `active` | `boolean` | `false` | Adds an `active` class to the rendered element |
 | `disabled` | `boolean` | `false` | Adds `disabled` class and prevents click events |
 | `query` | `LinkQuery` | — | Extra query params to merge into the URL |
+
+## Events
+
+| Event | Payload | Description |
+|-------|---------|-------------|
+| `click` | click event | Fires only on the `<RouterLink>` / `<NuxtLink>` render path. Suppressed when `disabled` |
+| `clicked` | click event | Fires on every non-disabled click, regardless of render path (router link or plain `<a>`). Suppressed when `disabled` |
+
+On the router-link path a click emits **both** events (`click` first, then `clicked`); on the plain-`<a>` path only `clicked` fires. Listen to `clicked` when you want a render-path-independent handler.
 
 Used internally by [Navigation](/components/navigation) for route-aware nav links.

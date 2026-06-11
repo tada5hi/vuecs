@@ -278,9 +278,19 @@ Non-interactive section heading. Wraps `DropdownMenuLabel`.
 
 Horizontal divider between items. Wraps `DropdownMenuSeparator`. No props beyond the theme overrides.
 
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `themeClass` | `Partial<DropdownMenuThemeClasses>` | `undefined` | Per-instance theme override. |
+| `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |
+
 ### `<VCDropdownMenuGroup>`
 
 Semantic wrapping group (renders a `<div role="group">`). Wraps `DropdownMenuGroup`. No props beyond the theme overrides.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `themeClass` | `Partial<DropdownMenuThemeClasses>` | `undefined` | Per-instance theme override. |
+| `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |
 
 ### `<VCDropdownMenuSub>`
 
