@@ -77,6 +77,20 @@ Use the named `#label` slot to render the label as markup. The slot receives `cl
 </VCFormCheckbox>
 ```
 
+## Default glyph (checkmark / indeterminate dash)
+
+A checked box renders a check mark, and `'indeterminate'` renders a dash, **out of the box** — both ship as `currentColor`-painted CSS masks in the structural stylesheet, so no icon package or slot wiring is needed.
+
+::: warning Structural stylesheet required
+The glyph lives in `@vuecs/forms`' structural CSS, not in the theme class strings. If a checked checkbox shows a bare color fill with no check mark, the stylesheet import is missing:
+
+```css
+@import "@vuecs/forms"; /* → dist/style.css */
+```
+
+The same import carries the switch track/thumb structure, slider rails, and the other form structural rules — see [Installation](/getting-started/installation).
+:::
+
 ## Custom indicator (checkmark)
 
 Replace the default checkmark via the `#indicator` slot:

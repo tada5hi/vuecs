@@ -17,6 +17,11 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    /* Content-independent line-box alignment (#1628). The wrapper's exported
+       baseline derives from its first flex item — the checkbox button, whose
+       own baseline shifts when Reka mounts/unmounts the indicator. `middle`
+       decouples the surrounding line box from that internal change. */
+    vertical-align: middle;
 }
 
 .vc-form-checkbox-label {
@@ -43,6 +48,12 @@
     background-color: var(--vc-color-bg, #fff);
     cursor: pointer;
     transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+    /* An inline-flex box exposes a different baseline when empty vs. when it
+       has content (empty → margin-box edge, non-empty → content baseline).
+       Reka mounts the indicator only while checked/indeterminate, so without
+       this every toggle shifted the surrounding line box by a few pixels
+       (#1628). `middle` makes the alignment content-independent. */
+    vertical-align: middle;
 }
 
 .vc-form-checkbox:hover {
