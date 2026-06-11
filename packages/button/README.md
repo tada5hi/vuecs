@@ -1,15 +1,39 @@
 # @vuecs/button
 
-[![npm version](https://badge.fury.io/js/@vuecs%2Fbutton.svg)](https://badge.fury.io/js/@vuecs%2Fbutton)
-[![main](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
+[![npm version](https://img.shields.io/npm/v/@vuecs/button)](https://www.npmjs.com/package/@vuecs/button)
+[![CI](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
+[![license](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](./LICENSE)
 
-General-purpose button component for Vue 3 with semantic color/variant/size variants, loading state, and leading/trailing icon slots.
+**`<VCButton>` — the general-purpose button of [vuecs](https://github.com/tada5hi/vuecs).** A full `variant` × `color` × `size` matrix, loading state, and icon slots — visually defined entirely by whichever theme you install (Tailwind, Bootstrap, Bulma, or your own).
 
-Full documentation: **[vuecs.dev/components/button](https://vuecs.dev/components/button)**
+## ✨ What's inside
+
+- 🎛️ **Variant matrix** — `variant` (`solid` / `outline` / `soft` / `ghost` / `link`) × `color` (`primary` / `neutral` / `success` / `warning` / `error` / `info`) × `size` (`sm` / `md` / `lg`), resolved through the vuecs variant system.
+- ⏳ **Loading state** — `:loading` disables interaction and exposes `{ loading, disabled }` to the default slot for spinners or custom feedback.
+- 🖼️ **Icon support** — `icon-left` / `icon-right` Iconify-name props (rendered via `<VCIcon>`) plus leading/trailing slots for full control.
+- 🔗 **Polymorphic** — render as `button`, `a`, or any tag via `:tag`; native `type` forwarding for forms.
+- 📝 **`useSubmitButton()` companion** — `@vuecs/forms` ships an experimental composable that drives create/update submit buttons (text, icon, color) from global behavioral defaults.
+
+## 📦 Installation
 
 ```bash
 npm install @vuecs/button
 ```
+
+## ⚡ Usage
+
+```vue
+<VCButton color="primary" icon-left="lucide:plus" :loading="busy" @click="create">
+    Create
+</VCButton>
+
+<VCButton variant="outline" color="error" size="sm">Delete</VCButton>
+<VCButton variant="ghost" tag="a" href="/docs">Docs</VCButton>
+```
+
+## 📚 Documentation
+
+Full reference, live demos, and per-theme variant tables: **[vuecs.dev/components/button](https://vuecs.dev/components/button)**
 
 ## License
 

@@ -1,40 +1,63 @@
 # @vuecs/forms
 
-[![npm version](https://badge.fury.io/js/@vuecs%2Fforms.svg)](https://badge.fury.io/js/@vuecs%2Fforms)
-[![main](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
+[![npm version](https://img.shields.io/npm/v/@vuecs/forms)](https://www.npmjs.com/package/@vuecs/forms)
+[![CI](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml/badge.svg)](https://github.com/Tada5hi/vuecs/actions/workflows/main.yml)
+[![license](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](./LICENSE)
 
-Form input components for Vue 3 on top of [Reka UI](https://reka-ui.com) primitives: a complete set of accessible inputs with `v-model` contract, validation hooks, and a shared `FormOption` shape across the pickers.
+**The complete form-input family of [vuecs](https://github.com/tada5hi/vuecs)** — accessible inputs on [Reka UI](https://reka-ui.com) primitives with a clean `v-model` contract, validation feedback, and a shared `FormOption` shape across every picker.
 
-Full documentation:
+## ✨ What's inside
 
-- [FormInput](https://vuecs.dev/components/form-input)
-- [FormNumber](https://vuecs.dev/components/form-number)
-- [FormPin](https://vuecs.dev/components/form-pin)
-- [FormTextarea](https://vuecs.dev/components/form-textarea)
-- [FormCheckbox + CheckboxGroup](https://vuecs.dev/components/form-checkbox)
-- [FormSwitch](https://vuecs.dev/components/form-switch)
-- [FormRadio + RadioGroup](https://vuecs.dev/components/form-radio)
-- [FormSelect](https://vuecs.dev/components/form-select)
-- [FormSelectSearch](https://vuecs.dev/components/form-select-search)
-- [FormSlider](https://vuecs.dev/components/form-slider) — single value or range, same component
-- [FormTags](https://vuecs.dev/components/form-tags)
-- [FormGroup + ValidationGroup](https://vuecs.dev/components/form-group)
-- [Button + `useSubmitButton()`](https://vuecs.dev/components/button) — the previous `VCFormSubmit` is now `VCButton` driven by an experimental composable
+- ⌨️ **Text & numbers** — `<VCFormInput>`, `<VCFormTextarea>`, `<VCFormNumber>` (typed, with steppers), `<VCFormPin>` (PIN/OTP).
+- ✅ **Toggles** — `<VCFormCheckbox>` (incl. `indeterminate`), `<VCFormCheckboxGroup>`, `<VCFormSwitch>`, `<VCFormRadio>` / `<VCFormRadioGroup>`.
+- 📋 **Pickers** — `<VCFormSelect>`, `<VCFormSelectSearch>`, `<VCFormTags>`, all driven by the same `FormOption<T>` shape (`{ value, label, disabled?, icon?, … }`) + `FormOptionGroup<T>`.
+- 🎚️ **`<VCFormSlider>`** — single value or range from one component; thumb count derives from the `v-model` shape.
+- 🧪 **Validation feedback** — wrap any input in `<VCFormGroup>`: it renders label + messages and folds an `error` / `warning` severity onto the input's theme variant automatically, with zero per-input wiring.
+- 🌐 **i18n-ready defaults** — placeholders, labels, and validation copy resolve through `@vuecs/core`'s behavioral-defaults pipeline (reactive `MaybeRef` values welcome).
+- 🚀 **`useSubmitButton()`** *(experimental)* — a reactive bind-object for create/update submit buttons on `@vuecs/button`.
+
+## 📦 Installation
 
 ```bash
 npm install @vuecs/forms
 ```
 
-## 3.0 — major rename + Reka migration
+## ⚡ Usage
 
-`@vuecs/form-controls` (≤2.x) was renamed to **`@vuecs/forms`** in 3.0. Highlights:
+```vue
+<VCFormGroup label-content="Email" :validation-messages="errors.email">
+    <VCFormInput v-model="form.email" type="email" />
+</VCFormGroup>
 
-- **Renamed** — update imports: `import { ... } from '@vuecs/forms'`. The old `@vuecs/form-controls` package is removed; no shim. Migrate in one pass.
-- **`VCFormInputCheckbox` was split** into three Reka-backed components: `<VCFormCheckbox>` (single, supports `boolean | 'indeterminate'`), `<VCFormCheckboxGroup>` (array v-model with roving focus), `<VCFormSwitch>` (Reka `Switch` primitive — distinct ARIA semantics).
-- **`VCFormRangeMultiSlider` was replaced** by `<VCFormSlider>` (Reka `Slider` primitive). One component handles both single (scalar `v-model`) and range (`number[]` `v-model`) modes; thumb count derives from the array shape.
-- **Option shape redesign** — `FormSelectOption` (`{ id, value }` — value-was-the-label, inverted) replaced with `FormOption<T>` (`{ value, label, disabled?, description?, icon?, meta? }`) + `FormOptionGroup<T>` for `<optgroup>`. Single `placeholder` prop replaces the `optionDefault` / `optionDefaultId` / `optionDefaultValue` triplet.
-- **New components on Reka primitives** — `<VCFormRadio>` + `<VCFormRadioGroup>`, `<VCFormPin>` (PIN/OTP), `<VCFormNumber>` (typed number input with steppers), `<VCFormTags>` (multi-value chip input).
-- **`vue-tsc --emitDeclarationOnly`** runs without `|| true` masking — types are validated.
+<VCFormSelect
+    v-model="form.role"
+    :options="[
+        { value: 'admin', label: 'Administrator' },
+        { value: 'user', label: 'User' },
+    ]"
+    placeholder="-- Select a role --"
+/>
+
+<VCFormSlider v-model="priceRange" :min="0" :max="500" />  <!-- range: v-model is number[] -->
+```
+
+## 📚 Documentation
+
+One page per component on **[vuecs.dev](https://vuecs.dev/components/)**:
+
+[Input](https://vuecs.dev/components/form-input) · [Textarea](https://vuecs.dev/components/form-textarea) · [Number](https://vuecs.dev/components/form-number) · [Pin](https://vuecs.dev/components/form-pin) · [Checkbox](https://vuecs.dev/components/form-checkbox) · [Switch](https://vuecs.dev/components/form-switch) · [Radio](https://vuecs.dev/components/form-radio) · [Select](https://vuecs.dev/components/form-select) · [SelectSearch](https://vuecs.dev/components/form-select-search) · [Slider](https://vuecs.dev/components/form-slider) · [Tags](https://vuecs.dev/components/form-tags)
+
+Guide: [Validation feedback](https://vuecs.dev/guide/validation-feedback)
+
+## 🔄 Migrating from `@vuecs/form-controls` (≤2.x)
+
+`@vuecs/form-controls` was renamed to **`@vuecs/forms`** in 3.0 — a clean break, no shim:
+
+- `VCFormInputCheckbox` split into `<VCFormCheckbox>` / `<VCFormCheckboxGroup>` / `<VCFormSwitch>` (distinct ARIA semantics).
+- `VCFormRangeMultiSlider` replaced by `<VCFormSlider>` (one component, single + range).
+- `FormSelectOption` (`{ id, value }`) replaced by `FormOption<T>` (`{ value, label, … }`); the `optionDefault*` triplet collapsed into one `placeholder` prop.
+- New Reka-backed components: Radio, Pin, Number, Tags.
+- `VCFormSubmit` decomposed into `<VCButton>` + `useSubmitButton()`.
 
 ## License
 
