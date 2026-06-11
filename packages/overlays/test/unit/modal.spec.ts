@@ -196,4 +196,60 @@ describe('<VCModalContent> closePolicy', () => {
 
         expect(open.value).toBe(false);
     });
+
+    const pointerDownOutside = async () => {
+        // Reka's DismissableLayer attaches its document-level `pointerdown`
+        // listener via setTimeout(0) after mount — wait one macrotask so the
+        // listener is actually registered before dispatching.
+        await new Promise((resolve) => { setTimeout(resolve, 1); });
+        document.body.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true }));
+    };
+
+    it('closes on outside pointerdown with the default policy', async () => {
+        const open = ref(true);
+        buildPolicyApp(open);
+        await nextTick();
+        await nextTick();
+
+        await pointerDownOutside();
+        await nextTick();
+
+        expect(open.value).toBe(false);
+    });
+
+    it("keeps open on outside pointerdown with closePolicy 'no-outside'", async () => {
+        const open = ref(true);
+        buildPolicyApp(open, 'no-outside');
+        await nextTick();
+        await nextTick();
+
+        await pointerDownOutside();
+        await nextTick();
+
+        expect(open.value).toBe(true);
+    });
+
+    it("keeps open on outside pointerdown with closePolicy 'never'", async () => {
+        const open = ref(true);
+        buildPolicyApp(open, 'never');
+        await nextTick();
+        await nextTick();
+
+        await pointerDownOutside();
+        await nextTick();
+
+        expect(open.value).toBe(true);
+    });
+
+    it("still closes on Escape with closePolicy 'no-outside'", async () => {
+        const open = ref(true);
+        buildPolicyApp(open, 'no-outside');
+        await nextTick();
+        await nextTick();
+
+        pressEscape();
+        await nextTick();
+
+        expect(open.value).toBe(false);
+    });
 });
