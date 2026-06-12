@@ -18,9 +18,9 @@
     "packages/table": "1.2.1",
     "themes/bootstrap": "7.0.1",
     "themes/bulma": "5.0.0",
-    "themes/tailwind": "5.0.0",
+    "themes/tailwind": "6.0.0",
     "icons/font-awesome": "1.1.1",
     "icons/lucide": "1.1.1",
     "packages/timeago": "2.1.0",
-    "examples/nuxt": "6.1.1"
+    "examples/nuxt": "6.1.2"
 }

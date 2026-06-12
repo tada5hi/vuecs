@@ -1,5 +1,14 @@
 # Changelog
 
+## [6.1.2](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v6.1.1...examples-nuxt-v6.1.2) (2026-06-12)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/theme-tailwind bumped from ^5.0.0 to ^6.0.0
+
 ## [6.1.1](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v6.1.0...examples-nuxt-v6.1.1) (2026-06-11)
 
 
