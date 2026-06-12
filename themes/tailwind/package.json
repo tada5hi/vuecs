@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/theme-tailwind",
-    "version": "5.0.0",
+    "version": "6.0.0",
     "type": "module",
     "description": "Tailwind CSS theme for vuecs components.",
     "exports": {
