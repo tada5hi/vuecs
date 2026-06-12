@@ -68,7 +68,7 @@
         "jsdom": "^29.1.1",
         "tailwindcss": "^4.0.0",
         "tsx": "^4.22.4",
-        "vue": "^3.5.35"
+        "vue": "^3.5.38"
     },
     "peerDependencies": {
         "@vueuse/core": "^13.0.0 || ^14.0.0",

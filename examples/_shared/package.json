@@ -41,7 +41,7 @@
         "@vuecs/overlays": "*",
         "@vuecs/pagination": "*",
         "@vuecs/timeago": "*",
-        "vue": "^3.5.35"
+        "vue": "^3.5.38"
     },
     "peerDependencies": {
         "vue": "^3.x"
