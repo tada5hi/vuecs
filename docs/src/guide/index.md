@@ -6,6 +6,7 @@ The guide section covers the concepts behind vuecs in depth. Read these once, an
 
 How vuecs is configured in an app — read these in order:
 
+- **[Undesigned Components](/guide/undesigned-components)** — the core idea: components ship structure, behavior, and a11y; themes supply the design. Who that split is for, and what it enables for library authors.
 - **[Theme System](/guide/theme-system)** — the four-layer class resolution chain (defaults → themes → overrides → instance props).
 - **[Variants](/guide/variants)** — structured variants, compound variants, and the merge rules across layers.
 - **[Behavioral Defaults](/guide/behavioral-defaults)** — the parallel resolution system for non-class props (button text, placeholders, content strings) — the i18n hook.

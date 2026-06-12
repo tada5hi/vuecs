@@ -8,28 +8,28 @@ interface Feature {
 const features: Feature[] = [
     {
         icon: '🎨',
-        title: 'Themeable',
-        detail: 'Layered theme resolution with structured variants, compound variants, and runtime overrides.',
-    },
-    {
-        icon: '🧩',
-        title: 'Design tokens',
-        detail: '22 Tailwind palettes, 6 semantic scales. Switch palette at runtime — no rebuild.',
-    },
-    {
-        icon: '🌗',
-        title: 'Dark mode',
-        detail: 'Tokens flip automatically under .dark — every component follows.',
-    },
-    {
-        icon: '🚀',
-        title: 'Nuxt-ready',
-        detail: 'SSR-safe color mode and palette via @vuecs/nuxt — zero FOUC on first paint.',
+        title: 'Undesigned by default',
+        detail: 'Components ship structure, behavior, and a11y only — layered theme resolution with variants supplies the look.',
     },
     {
         icon: '🛠️',
         title: 'Multi-framework',
-        detail: 'Drop-in themes for Tailwind v4, Bootstrap v5, Bootstrap v4, Font Awesome.',
+        detail: 'Drop-in themes for Tailwind v4, Bootstrap 5, and Bulma 1.0+ — emitting each framework\'s native classes.',
+    },
+    {
+        icon: '🔌',
+        title: 'Build your own library',
+        detail: 'Publish components on the same machinery — consumers restyle your library and vuecs through one theme config.',
+    },
+    {
+        icon: '🧩',
+        title: 'Design tokens',
+        detail: '22 palettes, 6 semantic scales, dark mode via .dark — switch palette at runtime, no rebuild.',
+    },
+    {
+        icon: '🚀',
+        title: 'Nuxt-ready',
+        detail: 'SSR-safe color mode, palette & locale via @vuecs/nuxt — zero FOUC on first paint.',
     },
     {
         icon: '🔒',

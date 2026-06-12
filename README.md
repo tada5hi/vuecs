@@ -32,12 +32,17 @@
 
 ## Why vuecs?
 
-Most component libraries lock you into one design system. vuecs inverts that: **components describe structure, themes describe looks** — and the two are wired together at runtime by a layered resolution engine.
+Most component libraries lock you into one design system. vuecs inverts that: **components ship undesigned** — structure, behavior, and accessibility, with no design opinion baked in — and **themes supply the design**. A layered resolution engine wires the two together at runtime.
 
 ```ts
 app.use(vuecs, { themes: [tailwind()] });   // an entire app, Tailwind-skinned
 app.use(vuecs, { themes: [bootstrap()] });  // same app, now Bootstrap — no component changes
 ```
+
+That inversion serves two audiences:
+
+- **App teams** get one component set whose look comes entirely from the installed theme — the Bootstrap theme supplies real `.btn` / `.card` classes, the Tailwind theme supplies utilities — so the components blend into an existing app without visual seams, and switching design systems later is a config swap, not a rewrite.
+- **Component-library authors** get a theming contract: build your own components on the same machinery, ship them with your default styling, and your consumers restyle them — together with vuecs and every other library on the contract — through one theme config. You stop dictating a CSS framework to everyone who installs your package.
 
 The value proposition is layered, and every layer is independently consumable:
 

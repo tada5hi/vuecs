@@ -70,6 +70,7 @@ export default defineConfig({
                     text: 'Concepts',
                     items: [
                         { text: 'Overview', link: '/guide/' },
+                        { text: 'Undesigned Components', link: '/guide/undesigned-components' },
                         { text: 'Theme System', link: '/guide/theme-system' },
                         { text: 'Variants', link: '/guide/variants' },
                         { text: 'Behavioral Defaults', link: '/guide/behavioral-defaults' },

@@ -48,10 +48,10 @@ const toggleDark = () => {
                     <span class="vc-hero-title-grad">vuecs</span>
                 </h1>
                 <p class="vc-hero-tagline">
-                    Vue 3 theming framework with shipped components.
-                    Design tokens, runtime palette + color-mode switching, SSR-safe Nuxt integration —
-                    plus an opt-in path for third-party libraries to compose their own
-                    components on the same theme system.
+                    Components that ship undesigned — structure, behavior, accessibility —
+                    and themes that supply the design: Tailwind, Bootstrap, Bulma, or your own.
+                    Build your own component library on the same machinery, and consumers
+                    restyle everything through one config.
                 </p>
                 <div class="vc-hero-actions">
                     <a
