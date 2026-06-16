@@ -64,13 +64,13 @@
         "@vuecs/timeago": "^2.1.0",
         "@vueuse/core": "^14.3.0",
         "jsdom": "^29.1.1",
-        "vue": "^3.5.35"
+        "vue": "^3.5.38"
     },
     "peerDependencies": {
         "@vuecs/core": "^3.2.0",
         "@vuecs/design": "^1.0.4",
         "@vueuse/core": "^13.0.0 || ^14.0.0",
-        "tailwindcss": "^4.3.0",
+        "tailwindcss": "^4.3.1",
         "vue": "^3.x"
     },
     "engines": {
