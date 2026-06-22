@@ -10,7 +10,12 @@ import {
     ref,
     watch,
 } from 'vue';
-import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
+import type { 
+    Component, 
+    ExtractPublicPropTypes, 
+    PropType, 
+    SlotsType, 
+} from 'vue';
 import { provideListItemContext, useList } from '../../composables';
 import { applyAsChild } from '../../utils';
 import type { ListItemThemeClasses } from '../../types';
@@ -26,9 +31,15 @@ const listItemProps = {
     /**
      * Row element. Default `'li'` — emits semantic HTML inside `<ul>` /
      * `<ol>` (the `<VCListBody>` parent). Override only for non-list
-     * structural contexts.
+     * structural contexts. Accepts a string tag or a component.
      */
-    tag: { type: String, default: 'li' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'li' },
+
+    /**
+     * @deprecated Use `as` instead. Non-breaking alias — takes precedence
+     * over `as` when set.
+     */
+    tag: { type: [String, Object, Function] as PropType<string | Component>, default: undefined },
 
     /**
      * Reka-style as-child: render by cloning the slot's first vnode
@@ -316,7 +327,7 @@ export default defineComponent({
                 const cloned = applyAsChild(children, mergedAttrs);
                 if (cloned) return cloned;
             }
-            return h(props.tag, mergedAttrs, children);
+            return h(props.tag ?? props.as, mergedAttrs, children);
         };
     },
 });

@@ -12,7 +12,7 @@ const stepperDescriptionProps = {
     /** Render the consumer's slot child as the description root (Reka `asChild` pattern). */
     asChild: { type: Boolean, default: false },
     /** HTML tag to render. */
-    as: { type: [String, Object] as PropType<string | Component>, default: 'p' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'p' },
     /** Theme-class overrides for this component instance. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<StepperThemeClasses>>, default: undefined },
     /** Theme-variant values for this component instance. */

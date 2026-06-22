@@ -19,7 +19,7 @@ const cardProps = {
     /** Adds hover / focus styling — useful for link-cards. */
     interactive: { type: Boolean, default: undefined },
     /** HTML tag to render. Use `:as-child` to compose onto an existing component. */
-    as: { type: [String, Object] as PropType<string | Component>, default: 'div' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'div' },
     /** Render the consumer's slot child as the card root (Reka `asChild` pattern). */
     asChild: { type: Boolean, default: false },
     ...themableProps<CardThemeClasses>(),

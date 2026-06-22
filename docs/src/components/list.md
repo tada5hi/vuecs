@@ -388,7 +388,8 @@ for this row.
 | `busy` | `boolean` | `false` | Loading flag (used when `state` is omitted). |
 | `total` | `number` | `data.length` | Server-side total (used when `state` is omitted). |
 | `meta` | `Record<string, unknown>` | — | Verbatim metadata bag (used when `state` is omitted; snapshot at setup). |
-| `tag` | `string` | `'div'` | Outer container element. |
+| `as` | `string \| Component` | `'div'` | Outer container element or component to render as. |
+| `tag` | `string \| Component` | — | **Deprecated** — use `as`. Non-breaking alias; wins over `as` when set. |
 | `selectionMode` | `'single' \| 'multi' \| undefined` | `undefined` | Opt into listbox semantics + selection. |
 | `selection` (v-model) | `SelectionKey[] \| SelectionKey \| null` | `null` | Selected keys; bound via `v-model:selection`. |
 | `themeClass` | `ThemeClassesOverride<ListThemeClasses>` | — | Slot class overrides. |
@@ -398,7 +399,8 @@ for this row.
 
 | Prop | Type | Default |
 |------|------|---------|
-| `tag` | `string` | `'ul'` |
+| `as` | `string \| Component` | `'ul'` |
+| `tag` | `string \| Component` | — (**deprecated** — use `as`; wins when set) |
 | `asChild` | `boolean` | `false` |
 | `themeClass` | `ThemeClassesOverride<ListBodyThemeClasses>` | — |
 | `themeVariant` | `VariantValues` | — |
@@ -412,7 +414,8 @@ for this row.
 | `selectable` | `boolean` | `false` | Row participates in selection. |
 | `disabled` | `boolean` | `false` | Disable interaction. |
 | `active` | `boolean \| 'page' \| 'step' \| 'location' \| 'date' \| 'time'` | `false` | Mark row as current (`aria-current`). |
-| `tag` | `string` | `'li'` | Row element. |
+| `as` | `string \| Component` | `'li'` | Row element or component to render as. |
+| `tag` | `string \| Component` | — | **Deprecated** — use `as`. Non-breaking alias; wins over `as` when set. |
 | `asChild` | `boolean` | `false` | Clone the default slot's single vnode instead of emitting a wrapper. |
 | `themeClass` | `ThemeClassesOverride<ListItemThemeClasses>` | — | |
 | `themeVariant` | `VariantValues` | — | |
@@ -421,7 +424,8 @@ for this row.
 
 | Prop | Type | Default |
 |------|------|---------|
-| `tag` | `string` | `'div'` |
+| `as` | `string \| Component` | `'div'` |
+| `tag` | `string \| Component` | — (**deprecated** — use `as`; wins when set) |
 | `asChild` | `boolean` | `false` |
 | `themeClass` | `ThemeClassesOverride<ListEmptyThemeClasses>` | — |
 | `themeVariant` | `VariantValues` | — |
@@ -430,7 +434,8 @@ for this row.
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `tag` | `string` | `'div'` | |
+| `as` | `string \| Component` | `'div'` | Wrapper element or component to render as. |
+| `tag` | `string \| Component` | — | **Deprecated** — use `as`. Non-breaking alias; wins over `as` when set. |
 | `overlay` | `boolean` | `false` | Refresh-feedback mode — shows whenever `busy`, regardless of data presence. Theme overlay variant activates. |
 | `asChild` | `boolean` | `false` | |
 | `themeClass` | `ThemeClassesOverride<ListLoadingThemeClasses>` | — | |

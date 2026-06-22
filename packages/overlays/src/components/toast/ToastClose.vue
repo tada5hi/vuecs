@@ -9,7 +9,7 @@ import type { ToastThemeClasses } from './types';
 
 const toastCloseProps = {
     /** HTML tag (or component) to render as. Reka default: `'button'`. */
-    as: { type: [String, Object] as PropType<string | Component>, default: 'button' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'button' },
     /** Render the slot content as the rendered element instead of wrapping it. */
     asChild: { type: Boolean, default: false },
     /**

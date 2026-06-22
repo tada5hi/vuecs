@@ -8,7 +8,7 @@ import type { AlertThemeClasses } from './types';
 
 const alertCloseProps = {
     /** HTML tag to render. */
-    as: { type: [String, Object] as PropType<string | Component>, default: 'button' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'button' },
     /**
      * Force the corner-X presentation (reads the theme's `closeIcon` slot).
      * When false (default), the slot-presence heuristic decides:

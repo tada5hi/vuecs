@@ -36,7 +36,7 @@ const toastProps = {
     /** Initial open state when `open` is undefined. */
     defaultOpen: { type: Boolean, default: true },
     /** HTML tag to render. */
-    as: { type: [String, Object] as PropType<string | Component>, default: 'li' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'li' },
     /** Render the consumer's slot child as the root (Reka `asChild` pattern). */
     asChild: { type: Boolean, default: false },
     ...themableProps<ToastThemeClasses>(),

@@ -172,14 +172,14 @@ Reka's `Slot` *mutates its rendered children array* — it replaces the first no
         :key="..."
     >
         <component
-            :is="itemTag"
+            :is="renderItemAs"
             v-if="item.type === 'page'"
             ...
         >
             <PaginationListItem ... />
         </component>
         <component
-            :is="itemTag"
+            :is="renderItemAs"
             v-else
             ...
         >
@@ -196,7 +196,7 @@ The wrapper component's vnode lineage differs between the `v-if` and `v-else` br
 ```vue
 <RekaPrimitive as-child v-slot="{ items }">
     <component
-        :is="itemTag"
+        :is="renderItemAs"
         v-for="(item, idx) in items"
         :key="..."
         ...
@@ -207,7 +207,7 @@ The wrapper component's vnode lineage differs between the `v-if` and `v-else` br
 </RekaPrimitive>
 ```
 
-One uniform `<component :is="itemTag">` per iteration; the conditional content is *inside* the wrapper. Slot always sees the same first-child shape, Vue's diff is clean.
+One uniform `<component :is="renderItemAs">` per iteration; the conditional content is *inside* the wrapper. Slot always sees the same first-child shape, Vue's diff is clean.
 
 **Rule:** when using `as-child` on a Reka primitive that exposes a multi-item slot, every iteration of your `v-for` must produce the same root vnode type. Conditional rendering belongs *inside* the iteration's root, not at the iteration root level.
 

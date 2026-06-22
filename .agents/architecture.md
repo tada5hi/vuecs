@@ -343,7 +343,9 @@ const badgeProps = {
     color: { type: String as PropType<BadgeColor>, default: undefined },
     variant: { type: String as PropType<BadgeVariant>, default: undefined },
     size: { type: String as PropType<BadgeSize>, default: undefined },
-    tag: { type: String, default: 'span' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'span' },
+    // `tag` kept as a deprecated alias (wins over `as` when set) — see #1642.
+    tag: { type: [String, Object, Function] as PropType<string | Component>, default: undefined },
     ...themableProps<BadgeThemeClasses>(),
 };
 
@@ -357,7 +359,7 @@ export default defineComponent({
             useThemeProps(props, 'color', 'variant', 'size'),
             badgeThemeDefaults,
         );
-        return () => h(props.tag, mergeProps(attrs, { class: theme.value.root }), slots.default?.());
+        return () => h(props.tag ?? props.as, mergeProps(attrs, { class: theme.value.root }), slots.default?.());
     },
 });
 ```

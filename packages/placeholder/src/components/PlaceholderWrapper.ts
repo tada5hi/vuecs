@@ -3,7 +3,12 @@ import {
     h, 
     mergeProps,
 } from 'vue';
-import type { ExtractPublicPropTypes, SlotsType } from 'vue';
+import type { 
+    Component, 
+    ExtractPublicPropTypes, 
+    PropType, 
+    SlotsType, 
+} from 'vue';
 import {
     themableProps, 
     useComponentTheme, 
@@ -15,8 +20,16 @@ import type { PlaceholderWrapperThemeClasses } from '../types';
 const placeholderWrapperProps = {
     /** When `true`, the `#loading` slot renders; otherwise `#default`. */
     loading: { type: Boolean, default: false },
-    /** Render-as tag. Defaults to `'div'`. */
-    tag: { type: String, default: 'div' },
+    /**
+     * Element or component to render as. Defaults to `'div'`. Pass a string
+     * tag or a component (`RouterLink` / `NuxtLink`).
+     */
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'div' },
+    /**
+     * @deprecated Use `as` instead. Non-breaking alias — takes precedence
+     * over `as` when set.
+     */
+    tag: { type: [String, Object, Function] as PropType<string | Component>, default: undefined },
     ...themableProps<PlaceholderWrapperThemeClasses>(),
 };
 
@@ -57,7 +70,7 @@ export const VCPlaceholderWrapper = defineComponent({
             placeholderWrapperThemeDefaults,
         );
         return () => h(
-            props.tag,
+            props.tag ?? props.as,
             mergeProps(attrs, {
                 class: theme.value.root || undefined,
                 // W3C ARIA "Loading content" pattern: while loading,

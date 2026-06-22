@@ -5,7 +5,12 @@ import type {
     ThemeElementDefinition,
     VariantValues,
 } from '@vuecs/core';
-import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
+import type { 
+    Component, 
+    ExtractPublicPropTypes, 
+    PropType, 
+    SlotsType, 
+} from 'vue';
 import {
     computed,
     defineComponent,
@@ -57,7 +62,16 @@ const countdownProps = {
         validator: (value: number) => value >= 0,
     },
     now: { type: Function as PropType<() => number>, default: () => Date.now() },
-    tag: { type: String, default: 'span' },
+    /**
+     * Element or component to render as. Pass a string tag (`'span'`,
+     * `'div'`) or a component (`RouterLink` / `NuxtLink`).
+     */
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'span' },
+    /**
+     * @deprecated Use `as` instead. Non-breaking alias — takes precedence
+     * over `as` when set.
+     */
+    tag: { type: [String, Object, Function] as PropType<string | Component>, default: undefined },
     time: {
         type: Number,
         default: 0,
@@ -250,7 +264,7 @@ export const VCCountdown = defineComponent({
             };
 
             return h(
-                props.tag,
+                props.tag ?? props.as,
                 { class: theme.value.root || undefined },
                 slots.default ? slots.default(slotProps) : undefined,
             );

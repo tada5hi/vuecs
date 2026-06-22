@@ -30,7 +30,7 @@ const tableExpandTriggerProps = {
      */
     chevron: { type: String as PropType<'auto' | 'none'>, default: undefined },
     /** HTML tag (or component) to render as. Default: `'button'`. */
-    as: { type: [String, Object] as PropType<string | Component>, default: 'button' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'button' },
     ...themableProps<TableExpandTriggerThemeClasses>(),
 };
 

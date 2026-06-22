@@ -13,7 +13,7 @@ const collapseContentProps = {
      */
     forceMount: { type: Boolean, default: false },
     /** HTML tag to render. */
-    as: { type: [String, Object] as PropType<string | Component>, default: 'div' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'div' },
     /** Render the consumer's slot child as the pane root (Reka `asChild` pattern). */
     asChild: { type: Boolean, default: false },
     ...themableProps<CollapseContentThemeClasses>(),

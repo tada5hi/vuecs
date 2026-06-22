@@ -96,13 +96,13 @@ const navItemsProps = {
      * renders the same container tag. Honored in collapse mode only —
      * dropdown mode keeps Reka's NavigationMenu primitives.
      */
-    as: { type: [String, Object] as PropType<string | Component>, default: 'ul' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'ul' },
     /**
      * The tag (or component) for each item wrapper. Defaults to `'li'`.
      * Forwarded unchanged to every nesting level. Honored in collapse mode
      * only — dropdown mode keeps Reka's NavigationMenu primitives.
      */
-    itemAs: { type: [String, Object] as PropType<string | Component>, default: 'li' },
+    itemAs: { type: [String, Object, Function] as PropType<string | Component>, default: 'li' },
     themeClass: { type: Object as PropType<ThemeClassesOverride<NavigationThemeClasses>>, default: undefined },
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
 };

@@ -2,7 +2,12 @@
 import { useComponentTheme } from '@vuecs/core';
 import type { ComponentThemeDefinition, ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { defineComponent, h } from 'vue';
-import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
+import type { 
+    Component, 
+    ExtractPublicPropTypes, 
+    PropType, 
+    SlotsType, 
+} from 'vue';
 import { useList } from '../../composables';
 import { applyAsChild } from '../../utils';
 import type { ListLoadingThemeClasses } from '../../types';
@@ -11,9 +16,14 @@ const listLoadingProps = {
     /**
      * Wrapper element. Default `'div'` with `role="status"` +
      * `aria-live="polite"` so screen readers announce the loading state
-     * when it appears.
+     * when it appears. Accepts a string tag or a component.
      */
-    tag: { type: String, default: 'div' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'div' },
+    /**
+     * @deprecated Use `as` instead. Non-breaking alias — takes precedence
+     * over `as` when set.
+     */
+    tag: { type: [String, Object, Function] as PropType<string | Component>, default: undefined },
     asChild: { type: Boolean, default: false },
     /**
      * Refresh-feedback mode. When `false` (default), shows only on
@@ -89,7 +99,7 @@ export default defineComponent({
                 const cloned = applyAsChild(children, attrs);
                 if (cloned) return cloned;
             }
-            return h(props.tag, attrs, children);
+            return h(props.tag ?? props.as, attrs, children);
         };
     },
 });

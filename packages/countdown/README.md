@@ -12,7 +12,7 @@
 - ▶️ **Lifecycle events** — `start`, `progress`, `abort`, `end` (opt out via `:emit-events="false"`).
 - 🚀 **Auto-start** — begins on mount by default (`:auto-start`); restart by re-binding `:time`.
 - 🎚️ **Tunable tick** — `:interval` (default 1000 ms) and an injectable `:now` function for deterministic tests.
-- 🏷️ **Polymorphic + themeable** — `:tag` to change the host element; theme via the `countdown` element key.
+- 🏷️ **Polymorphic + themeable** — `:as` to change the host element / component (string tag or `RouterLink` / `NuxtLink`); theme via the `countdown` element key.
 
 ## 📦 Installation
 

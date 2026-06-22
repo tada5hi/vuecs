@@ -64,7 +64,8 @@ Single animated bar — the building block.
 | `shape` | `'rect' \| 'pill' \| 'circle'` | theme default (`rect`) | Bar shape. `pill` rounds the ends (button / badge skeletons); `circle` forces 1:1 aspect (avatar skeletons — pair with a fixed `:width`). |
 | `animation` | `'wave' \| 'glow' \| 'none'` | `'wave'` | Shimmer animation. `none` disables the animation (e.g. for reduced-motion callers). |
 | `duration` | `string` | `undefined` | Override the shimmer duration (`'500ms'`, `'4s'`). Defaults to the theme's value (typically `2s`). |
-| `tag` | `string` | `'span'` | Element to render as. |
+| `as` | `string \| Component` | `'span'` | Element or component to render as (string tag or `RouterLink` / `NuxtLink`). |
+| `tag` | `string \| Component` | — | **Deprecated** — use `as`. Non-breaking alias; takes precedence over `as` when set. |
 
 ### `<VCPlaceholderWrapper>`
 
