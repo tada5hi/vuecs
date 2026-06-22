@@ -33,7 +33,7 @@ npm run lint:fix       # Auto-fix lint issues
 
 | Package | Description | Version |
 |---------|-------------|---------|
-| `@vuecs/button` | General-purpose button (color/variant/size, loading, icon slots) | 0.0.0 |
+| `@vuecs/button` | General-purpose button (color/variant/size, loading, icon slots) + polymorphic `:as` (string tag or component — render as `RouterLink` / `NuxtLink` for button-styled links; deprecated `tag` alias) | 0.0.0 |
 | `@vuecs/core` | Theme system, global behavioral defaults, utilities, component infrastructure. Also exports `VCPrimitive` (ported `as` / `asChild` building block) + `usePrimitiveElement` so downstream component libraries don't need a direct `reka-ui` dep (plan 034). | 2.0.0 |
 | `@vuecs/countdown` | Countdown/timer component | 1.0.1 |
 | `@vuecs/design` | CSS design tokens (concrete OKLCH defaults from Tailwind v4's palette + semantic aliases) + motion primitives (vanilla-CSS port of `tw-animate-css`) + theme-agnostic `useColorMode` + theme-aware `useColorPalette` (dispatches through installed themes' `palette.handle` hooks) + canonical `ColorPaletteConfig` type + generic palette primitives (`applyColorPaletteCss`, `bindColorPalette<T>`, `COLOR_PALETTE_STYLE_ELEMENT_ID`) for any theme to compose. No Tailwind dep — works standalone with BS/Bulma/no theme. (plan 017, plan 026) | 0.0.0 |
