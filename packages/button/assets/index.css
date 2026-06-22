@@ -19,7 +19,7 @@
  * pointer events on `<button>`, which would normally defeat `cursor: wait`.
  * Browsers honor the cursor on disabled controls anyway when the button
  * itself is the hover target, which is what we want here. Anchors
- * (`tag="a"`) ignore `disabled` — consumers rendering a button-as-link
+ * (`as="a"`) ignore `disabled` — consumers rendering a button-as-link
  * must guard navigation themselves.
  */
 .vc-button--busy {

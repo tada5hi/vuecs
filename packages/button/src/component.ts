@@ -8,6 +8,7 @@ import type {
 } from '@vuecs/core';
 import { VCIcon } from '@vuecs/icon';
 import type {
+    Component,
     ExtractPublicPropTypes,
     PropType,
     SlotsType,
@@ -46,7 +47,20 @@ const buttonProps = {
     variant: { type: String as PropType<ButtonVariant>, default: undefined },
     size: { type: String as PropType<ButtonSize>, default: undefined },
     type: { type: String, default: 'button' },
-    tag: { type: String, default: 'button' },
+    /**
+     * Element or component to render as. Pass a string tag (`'a'`, `'div'`)
+     * or a component (`RouterLink` / `NuxtLink`) to render a button-styled
+     * link / arbitrary element. Native `type` / `disabled` semantics apply
+     * only when this resolves to `'button'`; every other target receives
+     * `aria-disabled` instead. Extra attrs (`to`, `href`, `target`, …)
+     * forward to the rendered element.
+     */
+    as: { type: [String, Object] as PropType<string | Component>, default: 'button' },
+    /**
+     * @deprecated Use `as` instead. Retained as a non-breaking alias — when
+     * set it takes precedence over `as`.
+     */
+    tag: { type: [String, Object] as PropType<string | Component>, default: undefined },
     label: { type: String, default: undefined },
     iconLeft: { type: String, default: undefined },
     iconRight: { type: String, default: undefined },
@@ -154,10 +168,14 @@ export const VCButton = defineComponent({
                 ]));
             }
 
-            const isNativeButton = props.tag === 'button';
+            // `tag` is the deprecated alias — when explicitly set it wins
+            // over `as`; otherwise `as` (default `'button'`) drives the
+            // render target. A string tag or a component both resolve here.
+            const renderAs = props.tag ?? props.as;
+            const isNativeButton = renderAs === 'button';
 
             return h(
-                props.tag,
+                renderAs,
                 mergeProps({
                     class: [
                         resolved.root || undefined,

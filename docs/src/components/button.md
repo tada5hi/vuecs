@@ -85,8 +85,9 @@ const submit = useSubmitButton({ isEditing: () => isEditing.value });
 | `color` | `'primary' \| 'neutral' \| 'success' \| 'warning' \| 'error' \| 'info'` | (theme default) | Semantic color — themes map it onto their palette. Tailwind theme defaults to `primary`. |
 | `variant` | `'solid' \| 'soft' \| 'outline' \| 'ghost' \| 'link'` | (theme default) | Visual treatment. Tailwind theme defaults to `solid`. |
 | `size` | `'sm' \| 'md' \| 'lg'` | (theme default) | Padding / font-size. Tailwind theme defaults to `md`. |
-| `type` | `string` | `'button'` | Forwarded as the native `type` attribute when `tag` is `'button'` (use `'submit'` inside `<form>`). |
-| `tag` | `string` | `'button'` | Override the rendered tag — pass `'a'` to render as a link (the component sets `aria-disabled` instead of the no-op `disabled` attribute on non-button tags). |
+| `type` | `string` | `'button'` | Forwarded as the native `type` attribute when the rendered element is `'button'` (use `'submit'` inside `<form>`). |
+| `as` | `string \| Component` | `'button'` | Element or component to render as. Pass `'a'` to render as a link, or a component (`RouterLink` / `NuxtLink`) for a button-styled navigation link. Extra attrs (`to`, `href`, `target`, …) forward to the rendered element; native `type` / `disabled` apply only for `'button'`, other targets get `aria-disabled`. |
+| `tag` | `string \| Component` | — | **Deprecated** — use `as`. Non-breaking alias; takes precedence over `as` when set. |
 | `label` | `string` | — | Inline text. Equivalent to passing the same string as the default slot. |
 | `iconLeft` | `string` | — | Iconify name for a leading icon (e.g. `'lucide:plus'`), resolved through `<VCIcon>`. Skipped when empty / undefined. |
 | `iconRight` | `string` | — | Iconify name for a trailing icon. Same skip behavior as `iconLeft`. |
@@ -148,9 +149,34 @@ app.use(vuecs, {
 The composable's option names, return shape, and defaults key may change in a future minor release. Pin a version if you depend on the exact API.
 :::
 
+## Render as a link / component
+
+Use `:as` to render the button as a different element or component while keeping its theming (color / variant / size). This is the way to build a **button-styled navigation link** without hand-rolling `.btn` classes:
+
+```vue
+<script setup lang="ts">
+import { VCButton } from '@vuecs/button';
+import { RouterLink } from 'vue-router';
+// In Nuxt: const NuxtLink = resolveComponent('NuxtLink');
+</script>
+
+<template>
+    <!-- string tag -->
+    <VCButton as="a" href="/docs" variant="ghost">Docs</VCButton>
+
+    <!-- vue-router / Nuxt link — extra attrs (:to) forward to the component -->
+    <VCButton :as="RouterLink" :to="`/clients/${id}`" color="primary" variant="outline" size="sm">
+        Edit
+    </VCButton>
+</template>
+```
+
+Attributes the button doesn't own (`to`, `href`, `target`, `rel`, …) flow straight through to the rendered element. Native `type` / `disabled` attributes are only emitted when the target resolves to `'button'`; for every other target the button emits `aria-disabled` instead (see the Notes below).
+
 ## Notes
 
-- Setting `tag="a"` renders the button as `<a>`. The structural busy class still applies, but the native `disabled` attribute is a no-op on anchors — guard navigation via your own click handler if you mount the button as a link.
+- Setting `as="a"` (or `:as="RouterLink"` / `:as="NuxtLink"`) renders the button as a link / component. The structural busy class still applies, but the native `disabled` attribute is a no-op on non-button targets — the component emits `aria-disabled="true"` instead, and you should guard navigation via your own click handler if you mount the button as a link.
+- The `tag` prop is **deprecated** in favour of `as` (it remains a non-breaking alias and wins over `as` when both are set).
 - The `loading` prop is also passed as a `themeVariant` (`loading: true`), so themes can target the busy state via a variant if they want a custom look beyond the structural pulse.
 - Themes ship the full color × variant matrix (six colors × five variants). Override individual cells via `app.use(vuecs, { overrides: { elements: { button: { compoundVariants: [...] } } } })` if you need a different shade.
 - The `loading` state replaces the leading icon with a spinner and lifts opacity above the framework-disabled value so loading reads distinctly from disabled (the busy class otherwise inherits the framework's `disabled:opacity-*` and the two states would render identically).

@@ -11,7 +11,7 @@
 - 🎛️ **Variant matrix** — `variant` (`solid` / `outline` / `soft` / `ghost` / `link`) × `color` (`primary` / `neutral` / `success` / `warning` / `error` / `info`) × `size` (`sm` / `md` / `lg`), resolved through the vuecs variant system.
 - ⏳ **Loading state** — `:loading` disables interaction and exposes `{ loading, disabled }` to the default slot for spinners or custom feedback.
 - 🖼️ **Icon support** — `icon-left` / `icon-right` Iconify-name props (rendered via `<VCIcon>`) plus leading/trailing slots for full control.
-- 🔗 **Polymorphic** — render as `button`, `a`, or any tag via `:tag`; native `type` forwarding for forms.
+- 🔗 **Polymorphic** — render as `button`, `a`, any tag, or a component (`RouterLink` / `NuxtLink`) via `:as`; native `type` forwarding for forms, `aria-disabled` for non-button targets.
 - 📝 **`useSubmitButton()` companion** — `@vuecs/forms` ships an experimental composable that drives create/update submit buttons (text, icon, color) from global behavioral defaults.
 
 ## 📦 Installation
@@ -28,7 +28,12 @@ npm install @vuecs/button
 </VCButton>
 
 <VCButton variant="outline" color="error" size="sm">Delete</VCButton>
-<VCButton variant="ghost" tag="a" href="/docs">Docs</VCButton>
+<VCButton variant="ghost" as="a" href="/docs">Docs</VCButton>
+
+<!-- button-styled router link -->
+<VCButton :as="RouterLink" :to="`/clients/${id}`" color="primary" variant="outline" size="sm">
+    Edit
+</VCButton>
 ```
 
 ## 📚 Documentation
