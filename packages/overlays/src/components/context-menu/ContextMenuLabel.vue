@@ -9,7 +9,7 @@ import type { ContextMenuThemeClasses } from './types';
 
 const contextMenuLabelProps = {
     /** HTML tag (or component) to render as. Reka default: `'div'`. */
-    as: { type: [String, Object] as PropType<string | Component>, default: 'div' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'div' },
     /** Render the slot content as the rendered element instead of wrapping it. */
     asChild: { type: Boolean, default: false },
     /** Per-instance theme override — flat slot key map. */

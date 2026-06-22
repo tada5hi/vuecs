@@ -14,7 +14,7 @@ const toastDescriptionProps = {
      * `'div'`). `p` is the semantically-correct host for the toast body
      * text — overridable via `:as`.
      */
-    as: { type: [String, Object] as PropType<string | Component>, default: 'p' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'p' },
     /** Render the consumer's slot child as the root (Reka `asChild` pattern). */
     asChild: { type: Boolean, default: false },
     ...themableProps<ToastDescriptionThemeClasses>(),

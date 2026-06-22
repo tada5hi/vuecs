@@ -55,12 +55,12 @@ const buttonProps = {
      * `aria-disabled` instead. Extra attrs (`to`, `href`, `target`, …)
      * forward to the rendered element.
      */
-    as: { type: [String, Object] as PropType<string | Component>, default: 'button' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'button' },
     /**
      * @deprecated Use `as` instead. Retained as a non-breaking alias — when
      * set it takes precedence over `as`.
      */
-    tag: { type: [String, Object] as PropType<string | Component>, default: undefined },
+    tag: { type: [String, Object, Function] as PropType<string | Component>, default: undefined },
     label: { type: String, default: undefined },
     iconLeft: { type: String, default: undefined },
     iconRight: { type: String, default: undefined },

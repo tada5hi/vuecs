@@ -33,7 +33,7 @@ export const VCPrimitive = defineComponent({
             default: false,
         },
         as: {
-            type: [String, Object] as PropType<AsTag | Component>,
+            type: [String, Object, Function] as PropType<AsTag | Component>,
             default: 'div',
         },
     },

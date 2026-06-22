@@ -14,7 +14,7 @@ const toastActionProps = {
      */
     altText: { type: String, required: true },
     /** HTML tag to render. */
-    as: { type: [String, Object] as PropType<string | Component>, default: 'button' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'button' },
     /** Render the consumer's slot child as the root (Reka `asChild` pattern). */
     asChild: { type: Boolean, default: false },
     ...themableProps<ToastActionThemeClasses>(),

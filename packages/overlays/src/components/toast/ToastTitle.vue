@@ -14,7 +14,7 @@ const toastTitleProps = {
      * `'div'`). `h3` is the semantically-correct host for an in-context
      * heading within a toast — overridable via `:as`.
      */
-    as: { type: [String, Object] as PropType<string | Component>, default: 'h3' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'h3' },
     /** Render the consumer's slot child as the root (Reka `asChild` pattern). */
     asChild: { type: Boolean, default: false },
     ...themableProps<ToastTitleThemeClasses>(),

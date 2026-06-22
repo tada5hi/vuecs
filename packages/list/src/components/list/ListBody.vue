@@ -8,6 +8,7 @@ import {
     h,
 } from 'vue';
 import type {
+    Component,
     ExtractPublicPropTypes,
     PropType,
     SlotsType,
@@ -25,8 +26,14 @@ const listBodyProps = {
     /**
      * Inner list element. Default `'ul'` — emits semantic HTML so screen
      * readers announce "list, N items". Set `'ol'` for ordered lists.
+     * Accepts a string tag or a component.
      */
-    tag: { type: String, default: 'ul' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'ul' },
+    /**
+     * @deprecated Use `as` instead. Non-breaking alias — takes precedence
+     * over `as` when set.
+     */
+    tag: { type: [String, Object, Function] as PropType<string | Component>, default: undefined },
     /**
      * Reka-style as-child: render by cloning the slot's single root vnode
      * instead of emitting a wrapper. Only honored in manual mode (default
@@ -103,7 +110,7 @@ export default defineComponent({
                     const cloned = applyAsChild(defaultVNodes, { class: rootClass, ...ariaAttrs });
                     if (cloned) return cloned;
                 }
-                return h(props.tag, { class: rootClass, ...ariaAttrs }, defaultVNodes);
+                return h(props.tag ?? props.as, { class: rootClass, ...ariaAttrs }, defaultVNodes);
             }
 
             // Auto-iterate mode: render each row through `#item`.
@@ -119,13 +126,13 @@ export default defineComponent({
                     }
                     return h(Fragment, { key }, result);
                 });
-                return h(props.tag, { class: rootClass, ...ariaAttrs }, rows);
+                return h(props.tag ?? props.as, { class: rootClass, ...ariaAttrs }, rows);
             }
 
             // No slot, no children — render empty wrapper so themes can
             // still target it. Edge case (consumer wrote `<VCListBody />`
             // with no slots).
-            return h(props.tag, { class: rootClass, ...ariaAttrs });
+            return h(props.tag ?? props.as, { class: rootClass, ...ariaAttrs });
         };
     },
 });

@@ -9,7 +9,7 @@ import type { ContextMenuThemeClasses } from './types';
 
 const contextMenuItemProps = {
     /** HTML tag (or component) to render as. Reka default: `'div'`. */
-    as: { type: [String, Object] as PropType<string | Component>, default: 'div' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'div' },
     /** Render the slot content as the rendered element instead of wrapping it. */
     asChild: { type: Boolean, default: false },
     /** When true, prevents user interaction with the item. */

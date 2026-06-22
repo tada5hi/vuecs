@@ -9,7 +9,7 @@ import type { ContextMenuThemeClasses } from './types';
 
 const contextMenuTriggerProps = {
     /** HTML tag (or component) to render as. Reka default: `'span'`. */
-    as: { type: [String, Object] as PropType<string | Component>, default: 'span' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'span' },
     /** Render the slot content as the rendered element instead of wrapping it. */
     asChild: { type: Boolean, default: false },
     /** When true, the trigger does not open the menu on right-click / press. */

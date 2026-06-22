@@ -48,7 +48,7 @@ const toasterProps = {
     /** Aria label for the viewport landmark. */
     label: { type: String, default: undefined },
     /** HTML tag to render. */
-    as: { type: [String, Object] as PropType<string | Component>, default: 'ol' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'ol' },
     ...themableProps<ToastViewportThemeClasses>(),
 };
 

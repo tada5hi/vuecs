@@ -83,16 +83,26 @@ setup(props, { attrs }) {
    add a `Vuecs convention:` note in the JSDoc explaining why.
 5. Internal-only props (e.g. `inline` for portal opt-out, `themeClass`)
    keep their concrete defaults and still get JSDoc.
-6. **`as:` declarations widen to `[String, Object]`** — match
-   `VCPrimitive` / Reka's `Primitive`:
+6. **`as:` / `tag:` render-target declarations widen to
+   `[String, Object, Function]`** — accept a tag name, a component
+   options object (`RouterLink` / `NuxtLink`), AND a functional
+   component (which is a plain function at runtime):
    ```ts
-   as: { type: [String, Object] as PropType<string | Component>, default: 'div' },
+   as: { type: [String, Object, Function] as PropType<string | Component>, default: 'div' },
    ```
-   Single-type `String` rejects component values (e.g. `RouterLink`,
-   `NuxtLink`) at prop validation, silently coercing them to the
-   default. The wider declaration is what the
+   Single-type `String` rejects component values at prop validation,
+   silently coercing them to the default. Omitting `Function` lets the
+   common object-component case through but emits a Vue prop-type
+   warning when a *functional* component is passed — `Component`
+   includes functional components, so the runtime constructor array
+   must list `Function` to match the declared type (#1644). This
+   diverges deliberately from upstream Reka's `Primitive` (which uses
+   `[String, Object]`) — vuecs prefers warning-free functional-component
+   support. The wider declaration is what the
    `/guide/build-themable-component` page teaches; first-party
-   components mirror it.
+   components mirror it. (Applies only to render-target props — route
+   props like `<VCLink>`'s `to`, typed `string | Record<string, any>`,
+   stay `[String, Object]`.)
 
 This convention applies to every Reka-wrapping component across
 `@vuecs/overlays`, `@vuecs/forms`, `@vuecs/elements`, `@vuecs/navigation`

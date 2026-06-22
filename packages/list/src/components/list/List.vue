@@ -9,6 +9,7 @@ import {
     triggerRef,
 } from 'vue';
 import type {
+    Component,
     ExtractPublicPropTypes,
     PropType,
     SlotsType,
@@ -37,9 +38,15 @@ const listProps = {
     /**
      * Outer container element. Default `'div'`. Set `'section'` (+
      * `aria-labelledby`) for landmark semantics; otherwise leave it as
-     * a generic container.
+     * a generic container. Accepts a string tag or a component.
      */
-    tag: { type: String, default: 'div' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'div' },
+
+    /**
+     * @deprecated Use `as` instead. Non-breaking alias — takes precedence
+     * over `as` when set.
+     */
+    tag: { type: [String, Object, Function] as PropType<string | Component>, default: undefined },
 
     /**
      * Selection cardinality. Setting this opts into listbox ARIA
@@ -206,7 +213,7 @@ export default defineComponent({
         });
 
         return () => h(
-            props.tag,
+            props.tag ?? props.as,
             { class: theme.value.root || undefined },
             slots.default?.({ classes: theme.value }),
         );

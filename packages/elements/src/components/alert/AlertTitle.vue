@@ -12,7 +12,7 @@ const alertTitleProps = {
      * Vuecs convention: defaults to `'h4'` (semantically-correct alert
      * heading). Override via `:as` for nested-heading hierarchies.
      */
-    as: { type: [String, Object] as PropType<string | Component>, default: 'h4' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'h4' },
     ...themableProps<AlertTitleThemeClasses>(),
 };
 

@@ -2,7 +2,12 @@
 import { useComponentDefaults, useComponentTheme } from '@vuecs/core';
 import type { ComponentThemeDefinition, ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { defineComponent, h } from 'vue';
-import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
+import type { 
+    Component, 
+    ExtractPublicPropTypes, 
+    PropType, 
+    SlotsType, 
+} from 'vue';
 import { useList } from '../../composables';
 import { applyAsChild, hasMeaningfulVNodes } from '../../utils';
 import type { ListEmptyDefaults, ListEmptyThemeClasses } from '../../types';
@@ -10,9 +15,15 @@ import type { ListEmptyDefaults, ListEmptyThemeClasses } from '../../types';
 const listEmptyProps = {
     /**
      * Wrapper element. Default `'div'` with `role="status"` so screen
-     * readers announce the empty state when it appears.
+     * readers announce the empty state when it appears. Accepts a string
+     * tag or a component.
      */
-    tag: { type: String, default: 'div' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'div' },
+    /**
+     * @deprecated Use `as` instead. Non-breaking alias — takes precedence
+     * over `as` when set.
+     */
+    tag: { type: [String, Object, Function] as PropType<string | Component>, default: undefined },
     asChild: { type: Boolean, default: false },
     themeClass: { type: Object as PropType<ThemeClassesOverride<ListEmptyThemeClasses>>, default: undefined },
     themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
@@ -70,7 +81,7 @@ export default defineComponent({
                 if (cloned) return cloned;
             }
             const children = hasSlotContent ? slotChildren : [defaults.value.content];
-            return h(props.tag, attrs, children);
+            return h(props.tag ?? props.as, attrs, children);
         };
     },
 });

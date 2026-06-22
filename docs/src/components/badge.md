@@ -56,7 +56,8 @@ const variants = ['solid', 'soft', 'outline'] as const;
 | `color` | `'primary' \| 'neutral' \| 'success' \| 'warning' \| 'error' \| 'info'` | `'neutral'` (theme default) | Semantic color. |
 | `variant` | `'solid' \| 'soft' \| 'outline'` | `'soft'` (theme default) | Visual treatment. |
 | `size` | `'sm' \| 'md' \| 'lg'` | `'md'` (theme default) | Badge size. |
-| `tag` | `string` | `'span'` | HTML tag to render. |
+| `as` | `string \| Component` | `'span'` | Element or component to render as (string tag or `RouterLink` / `NuxtLink`). |
+| `tag` | `string \| Component` | — | **Deprecated** — use `as`. Non-breaking alias; takes precedence over `as` when set. |
 | `themeClass` | `Partial<BadgeThemeClasses>` | `undefined` | Per-instance theme override. |
 | `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values. |
 

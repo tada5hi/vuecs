@@ -8,7 +8,12 @@ import {
     toRef,
     watch,
 } from 'vue';
-import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
+import type { 
+    Component, 
+    ExtractPublicPropTypes, 
+    PropType, 
+    SlotsType, 
+} from 'vue';
 import { themableProps, useComponentTheme, useThemeProps } from '@vuecs/core';
 import {
     provideHeadCellCountContext,
@@ -75,8 +80,16 @@ const tableLiteProps = {
     bordered: { type: Boolean, default: undefined },
     /** Row hover highlight — shorthand for `themeVariant.hover`. */
     hover: { type: Boolean, default: undefined },
-    /** HTML tag to render. */
-    tag: { type: String, default: 'table' },
+    /**
+     * Element or component to render as. Defaults to `'table'`. Pass a
+     * string tag or a component.
+     */
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'table' },
+    /**
+     * @deprecated Use `as` instead. Non-breaking alias — takes precedence
+     * over `as` when set.
+     */
+    tag: { type: [String, Object, Function] as PropType<string | Component>, default: undefined },
     ...themableProps<TableThemeClasses>(),
 };
 
@@ -233,7 +246,7 @@ export default defineComponent({
             });
 
             const tableNode = h(
-                props.tag,
+                props.tag ?? props.as,
                 mergeProps(attrs, {
                     class: theme.value.root || undefined,
                     'aria-busy': props.busy ? 'true' : undefined,

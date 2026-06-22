@@ -128,8 +128,10 @@ Pass `''` to a single label prop (e.g. `:prev-label="''"`) to suppress that one 
 | `withText` | `boolean` | `false` | When `true`, forces the resolved label string (First / Previous / Next / Last) to render as visible text next to each edge button. When `false` (default), edge buttons are icon-only **if an icon resolves** for that button; otherwise the label string is rendered as a fallback so the button isn't empty. |
 | `siblingCount` | `number` | `1` | Number of sibling page items shown on either side of the current page; forwarded to Reka `siblingCount`. |
 | `showEdges` | `boolean` | `true` | Render First/Last edge buttons; forwarded to Reka `showEdges`. |
-| `tag` | `string` | `'ul'` | Root element tag |
-| `itemTag` | `string` | `'li'` | Item wrapper tag |
+| `as` | `string \| Component` | `'ul'` | Root element or component to render as. |
+| `itemAs` | `string \| Component` | `'li'` | Per-item element or component to render as. |
+| `tag` | `string \| Component` | — | **Deprecated** — use `as`. Non-breaking alias; takes precedence over `as` when set. |
+| `itemTag` | `string \| Component` | — | **Deprecated** — use `itemAs`. Non-breaking alias; takes precedence over `itemAs` when set. |
 | `firstIcon` | `string` | (preset) | Iconify name for the First-page button. `''` suppresses. |
 | `prevIcon` | `string` | (preset) | Iconify name for the Previous-page button. `''` suppresses. |
 | `nextIcon` | `string` | (preset) | Iconify name for the Next-page button. `''` suppresses. |

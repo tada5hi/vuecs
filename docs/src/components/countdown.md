@@ -55,7 +55,8 @@ const time = 3600 * 1000;
 | `emitEvents` | `boolean` | `true` | Emit the `start` / `progress` / `abort` / `end` events (set `false` to silence them) |
 | `interval` | `number` | `1000` | Update interval in milliseconds between `progress` ticks |
 | `now` | `() => number` | `() => Date.now()` | Returns the current timestamp — used to compute the end time and to re-sync after the tab regains visibility |
-| `tag` | `string` | `'span'` | HTML tag to render |
+| `as` | `string \| Component` | `'span'` | Element or component to render as (string tag or `RouterLink` / `NuxtLink`). |
+| `tag` | `string \| Component` | — | **Deprecated** — use `as`. Non-breaking alias; takes precedence over `as` when set. |
 | `themeClass` | `Partial<CountdownThemeClasses>` | `undefined` | Per-instance theme override |
 | `themeVariant` | `Record<string, string \| boolean>` | `undefined` | Per-instance variant values |
 

@@ -13,7 +13,7 @@ import {
     PaginationRoot,
 } from 'reka-ui';
 import { computed, defineComponent } from 'vue';
-import type { ExtractPublicPropTypes, PropType } from 'vue';
+import type { Component, ExtractPublicPropTypes, PropType } from 'vue';
 import type { PaginationDefaults, PaginationMeta, PaginationThemeClasses } from './type';
 import {
     calculateOffset,
@@ -30,10 +30,14 @@ const paginationProps = {
     offset: { type: Number, default: 0 },
     /** Disable interaction and emission. Vuecs convention: semantic rename of Reka `disabled`. */
     busy: { type: Boolean, default: false },
-    /** Root element tag. Vuecs convention: defaults to `ul` (overrides Reka's `nav`) for list-style markup. */
-    tag: { type: String, default: 'ul' },
-    /** Per-item element tag. Vuecs internal — drives `<component :is>`; no Reka equivalent. */
-    itemTag: { type: String, default: 'li' },
+    /** Root element / component to render as. Vuecs convention: defaults to `ul` (overrides Reka's `nav`) for list-style markup. */
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'ul' },
+    /** Per-item element / component to render as. Drives `<component :is>`; no Reka equivalent. */
+    itemAs: { type: [String, Object, Function] as PropType<string | Component>, default: 'li' },
+    /** @deprecated Use `as` instead. Non-breaking alias — takes precedence over `as` when set. */
+    tag: { type: [String, Object, Function] as PropType<string | Component>, default: undefined },
+    /** @deprecated Use `itemAs` instead. Non-breaking alias — takes precedence over `itemAs` when set. */
+    itemTag: { type: [String, Object, Function] as PropType<string | Component>, default: undefined },
     /** Theme slot-class overrides. Vuecs theme concern, never forwarded to Reka. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<PaginationThemeClasses>>, default: undefined },
     /** Theme variant values. Vuecs theme concern, never forwarded to Reka. */
@@ -153,6 +157,11 @@ export default defineComponent({
         const showStartControls = computed(() => !props.hideDisabled || currentPage.value > 1);
         const showEndControls = computed(() => !props.hideDisabled || currentPage.value < pageCount.value);
 
+        // `tag` / `itemTag` are deprecated aliases that win over `as` /
+        // `itemAs` when explicitly set (#1642).
+        const renderAs = computed(() => props.tag ?? props.as);
+        const renderItemAs = computed(() => props.itemTag ?? props.itemAs);
+
         const pageItemClass = (active: boolean): string | undefined => {
             const parts: string[] = [];
             if (theme.value.link) parts.push(theme.value.link);
@@ -188,6 +197,8 @@ export default defineComponent({
             pageItemClass,
             ellipsisClass,
             onPageUpdate,
+            renderAs,
+            renderItemAs,
         };
     },
 });
@@ -195,7 +206,7 @@ export default defineComponent({
 
 <template>
     <PaginationRoot
-        :as="tag"
+        :as="renderAs"
         :total="total"
         :items-per-page="effectiveLimit"
         :sibling-count="siblingCount"
@@ -207,7 +218,7 @@ export default defineComponent({
     >
         <template #default="{ page: rekaPage }">
             <component
-                :is="itemTag"
+                :is="renderItemAs"
                 v-if="showStartControls"
                 :class="theme.item || undefined"
             >
@@ -241,7 +252,7 @@ export default defineComponent({
                 </PaginationFirst>
             </component>
             <component
-                :is="itemTag"
+                :is="renderItemAs"
                 v-if="showStartControls"
                 :class="theme.item || undefined"
             >
@@ -280,7 +291,7 @@ export default defineComponent({
                      even when the visible window shifts); ellipses key by
                      iteration index (no stable identity). -->
                 <component
-                    :is="itemTag"
+                    :is="renderItemAs"
                     v-for="(item, idx) in items"
                     :key="item.type === 'page' ? `p${item.value}` : `e${idx}`"
                     :class="theme.item || undefined"
@@ -303,7 +314,7 @@ export default defineComponent({
                 </component>
             </PaginationList>
             <component
-                :is="itemTag"
+                :is="renderItemAs"
                 v-if="showEndControls"
                 :class="theme.item || undefined"
             >
@@ -322,7 +333,7 @@ export default defineComponent({
                 </PaginationNext>
             </component>
             <component
-                :is="itemTag"
+                :is="renderItemAs"
                 v-if="showEndControls"
                 :class="theme.item || undefined"
             >

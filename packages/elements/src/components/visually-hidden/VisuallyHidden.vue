@@ -5,7 +5,7 @@ import { VisuallyHidden } from 'reka-ui';
 
 const visuallyHiddenProps = {
     /** HTML tag to render. */
-    as: { type: [String, Object] as PropType<string | Component>, default: 'span' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'span' },
 };
 
 export type VisuallyHiddenProps = ExtractPublicPropTypes<typeof visuallyHiddenProps>;

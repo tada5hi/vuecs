@@ -7,7 +7,7 @@ import type { AlertDescriptionThemeClasses } from './types';
 
 const alertDescriptionProps = {
     /** HTML tag to render. */
-    as: { type: [String, Object] as PropType<string | Component>, default: 'div' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'div' },
     ...themableProps<AlertDescriptionThemeClasses>(),
 };
 

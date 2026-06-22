@@ -3,10 +3,10 @@ import {
     h, 
     mergeProps,
 } from 'vue';
-import type { ExtractPublicPropTypes, PropType } from 'vue';
+import type { Component, ExtractPublicPropTypes, PropType } from 'vue';
 import {
-    themableProps, 
-    useComponentTheme, 
+    themableProps,
+    useComponentTheme,
     useThemeProps,
 } from '@vuecs/core';
 import { placeholderThemeDefaults } from '../theme';
@@ -46,8 +46,16 @@ const placeholderProps = {
      * the theme.
      */
     duration: { type: String, default: undefined },
-    /** Render-as tag. Defaults to `'span'` (inline-block placeholder bar). */
-    tag: { type: String, default: 'span' },
+    /**
+     * Element or component to render as. Defaults to `'span'` (inline-block
+     * placeholder bar). Pass a string tag or a component.
+     */
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'span' },
+    /**
+     * @deprecated Use `as` instead. Non-breaking alias — takes precedence
+     * over `as` when set.
+     */
+    tag: { type: [String, Object, Function] as PropType<string | Component>, default: undefined },
     ...themableProps<PlaceholderThemeClasses>(),
 };
 
@@ -98,7 +106,7 @@ export const VCPlaceholder = defineComponent({
             const style: Record<string, string> = { width: widthStyle };
             if (props.duration !== undefined) style.animationDuration = props.duration;
             return h(
-                props.tag,
+                props.tag ?? props.as,
                 mergeProps(attrs, {
                     class: [t.root || undefined, animationClass || undefined],
                     style,

@@ -76,7 +76,7 @@ const navItemProps = {
      * collapse mode only.
      */
     as: {
-        type: [String, Object] as PropType<string | Component>,
+        type: [String, Object, Function] as PropType<string | Component>,
         default: 'li',
     },
     /**
@@ -85,7 +85,7 @@ const navItemProps = {
      * Honored in collapse mode only.
      */
     itemsAs: {
-        type: [String, Object] as PropType<string | Component>,
+        type: [String, Object, Function] as PropType<string | Component>,
         default: 'ul',
     },
     themeClass: {

@@ -12,7 +12,7 @@ const stepperSeparatorProps = {
     /** Render the consumer's slot child as the separator root (Reka `asChild` pattern). */
     asChild: { type: Boolean, default: false },
     /** HTML tag to render. */
-    as: { type: [String, Object] as PropType<string | Component>, default: 'div' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'div' },
     /** Theme-class overrides for this component instance. */
     themeClass: { type: Object as PropType<ThemeClassesOverride<StepperThemeClasses>>, default: undefined },
     /** Theme-variant values for this component instance. */
