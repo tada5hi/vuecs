@@ -15,7 +15,7 @@ import type {
     VCFormTextarea,
 } from './components';
 
-declare module '@vue/runtime-core' {
+declare module 'vue' {
     export interface GlobalComponents {
         VCFormCheckbox: typeof VCFormCheckbox,
         VCFormCheckboxGroup: typeof VCFormCheckboxGroup,

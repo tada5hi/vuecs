@@ -110,7 +110,10 @@ export function useColorPaletteUnshared<
                     },
                     write: (value) => JSON.stringify(value),
                 },
-            }) :
+            // `useStorage` returns `RemovableRef<T>` (nullable setter), no longer
+            // assignable to a plain `Ref<T>` under Vue 3.5's `Ref<T, S>`. We never
+            // write null, so bridging it to `Ref<T>` is runtime-safe.
+            }) as unknown as Ref<T> :
             ref<T>(sanitize(initial)) as Ref<T>);
 
     const renderConcatenated = (palette: T): string => {

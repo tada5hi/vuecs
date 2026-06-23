@@ -2,7 +2,7 @@ import { installLocale } from '@vuecs/locale';
 import type { LocaleSource } from '@vuecs/locale';
 import { useNavigatorLanguage } from '@vueuse/core';
 import { ref } from 'vue';
-import type { App } from 'vue';
+import type { App, Ref } from 'vue';
 // @ts-expect-error resolved by Nuxt at build time
 // eslint-disable-next-line @stylistic/exp-list-style
 import { defineNuxtPlugin, useCookie, useHead, useRequestHeaders, useRuntimeConfig } from '#imports';
@@ -81,9 +81,13 @@ export default defineNuxtPlugin({
         // `ImportMeta` augmentation.
         const isServer = (import.meta as unknown as { server?: boolean }).server === true;
 
-        const navigatorLanguage = isServer ?
+        // `useNavigatorLanguage().language` is a `ShallowRef`; under Vue 3.5's
+        // `Ref<T, S>` it no longer collapses into the `Ref<string | undefined>`
+        // the option expects. A `ShallowRef` is a `Ref` at runtime, so the
+        // bridge cast is safe.
+        const navigatorLanguage: Ref<string | undefined> = isServer ?
             ref(parseAcceptLanguage(useRequestHeaders(['accept-language'])['accept-language'])) :
-            useNavigatorLanguage().language;
+            useNavigatorLanguage().language as Ref<string | undefined>;
 
         const handles = installLocale(nuxtApp.vueApp, {
             source: cookie,

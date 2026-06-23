@@ -43,8 +43,11 @@ export function installLocale(app: App, options: LocaleOptions = {}): UseLocaleR
 
     const scope = effectScope(true);
     const handles = scope.run(() => {
+        // `useStorage` returns `RemovableRef<LocaleSource>` (nullable setter),
+        // no longer assignable to a plain `Ref` under Vue 3.5's `Ref<T, S>`. We
+        // never write null, so bridging it to `Ref<LocaleSource>` is safe.
         const source: Ref<LocaleSource> = customSource ?? (persist ?
-            useStorage<LocaleSource>(storageKey, initial) :
+            useStorage<LocaleSource>(storageKey, initial) as unknown as Ref<LocaleSource> :
             ref<LocaleSource>(initial));
 
         return bindLocale(source, { initial, ...bindOptions });

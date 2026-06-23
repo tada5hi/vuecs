@@ -20,7 +20,7 @@ import type VCTag from './components/tag/Tag.vue';
 import type VCTags from './components/tag/Tags.vue';
 import type VCVisuallyHidden from './components/visually-hidden/VisuallyHidden.vue';
 
-declare module '@vue/runtime-core' {
+declare module 'vue' {
     export interface GlobalComponents {
         VCSeparator: typeof VCSeparator,
         VCTag: typeof VCTag,

@@ -1,7 +1,9 @@
 {
-    "extends": "../../tsconfig.json",
+    "//": "Extends tsconfig.build.json (not the dev tsconfig.json) so the nuxt-module-build pass resolves @vuecs/* via their package.json exports (dist .d.ts) instead of the dev-only source path aliases — matching how every other package's build pipeline consumes its dependencies. Inheriting the source aliases makes module-builder re-type-check workspace deps' source (e.g. @vuecs/core's .vue re-exports) under its own settings. `strict` is re-enabled (tsconfig.build.json turns it off) so this module's own runtime source keeps full type-safety.",
+    "extends": "../../tsconfig.build.json",
     "compilerOptions": {
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "strict": true
     },
     "include": [
         "src/**/*.ts"

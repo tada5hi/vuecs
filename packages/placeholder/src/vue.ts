@@ -3,7 +3,7 @@ import type {
     VCPlaceholderWrapper,
 } from './components';
 
-declare module '@vue/runtime-core' {
+declare module 'vue' {
     export interface GlobalComponents {
         VCPlaceholder: typeof VCPlaceholder;
         VCPlaceholderWrapper: typeof VCPlaceholderWrapper;
