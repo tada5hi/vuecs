@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/gravatar",
-    "version": "2.0.6",
+    "version": "2.0.7",
     "type": "module",
     "description": "A package containing a gravatar component.",
     "exports": {
@@ -45,13 +45,13 @@
     },
     "devDependencies": {
         "@types/md5": "^2.3.5",
-        "@vuecs/core": "^3.2.1",
-        "@vuecs/elements": "^1.2.4",
+        "@vuecs/core": "^3.2.2",
+        "@vuecs/elements": "^1.2.5",
         "vue": "^3.5.38"
     },
     "peerDependencies": {
-        "@vuecs/core": "^3.2.1",
-        "@vuecs/elements": "^1.2.4",
+        "@vuecs/core": "^3.2.2",
+        "@vuecs/elements": "^1.2.5",
         "vue": "^3.x"
     },
     "engines": {

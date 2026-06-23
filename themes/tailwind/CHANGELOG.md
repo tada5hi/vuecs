@@ -1,5 +1,29 @@
 # Changelog
 
+## [6.0.1](https://github.com/tada5hi/vuecs/compare/theme-tailwind-v6.0.0...theme-tailwind-v6.0.1) (2026-06-23)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/button bumped from ^1.1.0 to ^1.1.1
+    * @vuecs/core bumped from ^3.2.1 to ^3.2.2
+    * @vuecs/countdown bumped from ^2.0.5 to ^2.0.6
+    * @vuecs/design bumped from ^1.0.5 to ^1.0.6
+    * @vuecs/elements bumped from ^1.2.4 to ^1.2.5
+    * @vuecs/forms bumped from ^5.2.2 to ^5.2.3
+    * @vuecs/gravatar bumped from ^2.0.6 to ^2.0.7
+    * @vuecs/list bumped from ^1.0.5 to ^1.0.6
+    * @vuecs/navigation bumped from ^4.0.3 to ^4.0.4
+    * @vuecs/overlays bumped from ^1.1.1 to ^1.1.2
+    * @vuecs/pagination bumped from ^2.1.4 to ^2.1.5
+    * @vuecs/placeholder bumped from ^1.0.5 to ^1.0.6
+    * @vuecs/timeago bumped from ^2.1.1 to ^2.1.2
+  * peerDependencies
+    * @vuecs/core bumped from ^3.2.1 to ^3.2.2
+    * @vuecs/design bumped from ^1.0.5 to ^1.0.6
+
 ## [6.0.0](https://github.com/tada5hi/vuecs/compare/theme-tailwind-v5.0.0...theme-tailwind-v6.0.0) (2026-06-23)
 
 

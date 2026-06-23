@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.1.2](https://github.com/tada5hi/vuecs/compare/nuxt-v1.1.1...nuxt-v1.1.2) (2026-06-23)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @vuecs/core bumped from ^3.2.1 to ^3.2.2
+    * @vuecs/design bumped from ^1.0.5 to ^1.0.6
+    * @vuecs/locale bumped from ^1.0.1 to ^1.0.2
+
 ## [1.1.1](https://github.com/tada5hi/vuecs/compare/nuxt-v1.1.0...nuxt-v1.1.1) (2026-06-23)
 
 
