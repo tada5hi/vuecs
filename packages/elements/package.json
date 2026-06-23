@@ -47,14 +47,14 @@
         "test:coverage": "vitest --config test/vitest.config.ts --run --coverage"
     },
     "dependencies": {
-        "reka-ui": "^2.9.9"
+        "reka-ui": "^2.10.0"
     },
     "devDependencies": {
         "@vue/test-utils": "^2.4.11",
         "@vuecs/core": "^3.2.0",
         "@vuecs/placeholder": "^1.0.4",
         "jsdom": "^29.0.2",
-        "vue": "^3.5.35"
+        "vue": "^3.5.38"
     },
     "peerDependencies": {
         "@vuecs/core": "^3.2.0",
