@@ -1,6 +1,6 @@
 import type { ThemeElementDefinition } from '@vuecs/core';
 
-export type TagSize = 'sm' | 'md' | 'lg';
+export type TagSize = 'xs' | 'sm' | 'md' | 'lg';
 
 export type TagThemeClasses = {
     /** The chip's outer element. */

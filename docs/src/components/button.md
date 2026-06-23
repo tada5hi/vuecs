@@ -43,6 +43,7 @@ const submit = useSubmitButton({ isEditing: () => isEditing.value });
 
     <!-- Size + state axes. `loading` shows the structural busy state
          (cursor: wait + opacity pulse); `disabled` is the inert sibling. -->
+    <VCButton size="xs" label="Extra small" />
     <VCButton size="sm" label="Small" />
     <VCButton size="md" label="Medium" />
     <VCButton size="lg" label="Large" />
@@ -84,7 +85,7 @@ const submit = useSubmitButton({ isEditing: () => isEditing.value });
 |------|------|---------|-------------|
 | `color` | `'primary' \| 'neutral' \| 'success' \| 'warning' \| 'error' \| 'info'` | (theme default) | Semantic color — themes map it onto their palette. Tailwind theme defaults to `primary`. |
 | `variant` | `'solid' \| 'soft' \| 'outline' \| 'ghost' \| 'link'` | (theme default) | Visual treatment. Tailwind theme defaults to `solid`. |
-| `size` | `'sm' \| 'md' \| 'lg'` | (theme default) | Padding / font-size. Tailwind theme defaults to `md`. |
+| `size` | `'xs' \| 'sm' \| 'md' \| 'lg'` | (theme default) | Padding / font-size. Tailwind theme defaults to `md`. |
 | `type` | `string` | `'button'` | Forwarded as the native `type` attribute when the rendered element is `'button'` (use `'submit'` inside `<form>`). |
 | `as` | `string \| Component` | `'button'` | Element or component to render as. Pass `'a'` to render as a link, or a component (`RouterLink` / `NuxtLink`) for a button-styled navigation link. Extra attrs (`to`, `href`, `target`, …) forward to the rendered element; native `type` / `disabled` apply only for `'button'`, other targets get `aria-disabled`. |
 | `tag` | `string \| Component` | — | **Deprecated** — use `as`. Non-breaking alias; takes precedence over `as` when set. |

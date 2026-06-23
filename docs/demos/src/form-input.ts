@@ -18,7 +18,7 @@ announceProps(
         'themeVariant.size': {
             type: 'enum',
             default: 'md',
-            options: ['sm', 'md', 'lg'],
+            options: ['xs', 'sm', 'md', 'lg'],
             section: 'Variant',
         },
         disabled: {

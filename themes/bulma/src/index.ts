@@ -76,6 +76,7 @@ export default function bulmaTheme(): Theme {
                 // gap-fill needed.
                 variants: {
                     size: {
+                        xs: { root: 'is-small vc-size-xs' },
                         sm: { root: 'is-small' },
                         md: { root: '' },
                         lg: { root: 'is-large' },
@@ -91,6 +92,7 @@ export default function bulmaTheme(): Theme {
                 classes: { root: 'textarea' },
                 variants: {
                     size: {
+                        xs: { root: 'is-small vc-size-xs' },
                         sm: { root: 'is-small' },
                         md: { root: '' },
                         lg: { root: 'is-large' },
@@ -122,6 +124,7 @@ export default function bulmaTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { root: 'vc-form-checkbox-xs', label: 'vc-fs-xs' },
                         sm: { root: 'vc-form-checkbox-sm', label: 'is-size-7' },
                         md: { root: '' },
                         lg: { root: 'vc-form-checkbox-lg', label: 'is-size-5' },
@@ -142,6 +145,7 @@ export default function bulmaTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { root: 'vc-form-switch-xs', label: 'vc-fs-xs' },
                         sm: { root: 'vc-form-switch-sm', label: 'is-size-7' },
                         md: { root: '' },
                         lg: { root: 'vc-form-switch-lg', label: 'is-size-5' },
@@ -158,6 +162,7 @@ export default function bulmaTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { root: 'vc-form-radio-xs', label: 'vc-fs-xs' },
                         sm: { root: 'vc-form-radio-sm', label: 'is-size-7' },
                         md: { root: '' },
                         lg: { root: 'vc-form-radio-lg', label: 'is-size-5' },
@@ -186,6 +191,7 @@ export default function bulmaTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { trigger: 'is-small vc-size-xs' },
                         sm: { trigger: 'is-small' },
                         md: { trigger: '' },
                         lg: { trigger: 'is-large' },
@@ -250,6 +256,11 @@ export default function bulmaTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: {
+                            input: 'is-small vc-size-xs', 
+                            decrement: 'is-small vc-size-xs', 
+                            increment: 'is-small vc-size-xs', 
+                        },
                         sm: {
                             input: 'is-small',
                             decrement: 'is-small',
@@ -282,6 +293,7 @@ export default function bulmaTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { root: 'is-small vc-size-xs', item: 'vc-fs-xs' },
                         sm: { root: 'is-small', item: 'is-size-7' },
                         md: { root: '' },
                         lg: { root: 'is-large', item: 'is-size-6' },
@@ -301,6 +313,7 @@ export default function bulmaTheme(): Theme {
                 classes: { root: 'button is-inline-flex is-align-items-center is-justify-content-center is-gap-2' },
                 variants: {
                     size: {
+                        xs: { root: 'is-small vc-size-xs' },
                         sm: { root: 'is-small' },
                         md: { root: '' },
                         lg: { root: 'is-large' },
@@ -425,6 +438,7 @@ export default function bulmaTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { link: 'vc-fs-xs', trigger: 'vc-fs-xs' },
                         sm: { link: 'is-size-7', trigger: 'is-size-7' },
                         md: { link: '' },
                         lg: { link: 'is-size-6', trigger: 'is-size-6' },
@@ -451,6 +465,7 @@ export default function bulmaTheme(): Theme {
                 // `md` lifts to `is-medium` and `lg` to `is-large`.
                 variants: {
                     size: {
+                        xs: { root: 'vc-fs-xs' },
                         sm: { root: '' },
                         md: { root: 'is-medium' },
                         lg: { root: 'is-large' },
@@ -465,6 +480,7 @@ export default function bulmaTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { root: 'vc-size-xs' },
                         sm: { root: '' },
                         md: { root: 'are-medium' },
                         lg: { root: 'are-large' },
@@ -483,6 +499,7 @@ export default function bulmaTheme(): Theme {
                 // `vc-avatar-{sm,lg}` helpers (defined in @vuecs/elements).
                 variants: {
                     size: {
+                        xs: { root: 'vc-avatar-xs' },
                         sm: { root: 'vc-avatar-sm' },
                         md: { root: '' },
                         lg: { root: 'vc-avatar-lg' },
@@ -599,6 +616,7 @@ export default function bulmaTheme(): Theme {
                     // would shrink that reserved space and let text overlap
                     // the close icon.
                     size: {
+                        xs: { root: 'vc-fs-xs' },
                         sm: { root: 'is-size-7' },
                         md: { root: '' },
                         lg: { root: 'is-size-5' },
@@ -645,6 +663,7 @@ export default function bulmaTheme(): Theme {
                 classes: { root: 'tag is-rounded vc-badge' },
                 variants: {
                     size: {
+                        xs: { root: 'vc-fs-xs' },
                         sm: { root: '' },
                         md: { root: 'is-medium' },
                         lg: { root: 'is-large' },
@@ -821,6 +840,7 @@ export default function bulmaTheme(): Theme {
                         ghost: { link: 'is-text' },
                     },
                     size: {
+                        xs: { root: 'is-small vc-size-xs' },
                         sm: { root: 'is-small' },
                         md: { root: '' },
                         lg: { root: 'is-large' },
@@ -860,6 +880,7 @@ export default function bulmaTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { content: 'vc-modal-xs' },
                         sm: { content: 'modal-sm' },
                         md: { content: '' },
                         lg: { content: 'modal-lg' },
@@ -883,6 +904,7 @@ export default function bulmaTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { content: 'vc-fs-xs p-2' },
                         sm: { content: 'is-size-7 p-2' },
                         md: { content: '' },
                         lg: { content: 'is-size-6 p-5' },
@@ -898,6 +920,7 @@ export default function bulmaTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { content: 'vc-fs-xs p-2' },
                         sm: { content: 'is-size-7 p-2' },
                         md: { content: '' },
                         lg: { content: 'is-size-6 p-5' },
@@ -971,6 +994,7 @@ export default function bulmaTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { content: 'vc-fs-xs px-2 py-0' },
                         sm: { content: 'is-size-7 px-2 py-1' },
                         md: { content: 'px-3 py-1' },
                         lg: { content: 'is-size-6 px-3 py-2' },
@@ -998,6 +1022,7 @@ export default function bulmaTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { content: 'vc-fs-xs' },
                         sm: { content: 'is-size-7' },
                         md: { content: '' },
                         lg: { content: 'is-size-6' },
@@ -1022,6 +1047,7 @@ export default function bulmaTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { content: 'vc-fs-xs' },
                         sm: { content: 'is-size-7' },
                         md: { content: '' },
                         lg: { content: 'is-size-6' },
@@ -1050,6 +1076,11 @@ export default function bulmaTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: {
+                            indicator: 'vc-stepper-indicator-xs', 
+                            title: 'vc-fs-xs', 
+                            description: 'vc-fs-xs', 
+                        },
                         sm: {
                             indicator: 'vc-stepper-indicator-sm', 
                             title: 'is-size-7', 

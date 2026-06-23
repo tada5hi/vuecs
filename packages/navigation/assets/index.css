@@ -261,6 +261,11 @@
 }
 
 /* Size helpers — themes drive these via `stepper.variants.size.{sm,lg}`. */
+.vc-stepper-indicator-xs {
+    width: 1.25rem;
+    height: 1.25rem;
+    font-size: 0.625rem;
+}
 .vc-stepper-indicator-sm {
     width: 1.5rem;
     height: 1.5rem;

@@ -85,6 +85,10 @@ const submit = useSubmitButton({ isEditing: () => isEditing.value });
              themeVariant.size at the component's merge step. -->
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
             <VCButton
+                size="xs"
+                label="Extra small"
+            />
+            <VCButton
                 size="sm"
                 label="Small"
             />

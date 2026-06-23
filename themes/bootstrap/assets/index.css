@@ -393,6 +393,7 @@
  * the theme's `position-fixed top-50 start-50 translate-middle`.
  * ──────────────────────────────────────────────────────────────────────── */
 
+.vc-modal-content.vc-modal-xs { max-width: 260px; width: calc(100% - 1rem); }
 .vc-modal-content.modal-sm { max-width: 300px; width: calc(100% - 1rem); }
 .vc-modal-content.modal-lg { max-width: 800px; width: calc(100% - 1rem); }
 .vc-modal-content.modal-xl { max-width: 1140px; width: calc(100% - 1rem); }
@@ -469,4 +470,41 @@
 
 .vc-alert-outline {
     background-color: transparent !important;
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * Size: `xs` gap-fill. Bootstrap 5 ships `-sm` / `-lg` size modifiers but
+ * nothing below `sm`. The vuecs size axis adds `xs` (one notch under `sm`);
+ * these helpers supply it by tightening the relevant BS CSS variables /
+ * utilities. Referenced from the `size.xs` theme entries in
+ * `themes/bootstrap/src/index.ts`.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+/* Generic font shrink for text-bearing surfaces (alert, popover, tooltip,
+   menus, nav, list, badge, tag) — BS has no font step below `.small`. */
+.vc-fs-xs { font-size: 0.7rem; }
+
+/* Button — BS5 buttons resolve sizing from these vars (set by `.btn-sm`). */
+.vc-btn-xs {
+    --bs-btn-padding-y: 0.12rem;
+    --bs-btn-padding-x: 0.4rem;
+    --bs-btn-font-size: 0.7rem;
+    --bs-btn-border-radius: 0.2rem;
+}
+
+/* Pagination — BS5 reads these vars (set by `.pagination-sm`). */
+.vc-pagination-xs {
+    --bs-pagination-padding-y: 0.05rem;
+    --bs-pagination-padding-x: 0.4rem;
+    --bs-pagination-font-size: 0.7rem;
+}
+
+/* Text inputs / selects / textareas — every BS theme slot that takes the
+   `xs` size carries the `.form-control` base class (the FormSelect trigger
+   included), and `.form-control-sm` sets padding+font directly, so override
+   both. Element-qualified (0,2,0) beats `.form-control-sm`. */
+.form-control.vc-form-control-xs {
+    padding: 0.1rem 0.4rem;
+    font-size: 0.7rem;
+    border-radius: 0.2rem;
 }

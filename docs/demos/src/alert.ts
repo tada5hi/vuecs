@@ -16,7 +16,7 @@ app.mount('#app');
 announceVariants(
     {
         variant: ['solid', 'soft', 'outline'],
-        size: ['sm', 'md', 'lg'],
+        size: ['xs', 'sm', 'md', 'lg'],
     },
     { variant: 'soft', size: 'md' },
 );

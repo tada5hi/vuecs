@@ -30,6 +30,7 @@ export default function bootstrapTheme(): Theme {
                 // wanting a true amber state can override.
                 variants: {
                     size: {
+                        xs: { root: 'form-control-sm vc-form-control-xs', group: 'input-group-sm' },
                         sm: { root: 'form-control-sm', group: 'input-group-sm' },
                         md: { root: '' },
                         lg: { root: 'form-control-lg', group: 'input-group-lg' },
@@ -63,6 +64,7 @@ export default function bootstrapTheme(): Theme {
                 // helpers (defined in @vuecs/forms styles).
                 variants: {
                     size: {
+                        xs: { root: 'vc-form-checkbox-xs', label: 'vc-fs-xs' },
                         sm: { root: 'vc-form-checkbox-sm', label: 'small' },
                         md: { root: '' },
                         lg: { root: 'vc-form-checkbox-lg', label: 'fs-5' },
@@ -80,6 +82,7 @@ export default function bootstrapTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { root: 'vc-form-switch-xs', label: 'vc-fs-xs' },
                         sm: { root: 'vc-form-switch-sm', label: 'small' },
                         md: { root: '' },
                         lg: { root: 'vc-form-switch-lg', label: 'fs-5' },
@@ -106,6 +109,7 @@ export default function bootstrapTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { trigger: 'form-control-sm vc-form-control-xs' },
                         sm: { trigger: 'form-control-sm' },
                         md: { trigger: '' },
                         lg: { trigger: 'form-control-lg' },
@@ -151,6 +155,7 @@ export default function bootstrapTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { root: 'vc-form-radio-xs', label: 'vc-fs-xs' },
                         sm: { root: 'vc-form-radio-sm', label: 'small' },
                         md: { root: '' },
                         lg: { root: 'vc-form-radio-lg', label: 'fs-5' },
@@ -193,6 +198,12 @@ export default function bootstrapTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: {
+                            root: 'input-group-sm', 
+                            input: 'form-control-sm vc-form-control-xs', 
+                            decrement: 'btn-sm vc-btn-xs', 
+                            increment: 'btn-sm vc-btn-xs', 
+                        },
                         sm: {
                             root: 'input-group-sm',
                             input: 'form-control-sm',
@@ -228,6 +239,7 @@ export default function bootstrapTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { root: 'form-control-sm vc-form-control-xs p-1', item: 'vc-fs-xs' },
                         sm: { root: 'form-control-sm p-1', item: 'small' },
                         md: { root: '' },
                         lg: { root: 'form-control-lg p-3', item: 'fs-6' },
@@ -248,6 +260,7 @@ export default function bootstrapTheme(): Theme {
                 classes: { root: 'btn d-inline-flex align-items-center justify-content-center gap-2' },
                 variants: {
                     size: {
+                        xs: { root: 'btn-sm vc-btn-xs' },
                         sm: { root: 'btn-sm' },
                         md: { root: '' },
                         lg: { root: 'btn-lg' },
@@ -308,6 +321,7 @@ export default function bootstrapTheme(): Theme {
                 classes: { root: 'form-control' },
                 variants: {
                     size: {
+                        xs: { root: 'form-control-sm vc-form-control-xs' },
                         sm: { root: 'form-control-sm' },
                         md: { root: '' },
                         lg: { root: 'form-control-lg' },
@@ -389,6 +403,7 @@ export default function bootstrapTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { link: 'vc-fs-xs py-0 px-2', trigger: 'vc-fs-xs py-0 px-2' },
                         sm: { link: 'small py-1 px-2', trigger: 'small py-1 px-2' },
                         md: { link: '' },
                         lg: { link: 'fs-6 py-3 px-4', trigger: 'fs-6 py-3 px-4' },
@@ -419,6 +434,7 @@ export default function bootstrapTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { root: 'vc-fs-xs px-2 py-0' },
                         sm: { root: 'small px-2 py-1' },
                         md: { root: '' },
                         lg: { root: 'fs-6 px-3 py-2' },
@@ -433,6 +449,7 @@ export default function bootstrapTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { root: 'gap-1' },
                         sm: { root: 'gap-1' },
                         md: { root: '' },
                         lg: { root: 'gap-3' },
@@ -452,6 +469,7 @@ export default function bootstrapTheme(): Theme {
                 // shipped in @vuecs/elements/assets/avatar.css.
                 variants: {
                     size: {
+                        xs: { root: 'vc-avatar-xs' },
                         sm: { root: 'vc-avatar-sm' },
                         md: { root: '' },
                         lg: { root: 'vc-avatar-lg' },
@@ -553,6 +571,7 @@ export default function bootstrapTheme(): Theme {
                     // with `px-*` here would let text overlap the close icon
                     // because BS `.px-*` utilities clobber both sides.
                     size: {
+                        xs: { root: 'py-1 vc-fs-xs' },
                         sm: { root: 'py-2 small' },
                         md: { root: '' },
                         lg: { root: 'py-3 fs-6' },
@@ -595,6 +614,7 @@ export default function bootstrapTheme(): Theme {
                 classes: { root: 'badge rounded-pill' },
                 variants: {
                     size: {
+                        xs: { root: 'vc-fs-xs px-2 py-0' },
                         sm: { root: 'small px-2 py-1' },
                         md: { root: '' },
                         lg: { root: 'fs-6 px-3 py-2' },
@@ -774,6 +794,7 @@ export default function bootstrapTheme(): Theme {
                         ghost: { link: 'border-0 bg-transparent' },
                     },
                     size: {
+                        xs: { root: 'pagination-sm vc-pagination-xs' },
                         sm: { root: 'pagination-sm' },
                         md: { root: '' },
                         lg: { root: 'pagination-lg' },
@@ -814,6 +835,7 @@ export default function bootstrapTheme(): Theme {
                 // in for `.modal-dialog` so we apply the size class there.
                 variants: {
                     size: {
+                        xs: { content: 'vc-modal-xs' },
                         sm: { content: 'modal-sm' },
                         md: { content: '' },
                         lg: { content: 'modal-lg' },
@@ -838,6 +860,7 @@ export default function bootstrapTheme(): Theme {
                 // to consumers via per-instance themeClass.
                 variants: {
                     size: {
+                        xs: { content: 'vc-fs-xs p-2' },
                         sm: { content: 'small p-2' },
                         md: { content: '' },
                         lg: { content: 'fs-6 p-4' },
@@ -853,6 +876,7 @@ export default function bootstrapTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { content: 'vc-fs-xs p-2' },
                         sm: { content: 'small p-2' },
                         md: { content: '' },
                         lg: { content: 'fs-6 p-4' },
@@ -879,6 +903,7 @@ export default function bootstrapTheme(): Theme {
                 // @vuecs/navigation's stepper structural CSS.
                 variants: {
                     size: {
+                        xs: { indicator: 'vc-stepper-indicator-xs', title: 'vc-fs-xs' },
                         sm: { indicator: 'vc-stepper-indicator-sm', title: 'small' },
                         md: { indicator: '' },
                         lg: { indicator: 'vc-stepper-indicator-lg', title: 'fs-6' },
@@ -951,6 +976,7 @@ export default function bootstrapTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { content: 'vc-fs-xs px-2 py-0' },
                         sm: { content: 'small px-2 py-1' },
                         md: { content: '' },
                         lg: { content: 'fs-6 px-3 py-2' },
@@ -979,6 +1005,12 @@ export default function bootstrapTheme(): Theme {
                 // dropdown chrome stays untouched.
                 variants: {
                     size: {
+                        xs: {
+                            content: 'vc-fs-xs p-1', 
+                            item: 'py-0 px-2', 
+                            subTrigger: 'py-0 px-2', 
+                            subContent: 'vc-fs-xs p-1', 
+                        },
                         sm: {
                             content: 'small p-1', 
                             item: 'py-1 px-2', 
@@ -1013,6 +1045,12 @@ export default function bootstrapTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: {
+                            content: 'vc-fs-xs p-1', 
+                            item: 'py-0 px-2', 
+                            subTrigger: 'py-0 px-2', 
+                            subContent: 'vc-fs-xs p-1', 
+                        },
                         sm: {
                             content: 'small p-1', 
                             item: 'py-1 px-2', 

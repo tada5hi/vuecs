@@ -102,6 +102,11 @@ export default function tailwindTheme(): Theme {
                 // primary-focus chrome is overridden via tailwind-merge.
                 variants: {
                     size: {
+                        xs: {
+                            root: 'px-1.5 py-0.5 text-[0.7rem]',
+                            groupAppend: 'px-1.5 text-[0.7rem]',
+                            groupPrepend: 'px-1.5 text-[0.7rem]',
+                        },
                         sm: {
                             root: 'px-2 py-1 text-xs',
                             groupAppend: 'px-2 text-xs',
@@ -136,6 +141,7 @@ export default function tailwindTheme(): Theme {
                 // the structural label rule.
                 variants: {
                     size: {
+                        xs: { root: 'vc-form-checkbox-xs', label: 'text-[0.7rem]!' },
                         sm: { root: 'vc-form-checkbox-sm', label: 'text-xs!' },
                         md: { root: '' },
                         lg: { root: 'vc-form-checkbox-lg', label: 'text-base!' },
@@ -156,6 +162,7 @@ export default function tailwindTheme(): Theme {
                 // selectors). See formCheckbox above for rationale.
                 variants: {
                     size: {
+                        xs: { root: 'vc-form-switch-xs', label: 'text-[0.7rem]!' },
                         sm: { root: 'vc-form-switch-sm', label: 'text-xs!' },
                         md: { root: '' },
                         lg: { root: 'vc-form-switch-lg', label: 'text-base!' },
@@ -180,6 +187,7 @@ export default function tailwindTheme(): Theme {
                 // helpers — see formCheckbox above for rationale.
                 variants: {
                     size: {
+                        xs: { trigger: 'vc-form-select-trigger-xs', item: 'py-0.5 pl-6 text-[0.7rem]!' },
                         sm: { trigger: 'vc-form-select-trigger-sm', item: 'py-1 pl-6 text-xs!' },
                         md: { trigger: '' },
                         lg: { trigger: 'vc-form-select-trigger-lg', item: 'py-2 pl-8 text-base!' },
@@ -222,6 +230,7 @@ export default function tailwindTheme(): Theme {
                 // (root + indicator scale together via descendant selectors).
                 variants: {
                     size: {
+                        xs: { root: 'vc-form-radio-xs', label: 'text-[0.7rem]!' },
                         sm: { root: 'vc-form-radio-sm', label: 'text-xs!' },
                         md: { root: '' },
                         lg: { root: 'vc-form-radio-lg', label: 'text-base!' },
@@ -257,6 +266,11 @@ export default function tailwindTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: {
+                            input: 'px-1.5 py-0.5 text-[0.7rem]',
+                            decrement: 'w-5 text-[0.7rem]',
+                            increment: 'w-5 text-[0.7rem]',
+                        },
                         sm: {
                             input: 'px-2 py-1 text-xs',
                             decrement: 'w-6 text-xs',
@@ -286,6 +300,11 @@ export default function tailwindTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: {
+                            root: 'px-1! py-0.5!',
+                            item: 'px-1! py-px! text-[0.5625rem]!',
+                            input: 'text-[0.7rem]!',
+                        },
                         sm: {
                             root: 'px-1.5! py-1!',
                             item: 'px-1.5! py-px! text-[0.625rem]!',
@@ -319,6 +338,7 @@ export default function tailwindTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { root: 'px-2 py-0.5 text-[0.7rem]' },
                         sm: { root: 'px-2.5 py-1 text-xs' },
                         md: { root: 'px-3 py-1.5 text-sm' },
                         lg: { root: 'px-4 py-2 text-base' },
@@ -378,6 +398,7 @@ export default function tailwindTheme(): Theme {
                 classes: { root: 'block w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-fg shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:bg-bg-muted' },
                 variants: {
                     size: {
+                        xs: { root: 'px-1.5 py-0.5 text-[0.7rem]' },
                         sm: { root: 'px-2 py-1 text-xs' },
                         md: { root: '' },
                         lg: { root: 'px-4 py-3 text-base' },
@@ -478,6 +499,11 @@ export default function tailwindTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: {
+                            link: 'px-1.5 py-0.5 text-[0.7rem]',
+                            linkIcon: 'h-2.5 w-2.5',
+                            trigger: 'px-1.5 py-0.5 text-[0.7rem]',
+                        },
                         sm: {
                             link: 'px-2 py-1 text-xs',
                             linkIcon: 'h-3 w-3',
@@ -635,6 +661,7 @@ export default function tailwindTheme(): Theme {
                         ghost: { link: 'border border-border bg-bg text-fg hover:bg-bg-muted' },
                     },
                     size: {
+                        xs: { link: 'h-6 min-w-6 px-1.5 text-[0.7rem]' },
                         sm: { link: 'h-7 min-w-7 px-2 text-xs' },
                         md: { link: 'h-8 min-w-8 px-3 text-sm' },
                         lg: { link: 'h-10 min-w-10 px-4 text-base' },
@@ -669,6 +696,7 @@ export default function tailwindTheme(): Theme {
                 // utility above the structural padding/font-size defaults.
                 variants: {
                     size: {
+                        xs: { root: 'px-1! py-px! text-[0.5625rem]! gap-0.5!', remove: 'h-2.5! w-2.5!' },
                         sm: { root: 'px-1.5! py-px! text-[0.625rem]! gap-0.5!', remove: 'h-3! w-3!' },
                         md: { root: 'px-2! py-0.5! text-xs!', remove: 'h-4! w-4!' },
                         lg: { root: 'px-2.5! py-1! text-sm!', remove: 'h-5! w-5!' },
@@ -687,6 +715,7 @@ export default function tailwindTheme(): Theme {
                 // also resize.
                 variants: {
                     size: {
+                        xs: { root: 'gap-0.5' },
                         sm: { root: 'gap-1' },
                         md: { root: '' },
                         lg: { root: 'gap-2' },
@@ -710,6 +739,7 @@ export default function tailwindTheme(): Theme {
                 // unlayered structural; see form-checkbox.css rationale).
                 variants: {
                     size: {
+                        xs: { root: 'vc-avatar-xs', fallback: 'text-[0.625rem]!' },
                         sm: { root: 'vc-avatar-sm', fallback: 'text-xs!' },
                         md: { fallback: 'text-sm!' },
                         lg: { root: 'vc-avatar-lg', fallback: 'text-base!' },
@@ -799,6 +829,7 @@ export default function tailwindTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { root: 'p-1.5 pr-7 text-[0.7rem]' },
                         sm: { root: 'p-2 pr-8 text-xs' },
                         md: { root: 'p-3 pr-9 text-sm' },
                         lg: { root: 'p-4 pr-10 text-sm' },
@@ -842,6 +873,7 @@ export default function tailwindTheme(): Theme {
                 // tag.size above for rationale.
                 variants: {
                     size: {
+                        xs: { root: 'px-1! py-px! text-[0.5625rem]!' },
                         sm: { root: 'px-1.5! py-px! text-[0.625rem]!' },
                         md: { root: 'px-2! py-0.5! text-xs!' },
                         lg: { root: 'px-2.5! py-1! text-sm!' },
@@ -901,6 +933,7 @@ export default function tailwindTheme(): Theme {
                 // sm fits compact confirms, lg fits forms, xl fits dashboards.
                 variants: {
                     size: {
+                        xs: { content: 'max-w-xs p-3 gap-2' },
                         sm: { content: 'max-w-sm p-4 gap-3' },
                         md: { content: '' },
                         lg: { content: 'max-w-2xl' },
@@ -921,6 +954,7 @@ export default function tailwindTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { content: 'w-48 p-2 text-[0.7rem]' },
                         sm: { content: 'w-56 p-3 text-xs' },
                         md: { content: '' },
                         lg: { content: 'w-96 p-5 text-base' },
@@ -936,6 +970,7 @@ export default function tailwindTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { content: 'w-40 p-2 text-[0.7rem]' },
                         sm: { content: 'w-48 p-3 text-xs' },
                         md: { content: '' },
                         lg: { content: 'w-80 p-5 text-base' },
@@ -973,6 +1008,11 @@ export default function tailwindTheme(): Theme {
                 // text-size defaults set on neighboring elements.
                 variants: {
                     size: {
+                        xs: {
+                            indicator: 'vc-stepper-indicator-xs',
+                            title: 'text-[0.7rem]!',
+                            description: 'text-[0.5625rem]!',
+                        },
                         sm: {
                             indicator: 'vc-stepper-indicator-sm',
                             title: 'text-xs!',
@@ -1051,6 +1091,7 @@ export default function tailwindTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: { content: 'px-1.5 py-0.5 text-[0.5625rem]' },
                         sm: { content: 'px-2 py-1 text-[0.625rem]' },
                         md: { content: '' },
                         lg: { content: 'px-4 py-2 text-sm' },
@@ -1076,6 +1117,12 @@ export default function tailwindTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: {
+                            content: 'min-w-[5rem] text-[0.7rem]',
+                            item: 'px-1 py-0.5',
+                            subTrigger: 'px-1 py-0.5',
+                            subContent: 'min-w-[5rem] text-[0.7rem]',
+                        },
                         sm: {
                             content: 'min-w-[6rem] text-xs',
                             item: 'px-1.5 py-1',
@@ -1110,6 +1157,12 @@ export default function tailwindTheme(): Theme {
                 },
                 variants: {
                     size: {
+                        xs: {
+                            content: 'min-w-[5rem] text-[0.7rem]',
+                            item: 'px-1 py-0.5',
+                            subTrigger: 'px-1 py-0.5',
+                            subContent: 'min-w-[5rem] text-[0.7rem]',
+                        },
                         sm: {
                             content: 'min-w-[6rem] text-xs',
                             item: 'px-1.5 py-1',

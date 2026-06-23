@@ -27,6 +27,6 @@ app.mount('#app');
 // themeVariant.size at component-level merge), so toggling the toolbar
 // reskins the color / variant / state rows while the size row remains a
 // stable size reference.
-announceVariants({ size: ['sm', 'md', 'lg'] }, { size: 'md' });
+announceVariants({ size: ['xs', 'sm', 'md', 'lg'] }, { size: 'md' });
 
 installIframeBridge();

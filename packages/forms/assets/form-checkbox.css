@@ -85,6 +85,14 @@
    Tailwind v4 utilities (`h-3 w-3`) sit in `@layer utilities` and lose to
    unlayered structural CSS, so we ship dedicated structural helpers and
    reference them from both Tailwind and Bootstrap theme entries. */
+.vc-form-checkbox-xs {
+    width: 0.625rem;
+    height: 0.625rem;
+}
+.vc-form-checkbox-xs .vc-form-checkbox-indicator::before {
+    width: 0.375rem;
+    height: 0.375rem;
+}
 .vc-form-checkbox-sm {
     width: 0.75rem;
     height: 0.75rem;

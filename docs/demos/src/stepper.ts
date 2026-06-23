@@ -13,6 +13,6 @@ installVuecs(app);
 app.use(navigation);
 app.mount('#app');
 
-announceVariants({ size: ['sm', 'md', 'lg'] }, { size: 'md' });
+announceVariants({ size: ['xs', 'sm', 'md', 'lg'] }, { size: 'md' });
 
 installIframeBridge();

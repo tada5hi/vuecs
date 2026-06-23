@@ -84,6 +84,17 @@
 /* Size helpers — themes drive these via `formSwitch.variants.size.{sm,lg}`.
    Track and thumb scale together; the `[data-state="checked"]` translate
    distance matches the new track width minus thumb. */
+.vc-form-switch-xs {
+    width: 1.5rem;
+    height: 0.875rem;
+}
+.vc-form-switch-xs .vc-form-switch-thumb {
+    width: 0.5rem;
+    height: 0.5rem;
+}
+.vc-form-switch-xs[data-state="checked"] .vc-form-switch-thumb {
+    translate: 0.625rem 0;
+}
 .vc-form-switch-sm {
     width: 1.75rem;
     height: 1rem;
