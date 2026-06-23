@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/tada5hi/vuecs/compare/elements-v1.2.5...elements-v1.3.0) (2026-06-23)
+
+
+### Features
+
+* add xs size variant beside sm/md/lg ([#1653](https://github.com/tada5hi/vuecs/issues/1653)) ([2d6505c](https://github.com/tada5hi/vuecs/commit/2d6505c9883a36760e8334db43223190c795c2b5))
+
 ## [1.2.5](https://github.com/tada5hi/vuecs/compare/elements-v1.2.4...elements-v1.2.5) (2026-06-23)
 
 

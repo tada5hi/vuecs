@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.8](https://github.com/tada5hi/vuecs/compare/gravatar-v2.0.7...gravatar-v2.0.8) (2026-06-23)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/elements bumped from ^1.2.5 to ^1.3.0
+  * peerDependencies
+    * @vuecs/elements bumped from ^1.2.5 to ^1.3.0
+
 ## [2.0.7](https://github.com/tada5hi/vuecs/compare/gravatar-v2.0.6...gravatar-v2.0.7) (2026-06-23)
 
 

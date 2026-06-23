@@ -1,5 +1,23 @@
 # Changelog
 
+## [5.1.0](https://github.com/tada5hi/vuecs/compare/theme-bulma-v5.0.2...theme-bulma-v5.1.0) (2026-06-23)
+
+
+### Features
+
+* add xs size variant beside sm/md/lg ([#1653](https://github.com/tada5hi/vuecs/issues/1653)) ([2d6505c](https://github.com/tada5hi/vuecs/commit/2d6505c9883a36760e8334db43223190c795c2b5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/button bumped from ^1.1.1 to ^1.2.0
+    * @vuecs/elements bumped from ^1.2.5 to ^1.3.0
+    * @vuecs/forms bumped from ^5.2.3 to ^5.3.0
+    * @vuecs/gravatar bumped from ^2.0.7 to ^2.0.8
+    * @vuecs/navigation bumped from ^4.0.4 to ^4.1.0
+
 ## [5.0.2](https://github.com/tada5hi/vuecs/compare/theme-bulma-v5.0.1...theme-bulma-v5.0.2) (2026-06-23)
 
 
