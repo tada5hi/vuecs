@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.3.0](https://github.com/tada5hi/vuecs/compare/forms-v5.2.3...forms-v5.3.0) (2026-06-23)
+
+
+### Features
+
+* add xs size variant beside sm/md/lg ([#1653](https://github.com/tada5hi/vuecs/issues/1653)) ([2d6505c](https://github.com/tada5hi/vuecs/commit/2d6505c9883a36760e8334db43223190c795c2b5))
+
 ## [5.2.3](https://github.com/tada5hi/vuecs/compare/forms-v5.2.2...forms-v5.2.3) (2026-06-23)
 
 
