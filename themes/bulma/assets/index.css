@@ -368,6 +368,7 @@
     border-radius: var(--vc-radius-lg);
 }
 
+.vc-modal-content.vc-modal-xs { max-width: 260px;  width: calc(100% - 1rem); }
 .vc-modal-content.modal-sm { max-width: 300px;  width: calc(100% - 1rem); }
 .vc-modal-content.modal-lg { max-width: 800px;  width: calc(100% - 1rem); }
 .vc-modal-content.modal-xl { max-width: 1140px; width: calc(100% - 1rem); }
@@ -644,3 +645,37 @@
     border: 1px solid var(--vc-color-info-600);
     color: var(--vc-color-info-700);
 }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * Size: `xs` gap-fill. Bulma ships `is-small` / `is-medium` / `is-large` but
+ * nothing below `is-small`. The vuecs size axis adds `xs`; these helpers
+ * supply it. Bulma controls scale padding in `em`, so a font-size reduction
+ * shrinks the whole control. The element-qualified control selectors (0,2,0)
+ * beat Bulma's `.is-small` (0,1,0) without `!important`; `.vc-fs-xs` carries
+ * `!important` because it stands in for Bulma's `.is-size-7`, which is itself
+ * `!important`. Referenced from the `size.xs` theme entries in
+ * `themes/bulma/src/index.ts`.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+/* Generic font shrink for text-bearing surfaces (alert, popover, tooltip,
+   menus, nav, badge, tag, control labels) — one notch below `is-size-7`. */
+.vc-fs-xs { font-size: 0.65rem !important; }
+
+/* Controls whose font-size resolves from `var(--bulma-control-size)` (button,
+   input, textarea, select trigger). A direct font-size wins over the shared
+   `font-size: var(--bulma-control-size)` rule; padding is `em`-based so it
+   scales with it. */
+.button.vc-size-xs,
+.input.vc-size-xs,
+.textarea.vc-size-xs {
+    font-size: 0.65rem;
+}
+
+/* Pagination — the vuecs root is `.pagination-list`, and the size-bearing
+   `.pagination-link` children read `--bulma-control-size`, so set that var
+   (a plain font-size on the list wouldn't override the children's own rule). */
+.pagination-list.vc-size-xs { --bulma-control-size: 0.65rem; }
+
+/* `<VCTags>` container — Bulma's `.are-*` family has no step below the
+   default; shrink the child chips for the `xs` container size. */
+.tags.vc-size-xs .tag { font-size: 0.65rem; }

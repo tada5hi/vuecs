@@ -136,6 +136,11 @@
    Bootstrap's `form-control-{sm,lg}` and Tailwind's per-size utilities both
    sit in CSS layers we'd lose to (Bootstrap unlayered for some rules, Tailwind
    utilities for others), so we ship dedicated structural helpers. */
+.vc-form-select-trigger-xs {
+    padding: 0.125rem 0.4rem;
+    font-size: 0.7rem;
+    line-height: 0.9rem;
+}
 .vc-form-select-trigger-sm {
     padding: 0.25rem 0.5rem;
     font-size: 0.75rem;

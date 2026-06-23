@@ -4,7 +4,7 @@ export type Options = CoreOptions;
 
 export type ButtonColor = 'primary' | 'neutral' | 'success' | 'warning' | 'error' | 'info';
 export type ButtonVariant = 'solid' | 'soft' | 'outline' | 'ghost' | 'link';
-export type ButtonSize = 'sm' | 'md' | 'lg';
+export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg';
 
 export type ButtonThemeClasses = {
     root: string;

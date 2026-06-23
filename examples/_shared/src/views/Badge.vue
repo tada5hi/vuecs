@@ -2,7 +2,7 @@
 import { VCBadge } from '@vuecs/elements';
 
 withDefaults(defineProps<{
-    size?: 'sm' | 'md' | 'lg';
+    size?: 'xs' | 'sm' | 'md' | 'lg';
     variant?: 'solid' | 'soft' | 'outline';
     color?: 'primary' | 'neutral' | 'success' | 'warning' | 'error' | 'info';
 }>(), {

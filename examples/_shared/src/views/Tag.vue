@@ -16,7 +16,7 @@ const tags = ref([
 // pull the value from themeVariant rather than passing themeVariant
 // (themeVariant.size on Tags only scales the wrapper gap, not the
 // children's chip size).
-const tagSize = computed(() => props.themeVariant?.size as 'sm' | 'md' | 'lg' | undefined);
+const tagSize = computed(() => props.themeVariant?.size as 'xs' | 'sm' | 'md' | 'lg' | undefined);
 
 function remove(value: string | number | undefined) {
     tags.value = tags.value.filter((t) => t.value !== value);

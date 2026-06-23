@@ -33,9 +33,10 @@
 }
 
 /*
- * Size variant classes — referenced by the `avatar.size.{sm,md,lg}` theme
+ * Size variant classes — referenced by the `avatar.size.{xs,sm,md,lg}` theme
  * variant entries.
  */
+.vc-avatar-xs { width: 1.5rem; height: 1.5rem; }
 .vc-avatar-sm { width: 2rem; height: 2rem; }
 .vc-avatar-md { width: 2.5rem; height: 2.5rem; }
 .vc-avatar-lg { width: 3.5rem; height: 3.5rem; }

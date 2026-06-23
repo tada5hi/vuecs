@@ -99,6 +99,14 @@
 }
 
 /* Size helpers — themes drive these via `formRadio.variants.size.{sm,lg}`. */
+.vc-form-radio-xs {
+    width: 0.625rem;
+    height: 0.625rem;
+}
+.vc-form-radio-xs .vc-form-radio-indicator {
+    width: 0.3125rem;
+    height: 0.3125rem;
+}
 .vc-form-radio-sm {
     width: 0.75rem;
     height: 0.75rem;

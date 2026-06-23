@@ -214,38 +214,73 @@ unless the variant is structural (e.g. orientation-driven layout).
 
 | Component | Axis | Values | Notes |
 |---|---|---|---|
-| Button | `variant` × `color` × `size` | solid/outline/soft/ghost/link × primary/neutral/success/warning/error/info × sm/md/lg | Full matrix via `compoundVariants` |
-| Badge | `variant` × `color` × `size` | solid/soft/outline × six semantic colors × sm/md/lg | Mirrors button |
+| Button | `variant` × `color` × `size` | solid/outline/soft/ghost/link × primary/neutral/success/warning/error/info × xs/sm/md/lg | Full matrix via `compoundVariants` |
+| Badge | `variant` × `color` × `size` | solid/soft/outline × six semantic colors × xs/sm/md/lg | Mirrors button |
 | Card | `variant` × `interactive` | outline/soft/elevated × boolean | theme-tailwind uses `border + bg-bg` / `bg-bg-muted` / `shadow-md`; theme-bootstrap composes `.card` + `shadow` / `bg-body-tertiary`; theme-bulma uses `.box` + `vc-card-outline` gap-fill |
 | CardHeader / CardBody / CardFooter | `padding` | compact/normal/spacious | Set once on `<VCCard padding="…">` and propagated to bands via `provideCardContext()`; per-band props win over the inherited value |
-| Alert | `variant` × `color` × `size` | solid/soft/outline × neutral/info/success/warning/error × sm/md/lg | 15-cell `compoundVariants` matrix; `<VCAlertClose>` reuses `closeIcon` / `close` slots on the `alert` element (no separate theme key) |
+| Alert | `variant` × `color` × `size` | solid/soft/outline × neutral/info/success/warning/error × xs/sm/md/lg | 15-cell `compoundVariants` matrix; `<VCAlertClose>` reuses `closeIcon` / `close` slots on the `alert` element (no separate theme key) |
 | CollapseTrigger | `chevron` | auto/none | Drives visibility of the auto-rendered chevron icon (Iconify name from `ComponentDefaults['collapseTrigger'].chevronIcon`) |
-| Tag | `size` | sm/md/lg | Matches badge sizing |
-| Avatar | `size` | sm/md/lg | Theme-bootstrap uses `vc-avatar-{sm,lg}` helpers |
-| Pagination | `variant` × `size` | outline/soft/ghost × sm/md/lg | |
+| Tag | `size` | xs/sm/md/lg | Matches badge sizing |
+| Avatar | `size` | xs/sm/md/lg | Theme-bootstrap uses `vc-avatar-{sm,lg}` helpers |
+| Pagination | `variant` × `size` | outline/soft/ghost × xs/sm/md/lg | |
 | Table | `density` × `striped` × `bordered` × `hover` × `stickyHeader` | compact/normal/spacious × boolean × boolean × boolean × boolean | Whole-table chrome; sortable headers driven by per-column `:sortable` |
 | TableRow | `disabled` / `selected` / `focused` / `rowVariant` | boolean × boolean × boolean × success/warning/error/info/neutral/primary | `rowVariant` resolved from `row._rowVariant` (plan 028) |
 | TableCell | `align` / `stickyColumn` / `cellVariant` | left/center/right × boolean × six semantic colors | `cellVariant` resolved from `row._cellVariants[columnKey]` |
 | TableHeadCell | `align` / `stickyColumn` / `sorted` | left/center/right × boolean × asc/desc/none | `sorted` drives the indicator span + `aria-sort` |
 | TableEmpty | `filtered` | boolean | Distinct copy / style for empty-after-filter vs empty-no-data |
 | TableLoading | `overlay` | boolean | In-table band default vs absolute overlay for refresh-feedback |
-| FormInput / FormTextarea / FormSelect / FormNumber / FormTags / FormSelectSearch | `size` × `severity` | sm/md/lg × error/warning | theme-tailwind uses padding+font utilities + `border-error/warning-500` rings; theme-bootstrap uses `form-control-{sm,lg}` (+ `is-invalid` for both severities — BS5 doesn't ship a soft variant); theme-bulma uses `is-small/large` + native `is-danger`/`is-warning`. `severity` is folded in automatically from the surrounding `<VCFormGroup>` via `provideFormGroupContext` — no per-input wiring. |
-| FormCheckbox / FormSwitch / FormRadio | `size` | sm/md/lg | theme-bootstrap uses `vc-form-{checkbox,switch,radio}-{sm,lg}` helpers from @vuecs/forms structural CSS |
-| Modal | `size` | sm/md/lg/xl | theme-tailwind uses `max-w-*`; theme-bootstrap uses `modal-{sm,lg,xl}` |
-| Popover / HoverCard | `size` | sm/md/lg | Width + padding tier |
-| Tooltip | `size` | sm/md/lg | Padding + font-size only |
-| DropdownMenu / ContextMenu | `size` | sm/md/lg | Item padding + min-width |
+| FormInput / FormTextarea / FormSelect / FormNumber / FormTags | `size` × `severity` | xs/sm/md/lg × error/warning | theme-tailwind uses padding+font utilities + `border-error/warning-500` rings; theme-bootstrap uses `form-control-{sm,lg}` (+ `is-invalid` for both severities — BS5 doesn't ship a soft variant); theme-bulma uses `is-small/large` + native `is-danger`/`is-warning`. `severity` is folded in automatically from the surrounding `<VCFormGroup>` via `provideFormGroupContext` — no per-input wiring. |
+| FormSelectSearch | `severity` only | error/warning | No `size` axis (theme entry ships `severity` only) — the search box inherits its sizing from surrounding layout, not a size variant. |
+| FormCheckbox / FormSwitch / FormRadio | `size` | xs/sm/md/lg | theme-bootstrap uses `vc-form-{checkbox,switch,radio}-{sm,lg}` helpers from @vuecs/forms structural CSS |
+| Modal | `size` | xs/sm/md/lg/xl | theme-tailwind uses `max-w-*`; theme-bootstrap uses `modal-{sm,lg,xl}` |
+| Popover / HoverCard | `size` | xs/sm/md/lg | Width + padding tier |
+| Tooltip | `size` | xs/sm/md/lg | Padding + font-size only |
+| DropdownMenu / ContextMenu | `size` | xs/sm/md/lg | Item padding + min-width |
 | Toast | `color` × `variant` | six semantic colors × solid/soft/outline | Mirrors Badge color × variant matrix |
 | ToastViewport | `position` | top-{left,right,center}/bottom-{left,right,center} | Six positions; default `top-right` |
 | List / ListItem | `density` | compact/normal/spacious | Gap + per-row padding |
 | ListItem | `disabled` / `active` / `selected` | boolean | Folded into `themeVariant` from `<VCListItem>`'s props + derived selection state |
 | ListLoading | `overlay` | boolean | Refresh-feedback mode — absolute-positioned overlay |
-| Navigation | `size` | sm/md/lg | Link padding + icon size |
-| Stepper | `size` | sm/md/lg | Indicator + title scale; theme-bootstrap uses `vc-stepper-indicator-{sm,lg}` |
+| Navigation | `size` | xs/sm/md/lg | Link padding + icon size |
+| Stepper | `size` | xs/sm/md/lg | Indicator + title scale; theme-bootstrap uses `vc-stepper-indicator-{sm,lg}` |
 
 Components with NO theme variants today: VCSeparator, VCAspectRatio,
 VCVisuallyHidden, VCFormPin, VCFormSlider, VCGravatar, VCCountdown,
 VCTimeago, VCLink (Link has no theme system at all yet).
+
+#### The `xs` size tier
+
+The `size` axis runs `xs / sm / md / lg` (Modal additionally has `xl`);
+`md` stays the default for every component. `xs` was added beneath `sm`
+as a purely additive tier — no existing call site or default changes.
+The five typed size unions carry it (`ButtonSize`, `BadgeSize`,
+`TagSize`, `AvatarSize`, `AlertSize`); every other size-axis component
+takes size via the loose `themeVariant` record, so only the theme
+entries needed touching.
+
+Because **Bootstrap 5 and Bulma ship no native size step below `sm`**
+(`btn-sm` / `is-small` are the floor), the `xs` tier is gap-fill:
+
+- **Structural helpers** (theme-agnostic, in the component packages) gain
+  an `xs` peer beside the existing `sm` / `lg`:
+  `vc-avatar-xs`, `vc-form-{checkbox,switch,radio}-xs`,
+  `vc-form-select-trigger-xs`, `vc-stepper-indicator-xs`. All three
+  themes reference these by name.
+- **theme-tailwind** needs no CSS — it emits one-notch-smaller utility
+  classes inline (e.g. button `px-2 py-0.5 text-[0.7rem]`).
+- **theme-bootstrap** / **theme-bulma** each ship a small set of bridge
+  helpers in their `assets/index.css` (`vc-fs-xs`, plus
+  `vc-btn-xs` / `vc-pagination-xs` / `vc-form-control-xs` for Bootstrap,
+  and `vc-size-xs` for Bulma's `--bulma-control-size`-driven controls).
+  Modal `xs` is a distinct narrower tier (260px) added via
+  `.vc-modal-content.vc-modal-xs`, following each bridge's existing
+  `.vc-modal-content.modal-{sm,lg,xl}` width re-implementation (Reka's
+  dialog content has no `.modal-dialog` wrapper for native BS/Bulma
+  modal sizing).
+  The Bootstrap helpers tighten the relevant `--bs-*` CSS variables;
+  the Bulma helpers reduce font-size (Bulma scales control padding in
+  `em`). Same "bridge what the framework exposes, gap-fill what it
+  doesn't" doctrine as the rest of those bridges.
 
 ### Type-Safe Theme Slots (ThemeElements)
 
