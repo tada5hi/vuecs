@@ -65,8 +65,5 @@
         "lint": "eslint",
         "lint:fix": "npm run lint -- --fix",
         "prepare": "husky"
-    },
-    "overrides": {
-        "vue": "^3.5.38"
     }
 }

@@ -481,7 +481,7 @@ export default defineComponent({
             if (!currentIsEmpty) return;
             let finalSeed = seeds;
             if (props.expansionMode === 'single' && seeds.length > 1) {
-                if (process.env.NODE_ENV !== 'production') {
+                if ((globalThis as { process?: { env?: { NODE_ENV?: string } } }).process?.env?.NODE_ENV !== 'production') {
                     // eslint-disable-next-line no-console
                     console.warn(
                         '[VCTable] :expansion-mode="single" but multiple rows carry _expanded: true — using the first.',

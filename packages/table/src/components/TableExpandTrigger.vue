@@ -62,7 +62,7 @@ export default defineComponent({
         const expansion = rowCtx?.expansion ?? null;
 
         if (!expansion) {
-            if (process.env.NODE_ENV !== 'production') {
+            if ((globalThis as { process?: { env?: { NODE_ENV?: string } } }).process?.env?.NODE_ENV !== 'production') {
                 // eslint-disable-next-line no-console
                 console.warn('[VCTableExpandTrigger] mounted outside an expandable <VCTableRow>. Set `expandable` on the row (or `:expandable` on <VCTable>).');
             }
