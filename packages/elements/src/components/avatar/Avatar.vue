@@ -1,6 +1,11 @@
 <script lang="ts">
 import { defineComponent, h, mergeProps } from 'vue';
-import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
+import type { 
+    ExtractPublicPropTypes, 
+    PropType, 
+    SlotsType, 
+    VNode, 
+} from 'vue';
 import { AvatarFallback, AvatarImage, AvatarRoot } from 'reka-ui';
 import { useComponentTheme } from '@vuecs/core';
 import type {
@@ -74,7 +79,7 @@ export default defineComponent({
         const theme = useComponentTheme('avatar', themeProps, avatarThemeDefaults);
         return () => {
             const resolved = theme.value;
-            const children = [];
+            const children: VNode[] = [];
             if (props.src) {
                 children.push(h(AvatarImage, {
                     src: props.src,

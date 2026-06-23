@@ -17,7 +17,6 @@ import {
     provide,
     ref,
     resolveComponent,
-    toRef,
     watch,
 } from 'vue';
 import {
@@ -127,7 +126,13 @@ export const VCNavItem = defineComponent({
 
         const theme = useComponentTheme('navigation', themeProps, navigationThemeDefaults);
 
-        const data = toRef(props, 'data');
+        // `data` is `required: true`, so it's always present at runtime. The
+        // non-null assertion is needed because `defineComponent` widens
+        // required props declared via a separate `const` props object to
+        // `| undefined` in `setup` under strict (a Vue/TS inference quirk —
+        // inline prop objects don't exhibit it). Asserting here keeps every
+        // downstream `data.value` read clean instead of scattering `!`.
+        const data = computed(() => props.data!);
         const hasChildren = computed(() => data.value.children &&
             data.value.children.length > 0);
 

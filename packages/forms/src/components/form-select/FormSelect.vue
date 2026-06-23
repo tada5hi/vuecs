@@ -164,7 +164,9 @@ export default defineComponent({
         const renderItems = (): VNodeChild[] => {
             const classes = theme.value;
             const items: VNodeChild[] = [];
-            for (const item of props.options) {
+            // `options` is `required: true`; the `!` counters the separate-const
+            // props widening to `| undefined` under strict.
+            for (const item of props.options!) {
                 if (isFormOptionGroup(item)) {
                     items.push(renderGroup(item, classes));
                 } else {

@@ -120,7 +120,7 @@ export function composeTableInner(opts: {
      * typed `defineComponent({ slots: SlotsType<{…}> })` setup
      * argument without TS rejecting the assignment.
      */
-    slots?: Record<string, ((slotProps?: unknown) => unknown) | undefined>;
+    slots?: Record<string, ((...args: any[]) => unknown) | undefined>;
     /**
      * Current sort state. Forwarded to the `#header-<key>` slot props
      * (`sort` field) so consumers can render their own indicator. Only
@@ -301,12 +301,14 @@ export function composeTableInner(opts: {
     if (autoRender && !hasBody) {
         inner.push(h(VCTableBody, null, {
             row: ({ row, index }: { row: unknown; index: number }) => {
-                const rowProps = expandable ? {
-                    row,
-                    index,
-                    expandable: true,
-                    expandableTrigger,
-                } : { row, index };
+                // Flat `Record` (not a `{…} | {…}` union) so vue-tsc's `h()`
+                // overload resolution accepts it — a union props arg trips the
+                // typed-component overload under strict.
+                const rowProps: Record<string, unknown> = { row, index };
+                if (expandable) {
+                    rowProps.expandable = true;
+                    rowProps.expandableTrigger = expandableTrigger;
+                }
                 const rowSlots: Record<string, (slotProps?: unknown) => unknown> = {
                     default: () => cols.map((col) => {
                         const cellProps = {

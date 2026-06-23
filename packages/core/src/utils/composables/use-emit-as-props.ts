@@ -1,6 +1,10 @@
 import { camelize, getCurrentInstance, toHandlerKey } from 'vue';
 
-type EmitFn = (event: string, ...args: any[]) => void;
+// `(...args: any[]) => void` rather than `(event: string, ...)` so a typed
+// `emit` whose event is a literal union (e.g. `(event: 'update:open', …) => void`,
+// as Vue infers from `emits: ['update:open']`) still satisfies the constraint.
+// A `string` event param would reject it under strict (parameter contravariance).
+type EmitFn = (...args: any[]) => void;
 
 /**
  * Converts a component's declared `emits` array into a map of `onEventName`

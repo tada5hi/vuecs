@@ -18,9 +18,11 @@ export type FormSelectSearchEntryProps = ExtractPublicPropTypes<typeof formSelec
 export default defineComponent({
     props: formSelectSearchEntryProps,
     setup(props) {
+        // `entry` is `required: true`; the `!` counters the separate-const
+        // props widening to `| undefined` under strict.
         const active = computed(
             () => props.selected &&
-                props.selected.findIndex((el) => el.value === props.entry.value) !== -1,
+                props.selected.findIndex((el) => el.value === props.entry!.value) !== -1,
         );
 
         return { active };
@@ -33,6 +35,6 @@ export default defineComponent({
         :entry="entry"
         :active="active"
     >
-        {{ entry.label }}
+        {{ entry?.label }}
     </slot>
 </template>

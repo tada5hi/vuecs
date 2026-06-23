@@ -106,7 +106,10 @@ export function useForwardExpose() {
                     get: () => childExposed[key],
                 });
             }
-            instance.exposed = merged;
+            // `instance` is non-null (guarded with a throw at the top of
+            // `useForwardExpose`); the `!` restores that narrowing, which TS
+            // drops inside this closure.
+            instance!.exposed = merged;
         }
     }
 
