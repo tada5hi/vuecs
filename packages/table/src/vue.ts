@@ -13,7 +13,7 @@ import type VCTableRow from './components/TableRow.vue';
 import type VCTableRowExpansion from './components/TableRowExpansion.vue';
 import type VCTableSortIndicators from './components/TableSortIndicators.vue';
 
-declare module '@vue/runtime-core' {
+declare module 'vue' {
     export interface GlobalComponents {
         VCTable: typeof VCTable;
         VCTableLite: typeof VCTableLite;

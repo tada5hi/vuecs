@@ -222,7 +222,7 @@ export default defineComponent({
             setItemsDisplayed();
         });
 
-        useInfiniteScroll(listElement, () => {
+        useInfiniteScroll(() => listElement.value, () => {
             showMoreItemsDisplayed();
         }, {
             canLoadMore() {
@@ -313,9 +313,9 @@ export default defineComponent({
             isDisplayed.value = false;
         };
 
-        onClickOutside(listElement, () => {
+        onClickOutside(() => listElement.value, () => {
             hide();
-        }, { ignore: [inputElement] });
+        }, { ignore: () => [inputElement.value] });
 
         const onFocus = () => {
             q.value = '';

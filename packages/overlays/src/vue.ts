@@ -56,7 +56,7 @@ import type VCTooltipContent from './components/tooltip/TooltipContent.vue';
 import type VCTooltipProvider from './components/tooltip/TooltipProvider.vue';
 import type VCTooltipTrigger from './components/tooltip/TooltipTrigger.vue';
 
-declare module '@vue/runtime-core' {
+declare module 'vue' {
     export interface GlobalComponents {
         VCPresence: typeof VCPresence,
         VCModal: typeof VCModal,

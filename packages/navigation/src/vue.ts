@@ -10,7 +10,7 @@ import type {
     VCStepperTrigger,
 } from './components';
 
-declare module '@vue/runtime-core' {
+declare module 'vue' {
     export interface GlobalComponents {
         VCNavItem: typeof VCNavItem,
         VCNavItems: typeof VCNavItems,

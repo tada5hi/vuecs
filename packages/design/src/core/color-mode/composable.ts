@@ -33,13 +33,17 @@ export const useColorMode = createSharedComposable(
             syncClass = true,
         } = options;
 
+        // `useStorage` returns `RemovableRef<T>` (= `Ref<T, T | null | undefined>`)
+        // whose nullable setter is no longer assignable to a plain `Ref<T>`
+        // under Vue 3.5's two-parameter `Ref<T, S>`. We never write null, so
+        // bridging it to `Ref<ColorMode>` is runtime-safe.
         const storage: Ref<ColorMode> = persist ?
             useStorage<ColorMode>(storageKey, initial, undefined, {
                 serializer: {
                     read: (raw) => sanitize(raw, initial),
                     write: (value) => value,
                 },
-            }) :
+            }) as unknown as Ref<ColorMode> :
             ref<ColorMode>(initial);
 
         return bindColorMode(storage, { syncClass });
