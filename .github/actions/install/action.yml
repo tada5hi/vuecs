@@ -17,17 +17,6 @@ runs:
                 node-version: ${{ inputs.node-version }}
                 registry-url: ${{ inputs.registry-url }}
 
-        # The lockfile is generated and validated with npm 11. Node 22 ships
-        # npm 10, whose `npm ci` treats a transitive *optional* peer conflict
-        # (`unbuild`'s `peerOptional typescript@^5.9.2` vs our `typescript@^6`)
-        # as a fatal ERESOLVE; npm 11 downgraded that to a warning. Pin npm to
-        # 11 so CI installs the lockfile exactly as it resolves locally — no
-        # dependency-tree change, just a more lenient (and lockfile-matching)
-        # installer. Drop this once `unbuild` widens its TypeScript peer range.
-        -   name: Pin npm
-            shell: bash
-            run: npm install -g npm@11
-
         -   name: Use cache
             uses: actions/cache@v4
             with:
