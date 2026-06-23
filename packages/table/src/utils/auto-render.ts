@@ -190,7 +190,7 @@ export function composeTableInner(opts: {
     // is visible — fixing it requires either consumer-side
     // `<VCTableHeadCell aria-hidden>` or switching to auto-header.
     if (
-        process.env.NODE_ENV !== 'production' &&
+        (globalThis as { process?: { env?: { NODE_ENV?: string } } }).process?.env?.NODE_ENV !== 'production' &&
         autoRender && hasHeader && !hasBody && injectTrigger
     ) {
         // eslint-disable-next-line no-console
