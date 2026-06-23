@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.1.5](https://github.com/tada5hi/vuecs/compare/pagination-v2.1.4...pagination-v2.1.5) (2026-06-23)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.2.1 to ^3.2.2
+  * peerDependencies
+    * @vuecs/core bumped from ^3.2.1 to ^3.2.2
+
 ## [2.1.4](https://github.com/tada5hi/vuecs/compare/pagination-v2.1.3...pagination-v2.1.4) (2026-06-23)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.2](https://github.com/tada5hi/vuecs/compare/core-v3.2.1...core-v3.2.2) (2026-06-23)
+
+
+### Bug Fixes
+
+* build declarations under strict so polymorphic as/tag prop types survive ([#1650](https://github.com/tada5hi/vuecs/issues/1650)) ([5f6838e](https://github.com/tada5hi/vuecs/commit/5f6838e81444b219d6e2fe81217fbfd3291966d3))
+
 ## [3.2.1](https://github.com/tada5hi/vuecs/compare/core-v3.2.0...core-v3.2.1) (2026-06-23)
 
 

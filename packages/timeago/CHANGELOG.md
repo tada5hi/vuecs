@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.1.2](https://github.com/tada5hi/vuecs/compare/timeago-v2.1.1...timeago-v2.1.2) (2026-06-23)
+
+
+### Bug Fixes
+
+* build declarations under strict so polymorphic as/tag prop types survive ([#1650](https://github.com/tada5hi/vuecs/issues/1650)) ([5f6838e](https://github.com/tada5hi/vuecs/commit/5f6838e81444b219d6e2fe81217fbfd3291966d3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.2.1 to ^3.2.2
+  * peerDependencies
+    * @vuecs/core bumped from ^3.2.1 to ^3.2.2
+
 ## [2.1.1](https://github.com/tada5hi/vuecs/compare/timeago-v2.1.0...timeago-v2.1.1) (2026-06-23)
 
 

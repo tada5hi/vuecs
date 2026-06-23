@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/theme-bootstrap",
-    "version": "7.0.2",
+    "version": "7.0.3",
     "type": "module",
     "description": "Bootstrap theme for vuecs components. Currently targets Bootstrap 5; the version number tracks vuecs theme breaking changes, not Bootstrap's.",
     "exports": {
@@ -41,21 +41,21 @@
         "test:coverage": "vitest --config test/vitest.config.ts --run --coverage"
     },
     "devDependencies": {
-        "@vuecs/button": "^1.1.0",
-        "@vuecs/core": "^3.2.1",
-        "@vuecs/countdown": "^2.0.5",
-        "@vuecs/elements": "^1.2.4",
-        "@vuecs/forms": "^5.2.2",
-        "@vuecs/gravatar": "^2.0.6",
-        "@vuecs/list": "^1.0.5",
-        "@vuecs/navigation": "^4.0.3",
-        "@vuecs/overlays": "^1.1.1",
-        "@vuecs/pagination": "^2.1.4",
-        "@vuecs/placeholder": "^1.0.5",
-        "@vuecs/timeago": "^2.1.1"
+        "@vuecs/button": "^1.1.1",
+        "@vuecs/core": "^3.2.2",
+        "@vuecs/countdown": "^2.0.6",
+        "@vuecs/elements": "^1.2.5",
+        "@vuecs/forms": "^5.2.3",
+        "@vuecs/gravatar": "^2.0.7",
+        "@vuecs/list": "^1.0.6",
+        "@vuecs/navigation": "^4.0.4",
+        "@vuecs/overlays": "^1.1.2",
+        "@vuecs/pagination": "^2.1.5",
+        "@vuecs/placeholder": "^1.0.6",
+        "@vuecs/timeago": "^2.1.2"
     },
     "peerDependencies": {
-        "@vuecs/core": "^3.2.1"
+        "@vuecs/core": "^3.2.2"
     },
     "engines": {
         "node": ">=22.0.0"
