@@ -57,7 +57,11 @@ export const VCTimeago = defineComponent({
     setup(props) {
         const theme = useComponentTheme('timeago', props, timeagoThemeDefaults);
 
-        const dateTimeProp = toRef(props, 'datetime');
+        // `datetime` is `required: true`; `computed(() => props.datetime!)`
+        // (not `toRef`) keeps the resolved type non-`undefined` under strict —
+        // `defineComponent` widens required props from a separate `const` props
+        // object to `| undefined` in `setup`.
+        const dateTimeProp = computed(() => props.datetime!);
         const localeProp = toRef(props, 'locale');
         const titleProp = toRef(props, 'title');
         const autoUpdateProp = toRef(props, 'autoUpdate');

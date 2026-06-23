@@ -3,7 +3,10 @@ import type { ComputedRef } from 'vue';
 import { useEmitAsProps } from './use-emit-as-props';
 import { useForwardProps } from './use-forward-props';
 
-type EmitFn = (event: string, ...args: any[]) => void;
+// See `use-emit-as-props.ts` — a literal-union event param (Vue's inferred
+// `emit` type) must satisfy this constraint under strict, which `event: string`
+// rejects via parameter contravariance.
+type EmitFn = (...args: any[]) => void;
 
 /**
  * Combines `useForwardProps` and `useEmitAsProps` into one ComputedRef

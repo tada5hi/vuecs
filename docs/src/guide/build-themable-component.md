@@ -269,7 +269,7 @@ const myDataTableProps = {
     density: { type: String as PropType<MyDataTableDensity>, default: undefined },
 
     /** HTML tag (e.g. `'section'`) or component (e.g. `RouterLink`) to render. */
-    as: { type: [String, Object] as PropType<string | Component>, default: 'div' },
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'div' },
     /** Render the consumer's slot child as the root (asChild pattern). */
     asChild: { type: Boolean, default: false },
 
@@ -335,7 +335,11 @@ Now the consumer can:
 </template>
 ```
 
-The third form passes a Vue component to `as`. `<VCPrimitive>` then renders `h(RouterLink, mergedAttrs, { default: () => <the table chrome> })` — the entire table is wrapped in a `<RouterLink>`, making it clickable. Component-form `as` requires the prop type to accept both strings and components (`type: [String, Object] as PropType<string | Component>`).
+The third form passes a Vue component to `as`. `<VCPrimitive>` then renders `h(RouterLink, mergedAttrs, { default: () => <the table chrome> })` — the entire table is wrapped in a `<RouterLink>`, making it clickable. Component-form `as` requires the prop type to accept both strings and components (`type: [String, Object, Function] as PropType<string | Component>`).
+
+::: tip Build your declarations with `strict: true`
+A polymorphic `as` prop that also declares a Vue `default` becomes a key of the generated component's internal `Defaults` type, and `vue-tsc` bakes that type when emitting `.d.ts`. Under `strict: false` the bake is lossy — `$props.as` collapses to plain `string`, dropping the component arm, so `<MyDataTable :as="RouterLink">` fails to type-check in a consumer's `vue-tsc` / `nuxi typecheck` build. Building declarations with `strict: true` (vuecs's `tsconfig.build.json` does) keeps the full union: `$props.as` stays `string | Component | undefined` and no per-prop cast is needed. See [issue #1649](https://github.com/tada5hi/vuecs/issues/1649).
+:::
 
 `<VCPrimitive>` also accepts an `asChild` prop: instead of rendering its own element, it falls through to the consumer's slot child and merges the wrapper's class + attrs onto it. Two things to know before reaching for it:
 

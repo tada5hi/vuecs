@@ -54,7 +54,9 @@ export default defineComponent({
             // child indicators / titles can react to the parent step's
             // state without explicit attribute wiring on every child.
             {
-                step: props.step,
+                // `step` is `required: true`; the `!` counters the
+                // separate-const props widening to `| undefined` under strict.
+                step: props.step!,
                 disabled: props.disabled,
                 completed: props.completed,
                 ...mergeProps(attrs, { class: ['group', theme.value.item || undefined] }),

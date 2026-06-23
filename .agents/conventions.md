@@ -84,25 +84,39 @@ setup(props, { attrs }) {
 5. Internal-only props (e.g. `inline` for portal opt-out, `themeClass`)
    keep their concrete defaults and still get JSDoc.
 6. **`as:` / `tag:` render-target declarations widen to
-   `[String, Object, Function]`** — accept a tag name, a component
-   options object (`RouterLink` / `NuxtLink`), AND a functional
-   component (which is a plain function at runtime):
+   `[String, Object, Function]`:**
    ```ts
    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'div' },
    ```
-   Single-type `String` rejects component values at prop validation,
-   silently coercing them to the default. Omitting `Function` lets the
-   common object-component case through but emits a Vue prop-type
-   warning when a *functional* component is passed — `Component`
-   includes functional components, so the runtime constructor array
-   must list `Function` to match the declared type (#1644). This
-   diverges deliberately from upstream Reka's `Primitive` (which uses
-   `[String, Object]`) — vuecs prefers warning-free functional-component
-   support. The wider declaration is what the
-   `/guide/build-themable-component` page teaches; first-party
-   components mirror it. (Applies only to render-target props — route
-   props like `<VCLink>`'s `to`, typed `string | Record<string, any>`,
-   stay `[String, Object]`.)
+   The `[String, Object, Function]` runtime array accepts a tag name, a
+   component options object (`RouterLink` / `NuxtLink`), AND a functional
+   component (a plain function at runtime). Single-type `String` rejects
+   component values at prop validation, silently coercing them to the
+   default. Omitting `Function` lets the common object-component case
+   through but emits a Vue prop-type warning when a *functional*
+   component is passed — `Component` includes functional components, so
+   the runtime constructor array must list `Function` to match the
+   declared type (#1644). This diverges deliberately from upstream Reka's
+   `Primitive` (which uses `[String, Object]`) — vuecs prefers
+   warning-free functional-component support.
+
+   **No cast is needed on the prop entry — but the declaration build must
+   stay strict (#1649).** A polymorphic render-target prop that carries a
+   Vue `default` becomes a key of the generated `DefineComponent`'s
+   `Defaults` type parameter, and `vue-tsc` bakes that `Defaults` literal
+   when emitting declarations. Under **`strict: false`** the bake is lossy
+   — a string-literal default collapses `$props.as` to `string` (dropping
+   the `Component` arm), breaking `<VCButton :as="RouterLink">` in a
+   consumer's `vue-tsc` / `nuxi typecheck` build. Under **`strict: true`**
+   (where `tsconfig.build.json` now sits — it inherits the base
+   `@tada5hi/tsconfig` strictness the dev `tsconfig.json` already uses) the
+   bake keeps the full union: `props.as` types as `string | Component`
+   internally (the default applied) and `$props.as` as
+   `string | Component | undefined` externally. So the plain `{ type, default }`
+   pattern is correct *as long as the build stays strict* — do not flip
+   `tsconfig.build.json` back to `strict: false`. (Applies only to
+   render-target props — route props like `<VCLink>`'s `to`, typed
+   `string | Record<string, any>`, stay `[String, Object]`.)
 
 This convention applies to every Reka-wrapping component across
 `@vuecs/overlays`, `@vuecs/forms`, `@vuecs/elements`, `@vuecs/navigation`

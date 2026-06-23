@@ -42,7 +42,9 @@ export default defineComponent({
                     onSelect: (event: Event) => emit('select', event),
                     class: theme.value.radioItem || undefined,
                 }),
-                value: props.value,
+                // `value` is `required: true`; the `!` counters the
+                // separate-const props widening to `| undefined` under strict.
+                value: props.value!,
             },
             { default: () => slots.default?.() },
         );
