@@ -1,5 +1,34 @@
 # Changelog
 
+## [5.0.1](https://github.com/tada5hi/vuecs/compare/theme-bulma-v5.0.0...theme-bulma-v5.0.1) (2026-06-23)
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 12 updates ([#1639](https://github.com/tada5hi/vuecs/issues/1639)) ([4a8386c](https://github.com/tada5hi/vuecs/commit/4a8386c855b8af460f1f2a8228eb464c502ee242))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/button bumped from ^1.0.4 to ^1.1.0
+    * @vuecs/core bumped from ^3.2.0 to ^3.2.1
+    * @vuecs/countdown bumped from ^2.0.4 to ^2.0.5
+    * @vuecs/design bumped from ^1.0.4 to ^1.0.5
+    * @vuecs/elements bumped from ^1.2.3 to ^1.2.4
+    * @vuecs/forms bumped from ^5.2.1 to ^5.2.2
+    * @vuecs/gravatar bumped from ^2.0.5 to ^2.0.6
+    * @vuecs/list bumped from ^1.0.4 to ^1.0.5
+    * @vuecs/navigation bumped from ^4.0.2 to ^4.0.3
+    * @vuecs/overlays bumped from ^1.1.0 to ^1.1.1
+    * @vuecs/pagination bumped from ^2.1.3 to ^2.1.4
+    * @vuecs/placeholder bumped from ^1.0.4 to ^1.0.5
+    * @vuecs/timeago bumped from ^2.1.0 to ^2.1.1
+  * peerDependencies
+    * @vuecs/core bumped from ^3.2.0 to ^3.2.1
+    * @vuecs/design bumped from ^1.0.4 to ^1.0.5
+
 ## [5.0.0](https://github.com/tada5hi/vuecs/compare/theme-bulma-v4.0.0...theme-bulma-v5.0.0) (2026-06-11)
 
 

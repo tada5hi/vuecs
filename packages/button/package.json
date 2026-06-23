@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/button",
-    "version": "1.0.4",
+    "version": "1.1.0",
     "type": "module",
     "description": "A general-purpose button component for Vue 3.",
     "exports": {
@@ -40,13 +40,13 @@
         "build": "rimraf dist && npm run build:js && npm run build:types"
     },
     "devDependencies": {
-        "@vuecs/core": "^3.2.0",
-        "@vuecs/icon": "^1.0.1",
+        "@vuecs/core": "^3.2.1",
+        "@vuecs/icon": "^1.0.2",
         "vue": "^3.5.38"
     },
     "peerDependencies": {
-        "@vuecs/core": "^3.2.0",
-        "@vuecs/icon": "^1.0.1",
+        "@vuecs/core": "^3.2.1",
+        "@vuecs/icon": "^1.0.2",
         "vue": "^3.x"
     },
     "engines": {

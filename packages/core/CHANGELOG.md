@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.1](https://github.com/tada5hi/vuecs/compare/core-v3.2.0...core-v3.2.1) (2026-06-23)
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 12 updates ([#1639](https://github.com/tada5hi/vuecs/issues/1639)) ([4a8386c](https://github.com/tada5hi/vuecs/commit/4a8386c855b8af460f1f2a8228eb464c502ee242))
+
 ## [3.2.0](https://github.com/tada5hi/vuecs/compare/core-v3.1.2...core-v3.2.0) (2026-06-08)
 
 

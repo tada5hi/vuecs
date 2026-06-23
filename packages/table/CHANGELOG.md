@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.2.2](https://github.com/tada5hi/vuecs/compare/table-v1.2.1...table-v1.2.2) (2026-06-23)
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 12 updates ([#1639](https://github.com/tada5hi/vuecs/issues/1639)) ([4a8386c](https://github.com/tada5hi/vuecs/commit/4a8386c855b8af460f1f2a8228eb464c502ee242))
+* restore @vuecs/table type build and drop redundant vue override ([#1648](https://github.com/tada5hi/vuecs/issues/1648)) ([b101f04](https://github.com/tada5hi/vuecs/commit/b101f046ca24287604b9a4f792a68a4cdfc61a85))
+* restore build and tests under vue 3.5.38 / reka-ui 2.10.0 bump ([#1646](https://github.com/tada5hi/vuecs/issues/1646)) ([d490404](https://github.com/tada5hi/vuecs/commit/d490404d152172b454c70475dfa996d6d445c84f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.2.0 to ^3.2.1
+    * @vuecs/placeholder bumped from ^1.0.4 to ^1.0.5
+  * peerDependencies
+    * @vuecs/core bumped from ^3.2.0 to ^3.2.1
+    * @vuecs/placeholder bumped from ^1.0.4 to ^1.0.5
+
 ## [1.2.1](https://github.com/tada5hi/vuecs/compare/table-v1.2.0...table-v1.2.1) (2026-06-08)
 
 
