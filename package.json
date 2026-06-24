@@ -59,6 +59,11 @@
         "vitest": "^4.1.2",
         "vue-tsc": "~3.2.9"
     },
+    "overrides": {
+        "unbuild": {
+            "typescript": "$typescript"
+        }
+    },
     "scripts": {
         "build": "npx nx run-many -t build",
         "test": "npx nx run-many -t test",
