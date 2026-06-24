@@ -14,6 +14,7 @@
 - 📂 **Expandable rows** — `:expandable` + `#expansion` slot for inline detail panels; ResizeObserver-measured height animation, disclosure-pattern ARIA, single (accordion) or multi mode.
 - 📱 **Stacked responsive mode** — `:responsive` collapses to per-row cards below 640 px, labels read from `data-label`.
 - 🎨 **Row/cell tinting** — `_rowVariant` / `_cellVariants` row-meta keys color rows and individual cells without function props.
+- 🔤 **Typed rows** — `<VCTable>` / `<VCTableLite>` are generic over their row type, so slot props (`#cell-<key>="{ row }"`, `#expansion`, …) and `@row-click` / `getRowKey` infer the entity type from `:data` / `:columns` — no `as` cast.
 - 🪶 **`<VCTableLite>`** — same driver, theme wiring, and auto-render, minus sort/selection state — perfect under tanstack-table.
 - 🦴 **`<VCTablePlaceholder>`** — matching skeleton for loading states.
 

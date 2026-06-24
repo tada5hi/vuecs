@@ -215,6 +215,57 @@ the slot wins over the column's `formatter` if both are set.
 `<colgroup>` element at the top of the `<table>`, before the header
 band.
 
+## Typed rows & slots
+
+`<VCTable>` and `<VCTableLite>` are **generic over their row type**.
+`Row` is inferred from `:data` (or `:columns`) at the call site and
+flows into every row-bearing slot prop — no explicit annotation, no
+`as` cast:
+
+```vue
+<script setup lang="ts">
+import { VCTable } from '@vuecs/table';
+import type { TableColumn } from '@vuecs/table';
+
+interface User { id: number; name: string; email: string }
+const users: User[] = [/* … */];
+const columns: TableColumn<User>[] = [{ key: 'name' }, { key: 'email' }];
+</script>
+
+<template>
+    <VCTable :data="users" :columns="columns">
+        <template #cell-name="{ row }">
+            <!-- `row` is `User` — `row.email` autocompletes + type-checks -->
+            <a :href="`mailto:${row.email}`">{{ row.name }}</a>
+        </template>
+        <template #expansion="{ row }">
+            {{ row.email }}
+        </template>
+    </VCTable>
+</template>
+```
+
+The same inference reaches `#default` (`{ data }`, i.e. `data: Row[]`),
+`#header-<key>` (`{ column }`, where `column` is `TableColumn<User>`),
+`#expansion` (`<VCTable>` only), and the `@row-click` / `getRowKey`
+callbacks. When neither `:data` nor `:columns` is typed, `Row` falls
+back to `Record<string, unknown>`, so untyped call sites keep working.
+
+The generic is surfaced by re-typing the component's public surface
+(the runtime stays a plain `defineComponent` render-function component
+per vuecs's [conventions](/guide/) — no `<script setup generic>`). The
+slot-prop types (`TableSlotProps<Row>`, `TableCellSlotProps<Row>`,
+`TableHeadCellSlotProps<Row>`, `TableExpansionSlotProps<Row>`) are
+exported, so render-function consumers can reference them directly.
+
+::: tip
+The manual-compound parts (`<VCTableRow>`, `<VCTableCell>`,
+`<VCTableHeadCell>`) are **not** generic — when you hand-write the
+compound markup instead of using the `:columns` / `#cell-<key>` driver,
+the row inside `<VCTableBody>`'s `#row` slot is untyped (`unknown`) and
+you cast it yourself. The generic typing covers the driver path.
+:::
+
 ## Row selection
 
 `<VCTable :selection-mode>` enables row selection with the W3C ARIA

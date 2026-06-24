@@ -8,11 +8,12 @@ import {
     toRef,
     watch,
 } from 'vue';
-import type { 
-    Component, 
-    ExtractPublicPropTypes, 
-    PropType, 
-    SlotsType, 
+import type {
+    Component,
+    ExtractPublicPropTypes,
+    PropType,
+    PublicProps,
+    SlotsType,
 } from 'vue';
 import { themableProps, useComponentTheme, useThemeProps } from '@vuecs/core';
 import {
@@ -22,6 +23,7 @@ import {
 import { useRowSelectionMachine } from '../composables/selection';
 import type { RowSelectionKey } from '../composables/selection';
 import type {
+    GenericComponentShape,
     TableCellSlotProps,
     TableColumn,
     TableColumnRaw,
@@ -95,6 +97,32 @@ const tableLiteProps = {
 
 export type TableLiteProps = ExtractPublicPropTypes<typeof tableLiteProps>;
 
+// ──────────────────────────────────────────────────────────────────────────
+// Generic-over-`Row` facade (issue #1601). Same mechanism as `<VCTable>`
+// — see `GenericComponentShape` in `../types`. Lite has no emits and no
+// expansion slot, so the generic surface is just the row-bearing props
+// + the cell / header / default slots.
+// ──────────────────────────────────────────────────────────────────────────
+
+interface TableLiteSlots<Row> {
+    default?: (props: TableSlotProps<Row>) => unknown;
+    caption?: () => unknown;
+    colgroup?: () => unknown;
+    [cellSlot: `cell-${string}`]: (props: TableCellSlotProps<Row>) => unknown;
+    [headerSlot: `header-${string}`]: (props: TableHeadCellSlotProps<Row>) => unknown;
+}
+
+type TableLitePropsGeneric<Row> =    & Omit<TableLiteProps, 'data' | 'columns'> &
+    {
+        data?: Row[];
+        columns?: TableColumnRaw<Row>[];
+    } &
+    PublicProps;
+
+type VCTableLiteComponent = <Row = Record<string, unknown>>(
+    ...args: Parameters<GenericComponentShape<TableLitePropsGeneric<Row>, TableLiteSlots<Row>>>
+) => ReturnType<GenericComponentShape<TableLitePropsGeneric<Row>, TableLiteSlots<Row>>>;
+
 // Sort state is `SortDescriptor[]` since v1.x-B — empty array means
 // "no sort", which is the permanent state for Lite.
 const NOOP_SORT_STATE = ref([]);
@@ -106,7 +134,7 @@ const NOOP_SORT_STATE = ref([]);
 const NOOP_SELECTION_MODE = computed<undefined>(() => undefined);
 const NOOP_SELECTION_VALUE = computed<null>(() => null);
 
-export default defineComponent({
+const VCTableLite = defineComponent({
     name: 'VCTableLite',
     inheritAttrs: false,
     props: tableLiteProps,
@@ -280,4 +308,8 @@ export default defineComponent({
         };
     },
 });
+
+// Runtime is the `defineComponent` above; the cast only re-types the
+// public surface as generic-over-`Row`. Identical at runtime.
+export default VCTableLite as unknown as VCTableLiteComponent;
 </script>

@@ -2137,6 +2137,30 @@ parts (`<VCTableHeader>` / `<VCTableBody>` / `<VCTableFooter>` /
 Both shapes can mix — pass `:columns` AND write `<VCTableHeader>` to
 override only the header band, etc.
 
+### Generic over `Row` (issue #1601)
+
+`<VCTable>` and `<VCTableLite>` are published as **generic components**
+— `Row` is inferred from `:data` / `:columns` and flows into the slot
+props (`#cell-<key>` → `{ row: Row }`, `#header-<key>` →
+`{ column: TableColumn<Row> }`, `#default` → `{ data: Row[] }`,
+`#expansion` → `{ row: Row }`), plus `@row-click` / `getRowKey`.
+Inferring `Row` per call site also **dissolves the `TableColumn`
+variance friction** the issue describes: `TableColumn<User>[]` assigns
+to `:columns` because `Row` resolves to `User` rather than being pinned
+at `unknown`.
+
+The runtime stays a plain `defineComponent` render-function component
+(SFC convention); the default export is **cast** to a generic
+call/return signature `vue-tsc` recognizes (`GenericComponentShape` in
+`packages/table/src/types.ts` — Volar reads slot types off a `__ctx`
+member on the return type). `Row` is unconstrained (default
+`Record<string, unknown>`) so interface-typed rows infer cleanly. See
+[Conventions → Generic-over-data components](conventions.md#generic-over-data-components--definecomponent--cast-not-script-setup-generic)
+for the full pattern and rules. **Scope:** the driver path only — the
+manual-compound parts (`<VCTableRow>` / `<VCTableCell>` /
+`<VCTableHeadCell>`, `<VCTableSortIndicators>`) stay non-generic, so
+hand-written compound markup casts its own row.
+
 ### Driver auto-render (v0.2-B)
 
 When `:columns` resolves to a non-empty list AND the consumer's

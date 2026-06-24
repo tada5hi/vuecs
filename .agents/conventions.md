@@ -137,6 +137,80 @@ Themed Reka primitives (DialogContent, PopoverContent, StepperRoot,
 …) keep importing from `reka-ui` directly — the wrap-in-VC contract
 applies to the bare `Primitive` only.
 
+## Generic-over-data components — `defineComponent` + cast (not `<script setup generic>`)
+
+When a component needs to be **generic over a consumer-supplied entity
+type** so slot props infer it (`<VCTable :data="users">` →
+`#cell-name="{ row }"` types `row` as `User`), keep the runtime a plain
+`defineComponent` render-function component (the SFC convention) and
+**cast the default export** to a generic call/return signature
+`vue-tsc` recognizes. Do **not** switch the component to `<script setup
+generic="…">` — that's the only other path to generic slot inference,
+but it conflicts with the `defineComponent` convention and forces a
+`<template>` rewrite of render-function components.
+
+The mechanism (introduced for `@vuecs/table`, issue #1601):
+
+1. A reusable `GenericComponentShape<Props, Slots>` type encodes the
+   exact call/return signature the Vue compiler emits for a
+   `<script setup generic>` SFC — crucially, Volar reads the slot types
+   off a `__ctx?` member on the **return type** (not the `ctx`
+   parameter). It lives in `@vuecs/table/src/types.ts`.
+2. Each component declares `Row`-substituted prop + slot shapes and a
+   generic alias that wraps the helper:
+
+   ```ts
+   type VCTableComponent = <Row = Record<string, unknown>>(
+       ...args: Parameters<GenericComponentShape<TablePropsGeneric<Row>, TableSlots<Row>>>
+   ) => ReturnType<GenericComponentShape<TablePropsGeneric<Row>, TableSlots<Row>>>;
+
+   const VCTable = defineComponent({ /* unchanged runtime */ });
+   export default VCTable as unknown as VCTableComponent;
+   ```
+
+**Rules:**
+
+- **`Row` stays unconstrained** (`<Row = Record<string, unknown>>`, no
+  `extends`). A `Record<string, …>` constraint rejects `interface
+  User {}` ("index signature is missing in type") — interfaces lack an
+  implicit index signature. Matches every `<Row = unknown>` generic in
+  the package's `types.ts`.
+- **Splice emit handlers back into the generic props** as `on*` keys
+  (`'onUpdate:sort'`, `'onRow-click'`). A cast-to-function component
+  surfaces events through props, not a runtime `emits` option, so
+  `v-model:*` / `@event` only type-check at the call site when the
+  handler props are declared. **Watch the key casing** — Vue camelCases
+  a kebab event name into its handler-prop key, so template
+  `@row-click` resolves to `onRowClick`, NOT `onRow-click`. The
+  `update:*` family is the exception: Vue does **not** camelCase the
+  segment after the colon, so those stay hyphenated (`'onUpdate:sort'`).
+  Getting the casing wrong fails silently — the listener falls back to
+  implicit `any` and the build still compiles, so it must be caught by a
+  call-site consumer check (below), not the declaration emit.
+- **`attrs` / `emit` in the helper stay `unknown`** — they aren't
+  inference channels (slots flow through `__ctx`), and `unknown` keeps
+  it `no-explicit-any`-clean.
+- **Registration needs a cast.** The generic-function type isn't
+  structurally a Vue `Component`, so the `app.component(name, component
+  as Component)` registration loop casts back (runtime is identical).
+- **`h(Component, …)` / render-function usage needs a cast too.** The
+  generic-function type isn't assignable to Vue's `Component` /
+  `FunctionalComponent` parameter, so `h(VCTable, props)` doesn't
+  type-check without `as Component`. This is inherent to *every* generic
+  Vue component (a `<script setup generic>` SFC emits the same shape and
+  has the same limitation) — it's the cost of being generic, not a
+  defect of the cast. **Template usage** (the 99% path) is unaffected.
+
+Verify end-to-end after any change — the declaration emit compiles the
+typed surface even when it's subtly wrong, so build success is **not**
+sufficient. `vue-tsc --declaration` must preserve the generic in the
+emitted `.d.ts`, AND a consumer SFC compiling against the **built**
+`dist` must: (a) infer `Row` in slot props (typed-field access OK,
+wrong-type-field access errors); (b) infer `Row` in an **inline-arrow**
+`@event` handler (a named, pre-annotated handler hides a broken
+handler-prop key because `any` is assignable to it — use an inline
+arrow or a wrong-type assertion to surface casing bugs).
+
 ## Theme bridge authoring — bridge what the framework exposes
 
 When writing a theme-bridge CSS file (the `assets/index.css` in

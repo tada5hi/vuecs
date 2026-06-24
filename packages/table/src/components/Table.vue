@@ -11,11 +11,12 @@ import {
     triggerRef,
     watch,
 } from 'vue';
-import type { 
-    Component, 
-    ExtractPublicPropTypes, 
-    PropType, 
-    SlotsType, 
+import type {
+    Component,
+    ExtractPublicPropTypes,
+    PropType,
+    PublicProps,
+    SlotsType,
 } from 'vue';
 import { themableProps, useComponentTheme, useThemeProps } from '@vuecs/core';
 import {
@@ -30,6 +31,7 @@ import type {
 } from '../composables/selection';
 import { useSortMachine } from '../composables/sort';
 import type {
+    GenericComponentShape,
     SortDirection,
     TableCellSlotProps,
     TableColumn,
@@ -215,7 +217,71 @@ const tableProps = {
 
 export type TableProps = ExtractPublicPropTypes<typeof tableProps>;
 
-export default defineComponent({
+// ──────────────────────────────────────────────────────────────────────────
+// Generic-over-`Row` facade (issue #1601)
+//
+// `<VCTable>` is published as a generic component so consumer slot
+// templates infer their row type from `:data` / `:columns`:
+//
+//   <VCTable :data="users">
+//     <template #cell-name="{ row }">{{ row.email }}</template>  <!-- row: User -->
+//   </VCTable>
+//
+// The runtime stays a plain `defineComponent` (vuecs convention — render
+// functions, no `<script setup>`); the default export is cast to a
+// generic call/return signature `vue-tsc` recognizes. See
+// `GenericComponentShape` in `../types` for the mechanism.
+// ──────────────────────────────────────────────────────────────────────────
+
+/**
+ * Per-`Row` slot map for the generic facade. Mirrors the runtime
+ * `SlotsType` below, but threads the inferred `Row` into every
+ * row-bearing slot.
+ */
+interface TableSlots<Row> {
+    default?: (props: TableSlotProps<Row>) => unknown;
+    caption?: () => unknown;
+    colgroup?: () => unknown;
+    [cellSlot: `cell-${string}`]: (props: TableCellSlotProps<Row>) => unknown;
+    [headerSlot: `header-${string}`]: (props: TableHeadCellSlotProps<Row>) => unknown;
+    expansion?: (props: TableExpansionSlotProps<Row>) => unknown;
+}
+
+/**
+ * Public props with the `Row`-typed arms (`data` / `columns` /
+ * `getRowKey`) and the emit handlers spliced back in — functional
+ * components surface events through `on*` props, not a runtime `emits`
+ * option, so they must be declared here for `v-model:*` / `@row-click`
+ * to type-check at the call site.
+ */
+type TablePropsGeneric<Row> =    & Omit<TableProps, 'data' | 'columns' | 'getRowKey'> &
+    {
+        data?: Row[];
+        columns?: TableColumnRaw<Row>[];
+        getRowKey?: (row: Row, index: number) => RowSelectionKey;
+        'onUpdate:sort'?: (value: TableSortState) => void;
+        'onUpdate:selection'?: (value: RowSelectionValue<RowSelectionMode> | null) => void;
+        'onUpdate:expanded'?: (value: RowSelectionKey | RowSelectionKey[] | null) => void;
+        // Vue camelCases a kebab event name into its handler-prop key, so
+        // template `@row-click` resolves to `onRowClick` (NOT `onRow-click`).
+        // The `update:*` keys above are the exception — Vue does NOT
+        // camelCase the segment after the colon, so they stay hyphenated.
+        onRowClick?: (row: Row, index: number, event: Event) => void;
+    } &
+    PublicProps;
+
+/**
+ * Generic `<VCTable>` type. `Row` is unconstrained (matching every
+ * `<Row = unknown>` generic in `../types`) so interface-typed rows infer
+ * cleanly — a `Record<string, …>` constraint would reject `interface
+ * User {}` ("index signature is missing"). Defaults to
+ * `Record<string, unknown>` for untyped call sites.
+ */
+type VCTableComponent = <Row = Record<string, unknown>>(
+    ...args: Parameters<GenericComponentShape<TablePropsGeneric<Row>, TableSlots<Row>>>
+) => ReturnType<GenericComponentShape<TablePropsGeneric<Row>, TableSlots<Row>>>;
+
+const VCTable = defineComponent({
     name: 'VCTable',
     inheritAttrs: false,
     props: tableProps,
@@ -673,4 +739,8 @@ export default defineComponent({
         };
     },
 });
+
+// Runtime is the `defineComponent` above; the cast only re-types the
+// public surface as generic-over-`Row`. Identical at runtime.
+export default VCTable as unknown as VCTableComponent;
 </script>
