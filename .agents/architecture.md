@@ -2140,10 +2140,12 @@ override only the header band, etc.
 ### Generic over `Row` (issue #1601)
 
 `<VCTable>` and `<VCTableLite>` are published as **generic components**
-— `Row` is inferred from `:data` / `:columns` and flows into the slot
-props (`#cell-<key>` → `{ row: Row }`, `#header-<key>` →
-`{ column: TableColumn<Row> }`, `#default` → `{ data: Row[] }`,
-`#expansion` → `{ row: Row }`), plus `@row-click` / `getRowKey`.
+— `Row` is inferred from `:data` / `:columns` and flows into the shared
+slot props (`#cell-<key>` → `{ row: Row }`, `#header-<key>` →
+`{ column: TableColumn<Row> }`, `#default` → `{ data: Row[] }`).
+`<VCTable>` additionally threads `Row` through its `#expansion` slot
+(`{ row: Row }`) and the `@row-click` / `getRowKey` props — none of
+those exist on `<VCTableLite>`.
 Inferring `Row` per call site also **dissolves the `TableColumn`
 variance friction** the issue describes: `TableColumn<User>[]` assigns
 to `:columns` because `Row` resolves to `User` rather than being pinned

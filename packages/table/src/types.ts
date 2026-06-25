@@ -393,8 +393,8 @@ export type TableExpandableTrigger = 'leading' | 'trailing' | 'none';
  * this — e.g.
  *
  *   type VCTableComponent = <Row = Record<string, unknown>>(
- *       ...args: Parameters<GenericComponentShape<TableProps<Row>, TableSlots<Row>>>
- *   ) => ReturnType<GenericComponentShape<TableProps<Row>, TableSlots<Row>>>;
+ *       ...args: Parameters<GenericComponentShape<TablePropsGeneric<Row>, TableSlots<Row>>>
+ *   ) => ReturnType<GenericComponentShape<TablePropsGeneric<Row>, TableSlots<Row>>>;
  *
  * so generic inference flows from the call-site props (`:data` /
  * `:columns`) into the slot props (`#cell-…`, `#header-…`, `#expansion`).
@@ -402,9 +402,9 @@ export type TableExpandableTrigger = 'leading' | 'trailing' | 'none';
 export type GenericComponentShape<Props, Slots> = (
     props: Props,
     ctx?: {
-        slots: Slots; 
-        attrs: unknown; 
-        emit: unknown 
+        slots: Slots;
+        attrs: unknown;
+        emit: unknown;
     },
     expose?: (exposed: Record<string, never>) => void,
     setup?: Promise<{

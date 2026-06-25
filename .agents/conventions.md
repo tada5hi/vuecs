@@ -176,7 +176,7 @@ The mechanism (introduced for `@vuecs/table`, issue #1601):
   implicit index signature. Matches every `<Row = unknown>` generic in
   the package's `types.ts`.
 - **Splice emit handlers back into the generic props** as `on*` keys
-  (`'onUpdate:sort'`, `'onRow-click'`). A cast-to-function component
+  (`'onUpdate:sort'`, `onRowClick`). A cast-to-function component
   surfaces events through props, not a runtime `emits` option, so
   `v-model:*` / `@event` only type-check at the call site when the
   handler props are declared. **Watch the key casing** — Vue camelCases

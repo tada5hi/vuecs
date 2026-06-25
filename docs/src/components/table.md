@@ -245,16 +245,18 @@ const columns: TableColumn<User>[] = [{ key: 'name' }, { key: 'email' }];
 </template>
 ```
 
-The same inference reaches `#default` (`{ data }`, i.e. `data: Row[]`),
-`#header-<key>` (`{ column }`, where `column` is `TableColumn<User>`),
-`#expansion` (`<VCTable>` only), and the `@row-click` / `getRowKey`
-callbacks. When neither `:data` nor `:columns` is typed, `Row` falls
-back to `Record<string, unknown>`, so untyped call sites keep working.
+The same inference reaches `#default` (`{ data }`, i.e. `data: Row[]`)
+and `#header-<key>` (`{ column }`, where `column` is
+`TableColumn<User>`) on both components. `<VCTable>` additionally types
+its `#expansion` slot (`{ row }`) and the `@row-click` / `getRowKey`
+callbacks — `<VCTableLite>` exposes none of those. When neither `:data`
+nor `:columns` is typed, `Row` falls back to `Record<string, unknown>`,
+so untyped call sites keep working.
 
-The generic is surfaced by re-typing the component's public surface
-(the runtime stays a plain `defineComponent` render-function component
-per vuecs's [conventions](/guide/) — no `<script setup generic>`). The
-slot-prop types (`TableSlotProps<Row>`, `TableCellSlotProps<Row>`,
+The generic is surfaced by re-typing the component's public surface —
+the runtime stays a plain `defineComponent` render-function component
+(no `<script setup generic>`). The slot-prop types
+(`TableSlotProps<Row>`, `TableCellSlotProps<Row>`,
 `TableHeadCellSlotProps<Row>`, `TableExpansionSlotProps<Row>`) are
 exported, so render-function consumers can reference them directly.
 
