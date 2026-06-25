@@ -1,0 +1,11 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "strictNullChecks": true,
+        "noEmit": true,
+        "ignoreDeprecations": "6.0"
+    },
+    "include": [
+        "types/**/*.test-d.ts"
+    ]
+}
