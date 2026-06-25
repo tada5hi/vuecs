@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/tada5hi/vuecs/compare/table-v1.2.3...table-v1.3.0) (2026-06-25)
+
+
+### Features
+
+* **table:** make VCTable/VCTableLite generic over Row ([#1601](https://github.com/tada5hi/vuecs/issues/1601)) ([#1658](https://github.com/tada5hi/vuecs/issues/1658)) ([bfe9987](https://github.com/tada5hi/vuecs/commit/bfe9987c774ab2983e563e2c3771ce14768fc630))
+
 ## [1.2.3](https://github.com/tada5hi/vuecs/compare/table-v1.2.2...table-v1.2.3) (2026-06-23)
 
 
