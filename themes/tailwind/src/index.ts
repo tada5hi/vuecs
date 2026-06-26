@@ -482,7 +482,10 @@ export default function tailwindTheme(): Theme {
                 classes: { root: 'py-2 text-center text-sm text-fg-muted' },
                 variants: { overlay: { true: { root: 'absolute inset-0 z-10 flex items-center justify-center bg-bg/75 backdrop-blur-sm' } } },
             },
-            listEmpty: { classes: { root: 'rounded-md border border-warning-200 bg-warning-50 p-2 text-sm text-warning-800' } },
+            // Soft warning "empty / no-more" marker. Dark fill is a low-opacity
+            // tint of the mid shade so it harmonizes with any customized dark
+            // `--vc-color-bg` rather than staying a glaring light panel (#1662).
+            listEmpty: { classes: { root: 'rounded-md border border-warning-200 bg-warning-50 p-2 text-sm text-warning-800 dark:border-warning-800 dark:bg-warning-500/12 dark:text-warning-200' } },
             navigation: {
                 classes: {
                     group: 'm-0 flex list-none flex-col p-0',
@@ -843,13 +846,16 @@ export default function tailwindTheme(): Theme {
                     { variants: { variant: 'solid', color: 'warning' }, class: { root: 'bg-warning-600 text-on-warning border-warning-700' } },
                     { variants: { variant: 'solid', color: 'error' }, class: { root: 'bg-error-600 text-on-error border-error-700' } },
                     { variants: { variant: 'solid', color: 'info' }, class: { root: 'bg-info-600 text-on-info border-info-700' } },
-                    // soft
-                    { variants: { variant: 'soft', color: 'primary' }, class: { root: 'bg-primary-50 text-primary-800 border-primary-200 dark:bg-primary-950 dark:text-primary-200 dark:border-primary-800' } },
-                    { variants: { variant: 'soft', color: 'neutral' }, class: { root: 'bg-neutral-50 text-fg border-border dark:bg-neutral-900' } },
-                    { variants: { variant: 'soft', color: 'success' }, class: { root: 'bg-success-50 text-success-800 border-success-200 dark:bg-success-950 dark:text-success-200 dark:border-success-800' } },
-                    { variants: { variant: 'soft', color: 'warning' }, class: { root: 'bg-warning-50 text-warning-800 border-warning-200 dark:bg-warning-950 dark:text-warning-200 dark:border-warning-800' } },
-                    { variants: { variant: 'soft', color: 'error' }, class: { root: 'bg-error-50 text-error-800 border-error-200 dark:bg-error-950 dark:text-error-200 dark:border-error-800' } },
-                    { variants: { variant: 'soft', color: 'info' }, class: { root: 'bg-info-50 text-info-800 border-info-200 dark:bg-info-950 dark:text-info-200 dark:border-info-800' } },
+                    // soft — surface-aware dark fill: a low-opacity tint of the
+                    // mid shade (not the opaque deep `-950`) so the actual
+                    // `--vc-color-bg` shows through and the panel harmonizes with
+                    // any customized dark surface instead of reading muddy (#1662).
+                    { variants: { variant: 'soft', color: 'primary' }, class: { root: 'bg-primary-50 text-primary-800 border-primary-200 dark:bg-primary-500/12 dark:text-primary-200 dark:border-primary-800' } },
+                    { variants: { variant: 'soft', color: 'neutral' }, class: { root: 'bg-neutral-50 text-fg border-border dark:bg-neutral-500/12' } },
+                    { variants: { variant: 'soft', color: 'success' }, class: { root: 'bg-success-50 text-success-800 border-success-200 dark:bg-success-500/12 dark:text-success-200 dark:border-success-800' } },
+                    { variants: { variant: 'soft', color: 'warning' }, class: { root: 'bg-warning-50 text-warning-800 border-warning-200 dark:bg-warning-500/12 dark:text-warning-200 dark:border-warning-800' } },
+                    { variants: { variant: 'soft', color: 'error' }, class: { root: 'bg-error-50 text-error-800 border-error-200 dark:bg-error-500/12 dark:text-error-200 dark:border-error-800' } },
+                    { variants: { variant: 'soft', color: 'info' }, class: { root: 'bg-info-50 text-info-800 border-info-200 dark:bg-info-500/12 dark:text-info-200 dark:border-info-800' } },
                     // outline
                     { variants: { variant: 'outline', color: 'primary' }, class: { root: 'border-primary-600 text-primary-700 bg-transparent dark:text-primary-200' } },
                     { variants: { variant: 'outline', color: 'neutral' }, class: { root: 'border-border text-fg bg-transparent' } },
