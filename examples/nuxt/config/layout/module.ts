@@ -208,6 +208,11 @@ const listItems: NavigationItem[] = [
 
 const navigationItems: NavigationItem[] = [
     {
+        name: 'Breadcrumb',
+        type: 'link',
+        url: '/navigation/breadcrumb',
+    },
+    {
         name: 'Nav Items',
         type: 'link',
         url: '/navigation/items',
