@@ -1,6 +1,11 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
-import type { ComponentThemeDefinition, ThemeClassesOverride, VariantValues } from '@vuecs/core';
+import type {
+    ComponentThemeDefinition,
+    GenericComponentShape,
+    ThemeClassesOverride,
+    VariantValues,
+} from '@vuecs/core';
 import {
     computed,
     defineComponent,
@@ -10,11 +15,12 @@ import {
     ref,
     watch,
 } from 'vue';
-import type { 
-    Component, 
-    ExtractPublicPropTypes, 
-    PropType, 
-    SlotsType, 
+import type {
+    Component,
+    ExtractPublicPropTypes,
+    PropType,
+    PublicProps,
+    SlotsType,
 } from 'vue';
 import { provideListItemContext, useList } from '../../composables';
 import { applyAsChild } from '../../utils';
@@ -117,6 +123,52 @@ function clickShouldToggle(event: Event): boolean {
     return target.closest(NATIVE_INTERACTIVE_SELECTOR) === null;
 }
 
+// ──────────────────────────────────────────────────────────────────────────
+// Generic-over-`Item` facade (issue #1660)
+//
+// `<VCListItem>` is published as a generic component so a consumer's
+// default-slot template infers its row type from `:data`:
+//
+//   <VCListItem :data="user">
+//     <template #default="{ data }">{{ data.email }}</template>  <!-- data: User -->
+//   </VCListItem>
+//
+// The runtime stays a plain `defineComponent` (vuecs convention — render
+// functions, no `<script setup>`); the default export is cast to a
+// generic call/return signature `vue-tsc` recognizes. See
+// `GenericComponentShape` in `@vuecs/core` for the mechanism.
+// ──────────────────────────────────────────────────────────────────────────
+
+/**
+ * Per-`Item` slot map for the generic facade. Mirrors the runtime
+ * `SlotsType` below, but threads the inferred `Item` into the
+ * data-bearing default slot.
+ */
+interface ListItemSlots<Item> {
+    default?: (props: ListItemSlotProps<Item>) => unknown;
+}
+
+/**
+ * Public props with the `Item`-typed `data` arm spliced in. No emits —
+ * `<VCListItem>` exposes no events.
+ */
+type ListItemPropsGeneric<Item> = & Omit<ListItemProps, 'data'> &
+    {
+        data?: Item;
+    } &
+    PublicProps;
+
+/**
+ * Generic `<VCListItem>` type. `Item` is unconstrained (matching the
+ * `<T = unknown>` generics in the composables) so interface-typed rows
+ * infer cleanly — a `Record<string, …>` constraint would reject
+ * `interface User {}` ("index signature is missing"). Defaults to
+ * `Record<string, unknown>` for untyped call sites.
+ */
+type VCListItemComponent = <Item = Record<string, unknown>>(
+    ...args: Parameters<GenericComponentShape<ListItemPropsGeneric<Item>, ListItemSlots<Item>>>
+) => ReturnType<GenericComponentShape<ListItemPropsGeneric<Item>, ListItemSlots<Item>>>;
+
 /**
  * `<VCListItem>` — per-row container. Renders the row element (`<li>`
  * by default), exposes resolved item-level theme classes + row state
@@ -128,7 +180,7 @@ function clickShouldToggle(event: Event): boolean {
  * etc.) auto-exclude so their clicks propagate normally. Custom
  * interactive elements opt out via `data-vc-noselect` attribute.
  */
-export default defineComponent({
+const VCListItem = defineComponent({
     name: 'VCListItem',
     props: listItemProps,
     slots: Object as SlotsType<{
@@ -331,4 +383,8 @@ export default defineComponent({
         };
     },
 });
+
+// Runtime is the `defineComponent` above; the cast only re-types the
+// public surface as generic-over-`Item`. Identical at runtime.
+export default VCListItem as unknown as VCListItemComponent;
 </script>

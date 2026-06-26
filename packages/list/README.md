@@ -12,6 +12,7 @@
 - ☑️ **Built-in selection** — `v-model:selection`, single or multi, full ARIA-listbox semantics with keyboard range selection.
 - 🏪 **`defineList()` factory** — Pinia-style external state container; share one list state between the component, a toolbar, and a URL sync without prop-drilling.
 - 🪝 **`useList()` / `useListItem()`** — strict injectors for building custom parts that participate in the compound.
+- 🔤 **Type-safe item slots** — `<VCList>` / `<VCListItem>` are generic over the row type, so `<VCListItem :data="user">`'s `#default="{ data }"` infers `data` as your entity type with no cast.
 - 🎨 **Density variants** — `compact` / `normal` / `spacious`, plus `disabled` / `active` / `selected` item states across all shipping themes.
 
 ## 📦 Installation
@@ -27,9 +28,10 @@ npm install @vuecs/list
     <template #default="{ classes }">
         <header :class="classes.header">Users</header>
         <VCListBody>
-            <VCListItem v-for="user in users" :key="user.id" :value="user">
-                <template #default="{ classes }">
-                    <span :class="classes.text">{{ user.name }}</span>
+            <VCListItem v-for="user in users" :key="user.id" :data="user" selectable>
+                <template #default="{ data, classes }">
+                    <!-- `data` infers your row type from `:data` -->
+                    <span :class="classes.text">{{ data.name }}</span>
                     <span :class="classes.actions">
                         <VCButton size="sm" variant="ghost">Edit</VCButton>
                     </span>

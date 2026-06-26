@@ -1,17 +1,23 @@
 <script lang="ts">
 import { useComponentTheme } from '@vuecs/core';
-import type { ComponentThemeDefinition, ThemeClassesOverride, VariantValues } from '@vuecs/core';
+import type {
+    ComponentThemeDefinition,
+    GenericComponentShape,
+    ThemeClassesOverride,
+    VariantValues,
+} from '@vuecs/core';
 import {
-    computed, 
-    defineComponent, 
-    h, 
-    shallowRef, 
+    computed,
+    defineComponent,
+    h,
+    shallowRef,
     triggerRef,
 } from 'vue';
 import type {
     Component,
     ExtractPublicPropTypes,
     PropType,
+    PublicProps,
     SlotsType,
 } from 'vue';
 import {
@@ -92,6 +98,64 @@ export const listThemeDefaults: ComponentThemeDefinition<ListThemeClasses> = {
     },
 };
 
+// ──────────────────────────────────────────────────────────────────────────
+// Generic-over-`Item` facade (issue #1660)
+//
+// `<VCList>` is published as a generic component so its `:data` / `:state`
+// inputs type-check against the consumer's row type and `v-model:selection`
+// stays correctly typed:
+//
+//   <VCList :data="users" v-model:selection="selected">…</VCList>
+//
+// `<VCList>`'s own default slot only exposes `{ classes }` (row rendering
+// is delegated to `<VCListItem>` per plan 027), so `Item` flows into the
+// props only — the slot map stays non-generic. The runtime stays a plain
+// `defineComponent`; the default export is cast to a generic call/return
+// signature `vue-tsc` recognizes. See `GenericComponentShape` in
+// `@vuecs/core` for the mechanism.
+//
+// Scope: only `<VCList>` (driver, holds `:data` / `:state`) and
+// `<VCListItem>` (per-row, holds `:data`) are generic — both carry an
+// inference source. `<VCListBody>` / `<VCListEmpty>` / `<VCListLoading>`
+// read their data from `useList()` context and have no prop to infer
+// `Item` from, so they stay non-generic (consumers cast in-slot if
+// needed). Mirrors `@vuecs/table`'s "driver path only" doctrine.
+// ──────────────────────────────────────────────────────────────────────────
+
+/**
+ * `<VCList>`'s slot map — `Item`-independent (`#default` exposes only the
+ * resolved theme `classes`). Declared standalone so the facade alias
+ * reads symmetrically with `<VCListItem>`'s.
+ */
+interface ListSlots {
+    default?: (props: { classes: ListThemeClasses }) => unknown;
+}
+
+/**
+ * Public props with the `Item`-typed arms (`state` / `data`) and the
+ * `update:selection` emit handler spliced in — a cast-to-function
+ * component surfaces events through `on*` props, not a runtime `emits`
+ * option, so the handler must be declared here for `v-model:selection`
+ * to type-check at the call site.
+ */
+type ListPropsGeneric<Item> = & Omit<ListProps, 'state' | 'data'> &
+    {
+        state?: ListState<Item, Record<string, unknown>>;
+        data?: Item[];
+        'onUpdate:selection'?: (value: SelectionKey[] | SelectionKey | null) => void;
+    } &
+    PublicProps;
+
+/**
+ * Generic `<VCList>` type. `Item` is unconstrained (matching the
+ * `<T = unknown>` generics in the composables) so interface-typed rows
+ * infer cleanly. Defaults to `Record<string, unknown>` for untyped call
+ * sites.
+ */
+type VCListComponent = <Item = Record<string, unknown>>(
+    ...args: Parameters<GenericComponentShape<ListPropsGeneric<Item>, ListSlots>>
+) => ReturnType<GenericComponentShape<ListPropsGeneric<Item>, ListSlots>>;
+
 /**
  * `<VCList>` — outer container + state + selection coordinator.
  *
@@ -117,7 +181,7 @@ export const listThemeDefaults: ComponentThemeDefinition<ListThemeClasses> = {
  * </VCList>
  * ```
  */
-export default defineComponent({
+const VCList = defineComponent({
     name: 'VCList',
     props: listProps,
     emits: {
@@ -219,4 +283,8 @@ export default defineComponent({
         );
     },
 });
+
+// Runtime is the `defineComponent` above; the cast only re-types the
+// public surface as generic-over-`Item`. Identical at runtime.
+export default VCList as unknown as VCListComponent;
 </script>

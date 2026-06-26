@@ -112,7 +112,7 @@ packages/core/src/
     install.ts        # installDefaultsManager() / injectDefaultsManager()
     index.ts          # Barrel exports
   utils/              # Shared utilities (inject, provide, normalizeSlot, etc.)
-  types.ts            # VNodeClass, VNodeProperties, PartialPick
+  types.ts            # VNodeClass, VNodeProperties, PartialPick, GenericComponentShape
 ```
 
 ## List Package Structure

@@ -16,6 +16,7 @@ import type {
     SlotsType,
 } from 'vue';
 import { themableProps, useComponentTheme, useThemeProps } from '@vuecs/core';
+import type { GenericComponentShape } from '@vuecs/core';
 import {
     provideHeadCellCountContext,
     provideTableContext,
@@ -23,7 +24,6 @@ import {
 import { useRowSelectionMachine } from '../composables/selection';
 import type { RowSelectionKey } from '../composables/selection';
 import type {
-    GenericComponentShape,
     TableCellSlotProps,
     TableColumn,
     TableColumnRaw,
@@ -99,7 +99,7 @@ export type TableLiteProps = ExtractPublicPropTypes<typeof tableLiteProps>;
 
 // ──────────────────────────────────────────────────────────────────────────
 // Generic-over-`Row` facade (issue #1601). Same mechanism as `<VCTable>`
-// — see `GenericComponentShape` in `../types`. Lite has no emits and no
+// — see `GenericComponentShape` in `@vuecs/core`. Lite has no emits and no
 // expansion slot, so the generic surface is just the row-bearing props
 // + the cell / header / default slots.
 // ──────────────────────────────────────────────────────────────────────────

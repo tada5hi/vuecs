@@ -377,6 +377,50 @@ const {
 All fields are `ComputedRef`s; `toggle` invokes the selection machine
 for this row.
 
+## Type-safe item slots
+
+`<VCList>` and `<VCListItem>` are **generic over the row type**. The type
+flows from `<VCListItem :data>` into the `#default` slot, so `data` is
+your entity type with no cast:
+
+```vue
+<script setup lang="ts">
+interface User {
+    id: number;
+    name: string;
+    email: string;
+}
+
+const users: User[] = [/* … */];
+</script>
+
+<template>
+    <VCList :data="users">
+        <template #default="{ classes }">
+            <VCListBody>
+                <VCListItem
+                    v-for="user in users"
+                    :key="user.id"
+                    :data="user"
+                    selectable
+                >
+                    <template #default="{ data, classes: itemClasses }">
+                        <!-- `data` is inferred as `User` -->
+                        <span :class="itemClasses.text">{{ data.name }}</span>
+                    </template>
+                </VCListItem>
+            </VCListBody>
+        </template>
+    </VCList>
+</template>
+```
+
+`<VCList>`'s own `:data` / `:state` and `v-model:selection` are typed the
+same way. The body/empty/loading parts read their data from `useList()`
+context (no `:data` prop to infer from), so thread the row type through
+`<VCListItem :data>` — or annotate `useList<User>()` / `useListItem<User>()`
+in a row-content child SFC.
+
 ## Props
 
 ### `<VCList>`
