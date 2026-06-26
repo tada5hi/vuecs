@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.3.1](https://github.com/tada5hi/vuecs/compare/elements-v1.3.0...elements-v1.3.1) (2026-06-26)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.2.2 to ^3.3.0
+    * @vuecs/placeholder bumped from ^1.0.6 to ^1.0.7
+  * peerDependencies
+    * @vuecs/core bumped from ^3.2.2 to ^3.3.0
+    * @vuecs/placeholder bumped from ^1.0.6 to ^1.0.7
+
 ## [1.3.0](https://github.com/tada5hi/vuecs/compare/elements-v1.2.5...elements-v1.3.0) (2026-06-23)
 
 

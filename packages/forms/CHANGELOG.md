@@ -1,5 +1,16 @@
 # Changelog
 
+## [5.3.1](https://github.com/tada5hi/vuecs/compare/forms-v5.3.0...forms-v5.3.1) (2026-06-26)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.2.2 to ^3.3.0
+  * peerDependencies
+    * @vuecs/core bumped from ^3.2.2 to ^3.3.0
+
 ## [5.3.0](https://github.com/tada5hi/vuecs/compare/forms-v5.2.3...forms-v5.3.0) (2026-06-23)
 
 
