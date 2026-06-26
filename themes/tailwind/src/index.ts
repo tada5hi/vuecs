@@ -331,7 +331,7 @@ export default function tailwindTheme(): Theme {
                     // active color's `-500` shade picked per variant. `gap-2`
                     // (8px) keeps the leading-icon / spinner visually
                     // separated from the label without looking spaced-out.
-                    root: 'inline-flex items-center justify-center gap-2 rounded-md font-medium shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60',
+                    root: 'inline-flex items-center justify-center gap-2 rounded-md font-medium shadow-sm transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60',
                     leading: 'inline-flex shrink-0 items-center',
                     trailing: 'inline-flex shrink-0 items-center',
                     label: '',
