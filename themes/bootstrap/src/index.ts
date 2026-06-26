@@ -911,6 +911,27 @@ export default function bootstrapTheme(): Theme {
                 },
                 defaultVariants: { size: 'md' },
             },
+            // Bootstrap ships `.breadcrumb` (the flex `<ol>` container) +
+            // `.breadcrumb-item`, but its native `.breadcrumb-item +
+            // .breadcrumb-item::before` divider relies on ADJACENT items.
+            // vuecs renders an explicit separator `<li>` between crumbs, so
+            // that divider never fires — our `breadcrumbSeparator` element
+            // paints instead. We bridge the container (`.breadcrumb`) and
+            // link/page coloring (`link-secondary` / `text-body-secondary`);
+            // current-page + disabled state live as gap-fill in the bridge
+            // CSS (Bootstrap theme strings can't carry `[aria-current]` /
+            // `[aria-disabled]` attribute selectors).
+            breadcrumb: {
+                classes: {
+                    root: '',
+                    list: 'breadcrumb mb-0',
+                    link: 'link-secondary text-decoration-none',
+                    page: 'text-body-secondary',
+                    ellipsis: 'text-body-secondary',
+                },
+            },
+            breadcrumbItem: { classes: { root: '' } },
+            breadcrumbSeparator: { classes: { root: 'text-body-secondary' } },
             // Bootstrap doesn't ship a Toast viewport / queue idiom (the
             // toasts CSS exists but `.toast-container` is a static
             // layout). We compose `.toast-container` + position helpers

@@ -1,3 +1,4 @@
+export * from './breadcrumb';
 export * from './item/module';
 export * from './items';
 export * from './select-context';

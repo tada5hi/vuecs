@@ -53,6 +53,9 @@ import {
     listThemeDefaults,
 } from '@vuecs/list';
 import {
+    breadcrumbItemThemeDefaults,
+    breadcrumbSeparatorThemeDefaults,
+    breadcrumbThemeDefaults,
     navigationThemeDefaults,
     stepperThemeDefaults,
 } from '@vuecs/navigation';
@@ -117,6 +120,9 @@ const expectedCatalog = {
     aspectRatio: aspectRatioThemeDefaults,
     avatar: avatarThemeDefaults,
     badge: badgeThemeDefaults,
+    breadcrumb: breadcrumbThemeDefaults,
+    breadcrumbItem: breadcrumbItemThemeDefaults,
+    breadcrumbSeparator: breadcrumbSeparatorThemeDefaults,
     button: buttonThemeDefaults,
     card: cardThemeDefaults,
     cardBody: cardBodyThemeDefaults,

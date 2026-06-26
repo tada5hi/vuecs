@@ -431,6 +431,28 @@
 }
 
 /* ────────────────────────────────────────────────────────────────────────────
+ * @vuecs/navigation Breadcrumb — Bootstrap theme strings can't carry
+ * `[aria-current]` / `[aria-disabled]` attribute selectors, so the
+ * state-dependent crumb styling lives here. vuecs renders an explicit
+ * separator `<li>` between items (not adjacent crumbs), so Bootstrap's
+ * native `.breadcrumb-item + .breadcrumb-item::before` divider never
+ * fires — the `breadcrumbSeparator` element paints instead.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+/* The current-page crumb — full emphasis + weight so it stands out from
+   the muted link crumbs (mirrors Bootstrap's `.active` breadcrumb item). */
+.vc-breadcrumb [aria-current="page"] {
+    color: var(--bs-emphasis-color);
+    font-weight: 600;
+}
+
+/* A genuinely disabled crumb — non-interactive + dimmed. */
+.vc-breadcrumb [aria-disabled="true"] {
+    opacity: .65;
+    pointer-events: none;
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
  * @vuecs/table — gap-fill helpers for features Bootstrap doesn't natively
  * cover. Bootstrap's theme strings can't carry `[aria-sort=…]` attribute
  * selectors, so sort-indicator state lives in dedicated `vc-table-sort-{asc,desc}`

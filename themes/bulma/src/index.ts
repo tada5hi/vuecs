@@ -1096,6 +1096,26 @@ export default function bulmaTheme(): Theme {
                 },
                 defaultVariants: { size: 'md' },
             },
+            // Bulma ships a native `.breadcrumb` (`nav.breadcrumb > ul > li`).
+            // We put `.breadcrumb` on the `<nav>` root so Bulma colours the
+            // crumb links (`.breadcrumb a`). vuecs renders an `<ol>` plus an
+            // EXPLICIT separator `<li aria-hidden>` between items — Bulma's
+            // native `li + li::before { content: "/" }` would double up with
+            // ours, so the bridge CSS neutralises it (see assets/index.css).
+            // State styling (current / disabled) is keyed off `aria-current`
+            // / `aria-disabled`, which Bulma class strings can't express, so
+            // it also lives in the bridge CSS gap-fill.
+            breadcrumb: {
+                classes: {
+                    root: 'breadcrumb',
+                    list: '',
+                    link: '',
+                    page: '',
+                    ellipsis: '',
+                },
+            },
+            breadcrumbItem: { classes: { root: '' } },
+            breadcrumbSeparator: { classes: { root: '' } },
             placeholder: {
                 // Bulma has no built-in placeholder primitive — use
                 // the design-token muted bg. `wave` and `glow`
