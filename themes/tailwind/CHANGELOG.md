@@ -1,5 +1,35 @@
 # Changelog
 
+## [6.1.1](https://github.com/tada5hi/vuecs/compare/theme-tailwind-v6.1.0...theme-tailwind-v6.1.1) (2026-06-26)
+
+
+### Bug Fixes
+
+* **theme-tailwind:** add cursor-pointer to enabled VCButton ([#1656](https://github.com/tada5hi/vuecs/issues/1656)) ([#1668](https://github.com/tada5hi/vuecs/issues/1668)) ([0646c7d](https://github.com/tada5hi/vuecs/commit/0646c7de5f9c99a99a859b074f2ad1ec2503741c))
+* **theme-tailwind:** surface-aware soft dark fill for alert + list-empty ([#1662](https://github.com/tada5hi/vuecs/issues/1662)) ([#1667](https://github.com/tada5hi/vuecs/issues/1667)) ([cd5de22](https://github.com/tada5hi/vuecs/commit/cd5de22da9e1f9ca716d2682a381f62a7431e459))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/button bumped from ^1.2.0 to ^1.2.1
+    * @vuecs/core bumped from ^3.2.2 to ^3.3.0
+    * @vuecs/countdown bumped from ^2.0.6 to ^2.0.7
+    * @vuecs/design bumped from ^1.0.6 to ^1.0.7
+    * @vuecs/elements bumped from ^1.3.0 to ^1.3.1
+    * @vuecs/forms bumped from ^5.3.0 to ^5.3.1
+    * @vuecs/gravatar bumped from ^2.0.8 to ^2.0.9
+    * @vuecs/list bumped from ^1.0.6 to ^1.1.0
+    * @vuecs/navigation bumped from ^4.1.0 to ^4.1.1
+    * @vuecs/overlays bumped from ^1.1.2 to ^1.1.3
+    * @vuecs/pagination bumped from ^2.1.5 to ^2.1.6
+    * @vuecs/placeholder bumped from ^1.0.6 to ^1.0.7
+    * @vuecs/timeago bumped from ^2.1.2 to ^2.1.3
+  * peerDependencies
+    * @vuecs/core bumped from ^3.2.2 to ^3.3.0
+    * @vuecs/design bumped from ^1.0.6 to ^1.0.7
+
 ## [6.1.0](https://github.com/tada5hi/vuecs/compare/theme-tailwind-v6.0.1...theme-tailwind-v6.1.0) (2026-06-23)
 
 

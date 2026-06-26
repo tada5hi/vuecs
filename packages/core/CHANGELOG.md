@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.0](https://github.com/tada5hi/vuecs/compare/core-v3.2.2...core-v3.3.0) (2026-06-26)
+
+
+### Features
+
+* **list:** make VCList/VCListItem generic over item type ([#1660](https://github.com/tada5hi/vuecs/issues/1660)) ([#1664](https://github.com/tada5hi/vuecs/issues/1664)) ([2673a9f](https://github.com/tada5hi/vuecs/commit/2673a9fc4e8de8537aa5d006bccbb248b000074b))
+
 ## [3.2.2](https://github.com/tada5hi/vuecs/compare/core-v3.2.1...core-v3.2.2) (2026-06-23)
 
 

@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.4.0](https://github.com/tada5hi/vuecs/compare/table-v1.3.0...table-v1.4.0) (2026-06-26)
+
+
+### Features
+
+* **list:** make VCList/VCListItem generic over item type ([#1660](https://github.com/tada5hi/vuecs/issues/1660)) ([#1664](https://github.com/tada5hi/vuecs/issues/1664)) ([2673a9f](https://github.com/tada5hi/vuecs/commit/2673a9fc4e8de8537aa5d006bccbb248b000074b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.2.2 to ^3.3.0
+    * @vuecs/placeholder bumped from ^1.0.6 to ^1.0.7
+  * peerDependencies
+    * @vuecs/core bumped from ^3.2.2 to ^3.3.0
+    * @vuecs/placeholder bumped from ^1.0.6 to ^1.0.7
+
 ## [1.3.0](https://github.com/tada5hi/vuecs/compare/table-v1.2.3...table-v1.3.0) (2026-06-25)
 
 
