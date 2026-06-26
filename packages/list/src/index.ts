@@ -1,4 +1,4 @@
-import type { App, Plugin } from 'vue';
+import type { App, Component, Plugin } from 'vue';
 import { installConfigManager, installDefaultsManager, installThemeManager } from '@vuecs/core';
 import type { CoreOptions } from '@vuecs/core';
 
@@ -29,7 +29,11 @@ export function install(app: App, options: Options = {}): void {
         VCListLoading,
         VCListEmpty,
     }).forEach(([name, component]) => {
-        app.component(name, component);
+        // `VCList` / `VCListItem` are exported as generic-over-`Item`
+        // function types (issue #1660); that cast isn't structurally a
+        // Vue `Component`, but the runtime value still is. Cast back for
+        // registration — identical at runtime.
+        app.component(name, component as Component);
     });
 }
 

@@ -2153,10 +2153,12 @@ at `unknown`.
 
 The runtime stays a plain `defineComponent` render-function component
 (SFC convention); the default export is **cast** to a generic
-call/return signature `vue-tsc` recognizes (`GenericComponentShape` in
-`packages/table/src/types.ts` — Volar reads slot types off a `__ctx`
-member on the return type). `Row` is unconstrained (default
-`Record<string, unknown>`) so interface-typed rows infer cleanly. See
+call/return signature `vue-tsc` recognizes (`GenericComponentShape`,
+imported from `@vuecs/core` since #1660 — promoted there so
+`@vuecs/table`, `@vuecs/list`, and third-party libs share one helper;
+Volar reads slot types off a `__ctx` member on the return type). `Row`
+is unconstrained (default `Record<string, unknown>`) so interface-typed
+rows infer cleanly. See
 [Conventions → Generic-over-data components](conventions.md#generic-over-data-components--definecomponent--cast-not-script-setup-generic)
 for the full pattern and rules. **Scope:** the driver path only — the
 manual-compound parts (`<VCTableRow>` / `<VCTableCell>` /

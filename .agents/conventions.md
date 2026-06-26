@@ -149,13 +149,18 @@ generic="…">` — that's the only other path to generic slot inference,
 but it conflicts with the `defineComponent` convention and forces a
 `<template>` rewrite of render-function components.
 
-The mechanism (introduced for `@vuecs/table`, issue #1601):
+The mechanism (introduced for `@vuecs/table`, issue #1601; the helper
+was promoted to `@vuecs/core` and adopted by `@vuecs/list` in #1660):
 
 1. A reusable `GenericComponentShape<Props, Slots>` type encodes the
    exact call/return signature the Vue compiler emits for a
    `<script setup generic>` SFC — crucially, Volar reads the slot types
    off a `__ctx?` member on the **return type** (not the `ctx`
-   parameter). It lives in `@vuecs/table/src/types.ts`.
+   parameter). It lives in **`@vuecs/core`** (a flat root export,
+   `packages/core/src/types.ts`) so `@vuecs/table`, `@vuecs/list`, and
+   third-party component libraries all import the one helper —
+   `import type { GenericComponentShape } from '@vuecs/core'` — instead
+   of duplicating it.
 2. Each component declares `Row`-substituted prop + slot shapes and a
    generic alias that wraps the helper:
 
@@ -210,6 +215,30 @@ wrong-type-field access errors); (b) infer `Row` in an **inline-arrow**
 `@event` handler (a named, pre-annotated handler hides a broken
 handler-prop key because `any` is assignable to it — use an inline
 arrow or a wrong-type assertion to surface casing bugs).
+
+**Scope — apply the facade only to components that carry an inference
+source.** A generic component infers its entity type from a *prop*
+(`:data` / `:columns` / `:state`); slot props are the *output*, never an
+inference channel. So make generic only the components a consumer passes
+data to:
+
+- `@vuecs/table` — `<VCTable>` / `<VCTableLite>` (the `:data :columns`
+  drivers). The manual-compound parts (`<VCTableRow>` / `<VCTableCell>`
+  / `<VCTableHeadCell>` / `<VCTableSortIndicators>`) read from context
+  and stay non-generic — hand-written compound markup casts its own row.
+- `@vuecs/list` — `<VCList>` (driver, holds `:data` / `:state`) and
+  `<VCListItem>` (per-row, holds `:data`; its `#default` slot is the
+  one #1660 fixed from `unknown`). `<VCListBody>` / `<VCListEmpty>` /
+  `<VCListLoading>` read their data from `useList()` context with no
+  prop to infer `Item` from, so they stay non-generic — a consumer who
+  wants a typed auto-iterate `#item` slot threads the type through
+  `<VCListItem :data>` in the body's default slot, or casts in-slot.
+
+Each generic-component package ships a `test/types/*.test-d.ts` drift
+guard (importing the **built `dist`** declarations) plus the matching
+`test/tsconfig.json` + vitest `typecheck` block — see
+`packages/table/test/types/generic-row.test-d.ts` and
+`packages/list/test/types/generic-item.test-d.ts`.
 
 ## Theme bridge authoring — bridge what the framework exposes
 

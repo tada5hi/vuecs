@@ -1,4 +1,3 @@
-import type { VNode } from 'vue';
 import type { ThemeElementDefinition, VNodeClass } from '@vuecs/core';
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -373,53 +372,9 @@ export type TableExpandableTrigger = 'leading' | 'trailing' | 'none';
 
 // ──────────────────────────────────────────────────────────────────────────
 // Generic-component facade (issue #1601)
+//
+// The reusable `GenericComponentShape<Props, Slots>` helper lives in
+// `@vuecs/core` since #1660 (so `@vuecs/table`, `@vuecs/list`, and
+// third-party libraries share one helper). `<VCTable>` / `<VCTableLite>`
+// import it from there — see `Table.vue` / `TableLite.vue`.
 // ──────────────────────────────────────────────────────────────────────────
-
-/**
- * The call/return signature `vue-tsc` (Volar) recognizes for a generic
- * component — the exact shape it emits for a `<script setup generic="…">`
- * SFC, expressed by hand so a `defineComponent` render-function component
- * (vuecs's convention — see `.agents/conventions.md`) can stay generic
- * over its row type WITHOUT switching to `<script setup>`.
- *
- * Volar reads the slot types off the `__ctx` member of the return type;
- * the `expose` / `setup` parameters mirror the compiler's emitted
- * signature so the cast survives the declaration-emit
- * (`vue-tsc --declaration`) → consume round-trip identically. `attrs` /
- * `emit` aren't inference channels, so they stay `unknown`.
- *
- * `Props` and `Slots` are the already-`Row`-substituted shapes; the
- * `<Row>` type parameter is introduced by the component alias wrapping
- * this — e.g.
- *
- *   type VCTableComponent = <Row = Record<string, unknown>>(
- *       ...args: Parameters<GenericComponentShape<TablePropsGeneric<Row>, TableSlots<Row>>>
- *   ) => ReturnType<GenericComponentShape<TablePropsGeneric<Row>, TableSlots<Row>>>;
- *
- * so generic inference flows from the call-site props (`:data` /
- * `:columns`) into the slot props (`#cell-…`, `#header-…`, `#expansion`).
- */
-export type GenericComponentShape<Props, Slots> = (
-    props: Props,
-    ctx?: {
-        slots: Slots;
-        attrs: unknown;
-        emit: unknown;
-    },
-    expose?: (exposed: Record<string, never>) => void,
-    setup?: Promise<{
-        props: Props;
-        expose: (exposed: Record<string, never>) => void;
-        attrs: unknown;
-        slots: Slots;
-        emit: unknown;
-    }>,
-) => VNode & {
-    __ctx?: {
-        props: Props;
-        expose: (exposed: Record<string, never>) => void;
-        attrs: unknown;
-        slots: Slots;
-        emit: unknown;
-    };
-};

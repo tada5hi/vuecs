@@ -19,6 +19,7 @@ import type {
     SlotsType,
 } from 'vue';
 import { themableProps, useComponentTheme, useThemeProps } from '@vuecs/core';
+import type { GenericComponentShape } from '@vuecs/core';
 import {
     provideHeadCellCountContext,
     provideTableContext,
@@ -31,7 +32,6 @@ import type {
 } from '../composables/selection';
 import { useSortMachine } from '../composables/sort';
 import type {
-    GenericComponentShape,
     SortDirection,
     TableCellSlotProps,
     TableColumn,
@@ -230,7 +230,7 @@ export type TableProps = ExtractPublicPropTypes<typeof tableProps>;
 // The runtime stays a plain `defineComponent` (vuecs convention — render
 // functions, no `<script setup>`); the default export is cast to a
 // generic call/return signature `vue-tsc` recognizes. See
-// `GenericComponentShape` in `../types` for the mechanism.
+// `GenericComponentShape` in `@vuecs/core` for the mechanism.
 // ──────────────────────────────────────────────────────────────────────────
 
 /**
