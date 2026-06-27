@@ -1,5 +1,19 @@
 # Changelog
 
+## [6.2.0](https://github.com/tada5hi/vuecs/compare/theme-tailwind-v6.1.1...theme-tailwind-v6.2.0) (2026-06-27)
+
+
+### Features
+
+* **navigation:** add breadcrumb compound ([#1670](https://github.com/tada5hi/vuecs/issues/1670)) ([88cdbe5](https://github.com/tada5hi/vuecs/commit/88cdbe53b8bb182072ad6d503cc6fef34c3bad45))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/navigation bumped from ^4.1.1 to ^4.2.0
+
 ## [6.1.1](https://github.com/tada5hi/vuecs/compare/theme-tailwind-v6.1.0...theme-tailwind-v6.1.1) (2026-06-26)
 
 
