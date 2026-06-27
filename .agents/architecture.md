@@ -2084,7 +2084,13 @@ by `packages/navigation/test/types/breadcrumb.test-d.ts`.
 `<VCBreadcrumbLink active>` (APG keeps the current crumb a real link
 carrying `aria-current="page"`); url-less → `<VCBreadcrumbPage>` that
 can still fire the root's `@select`. Index-based ellipsis collapse via
-`:max-items` + `itemsBeforeCollapse` / `itemsAfterCollapse`.
+`:max-items` + `itemsBeforeCollapse` / `itemsAfterCollapse`. The
+default ellipsis is a decorative glyph; the `#ellipsis="{ hidden }"`
+slot exposes the collapsed crumbs so a consumer can reveal them
+(e.g. a `@vuecs/overlays` dropdown — the Nuxt-UI "custom slot"
+pattern, kept a call-site composition rather than a built-in overlays
+dep). When that slot is present, `<VCBreadcrumbEllipsis>` drops its
+`aria-hidden` so the interactive trigger stays in the a11y tree.
 
 ### Registry derivation (the `activeTrail` bridge)
 

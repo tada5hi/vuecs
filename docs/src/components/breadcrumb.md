@@ -122,9 +122,42 @@ Long trails collapse their middle into a single `<VCBreadcrumbEllipsis>` once th
 />
 ```
 
-With `:max-items="3"` a six-crumb trail renders as `Home … R2-D2 / Settings`. The ellipsis is `aria-hidden` chrome; the `#ellipsis="{ hidden }"` slot receives the collapsed crumbs if you want to render them in a popover.
+With `:max-items="3"` a six-crumb trail renders as `Home … R2-D2 / Settings`. By default the ellipsis is a decorative glyph (the collapsed crumbs are unreachable). `:max-items` is `undefined` by default (never collapse).
 
-`:max-items` is `undefined` by default (never collapse).
+### Reveal the collapsed crumbs in a dropdown
+
+The `#ellipsis="{ hidden }"` slot receives the collapsed crumbs, so you can make them reachable — e.g. behind a dropdown (the same composition Nuxt UI uses). When the slot is present, `<VCBreadcrumbEllipsis>` is **not** `aria-hidden`, so your trigger stays in the accessibility tree. This keeps the interactive overlay an opt-in composition rather than a built-in dependency of `@vuecs/navigation`:
+
+```vue
+<script setup lang="ts">
+import { VCBreadcrumb, VCBreadcrumbLink } from '@vuecs/navigation';
+import {
+    VCDropdownMenu,
+    VCDropdownMenuContent,
+    VCDropdownMenuItem,
+    VCDropdownMenuTrigger,
+} from '@vuecs/overlays';
+</script>
+
+<template>
+    <VCBreadcrumb :items="longTrail" :max-items="3">
+        <template #ellipsis="{ hidden }">
+            <VCDropdownMenu>
+                <VCDropdownMenuTrigger :aria-label="`Show ${hidden.length} collapsed crumbs`">
+                    …
+                </VCDropdownMenuTrigger>
+                <VCDropdownMenuContent>
+                    <VCDropdownMenuItem v-for="(crumb, i) in hidden" :key="i">
+                        <VCBreadcrumbLink :to="crumb.to" :href="crumb.href">
+                            {{ crumb.label }}
+                        </VCBreadcrumbLink>
+                    </VCDropdownMenuItem>
+                </VCDropdownMenuContent>
+            </VCDropdownMenu>
+        </template>
+    </VCBreadcrumb>
+</template>
+```
 
 ## Dynamic `/:id` leaf labels
 

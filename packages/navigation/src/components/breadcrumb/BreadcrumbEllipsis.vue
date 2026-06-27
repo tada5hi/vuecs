@@ -32,20 +32,29 @@ export default defineComponent({
         const theme = useComponentTheme('breadcrumb', themeProps, breadcrumbThemeDefaults);
         const defaults = useComponentDefaults('breadcrumb', {}, breadcrumbBehavioralDefaults);
 
-        return () => h(
-            props.as,
-            mergeProps(attrs, {
-                'class': theme.value.ellipsis || undefined,
-                'role': 'presentation',
-                'aria-hidden': 'true',
-            }),
-            slots.default ?
-                slots.default() :
+        return () => {
+            // When a consumer composes an interactive trigger into the slot
+            // (e.g. a dropdown of the collapsed crumbs), render it as-is — the
+            // trigger carries its own semantics + accessible name, so the
+            // wrapper must NOT be `aria-hidden`. The default static ellipsis
+            // keeps a decorative glyph + an sr-only label announcing the
+            // collapse (the hidden crumbs are otherwise unreachable).
+            if (slots.default) {
+                return h(
+                    props.as,
+                    mergeProps(attrs, { class: theme.value.ellipsis || undefined }),
+                    slots.default(),
+                );
+            }
+            return h(
+                props.as,
+                mergeProps(attrs, { class: theme.value.ellipsis || undefined }),
                 [
                     h('span', { 'aria-hidden': 'true' }, defaults.value.ellipsisGlyph),
                     h('span', { class: 'vc-sr-only' }, defaults.value.ellipsisLabel),
                 ],
-        );
+            );
+        };
     },
 });
 </script>

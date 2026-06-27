@@ -8,6 +8,12 @@ import {
     VCBreadcrumbSeparator,
 } from '@vuecs/navigation';
 import type { BreadcrumbItem } from '@vuecs/navigation';
+import {
+    VCDropdownMenu,
+    VCDropdownMenuContent,
+    VCDropdownMenuItem,
+    VCDropdownMenuTrigger,
+} from '@vuecs/overlays';
 
 defineProps<{
     themeVariant?: Record<string, string | boolean>;
@@ -84,6 +90,41 @@ const longItems: BreadcrumbItem[] = [
 
         <section>
             <h3 class="vc-demo-h">
+                Collapsed crumbs in a dropdown — <code>#ellipsis</code> slot
+            </h3>
+            <VCBreadcrumb
+                :items="longItems"
+                :max-items="3"
+                :theme-variant="themeVariant"
+            >
+                <template #ellipsis="{ hidden }">
+                    <VCDropdownMenu>
+                        <VCDropdownMenuTrigger
+                            class="vc-demo-ellipsis"
+                            :aria-label="`Show ${hidden.length} collapsed crumbs`"
+                        >
+                            …
+                        </VCDropdownMenuTrigger>
+                        <VCDropdownMenuContent :theme-variant="themeVariant">
+                            <VCDropdownMenuItem
+                                v-for="(crumb, index) in hidden"
+                                :key="index"
+                            >
+                                <VCBreadcrumbLink
+                                    :to="crumb.to"
+                                    :href="crumb.href"
+                                >
+                                    {{ crumb.label }}
+                                </VCBreadcrumbLink>
+                            </VCDropdownMenuItem>
+                        </VCDropdownMenuContent>
+                    </VCDropdownMenu>
+                </template>
+            </VCBreadcrumb>
+        </section>
+
+        <section>
+            <h3 class="vc-demo-h">
                 Manual compound — parts by hand
             </h3>
             <VCBreadcrumb :theme-variant="themeVariant">
@@ -123,5 +164,22 @@ const longItems: BreadcrumbItem[] = [
     font-weight: 600;
     margin: 0 0 0.5rem;
     color: var(--vc-color-fg-muted);
+}
+.vc-demo-ellipsis {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.75rem;
+    padding: 0 0.25rem;
+    border: 0;
+    border-radius: 0.25rem;
+    background: transparent;
+    color: var(--vc-color-fg-muted);
+    cursor: pointer;
+    line-height: 1;
+}
+.vc-demo-ellipsis:hover {
+    background: var(--vc-color-bg-muted);
+    color: var(--vc-color-fg);
 }
 </style>
