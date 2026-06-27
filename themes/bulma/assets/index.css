@@ -427,6 +427,41 @@
 }
 
 /* ────────────────────────────────────────────────────────────────────────────
+ * @vuecs/navigation Breadcrumb — `.breadcrumb` sits on the `<nav>` root so
+ * Bulma colours the crumb links (`.breadcrumb a`). Two gap-fills are needed:
+ *
+ *   1. Bulma's native `.breadcrumb li + li::before { content: "/" }` injects
+ *      a slash before every non-first `<li>`. vuecs renders its OWN explicit
+ *      separator `<li class="vc-breadcrumb-separator" aria-hidden>`, so the
+ *      native pseudo would double the separators. Suppress it — our element
+ *      paints.
+ *   2. Bulma's current-crumb style keys off `li.is-active`; vuecs uses the
+ *      APG-correct `aria-current="page"`. Disabled crumbs carry
+ *      `aria-disabled="true"`. Bulma class strings can't carry attribute
+ *      selectors, so the state styling lives here.
+ *
+ * The `<ol>` already flexes via `.vc-breadcrumb-list` (@vuecs/navigation
+ * structural CSS); Bulma's `.breadcrumb ol` flex agrees, so no override is
+ * needed there.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.vc-breadcrumb .vc-breadcrumb-list li + li::before {
+    content: none;
+}
+
+.vc-breadcrumb [aria-current="page"] {
+    font-weight: 600;
+}
+
+/* Exclude the current crumb: `<VCBreadcrumbPage as-link>` also carries
+   `aria-disabled="true"` (role="link"-but-not-clickable idiom) yet must
+   not be dimmed. */
+.vc-breadcrumb [aria-disabled="true"]:not([aria-current="page"]) {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
  * @vuecs/forms FormNumber — Bulma's `.button` class ships with
  * `border: 1px solid …` and a fixed `height: var(--bulma-control-height)`.
  * Our `<VCFormNumber>` decrement / increment slots receive `class="button"`

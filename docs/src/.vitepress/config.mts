@@ -177,6 +177,7 @@ export default defineConfig({
                 {
                     text: '@vuecs/navigation',
                     items: [
+                        { text: 'Breadcrumb', link: '/components/breadcrumb' },
                         { text: 'Navigation', link: '/components/navigation' },
                         { text: 'Stepper', link: '/components/stepper' },
                     ],

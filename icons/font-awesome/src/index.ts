@@ -32,6 +32,7 @@ export default function fontAwesomeIcons(): Icon {
             },
             collapseTrigger: { chevronIcon: 'fa6-solid:chevron-down' },
             tableExpandTrigger: { chevronIcon: 'fa6-solid:chevron-down' },
+            breadcrumb: { separatorIcon: 'fa6-solid:chevron-right' },
             alert: {
                 infoIcon: 'fa6-solid:circle-info',
                 successIcon: 'fa6-solid:circle-check',
