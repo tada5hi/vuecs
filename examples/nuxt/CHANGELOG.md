@@ -1,5 +1,21 @@
 # Changelog
 
+## [6.2.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v6.1.5...examples-nuxt-v6.2.0) (2026-06-27)
+
+
+### Features
+
+* **navigation:** add breadcrumb compound ([#1670](https://github.com/tada5hi/vuecs/issues/1670)) ([88cdbe5](https://github.com/tada5hi/vuecs/commit/88cdbe53b8bb182072ad6d503cc6fef34c3bad45))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/icons-font-awesome bumped from ^1.1.4 to ^1.2.0
+    * @vuecs/navigation bumped from ^4.1.1 to ^4.2.0
+    * @vuecs/theme-tailwind bumped from ^6.1.1 to ^6.2.0
+
 ## [6.1.5](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v6.1.4...examples-nuxt-v6.1.5) (2026-06-26)
 
 
