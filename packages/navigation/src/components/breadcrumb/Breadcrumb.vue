@@ -97,29 +97,36 @@ function buildSequence(
     before: number,
     after: number,
 ): SequenceEntry[] {
-    if (!maxItems || items.length <= maxItems || before + after >= items.length) {
+    // Clamp the collapse inputs so bad props can't produce malformed trails:
+    // `maxItems = 0` would otherwise be read as "never collapse" via `!maxItems`,
+    // and negative before/after flow straight into `slice()` (reordering crumbs).
+    const safeMaxItems = maxItems == null ? undefined : Math.max(1, Math.trunc(maxItems));
+    const safeBefore = Math.max(0, Math.trunc(before));
+    const safeAfter = Math.max(0, Math.trunc(after));
+
+    if (safeMaxItems == null || items.length <= safeMaxItems || safeBefore + safeAfter >= items.length) {
         return items.map((item, index) => ({
-            type: 'item', 
-            item, 
-            index, 
+            type: 'item',
+            item,
+            index,
         }));
     }
     const head: SequenceEntry[] = items
-        .slice(0, before)
+        .slice(0, safeBefore)
         .map((item, index) => ({
-            type: 'item', 
-            item, 
-            index, 
+            type: 'item',
+            item,
+            index,
         }));
-    const tailStart = items.length - after;
+    const tailStart = items.length - safeAfter;
     const tail: SequenceEntry[] = items
         .slice(tailStart)
         .map((item, k) => ({
-            type: 'item', 
-            item, 
-            index: tailStart + k, 
+            type: 'item',
+            item,
+            index: tailStart + k,
         }));
-    return [...head, { type: 'ellipsis', hidden: items.slice(before, tailStart) }, ...tail];
+    return [...head, { type: 'ellipsis', hidden: items.slice(safeBefore, tailStart) }, ...tail];
 }
 
 const VCBreadcrumb = defineComponent({
@@ -218,7 +225,9 @@ const VCBreadcrumb = defineComponent({
             const content = renderCrumbContent(item, index, current);
 
             if (item.disabled) {
-                return h(VCBreadcrumbPage, { disabled: true }, { default: () => content });
+                // Keep the current-page semantics even when the active crumb is
+                // disabled — otherwise it silently loses `aria-current="page"`.
+                return h(VCBreadcrumbPage, { disabled: true, current }, { default: () => content });
             }
             if (item.to != null || item.href != null) {
                 return h(
@@ -282,7 +291,10 @@ const VCBreadcrumb = defineComponent({
         };
 
         return () => {
-            const navChildren = slots.default ?
+            // Documented precedence: explicit `:items` / `:registry-id` drive the
+            // trail; the default slot is the manual-compound escape hatch and only
+            // wins when both data sources are absent.
+            const navChildren = (props.items == null && props.registryId == null && slots.default) ?
                 slots.default() :
                 h(VCBreadcrumbList, null, { default: () => renderItems() });
             return h(

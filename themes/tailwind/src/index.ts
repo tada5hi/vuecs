@@ -1047,9 +1047,11 @@ export default function tailwindTheme(): Theme {
                     // disabled-but-linked crumb.
                     link: 'rounded text-fg-muted no-underline transition-colors hover:text-fg hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring aria-[current=page]:text-fg aria-[current=page]:font-medium aria-[disabled=true]:pointer-events-none aria-[disabled=true]:opacity-50',
                     // Current-page or url-less crumb (`<span>`). Same
-                    // active-leaf signaling as the link via
-                    // `aria-current=page`; `aria-disabled` mutes it.
-                    page: 'text-fg-muted aria-[current=page]:text-fg aria-[current=page]:font-medium aria-[disabled=true]:opacity-50',
+                    // active-leaf signaling as the link via `aria-current=page`.
+                    // `aria-disabled` mutes a genuinely disabled crumb, but NOT
+                    // the current one — `<VCBreadcrumbPage as-link>` also carries
+                    // `aria-disabled=true` (role="link"-but-not-clickable idiom).
+                    page: 'text-fg-muted aria-[current=page]:text-fg aria-[current=page]:font-medium aria-[disabled=true]:not-aria-[current=page]:opacity-50',
                     ellipsis: 'text-fg-muted',
                 },
             },

@@ -109,6 +109,7 @@ const longItems: BreadcrumbItem[] = [
                             <VCDropdownMenuItem
                                 v-for="(crumb, index) in hidden"
                                 :key="index"
+                                as-child
                             >
                                 <VCBreadcrumbLink
                                     :to="crumb.to"

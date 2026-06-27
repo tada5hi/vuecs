@@ -147,7 +147,7 @@ import {
                     …
                 </VCDropdownMenuTrigger>
                 <VCDropdownMenuContent>
-                    <VCDropdownMenuItem v-for="(crumb, i) in hidden" :key="i">
+                    <VCDropdownMenuItem v-for="(crumb, i) in hidden" :key="i" as-child>
                         <VCBreadcrumbLink :to="crumb.to" :href="crumb.href">
                             {{ crumb.label }}
                         </VCBreadcrumbLink>
@@ -302,7 +302,7 @@ Resolved via `useComponentDefaults('breadcrumb', …)` — overridable per insta
 
 | Emit | Payload | Description |
 |---|---|---|
-| `select` | `(item: Item, index: number)` | Fired when a url-less crumb (no `to`/`href`, not the current page) is clicked — drive a non-navigating selection. |
+| `select` | `(item: Item, index: number)` | Fired when any non-disabled url-less crumb (no `to`/`href`, including the current page) is clicked — drive a non-navigating selection. |
 
 | Slot | Props | Description |
 |---|---|---|
@@ -339,5 +339,5 @@ Each takes `as` (render-target tag/component), `themeClass`, and `themeVariant`.
 ## See also
 
 - [Navigation](/components/navigation) — the registry whose `activeTrail` `:registry-id` mirrors
-- [Link](/components/link) — the router-aware anchor each crumb link composes
+- [VCLink docs](/components/link) — the router-aware anchor each crumb link composes
 - [Stepper](/components/stepper) — the other navigator in `@vuecs/navigation`

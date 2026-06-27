@@ -29,7 +29,10 @@ export type BreadcrumbManager = {
 };
 
 export function createBreadcrumbManager(initial: BreadcrumbItem[] = []): BreadcrumbManager {
-    const items = ref<BreadcrumbItem[]>([...initial]);
+    // Snapshot the creation-time trail so `reset()` restores the documented
+    // baseline even if the caller mutates the array they passed in later.
+    const baseline = [...initial];
+    const items = ref<BreadcrumbItem[]>([...baseline]);
     return {
         items,
         push: (item) => { items.value = [...items.value, item]; },
@@ -40,7 +43,7 @@ export function createBreadcrumbManager(initial: BreadcrumbItem[] = []): Breadcr
             return removed;
         },
         replace: (value) => { items.value = [...value]; },
-        reset: () => { items.value = [...initial]; },
+        reset: () => { items.value = [...baseline]; },
     };
 }
 

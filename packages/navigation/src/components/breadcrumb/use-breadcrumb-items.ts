@@ -50,7 +50,14 @@ export function useBreadcrumbItems(
             const entries = Array.isArray(resolved) ? resolved : [resolved];
             for (const entry of entries) {
                 const item = typeof entry === 'string' ? { label: entry } : entry;
-                out.push({ to: record.path, ...item } as BreadcrumbItem);
+                // Only fall back to the record's `path` as a router `to` when the
+                // meta entry supplies neither `to` nor `href` — forcing `to` onto
+                // an `{ label, href }` entry would break the `BreadcrumbItem`
+                // contract (`href` is the secondary, non-router target).
+                out.push({
+                    ...(item.to == null && item.href == null && record.path ? { to: record.path } : {}),
+                    ...item,
+                } as BreadcrumbItem);
             }
         }
         return out;

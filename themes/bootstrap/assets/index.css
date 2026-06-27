@@ -446,8 +446,10 @@
     font-weight: 600;
 }
 
-/* A genuinely disabled crumb — non-interactive + dimmed. */
-.vc-breadcrumb [aria-disabled="true"] {
+/* A genuinely disabled crumb — non-interactive + dimmed. Exclude the current
+   crumb: `<VCBreadcrumbPage as-link>` also carries `aria-disabled="true"`
+   (the role="link"-but-not-clickable idiom) and must not be dimmed. */
+.vc-breadcrumb [aria-disabled="true"]:not([aria-current="page"]) {
     opacity: .65;
     pointer-events: none;
 }
