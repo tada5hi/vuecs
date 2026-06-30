@@ -948,6 +948,41 @@ export default function tailwindTheme(): Theme {
                 },
                 defaultVariants: { size: 'md' },
             },
+            alertDialog: {
+                classes: {
+                    overlay: 'fixed inset-0 z-50 bg-neutral-950/60 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+                    content: 'fixed left-1/2 top-1/2 z-50 grid w-full max-w-md -translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg border border-border bg-bg p-6 text-fg shadow-lg outline-none focus:outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
+                    header: 'flex flex-col gap-1.5',
+                    title: 'text-lg font-semibold text-fg',
+                    description: 'text-sm text-fg-muted',
+                    body: 'flex flex-col gap-2 text-sm text-fg',
+                    footer: 'mt-2 flex flex-row items-center justify-end gap-2',
+                    trigger: '',
+                    // Cancel = neutral outline button. Consumers compose
+                    // `<VCButton>` via `as-child` for the full variant matrix.
+                    cancel: 'inline-flex h-9 items-center justify-center rounded-md border border-border bg-bg px-4 text-sm font-medium text-fg hover:bg-bg-muted focus:outline-none focus:ring-2 focus:ring-ring',
+                    // Action base carries no color — the `tone` variant supplies bg.
+                    action: 'inline-flex h-9 items-center justify-center rounded-md px-4 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-ring',
+                },
+                variants: {
+                    size: {
+                        xs: { content: 'max-w-xs p-4 gap-3' },
+                        sm: { content: 'max-w-sm' },
+                        md: { content: '' },
+                        lg: { content: 'max-w-lg' },
+                    },
+                    // Action-button color per semantic tone.
+                    tone: {
+                        neutral: { action: 'bg-neutral-600 hover:bg-neutral-700' },
+                        primary: { action: 'bg-primary-600 hover:bg-primary-700' },
+                        info: { action: 'bg-info-600 hover:bg-info-700' },
+                        success: { action: 'bg-success-600 hover:bg-success-700' },
+                        warning: { action: 'bg-warning-600 hover:bg-warning-700' },
+                        error: { action: 'bg-error-600 hover:bg-error-700' },
+                    },
+                },
+                defaultVariants: { size: 'md', tone: 'primary' },
+            },
             popover: {
                 classes: {
                     trigger: '',

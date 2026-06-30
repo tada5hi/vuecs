@@ -5,6 +5,14 @@ import type { CoreOptions } from '@vuecs/core';
 import './vue';
 import { registerOverlayConfigDefaults } from './config';
 import {
+    VCAlertDialog,
+    VCAlertDialogAction,
+    VCAlertDialogCancel,
+    VCAlertDialogContent,
+    VCAlertDialogDescription,
+    VCAlertDialogTitle,
+    VCAlertDialogTrigger,
+    VCConfirmDialog,
     VCContextMenu,
     VCContextMenuCheckboxItem,
     VCContextMenuContent,
@@ -76,6 +84,14 @@ export function install(app: App, options: Options = {}): void {
 
     Object.entries({
         VCPresence,
+        VCAlertDialog,
+        VCAlertDialogTrigger,
+        VCAlertDialogContent,
+        VCAlertDialogTitle,
+        VCAlertDialogDescription,
+        VCAlertDialogCancel,
+        VCAlertDialogAction,
+        VCConfirmDialog,
         VCModal,
         VCModalTrigger,
         VCModalContent,

@@ -233,6 +233,7 @@ unless the variant is structural (e.g. orientation-driven layout).
 | FormSelectSearch | `severity` only | error/warning | No `size` axis (theme entry ships `severity` only) — the search box inherits its sizing from surrounding layout, not a size variant. |
 | FormCheckbox / FormSwitch / FormRadio | `size` | xs/sm/md/lg | theme-bootstrap uses `vc-form-{checkbox,switch,radio}-{sm,lg}` helpers from @vuecs/forms structural CSS |
 | Modal | `size` | xs/sm/md/lg/xl | theme-tailwind uses `max-w-*`; theme-bootstrap uses `modal-{sm,lg,xl}` |
+| AlertDialog | `size` × `tone` | xs/sm/md/lg × six semantic colors | `size` sizes the `content`; `tone` colors the `action` button (drives `useConfirm({ tone })`). No `danger` alias (plan 040) |
 | Popover / HoverCard | `size` | xs/sm/md/lg | Width + padding tier |
 | Tooltip | `size` | xs/sm/md/lg | Padding + font-size only |
 | DropdownMenu / ContextMenu | `size` | xs/sm/md/lg | Item padding + min-width |
@@ -1799,6 +1800,11 @@ matching `*Portal` so consumers don't have to compose them manually
         types.ts            <- ModalClosePolicy + ModalThemeClasses + ThemeElements augmentation
         use-modal.ts        <- useModal() view-stack composable (issue #1480)
         index.ts
+      alert-dialog/           <- AlertDialog / Trigger / Content / Title / Description / Cancel / Action
+                                 (Reka AlertDialog — role="alertdialog", outside-click always off,
+                                 `noEscape` boolean instead of Modal's 4-value closePolicy)
+                                 + ConfirmDialog.vue (single host) + use-confirm.ts
+                                 (useConfirm() singleton FIFO queue → Promise<boolean>) (plan 040)
       popover/                <- Popover / Trigger / Content / Arrow / Close (with `icon` prop)
       hover-card/             <- HoverCard / Trigger / Content / Arrow (plan 013) — hover-with-grace-area; trigger defaults to `as="a"`
       tooltip/                <- TooltipProvider / Tooltip / Trigger / Content / Arrow
@@ -1843,9 +1849,47 @@ Equivalent composables for the other families haven't shipped — most of
 those don't need stateful flows, and consumers can wire `:open` /
 `@update:open` manually when they do.
 
-Theme entries for all seven families (`modal`, `popover`, `hoverCard`,
-`tooltip`, `dropdownMenu`, `contextMenu`, `toast` + the four `toast*`
-sub-keys) ship across `@vuecs/theme-tailwind`,
+### AlertDialog + `useConfirm()` (plan 040)
+
+The confirmation feature ships as **two layers on one primitive**:
+
+- **`<VCAlertDialog>` declarative compound** (7 parts: `Trigger` /
+  `Content` / `Title` / `Description` / `Cancel` / `Action`) wraps Reka's
+  `AlertDialog` family. This is the *semantically correct* confirm
+  primitive — Reka's `AlertDialogContent` hardcodes `role="alertdialog"`
+  (the WAI-ARIA *Alert and Message Dialogs* pattern, more assertive than
+  `<VCModal>`'s `role="dialog"`), disables outside-click dismissal, and
+  auto-focuses the registered Cancel element on open. Because outside-click
+  is always off, `<VCAlertDialogContent>` carries a single **`noEscape`**
+  boolean (Escape cancels by default) rather than Modal's 4-value
+  `closePolicy`. `Cancel` / `Action` render as themed `<button>`s but
+  support `as-child` so a consumer composes `<VCButton color="error">` for
+  the full variant matrix.
+- **`useConfirm()` imperative composable** returns a callable
+  `(options?) => Promise<boolean>` and mirrors the `useToast()` idiom: a
+  module-level **FIFO queue** (singleton) drained one-at-a-time by a single
+  `<VCConfirmDialog>` host placed once near the app root (like
+  `<VCToaster>`). `Action` → resolves `true`; `Cancel` / Escape →
+  resolves `false`. The host renders the head request through the Layer-1
+  parts (default title + description + Cancel/Action buttons, with a
+  `component` / `componentProps` escape hatch for a fully custom body).
+  The exposed `useConfirmController()` (`{ queue, settle, clear }`) is the
+  `@internal` seam the host + tests drive; `clear()` cancels all pending
+  as `false` (e.g. on route change). Same SSR caveat as `useToast()` — the
+  queue is process-wide, so only call `confirm()` from client handlers.
+
+`tone` (canonical six colors — no `danger` alias) drives the Action
+button color via a `tone` variant on the `alertDialog` theme key.
+Behavioral strings (`title` / `confirmLabel` / `cancelLabel`) resolve
+through `useComponentDefaults('confirm', …)` for i18n. There is
+deliberately no corner-X close (an alert dialog forces a Cancel/Action
+choice), so the theme key has no `close` / `closeIcon` slot. Known v1
+limitation: when the queue drains to empty the host content unmounts
+without an exit animation (the enter animation still plays).
+
+Theme entries for all eight families (`modal`, `alertDialog`, `popover`,
+`hoverCard`, `tooltip`, `dropdownMenu`, `contextMenu`, `toast` + the four
+`toast*` sub-keys) ship across `@vuecs/theme-tailwind`,
 `@vuecs/theme-bootstrap`, and `@vuecs/theme-bulma` with `data-state`
 animation hooks (`open|closed` for modal/popover/hover-card/menu/toast,
 `delayed-open|closed` for tooltip). Toast additionally exposes
