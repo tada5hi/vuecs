@@ -62,7 +62,8 @@
     "overrides": {
         "unbuild": {
             "typescript": "$typescript"
-        }
+        },
+        "vue": "^3.5.39"
     },
     "scripts": {
         "build": "npx nx run-many -t build",
