@@ -47,6 +47,12 @@ export const sharedRoutes: SharedRoute[] = [
         view: () => import('./views/Badge.vue').then((m) => m.default),
     },
     {
+        path: '/breadcrumb',
+        name: 'breadcrumb',
+        label: 'Breadcrumb',
+        view: () => import('./views/Breadcrumb.vue').then((m) => m.default),
+    },
+    {
         path: '/button',
         name: 'button',
         label: 'Button',

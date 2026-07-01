@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.2.1](https://github.com/tada5hi/vuecs/compare/button-v1.2.0...button-v1.2.1) (2026-06-26)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.2.2 to ^3.3.0
+  * peerDependencies
+    * @vuecs/core bumped from ^3.2.2 to ^3.3.0
+
 ## [1.2.0](https://github.com/tada5hi/vuecs/compare/button-v1.1.1...button-v1.2.0) (2026-06-23)
 
 

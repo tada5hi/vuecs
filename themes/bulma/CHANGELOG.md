@@ -1,5 +1,43 @@
 # Changelog
 
+## [5.2.0](https://github.com/tada5hi/vuecs/compare/theme-bulma-v5.1.1...theme-bulma-v5.2.0) (2026-06-27)
+
+
+### Features
+
+* **navigation:** add breadcrumb compound ([#1670](https://github.com/tada5hi/vuecs/issues/1670)) ([88cdbe5](https://github.com/tada5hi/vuecs/commit/88cdbe53b8bb182072ad6d503cc6fef34c3bad45))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/navigation bumped from ^4.1.1 to ^4.2.0
+
+## [5.1.1](https://github.com/tada5hi/vuecs/compare/theme-bulma-v5.1.0...theme-bulma-v5.1.1) (2026-06-26)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/button bumped from ^1.2.0 to ^1.2.1
+    * @vuecs/core bumped from ^3.2.2 to ^3.3.0
+    * @vuecs/countdown bumped from ^2.0.6 to ^2.0.7
+    * @vuecs/design bumped from ^1.0.6 to ^1.0.7
+    * @vuecs/elements bumped from ^1.3.0 to ^1.3.1
+    * @vuecs/forms bumped from ^5.3.0 to ^5.3.1
+    * @vuecs/gravatar bumped from ^2.0.8 to ^2.0.9
+    * @vuecs/list bumped from ^1.0.6 to ^1.1.0
+    * @vuecs/navigation bumped from ^4.1.0 to ^4.1.1
+    * @vuecs/overlays bumped from ^1.1.2 to ^1.1.3
+    * @vuecs/pagination bumped from ^2.1.5 to ^2.1.6
+    * @vuecs/placeholder bumped from ^1.0.6 to ^1.0.7
+    * @vuecs/timeago bumped from ^2.1.2 to ^2.1.3
+  * peerDependencies
+    * @vuecs/core bumped from ^3.2.2 to ^3.3.0
+    * @vuecs/design bumped from ^1.0.6 to ^1.0.7
+
 ## [5.1.0](https://github.com/tada5hi/vuecs/compare/theme-bulma-v5.0.2...theme-bulma-v5.1.0) (2026-06-23)
 
 

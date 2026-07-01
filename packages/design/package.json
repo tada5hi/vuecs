@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/design",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "type": "module",
     "description": "Design tokens (CSS variables) and runtime palette switcher for vuecs components.",
     "exports": {
@@ -63,7 +63,7 @@
         "test:coverage": "vitest --config test/vitest.config.ts --run --coverage"
     },
     "devDependencies": {
-        "@vuecs/core": "^3.2.2",
+        "@vuecs/core": "^3.3.0",
         "@vueuse/core": "^14.3.0",
         "jsdom": "^29.1.1",
         "tailwindcss": "^4.3.1",

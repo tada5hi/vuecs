@@ -1072,6 +1072,30 @@ export default function tailwindTheme(): Theme {
                 },
                 defaultVariants: { size: 'md' },
             },
+            breadcrumb: {
+                classes: {
+                    root: 'text-sm',
+                    // Layout (flex row + gap) is structural — see the
+                    // `vc-breadcrumb-list` defaults in @vuecs/navigation.
+                    list: '',
+                    // Navigable crumb: muted by default, lifts to fg + an
+                    // underline on hover. `aria-current=page` (set on the
+                    // current crumb when it still carries a link) paints it
+                    // as the active leaf. `aria-disabled` mutes the rare
+                    // disabled-but-linked crumb.
+                    link: 'rounded text-fg-muted no-underline transition-colors hover:text-fg hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring aria-[current=page]:text-fg aria-[current=page]:font-medium aria-[disabled=true]:pointer-events-none aria-[disabled=true]:opacity-50',
+                    // Current-page or url-less crumb (`<span>`). Same
+                    // active-leaf signaling as the link via `aria-current=page`.
+                    // `aria-disabled` mutes a genuinely disabled crumb, but NOT
+                    // the current one — `<VCBreadcrumbPage as-link>` also carries
+                    // `aria-disabled=true` (role="link"-but-not-clickable idiom).
+                    page: 'text-fg-muted aria-[current=page]:text-fg aria-[current=page]:font-medium aria-[disabled=true]:not-aria-[current=page]:opacity-50',
+                    ellipsis: 'text-fg-muted',
+                },
+            },
+            // Layout is structural (`vc-breadcrumb-item`); no visual class.
+            breadcrumbItem: { classes: { root: '' } },
+            breadcrumbSeparator: { classes: { root: 'text-fg-muted' } },
             toastViewport: {
                 // Fixed-position viewport. Each position variant pins the
                 // viewport against one viewport corner / center. Stack

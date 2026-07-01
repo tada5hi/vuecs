@@ -78,6 +78,7 @@ vuecs ships its components across separate packages — install only what you us
 
 | Component | Notes |
 |-----------|-------|
+| [Breadcrumb](/components/breadcrumb) | Hierarchical trail — `:items` driver / manual compound / registry-derived, ellipsis collapse, push/pop manager + dynamic-`/:id` leaf override |
 | [Navigation](/components/navigation) | Multi-level nav with router integration |
 | [Stepper](/components/stepper) | Multi-step wizard / checkout / onboarding navigator (Reka primitive) |
 

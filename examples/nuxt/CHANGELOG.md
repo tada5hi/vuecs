@@ -1,5 +1,43 @@
 # Changelog
 
+## [6.2.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v6.1.5...examples-nuxt-v6.2.0) (2026-06-27)
+
+
+### Features
+
+* **navigation:** add breadcrumb compound ([#1670](https://github.com/tada5hi/vuecs/issues/1670)) ([88cdbe5](https://github.com/tada5hi/vuecs/commit/88cdbe53b8bb182072ad6d503cc6fef34c3bad45))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/icons-font-awesome bumped from ^1.1.4 to ^1.2.0
+    * @vuecs/navigation bumped from ^4.1.1 to ^4.2.0
+    * @vuecs/theme-tailwind bumped from ^6.1.1 to ^6.2.0
+
+## [6.1.5](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v6.1.4...examples-nuxt-v6.1.5) (2026-06-26)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/button bumped from ^1.2.0 to ^1.2.1
+    * @vuecs/countdown bumped from ^2.0.6 to ^2.0.7
+    * @vuecs/design bumped from ^1.0.6 to ^1.0.7
+    * @vuecs/elements bumped from ^1.3.0 to ^1.3.1
+    * @vuecs/forms bumped from ^5.3.0 to ^5.3.1
+    * @vuecs/gravatar bumped from ^2.0.8 to ^2.0.9
+    * @vuecs/icons-font-awesome bumped from ^1.1.3 to ^1.1.4
+    * @vuecs/list bumped from ^1.0.6 to ^1.1.0
+    * @vuecs/navigation bumped from ^4.1.0 to ^4.1.1
+    * @vuecs/nuxt bumped from ^1.1.2 to ^1.1.3
+    * @vuecs/overlays bumped from ^1.1.2 to ^1.1.3
+    * @vuecs/pagination bumped from ^2.1.5 to ^2.1.6
+    * @vuecs/theme-tailwind bumped from ^6.1.0 to ^6.1.1
+    * @vuecs/timeago bumped from ^2.1.2 to ^2.1.3
+
 ## [6.1.4](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v6.1.3...examples-nuxt-v6.1.4) (2026-06-23)
 
 

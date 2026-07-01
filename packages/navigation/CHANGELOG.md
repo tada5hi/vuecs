@@ -1,5 +1,23 @@
 # Changelog
 
+## [4.2.0](https://github.com/tada5hi/vuecs/compare/navigation-v4.1.1...navigation-v4.2.0) (2026-06-27)
+
+
+### Features
+
+* **navigation:** add breadcrumb compound ([#1670](https://github.com/tada5hi/vuecs/issues/1670)) ([88cdbe5](https://github.com/tada5hi/vuecs/commit/88cdbe53b8bb182072ad6d503cc6fef34c3bad45))
+
+## [4.1.1](https://github.com/tada5hi/vuecs/compare/navigation-v4.1.0...navigation-v4.1.1) (2026-06-26)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.2.2 to ^3.3.0
+  * peerDependencies
+    * @vuecs/core bumped from ^3.2.2 to ^3.3.0
+
 ## [4.1.0](https://github.com/tada5hi/vuecs/compare/navigation-v4.0.4...navigation-v4.1.0) (2026-06-23)
 
 

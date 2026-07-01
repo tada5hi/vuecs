@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/navigation",
-    "version": "4.1.0",
+    "version": "4.2.0",
     "type": "module",
     "description": "A package for multi level navigations.",
     "exports": {
@@ -45,22 +45,22 @@
         "build:js": "tsdown",
         "build:types": "vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json",
         "build": "rimraf dist && npm run build:js && npm run build:types",
-        "test": "vitest --config test/vitest.config.ts --run",
-        "test:coverage": "vitest --config test/vitest.config.ts --run --coverage"
+        "test": "npm run build:types && vitest --config test/vitest.config.ts --run",
+        "test:coverage": "npm run build:types && vitest --config test/vitest.config.ts --run --coverage"
     },
     "dependencies": {
         "reka-ui": "^2.10.0"
     },
     "devDependencies": {
         "@vue/test-utils": "^2.4.11",
-        "@vuecs/core": "^3.2.2",
+        "@vuecs/core": "^3.3.0",
         "@vuecs/link": "^2.0.2",
         "jsdom": "^29.1.1",
         "vue": "^3.5.38",
         "vue-router": "^5.1.0"
     },
     "peerDependencies": {
-        "@vuecs/core": "^3.2.2",
+        "@vuecs/core": "^3.3.0",
         "@vuecs/link": "^2.0.2",
         "vue": "^3.x",
         "vue-router": "^4.x || ^5.x"
