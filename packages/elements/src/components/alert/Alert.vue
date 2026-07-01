@@ -139,10 +139,19 @@ export default defineComponent({
             const iconSlot = slots.icon?.({ class: theme.value.icon });
             let iconNode: VNode | null = null;
             if (isMeaningfulSlotContent(iconSlot)) {
-                iconNode = h('div', { class: iconClass, 'aria-hidden': 'true' }, iconSlot);
+                // No `aria-hidden` on the slot path: `#icon` content is
+                // consumer-owned and may be meaningful or interactive (a live
+                // `role="status"` spinner, a focusable control). Forcing
+                // `aria-hidden` here would hide announced/focusable content
+                // from assistive tech — the `aria-hidden-focus` anti-pattern
+                // (WCAG 4.1.2). The consumer owns the slot's semantics; a
+                // purely decorative icon can set `aria-hidden` itself.
+                iconNode = h('div', { class: iconClass }, iconSlot);
             } else {
                 const iconValue = iconName.value;
                 if (iconValue && hasIconComponent) {
+                    // Decorative prop / color-derived icon — hidden from AT;
+                    // the alert's `role` + text content carry the semantics.
                     iconNode = h('div', { class: iconClass, 'aria-hidden': 'true' }, [
                         h(VCIcon as Component, { name: iconValue }),
                     ]);

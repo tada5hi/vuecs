@@ -121,6 +121,13 @@ Precedence is `#icon` slot → `:icon` prop → color-derived default. An empty
 (or `v-if="false"`) slot falls back to the prop / default, so `:icon="''"`
 still suppresses when the slot renders nothing.
 
+The color-derived / `:icon` icon is decorative, so its wrapper is
+`aria-hidden` (the alert's `role` + text carry the meaning). The `#icon`
+slot wrapper is **not** `aria-hidden` — its content is yours and may be
+meaningful or interactive (a live `role="status"` spinner, a focusable
+control). If you slot a purely decorative icon, mark it `aria-hidden`
+yourself.
+
 ### Dismiss with collapse animation
 
 Compose with [`<VCCollapse>`](/components/collapse) for a height-collapse on dismiss (instead of instant unmount):
@@ -220,7 +227,7 @@ Override via `<VCAlert role="log">` for custom interaction patterns (e.g. chat l
 | Slot | Props | Description |
 |---|---|---|
 | `default` | — | Alert body — title / description compound or inline text. |
-| `icon` | `{ class: string }` | Leading-icon override, rendered inside the icon wrapper in place of the `icon` prop / color-derived default. `class` is the resolved icon-wrapper theme class. An empty (or `v-if="false"`) slot falls back to the prop / default. |
+| `icon` | `{ class: string }` | Leading-icon override, rendered inside the icon wrapper in place of the `icon` prop / color-derived default. `class` is the resolved icon-wrapper theme class. An empty (or `v-if="false"`) slot falls back to the prop / default. The slot wrapper is **not** `aria-hidden` (consumer owns slot a11y); the prop / color-derived icon wrapper is. |
 
 `<VCAlert>` is presentational — wrap with `v-if` (instant dismissal) or `<VCCollapse v-model:open>` (animated). No `v-model:open` on the alert itself.
 

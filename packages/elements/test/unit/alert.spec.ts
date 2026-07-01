@@ -144,8 +144,33 @@ describe('<VCAlert>', () => {
             }), { global: { plugins: [...plugins] } });
             const iconWrapper = (wrapper.element as HTMLElement).querySelector('.vc-alert-icon');
             expect(iconWrapper).not.toBeNull();
-            expect(iconWrapper!.getAttribute('aria-hidden')).toBe('true');
             expect(iconWrapper!.querySelector('[data-test-slot-icon]')).not.toBeNull();
+        });
+
+        it('does NOT force aria-hidden on the consumer-owned slot wrapper', () => {
+            // Slot content may be meaningful / interactive (a live spinner, a
+            // focusable control); hiding it from AT would be the
+            // aria-hidden-focus anti-pattern. The consumer owns slot a11y.
+            const wrapper = mount(defineComponent({
+                setup: () => () => h(VCAlert, { color: 'warning' }, {
+                    icon: () => h('svg', { 'data-test-slot-icon': '' }),
+                    default: () => 'x',
+                }),
+            }), { global: { plugins: [...plugins] } });
+            const iconWrapper = (wrapper.element as HTMLElement).querySelector('.vc-alert-icon');
+            expect(iconWrapper!.getAttribute('aria-hidden')).toBeNull();
+        });
+
+        it('keeps aria-hidden on the decorative prop/color icon wrapper', () => {
+            const VCIcon = defineComponent({
+                name: 'VCIcon',
+                props: ['name'],
+                setup: (props) => () => h('span', { 'data-test-icon': props.name }),
+            });
+            const wrapper = mount(defineComponent({ setup: () => () => h(VCAlert, { color: 'error', icon: 'lucide:x' }, { default: () => 'x' }) }), { global: { plugins: [...plugins], components: { VCIcon } } });
+            const iconWrapper = (wrapper.element as HTMLElement).querySelector('.vc-alert-icon');
+            expect(iconWrapper).not.toBeNull();
+            expect(iconWrapper!.getAttribute('aria-hidden')).toBe('true');
         });
 
         it('takes precedence over the :icon prop and color-derived default', () => {
