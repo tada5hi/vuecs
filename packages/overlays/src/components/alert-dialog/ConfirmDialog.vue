@@ -6,22 +6,23 @@ import VCAlertDialog from './AlertDialog.vue';
 import VCAlertDialogContent from './AlertDialogContent.vue';
 import VCAlertDialogTitle from './AlertDialogTitle.vue';
 import VCAlertDialogDescription from './AlertDialogDescription.vue';
+import VCAlertDialogCancel from './AlertDialogCancel.vue';
+import VCAlertDialogAction from './AlertDialogAction.vue';
 import { alertDialogThemeDefaults } from './theme';
 import { confirmHardcodedDefaults, injectConfirmManager } from './use-confirm';
 import type { ConfirmRequest } from './use-confirm';
 
 /**
  * Single host for the imperative `useConfirm()` API — place it once near the
- * app root (sibling of `<VCToaster>`). Reads the module-level FIFO queue and
- * renders the head request through the `<VCAlertDialog*>` parts.
+ * app root (sibling of `<VCToaster>`). Injects the per-app `ConfirmManager`
+ * and renders the head request through the `<VCAlertDialog*>` parts.
  *
- * The footer buttons are plain `<button>`s (not `<VCAlertDialogAction>` /
- * `<VCAlertDialogCancel>`, which would both close via Reka's `DialogClose` and
- * make Action vs Cancel indistinguishable). Cancel is rendered first so it is
- * the first focusable element — matching Reka's auto-focus and keeping an
- * accidental Enter off the destructive Action. Outside-click is disabled by
- * Reka, so the only `update:open=false` path is Escape (when not `noEscape`),
- * which resolves the request as cancelled.
+ * The footer uses `<VCAlertDialogCancel manual>` / `<VCAlertDialogAction manual>`.
+ * `manual` suppresses Reka's auto-close — which can't distinguish confirm from
+ * cancel — so the host's own `@click` drives the true / false resolution.
+ * Cancel renders first so it is the first focusable element on open. Escape
+ * (the only remaining `update:open=false` path, since the manual parts don't
+ * close on click) resolves the shown request as cancelled.
  *
  * Known v1 limitation: when the queue drains to empty the content unmounts
  * without an exit animation (the enter animation still plays). Sequential
@@ -34,15 +35,10 @@ export default defineComponent({
         const head = computed<ConfirmRequest | undefined>(() => manager.queue.value[0]);
         const open = computed(() => manager.queue.value.length > 0);
         const defaults = useComponentDefaults('confirm', {}, confirmHardcodedDefaults);
-
-        // Resolve the shared `alertDialog` theme with the head request's tone
-        // so the Action button picks up its color. Title / description /
-        // overlay / content classes come from the Layer-1 parts' own
-        // resolution; this instance only drives the host-rendered footer.
-        const theme = useComponentTheme('alertDialog', {
-            get themeClass() { return undefined; },
-            get themeVariant() { return { tone: head.value?.options.tone ?? 'primary' }; },
-        }, alertDialogThemeDefaults);
+        // Host owns only the footer layout class; the Cancel / Action parts
+        // resolve their own `alertDialog` theme (the Action's `tone` is passed
+        // per-request via `themeVariant`).
+        const theme = useComponentTheme('alertDialog', {}, alertDialogThemeDefaults);
 
         // Resolve `req` only if it is still the head of the queue. Guards
         // against a stale interaction (e.g. a fast double-click landing before
@@ -56,7 +52,7 @@ export default defineComponent({
 
         function onOpenChange(next: boolean): void {
             // Only Escape reaches here (outside-click is disabled by Reka and
-            // the buttons are plain, not DialogClose). Cancel the shown head.
+            // the manual buttons don't close on click). Cancel the shown head.
             if (!next && head.value) resolveRequest(head.value, false);
         }
 
@@ -68,17 +64,19 @@ export default defineComponent({
                     h(VCAlertDialogDescription, () => options.description) :
                     null,
                 h('div', { class: theme.value.footer || undefined }, [
-                    // Cancel first → first focusable on open.
-                    h('button', {
+                    // Cancel first → first focusable on open. `manual` disables
+                    // the auto-close so `@click` drives resolution.
+                    h(VCAlertDialogCancel, {
+                        manual: true,
                         type: 'button',
-                        class: theme.value.cancel || undefined,
                         onClick: () => resolveRequest(req, false),
-                    }, options.cancelLabel ?? defaults.value.cancelLabel),
-                    h('button', {
+                    }, () => options.cancelLabel ?? defaults.value.cancelLabel),
+                    h(VCAlertDialogAction, {
+                        manual: true,
                         type: 'button',
-                        class: theme.value.action || undefined,
+                        themeVariant: { tone: options.tone ?? 'primary' },
                         onClick: () => resolveRequest(req, true),
-                    }, options.confirmLabel ?? defaults.value.confirmLabel),
+                    }, () => options.confirmLabel ?? defaults.value.confirmLabel),
                 ]),
             ];
             return children.filter((c): c is VNode => c !== null);
