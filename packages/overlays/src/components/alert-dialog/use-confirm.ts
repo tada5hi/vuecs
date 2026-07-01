@@ -16,7 +16,12 @@ export type ConfirmTone = 'neutral' | 'primary' | 'info' | 'success' | 'warning'
 export type ConfirmOptions = {
     /** Heading text. Falls through to `useComponentDefaults('confirm').title`. */
     title?: string;
-    /** Optional body text. */
+    /**
+     * Optional body text. Omitting it is valid, but — like any Reka dialog
+     * with no description — triggers Reka's "Missing Description" dev-only
+     * console warning (never emitted in production). Pass a description to
+     * silence it.
+     */
     description?: string;
     /** Action (confirm) button label. Falls through to the `confirmLabel` default. */
     confirmLabel?: string;
@@ -62,13 +67,20 @@ export const confirmHardcodedDefaults: ConfirmDefaults = {
 // ──────────────────────────────────────────────────────────────────────────
 
 export type ConfirmRequest = {
-    id: string;
+    /**
+     * Opaque per-request token, used only as the host's Vue `:key` (to remount
+     * between sequential dialogs). Never a DOM id, never returned to the
+     * caller, never used for lookup — `settle()` / `clear()` work on the queue
+     * head positionally — so a fresh `Symbol` is the cleanest unique value (no
+     * module-level counter; `useId()` would need a `setup()` context this
+     * click-handler-minted id doesn't have).
+     */
+    id: symbol;
     options: ConfirmOptions;
     resolve: (value: boolean) => void;
 };
 
 const queue = ref<ConfirmRequest[]>([]);
-let nextId = 0;
 
 export type UseConfirmReturn = (options?: ConfirmOptions) => Promise<boolean>;
 
@@ -83,17 +95,27 @@ export type UseConfirmReturn = (options?: ConfirmOptions) => Promise<boolean>;
  *       await api.deleteProject(id);
  *   }
  *
- * SSR note: the queue is a *process-wide* singleton (same caveat as
- * `useToast()`). A confirm is always a client gesture, so only call it from
- * client-side handlers — never from SSR setup.
+ * SSR safety: the queue is a process-wide singleton, so on a reused server
+ * it is shared across concurrent requests. That is harmless here because
+ * `confirm()` short-circuits to `false` on the server (below) WITHOUT touching
+ * the queue — there is no user to confirm and no dialog to render server-side
+ * — so the shared queue stays provably empty during SSR and can never leak one
+ * request's pending confirm into another's render. On the client, each browser
+ * tab has its own module instance, so there is no cross-client sharing.
  */
 export function useConfirm(): UseConfirmReturn {
     return (options: ConfirmOptions = {}) => new Promise<boolean>((resolve) => {
-        nextId += 1;
+        // Server-side: no UI to confirm against. Resolve `false` (the safe
+        // "not confirmed" default) without enqueuing, keeping the shared
+        // module queue empty across concurrent SSR requests.
+        if (typeof window === 'undefined') {
+            resolve(false);
+            return;
+        }
         queue.value = [...queue.value, {
-            id: `vc-confirm-${nextId}`, 
-            options, 
-            resolve, 
+            id: Symbol('vc-confirm'),
+            options,
+            resolve,
         }];
     });
 }

@@ -44,8 +44,20 @@ export default defineComponent({
             get themeVariant() { return { tone: head.value?.options.tone ?? 'primary' }; },
         }, alertDialogThemeDefaults);
 
+        // Resolve `req` only if it is still the head of the queue. Guards
+        // against a stale interaction (e.g. a fast double-click landing before
+        // the head advances) settling a request the control wasn't rendered
+        // for — which, with 2+ queued confirms, would otherwise resolve the
+        // wrong promise.
+        function resolveRequest(req: ConfirmRequest, value: boolean): void {
+            if (head.value?.id !== req.id) return;
+            settle(value);
+        }
+
         function onOpenChange(next: boolean): void {
-            if (!next) settle(false);
+            // Only Escape reaches here (outside-click is disabled by Reka and
+            // the buttons are plain, not DialogClose). Cancel the shown head.
+            if (!next && head.value) resolveRequest(head.value, false);
         }
 
         function renderDefaultBody(req: ConfirmRequest): VNode[] {
@@ -60,12 +72,12 @@ export default defineComponent({
                     h('button', {
                         type: 'button',
                         class: theme.value.cancel || undefined,
-                        onClick: () => settle(false),
+                        onClick: () => resolveRequest(req, false),
                     }, options.cancelLabel ?? defaults.value.cancelLabel),
                     h('button', {
                         type: 'button',
                         class: theme.value.action || undefined,
-                        onClick: () => settle(true),
+                        onClick: () => resolveRequest(req, true),
                     }, options.confirmLabel ?? defaults.value.confirmLabel),
                 ]),
             ];
@@ -77,8 +89,8 @@ export default defineComponent({
             if (req.options.component) {
                 return h(req.options.component, {
                     ...(req.options.componentProps ?? {}),
-                    confirm: () => settle(true),
-                    cancel: () => settle(false),
+                    confirm: () => resolveRequest(req, true),
+                    cancel: () => resolveRequest(req, false),
                 });
             }
             return renderDefaultBody(req);

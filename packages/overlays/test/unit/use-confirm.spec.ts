@@ -4,6 +4,7 @@ import {
     describe,
     expect,
     it,
+    vi,
 } from 'vitest';
 import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
@@ -66,6 +67,20 @@ describe('useConfirm queue', () => {
         await expect(p1).resolves.toBe(false);
         await expect(p2).resolves.toBe(false);
         expect(queue.value.length).toBe(0);
+    });
+
+    it('resolves false WITHOUT enqueuing on the server (no window)', async () => {
+        // SSR guard: keeps the process-wide singleton queue empty during
+        // server render, so it can never leak one request into another.
+        vi.stubGlobal('window', undefined);
+        try {
+            const confirm = useConfirm();
+            const p = confirm({ title: 'x' });
+            expect(queue.value.length).toBe(0);
+            await expect(p).resolves.toBe(false);
+        } finally {
+            vi.unstubAllGlobals();
+        }
     });
 });
 

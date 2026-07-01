@@ -35,6 +35,10 @@ export type AlertDialogContentProps = ExtractPublicPropTypes<typeof alertDialogC
 
 export default defineComponent({
     name: 'VCAlertDialogContent',
+    // attrs are forwarded explicitly via `mergeProps(attrs, …)` onto the inner
+    // AlertDialogContent — disable inheritance so they don't also fall through
+    // to AlertDialogPortal (non-inline) or warn on the fragment root (inline).
+    inheritAttrs: false,
     props: alertDialogContentProps,
     setup(props, { slots, attrs }) {
         const theme = useComponentTheme('alertDialog', props, alertDialogThemeDefaults);

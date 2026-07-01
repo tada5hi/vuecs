@@ -961,8 +961,10 @@ export default function tailwindTheme(): Theme {
                     // Cancel = neutral outline button. Consumers compose
                     // `<VCButton>` via `as-child` for the full variant matrix.
                     cancel: 'inline-flex h-9 items-center justify-center rounded-md border border-border bg-bg px-4 text-sm font-medium text-fg hover:bg-bg-muted focus:outline-none focus:ring-2 focus:ring-ring',
-                    // Action base carries no color — the `tone` variant supplies bg.
-                    action: 'inline-flex h-9 items-center justify-center rounded-md px-4 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-ring',
+                    // Action base carries no color — the `tone` variant supplies
+                    // bg + the matching `text-on-*` on-color (so amber `warning`
+                    // gets dark text, not white — WCAG contrast per tone).
+                    action: 'inline-flex h-9 items-center justify-center rounded-md px-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-ring',
                 },
                 variants: {
                     size: {
@@ -971,14 +973,15 @@ export default function tailwindTheme(): Theme {
                         md: { content: '' },
                         lg: { content: 'max-w-lg' },
                     },
-                    // Action-button color per semantic tone.
+                    // Action-button color per semantic tone — bg paired with the
+                    // matching on-color token (mirrors button/badge/alert/toast).
                     tone: {
-                        neutral: { action: 'bg-neutral-600 hover:bg-neutral-700' },
-                        primary: { action: 'bg-primary-600 hover:bg-primary-700' },
-                        info: { action: 'bg-info-600 hover:bg-info-700' },
-                        success: { action: 'bg-success-600 hover:bg-success-700' },
-                        warning: { action: 'bg-warning-600 hover:bg-warning-700' },
-                        error: { action: 'bg-error-600 hover:bg-error-700' },
+                        neutral: { action: 'bg-neutral-600 text-on-neutral hover:bg-neutral-700' },
+                        primary: { action: 'bg-primary-600 text-on-primary hover:bg-primary-700' },
+                        info: { action: 'bg-info-600 text-on-info hover:bg-info-700' },
+                        success: { action: 'bg-success-600 text-on-success hover:bg-success-700' },
+                        warning: { action: 'bg-warning-600 text-on-warning hover:bg-warning-700' },
+                        error: { action: 'bg-error-600 text-on-error hover:bg-error-700' },
                     },
                 },
                 defaultVariants: { size: 'md', tone: 'primary' },
