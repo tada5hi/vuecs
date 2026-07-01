@@ -99,7 +99,7 @@ export class AlertDialogManager {
                 return;
             }
             this.queue.value = [...this.queue.value, {
-                id: Symbol('vc-confirm'), 
+                id: Symbol('vc-alert-dialog'), 
                 options, 
                 resolve, 
             }];
@@ -122,10 +122,10 @@ export class AlertDialogManager {
     }
 }
 
-const CONFIRM_MANAGER_KEY = Symbol.for('VCAlertDialogManager');
+const ALERT_DIALOG_MANAGER_KEY = Symbol.for('VCAlertDialogManager');
 
 export function tryInjectAlertDialogManager(app?: App): AlertDialogManager | undefined {
-    return inject<AlertDialogManager>(CONFIRM_MANAGER_KEY, app);
+    return inject<AlertDialogManager>(ALERT_DIALOG_MANAGER_KEY, app);
 }
 
 export function injectAlertDialogManager(app?: App): AlertDialogManager {
@@ -137,7 +137,12 @@ export function injectAlertDialogManager(app?: App): AlertDialogManager {
 }
 
 export function provideAlertDialogManager(manager: AlertDialogManager = new AlertDialogManager(), app?: App): AlertDialogManager {
-    provide(CONFIRM_MANAGER_KEY, manager, app);
+    // `provide()` is a no-op when the key is already present (install-order
+    // safety). Return the *provided* manager so callers never get an orphan
+    // instance that `useAlertDialog()` / `<VCAlertDialogProvider>` won't inject.
+    const existing = tryInjectAlertDialogManager(app);
+    if (existing) return existing;
+    provide(ALERT_DIALOG_MANAGER_KEY, manager, app);
     return manager;
 }
 

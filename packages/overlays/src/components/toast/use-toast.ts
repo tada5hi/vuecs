@@ -39,6 +39,11 @@ export function injectToastManager(app?: App): ToastManager {
 }
 
 export function provideToastManager(manager: ToastManager = new ToastManager(), app?: App): ToastManager {
+    // `provide()` is a no-op when the key is already present (install-order
+    // safety). Return the *provided* manager so callers never get an orphan
+    // instance that `useToast()` / `<VCToaster>` won't inject.
+    const existing = tryInjectToastManager(app);
+    if (existing) return existing;
     provide(TOAST_MANAGER_KEY, manager, app);
     return manager;
 }
@@ -84,13 +89,22 @@ export function useToast(): UseToastReturn {
         if (typeof window === 'undefined') {
             return entry.id ?? '';
         }
-        // Caller-provided `entry.id` is a hint, not a guarantee — if it
-        // collides with an existing queue entry we regenerate so the queue's
-        // id invariant stays unique. Caller receives the actual id back.
+        // Caller-provided `entry.id` is a hint, not a guarantee — if it's
+        // absent or collides with an existing entry we generate a fresh one,
+        // and keep regenerating until it's unique (a custom id in the
+        // `vc-toast-N` format could otherwise clash with the counter). Caller
+        // receives the actual id back so `dismiss(id)` / `update(id)` stay
+        // deterministic.
+        const isTaken = (candidate: string) => entries.value.some((e) => e.id === candidate);
         const suggested = entry.id;
-        const id = (suggested === undefined || entries.value.some((e) => e.id === suggested)) ?
-            manager.generateId() :
-            suggested;
+        let id: string;
+        if (suggested !== undefined && !isTaken(suggested)) {
+            id = suggested;
+        } else {
+            do {
+                id = manager.generateId();
+            } while (isTaken(id));
+        }
         entries.value = [...entries.value, { ...entry, id }];
         return id;
     }

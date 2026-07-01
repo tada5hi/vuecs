@@ -5,9 +5,9 @@ import {
     expect,
     it,
 } from 'vitest';
-import { defineComponent, h } from 'vue';
+import { createApp, defineComponent, h } from 'vue';
 import { mount } from '@vue/test-utils';
-import vuecsOverlays, { useToast } from '../../src';
+import vuecsOverlays, { ToastManager, provideToastManager, useToast } from '../../src';
 
 describe('useToast (app-scoped)', () => {
     afterEach(() => {
@@ -61,5 +61,21 @@ describe('useToast (app-scoped)', () => {
 
     it('throws when useToast() is called with no manager (plugin not installed)', () => {
         expect(() => useToast()).toThrow();
+    });
+
+    it('generated ids never collide with a custom vc-toast-N id', () => {
+        const toast = mountToast();
+        toast.add({ id: 'vc-toast-1' }); // custom id in the generator's own format
+        const generated = toast.add({}); // auto-generated
+        expect(generated).not.toBe('vc-toast-1');
+        const ids = toast.entries.value.map((e) => e.id);
+        expect(new Set(ids).size).toBe(ids.length); // all unique
+    });
+
+    it('provideToastManager returns the already-provided manager on a second call', () => {
+        const app = createApp({ render: () => null });
+        const first = provideToastManager(new ToastManager(), app);
+        const second = provideToastManager(new ToastManager(), app);
+        expect(second).toBe(first);
     });
 });

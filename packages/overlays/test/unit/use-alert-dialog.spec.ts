@@ -6,11 +6,17 @@ import {
     it,
     vi,
 } from 'vitest';
-import { defineComponent, h, nextTick } from 'vue';
+import { 
+    createApp, 
+    defineComponent, 
+    h, 
+    nextTick, 
+} from 'vue';
 import { mount } from '@vue/test-utils';
 import vuecsOverlays, {
     AlertDialogManager,
     VCAlertDialogProvider,
+    provideAlertDialogManager,
     useAlertDialog,
 } from '../../src';
 
@@ -78,6 +84,13 @@ describe('AlertDialogManager', () => {
         expect(a.queue.value.length).toBe(1);
         expect(b.queue.value.length).toBe(0);
         a.clear();
+    });
+
+    it('provideAlertDialogManager returns the already-provided manager on a second call', () => {
+        const app = createApp({ render: () => null });
+        const first = provideAlertDialogManager(new AlertDialogManager(), app);
+        const second = provideAlertDialogManager(new AlertDialogManager(), app);
+        expect(second).toBe(first);
     });
 });
 
