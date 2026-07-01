@@ -2521,12 +2521,18 @@ available. Resolution order per cell:
    `{ value, key, row }` and its return value is rendered. Otherwise
    `null` / `undefined` render as `''`; everything else via `String(...)`.
 
-The slot-vs-auto branch is decided by `hasMeaningfulSlotContent()` —
-Vue passes `slots.default` as an always-present render fn when a
-`<template>` slot is declared, so a naive `slots.default?.()` truthy
-check would always pick the slot path. The helper walks the returned
-vnode array and considers a slot meaningful when it contains an
-element, a component, or a text node with non-whitespace content.
+The slot-vs-auto branch is decided by `isMeaningfulSlotContent()`
+(a shared helper exported from `@vuecs/core`) — Vue passes
+`slots.default` as an always-present render fn when a `<template>`
+slot is declared, so a naive `slots.default?.()` truthy check would
+always pick the slot path. The helper walks the returned vnode array
+(recursing into `Fragment` children) and considers a slot meaningful
+when it contains an element, a component, or a text node with
+non-whitespace content — comment anchors (`v-if="false"`), whitespace,
+and empty arrays are treated as empty. The same helper gates the
+`<VCAlert>` `#icon` slot and `<VCButton>`'s `#leading` / `#trailing`
+slots (fall back to the icon prop / default) and `<VCTableCell>`'s
+auto-render.
 
 Mounting `<VCTableCell>` outside a `<VCTable>` context renders an
 empty cell — no fallback to `row[columnKey]` from inject. Manual

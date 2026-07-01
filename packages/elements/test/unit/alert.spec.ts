@@ -5,7 +5,12 @@ import {
     expect,
     it,
 } from 'vitest';
-import { defineComponent, h, ref } from 'vue';
+import {
+    Comment,
+    defineComponent,
+    h,
+    ref,
+} from 'vue';
 import { mount } from '@vue/test-utils';
 import vuecsElements, {
     VCAlert,
@@ -126,6 +131,105 @@ describe('<VCAlert>', () => {
             });
             expect((wrapper.element as HTMLElement)
                 .querySelector('[data-test-icon="lucide:circle-x"]')).not.toBeNull();
+        });
+    });
+
+    describe('#icon slot', () => {
+        it('renders the #icon slot inside the icon wrapper', () => {
+            const wrapper = mount(defineComponent({
+                setup: () => () => h(VCAlert, { color: 'warning' }, {
+                    icon: () => h('svg', { 'data-test-slot-icon': '' }),
+                    default: () => 'x',
+                }),
+            }), { global: { plugins: [...plugins] } });
+            const iconWrapper = (wrapper.element as HTMLElement).querySelector('.vc-alert-icon');
+            expect(iconWrapper).not.toBeNull();
+            expect(iconWrapper!.querySelector('[data-test-slot-icon]')).not.toBeNull();
+        });
+
+        it('does NOT force aria-hidden on the consumer-owned slot wrapper', () => {
+            // Slot content may be meaningful / interactive (a live spinner, a
+            // focusable control); hiding it from AT would be the
+            // aria-hidden-focus anti-pattern. The consumer owns slot a11y.
+            const wrapper = mount(defineComponent({
+                setup: () => () => h(VCAlert, { color: 'warning' }, {
+                    icon: () => h('svg', { 'data-test-slot-icon': '' }),
+                    default: () => 'x',
+                }),
+            }), { global: { plugins: [...plugins] } });
+            const iconWrapper = (wrapper.element as HTMLElement).querySelector('.vc-alert-icon');
+            expect(iconWrapper!.getAttribute('aria-hidden')).toBeNull();
+        });
+
+        it('keeps aria-hidden on the decorative prop/color icon wrapper', () => {
+            const VCIcon = defineComponent({
+                name: 'VCIcon',
+                props: ['name'],
+                setup: (props) => () => h('span', { 'data-test-icon': props.name }),
+            });
+            const wrapper = mount(defineComponent({ setup: () => () => h(VCAlert, { color: 'error', icon: 'lucide:x' }, { default: () => 'x' }) }), { global: { plugins: [...plugins], components: { VCIcon } } });
+            const iconWrapper = (wrapper.element as HTMLElement).querySelector('.vc-alert-icon');
+            expect(iconWrapper).not.toBeNull();
+            expect(iconWrapper!.getAttribute('aria-hidden')).toBe('true');
+        });
+
+        it('takes precedence over the :icon prop and color-derived default', () => {
+            const VCIcon = defineComponent({
+                name: 'VCIcon',
+                props: ['name'],
+                setup: (props) => () => h('span', { 'data-test-icon': props.name }),
+            });
+            const wrapper = mount(defineComponent({
+                setup: () => () => h(VCAlert, { color: 'error', icon: 'lucide:x' }, {
+                    icon: () => h('svg', { 'data-test-slot-icon': '' }),
+                    default: () => 'x',
+                }),
+            }), { global: { plugins: [...plugins], components: { VCIcon } } });
+            const root = wrapper.element as HTMLElement;
+            // Slot content is rendered; the prop-driven VCIcon is not.
+            expect(root.querySelector('[data-test-slot-icon]')).not.toBeNull();
+            expect(root.querySelector('[data-test-icon]')).toBeNull();
+        });
+
+        it('exposes the resolved icon-wrapper class as a slot prop', () => {
+            let received: string | undefined;
+            mount(defineComponent({
+                setup: () => () => h(VCAlert, { color: 'warning' }, {
+                    icon: (props: { class: string }) => {
+                        received = props.class;
+                        return h('span', 'x');
+                    },
+                    default: () => 'x',
+                }),
+            }), { global: { plugins: [...plugins] } });
+            expect(received).toBe('vc-alert-icon');
+        });
+
+        it('an empty slot falls back to the :icon prop / default (no empty wrapper)', () => {
+            const VCIcon = defineComponent({
+                name: 'VCIcon',
+                props: ['name'],
+                setup: (props) => () => h('span', { 'data-test-icon': props.name }),
+            });
+            const wrapper = mount(defineComponent({
+                setup: () => () => h(VCAlert, { color: 'error', icon: 'lucide:x' }, {
+                    icon: () => null,
+                    default: () => 'x',
+                }),
+            }), { global: { plugins: [...plugins], components: { VCIcon } } });
+            const root = wrapper.element as HTMLElement;
+            // Empty slot → fall back to the prop-driven icon.
+            expect(root.querySelector('[data-test-icon="lucide:x"]')).not.toBeNull();
+        });
+
+        it('a whitespace-only / commented slot does not render an icon wrapper when the prop is suppressed', () => {
+            const wrapper = mount(defineComponent({
+                setup: () => () => h(VCAlert, { color: 'error', icon: '' }, {
+                    icon: () => [h(Comment, ''), '   '],
+                    default: () => 'x',
+                }),
+            }), { global: { plugins: [...plugins] } });
+            expect((wrapper.element as HTMLElement).querySelector('.vc-alert-icon')).toBeNull();
         });
     });
 

@@ -103,6 +103,31 @@ For an animated dismiss, wrap with [`<VCCollapse>`](/components/collapse) (see t
 
 Pass an empty string (`:icon="''"`) to suppress the icon entirely.
 
+For full control over the leading visual — a custom-styled `<VCIcon>`, a
+spinner, an image, or any component — use the `#icon` slot. It renders in
+the alert's icon position and takes precedence over the `:icon` prop and
+the color-derived default:
+
+```vue
+<VCAlert color="warning">
+    <template #icon>
+        <VCIcon name="fa6-solid:upload" class="text-lg" />
+    </template>
+    Upload one or more code files…
+</VCAlert>
+```
+
+Precedence is `#icon` slot → `:icon` prop → color-derived default. An empty
+(or `v-if="false"`) slot falls back to the prop / default, so `:icon="''"`
+still suppresses when the slot renders nothing.
+
+The color-derived / `:icon` icon is decorative, so its wrapper is
+`aria-hidden` (the alert's `role` + text carry the meaning). The `#icon`
+slot wrapper is **not** `aria-hidden` — its content is yours and may be
+meaningful or interactive (a live `role="status"` spinner, a focusable
+control). If you slot a purely decorative icon, mark it `aria-hidden`
+yourself.
+
 ### Dismiss with collapse animation
 
 Compose with [`<VCCollapse>`](/components/collapse) for a height-collapse on dismiss (instead of instant unmount):
@@ -193,9 +218,16 @@ Override via `<VCAlert role="log">` for custom interaction patterns (e.g. chat l
 | `color` | `'primary' \| 'neutral' \| 'info' \| 'success' \| 'warning' \| 'error'` | `undefined` | Folded into `themeVariant`; auto-resolves the icon + ARIA role for `info/success/warning/error`. `primary` and `neutral` use no preset icon by default (pass `:icon` explicitly to render one). |
 | `variant` | `'solid' \| 'soft' \| 'outline'` | `undefined` | Folded into `themeVariant`. |
 | `size` | `'xs' \| 'sm' \| 'md' \| 'lg'` | `undefined` | Folded into `themeVariant`. |
-| `icon` | `string` | `undefined` (preset default for `color`) | Iconify name. Pass `''` to suppress. |
+| `icon` | `string` | `undefined` (preset default for `color`) | Iconify name. Pass `''` to suppress. Overridden by the `#icon` slot. |
 | `role` | `string` | derived from `color` | ARIA role override. |
 | `as` | `string` | `'div'` | HTML tag to render. |
+
+#### Slots
+
+| Slot | Props | Description |
+|---|---|---|
+| `default` | — | Alert body — title / description compound or inline text. |
+| `icon` | `{ class: string }` | Leading-icon override, rendered inside the icon wrapper in place of the `icon` prop / color-derived default. `class` is the resolved icon-wrapper theme class. An empty (or `v-if="false"`) slot falls back to the prop / default. The slot wrapper is **not** `aria-hidden` (consumer owns slot a11y); the prop / color-derived icon wrapper is. |
 
 `<VCAlert>` is presentational — wrap with `v-if` (instant dismissal) or `<VCCollapse v-model:open>` (animated). No `v-model:open` on the alert itself.
 

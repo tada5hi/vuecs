@@ -1,4 +1,4 @@
-import { useComponentTheme } from '@vuecs/core';
+import { isMeaningfulSlotContent, useComponentTheme } from '@vuecs/core';
 import type {
     ComponentThemeDefinition,
     ThemeClassesOverride,
@@ -113,10 +113,10 @@ export const VCButton = defineComponent({
 
             const children: VNodeArrayChildren = [];
 
-            // Empty slot results (`<template #leading />` returning []) used to
-            // emit a wrapper <span> with no children — functionally inert but
-            // dead markup. Coerce slot output to non-empty before pushing.
-            const isNonEmptySlot = (out: unknown): out is VNodeArrayChildren => Array.isArray(out) && out.length > 0;
+            // Empty slot results (`<template #leading />` returning [], or a
+            // `v-if="false"` comment) would otherwise emit a wrapper <span>
+            // with no visible children — functionally inert but dead markup.
+            // `isMeaningfulSlotContent` (from @vuecs/core) gates that out.
 
             // When loading, the leading slot becomes a spinner — universally
             // legible loading affordance, replaces any consumer-provided icon
@@ -138,7 +138,7 @@ export const VCButton = defineComponent({
                 ]));
             } else if (slots.leading) {
                 const leadingOut = slots.leading(slotProps);
-                if (isNonEmptySlot(leadingOut)) {
+                if (isMeaningfulSlotContent(leadingOut)) {
                     children.push(h('span', { class: resolved.leading || undefined }, leadingOut));
                 }
             } else if (props.iconLeft) {
@@ -151,7 +151,7 @@ export const VCButton = defineComponent({
             }
 
             const slotLabel = slots.default ? slots.default(slotProps) : undefined;
-            if (isNonEmptySlot(slotLabel)) {
+            if (isMeaningfulSlotContent(slotLabel)) {
                 children.push(h('span', { class: resolved.label || undefined }, slotLabel));
             } else if (typeof props.label === 'string' && props.label !== '') {
                 children.push(h('span', { class: resolved.label || undefined }, props.label));
@@ -159,7 +159,7 @@ export const VCButton = defineComponent({
 
             if (slots.trailing) {
                 const trailingOut = slots.trailing(slotProps);
-                if (isNonEmptySlot(trailingOut)) {
+                if (isMeaningfulSlotContent(trailingOut)) {
                     children.push(h('span', { class: resolved.trailing || undefined }, trailingOut));
                 }
             } else if (props.iconRight) {

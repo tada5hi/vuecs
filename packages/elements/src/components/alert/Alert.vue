@@ -6,8 +6,15 @@ import {
     mergeProps,
     resolveComponent,
 } from 'vue';
-import type { Component, ExtractPublicPropTypes, PropType } from 'vue';
+import type {
+    Component,
+    ExtractPublicPropTypes,
+    PropType,
+    SlotsType,
+    VNode,
+} from 'vue';
 import {
+    isMeaningfulSlotContent,
     themableProps,
     useComponentDefaults,
     useComponentTheme,
@@ -50,6 +57,11 @@ const alertProps = {
 
 export type AlertProps = ExtractPublicPropTypes<typeof alertProps>;
 
+export type AlertIconSlotProps = {
+    /** Resolved theme class for the leading-icon wrapper. */
+    class: string;
+};
+
 const alertBehavioralDefaults: AlertDefaults = {
     primaryIcon: '',
     neutralIcon: '',
@@ -74,6 +86,16 @@ export default defineComponent({
     name: 'VCAlert',
     inheritAttrs: false,
     props: alertProps,
+    slots: Object as SlotsType<{
+        /** Alert body — title / description compound or inline text. */
+        default?: Record<string, never>;
+        /**
+         * Leading-icon override. Rendered inside the icon wrapper in place
+         * of the `icon` prop / color-derived default. An empty (or
+         * `v-if="false"`) slot falls back to the prop / default.
+         */
+        icon?: AlertIconSlotProps;
+    }>,
     setup(props, { attrs, slots }) {
         const themeProps = useThemeProps(props, 'color', 'variant', 'size');
         const theme = useComponentTheme('alert', themeProps, alertThemeDefaults);
@@ -107,8 +129,34 @@ export default defineComponent({
         const hasIconComponent = typeof VCIcon !== 'string';
 
         return () => {
-            const iconValue = iconName.value;
-            const showIcon = !!iconValue && hasIconComponent;
+            const iconClass = theme.value.icon || undefined;
+
+            // Precedence: `#icon` slot → `icon` prop → color-derived default.
+            // The wrapper is a `<div>` (flow content) rather than a `<span>`
+            // so an arbitrary `#icon` slot — including block-level content
+            // like a spinner — nests validly. `.vc-alert-icon` sets
+            // `display: inline-flex`, so the tag has no layout effect.
+            const iconSlot = slots.icon?.({ class: theme.value.icon });
+            let iconNode: VNode | null = null;
+            if (isMeaningfulSlotContent(iconSlot)) {
+                // No `aria-hidden` on the slot path: `#icon` content is
+                // consumer-owned and may be meaningful or interactive (a live
+                // `role="status"` spinner, a focusable control). Forcing
+                // `aria-hidden` here would hide announced/focusable content
+                // from assistive tech — the `aria-hidden-focus` anti-pattern
+                // (WCAG 4.1.2). The consumer owns the slot's semantics; a
+                // purely decorative icon can set `aria-hidden` itself.
+                iconNode = h('div', { class: iconClass }, iconSlot);
+            } else {
+                const iconValue = iconName.value;
+                if (iconValue && hasIconComponent) {
+                    // Decorative prop / color-derived icon — hidden from AT;
+                    // the alert's `role` + text content carry the semantics.
+                    iconNode = h('div', { class: iconClass, 'aria-hidden': 'true' }, [
+                        h(VCIcon as Component, { name: iconValue }),
+                    ]);
+                }
+            }
 
             return h(
                 props.as,
@@ -117,9 +165,7 @@ export default defineComponent({
                     class: theme.value.root || undefined,
                 }),
                 [
-                    showIcon ? h('span', { class: theme.value.icon || undefined, 'aria-hidden': 'true' }, [
-                        h(VCIcon as Component, { name: iconValue }),
-                    ]) : null,
+                    iconNode,
                     h('div', { class: theme.value.content || undefined }, slots.default?.()),
                 ],
             );

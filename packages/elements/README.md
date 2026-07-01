@@ -20,7 +20,7 @@
 **Compounds**
 
 - 🗂️ **Card** — `<VCCard>` + Header / Title / Description / Body / Footer. `variant` (`outline` / `soft` / `elevated`), `interactive` hover/focus ring for whole-card links (`as-child` + `<NuxtLink>`), and `padding` set once on the root and inherited by every band. Plus `<VCCardPlaceholder>`, the matching skeleton.
-- 🚨 **Alert** — `<VCAlert>` + Title / Description / Close. Persistent banner with a 15-cell `variant` × `color` matrix.
+- 🚨 **Alert** — `<VCAlert>` + Title / Description / Close. Persistent banner with a 15-cell `variant` × `color` matrix. Leading icon resolves from `color`, an `:icon` name prop, or the `#icon` slot for arbitrary content.
 - 📂 **Collapse** — `<VCCollapse>` + Trigger / Content (Reka Collapsible) with auto-chevron and height animation.
 
 ## 📦 Installation
