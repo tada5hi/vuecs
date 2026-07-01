@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.3](https://github.com/tada5hi/vuecs/compare/link-v2.0.2...link-v2.0.3) (2026-07-01)
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 8 updates ([#1674](https://github.com/tada5hi/vuecs/issues/1674)) ([f6a6955](https://github.com/tada5hi/vuecs/commit/f6a695597a7e4aeee7a6365af7997376efc37d4c))
+
 ## [2.0.2](https://github.com/tada5hi/vuecs/compare/link-v2.0.1...link-v2.0.2) (2026-06-23)
 
 

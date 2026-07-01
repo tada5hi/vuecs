@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.3.0](https://github.com/tada5hi/vuecs/compare/button-v1.2.1...button-v1.3.0) (2026-07-01)
+
+
+### Features
+
+* **elements:** override VCAlert leading icon via #icon slot ([#1672](https://github.com/tada5hi/vuecs/issues/1672)) ([#1678](https://github.com/tada5hi/vuecs/issues/1678)) ([ad0daf5](https://github.com/tada5hi/vuecs/commit/ad0daf56582c8c6eef2f80da0871c87d4229ef01))
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 8 updates ([#1674](https://github.com/tada5hi/vuecs/issues/1674)) ([f6a6955](https://github.com/tada5hi/vuecs/commit/f6a695597a7e4aeee7a6365af7997376efc37d4c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.3.0 to ^3.4.0
+    * @vuecs/icon bumped from ^1.0.2 to ^1.0.3
+  * peerDependencies
+    * @vuecs/core bumped from ^3.3.0 to ^3.4.0
+    * @vuecs/icon bumped from ^1.0.2 to ^1.0.3
+
 ## [1.2.1](https://github.com/tada5hi/vuecs/compare/button-v1.2.0...button-v1.2.1) (2026-06-26)
 
 

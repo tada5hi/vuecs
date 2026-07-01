@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/countdown",
-    "version": "2.0.7",
+    "version": "2.0.8",
     "type": "module",
     "description": "A package containing a countdown component.",
     "exports": {
@@ -37,11 +37,11 @@
         "build": "rimraf dist && npm run build:js && npm run build:types"
     },
     "devDependencies": {
-        "@vuecs/core": "^3.3.0",
+        "@vuecs/core": "^3.4.0",
         "vue": "^3.5.39"
     },
     "peerDependencies": {
-        "@vuecs/core": "^3.3.0",
+        "@vuecs/core": "^3.4.0",
         "vue": "^3.x"
     },
     "engines": {
