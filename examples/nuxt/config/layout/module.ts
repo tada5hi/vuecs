@@ -226,6 +226,11 @@ const navigationItems: NavigationItem[] = [
 
 const overlaysItems: NavigationItem[] = [
     {
+        name: 'Alert Dialog',
+        type: 'link',
+        url: '/overlays/alert-dialog',
+    },
+    {
         name: 'Context Menu',
         type: 'link',
         url: '/overlays/context-menu',

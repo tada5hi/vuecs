@@ -844,6 +844,40 @@ export default function bootstrapTheme(): Theme {
                 },
                 defaultVariants: { size: 'md' },
             },
+            alertDialog: {
+                classes: {
+                    overlay: 'modal-backdrop fade show vc-overlay-fade-anim',
+                    content: 'modal-content position-fixed top-50 start-50 translate-middle shadow vc-overlay-anim',
+                    header: 'modal-header',
+                    title: 'modal-title',
+                    description: 'text-muted small',
+                    body: 'modal-body',
+                    footer: 'modal-footer',
+                    trigger: '',
+                    cancel: 'btn btn-secondary',
+                    // Action base = `btn` only; the `tone` variant adds the color class.
+                    action: 'btn',
+                },
+                variants: {
+                    // `.modal-content` stands in for `.modal-dialog`; size
+                    // classes are bridged in assets/index.css (same as modal).
+                    size: {
+                        xs: { content: 'vc-modal-xs' },
+                        sm: { content: 'modal-sm' },
+                        md: { content: '' },
+                        lg: { content: 'modal-lg' },
+                    },
+                    tone: {
+                        neutral: { action: 'btn-secondary' },
+                        primary: { action: 'btn-primary' },
+                        info: { action: 'btn-info' },
+                        success: { action: 'btn-success' },
+                        warning: { action: 'btn-warning' },
+                        error: { action: 'btn-danger' },
+                    },
+                },
+                defaultVariants: { size: 'md', tone: 'primary' },
+            },
             popover: {
                 classes: {
                     trigger: '',

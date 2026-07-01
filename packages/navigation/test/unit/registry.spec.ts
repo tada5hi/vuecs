@@ -6,7 +6,8 @@
  */
 
 import {
-    computed, 
+    computed,
+    createApp, 
     ref, 
     watchEffect,
 } from 'vue';
@@ -17,7 +18,7 @@ import {
     it, 
     vi,
 } from 'vitest';
-import { NavigationRegistry } from '../../src';
+import { NavigationRegistry, provideNavigationRegistry } from '../../src';
 import type { NavigationItemNormalized, NavigationRegistryEntry } from '../../src';
 
 function item(name: string, active = false): NavigationItemNormalized {
@@ -138,5 +139,14 @@ describe('NavigationRegistry', () => {
         expect(seen).toEqual([0, 2, 1, 0]); // back to empty entry
 
         stop();
+    });
+});
+
+describe('provideNavigationRegistry', () => {
+    it('returns the already-provided registry on a second call', () => {
+        const app = createApp({ render: () => null });
+        const first = provideNavigationRegistry(new NavigationRegistry(), app);
+        const second = provideNavigationRegistry(new NavigationRegistry(), app);
+        expect(second).toBe(first);
     });
 });

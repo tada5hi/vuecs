@@ -28,6 +28,14 @@ export function provideNavigationRegistry(
     registry: NavigationRegistry = new NavigationRegistry(),
     app?: App,
 ): NavigationRegistry {
+    // `provide()` is a no-op when a registry is already present (install-order
+    // safety). Return the *already provided* registry so callers never get an
+    // orphan instance that the navigation components won't inject.
+    const existing = tryInjectNavigationRegistry(app);
+    if (existing) {
+        return existing;
+    }
+
     provide(sym, registry, app);
     return registry;
 }

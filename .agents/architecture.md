@@ -233,6 +233,7 @@ unless the variant is structural (e.g. orientation-driven layout).
 | FormSelectSearch | `severity` only | error/warning | No `size` axis (theme entry ships `severity` only) — the search box inherits its sizing from surrounding layout, not a size variant. |
 | FormCheckbox / FormSwitch / FormRadio | `size` | xs/sm/md/lg | theme-bootstrap uses `vc-form-{checkbox,switch,radio}-{sm,lg}` helpers from @vuecs/forms structural CSS |
 | Modal | `size` | xs/sm/md/lg/xl | theme-tailwind uses `max-w-*`; theme-bootstrap uses `modal-{sm,lg,xl}` |
+| AlertDialog | `size` × `tone` | xs/sm/md/lg × six semantic colors | `size` sizes the `content`; `tone` colors the `action` button (drives `useAlertDialog({ tone })`). No `danger` alias (plan 040) |
 | Popover / HoverCard | `size` | xs/sm/md/lg | Width + padding tier |
 | Tooltip | `size` | xs/sm/md/lg | Padding + font-size only |
 | DropdownMenu / ContextMenu | `size` | xs/sm/md/lg | Item padding + min-width |
@@ -1799,6 +1800,11 @@ matching `*Portal` so consumers don't have to compose them manually
         types.ts            <- ModalClosePolicy + ModalThemeClasses + ThemeElements augmentation
         use-modal.ts        <- useModal() view-stack composable (issue #1480)
         index.ts
+      alert-dialog/           <- AlertDialog / Trigger / Content / Title / Description / Cancel / Action
+                                 (Reka AlertDialog — role="alertdialog", outside-click always off,
+                                 `noEscape` boolean instead of Modal's 4-value closePolicy)
+                                 + AlertDialogProvider.vue (single host) + use-alert-dialog.ts
+                                 (useAlertDialog() singleton FIFO queue → Promise<boolean>) (plan 040)
       popover/                <- Popover / Trigger / Content / Arrow / Close (with `icon` prop)
       hover-card/             <- HoverCard / Trigger / Content / Arrow (plan 013) — hover-with-grace-area; trigger defaults to `as="a"`
       tooltip/                <- TooltipProvider / Tooltip / Trigger / Content / Arrow
@@ -1829,23 +1835,84 @@ roadmap-scoped Reka-wrapped compound API is layered on top of it (the
 composable owns the state, `<VCModal>` v-binds to it).
 
 The `useToast()` composable (plan 029) plays the same role for the Toast
-family: a **shared, module-level queue** with `add` / `dismiss` / `update`
-/ `clear` methods. Every call site reads from the same `entries` ref, so
-a notification fired from a Pinia store, an axios interceptor, or a deep
-component lands in the same `<VCToaster>` viewport. Unlike `useModal()`
-(per-call instance), `useToast()` is a module singleton — the queue is
-app-wide on purpose. The `<VCToaster>` component reads the queue and
-renders one `<VCToast>` per entry, with the canonical
-title/description/action/close layout as the default slot fallback and a
-`{ entry, dismiss }` slot prop for per-toast customization.
+family: an **app-scoped queue** with `add` / `dismiss` / `update` /
+`clear` methods. As of plan 040 the queue lives on a per-app
+`ToastManager` (provided by the plugin under `Symbol.for('VCToastManager')`),
+**not** a module singleton — so concurrent SSR requests never share state
+and multiple apps on one page stay isolated (same app-aware
+`provide`/`inject` bridge as the navigation registry / breadcrumb
+manager). Consequence: `useToast()` **injects**, so it must be called from
+a component setup / inject context; capture the returned API once and
+reuse it in handlers (for a store action / interceptor, capture at app
+init via `app.runWithContext`). Every call site in the same app shares the
+one `entries` ref, so a notification fired from a store or a deep
+component lands in the same `<VCToaster>` viewport. `add()` is a client
+gesture — it no-ops (returns without enqueuing) when there is no `window`,
+so an SSR misuse can't render a toast into the server output. The
+`<VCToaster>` component reads the queue and renders one `<VCToast>` per
+entry, with the canonical title/description/action/close layout as the
+default slot fallback and a `{ entry, dismiss }` slot prop for per-toast
+customization. (Exported: `ToastManager`, `provideToastManager`,
+`injectToastManager` / `tryInjectToastManager`.)
 
 Equivalent composables for the other families haven't shipped — most of
 those don't need stateful flows, and consumers can wire `:open` /
 `@update:open` manually when they do.
 
-Theme entries for all seven families (`modal`, `popover`, `hoverCard`,
-`tooltip`, `dropdownMenu`, `contextMenu`, `toast` + the four `toast*`
-sub-keys) ship across `@vuecs/theme-tailwind`,
+### AlertDialog + `useAlertDialog()` (plan 040)
+
+The confirmation feature ships as **two layers on one primitive**:
+
+- **`<VCAlertDialog>` declarative compound** (7 parts: `Trigger` /
+  `Content` / `Title` / `Description` / `Cancel` / `Action`) wraps Reka's
+  `AlertDialog` family. This is the *semantically correct* confirm
+  primitive — Reka's `AlertDialogContent` hardcodes `role="alertdialog"`
+  (the WAI-ARIA *Alert and Message Dialogs* pattern, more assertive than
+  `<VCModal>`'s `role="dialog"`), disables outside-click dismissal, and
+  auto-focuses the registered Cancel element on open. Because outside-click
+  is always off, `<VCAlertDialogContent>` carries a single **`noEscape`**
+  boolean (Escape cancels by default) rather than Modal's 4-value
+  `closePolicy`. `Cancel` / `Action` render as themed `<button>`s but
+  support `as-child` so a consumer composes `<VCButton color="error">` for
+  the full variant matrix. Both also take a **`manual`** prop that suppresses
+  Reka's auto-close and exposes a `confirm()` / `cancel()` trigger via the
+  default slot (typed `AlertDialogActionSlotProps` /
+  `AlertDialogCancelSlotProps`) — the opt-in for validate-then-confirm and
+  async spinner-then-close flows. Manual mode renders via `VCPrimitive` (not
+  `DialogClose`) and closes through Reka's public
+  `injectDialogRootContext().onOpenChange(false)`, so it works controlled +
+  uncontrolled. (An async `onConfirm` for the imperative `useAlertDialog` host is a
+  planned follow-up.)
+- **`useAlertDialog()` imperative composable** returns a callable
+  `(options?) => Promise<boolean>` and mirrors the `useToast()` idiom: a
+  app-scoped **FIFO queue** drained one-at-a-time by a single
+  `<VCAlertDialogProvider>` host placed once near the app root (like
+  `<VCToaster>`). Like toast, the queue lives on a per-app `AlertDialogManager`
+  (`Symbol.for('VCAlertDialogManager')`), so `useAlertDialog()` **injects** and
+  must be called from a setup / inject context (capture the callable and
+  reuse it in handlers). `Action` → resolves `true`; `Cancel` / Escape →
+  resolves `false`. The host renders the head request through the Layer-1
+  parts (default title + description + Cancel/Action buttons, with a
+  `component` / `componentProps` escape hatch for a fully custom body).
+  `injectAlertDialogManager()` exposes `{ queue, settle, clear }` — the host
+  drives it, and consumers call `.clear()` to cancel all pending (e.g. on
+  route change). `confirm()` resolves `false` without enqueuing when there
+  is no `window` (client-only gesture; no SSR-rendered dialog / hydration
+  mismatch). (Exported: `AlertDialogManager`, `provideAlertDialogManager`,
+  `injectAlertDialogManager` / `tryInjectAlertDialogManager`.)
+
+`tone` (canonical six colors — no `danger` alias) drives the Action
+button color via a `tone` variant on the `alertDialog` theme key.
+Behavioral strings (`title` / `confirmLabel` / `cancelLabel`) resolve
+through `useComponentDefaults('alertDialog', …)` for i18n. There is
+deliberately no corner-X close (an alert dialog forces a Cancel/Action
+choice), so the theme key has no `close` / `closeIcon` slot. Known v1
+limitation: when the queue drains to empty the host content unmounts
+without an exit animation (the enter animation still plays).
+
+Theme entries for all eight families (`modal`, `alertDialog`, `popover`,
+`hoverCard`, `tooltip`, `dropdownMenu`, `contextMenu`, `toast` + the four
+`toast*` sub-keys) ship across `@vuecs/theme-tailwind`,
 `@vuecs/theme-bootstrap`, and `@vuecs/theme-bulma` with `data-state`
 animation hooks (`open|closed` for modal/popover/hover-card/menu/toast,
 `delayed-open|closed` for tooltip). Toast additionally exposes
