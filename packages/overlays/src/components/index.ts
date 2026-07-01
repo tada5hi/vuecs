@@ -1,3 +1,4 @@
+export * from './alert-dialog';
 export * from './context-menu';
 export * from './dropdown-menu';
 export * from './hover-card';

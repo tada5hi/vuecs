@@ -5,6 +5,16 @@ import type { CoreOptions } from '@vuecs/core';
 import './vue';
 import { registerOverlayConfigDefaults } from './config';
 import {
+    AlertDialogManager,
+    ToastManager,
+    VCAlertDialog,
+    VCAlertDialogAction,
+    VCAlertDialogCancel,
+    VCAlertDialogContent,
+    VCAlertDialogDescription,
+    VCAlertDialogProvider,
+    VCAlertDialogTitle,
+    VCAlertDialogTrigger,
     VCContextMenu,
     VCContextMenuCheckboxItem,
     VCContextMenuContent,
@@ -62,6 +72,8 @@ import {
     VCTooltipContent,
     VCTooltipProvider,
     VCTooltipTrigger,
+    provideAlertDialogManager,
+    provideToastManager,
 } from './components';
 
 export * from './components';
@@ -74,8 +86,22 @@ export function install(app: App, options: Options = {}): void {
     const config = installConfigManager(app, options);
     registerOverlayConfigDefaults(config);
 
+    // App-scoped imperative queues (toast + confirm) — one manager per app so
+    // concurrent SSR requests never share state and multi-app pages stay
+    // isolated. `useToast()` / `useAlertDialog()` and their hosts inject these.
+    provideToastManager(new ToastManager(), app);
+    provideAlertDialogManager(new AlertDialogManager(), app);
+
     Object.entries({
         VCPresence,
+        VCAlertDialog,
+        VCAlertDialogTrigger,
+        VCAlertDialogContent,
+        VCAlertDialogTitle,
+        VCAlertDialogDescription,
+        VCAlertDialogCancel,
+        VCAlertDialogAction,
+        VCAlertDialogProvider,
         VCModal,
         VCModalTrigger,
         VCModalContent,

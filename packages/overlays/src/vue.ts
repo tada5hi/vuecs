@@ -1,3 +1,11 @@
+import type VCAlertDialog from './components/alert-dialog/AlertDialog.vue';
+import type VCAlertDialogAction from './components/alert-dialog/AlertDialogAction.vue';
+import type VCAlertDialogCancel from './components/alert-dialog/AlertDialogCancel.vue';
+import type VCAlertDialogContent from './components/alert-dialog/AlertDialogContent.vue';
+import type VCAlertDialogDescription from './components/alert-dialog/AlertDialogDescription.vue';
+import type VCAlertDialogTitle from './components/alert-dialog/AlertDialogTitle.vue';
+import type VCAlertDialogTrigger from './components/alert-dialog/AlertDialogTrigger.vue';
+import type VCAlertDialogProvider from './components/alert-dialog/AlertDialogProvider.vue';
 import type VCContextMenu from './components/context-menu/ContextMenu.vue';
 import type VCContextMenuCheckboxItem from './components/context-menu/ContextMenuCheckboxItem.vue';
 import type VCContextMenuContent from './components/context-menu/ContextMenuContent.vue';
@@ -59,6 +67,14 @@ import type VCTooltipTrigger from './components/tooltip/TooltipTrigger.vue';
 declare module 'vue' {
     export interface GlobalComponents {
         VCPresence: typeof VCPresence,
+        VCAlertDialog: typeof VCAlertDialog,
+        VCAlertDialogTrigger: typeof VCAlertDialogTrigger,
+        VCAlertDialogContent: typeof VCAlertDialogContent,
+        VCAlertDialogTitle: typeof VCAlertDialogTitle,
+        VCAlertDialogDescription: typeof VCAlertDialogDescription,
+        VCAlertDialogCancel: typeof VCAlertDialogCancel,
+        VCAlertDialogAction: typeof VCAlertDialogAction,
+        VCAlertDialogProvider: typeof VCAlertDialogProvider,
         VCModal: typeof VCModal,
         VCModalTrigger: typeof VCModalTrigger,
         VCModalContent: typeof VCModalContent,

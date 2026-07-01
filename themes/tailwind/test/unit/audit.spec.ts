@@ -60,6 +60,7 @@ import {
     stepperThemeDefaults,
 } from '@vuecs/navigation';
 import {
+    alertDialogThemeDefaults,
     contextMenuThemeDefaults,
     dropdownMenuThemeDefaults,
     hoverCardThemeDefaults,
@@ -158,6 +159,7 @@ const expectedCatalog = {
     listEmpty: listEmptyThemeDefaults,
     listItem: listItemThemeDefaults,
     listLoading: listLoadingThemeDefaults,
+    alertDialog: alertDialogThemeDefaults,
     modal: modalThemeDefaults,
     navigation: navigationThemeDefaults,
     pagination: paginationThemeDefaults,

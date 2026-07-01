@@ -87,12 +87,14 @@ vuecs ships its components across separate packages — install only what you us
 | Component | Notes |
 |-----------|-------|
 | [Modal](/components/modal) | Compound dialog (`VCModal*` parts) + `useModal()` view-stack composable |
+| [AlertDialog](/components/alert-dialog) | `role="alertdialog"` confirmation compound + imperative `useAlertDialog()` → `Promise<boolean>` |
 | [Popover](/components/popover) | Floating panel anchored to a trigger (floating-ui positioning) |
 | [HoverCard](/components/hover-card) | Hover-triggered floating panel with grace-area handling |
 | [Tooltip](/components/tooltip) | Hover/focus text bubble; app-level `<VCTooltipProvider>` for delays |
 | [Toast](/components/toast) | Transient notifications via shared `useToast()` queue; auto-dismiss, swipe-to-close, action button |
 | [DropdownMenu](/components/dropdown-menu) | Click-triggered action menu with arrow/typeahead navigation |
 | [ContextMenu](/components/context-menu) | Right-click menu (same shape as DropdownMenu, cursor-anchored) |
+| [Presence](/components/presence) | Low-level exit-animation wrapper (`<VCPresence>`) for custom non-Reka panels |
 
 ## @vuecs/pagination
 

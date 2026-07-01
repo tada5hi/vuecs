@@ -889,6 +889,39 @@ export default function bulmaTheme(): Theme {
                 },
                 defaultVariants: { size: 'md' },
             },
+            alertDialog: {
+                classes: {
+                    overlay: 'modal-background vc-overlay-fade-anim',
+                    content: 'modal-content has-background-white p-5 vc-overlay-anim',
+                    header: 'is-flex is-flex-direction-column',
+                    title: 'title is-5',
+                    description: 'subtitle is-size-7 has-text-grey',
+                    body: 'is-flex is-flex-direction-column',
+                    footer: 'is-flex is-align-items-center is-justify-content-flex-end mt-4',
+                    trigger: '',
+                    // Bulma has no flex `gap`; `mr-2` separates Cancel from Action.
+                    cancel: 'button mr-2',
+                    // Action base = `button`; the `tone` variant adds the color class.
+                    action: 'button',
+                },
+                variants: {
+                    size: {
+                        xs: { content: 'vc-modal-xs' },
+                        sm: { content: 'modal-sm' },
+                        md: { content: '' },
+                        lg: { content: 'modal-lg' },
+                    },
+                    tone: {
+                        neutral: { action: 'is-dark' },
+                        primary: { action: 'is-primary' },
+                        info: { action: 'is-info' },
+                        success: { action: 'is-success' },
+                        warning: { action: 'is-warning' },
+                        error: { action: 'is-danger' },
+                    },
+                },
+                defaultVariants: { size: 'md', tone: 'primary' },
+            },
             popover: {
                 classes: {
                     trigger: '',

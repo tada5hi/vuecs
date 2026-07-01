@@ -186,12 +186,14 @@ export default defineConfig({
                     text: '@vuecs/overlays',
                     items: [
                         { text: 'Modal', link: '/components/modal' },
+                        { text: 'AlertDialog', link: '/components/alert-dialog' },
                         { text: 'Popover', link: '/components/popover' },
                         { text: 'HoverCard', link: '/components/hover-card' },
                         { text: 'Tooltip', link: '/components/tooltip' },
                         { text: 'Toast', link: '/components/toast' },
                         { text: 'DropdownMenu', link: '/components/dropdown-menu' },
                         { text: 'ContextMenu', link: '/components/context-menu' },
+                        { text: 'Presence', link: '/components/presence' },
                     ],
                 },
                 {
