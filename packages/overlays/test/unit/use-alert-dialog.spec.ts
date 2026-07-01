@@ -9,14 +9,14 @@ import {
 import { defineComponent, h, nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import vuecsOverlays, {
-    ConfirmManager,
-    VCConfirmDialog,
-    useConfirm,
+    AlertDialogManager,
+    VCAlertDialogProvider,
+    useAlertDialog,
 } from '../../src';
 
-describe('ConfirmManager', () => {
+describe('AlertDialogManager', () => {
     it('queues a request and resolves true on settle(true)', async () => {
-        const m = new ConfirmManager();
+        const m = new AlertDialogManager();
         const p = m.confirm({ title: 'x' });
         expect(m.queue.value.length).toBe(1);
 
@@ -26,14 +26,14 @@ describe('ConfirmManager', () => {
     });
 
     it('resolves false on settle(false)', async () => {
-        const m = new ConfirmManager();
+        const m = new AlertDialogManager();
         const p = m.confirm();
         m.settle(false);
         await expect(p).resolves.toBe(false);
     });
 
     it('processes concurrent requests FIFO', async () => {
-        const m = new ConfirmManager();
+        const m = new AlertDialogManager();
         const p1 = m.confirm({ title: 'first' });
         const p2 = m.confirm({ title: 'second' });
 
@@ -48,7 +48,7 @@ describe('ConfirmManager', () => {
     });
 
     it('clear() cancels every pending request as false', async () => {
-        const m = new ConfirmManager();
+        const m = new AlertDialogManager();
         const p1 = m.confirm();
         const p2 = m.confirm();
 
@@ -62,7 +62,7 @@ describe('ConfirmManager', () => {
     it('resolves false WITHOUT enqueuing on the server (no window)', async () => {
         vi.stubGlobal('window', undefined);
         try {
-            const m = new ConfirmManager();
+            const m = new AlertDialogManager();
             const p = m.confirm({ title: 'x' });
             expect(m.queue.value.length).toBe(0);
             await expect(p).resolves.toBe(false);
@@ -72,8 +72,8 @@ describe('ConfirmManager', () => {
     });
 
     it('is app-scoped — two managers keep isolated queues', () => {
-        const a = new ConfirmManager();
-        const b = new ConfirmManager();
+        const a = new AlertDialogManager();
+        const b = new AlertDialogManager();
         a.confirm({ title: 'a' });
         expect(a.queue.value.length).toBe(1);
         expect(b.queue.value.length).toBe(0);
@@ -81,19 +81,19 @@ describe('ConfirmManager', () => {
     });
 });
 
-describe('<VCConfirmDialog> host (app-scoped)', () => {
+describe('<VCAlertDialogProvider> host (app-scoped)', () => {
     afterEach(() => {
         document.body.innerHTML = '';
     });
 
-    // Mount a harness that captures `useConfirm()` (injecting the app manager)
+    // Mount a harness that captures `useAlertDialog()` (injecting the app manager)
     // and renders the host (which injects the SAME app manager).
     function mountHost() {
-        let confirm!: ReturnType<typeof useConfirm>;
+        let confirm!: ReturnType<typeof useAlertDialog>;
         const Harness = defineComponent({
             setup() {
-                confirm = useConfirm();
-                return () => h(VCConfirmDialog);
+                confirm = useAlertDialog();
+                return () => h(VCAlertDialogProvider);
             },
         });
         mount(Harness, {
@@ -141,7 +141,7 @@ describe('<VCConfirmDialog> host (app-scoped)', () => {
         await expect(p).resolves.toBe(false);
     });
 
-    it('throws when useConfirm() is called with no manager (plugin not installed)', () => {
-        expect(() => useConfirm()).toThrow();
+    it('throws when useAlertDialog() is called with no manager (plugin not installed)', () => {
+        expect(() => useAlertDialog()).toThrow();
     });
 });

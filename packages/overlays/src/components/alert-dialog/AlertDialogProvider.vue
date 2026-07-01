@@ -9,12 +9,12 @@ import VCAlertDialogDescription from './AlertDialogDescription.vue';
 import VCAlertDialogCancel from './AlertDialogCancel.vue';
 import VCAlertDialogAction from './AlertDialogAction.vue';
 import { alertDialogThemeDefaults } from './theme';
-import { confirmHardcodedDefaults, injectConfirmManager } from './use-confirm';
-import type { ConfirmRequest } from './use-confirm';
+import { alertDialogHardcodedDefaults, injectAlertDialogManager } from './use-alert-dialog';
+import type { AlertDialogRequest } from './use-alert-dialog';
 
 /**
- * Single host for the imperative `useConfirm()` API — place it once near the
- * app root (sibling of `<VCToaster>`). Injects the per-app `ConfirmManager`
+ * Single host for the imperative `useAlertDialog()` API — place it once near the
+ * app root (sibling of `<VCToaster>`). Injects the per-app `AlertDialogManager`
  * and renders the head request through the `<VCAlertDialog*>` parts.
  *
  * The footer uses `<VCAlertDialogCancel manual>` / `<VCAlertDialogAction manual>`.
@@ -29,12 +29,12 @@ import type { ConfirmRequest } from './use-confirm';
  * requests swap content in place.
  */
 export default defineComponent({
-    name: 'VCConfirmDialog',
+    name: 'VCAlertDialogProvider',
     setup() {
-        const manager = injectConfirmManager();
-        const head = computed<ConfirmRequest | undefined>(() => manager.queue.value[0]);
+        const manager = injectAlertDialogManager();
+        const head = computed<AlertDialogRequest | undefined>(() => manager.queue.value[0]);
         const open = computed(() => manager.queue.value.length > 0);
-        const defaults = useComponentDefaults('confirm', {}, confirmHardcodedDefaults);
+        const defaults = useComponentDefaults('alertDialog', {}, alertDialogHardcodedDefaults);
         // Host owns only the footer layout class; the Cancel / Action parts
         // resolve their own `alertDialog` theme (the Action's `tone` is passed
         // per-request via `themeVariant`).
@@ -45,7 +45,7 @@ export default defineComponent({
         // the head advances) settling a request the control wasn't rendered
         // for — which, with 2+ queued confirms, would otherwise resolve the
         // wrong promise.
-        function resolveRequest(req: ConfirmRequest, value: boolean): void {
+        function resolveRequest(req: AlertDialogRequest, value: boolean): void {
             if (head.value?.id !== req.id) return;
             manager.settle(value);
         }
@@ -56,7 +56,7 @@ export default defineComponent({
             if (!next && head.value) resolveRequest(head.value, false);
         }
 
-        function renderDefaultBody(req: ConfirmRequest): VNode[] {
+        function renderDefaultBody(req: AlertDialogRequest): VNode[] {
             const { options } = req;
             const children: (VNode | null)[] = [
                 h(VCAlertDialogTitle, () => options.title ?? defaults.value.title),
@@ -86,7 +86,7 @@ export default defineComponent({
             return children.filter((c): c is VNode => c !== null);
         }
 
-        function renderBody(req: ConfirmRequest) {
+        function renderBody(req: AlertDialogRequest) {
             // Escape hatch — a fully custom body owns its own buttons.
             if (req.options.component) {
                 return h(req.options.component, {

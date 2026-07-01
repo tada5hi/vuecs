@@ -5,7 +5,7 @@ import type VCAlertDialogContent from './components/alert-dialog/AlertDialogCont
 import type VCAlertDialogDescription from './components/alert-dialog/AlertDialogDescription.vue';
 import type VCAlertDialogTitle from './components/alert-dialog/AlertDialogTitle.vue';
 import type VCAlertDialogTrigger from './components/alert-dialog/AlertDialogTrigger.vue';
-import type VCConfirmDialog from './components/alert-dialog/ConfirmDialog.vue';
+import type VCAlertDialogProvider from './components/alert-dialog/AlertDialogProvider.vue';
 import type VCContextMenu from './components/context-menu/ContextMenu.vue';
 import type VCContextMenuCheckboxItem from './components/context-menu/ContextMenuCheckboxItem.vue';
 import type VCContextMenuContent from './components/context-menu/ContextMenuContent.vue';
@@ -74,7 +74,7 @@ declare module 'vue' {
         VCAlertDialogDescription: typeof VCAlertDialogDescription,
         VCAlertDialogCancel: typeof VCAlertDialogCancel,
         VCAlertDialogAction: typeof VCAlertDialogAction,
-        VCConfirmDialog: typeof VCConfirmDialog,
+        VCAlertDialogProvider: typeof VCAlertDialogProvider,
         VCModal: typeof VCModal,
         VCModalTrigger: typeof VCModalTrigger,
         VCModalContent: typeof VCModalContent,

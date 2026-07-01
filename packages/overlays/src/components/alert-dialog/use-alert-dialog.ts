@@ -12,10 +12,10 @@ import type { ComponentDefaultValues } from '@vuecs/core';
  * the canonical six-color set used across `@vuecs/button` / `@vuecs/elements`
  * — no `danger` alias. Destructive confirms use `tone: 'error'`.
  */
-export type ConfirmTone = 'neutral' | 'primary' | 'info' | 'success' | 'warning' | 'error';
+export type AlertDialogTone = 'neutral' | 'primary' | 'info' | 'success' | 'warning' | 'error';
 
-export type ConfirmOptions = {
-    /** Heading text. Falls through to `useComponentDefaults('confirm').title`. */
+export type AlertDialogOptions = {
+    /** Heading text. Falls through to `useComponentDefaults('alertDialog').title`. */
     title?: string;
     /**
      * Optional body text. Omitting it is valid, but — like any Reka dialog
@@ -29,7 +29,7 @@ export type ConfirmOptions = {
     /** Cancel button label. Falls through to the `cancelLabel` default. */
     cancelLabel?: string;
     /** Tone for the Action button. Default `'primary'`. */
-    tone?: ConfirmTone;
+    tone?: AlertDialogTone;
     /** When `true`, Escape no longer cancels — the user must pick a button. */
     noEscape?: boolean;
     /**
@@ -43,8 +43,8 @@ export type ConfirmOptions = {
     componentProps?: Record<string, unknown>;
 };
 
-/** Behavioral-default keys resolved via `useComponentDefaults('confirm', …)`. */
-export type ConfirmDefaults = {
+/** Behavioral-default keys resolved via `useComponentDefaults('alertDialog', …)`. */
+export type AlertDialogDefaults = {
     title: string;
     confirmLabel: string;
     cancelLabel: string;
@@ -52,25 +52,25 @@ export type ConfirmDefaults = {
 
 declare module '@vuecs/core' {
     interface ComponentDefaults {
-        confirm?: ComponentDefaultValues<ConfirmDefaults>;
+        alertDialog?: ComponentDefaultValues<AlertDialogDefaults>;
     }
 }
 
 /** Lowest-priority fallback layer — overridable per-call or app-wide. */
-export const confirmHardcodedDefaults: ConfirmDefaults = {
+export const alertDialogHardcodedDefaults: AlertDialogDefaults = {
     title: 'Are you sure?',
     confirmLabel: 'Confirm',
     cancelLabel: 'Cancel',
 };
 
-export type ConfirmRequest = {
+export type AlertDialogRequest = {
     /**
      * Opaque per-request token, used only as the host's Vue `:key` (to remount
      * between sequential dialogs). Never a DOM id, never returned to the
      * caller — a fresh `Symbol` is the cleanest unique value.
      */
     id: symbol;
-    options: ConfirmOptions;
+    options: AlertDialogOptions;
     resolve: (value: boolean) => void;
 };
 
@@ -81,10 +81,10 @@ export type ConfirmRequest = {
 /**
  * Holds the per-app confirmation queue. Scoped to the app (not a module
  * singleton) so concurrent SSR requests never share state and multiple apps on
- * one page stay isolated. Drained one-at-a-time (FIFO) by `<VCConfirmDialog>`.
+ * one page stay isolated. Drained one-at-a-time (FIFO) by `<VCAlertDialogProvider>`.
  */
-export class ConfirmManager {
-    readonly queue: Ref<ConfirmRequest[]> = shallowRef<ConfirmRequest[]>([]);
+export class AlertDialogManager {
+    readonly queue: Ref<AlertDialogRequest[]> = shallowRef<AlertDialogRequest[]>([]);
 
     /**
      * Enqueue a confirmation; resolves `true` (Action) / `false`
@@ -92,7 +92,7 @@ export class ConfirmManager {
      * resolves `false` without enqueuing (avoids an SSR-rendered dialog +
      * hydration mismatch).
      */
-    confirm(options: ConfirmOptions = {}): Promise<boolean> {
+    confirm(options: AlertDialogOptions = {}): Promise<boolean> {
         return new Promise<boolean>((resolve) => {
             if (typeof window === 'undefined') {
                 resolve(false);
@@ -122,41 +122,41 @@ export class ConfirmManager {
     }
 }
 
-const CONFIRM_MANAGER_KEY = Symbol.for('VCConfirmManager');
+const CONFIRM_MANAGER_KEY = Symbol.for('VCAlertDialogManager');
 
-export function tryInjectConfirmManager(app?: App): ConfirmManager | undefined {
-    return inject<ConfirmManager>(CONFIRM_MANAGER_KEY, app);
+export function tryInjectAlertDialogManager(app?: App): AlertDialogManager | undefined {
+    return inject<AlertDialogManager>(CONFIRM_MANAGER_KEY, app);
 }
 
-export function injectConfirmManager(app?: App): ConfirmManager {
-    const instance = tryInjectConfirmManager(app);
+export function injectAlertDialogManager(app?: App): AlertDialogManager {
+    const instance = tryInjectAlertDialogManager(app);
     if (!instance) {
-        throw new Error('[vuecs] No ConfirmManager available. Install @vuecs/overlays (app.use) and call useConfirm() from a component setup / inject context.');
+        throw new Error('[vuecs] No AlertDialogManager available. Install @vuecs/overlays (app.use) and call useAlertDialog() from a component setup / inject context.');
     }
     return instance;
 }
 
-export function provideConfirmManager(manager: ConfirmManager = new ConfirmManager(), app?: App): ConfirmManager {
+export function provideAlertDialogManager(manager: AlertDialogManager = new AlertDialogManager(), app?: App): AlertDialogManager {
     provide(CONFIRM_MANAGER_KEY, manager, app);
     return manager;
 }
 
-export type UseConfirmReturn = (options?: ConfirmOptions) => Promise<boolean>;
+export type UseAlertDialogReturn = (options?: AlertDialogOptions) => Promise<boolean>;
 
 /**
- * Imperative confirmation dialog. Injects the per-app `ConfirmManager`, so it
+ * Imperative confirmation dialog. Injects the per-app `AlertDialogManager`, so it
  * MUST be called from a component setup / inject context — capture the returned
  * callable once and reuse it in handlers (including store actions). Resolves
- * `Promise<boolean>`. A single `<VCConfirmDialog>` host (placed once per app)
+ * `Promise<boolean>`. A single `<VCAlertDialogProvider>` host (placed once per app)
  * drains the queue.
  *
- *   const confirm = useConfirm();
+ *   const confirm = useAlertDialog();
  *   if (await confirm({ title: 'Delete project?', tone: 'error' })) { … }
  *
  * To cancel all pending confirms (e.g. on route change) inject the manager
- * directly: `injectConfirmManager().clear()`.
+ * directly: `injectAlertDialogManager().clear()`.
  */
-export function useConfirm(): UseConfirmReturn {
-    const manager = injectConfirmManager();
-    return (options: ConfirmOptions = {}) => manager.confirm(options);
+export function useAlertDialog(): UseAlertDialogReturn {
+    const manager = injectAlertDialogManager();
+    return (options: AlertDialogOptions = {}) => manager.confirm(options);
 }

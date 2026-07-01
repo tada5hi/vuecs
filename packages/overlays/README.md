@@ -9,7 +9,7 @@
 ## ✨ What's inside
 
 - 🪟 **Modal** — with **`useModal()`**, a view-stack composable (`pushView` / `popView` / `replaceView`) for "list → detail → back" flows inside one modal instance. No stacked dialogs, no z-index fights.
-- ⚠️ **AlertDialog** — the `role="alertdialog"` confirmation primitive (outside-click off, distinct Cancel/Action buttons) **plus `useConfirm()`** — `const ok = await confirm({ title, description, tone: 'error' })`. A single `<VCConfirmDialog>` host drains a shared FIFO queue, the same way `<VCToaster>` drains `useToast()`.
+- ⚠️ **AlertDialog** — the `role="alertdialog"` confirmation primitive (outside-click off, distinct Cancel/Action buttons) **plus `useAlertDialog()`** — `const ok = await confirm({ title, description, tone: 'error' })`. A single `<VCAlertDialogProvider>` host drains a shared FIFO queue, the same way `<VCToaster>` drains `useToast()`.
 - 🔔 **Toast** — with **`useToast()`**, an **app-scoped** queue (`add` / `dismiss` / `update` / `clear`), provided per-app so SSR requests stay isolated. Capture it from a component `setup()` and reuse the returned API anywhere (store, interceptor); every entry lands in the same `<VCToaster>` viewport.
 - 💬 **Popover · HoverCard · Tooltip** — positioned floating panels with arrows, grace-area hover (HoverCard), and provider-level config (Tooltip).
 - 📋 **DropdownMenu · ContextMenu** — the full menu surface: items, labels, separators, groups, checkbox items, radio groups, submenus.
@@ -43,10 +43,10 @@ toast.add({ title: 'Saved', description: 'Your changes are live.', color: 'succe
 ```
 
 ```ts
-import { useConfirm } from '@vuecs/overlays';
+import { useAlertDialog } from '@vuecs/overlays';
 
-const confirm = useConfirm();
-// Place a single <VCConfirmDialog /> near your app root, then:
+const confirm = useAlertDialog();
+// Place a single <VCAlertDialogProvider /> near your app root, then:
 if (await confirm({ title: 'Delete project?', description: 'This cannot be undone.', tone: 'error' })) {
     await api.deleteProject(id);
 }

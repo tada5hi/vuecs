@@ -5,7 +5,7 @@ export { default as VCAlertDialogTitle } from './AlertDialogTitle.vue';
 export { default as VCAlertDialogDescription } from './AlertDialogDescription.vue';
 export { default as VCAlertDialogCancel } from './AlertDialogCancel.vue';
 export { default as VCAlertDialogAction } from './AlertDialogAction.vue';
-export { default as VCConfirmDialog } from './ConfirmDialog.vue';
+export { default as VCAlertDialogProvider } from './AlertDialogProvider.vue';
 
 export type { AlertDialogProps } from './AlertDialog.vue';
 export type { AlertDialogTriggerProps } from './AlertDialogTrigger.vue';
@@ -17,4 +17,4 @@ export type { AlertDialogActionProps } from './AlertDialogAction.vue';
 
 export * from './theme';
 export * from './types';
-export * from './use-confirm';
+export * from './use-alert-dialog';

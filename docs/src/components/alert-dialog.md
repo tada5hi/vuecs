@@ -5,7 +5,7 @@ Accessible **confirmation** dialog built on [Reka UI](https://reka-ui.com/)'s `A
 Ships in two layers:
 
 - **`<VCAlertDialog>` compound** — declarative markup, full control.
-- **`useConfirm()`** — an imperative `await confirm(…)` that resolves `Promise<boolean>`, drained by a single `<VCConfirmDialog>` host (the same pattern as `useToast()` / `<VCToaster>`).
+- **`useAlertDialog()`** — an imperative `await confirm(…)` that resolves `Promise<boolean>`, drained by a single `<VCAlertDialogProvider>` host (the same pattern as `useToast()` / `<VCToaster>`).
 
 ```bash
 npm install @vuecs/overlays
@@ -76,22 +76,22 @@ function onDelete() {
 </template>
 ```
 
-## Imperative API — `useConfirm()`
+## Imperative API — `useAlertDialog()`
 
-For the common "confirm in a click handler" case, skip the markup and `await` a result. Place **one** `<VCConfirmDialog />` near your app root (next to `<VCToaster />`), then call `useConfirm()` anywhere:
+For the common "confirm in a click handler" case, skip the markup and `await` a result. Place **one** `<VCAlertDialogProvider />` near your app root (next to `<VCToaster />`), then call `useAlertDialog()` anywhere:
 
 ```vue
 <!-- App.vue -->
 <template>
     <RouterView />
-    <VCConfirmDialog />
+    <VCAlertDialogProvider />
 </template>
 ```
 
 ```ts
-import { useConfirm } from '@vuecs/overlays';
+import { useAlertDialog } from '@vuecs/overlays';
 
-const confirm = useConfirm();
+const confirm = useAlertDialog();
 
 async function remove(id: string) {
     const ok = await confirm({
@@ -107,11 +107,11 @@ async function remove(id: string) {
 }
 ```
 
-### `ConfirmOptions`
+### `AlertDialogOptions`
 
 | Option | Type | Default | Notes |
 |---|---|---|---|
-| `title` | `string` | `'Are you sure?'` | Falls through to `useComponentDefaults('confirm').title`. |
+| `title` | `string` | `'Are you sure?'` | Falls through to `useComponentDefaults('alertDialog').title`. |
 | `description` | `string` | — | Optional body text. |
 | `confirmLabel` | `string` | `'Confirm'` | Action button label. |
 | `cancelLabel` | `string` | `'Cancel'` | Cancel button label. |
@@ -125,13 +125,13 @@ The call returns `Promise<boolean>` — `true` for **Action**, `false` for **Can
 ```ts
 app.use(vuecs, {
     defaults: {
-        confirm: { confirmLabel: 'Ja', cancelLabel: 'Nein' },
+        alertDialog: { confirmLabel: 'Ja', cancelLabel: 'Nein' },
     },
 });
 ```
 
 ::: tip App-scoped & SSR
-The queue lives on a per-app manager (like `useToast()`), so it's SSR-safe (no cross-request leakage) and isolated per app. Because `useConfirm()` **injects** that manager, call it from a component `setup()` and capture the returned function — then reuse it in handlers (including store actions). For a call site outside setup (an axios interceptor), capture `confirm` once at app init via `app.runWithContext(() => useConfirm())` and pass it in. `confirm()` resolves `false` (without opening anything) on the server.
+The queue lives on a per-app manager (like `useToast()`), so it's SSR-safe (no cross-request leakage) and isolated per app. Because `useAlertDialog()` **injects** that manager, call it from a component `setup()` and capture the returned function — then reuse it in handlers (including store actions). For a call site outside setup (an axios interceptor), capture `confirm` once at app init via `app.runWithContext(() => useAlertDialog())` and pass it in. `confirm()` resolves `false` (without opening anything) on the server.
 :::
 
 ## Gated / async confirmation
@@ -180,7 +180,7 @@ async function onDelete(confirm: () => void) {
 
 Without `manual`, the dialog closes the moment the button is clicked — before `deleteProject` resolves. With `manual`, it stays open (showing the `:loading` spinner) until you call `confirm()`. The same `manual` + `cancel()` pattern applies to `<VCAlertDialogCancel>`.
 
-> The imperative `useConfirm()` currently resolves before your action runs (`if (await confirm()) { await work() }`); an async-aware `onConfirm` for the imperative host is a planned follow-up. Until then, use the `manual` declarative pattern above for spinner-in-dialog flows.
+> The imperative `useAlertDialog()` currently resolves before your action runs (`if (await confirm()) { await work() }`); an async-aware `onConfirm` for the imperative host is a planned follow-up. Until then, use the `manual` declarative pattern above for spinner-in-dialog flows.
 
 ## Theming
 

@@ -3,7 +3,7 @@ import type { AlertDialogThemeClasses } from './types';
 
 /**
  * Single theme-defaults source for every `<VCAlertDialog*>` part (and the
- * `<VCConfirmDialog>` host). Each component reads only the slot it needs —
+ * `<VCAlertDialogProvider>` host). Each component reads only the slot it needs —
  * sharing the source keeps the augmentation, types, and consumer overrides
  * in one place.
  *

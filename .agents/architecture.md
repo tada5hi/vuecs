@@ -233,7 +233,7 @@ unless the variant is structural (e.g. orientation-driven layout).
 | FormSelectSearch | `severity` only | error/warning | No `size` axis (theme entry ships `severity` only) — the search box inherits its sizing from surrounding layout, not a size variant. |
 | FormCheckbox / FormSwitch / FormRadio | `size` | xs/sm/md/lg | theme-bootstrap uses `vc-form-{checkbox,switch,radio}-{sm,lg}` helpers from @vuecs/forms structural CSS |
 | Modal | `size` | xs/sm/md/lg/xl | theme-tailwind uses `max-w-*`; theme-bootstrap uses `modal-{sm,lg,xl}` |
-| AlertDialog | `size` × `tone` | xs/sm/md/lg × six semantic colors | `size` sizes the `content`; `tone` colors the `action` button (drives `useConfirm({ tone })`). No `danger` alias (plan 040) |
+| AlertDialog | `size` × `tone` | xs/sm/md/lg × six semantic colors | `size` sizes the `content`; `tone` colors the `action` button (drives `useAlertDialog({ tone })`). No `danger` alias (plan 040) |
 | Popover / HoverCard | `size` | xs/sm/md/lg | Width + padding tier |
 | Tooltip | `size` | xs/sm/md/lg | Padding + font-size only |
 | DropdownMenu / ContextMenu | `size` | xs/sm/md/lg | Item padding + min-width |
@@ -1803,8 +1803,8 @@ matching `*Portal` so consumers don't have to compose them manually
       alert-dialog/           <- AlertDialog / Trigger / Content / Title / Description / Cancel / Action
                                  (Reka AlertDialog — role="alertdialog", outside-click always off,
                                  `noEscape` boolean instead of Modal's 4-value closePolicy)
-                                 + ConfirmDialog.vue (single host) + use-confirm.ts
-                                 (useConfirm() singleton FIFO queue → Promise<boolean>) (plan 040)
+                                 + AlertDialogProvider.vue (single host) + use-alert-dialog.ts
+                                 (useAlertDialog() singleton FIFO queue → Promise<boolean>) (plan 040)
       popover/                <- Popover / Trigger / Content / Arrow / Close (with `icon` prop)
       hover-card/             <- HoverCard / Trigger / Content / Arrow (plan 013) — hover-with-grace-area; trigger defaults to `as="a"`
       tooltip/                <- TooltipProvider / Tooltip / Trigger / Content / Arrow
@@ -1859,7 +1859,7 @@ Equivalent composables for the other families haven't shipped — most of
 those don't need stateful flows, and consumers can wire `:open` /
 `@update:open` manually when they do.
 
-### AlertDialog + `useConfirm()` (plan 040)
+### AlertDialog + `useAlertDialog()` (plan 040)
 
 The confirmation feature ships as **two layers on one primitive**:
 
@@ -1881,30 +1881,30 @@ The confirmation feature ships as **two layers on one primitive**:
   async spinner-then-close flows. Manual mode renders via `VCPrimitive` (not
   `DialogClose`) and closes through Reka's public
   `injectDialogRootContext().onOpenChange(false)`, so it works controlled +
-  uncontrolled. (An async `onConfirm` for the imperative `useConfirm` host is a
+  uncontrolled. (An async `onConfirm` for the imperative `useAlertDialog` host is a
   planned follow-up.)
-- **`useConfirm()` imperative composable** returns a callable
+- **`useAlertDialog()` imperative composable** returns a callable
   `(options?) => Promise<boolean>` and mirrors the `useToast()` idiom: a
   app-scoped **FIFO queue** drained one-at-a-time by a single
-  `<VCConfirmDialog>` host placed once near the app root (like
-  `<VCToaster>`). Like toast, the queue lives on a per-app `ConfirmManager`
-  (`Symbol.for('VCConfirmManager')`), so `useConfirm()` **injects** and
+  `<VCAlertDialogProvider>` host placed once near the app root (like
+  `<VCToaster>`). Like toast, the queue lives on a per-app `AlertDialogManager`
+  (`Symbol.for('VCAlertDialogManager')`), so `useAlertDialog()` **injects** and
   must be called from a setup / inject context (capture the callable and
   reuse it in handlers). `Action` → resolves `true`; `Cancel` / Escape →
   resolves `false`. The host renders the head request through the Layer-1
   parts (default title + description + Cancel/Action buttons, with a
   `component` / `componentProps` escape hatch for a fully custom body).
-  `injectConfirmManager()` exposes `{ queue, settle, clear }` — the host
+  `injectAlertDialogManager()` exposes `{ queue, settle, clear }` — the host
   drives it, and consumers call `.clear()` to cancel all pending (e.g. on
   route change). `confirm()` resolves `false` without enqueuing when there
   is no `window` (client-only gesture; no SSR-rendered dialog / hydration
-  mismatch). (Exported: `ConfirmManager`, `provideConfirmManager`,
-  `injectConfirmManager` / `tryInjectConfirmManager`.)
+  mismatch). (Exported: `AlertDialogManager`, `provideAlertDialogManager`,
+  `injectAlertDialogManager` / `tryInjectAlertDialogManager`.)
 
 `tone` (canonical six colors — no `danger` alias) drives the Action
 button color via a `tone` variant on the `alertDialog` theme key.
 Behavioral strings (`title` / `confirmLabel` / `cancelLabel`) resolve
-through `useComponentDefaults('confirm', …)` for i18n. There is
+through `useComponentDefaults('alertDialog', …)` for i18n. There is
 deliberately no corner-X close (an alert dialog forces a Cancel/Action
 choice), so the theme key has no `close` / `closeIcon` slot. Known v1
 limitation: when the queue drains to empty the host content unmounts

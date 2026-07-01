@@ -87,7 +87,7 @@ vuecs ships its components across separate packages — install only what you us
 | Component | Notes |
 |-----------|-------|
 | [Modal](/components/modal) | Compound dialog (`VCModal*` parts) + `useModal()` view-stack composable |
-| [AlertDialog](/components/alert-dialog) | `role="alertdialog"` confirmation compound + imperative `useConfirm()` → `Promise<boolean>` |
+| [AlertDialog](/components/alert-dialog) | `role="alertdialog"` confirmation compound + imperative `useAlertDialog()` → `Promise<boolean>` |
 | [Popover](/components/popover) | Floating panel anchored to a trigger (floating-ui positioning) |
 | [HoverCard](/components/hover-card) | Hover-triggered floating panel with grace-area handling |
 | [Tooltip](/components/tooltip) | Hover/focus text bubble; app-level `<VCTooltipProvider>` for delays |

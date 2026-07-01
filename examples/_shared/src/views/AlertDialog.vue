@@ -5,10 +5,10 @@ import {
     VCAlertDialogCancel,
     VCAlertDialogContent,
     VCAlertDialogDescription,
+    VCAlertDialogProvider,
     VCAlertDialogTitle,
     VCAlertDialogTrigger,
-    VCConfirmDialog,
-    useConfirm,
+    useAlertDialog,
 } from '@vuecs/overlays';
 import { ref } from 'vue';
 
@@ -16,9 +16,9 @@ defineProps<{
     themeVariant?: Record<string, string | boolean>;
 }>();
 
-// Imperative API — a single <VCConfirmDialog> host (mounted below) drains
+// Imperative API — a single <VCAlertDialogProvider> host (mounted below) drains
 // the shared queue this resolves against.
-const confirm = useConfirm();
+const confirm = useAlertDialog();
 const lastResult = ref<string>();
 
 async function runConfirm() {
@@ -64,14 +64,14 @@ async function runConfirm() {
         <!-- Imperative API -->
         <section class="vc-demo-section">
             <h3 class="vc-demo-heading">
-                Imperative — <code>useConfirm()</code>
+                Imperative — <code>useAlertDialog()</code>
             </h3>
             <button
                 type="button"
                 class="vc-demo-btn-danger"
                 @click="runConfirm"
             >
-                Delete via useConfirm…
+                Delete via useAlertDialog…
             </button>
             <p
                 v-if="lastResult"
@@ -81,8 +81,8 @@ async function runConfirm() {
             </p>
         </section>
 
-        <!-- Single host for the imperative useConfirm() queue. -->
-        <VCConfirmDialog />
+        <!-- Single host for the imperative useAlertDialog() queue. -->
+        <VCAlertDialogProvider />
     </div>
 </template>
 
