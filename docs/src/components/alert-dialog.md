@@ -130,9 +130,57 @@ app.use(vuecs, {
 });
 ```
 
-::: tip SSR
-The queue is a process-wide singleton (same caveat as `useToast()`). A confirmation is always a client gesture — only call `confirm()` from client-side handlers, never from SSR setup.
+::: tip App-scoped & SSR
+The queue lives on a per-app manager (like `useToast()`), so it's SSR-safe (no cross-request leakage) and isolated per app. Because `useConfirm()` **injects** that manager, call it from a component `setup()` and capture the returned function — then reuse it in handlers (including store actions). For a call site outside setup (an axios interceptor), capture `confirm` once at app init via `app.runWithContext(() => useConfirm())` and pass it in. `confirm()` resolves `false` (without opening anything) on the server.
 :::
+
+## Gated / async confirmation
+
+By default `<VCAlertDialogAction>` / `<VCAlertDialogCancel>` close the dialog the instant they're clicked (they're Reka `DialogClose`). For flows that must **validate before confirming** or **stay open during an async action** (spinner-then-close), add `manual`: the button no longer auto-closes, and its default slot receives a `confirm()` / `cancel()` trigger you call when ready.
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { VCAlertDialog, VCAlertDialogContent, VCAlertDialogTitle, VCAlertDialogDescription, VCAlertDialogCancel, VCAlertDialogAction } from '@vuecs/overlays';
+import { VCButton } from '@vuecs/button';
+
+const open = ref(false);
+const deleting = ref(false);
+
+async function onDelete(confirm: () => void) {
+    deleting.value = true;
+    try {
+        await api.deleteProject(id);
+        confirm();            // close only after the request succeeds
+    } finally {
+        deleting.value = false;
+    }
+}
+</script>
+
+<template>
+    <VCAlertDialog v-model:open="open">
+        <VCAlertDialogContent>
+            <VCAlertDialogTitle>Delete project?</VCAlertDialogTitle>
+            <VCAlertDialogDescription>This cannot be undone.</VCAlertDialogDescription>
+            <div class="vc-alert-dialog-footer">
+                <VCAlertDialogCancel as-child>
+                    <VCButton variant="ghost">Cancel</VCButton>
+                </VCAlertDialogCancel>
+                <VCAlertDialogAction manual as-child v-slot="{ confirm }">
+                    <VCButton color="error" :loading="deleting" @click="onDelete(confirm)">
+                        Delete
+                    </VCButton>
+                </VCAlertDialogAction>
+            </div>
+        </VCAlertDialogContent>
+    </VCAlertDialog>
+</template>
+```
+
+Without `manual`, the dialog closes the moment the button is clicked — before `deleteProject` resolves. With `manual`, it stays open (showing the `:loading` spinner) until you call `confirm()`. The same `manual` + `cancel()` pattern applies to `<VCAlertDialogCancel>`.
+
+> The imperative `useConfirm()` currently resolves before your action runs (`if (await confirm()) { await work() }`); an async-aware `onConfirm` for the imperative host is a planned follow-up. Until then, use the `manual` declarative pattern above for spinner-in-dialog flows.
 
 ## Theming
 

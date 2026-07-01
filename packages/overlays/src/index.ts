@@ -5,6 +5,8 @@ import type { CoreOptions } from '@vuecs/core';
 import './vue';
 import { registerOverlayConfigDefaults } from './config';
 import {
+    ConfirmManager,
+    ToastManager,
     VCAlertDialog,
     VCAlertDialogAction,
     VCAlertDialogCancel,
@@ -70,6 +72,8 @@ import {
     VCTooltipContent,
     VCTooltipProvider,
     VCTooltipTrigger,
+    provideConfirmManager,
+    provideToastManager,
 } from './components';
 
 export * from './components';
@@ -81,6 +85,12 @@ export function install(app: App, options: Options = {}): void {
     installDefaultsManager(app, options);
     const config = installConfigManager(app, options);
     registerOverlayConfigDefaults(config);
+
+    // App-scoped imperative queues (toast + confirm) — one manager per app so
+    // concurrent SSR requests never share state and multi-app pages stay
+    // isolated. `useToast()` / `useConfirm()` and their hosts inject these.
+    provideToastManager(new ToastManager(), app);
+    provideConfirmManager(new ConfirmManager(), app);
 
     Object.entries({
         VCPresence,

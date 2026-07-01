@@ -1,17 +1,46 @@
+import { inject, provide } from '@vuecs/core';
 import { readonly, ref } from 'vue';
-import type { Ref } from 'vue';
+import type { App, Ref } from 'vue';
 import type { ToastEntry, ToastEntryInput } from './types';
 
 // ──────────────────────────────────────────────────────────────────────────
-// Singleton queue (module-level — shared across every `useToast()` caller)
+// App-scoped manager (one per app — provided by the @vuecs/overlays plugin)
 // ──────────────────────────────────────────────────────────────────────────
 
-const entries = ref<ToastEntry[]>([]);
-let nextId = 0;
+/**
+ * Holds the per-app toast queue + id sequence. Scoped to the app (not a module
+ * singleton) so concurrent SSR requests never share state and multiple apps on
+ * one page stay isolated. `<VCToaster>` reads `entries`; every `useToast()`
+ * call in the same app shares this instance.
+ */
+export class ToastManager {
+    readonly entries: Ref<ToastEntry[]> = ref<ToastEntry[]>([]);
 
-function generateId(): string {
-    nextId += 1;
-    return `vc-toast-${nextId}`;
+    private seq = 0;
+
+    generateId(): string {
+        this.seq += 1;
+        return `vc-toast-${this.seq}`;
+    }
+}
+
+const TOAST_MANAGER_KEY = Symbol.for('VCToastManager');
+
+export function tryInjectToastManager(app?: App): ToastManager | undefined {
+    return inject<ToastManager>(TOAST_MANAGER_KEY, app);
+}
+
+export function injectToastManager(app?: App): ToastManager {
+    const instance = tryInjectToastManager(app);
+    if (!instance) {
+        throw new Error('[vuecs] No ToastManager available. Install @vuecs/overlays (app.use) and call useToast() from a component setup / inject context.');
+    }
+    return instance;
+}
+
+export function provideToastManager(manager: ToastManager = new ToastManager(), app?: App): ToastManager {
+    provide(TOAST_MANAGER_KEY, manager, app);
+    return manager;
 }
 
 export type UseToastReturn = {
@@ -31,37 +60,36 @@ export type UseToastReturn = {
 };
 
 /**
- * Module-level singleton — every `useToast()` call returns the same queue
- * ref and mutator set. Adding from a fetch handler and rendering inside
- * `<VCToaster>` reuse one source of truth (singleton queue per plan 029 Q2).
+ * App-scoped toast queue. Injects the per-app `ToastManager` (provided by the
+ * @vuecs/overlays plugin), so it MUST be called from a component setup / inject
+ * context — capture the returned API once and reuse it in handlers (including
+ * store actions / interceptors wired at app init via `app.runWithContext`).
+ * Adding from a handler and rendering inside `<VCToaster>` reuse the one
+ * per-app queue.
  *
  *   const toast = useToast();
  *   toast.add({ title: 'Saved', description: 'User updated.', color: 'success' });
- *   const id = toast.add({ title: 'Uploading…', duration: 0 });
- *   toast.update(id, { description: '50% complete…' });
- *   toast.dismiss(id);
  *
  * The composable owns NO timer logic — auto-dismiss + pause-on-hover are
- * driven by Reka's `ToastRoot` `duration` prop, which `<VCToast>` forwards
- * from `entry.duration ?? <VCToastProvider :duration>`.
- *
- * SSR note: The singleton is *process-wide*, not per-request. If a server
- * worker is reused across requests (Nuxt default), state could in theory
- * leak between renders — but toasts are user-action notifications fired
- * from client-side handlers (clicks, fetch callbacks), so the server-side
- * queue is almost always empty at render time. Don't call `add()` from
- * SSR setup paths; defer it to `onMounted` or post-hydration handlers.
+ * driven by Reka's `ToastRoot` `duration` prop.
  */
 export function useToast(): UseToastReturn {
+    const manager = injectToastManager();
+    const { entries } = manager;
+
     function add(entry: ToastEntryInput): string {
+        // No viewport to render server-side — skip enqueuing (app scoping keeps
+        // state per-request; this additionally prevents an SSR-rendered toast +
+        // hydration mismatch on misuse). Toasts are client-side gestures.
+        if (typeof window === 'undefined') {
+            return entry.id ?? '';
+        }
         // Caller-provided `entry.id` is a hint, not a guarantee — if it
-        // collides with an existing queue entry we regenerate so the
-        // queue's id invariant stays unique. Caller receives the actual
-        // id back. Keeps `dismiss(id)` / `update(id)` deterministic
-        // without throwing on duplicate-id submissions.
+        // collides with an existing queue entry we regenerate so the queue's
+        // id invariant stays unique. Caller receives the actual id back.
         const suggested = entry.id;
         const id = (suggested === undefined || entries.value.some((e) => e.id === suggested)) ?
-            generateId() :
+            manager.generateId() :
             suggested;
         entries.value = [...entries.value, { ...entry, id }];
         return id;
@@ -72,9 +100,6 @@ export function useToast(): UseToastReturn {
         if (idx === -1) return;
         const removed = entries.value[idx];
         entries.value = entries.value.filter((e) => e.id !== id);
-        // `toastApi` is initialised below; the closure resolves at call
-        // time so by the time any user-triggered `dismiss` runs, it's
-        // fully wired up.
         removed?.onDismiss?.(id, toastApi);
     }
 

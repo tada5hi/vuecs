@@ -7,7 +7,7 @@ import VCAlertDialogContent from './AlertDialogContent.vue';
 import VCAlertDialogTitle from './AlertDialogTitle.vue';
 import VCAlertDialogDescription from './AlertDialogDescription.vue';
 import { alertDialogThemeDefaults } from './theme';
-import { confirmHardcodedDefaults, useConfirmController } from './use-confirm';
+import { confirmHardcodedDefaults, injectConfirmManager } from './use-confirm';
 import type { ConfirmRequest } from './use-confirm';
 
 /**
@@ -30,9 +30,9 @@ import type { ConfirmRequest } from './use-confirm';
 export default defineComponent({
     name: 'VCConfirmDialog',
     setup() {
-        const { queue, settle } = useConfirmController();
-        const head = computed<ConfirmRequest | undefined>(() => queue.value[0]);
-        const open = computed(() => queue.value.length > 0);
+        const manager = injectConfirmManager();
+        const head = computed<ConfirmRequest | undefined>(() => manager.queue.value[0]);
+        const open = computed(() => manager.queue.value.length > 0);
         const defaults = useComponentDefaults('confirm', {}, confirmHardcodedDefaults);
 
         // Resolve the shared `alertDialog` theme with the head request's tone
@@ -51,7 +51,7 @@ export default defineComponent({
         // wrong promise.
         function resolveRequest(req: ConfirmRequest, value: boolean): void {
             if (head.value?.id !== req.id) return;
-            settle(value);
+            manager.settle(value);
         }
 
         function onOpenChange(next: boolean): void {

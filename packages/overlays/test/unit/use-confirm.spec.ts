@@ -6,98 +6,107 @@ import {
     it,
     vi,
 } from 'vitest';
-import { nextTick } from 'vue';
+import { defineComponent, h, nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import vuecsOverlays, {
+    ConfirmManager,
     VCConfirmDialog,
     useConfirm,
-    useConfirmController,
 } from '../../src';
 
-const {
-    queue, 
-    settle, 
-    clear, 
-} = useConfirmController();
-
-describe('useConfirm queue', () => {
-    afterEach(() => {
-        clear();
-    });
-
+describe('ConfirmManager', () => {
     it('queues a request and resolves true on settle(true)', async () => {
-        const confirm = useConfirm();
-        const p = confirm({ title: 'x' });
-        expect(queue.value.length).toBe(1);
+        const m = new ConfirmManager();
+        const p = m.confirm({ title: 'x' });
+        expect(m.queue.value.length).toBe(1);
 
-        settle(true);
+        m.settle(true);
         await expect(p).resolves.toBe(true);
-        expect(queue.value.length).toBe(0);
+        expect(m.queue.value.length).toBe(0);
     });
 
     it('resolves false on settle(false)', async () => {
-        const confirm = useConfirm();
-        const p = confirm();
-        settle(false);
+        const m = new ConfirmManager();
+        const p = m.confirm();
+        m.settle(false);
         await expect(p).resolves.toBe(false);
     });
 
     it('processes concurrent requests FIFO', async () => {
-        const confirm = useConfirm();
-        const p1 = confirm({ title: 'first' });
-        const p2 = confirm({ title: 'second' });
+        const m = new ConfirmManager();
+        const p1 = m.confirm({ title: 'first' });
+        const p2 = m.confirm({ title: 'second' });
 
-        expect(queue.value.length).toBe(2);
-        expect(queue.value[0]?.options.title).toBe('first');
+        expect(m.queue.value.length).toBe(2);
+        expect(m.queue.value[0]?.options.title).toBe('first');
 
-        settle(true); // resolves the first
-        settle(false); // resolves the second
+        m.settle(true); // resolves the first
+        m.settle(false); // resolves the second
 
         await expect(p1).resolves.toBe(true);
         await expect(p2).resolves.toBe(false);
     });
 
     it('clear() cancels every pending request as false', async () => {
-        const confirm = useConfirm();
-        const p1 = confirm();
-        const p2 = confirm();
+        const m = new ConfirmManager();
+        const p1 = m.confirm();
+        const p2 = m.confirm();
 
-        clear();
+        m.clear();
 
         await expect(p1).resolves.toBe(false);
         await expect(p2).resolves.toBe(false);
-        expect(queue.value.length).toBe(0);
+        expect(m.queue.value.length).toBe(0);
     });
 
     it('resolves false WITHOUT enqueuing on the server (no window)', async () => {
-        // SSR guard: keeps the process-wide singleton queue empty during
-        // server render, so it can never leak one request into another.
         vi.stubGlobal('window', undefined);
         try {
-            const confirm = useConfirm();
-            const p = confirm({ title: 'x' });
-            expect(queue.value.length).toBe(0);
+            const m = new ConfirmManager();
+            const p = m.confirm({ title: 'x' });
+            expect(m.queue.value.length).toBe(0);
             await expect(p).resolves.toBe(false);
         } finally {
             vi.unstubAllGlobals();
         }
     });
+
+    it('is app-scoped — two managers keep isolated queues', () => {
+        const a = new ConfirmManager();
+        const b = new ConfirmManager();
+        a.confirm({ title: 'a' });
+        expect(a.queue.value.length).toBe(1);
+        expect(b.queue.value.length).toBe(0);
+        a.clear();
+    });
 });
 
-describe('<VCConfirmDialog> host', () => {
+describe('<VCConfirmDialog> host (app-scoped)', () => {
     afterEach(() => {
-        clear();
         document.body.innerHTML = '';
     });
 
-    it('renders the queued request and resolves true via the action button', async () => {
-        mount(VCConfirmDialog, {
+    // Mount a harness that captures `useConfirm()` (injecting the app manager)
+    // and renders the host (which injects the SAME app manager).
+    function mountHost() {
+        let confirm!: ReturnType<typeof useConfirm>;
+        const Harness = defineComponent({
+            setup() {
+                confirm = useConfirm();
+                return () => h(VCConfirmDialog);
+            },
+        });
+        mount(Harness, {
             global: { plugins: [[vuecsOverlays, {}]] },
             attachTo: document.body,
         });
+        return confirm;
+    }
+
+    it('renders the queued request and resolves true via the action button', async () => {
+        const confirm = mountHost();
         await nextTick();
 
-        const confirm = useConfirm();
         const p = confirm({
             title: 'Delete project?', 
             confirmLabel: 'Delete', 
@@ -117,13 +126,9 @@ describe('<VCConfirmDialog> host', () => {
     });
 
     it('resolves false via the cancel button', async () => {
-        mount(VCConfirmDialog, {
-            global: { plugins: [[vuecsOverlays, {}]] },
-            attachTo: document.body,
-        });
+        const confirm = mountHost();
         await nextTick();
 
-        const confirm = useConfirm();
         const p = confirm({ confirmLabel: 'Delete', cancelLabel: 'Keep' });
         await nextTick();
         await nextTick();
@@ -134,5 +139,9 @@ describe('<VCConfirmDialog> host', () => {
         cancel!.click();
 
         await expect(p).resolves.toBe(false);
+    });
+
+    it('throws when useConfirm() is called with no manager (plugin not installed)', () => {
+        expect(() => useConfirm()).toThrow();
     });
 });

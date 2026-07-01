@@ -35,6 +35,26 @@ export type AlertDialogThemeClasses = {
     action: string;
 };
 
+/**
+ * Default-slot props for `<VCAlertDialogAction>`. `confirm()` closes the
+ * dialog. Mainly useful in `manual` mode (where the click's auto-close is
+ * suppressed) so the consumer can close after validation / an async action;
+ * in the default mode the button already closes on click.
+ */
+export type AlertDialogActionSlotProps = {
+    /** Invoke to confirm and close the dialog. */
+    confirm: () => void;
+};
+
+/**
+ * Default-slot props for `<VCAlertDialogCancel>`. `cancel()` closes the dialog.
+ * Mainly useful in `manual` mode (auto-close suppressed).
+ */
+export type AlertDialogCancelSlotProps = {
+    /** Invoke to cancel and close the dialog. */
+    cancel: () => void;
+};
+
 declare module '@vuecs/core' {
     interface ThemeElements {
         alertDialog?: ThemeElementDefinition<AlertDialogThemeClasses>;

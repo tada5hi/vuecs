@@ -10,7 +10,7 @@
 
 - 🪟 **Modal** — with **`useModal()`**, a view-stack composable (`pushView` / `popView` / `replaceView`) for "list → detail → back" flows inside one modal instance. No stacked dialogs, no z-index fights.
 - ⚠️ **AlertDialog** — the `role="alertdialog"` confirmation primitive (outside-click off, distinct Cancel/Action buttons) **plus `useConfirm()`** — `const ok = await confirm({ title, description, tone: 'error' })`. A single `<VCConfirmDialog>` host drains a shared FIFO queue, the same way `<VCToaster>` drains `useToast()`.
-- 🔔 **Toast** — with **`useToast()`**, an app-wide shared queue (`add` / `dismiss` / `update` / `clear`). Fire from a Pinia store, an axios interceptor, or any component; every entry lands in the same `<VCToaster>` viewport.
+- 🔔 **Toast** — with **`useToast()`**, an **app-scoped** queue (`add` / `dismiss` / `update` / `clear`), provided per-app so SSR requests stay isolated. Capture it from a component `setup()` and reuse the returned API anywhere (store, interceptor); every entry lands in the same `<VCToaster>` viewport.
 - 💬 **Popover · HoverCard · Tooltip** — positioned floating panels with arrows, grace-area hover (HoverCard), and provider-level config (Tooltip).
 - 📋 **DropdownMenu · ContextMenu** — the full menu surface: items, labels, separators, groups, checkbox items, radio groups, submenus.
 - 🎞️ **Enter *and* exit animations** — `data-state`-driven, with Reka's internal `Presence` delaying unmount until the exit animation completes. Works in every shipping theme.

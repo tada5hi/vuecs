@@ -1,5 +1,6 @@
-import { readonly, ref } from 'vue';
-import type { Component, Ref } from 'vue';
+import { inject, provide } from '@vuecs/core';
+import { shallowRef } from 'vue';
+import type { App, Component, Ref } from 'vue';
 import type { ComponentDefaultValues } from '@vuecs/core';
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -62,93 +63,100 @@ export const confirmHardcodedDefaults: ConfirmDefaults = {
     cancelLabel: 'Cancel',
 };
 
-// ──────────────────────────────────────────────────────────────────────────
-// Singleton FIFO queue (module-level — shared across every caller + the host)
-// ──────────────────────────────────────────────────────────────────────────
-
 export type ConfirmRequest = {
     /**
      * Opaque per-request token, used only as the host's Vue `:key` (to remount
      * between sequential dialogs). Never a DOM id, never returned to the
-     * caller, never used for lookup — `settle()` / `clear()` work on the queue
-     * head positionally — so a fresh `Symbol` is the cleanest unique value (no
-     * module-level counter; `useId()` would need a `setup()` context this
-     * click-handler-minted id doesn't have).
+     * caller — a fresh `Symbol` is the cleanest unique value.
      */
     id: symbol;
     options: ConfirmOptions;
     resolve: (value: boolean) => void;
 };
 
-const queue = ref<ConfirmRequest[]>([]);
+// ──────────────────────────────────────────────────────────────────────────
+// App-scoped manager (one per app — provided by the @vuecs/overlays plugin)
+// ──────────────────────────────────────────────────────────────────────────
+
+/**
+ * Holds the per-app confirmation queue. Scoped to the app (not a module
+ * singleton) so concurrent SSR requests never share state and multiple apps on
+ * one page stay isolated. Drained one-at-a-time (FIFO) by `<VCConfirmDialog>`.
+ */
+export class ConfirmManager {
+    readonly queue: Ref<ConfirmRequest[]> = shallowRef<ConfirmRequest[]>([]);
+
+    /**
+     * Enqueue a confirmation; resolves `true` (Action) / `false`
+     * (Cancel / Escape). On the server there's no dialog to render, so it
+     * resolves `false` without enqueuing (avoids an SSR-rendered dialog +
+     * hydration mismatch).
+     */
+    confirm(options: ConfirmOptions = {}): Promise<boolean> {
+        return new Promise<boolean>((resolve) => {
+            if (typeof window === 'undefined') {
+                resolve(false);
+                return;
+            }
+            this.queue.value = [...this.queue.value, {
+                id: Symbol('vc-confirm'), 
+                options, 
+                resolve, 
+            }];
+        });
+    }
+
+    /** Resolve + dequeue the head request. */
+    settle(value: boolean): void {
+        const head = this.queue.value[0];
+        if (!head) return;
+        this.queue.value = this.queue.value.slice(1);
+        head.resolve(value);
+    }
+
+    /** Cancel every pending request (resolves `false`) — e.g. on route change. */
+    clear(): void {
+        const pending = this.queue.value;
+        this.queue.value = [];
+        for (const req of pending) req.resolve(false);
+    }
+}
+
+const CONFIRM_MANAGER_KEY = Symbol.for('VCConfirmManager');
+
+export function tryInjectConfirmManager(app?: App): ConfirmManager | undefined {
+    return inject<ConfirmManager>(CONFIRM_MANAGER_KEY, app);
+}
+
+export function injectConfirmManager(app?: App): ConfirmManager {
+    const instance = tryInjectConfirmManager(app);
+    if (!instance) {
+        throw new Error('[vuecs] No ConfirmManager available. Install @vuecs/overlays (app.use) and call useConfirm() from a component setup / inject context.');
+    }
+    return instance;
+}
+
+export function provideConfirmManager(manager: ConfirmManager = new ConfirmManager(), app?: App): ConfirmManager {
+    provide(CONFIRM_MANAGER_KEY, manager, app);
+    return manager;
+}
 
 export type UseConfirmReturn = (options?: ConfirmOptions) => Promise<boolean>;
 
 /**
- * Imperative confirmation dialog. Returns a callable that opens an alert
- * dialog and resolves `true` (Action) / `false` (Cancel / Escape). Concurrent
- * calls queue FIFO and are shown one at a time by `<VCConfirmDialog>` (placed
- * once near the app root, like `<VCToaster>`).
+ * Imperative confirmation dialog. Injects the per-app `ConfirmManager`, so it
+ * MUST be called from a component setup / inject context — capture the returned
+ * callable once and reuse it in handlers (including store actions). Resolves
+ * `Promise<boolean>`. A single `<VCConfirmDialog>` host (placed once per app)
+ * drains the queue.
  *
  *   const confirm = useConfirm();
- *   if (await confirm({ title: 'Delete project?', tone: 'error' })) {
- *       await api.deleteProject(id);
- *   }
+ *   if (await confirm({ title: 'Delete project?', tone: 'error' })) { … }
  *
- * SSR safety: the queue is a process-wide singleton, so on a reused server
- * it is shared across concurrent requests. That is harmless here because
- * `confirm()` short-circuits to `false` on the server (below) WITHOUT touching
- * the queue — there is no user to confirm and no dialog to render server-side
- * — so the shared queue stays provably empty during SSR and can never leak one
- * request's pending confirm into another's render. On the client, each browser
- * tab has its own module instance, so there is no cross-client sharing.
+ * To cancel all pending confirms (e.g. on route change) inject the manager
+ * directly: `injectConfirmManager().clear()`.
  */
 export function useConfirm(): UseConfirmReturn {
-    return (options: ConfirmOptions = {}) => new Promise<boolean>((resolve) => {
-        // Server-side: no UI to confirm against. Resolve `false` (the safe
-        // "not confirmed" default) without enqueuing, keeping the shared
-        // module queue empty across concurrent SSR requests.
-        if (typeof window === 'undefined') {
-            resolve(false);
-            return;
-        }
-        queue.value = [...queue.value, {
-            id: Symbol('vc-confirm'),
-            options,
-            resolve,
-        }];
-    });
-}
-
-/**
- * @internal — consumed by `<VCConfirmDialog>` (and tests). Exposes the queue
- * plus the resolution primitives. `settle()` resolves the head request and
- * dequeues it; `clear()` cancels every pending request (resolves `false`),
- * useful on route change.
- */
-export type ConfirmController = {
-    queue: Readonly<Ref<ReadonlyArray<ConfirmRequest>>>;
-    settle: (value: boolean) => void;
-    clear: () => void;
-};
-
-export function useConfirmController(): ConfirmController {
-    function settle(value: boolean): void {
-        const head = queue.value[0];
-        if (!head) return;
-        queue.value = queue.value.slice(1);
-        head.resolve(value);
-    }
-
-    function clear(): void {
-        const pending = queue.value;
-        queue.value = [];
-        for (const req of pending) req.resolve(false);
-    }
-
-    return {
-        queue: readonly(queue) as Readonly<Ref<ReadonlyArray<ConfirmRequest>>>,
-        settle,
-        clear,
-    };
+    const manager = injectConfirmManager();
+    return (options: ConfirmOptions = {}) => manager.confirm(options);
 }

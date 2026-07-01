@@ -1835,15 +1835,25 @@ roadmap-scoped Reka-wrapped compound API is layered on top of it (the
 composable owns the state, `<VCModal>` v-binds to it).
 
 The `useToast()` composable (plan 029) plays the same role for the Toast
-family: a **shared, module-level queue** with `add` / `dismiss` / `update`
-/ `clear` methods. Every call site reads from the same `entries` ref, so
-a notification fired from a Pinia store, an axios interceptor, or a deep
-component lands in the same `<VCToaster>` viewport. Unlike `useModal()`
-(per-call instance), `useToast()` is a module singleton — the queue is
-app-wide on purpose. The `<VCToaster>` component reads the queue and
-renders one `<VCToast>` per entry, with the canonical
-title/description/action/close layout as the default slot fallback and a
-`{ entry, dismiss }` slot prop for per-toast customization.
+family: an **app-scoped queue** with `add` / `dismiss` / `update` /
+`clear` methods. As of plan 040 the queue lives on a per-app
+`ToastManager` (provided by the plugin under `Symbol.for('VCToastManager')`),
+**not** a module singleton — so concurrent SSR requests never share state
+and multiple apps on one page stay isolated (same app-aware
+`provide`/`inject` bridge as the navigation registry / breadcrumb
+manager). Consequence: `useToast()` **injects**, so it must be called from
+a component setup / inject context; capture the returned API once and
+reuse it in handlers (for a store action / interceptor, capture at app
+init via `app.runWithContext`). Every call site in the same app shares the
+one `entries` ref, so a notification fired from a store or a deep
+component lands in the same `<VCToaster>` viewport. `add()` is a client
+gesture — it no-ops (returns without enqueuing) when there is no `window`,
+so an SSR misuse can't render a toast into the server output. The
+`<VCToaster>` component reads the queue and renders one `<VCToast>` per
+entry, with the canonical title/description/action/close layout as the
+default slot fallback and a `{ entry, dismiss }` slot prop for per-toast
+customization. (Exported: `ToastManager`, `provideToastManager`,
+`injectToastManager` / `tryInjectToastManager`.)
 
 Equivalent composables for the other families haven't shipped — most of
 those don't need stateful flows, and consumers can wire `:open` /
@@ -1864,19 +1874,32 @@ The confirmation feature ships as **two layers on one primitive**:
   boolean (Escape cancels by default) rather than Modal's 4-value
   `closePolicy`. `Cancel` / `Action` render as themed `<button>`s but
   support `as-child` so a consumer composes `<VCButton color="error">` for
-  the full variant matrix.
+  the full variant matrix. Both also take a **`manual`** prop that suppresses
+  Reka's auto-close and exposes a `confirm()` / `cancel()` trigger via the
+  default slot (typed `AlertDialogActionSlotProps` /
+  `AlertDialogCancelSlotProps`) — the opt-in for validate-then-confirm and
+  async spinner-then-close flows. Manual mode renders via `VCPrimitive` (not
+  `DialogClose`) and closes through Reka's public
+  `injectDialogRootContext().onOpenChange(false)`, so it works controlled +
+  uncontrolled. (An async `onConfirm` for the imperative `useConfirm` host is a
+  planned follow-up.)
 - **`useConfirm()` imperative composable** returns a callable
   `(options?) => Promise<boolean>` and mirrors the `useToast()` idiom: a
-  module-level **FIFO queue** (singleton) drained one-at-a-time by a single
+  app-scoped **FIFO queue** drained one-at-a-time by a single
   `<VCConfirmDialog>` host placed once near the app root (like
-  `<VCToaster>`). `Action` → resolves `true`; `Cancel` / Escape →
+  `<VCToaster>`). Like toast, the queue lives on a per-app `ConfirmManager`
+  (`Symbol.for('VCConfirmManager')`), so `useConfirm()` **injects** and
+  must be called from a setup / inject context (capture the callable and
+  reuse it in handlers). `Action` → resolves `true`; `Cancel` / Escape →
   resolves `false`. The host renders the head request through the Layer-1
   parts (default title + description + Cancel/Action buttons, with a
   `component` / `componentProps` escape hatch for a fully custom body).
-  The exposed `useConfirmController()` (`{ queue, settle, clear }`) is the
-  `@internal` seam the host + tests drive; `clear()` cancels all pending
-  as `false` (e.g. on route change). Same SSR caveat as `useToast()` — the
-  queue is process-wide, so only call `confirm()` from client handlers.
+  `injectConfirmManager()` exposes `{ queue, settle, clear }` — the host
+  drives it, and consumers call `.clear()` to cancel all pending (e.g. on
+  route change). `confirm()` resolves `false` without enqueuing when there
+  is no `window` (client-only gesture; no SSR-rendered dialog / hydration
+  mismatch). (Exported: `ConfirmManager`, `provideConfirmManager`,
+  `injectConfirmManager` / `tryInjectConfirmManager`.)
 
 `tone` (canonical six colors — no `danger` alias) drives the Action
 button color via a `tone` variant on the `alertDialog` theme key.

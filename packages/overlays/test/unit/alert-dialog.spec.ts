@@ -138,3 +138,80 @@ describe('<VCAlertDialog>', () => {
         expect(open.value).toBe(true);
     });
 });
+
+describe('<VCAlertDialogAction> / <VCAlertDialogCancel> manual mode', () => {
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
+
+    it('manual Action: a click does NOT close; the exposed confirm() does', async () => {
+        const open = ref(true);
+        let confirmFn: (() => void) | undefined;
+        const App = defineComponent({
+            setup() {
+                return () => h(VCAlertDialog, {
+                    open: open.value,
+                    'onUpdate:open': (v: boolean) => { open.value = v; },
+                }, {
+                    default: () => h(VCAlertDialogContent, { inline: true }, {
+                        default: () => [
+                            h(VCAlertDialogTitle, () => 'T'),
+                            h(VCAlertDialogAction, { manual: true, 'data-testid': 'action' }, {
+                                default: (p: { confirm: () => void }) => {
+                                    confirmFn = p.confirm;
+                                    return 'Go';
+                                },
+                            }),
+                        ],
+                    }),
+                });
+            },
+        });
+        mount(App, { global: { plugins: [[vuecsOverlays, {}]] }, attachTo: document.body });
+        await nextTick();
+        await nextTick();
+
+        // Auto-close is suppressed: clicking the button must not close.
+        document.body.querySelector<HTMLElement>('[data-testid="action"]')!.click();
+        await nextTick();
+        expect(open.value).toBe(true);
+
+        // The exposed trigger closes it.
+        confirmFn!();
+        await nextTick();
+        expect(open.value).toBe(false);
+    });
+
+    it('manual Cancel: the exposed cancel() closes', async () => {
+        const open = ref(true);
+        let cancelFn: (() => void) | undefined;
+        const App = defineComponent({
+            setup() {
+                return () => h(VCAlertDialog, {
+                    open: open.value,
+                    'onUpdate:open': (v: boolean) => { open.value = v; },
+                }, {
+                    default: () => h(VCAlertDialogContent, { inline: true }, {
+                        default: () => [
+                            h(VCAlertDialogTitle, () => 'T'),
+                            h(VCAlertDialogCancel, { manual: true }, {
+                                default: (p: { cancel: () => void }) => {
+                                    cancelFn = p.cancel;
+                                    return 'Cancel';
+                                },
+                            }),
+                        ],
+                    }),
+                });
+            },
+        });
+        mount(App, { global: { plugins: [[vuecsOverlays, {}]] }, attachTo: document.body });
+        await nextTick();
+        await nextTick();
+
+        expect(open.value).toBe(true);
+        cancelFn!();
+        await nextTick();
+        expect(open.value).toBe(false);
+    });
+});
