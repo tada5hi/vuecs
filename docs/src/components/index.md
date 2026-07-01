@@ -93,6 +93,7 @@ vuecs ships its components across separate packages — install only what you us
 | [Toast](/components/toast) | Transient notifications via shared `useToast()` queue; auto-dismiss, swipe-to-close, action button |
 | [DropdownMenu](/components/dropdown-menu) | Click-triggered action menu with arrow/typeahead navigation |
 | [ContextMenu](/components/context-menu) | Right-click menu (same shape as DropdownMenu, cursor-anchored) |
+| [Presence](/components/presence) | Low-level exit-animation wrapper (`<VCPresence>`) for custom non-Reka panels |
 
 ## @vuecs/pagination
 

@@ -192,6 +192,7 @@ export default defineConfig({
                         { text: 'Toast', link: '/components/toast' },
                         { text: 'DropdownMenu', link: '/components/dropdown-menu' },
                         { text: 'ContextMenu', link: '/components/context-menu' },
+                        { text: 'Presence', link: '/components/presence' },
                     ],
                 },
                 {
