@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.0.10](https://github.com/tada5hi/vuecs/compare/gravatar-v2.0.9...gravatar-v2.0.10) (2026-07-01)
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 8 updates ([#1674](https://github.com/tada5hi/vuecs/issues/1674)) ([f6a6955](https://github.com/tada5hi/vuecs/commit/f6a695597a7e4aeee7a6365af7997376efc37d4c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.3.0 to ^3.4.0
+    * @vuecs/elements bumped from ^1.3.1 to ^1.4.0
+  * peerDependencies
+    * @vuecs/core bumped from ^3.3.0 to ^3.4.0
+    * @vuecs/elements bumped from ^1.3.1 to ^1.4.0
+
 ## [2.0.9](https://github.com/tada5hi/vuecs/compare/gravatar-v2.0.8...gravatar-v2.0.9) (2026-06-26)
 
 

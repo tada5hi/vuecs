@@ -1,5 +1,39 @@
 # Changelog
 
+## [6.3.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v6.2.0...examples-nuxt-v6.3.0) (2026-07-01)
+
+
+### Features
+
+* **overlays:** AlertDialog compound + useAlertDialog() ([#1675](https://github.com/tada5hi/vuecs/issues/1675)) ([f7287f7](https://github.com/tada5hi/vuecs/commit/f7287f7937f049995810df0c9aeaf667ff1a7600))
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 8 updates ([#1674](https://github.com/tada5hi/vuecs/issues/1674)) ([f6a6955](https://github.com/tada5hi/vuecs/commit/f6a695597a7e4aeee7a6365af7997376efc37d4c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/button bumped from ^1.2.1 to ^1.3.0
+    * @vuecs/countdown bumped from ^2.0.7 to ^2.0.8
+    * @vuecs/design bumped from ^1.0.7 to ^1.0.8
+    * @vuecs/elements bumped from ^1.3.1 to ^1.4.0
+    * @vuecs/forms bumped from ^5.3.1 to ^5.3.2
+    * @vuecs/gravatar bumped from ^2.0.9 to ^2.0.10
+    * @vuecs/icon bumped from ^1.0.2 to ^1.0.3
+    * @vuecs/icons-font-awesome bumped from ^1.2.0 to ^1.2.1
+    * @vuecs/link bumped from ^2.0.2 to ^2.0.3
+    * @vuecs/list bumped from ^1.1.0 to ^1.1.1
+    * @vuecs/navigation bumped from ^4.2.0 to ^4.3.0
+    * @vuecs/nuxt bumped from ^1.1.3 to ^1.1.4
+    * @vuecs/overlays bumped from ^1.1.3 to ^1.2.0
+    * @vuecs/pagination bumped from ^2.1.6 to ^2.1.7
+    * @vuecs/theme-tailwind bumped from ^6.2.0 to ^6.3.0
+    * @vuecs/timeago bumped from ^2.1.3 to ^2.1.4
+
 ## [6.2.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v6.1.5...examples-nuxt-v6.2.0) (2026-06-27)
 
 

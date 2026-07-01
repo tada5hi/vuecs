@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.1.1](https://github.com/tada5hi/vuecs/compare/list-v1.1.0...list-v1.1.1) (2026-07-01)
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 8 updates ([#1674](https://github.com/tada5hi/vuecs/issues/1674)) ([f6a6955](https://github.com/tada5hi/vuecs/commit/f6a695597a7e4aeee7a6365af7997376efc37d4c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.3.0 to ^3.4.0
+  * peerDependencies
+    * @vuecs/core bumped from ^3.3.0 to ^3.4.0
+
 ## [1.1.0](https://github.com/tada5hi/vuecs/compare/list-v1.0.6...list-v1.1.0) (2026-06-26)
 
 

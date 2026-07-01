@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/locale",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "type": "module",
     "description": "Browser-language-aware, resettable locale source for vuecs — bridges into @vuecs/core's config.",
     "exports": {
@@ -40,13 +40,13 @@
         "test:coverage": "vitest --config test/vitest.config.ts --run --coverage"
     },
     "devDependencies": {
-        "@vuecs/core": "^3.3.0",
+        "@vuecs/core": "^3.4.0",
         "@vueuse/core": "^14.3.0",
         "jsdom": "^29.1.1",
         "vue": "^3.5.39"
     },
     "peerDependencies": {
-        "@vuecs/core": "^3.3.0",
+        "@vuecs/core": "^3.4.0",
         "@vueuse/core": "^13.0.0 || ^14.0.0",
         "vue": "^3.x"
     },

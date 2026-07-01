@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.2.0](https://github.com/tada5hi/vuecs/compare/overlays-v1.1.3...overlays-v1.2.0) (2026-07-01)
+
+
+### Features
+
+* **overlays:** AlertDialog compound + useAlertDialog() ([#1675](https://github.com/tada5hi/vuecs/issues/1675)) ([f7287f7](https://github.com/tada5hi/vuecs/commit/f7287f7937f049995810df0c9aeaf667ff1a7600))
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 8 updates ([#1674](https://github.com/tada5hi/vuecs/issues/1674)) ([f6a6955](https://github.com/tada5hi/vuecs/commit/f6a695597a7e4aeee7a6365af7997376efc37d4c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.3.0 to ^3.4.0
+  * peerDependencies
+    * @vuecs/core bumped from ^3.3.0 to ^3.4.0
+
 ## [1.1.3](https://github.com/tada5hi/vuecs/compare/overlays-v1.1.2...overlays-v1.1.3) (2026-06-26)
 
 
