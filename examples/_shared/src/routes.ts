@@ -23,6 +23,12 @@ export const sharedRoutes: SharedRoute[] = [
         view: () => import('./views/Alert.vue').then((m) => m.default),
     },
     {
+        path: '/alert-dialog',
+        name: 'alert-dialog',
+        label: 'Alert Dialog',
+        view: () => import('./views/AlertDialog.vue').then((m) => m.default),
+    },
+    {
         path: '/aspect-ratio',
         name: 'aspect-ratio',
         label: 'Aspect Ratio',
