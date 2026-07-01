@@ -65,7 +65,11 @@ export default defineComponent({
                     null,
                 h('div', { class: theme.value.footer || undefined }, [
                     // Cancel first → first focusable on open. `manual` disables
-                    // the auto-close so `@click` drives resolution.
+                    // the auto-close so `@click` drives resolution. No
+                    // `themeVariant`: Cancel is the neutral escape, and the
+                    // theme's `tone` variant styles only the `action` slot — so
+                    // tone is applied to the Action alone (a destructive confirm
+                    // colors the Action, keeping Cancel visually neutral).
                     h(VCAlertDialogCancel, {
                         manual: true,
                         type: 'button',
