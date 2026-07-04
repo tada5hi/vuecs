@@ -61,16 +61,23 @@ These flip under `.dark`:
 | `--vc-color-border-muted` | `neutral-100` | `neutral-900` | `border-border-muted` |
 | `--vc-color-ring` | `primary-500` | `primary-400` | `ring-ring` |
 
-The `on-*` tokens are the contrasting foreground when a filled semantic background is in use. `--vc-color-on-warning` is the only one that flips (warning fills are light, so the text needs a darker tone in light mode).
+The `on-*` tokens are the contrasting foreground for a **filled** semantic background (e.g. a solid `primary` button).
 
-| Token | Light mode | Dark mode |
-|-------|------------|-----------|
-| `--vc-color-on-primary` | `white` | `white` |
-| `--vc-color-on-neutral` | `white` | `white` |
-| `--vc-color-on-success` | `white` | `white` |
-| `--vc-color-on-warning` | `neutral-900` | `neutral-950` |
-| `--vc-color-on-error` | `white` | `white` |
-| `--vc-color-on-info` | `white` | `white` |
+Where the browser supports [CSS relative color syntax](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_colors/Relative_colors) (Chrome 119+, Safari 16.4+, Firefox 128+), each `on-*` is **derived from its own `-600` surface shade** — an `@supports` block in `@vuecs/design` snaps the foreground to black or white by the surface's OKLCH lightness. Two consequences:
+
+- **Runtime palette swaps stay legible.** `setColorPalette({ primary: 'amber' })` repaints the surface *and* recomputes the foreground, so a light swap can't leave white-on-yellow. The Tailwind and Bulma palette renderers emit the same adaptive `on-*` per swapped scale.
+- **Light `success` / `info` surfaces get dark text by default** (green-600 / sky-600 are light enough that black is the more legible pairing).
+
+Browsers without relative color syntax fall back to these literals:
+
+| Token | Fallback | Note |
+|-------|----------|------|
+| `--vc-color-on-primary` | `white` | |
+| `--vc-color-on-neutral` | `white` | |
+| `--vc-color-on-success` | `white` | |
+| `--vc-color-on-warning` | `neutral-900` (light) / `neutral-950` (dark) | only literal that flips per mode |
+| `--vc-color-on-error` | `white` | |
+| `--vc-color-on-info` | `white` | |
 
 ## Radius
 
@@ -221,6 +228,21 @@ setColorPalette({ primary: 'green', neutral: 'zinc' });
 Inserts or updates a `<style id="vc-color-palette">` element in `<head>`. Idempotent — calling it again replaces the previous block.
 
 For SSR (Nuxt), install `@vuecs/nuxt` — its theme-agnostic SSR plugin walks every installed theme's `palette.handle` hook via `renderColorPaletteFromThemes()` to emit the same `<style>` block into the head before first paint. No per-theme Nuxt module needed.
+
+### Accessibility — color-vision-deficiency palettes
+
+Adapting for color-vision deficiency (CVD) is a **whole-palette swap**, not a per-component override — the same mechanism a brand re-palette uses. `@vuecs/design` ships a starting preset:
+
+```ts
+import { colorBlindSafePalette, useColorPalette } from '@vuecs/design';
+
+useColorPalette().set(colorBlindSafePalette);
+// …or imperatively via a theme renderer:
+import { setColorPalette } from '@vuecs/theme-tailwind';
+setColorPalette(colorBlindSafePalette);
+```
+
+It keeps `success` (teal) and `error` (rose) out of the red↔green confusion zone (the most common CVD). Two caveats: six simultaneously distinguishable hues is near the CVD limit, so **never rely on colour alone** — keep pairing state with an icon or text label (the Alert / Toast / Badge families expose icon slots for exactly this); and the preset targets the red-green case, so author your own `ColorPaletteConfig` for a tritan (blue-yellow) target.
 
 ### Custom palette catalogs
 
