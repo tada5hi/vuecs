@@ -68,6 +68,12 @@ jobs:
                 uses: ./.github/actions/build
             -   name: Lint
                 run: npx eslint
+            -   name: Lint CSS
+                run: npm run lint:css
+            -   name: Check import boundaries
+                run: npm run lint:boundaries
+            -   name: Check package exports
+                run: npm run check:exports
 
     tests:
         name: Test Packages
