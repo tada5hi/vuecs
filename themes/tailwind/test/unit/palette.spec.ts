@@ -31,6 +31,15 @@ describe('renderColorPaletteStyles', () => {
         expect(css).toContain('--vc-color-success-500: var(--color-emerald-500);');
         expect(css).toContain('--vc-color-error-500: var(--color-rose-500);');
     });
+
+    it('should emit an adaptive on-* foreground per swapped scale', () => {
+        // The on-* token derives from the NEW palette's -600 surface via
+        // relative-color-syntax, so e.g. `primary: 'amber'` self-corrects to
+        // dark text instead of keeping the hardcoded white (WCAG). Degrades to
+        // the literal token on browsers without relative-color-syntax.
+        const css = renderColorPaletteStyles({ primary: 'amber' });
+        expect(css).toContain('--vc-color-on-primary: oklch(from var(--color-amber-600)');
+    });
 });
 
 describe('setColorPalette', () => {
