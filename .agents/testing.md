@@ -2,46 +2,104 @@
 
 ## Framework
 
-- **Vitest** with v8 coverage provider
-- Each tested package has its own `test/vitest.config.ts`
+- **Vitest** with the v8 coverage provider, `jsdom` environment for component specs.
+- Each tested package/theme has its own `test/vitest.config.ts`.
+- Two test flavours: runtime specs (`*.spec.ts`) and type-level drift guards (`*.test-d.ts`, run via Vitest `typecheck`).
 
-## Test Locations
+## Test inventory
 
-Only two packages currently have tests:
+**14 workspaces** carry tests — **101 `.spec.ts`** total (plus 4 `.test-d.ts`
+type guards). This is no longer "just core + navigation"; keep this table in
+sync when adding a test dir.
 
-| Package | Test directory | What's tested |
-|---------|---------------|---------------|
-| `@vuecs/core` | `packages/core/test/unit/` | Theme resolution (extend, resolve, variant, manager, composable, install), global defaults (manager, composable), utility functions (evaluate) |
-| `@vuecs/navigation` | `packages/navigation/test/unit/` | NavigationManager |
+| Workspace | Specs | Focus |
+|-----------|------:|-------|
+| `@vuecs/core` | 35 | Theme resolve/extend/variant/manager/composable/install, defaults, config, `defineTheme`/`mergeThemes`, `auditTheme`, ported composables (`useSelectionMachine`, primitive, …) |
+| `@vuecs/table` | 16 | Sort machine, `sortRows`, selection machine, auto-render, driver/columns |
+| `@vuecs/elements` | 10 | Card / Alert / Collapse / Badge / Avatar / Tag parts |
+| `@vuecs/navigation` | 10 | Registry, resolver, breadcrumb, stepper |
+| `@vuecs/overlays` | 10 | Modal / AlertDialog / Popover / Tooltip / menus, `useToast` / `useModal` / `useAlertDialog` |
+| `@vuecs/design` | 7 | `useColorMode`, palette render/apply, standalone catalog |
+| `@vuecs/forms` | 2 | Components (incl. Reka `VCFormSelect`), `useSubmitButton` |
+| `@vuecs/list` | 2 | Components + list context |
+| `@vuecs/locale` | 2 | `bindLocale` / `useLocaleManager` |
+| `@vuecs/pagination` | 2 | Pagination behaviour |
+| `@vuecs/placeholder` | 1 | Placeholder / wrapper |
+| `@vuecs/theme-tailwind` | 2 | `auditTheme` drift + palette render |
+| `@vuecs/theme-bootstrap` | 1 | `auditTheme` drift |
+| `@vuecs/theme-bulma` | 1 | `auditTheme` drift |
 
 ## Running Tests
 
 ```bash
-# All tests via Nx
-npm run test
+# All packages via Nx (cached) — this is what CI runs
+npm run test                 # → npx nx run-many -t test
 
 # Single package
-npm run test --workspace=packages/core --if-present
-npm run test --workspace=packages/navigation --if-present
+npm run test --workspace=packages/table --if-present
 ```
 
-## Test File Naming
+> **Nx cache caveat.** `test` is cached by Nx (see `nx.json`). A green result
+> may be a **cache hit** that never re-ran the specs — expected after a no-op
+> change, misleading when you're chasing a flaky/env-dependent test. Force a
+> real run with `npx nx run-many -t test --skip-nx-cache`, or clear everything
+> with `npx nx reset`.
 
-Tests use the `.spec.ts` suffix and live under `test/unit/`:
+## Type-level tests (drift guards)
+
+Four `*.test-d.ts` files assert that the **built `dist` declarations** keep
+their generic-over-data / model-value inference. They run via each package's
+Vitest `typecheck` block (its own `test/tsconfig.json`), not the runtime
+`.spec.ts` path:
+
 ```
-packages/core/test/unit/theme/extend.spec.ts
-packages/core/test/unit/theme/resolve.spec.ts
-packages/core/test/unit/theme/variant.spec.ts
-packages/core/test/unit/theme/manager.spec.ts
-packages/core/test/unit/defaults/manager.spec.ts
-packages/core/test/unit/defaults/composable.spec.ts
-packages/core/test/unit/utils/evaluate.spec.ts
-packages/navigation/test/unit/manager.spec.ts
+packages/table/test/types/generic-row.test-d.ts       # <VCTable> Row inference
+packages/list/test/types/generic-item.test-d.ts        # <VCList>/<VCListItem> Item inference
+packages/navigation/test/types/breadcrumb.test-d.ts    # <VCBreadcrumb> Item inference
+packages/forms/test/types/model-value.test-d.ts        # form model-value typing
 ```
+
+The generic-component pattern these guard is documented in
+[Conventions → Generic-over-data components](conventions.md#generic-over-data-components--definecomponent--cast-not-script-setup-generic) —
+don't re-document it here; add a `.test-d.ts` next to any new generic component.
+
+## Component testing with Reka UI primitives (jsdom)
+
+Overlay/select components that wrap Reka's open/close primitives (Select,
+Dialog, Popover, Tooltip, DropdownMenu, ContextMenu) **do not open on
+`wrapper.trigger('click')`** — Reka handles `pointerdown` and calls pointer-
+capture APIs jsdom doesn't implement. Stub them, drive pointer events, and
+tear down carefully:
+
+```ts
+beforeAll(() => {
+    if (typeof Element !== 'undefined' && !Element.prototype.hasPointerCapture) {
+        Element.prototype.hasPointerCapture = () => false;
+        Element.prototype.setPointerCapture = () => {};
+        Element.prototype.releasePointerCapture = () => {};
+        Element.prototype.scrollIntoView = () => {};
+    }
+});
+```
+
+- **Open** the primitive by dispatching `pointerdown` + `pointerup` on the
+  trigger (NOT `click`). Mount with `attachTo: document.body` so portalled
+  content is queryable.
+- **Pick an item** by dispatching real `PointerEvent('pointerdown')` +
+  `PointerEvent('pointerup')` on it — a bare `new Event('pointerup')` is
+  sometimes ignored by Reka's handler.
+- **Tear down** with `wrapper.unmount()` + `await nextTick()` **before**
+  clearing `document.body.innerHTML` — Reka schedules microtasks (e.g. close-
+  on-pick) that `insertBefore` on the teleport target; clearing body first
+  crashes the next render.
+
+Reference implementation: `packages/forms/test/unit/components.spec.ts` (the
+`VCFormSelect` block).
 
 ## Vitest Config
 
 Each tested package has a `test/vitest.config.ts`:
+
 ```typescript
 import { defineConfig } from 'vitest/config';
 
@@ -59,4 +117,6 @@ export default defineConfig({
 
 ## CI
 
-The CI pipeline (`main.yml`) runs tests for the `navigation` package only via a matrix strategy. The `core` package tests are not explicitly included in CI but run via `npm run test` (Nx).
+`main.yml`'s **Test Packages** job runs `npx nx run-many -t test` after the
+build job — i.e. **every** package's test target across the Nx graph, not a
+single-package matrix. Nx caching means unaffected packages replay from cache.

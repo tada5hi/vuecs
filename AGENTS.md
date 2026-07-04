@@ -94,7 +94,7 @@ All four mount the same demo views from `examples/_shared/` (private workspace p
 
 - **[Project Structure](.agents/structure.md)** — Monorepo layout, package organization, nested core re-exports, build outputs, and docs site layout
 - **[Architecture](.agents/architecture.md)** — Vue plugin pattern, theme system, navigation registry/resolver, and theme architecture
-- **[Testing](.agents/testing.md)** — Jest setup, test locations, and coverage
+- **[Testing](.agents/testing.md)** — Vitest setup, test inventory, Nx cache caveat, and the jsdom Reka recipe
 - **[Conventions](.agents/conventions.md)** — Commit messages, linting, release-please, CI/CD, and **documentation update rules**
 
 ## External References
