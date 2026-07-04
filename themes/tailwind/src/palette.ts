@@ -41,6 +41,15 @@ export function renderColorPaletteStyles(palette: ColorPaletteConfig): string {
                 `    --vc-color-${scale}-${shade}: var(--color-${paletteName}-${shade});`,
             );
         }
+        // Adaptive foreground for the swapped surface — snaps on-* to black
+        // or white by the new `-600` shade's OKLCH lightness so the pair
+        // stays legible (e.g. `primary: 'amber'` must not keep white text).
+        // Mirrors the `@supports` block in `@vuecs/design`'s index.css;
+        // browsers without relative-color-syntax drop this line and keep the
+        // literal on-* token (no regression). 0.62 = the shared crossover.
+        declarations.push(
+            `    --vc-color-on-${scale}: oklch(from var(--color-${paletteName}-600) clamp(0, (0.62 - l) * 1000, 1) 0 0);`,
+        );
     }
 
     return `:root {\n${declarations.join('\n')}\n}\n`;

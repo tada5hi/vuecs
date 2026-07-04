@@ -97,6 +97,16 @@ export function renderColorPaletteStyles(palette: ColorPaletteConfig): string {
                 `    --vc-color-${scale}-${shade}: hsl(${h}deg, ${s}%, ${l}%);`,
             );
         }
+
+        // (4) Adaptive foreground — snap on-* to black/white by the new
+        //     `-600` surface lightness so the swapped pairing stays legible
+        //     (e.g. `primary: 'amber'` must not keep white text). Mirrors the
+        //     `@supports` block in `@vuecs/design`; browsers without
+        //     relative-color-syntax drop this line and keep the literal token.
+        const surface = shades['600'];
+        declarations.push(
+            `    --vc-color-on-${scale}: oklch(from hsl(${surface.h}deg, ${surface.s}%, ${surface.l}%) clamp(0, (0.62 - l) * 1000, 1) 0 0);`,
+        );
     }
 
     return `:root {\n${declarations.join('\n')}\n}\n`;
