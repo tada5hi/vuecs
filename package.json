@@ -46,7 +46,7 @@
         "@tada5hi/tsconfig": "^0.7.2",
         "@tsdown/css": "^0.22.3",
         "@vitejs/plugin-vue": "^6.0.7",
-        "@vitest/coverage-v8": "^4.1.9",
+        "@vitest/coverage-v8": "^4.1.10",
         "eslint": "^10.6.0",
         "eslint-plugin-vue": "^10.9.2",
         "husky": "^9.1.7",
