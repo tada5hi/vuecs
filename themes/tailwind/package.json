@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/theme-tailwind",
-    "version": "6.3.0",
+    "version": "6.3.1",
     "type": "module",
     "description": "Tailwind CSS theme for vuecs components.",
     "exports": {
@@ -54,7 +54,7 @@
         "@vuecs/countdown": "^2.0.8",
         "@vuecs/design": "^1.0.8",
         "@vuecs/elements": "^1.4.0",
-        "@vuecs/forms": "^5.3.2",
+        "@vuecs/forms": "^5.3.3",
         "@vuecs/gravatar": "^2.0.10",
         "@vuecs/list": "^1.1.1",
         "@vuecs/navigation": "^4.3.0",

@@ -1,5 +1,14 @@
 # Changelog
 
+## [6.3.1](https://github.com/tada5hi/vuecs/compare/theme-tailwind-v6.3.0...theme-tailwind-v6.3.1) (2026-07-17)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/forms bumped from ^5.3.2 to ^5.3.3
+
 ## [6.3.0](https://github.com/tada5hi/vuecs/compare/theme-tailwind-v6.2.0...theme-tailwind-v6.3.0) (2026-07-01)
 
 

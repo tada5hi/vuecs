@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.3.3](https://github.com/tada5hi/vuecs/compare/forms-v5.3.2...forms-v5.3.3) (2026-07-17)
+
+
+### Bug Fixes
+
+* **forms:** keep select trigger label reactive to option label changes ([#1689](https://github.com/tada5hi/vuecs/issues/1689)) ([525df8c](https://github.com/tada5hi/vuecs/commit/525df8cbc84f8e70a01052fbe09fa2ac228102b8))
+
 ## [5.3.2](https://github.com/tada5hi/vuecs/compare/forms-v5.3.1...forms-v5.3.2) (2026-07-01)
 
 
