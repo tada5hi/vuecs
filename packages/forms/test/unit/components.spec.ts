@@ -882,15 +882,43 @@ describe('VCFormSelect', () => {
         expect(wrapper.find('button[role="combobox"]').text()).toContain('Pick one');
     });
 
-    it('should show the matching option label in the trigger when modelValue is set', async () => {
+    it('should show the matching option label in the trigger when modelValue is set', () => {
         const wrapper = mount(VCFormSelect, {
             props: { options, modelValue: '2' },
             global: { plugins: [themePlugin] },
         });
-        // SelectValue resolves the displayed label asynchronously after
-        // SelectItem registers its text — wait one tick.
-        await nextTick();
+        // The trigger label derives synchronously from `options` — it must
+        // not depend on Reka's mount-time textContent registration.
         expect(wrapper.find('button[role="combobox"]').text()).toContain('Option 2');
+    });
+
+    it('should update the trigger label when the selected option label changes after mount', async () => {
+        // Regression: labels that resolve asynchronously (i18n) previously
+        // stayed stale in the closed trigger until the dropdown was opened,
+        // because Reka snapshots each item's textContent once in onMounted.
+        const wrapper = mount(VCFormSelect, {
+            props: { options: [{ value: '1', label: 'form.key' }], modelValue: '1' },
+            global: { plugins: [themePlugin] },
+        });
+        expect(wrapper.find('button[role="combobox"]').text()).toContain('form.key');
+        await wrapper.setProps({ options: [{ value: '1', label: 'Translated' }] });
+        expect(wrapper.find('button[role="combobox"]').text()).toContain('Translated');
+    });
+
+    it('should show the label of an option nested inside a group in the trigger', () => {
+        const wrapper = mount(VCFormSelect, {
+            props: {
+                options: [
+                    {
+                        label: 'Europe',
+                        options: [{ value: 'de', label: 'Germany' }],
+                    },
+                ],
+                modelValue: 'de',
+            },
+            global: { plugins: [themePlugin] },
+        });
+        expect(wrapper.find('button[role="combobox"]').text()).toContain('Germany');
     });
 
     it('should respect the disabled prop on the trigger', () => {
