@@ -34,7 +34,7 @@
         "@vuecs/countdown": "^2.0.8",
         "@vuecs/design": "^1.0.8",
         "@vuecs/elements": "^1.4.0",
-        "@vuecs/forms": "^5.3.2",
+        "@vuecs/forms": "^5.3.3",
         "@vuecs/gravatar": "^2.0.10",
         "@vuecs/icon": "^1.0.3",
         "@vuecs/icons-font-awesome": "^1.2.1",
@@ -44,12 +44,12 @@
         "@vuecs/nuxt": "^1.1.4",
         "@vuecs/overlays": "^1.2.0",
         "@vuecs/pagination": "^2.1.7",
-        "@vuecs/theme-tailwind": "^6.3.0",
+        "@vuecs/theme-tailwind": "^6.3.1",
         "@vuecs/timeago": "^2.1.4",
         "nuxt": "4.4.8",
         "tailwindcss": "^4.3.2",
         "vue": "^3.5.39",
         "vue-router": "^5.1.0"
     },
-    "version": "6.3.0"
+    "version": "6.3.1"
 }
