@@ -9,4 +9,5 @@ export type {
     FormCheckboxLabelSlotProps,
     FormCheckboxIndicatorSlotProps,
     FormCheckboxModelValue,
+    FormCheckboxState,
 } from './FormCheckbox.vue';
