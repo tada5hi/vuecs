@@ -4,7 +4,7 @@
     "packages/countdown": "2.0.8",
     "packages/design": "1.0.8",
     "packages/elements": "1.4.0",
-    "packages/forms": "5.3.2",
+    "packages/forms": "5.3.3",
     "packages/gravatar": "2.0.10",
     "packages/icon": "1.0.3",
     "packages/link": "2.0.3",
@@ -16,11 +16,11 @@
     "packages/pagination": "2.1.7",
     "packages/placeholder": "1.0.8",
     "packages/table": "1.5.0",
-    "themes/bootstrap": "7.3.0",
-    "themes/bulma": "5.3.0",
-    "themes/tailwind": "6.3.0",
+    "themes/bootstrap": "7.3.1",
+    "themes/bulma": "5.3.1",
+    "themes/tailwind": "6.3.1",
     "icons/font-awesome": "1.2.1",
     "icons/lucide": "1.2.1",
     "packages/timeago": "2.1.4",
-    "examples/nuxt": "6.3.0"
+    "examples/nuxt": "6.3.1"
 }

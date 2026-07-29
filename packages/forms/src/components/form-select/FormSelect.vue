@@ -23,6 +23,7 @@ import {
     SelectViewport,
 } from 'reka-ui';
 import type { AcceptableValue } from 'reka-ui';
+import { isEqual } from 'ohash';
 import type {
     ExtractPublicPropTypes,
     PropType,
@@ -30,6 +31,7 @@ import type {
     VNodeChild,
 } from 'vue';
 import {
+    computed,
     defineComponent,
     h,
     mergeProps,
@@ -177,6 +179,40 @@ export default defineComponent({
             return items;
         };
 
+        // Same value semantics as Reka's `compare` (no `by` comparator is
+        // exposed): strings via `===`, everything else via ohash `isEqual`.
+        const isSelected = (value: AcceptableValue): boolean => {
+            if (props.modelValue === undefined || props.modelValue === null) {
+                return false;
+            }
+            if (typeof value === 'string') {
+                return value === props.modelValue;
+            }
+            return isEqual(value, props.modelValue);
+        };
+
+        // Reka's SelectValue derives the trigger label from SelectRoot's
+        // optionsSet — a snapshot of each item's DOM textContent taken once in
+        // SelectItemText's onMounted. A label that changes after mount (async
+        // i18n resolution, a locale switch while closed) never re-registers,
+        // so the CLOSED trigger keeps the stale text until the content
+        // remounts on open. Resolve the label from `props.options` instead and
+        // hand it to SelectValue's default slot, which bypasses the snapshot.
+        const selectedLabel = computed<string | undefined>(() => {
+            for (const item of props.options!) {
+                if (isFormOptionGroup(item)) {
+                    const match = item.options.find((option) => isSelected(option.value));
+                    if (match) {
+                        return match.label;
+                    }
+                } else if (isSelected(item.value)) {
+                    return item.label;
+                }
+            }
+
+            return undefined;
+        });
+
         return () => {
             const resolved = theme.value;
             const { placeholder } = defaults.value;
@@ -192,7 +228,11 @@ export default defineComponent({
             }, {
                 default: () => [
                     h(SelectTrigger, mergeProps({ class: resolved.trigger || undefined }, attrs), () => [
-                        h(SelectValue, { class: resolved.value || undefined, placeholder }),
+                        h(
+                            SelectValue,
+                            { class: resolved.value || undefined, placeholder },
+                            () => selectedLabel.value ?? placeholder,
+                        ),
                         h(SelectIcon, { class: resolved.icon || undefined }, () => '▾'),
                     ]),
                     h(SelectPortal, null, () => [

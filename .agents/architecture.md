@@ -1709,6 +1709,64 @@ Components use TypeScript render functions (not `.vue` SFCs) via `defineComponen
 
 Components emit minimal structural CSS via co-located `vc-*` default classes. Visual styling is delegated to theme packages. CSS is extracted into separate `dist/style.css` files during build, so consumers can import styles independently.
 
+### Form glyphs are rendered, not CSS masks (#1694)
+
+A glyph that carries **meaning** (the checkbox's check mark / indeterminate
+dash) is *content*, not styling — so it is rendered by the component, never
+painted from the structural stylesheet.
+
+The rule exists because neither lower layer is guaranteed at a given call
+site. `dist/style.css` is an opt-in import, and a consumer on a
+self-sufficient theme (`@vuecs/theme-tailwind` styles the whole checkbox box
+from utility classes) has no reason to add it. A CSS-mask glyph therefore
+disappeared silently on the default-theme → Tailwind-theme migration: the box
+still filled with `primary-600`, so checked and unchecked stayed
+distinguishable and nothing errored — there was just no check mark. Pushing
+the glyph into every theme's `indicator` class instead would have duplicated
+the same SVG across three theme packages and still left theme-less consumers
+bare.
+
+`<VCFormCheckbox>` renders an inline `<svg class="vc-form-checkbox-glyph">`
+stroked in `currentColor`, gated behind `isMeaningfulSlotContent(#indicator)`.
+Layer responsibilities after the split:
+
+| Layer | Owns |
+|---|---|
+| Component | the glyph's *shape* (check path vs. dash path, chosen from Reka's `state`) and its *size* — `width`/`height` are `85%`, so it scales with whatever sets the box |
+| Theme `indicator` class | its *colour* (`text-current` over the root's `text-on-primary`, `text-white`, …) |
+| Structural CSS | the box: `.vc-form-checkbox` sizing + the `vc-form-checkbox-{xs,sm,lg}` size-variant helpers. No glyph rules at all |
+
+**Size the glyph by ratio, not by length.** The box height is not the
+component's to predict — `1rem` by default, a size-variant helper under
+`themeVariant.size`, or a bespoke value when a consumer lines a checkbox up
+beside a taller input. Any fixed length (`12px`, `0.75em`, `0.75rem`) is
+correct for exactly one of those, so the glyph holds the *proportion*
+instead: `85%` is the old `0.75rem`-in-a-`1rem`-border-box glyph expressed
+against the content box a percentage resolves against (12 / 14). That removed
+three per-size glyph rules from the stylesheet and made arbitrary box sizes
+work for free.
+
+The percentage needs a definite containing block, so the component also sets
+`style="width:100%;height:100%"` on the `CheckboxIndicator` inline — the
+structural rule declares exactly the same thing, but it is an opt-in import
+and the glyph has to size correctly without it. Presentation attributes lose
+to CSS, so a theme or consumer rule still wins over the `85%`.
+
+Removing the old `::before` mask also fixed a latent double-glyph: the mask
+rule was unconditional, so an `#indicator` slot *plus* the stylesheet painted
+both.
+
+Purely decorative shapes stay in CSS — the radio's dot (`formRadio.indicator`
+is a self-sufficient theme class) and the switch's thumb are presentation, not
+content, and a theme is free to redraw them.
+
+Contrast with the icon-name path (`collapseTrigger.chevronIcon`,
+`tableExpandTrigger.chevronIcon`): those resolve through `ComponentDefaults`
+and render via `<VCIcon>`, degrading to *nothing* when no icon preset is
+installed. That trade is fine for affordance chrome; it is not fine for a
+checkbox's state indicator, which is the only thing distinguishing checked
+from indeterminate.
+
 ## Dependency Flow
 
 ```
@@ -2530,9 +2588,11 @@ always pick the slot path. The helper walks the returned vnode array
 when it contains an element, a component, or a text node with
 non-whitespace content — comment anchors (`v-if="false"`), whitespace,
 and empty arrays are treated as empty. The same helper gates the
-`<VCAlert>` `#icon` slot and `<VCButton>`'s `#leading` / `#trailing`
-slots (fall back to the icon prop / default) and `<VCTableCell>`'s
-auto-render.
+`<VCAlert>` `#icon` slot, `<VCButton>`'s `#leading` / `#trailing`
+slots (fall back to the icon prop / default), `<VCFormCheckbox>`'s
+`#indicator` slot (falls back to the built-in check / dash glyph —
+see [Form glyphs](#form-glyphs-are-rendered-not-css-masks-1694)), and
+`<VCTableCell>`'s auto-render.
 
 Mounting `<VCTableCell>` outside a `<VCTable>` context renders an
 empty cell — no fallback to `row[columnKey]` from inject. Manual

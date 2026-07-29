@@ -1,5 +1,15 @@
 # Changelog
 
+## [6.3.1](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v6.3.0...examples-nuxt-v6.3.1) (2026-07-17)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/forms bumped from ^5.3.2 to ^5.3.3
+    * @vuecs/theme-tailwind bumped from ^6.3.0 to ^6.3.1
+
 ## [6.3.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v6.2.0...examples-nuxt-v6.3.0) (2026-07-01)
 
 

@@ -48,9 +48,9 @@ const selected = ref<string[]>(['a']);
 @import "@vuecs/design";
 
 /*
- * Structural CSS for the checkbox indicator + group container ships in
- * @vuecs/forms. Without this import the checked-state checkmark + group
- * layout helpers are missing.
+ * Structural CSS for the checkbox box + group container ships in
+ * @vuecs/forms. The checkmark itself is rendered by the component, but
+ * without this import the size helpers + group layout are missing.
  */
 @import "@vuecs/forms";
 
@@ -79,29 +79,29 @@ Use the named `#label` slot to render the label as markup. The slot receives `cl
 
 ## Default glyph (checkmark / indeterminate dash)
 
-A checked box renders a check mark, and `'indeterminate'` renders a dash, **out of the box** — both ship as `currentColor`-painted CSS masks in the structural stylesheet, so no icon package or slot wiring is needed.
+A checked box renders a check mark, and `'indeterminate'` renders a dash, **out of the box** — `<VCFormCheckbox>` paints both as an inline `<svg>` stroked in `currentColor`, so no icon package, theme, stylesheet import or slot wiring is needed. Themes colour the glyph through the `indicator` slot class they already ship (`text-current` on top of the root's `text-on-primary` in `@vuecs/theme-tailwind`, `text-white` in `@vuecs/theme-bootstrap`).
 
-::: warning Structural stylesheet required
-The glyph lives in `@vuecs/forms`' structural CSS, not in the theme class strings. If a checked checkbox shows a bare color fill with no check mark, the stylesheet import is missing:
+Importing `@vuecs/forms`' structural CSS is still recommended — it carries the checkbox box sizing, the `sm`/`lg` size helpers (which scale the glyph to match), the switch track/thumb structure and the slider rails:
 
 ```css
 @import "@vuecs/forms"; /* → dist/style.css */
 ```
 
-The same import carries the switch track/thumb structure, slider rails, and the other form structural rules — see [Installation](/getting-started/installation).
-:::
+See [Installation](/getting-started/installation).
 
 ## Custom indicator (checkmark)
 
-Replace the default checkmark via the `#indicator` slot:
+Replace the built-in glyph via the `#indicator` slot. It receives the resolved `indicator` theme class plus the current `state` (`true` or `'indeterminate'`), so a custom indicator can distinguish the two:
 
 ```vue
 <VCFormCheckbox v-model="accepted">
-    <template #indicator="{ class: indicatorClass }">
-        <span :class="indicatorClass">✔</span>
+    <template #indicator="{ class: indicatorClass, state }">
+        <span :class="indicatorClass">{{ state === 'indeterminate' ? '–' : '✔' }}</span>
     </template>
 </VCFormCheckbox>
 ```
+
+An empty slot (a `v-if` that renders nothing) falls back to the built-in glyph rather than blanking the box.
 
 ## Group v-model
 
@@ -154,7 +154,7 @@ The group also enables roving focus (arrow keys to move between children) by def
 | Slot | Slot props | Description |
 |------|------------|-------------|
 | `label` | `{ class, id }` | Custom label markup. `class` is the resolved `label` theme class; `id` matches the checkbox's `for` target. Replaces the default `<label>` |
-| `indicator` | `{ class }` | Custom checkmark content. `class` is the resolved `indicator` theme class |
+| `indicator` | `{ class, state }` | Custom checkmark content, replacing the built-in glyph. `class` is the resolved `indicator` theme class; `state` is `true` or `'indeterminate'`. Empty slot content falls back to the built-in glyph |
 
 ## See also
 

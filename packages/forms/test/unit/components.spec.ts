@@ -761,6 +761,68 @@ describe('VCFormCheckbox', () => {
         const btn = wrapper.find('button[role="checkbox"]');
         expect(btn.attributes('disabled')).toBeDefined();
     });
+
+    // #1694 — the glyph must not depend on the structural stylesheet, which
+    // theme-driven consumers have no reason to import.
+    it('should render a built-in check glyph when checked without an indicator slot', () => {
+        const wrapper = mount(VCFormCheckbox, {
+            props: { modelValue: true },
+            global: { plugins: [themePlugin] },
+        });
+        const glyph = wrapper.find('.vc-form-checkbox-indicator svg.vc-form-checkbox-glyph');
+        expect(glyph.exists()).toBe(true);
+        expect(glyph.find('path').attributes('d')).toBe('M3.5 8.5l3 3 6-7');
+    });
+
+    it('should render a dash glyph while indeterminate', () => {
+        const wrapper = mount(VCFormCheckbox, {
+            props: { modelValue: 'indeterminate' as const },
+            global: { plugins: [themePlugin] },
+        });
+        expect(wrapper.find('svg.vc-form-checkbox-glyph path').attributes('d')).toBe('M4 8h8');
+    });
+
+    it('should not render the built-in glyph while unchecked', () => {
+        const wrapper = mount(VCFormCheckbox, {
+            props: { modelValue: false },
+            global: { plugins: [themePlugin] },
+        });
+        expect(wrapper.find('svg.vc-form-checkbox-glyph').exists()).toBe(false);
+    });
+
+    it('should let an indicator slot replace the built-in glyph', () => {
+        const wrapper = mount(VCFormCheckbox, {
+            props: { modelValue: true },
+            global: { plugins: [themePlugin] },
+            slots: { indicator: () => h('i', { class: 'custom-glyph' }) },
+        });
+        expect(wrapper.find('.custom-glyph').exists()).toBe(true);
+        expect(wrapper.find('svg.vc-form-checkbox-glyph').exists()).toBe(false);
+    });
+
+    it('should fall back to the built-in glyph when the indicator slot renders nothing', () => {
+        const wrapper = mount(VCFormCheckbox, {
+            props: { modelValue: true },
+            global: { plugins: [themePlugin] },
+            slots: { indicator: () => null },
+        });
+        expect(wrapper.find('svg.vc-form-checkbox-glyph').exists()).toBe(true);
+    });
+
+    it('should expose the resolved state on the indicator slot', () => {
+        const states: unknown[] = [];
+        mount(VCFormCheckbox, {
+            props: { modelValue: 'indeterminate' as const },
+            global: { plugins: [themePlugin] },
+            slots: {
+                indicator: (props: { state: unknown }) => {
+                    states.push(props.state);
+                    return h('i');
+                },
+            },
+        });
+        expect(states).toContain('indeterminate');
+    });
 });
 
 describe('VCFormCheckboxGroup', () => {
@@ -882,15 +944,43 @@ describe('VCFormSelect', () => {
         expect(wrapper.find('button[role="combobox"]').text()).toContain('Pick one');
     });
 
-    it('should show the matching option label in the trigger when modelValue is set', async () => {
+    it('should show the matching option label in the trigger when modelValue is set', () => {
         const wrapper = mount(VCFormSelect, {
             props: { options, modelValue: '2' },
             global: { plugins: [themePlugin] },
         });
-        // SelectValue resolves the displayed label asynchronously after
-        // SelectItem registers its text — wait one tick.
-        await nextTick();
+        // The trigger label derives synchronously from `options` — it must
+        // not depend on Reka's mount-time textContent registration.
         expect(wrapper.find('button[role="combobox"]').text()).toContain('Option 2');
+    });
+
+    it('should update the trigger label when the selected option label changes after mount', async () => {
+        // Regression: labels that resolve asynchronously (i18n) previously
+        // stayed stale in the closed trigger until the dropdown was opened,
+        // because Reka snapshots each item's textContent once in onMounted.
+        const wrapper = mount(VCFormSelect, {
+            props: { options: [{ value: '1', label: 'form.key' }], modelValue: '1' },
+            global: { plugins: [themePlugin] },
+        });
+        expect(wrapper.find('button[role="combobox"]').text()).toContain('form.key');
+        await wrapper.setProps({ options: [{ value: '1', label: 'Translated' }] });
+        expect(wrapper.find('button[role="combobox"]').text()).toContain('Translated');
+    });
+
+    it('should show the label of an option nested inside a group in the trigger', () => {
+        const wrapper = mount(VCFormSelect, {
+            props: {
+                options: [
+                    {
+                        label: 'Europe',
+                        options: [{ value: 'de', label: 'Germany' }],
+                    },
+                ],
+                modelValue: 'de',
+            },
+            global: { plugins: [themePlugin] },
+        });
+        expect(wrapper.find('button[role="combobox"]').text()).toContain('Germany');
     });
 
     it('should respect the disabled prop on the trigger', () => {
