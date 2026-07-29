@@ -1,5 +1,32 @@
 # Changelog
 
+## [7.4.0](https://github.com/tada5hi/vuecs/compare/theme-bootstrap-v7.3.1...theme-bootstrap-v7.4.0) (2026-07-29)
+
+
+### Features
+
+* adaptive on-* tokens, colorBlindSafePalette, package sideEffects ([#1681](https://github.com/tada5hi/vuecs/issues/1681)) ([a606693](https://github.com/tada5hi/vuecs/commit/a606693fdd88daf7b795a43756bf47acc54e2457))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/button bumped from ^1.3.0 to ^1.4.0
+    * @vuecs/core bumped from ^3.4.0 to ^3.5.0
+    * @vuecs/countdown bumped from ^2.0.8 to ^2.1.0
+    * @vuecs/elements bumped from ^1.4.0 to ^1.5.0
+    * @vuecs/forms bumped from ^5.3.3 to ^5.4.0
+    * @vuecs/gravatar bumped from ^2.0.10 to ^2.1.0
+    * @vuecs/list bumped from ^1.1.1 to ^1.2.0
+    * @vuecs/navigation bumped from ^4.3.0 to ^4.4.0
+    * @vuecs/overlays bumped from ^1.2.0 to ^1.3.0
+    * @vuecs/pagination bumped from ^2.1.7 to ^2.2.0
+    * @vuecs/placeholder bumped from ^1.0.8 to ^1.1.0
+    * @vuecs/timeago bumped from ^2.1.4 to ^2.2.0
+  * peerDependencies
+    * @vuecs/core bumped from ^3.4.0 to ^3.5.0
+
 ## [7.3.1](https://github.com/tada5hi/vuecs/compare/theme-bootstrap-v7.3.0...theme-bootstrap-v7.3.1) (2026-07-17)
 
 

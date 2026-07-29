@@ -1,5 +1,27 @@
 # Changelog
 
+## [5.4.0](https://github.com/tada5hi/vuecs/compare/forms-v5.3.3...forms-v5.4.0) (2026-07-29)
+
+
+### Features
+
+* adaptive on-* tokens, colorBlindSafePalette, package sideEffects ([#1681](https://github.com/tada5hi/vuecs/issues/1681)) ([a606693](https://github.com/tada5hi/vuecs/commit/a606693fdd88daf7b795a43756bf47acc54e2457))
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 20 updates ([#1693](https://github.com/tada5hi/vuecs/issues/1693)) ([d3f81c7](https://github.com/tada5hi/vuecs/commit/d3f81c752f5a7af058942b0c91fe2eef056fd18b))
+* **forms:** render the checkbox glyph in the component, not the stylesheet ([#1695](https://github.com/tada5hi/vuecs/issues/1695)) ([61c4f0b](https://github.com/tada5hi/vuecs/commit/61c4f0b2979f1e0efea72ba29774f219aacc6eaa))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.4.0 to ^3.5.0
+  * peerDependencies
+    * @vuecs/core bumped from ^3.4.0 to ^3.5.0
+
 ## [5.3.3](https://github.com/tada5hi/vuecs/compare/forms-v5.3.2...forms-v5.3.3) (2026-07-17)
 
 

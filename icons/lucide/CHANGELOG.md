@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.3.0](https://github.com/tada5hi/vuecs/compare/icons-lucide-v1.2.1...icons-lucide-v1.3.0) (2026-07-29)
+
+
+### Features
+
+* adaptive on-* tokens, colorBlindSafePalette, package sideEffects ([#1681](https://github.com/tada5hi/vuecs/issues/1681)) ([a606693](https://github.com/tada5hi/vuecs/commit/a606693fdd88daf7b795a43756bf47acc54e2457))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.4.0 to ^3.5.0
+  * peerDependencies
+    * @vuecs/core bumped from ^3.4.0 to ^3.5.0
+
 ## [1.2.1](https://github.com/tada5hi/vuecs/compare/icons-lucide-v1.2.0...icons-lucide-v1.2.1) (2026-07-01)
 
 

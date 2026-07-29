@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/placeholder",
-    "version": "1.0.8",
+    "version": "1.1.0",
     "type": "module",
     "description": "Skeleton / placeholder loading components for vuecs (the Twitter/Facebook shimmer pattern).",
     "exports": {
@@ -47,14 +47,14 @@
         "test": "vitest --config test/vitest.config.ts --run"
     },
     "devDependencies": {
-        "@vuecs/core": "^3.4.0",
+        "@vuecs/core": "^3.5.0",
         "@vue/test-utils": "^2.4.11",
         "@vitejs/plugin-vue": "^6.0.8",
         "jsdom": "^29.1.1",
         "vue": "^3.5.40"
     },
     "peerDependencies": {
-        "@vuecs/core": "^3.4.0",
+        "@vuecs/core": "^3.5.0",
         "vue": "^3.x"
     },
     "engines": {
