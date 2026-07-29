@@ -180,7 +180,11 @@
     --vc-color-border-muted: var(--vc-color-neutral-100);
     --vc-color-ring:         var(--vc-color-primary-500);
 
-    /* "on-*" tokens = foreground color when placed on a filled semantic bg */
+    /* "on-*" tokens = foreground color when placed on a filled semantic bg.
+       These literals are the FALLBACK — an `@supports` block at the end of
+       the layer derives each one adaptively (black/white per surface
+       lightness) where CSS relative-color-syntax is supported, so runtime
+       palette swaps stay legible. */
     --vc-color-on-primary: #fff;
     --vc-color-on-success: #fff;
     --vc-color-on-warning: var(--vc-color-neutral-900);
@@ -218,6 +222,40 @@
     --vc-color-ring:         var(--vc-color-primary-400);
 
     --vc-color-on-warning: var(--vc-color-neutral-950);
+}
+
+/* -----------------------------------------------------------------
+   Adaptive on-* foregrounds — WCAG legibility on runtime palette swaps.
+
+   The literal on-* values above (`#fff` / neutral-900) are the fallback
+   for browsers without CSS relative-color-syntax. Where supported, each
+   on-* is derived from its own filled surface shade (`-600`): the OKLCH
+   lightness snaps the foreground to black or white so the pair stays
+   legible even after `setColorPalette({ primary: 'amber' })` remaps the
+   scale (the palette renderers patch the same tokens on swap — see
+   themes/{tailwind,bulma}/src/palette.ts).
+
+   `clamp(0, (0.62 - l) * 1000, 1)` → L=0 (light surface → black text)
+   or L=1 (dark surface → white text). The 0.62 crossover is the single
+   tuning knob; spot-check the six default scales against a contrast
+   checker when adjusting it. NB this flips the default `success` /
+   `info` foregrounds white→black (green-600 / sky-600 are light enough
+   that black is the more legible pairing).
+
+   Kept INSIDE `@layer vuecs` so a consumer `:root { --vc-color-on-*: … }`
+   override still wins without `!important` (#1595). Browser floor:
+   Chrome 119+ / Safari 16.4+ / Firefox 128+; older browsers ignore this
+   block and keep the literals above.
+   ----------------------------------------------------------------- */
+@supports (color: oklch(from red l c h)) {
+    :root {
+        --vc-color-on-primary: oklch(from var(--vc-color-primary-600) clamp(0, (0.62 - l) * 1000, 1) 0 0);
+        --vc-color-on-success: oklch(from var(--vc-color-success-600) clamp(0, (0.62 - l) * 1000, 1) 0 0);
+        --vc-color-on-warning: oklch(from var(--vc-color-warning-600) clamp(0, (0.62 - l) * 1000, 1) 0 0);
+        --vc-color-on-error:   oklch(from var(--vc-color-error-600)   clamp(0, (0.62 - l) * 1000, 1) 0 0);
+        --vc-color-on-info:    oklch(from var(--vc-color-info-600)    clamp(0, (0.62 - l) * 1000, 1) 0 0);
+        --vc-color-on-neutral: oklch(from var(--vc-color-neutral-600) clamp(0, (0.62 - l) * 1000, 1) 0 0);
+    }
 }
 
 } /* @layer vuecs */

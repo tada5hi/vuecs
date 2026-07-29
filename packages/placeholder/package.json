@@ -17,6 +17,9 @@
     "files": [
         "dist"
     ],
+    "sideEffects": [
+        "./dist/*.css"
+    ],
     "keywords": [
         "vue",
         "vuecs",
