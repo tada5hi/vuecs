@@ -47,10 +47,10 @@
         "test": "vitest --config test/vitest.config.ts --run"
     },
     "devDependencies": {
-        "@vuecs/core": "^3.5.0",
-        "@vue/test-utils": "^2.4.11",
         "@vitejs/plugin-vue": "^6.0.8",
-        "jsdom": "^29.1.1",
+        "@vue/test-utils": "^2.4.11",
+        "@vuecs/core": "^3.5.0",
+        "jsdom": "^30.0.1",
         "vue": "^3.5.40"
     },
     "peerDependencies": {
