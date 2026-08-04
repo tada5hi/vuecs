@@ -87,13 +87,13 @@ const submit = useSubmitButton({ isEditing: () => isEditing.value });
 | `variant` | `'solid' \| 'soft' \| 'outline' \| 'ghost' \| 'link'` | (theme default) | Visual treatment. Tailwind theme defaults to `solid`. |
 | `size` | `'xs' \| 'sm' \| 'md' \| 'lg'` | (theme default) | Padding / font-size. Tailwind theme defaults to `md`. |
 | `type` | `string` | `'button'` | Forwarded as the native `type` attribute when the rendered element is `'button'` (use `'submit'` inside `<form>`). |
-| `as` | `string \| Component` | `'button'` | Element or component to render as. Pass `'a'` to render as a link, or a component (`RouterLink` / `NuxtLink`) for a button-styled navigation link. Extra attrs (`to`, `href`, `target`, …) forward to the rendered element; native `type` / `disabled` apply only for `'button'`, other targets get `aria-disabled`. |
+| `as` | `string \| Component` | `'button'` | Element or component to render as. Pass `'a'` to render as a link, or a component (`RouterLink` / `NuxtLink`) for a button-styled navigation link. Extra attrs (`to`, `href`, `target`, …) forward to the rendered element; native `type` / `disabled` apply only for `'button'`, other targets get `aria-disabled` + `tabindex="-1"` + a click guard. |
 | `tag` | `string \| Component` | — | **Deprecated** — use `as`. Non-breaking alias; takes precedence over `as` when set. |
 | `label` | `string` | — | Inline text. Equivalent to passing the same string as the default slot. |
 | `iconLeft` | `string` | — | Iconify name for a leading icon (e.g. `'lucide:plus'`), resolved through `<VCIcon>`. Skipped when empty / undefined. |
 | `iconRight` | `string` | — | Iconify name for a trailing icon. Same skip behavior as `iconLeft`. |
 | `loading` | `boolean` | `false` | Disables the button and applies `vc-button--busy` (wait cursor + opacity pulse). Also resolves as the `loading` themeVariant. |
-| `disabled` | `boolean` | `false` | Disables without the busy state. |
+| `disabled` | `boolean` | `false` | Disables without the busy state. Enforced on every render target — see [Disabling a button-styled link](#disabling-a-button-styled-link). |
 | `themeClass` | `Partial<ButtonThemeClasses>` | — | Per-instance slot class overrides — see [Theme System](/guide/theme-system). |
 | `themeVariant` | `Record<string, string \| boolean>` | — | Lower-priority variant overrides; merged with the convenience props above. |
 
@@ -172,11 +172,37 @@ import { RouterLink } from 'vue-router';
 </template>
 ```
 
-Attributes the button doesn't own (`to`, `href`, `target`, `rel`, …) flow straight through to the rendered element. Native `type` / `disabled` attributes are only emitted when the target resolves to `'button'`; for every other target the button emits `aria-disabled` instead (see the Notes below).
+Attributes the button doesn't own (`to`, `href`, `target`, `rel`, …) flow straight through to the rendered element. Native `type` / `disabled` attributes are only emitted when the target resolves to `'button'`; every other target gets the equivalent treatment via ARIA + a click guard (see below).
+
+### Disabling a button-styled link
+
+`disabled` is enforced on every render target, not just `<button>`:
+
+```vue
+<VCButton :as="RouterLink" :to="`/users/${id}`" :disabled="!canEdit" size="sm">
+    details
+</VCButton>
+```
+
+`<a>`, `RouterLink`, `NuxtLink` and friends don't understand the native
+`disabled` attribute, so for those targets the component instead emits
+`aria-disabled="true"`, sets `tabindex="-1"` (matching what native
+`disabled` does to the tab order), and attaches a **capture-phase click
+guard** that `preventDefault()`s and stops propagation. The guard runs
+before the target's own click handler, so the link cannot navigate —
+including via keyboard, since Enter on a focused link dispatches a click.
+
+The visual cue comes from the theme, keyed off `[aria-disabled="true"]`
+— the same split as the native path, where the cue comes from the
+theme's `disabled:` utilities. All three shipping themes carry it.
+
+::: tip
+You no longer need the old workaround of withholding `:to` when disabled.
+:::
 
 ## Notes
 
-- Setting `as="a"` (or `:as="RouterLink"` / `:as="NuxtLink"`) renders the button as a link / component. The structural busy class still applies, but the native `disabled` attribute is a no-op on non-button targets — the component emits `aria-disabled="true"` instead, and you should guard navigation via your own click handler if you mount the button as a link.
+- Setting `as="a"` (or `:as="RouterLink"` / `:as="NuxtLink"`) renders the button as a link / component. The structural busy class still applies. `loading` implies `disabled`, so an in-flight button-link is guarded too — this is what stops a double-submit from a button rendered as a link.
 - The `tag` prop is **deprecated** in favour of `as` (it remains a non-breaking alias and wins over `as` when both are set).
 - The `loading` prop is also passed as a `themeVariant` (`loading: true`), so themes can target the busy state via a variant if they want a custom look beyond the structural pulse.
 - Themes ship the full color × variant matrix (six colors × five variants). Override individual cells via `app.use(vuecs, { overrides: { elements: { button: { compoundVariants: [...] } } } })` if you need a different shade.

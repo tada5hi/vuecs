@@ -40,11 +40,14 @@
     "scripts": {
         "build:js": "tsdown",
         "build:types": "vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json",
-        "build": "rimraf dist && npm run build:js && npm run build:types"
+        "build": "rimraf dist && npm run build:js && npm run build:types",
+        "test": "vitest --config test/vitest.config.ts --run"
     },
     "devDependencies": {
+        "@vue/test-utils": "^2.4.11",
         "@vuecs/core": "^3.5.0",
         "@vuecs/icon": "^1.1.0",
+        "jsdom": "^29.1.1",
         "vue": "^3.5.40"
     },
     "peerDependencies": {

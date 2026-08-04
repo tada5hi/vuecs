@@ -19,8 +19,11 @@
  * pointer events on `<button>`, which would normally defeat `cursor: wait`.
  * Browsers honor the cursor on disabled controls anyway when the button
  * itself is the hover target, which is what we want here. Anchors
- * (`as="a"`) ignore `disabled` — consumers rendering a button-as-link
- * must guard navigation themselves.
+ * (`as="a"`) ignore `disabled`, so the component guards their activation
+ * itself (`aria-disabled` + `tabindex="-1"` + a capture-phase click guard,
+ * #1699); the *visual* disabled cue is the theme's job, keyed off
+ * `[aria-disabled="true"]` — same split as the native path, where the cue
+ * comes from the theme's `disabled:` utilities rather than from here.
  */
 .vc-button--busy {
     cursor: wait;
