@@ -75,6 +75,19 @@ export const VCLink = defineComponent({
                 return link;
             }
 
+            // Split the fragment off before touching the search string. A URL's
+            // fragment is always last, so appending `?…` to a link that already
+            // ends in `#anchor` produces `/docs#install?ref=x` — the browser
+            // reads `?ref=x` as fragment text and never sends the query. The
+            // `split('?')` below would also drop the fragment outright for a
+            // link carrying both. Re-attached after the query is built.
+            let fragment = '';
+            const fragmentIndex = link.indexOf('#');
+            if (fragmentIndex !== -1) {
+                fragment = link.slice(fragmentIndex);
+                link = link.slice(0, fragmentIndex);
+            }
+
             let searchParams : URLSearchParams;
             if (link.includes('?')) {
                 const url = new URL(link, 'http://localhost:3000');
@@ -89,7 +102,7 @@ export const VCLink = defineComponent({
                 searchParams = new URLSearchParams(query);
             }
 
-            return `${link}?${searchParams.toString()}`;
+            return `${link}?${searchParams.toString()}${fragment}`;
         };
 
         const isRouterLink = computed(() => computedTag.value !== 'a');

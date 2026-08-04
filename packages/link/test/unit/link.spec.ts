@@ -47,6 +47,48 @@ describe('VCLink', () => {
         expect(searchParams.get('ref')).toBe('x');
     });
 
+    it('keeps the fragment after the query when the href has only a fragment', () => {
+        // A fragment is always last in a URL. Appending `?ref=x` to
+        // `/docs#install` yields `/docs#install?ref=x`, where the browser reads
+        // the query as fragment text and never sends it.
+        const wrapper = mount(VCLink, {
+            props: {
+                href: '/docs#install',
+                query: { ref: 'x' },
+            },
+        });
+
+        expect(wrapper.attributes('href')).toBe('/docs?ref=x#install');
+    });
+
+    it('keeps the fragment when the href carries both a query and a fragment', () => {
+        const wrapper = mount(VCLink, {
+            props: {
+                href: '/docs?a=1#install',
+                query: { ref: 'x' },
+            },
+        });
+
+        const href = wrapper.attributes('href') as string;
+        expect(href.endsWith('#install')).toBe(true);
+
+        const url = new URL(href, 'http://localhost');
+        expect(url.searchParams.get('a')).toBe('1');
+        expect(url.searchParams.get('ref')).toBe('x');
+        expect(url.hash).toBe('#install');
+    });
+
+    it('keeps the fragment on an absolute href', () => {
+        const wrapper = mount(VCLink, {
+            props: {
+                href: 'https://example.com/docs#install',
+                query: { ref: 'x' },
+            },
+        });
+
+        expect(wrapper.attributes('href')).toBe('https://example.com/docs?ref=x#install');
+    });
+
     it('leaves the href untouched when no query is passed', () => {
         const wrapper = mount(VCLink, { props: { href: 'https://example.com/path' } });
 
@@ -71,10 +113,10 @@ describe('VCLink', () => {
     it('applies active / disabled state to the rendered anchor', () => {
         const wrapper = mount(VCLink, {
             props: {
-                href: '/x', 
-                active: true, 
-                disabled: true, 
-            }, 
+                href: '/x',
+                active: true,
+                disabled: true,
+            },
         });
 
         expect(wrapper.classes()).toContain('active');

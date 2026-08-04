@@ -49,7 +49,7 @@ npm run test --workspace=packages/table --if-present
 
 ## Type-level tests (drift guards)
 
-Four `*.test-d.ts` files assert that the **built `dist` declarations** keep
+Five `*.test-d.ts` files assert that the **built `dist` declarations** keep
 their generic-over-data / model-value inference. They run via each package's
 Vitest `typecheck` block (its own `test/tsconfig.json`), not the runtime
 `.spec.ts` path:
