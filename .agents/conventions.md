@@ -293,6 +293,27 @@ interfaces (should print nothing):
 find packages/*/dist themes/*/dist -name '*.d.ts' | xargs grep -nE '^interface [A-Za-z]'
 ```
 
+## Derived prop types over hand-written mirrors (#1705)
+
+A package's public prop type is `ExtractPublicPropTypes<typeof xProps>`,
+exported from the module that declares `xProps`. Never maintain a second,
+hand-written type describing the same component's props.
+
+`@vuecs/link` carried both — a derived `LinkProps` and a hand-written
+`LinkProperties` — and the hand-written one drifted: `query` shipped as a
+real prop and never made it into the mirror, so a supported prop was
+undiscoverable through the type consumers actually imported.
+
+Relatedly, **do not add a `[key: string]: any` escape hatch** to a prop
+type. It defeats the entire point: every typo type-checks and then does
+nothing at runtime. Narrowing it to `unknown` does **not** fix that —
+excess-property checking admits any extra key whose value is assignable to
+the index type, and everything is assignable to `unknown`. Only omitting
+the index signature catches misspelled keys. Consumers who genuinely
+thread fallthrough attributes alongside props widen at their own call site
+(`LinkProps & Record<string, unknown>`), which keeps the known props
+checked.
+
 ## Theme bridge authoring — bridge what the framework exposes
 
 When writing a theme-bridge CSS file (the `assets/index.css` in

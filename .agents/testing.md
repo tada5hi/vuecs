@@ -8,7 +8,7 @@
 
 ## Test inventory
 
-**14 workspaces** carry tests — **101 `.spec.ts`** total (plus 4 `.test-d.ts`
+**15 workspaces** carry tests — **102 `.spec.ts`** total (plus 5 `.test-d.ts`
 type guards). This is no longer "just core + navigation"; keep this table in
 sync when adding a test dir.
 
@@ -25,6 +25,7 @@ sync when adding a test dir.
 | `@vuecs/locale` | 2 | `bindLocale` / `useLocaleManager` |
 | `@vuecs/pagination` | 2 | Pagination behaviour |
 | `@vuecs/placeholder` | 1 | Placeholder / wrapper |
+| `@vuecs/link` | 1 | Render-path resolution, `query` href merging, active / disabled |
 | `@vuecs/theme-tailwind` | 2 | `auditTheme` drift + palette render |
 | `@vuecs/theme-bootstrap` | 1 | `auditTheme` drift |
 | `@vuecs/theme-bulma` | 1 | `auditTheme` drift |
@@ -57,6 +58,7 @@ packages/table/test/types/generic-row.test-d.ts       # <VCTable> Row inference
 packages/list/test/types/generic-item.test-d.ts        # <VCList>/<VCListItem> Item inference
 packages/navigation/test/types/breadcrumb.test-d.ts    # <VCBreadcrumb> Item inference
 packages/forms/test/types/model-value.test-d.ts        # form model-value typing
+packages/link/test/types/link-props.test-d.ts          # LinkProps surface + no index signature
 ```
 
 The three generic-component guards additionally pin that the facade types

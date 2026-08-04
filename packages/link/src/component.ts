@@ -146,7 +146,14 @@ export const VCLink = defineComponent({
         });
 
         const computedAttrs = computed(() => ({
-            ...(props.href ? { href: props.href } : {}),
+            // `computedHref`, NOT the raw `props.href` (#1705): the
+            // query-extended href was computed and then thrown away, so
+            // `:query` silently did nothing on the plain-`<a>` path — it only
+            // ever reached the DOM via `computedProps.to` in router mode.
+            // Keep the `props.href` guard so an hrefless `<VCLink>` still
+            // renders no `href` at all; `computedHref`'s `'#'` is a
+            // click-suppression sentinel and must not leak into the DOM.
+            ...(props.href ? { href: computedHref.value } : {}),
             ...(isRouterLink.value ? {} : { target: props.target }),
         }));
 
