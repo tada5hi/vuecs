@@ -413,10 +413,14 @@ without that step a stale or hand-edited value round-trips into `mode`
 and from there onto the `<html>` class.
 
 ```ts
+import { computed, ref } from 'vue';
+import type { Ref } from 'vue';
 import { bindColorMode, isColorMode } from '@vuecs/design';
 import type { ColorMode } from '@vuecs/design';
 
-const source = /* Ref<string> from your storage backend */;
+// Whatever your storage backend hands you — a cookie ref, `useStorage()`,
+// a value read out of an SSR hydration payload …
+const source: Ref<string> = ref(localStorage.getItem('my-color-mode') ?? 'system');
 
 const mode = computed<ColorMode>({
     // Reads degrade to the configured initial …
