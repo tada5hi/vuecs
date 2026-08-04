@@ -59,6 +59,12 @@ packages/navigation/test/types/breadcrumb.test-d.ts    # <VCBreadcrumb> Item inf
 packages/forms/test/types/model-value.test-d.ts        # form model-value typing
 ```
 
+The three generic-component guards additionally pin that the facade types
+(`*Slots` / `*PropsGeneric` / `VC*Component`) stay **exported from the package
+barrel** — the TS4023 condition from #1704, which only ever manifests in a
+downstream package's declaration emit. See
+[Conventions → Every type in the facade chain MUST be exported](conventions.md#every-type-in-the-facade-chain-must-be-exported-1704).
+
 The generic-component pattern these guard is documented in
 [Conventions → Generic-over-data components](conventions.md#generic-over-data-components--definecomponent--cast-not-script-setup-generic) —
 don't re-document it here; add a `.test-d.ts` next to any new generic component.

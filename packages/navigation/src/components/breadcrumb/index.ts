@@ -7,8 +7,11 @@ export { default as VCBreadcrumbSeparator } from './BreadcrumbSeparator.vue';
 export { default as VCBreadcrumbEllipsis } from './BreadcrumbEllipsis.vue';
 
 export type {
-    BreadcrumbProps,
     BreadcrumbItemSlotProps,
+    BreadcrumbProps,
+    BreadcrumbPropsGeneric,
+    BreadcrumbSlots,
+    VCBreadcrumbComponent,
 } from './Breadcrumb.vue';
 export type { BreadcrumbListProps } from './BreadcrumbList.vue';
 export type { BreadcrumbItemProps } from './BreadcrumbItem.vue';

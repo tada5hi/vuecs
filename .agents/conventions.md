@@ -240,6 +240,59 @@ guard (importing the **built `dist`** declarations) plus the matching
 `packages/table/test/types/generic-row.test-d.ts` and
 `packages/list/test/types/generic-item.test-d.ts`.
 
+### Every type in the facade chain MUST be exported (#1704)
+
+`export` the `*Slots`, `*PropsGeneric`, and `VC*Component` aliases, and
+re-export all three from the package barrel — not just the `*Props` type.
+Leaving them module-private compiles fine in-tree and breaks **consumers**:
+
+```
+error TS4023: Exported variable '__VLS_export' has or is using name
+'BreadcrumbSlots' from external module ".../Breadcrumb.vue"
+but cannot be named.
+```
+
+A consumer that registers the component in an SFC and runs
+`vue-tsc --declaration` has to *write* the component's type into its own
+emitted `.d.ts`. It has two ways to write a type: **name** it (needs an
+export) or **expand it structurally**. Which one applies is what makes
+this bug so easy to reintroduce:
+
+| Declaration | Unexported behaviour |
+|---|---|
+| `type X = …` | Silently expanded inline. Compiles. |
+| `interface X {}` | Nominal — cannot be inlined. **TS4023.** |
+
+So the hard failure always lands on an **unexported `interface`** — which
+is exactly what all five `*Slots` maps were. The `type` aliases beside
+them (`*PropsGeneric`, `VC*Component`) never errored; they were quietly
+inlined. Both still need exporting, for different reasons:
+
+- **Interfaces — correctness.** Without the export the consumer build
+  fails outright.
+- **Type aliases — quality.** Exported, a consumer emits one line:
+  `VCBreadcrumb: import("@vuecs/navigation").VCBreadcrumbComponent`.
+  Unexported, it emits a ~25-line structural expansion of vuecs's
+  internals (every `Omit`, every `PublicProps` arm, the whole
+  `GenericComponentShape` return type) baked into the consumer's own
+  published `.d.ts` — bloating it, slowing their typecheck, and freezing
+  a copy of our internal type layout that goes stale on our next refactor.
+
+This is invisible from inside vuecs — the names resolve locally, so the
+package's own build, tests, and `vue-tsc` run all stay green while every
+downstream package that emits declarations fails. The only in-repo signal
+is the `.test-d.ts` guard: each generic component's guard imports its
+three facade types **from the top-level barrel**, because `export`-ability
+is exactly the condition TS4023 checks. Don't drop those imports as
+"unused" — they are the test.
+
+To audit the whole repo, scan the built declarations for unexported
+interfaces (should print nothing):
+
+```bash
+find packages/*/dist themes/*/dist -name '*.d.ts' | xargs grep -nE '^interface [A-Za-z]'
+```
+
 ## Theme bridge authoring — bridge what the framework exposes
 
 When writing a theme-bridge CSS file (the `assets/index.css` in

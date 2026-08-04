@@ -104,7 +104,7 @@ export type TableLiteProps = ExtractPublicPropTypes<typeof tableLiteProps>;
 // + the cell / header / default slots.
 // ──────────────────────────────────────────────────────────────────────────
 
-interface TableLiteSlots<Row> {
+export interface TableLiteSlots<Row> {
     default?: (props: TableSlotProps<Row>) => unknown;
     caption?: () => unknown;
     colgroup?: () => unknown;
@@ -112,14 +112,14 @@ interface TableLiteSlots<Row> {
     [headerSlot: `header-${string}`]: (props: TableHeadCellSlotProps<Row>) => unknown;
 }
 
-type TableLitePropsGeneric<Row> =    & Omit<TableLiteProps, 'data' | 'columns'> &
+export type TableLitePropsGeneric<Row> =    & Omit<TableLiteProps, 'data' | 'columns'> &
     {
         data?: Row[];
         columns?: TableColumnRaw<Row>[];
     } &
     PublicProps;
 
-type VCTableLiteComponent = <Row = Record<string, unknown>>(
+export type VCTableLiteComponent = <Row = Record<string, unknown>>(
     ...args: Parameters<GenericComponentShape<TableLitePropsGeneric<Row>, TableLiteSlots<Row>>>
 ) => ReturnType<GenericComponentShape<TableLitePropsGeneric<Row>, TableLiteSlots<Row>>>;
 

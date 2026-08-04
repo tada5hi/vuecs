@@ -238,7 +238,7 @@ export type TableProps = ExtractPublicPropTypes<typeof tableProps>;
  * `SlotsType` below, but threads the inferred `Row` into every
  * row-bearing slot.
  */
-interface TableSlots<Row> {
+export interface TableSlots<Row> {
     default?: (props: TableSlotProps<Row>) => unknown;
     caption?: () => unknown;
     colgroup?: () => unknown;
@@ -254,7 +254,7 @@ interface TableSlots<Row> {
  * option, so they must be declared here for `v-model:*` / `@row-click`
  * to type-check at the call site.
  */
-type TablePropsGeneric<Row> =    & Omit<TableProps, 'data' | 'columns' | 'getRowKey'> &
+export type TablePropsGeneric<Row> =    & Omit<TableProps, 'data' | 'columns' | 'getRowKey'> &
     {
         data?: Row[];
         columns?: TableColumnRaw<Row>[];
@@ -277,7 +277,7 @@ type TablePropsGeneric<Row> =    & Omit<TableProps, 'data' | 'columns' | 'getRow
  * User {}` ("index signature is missing"). Defaults to
  * `Record<string, unknown>` for untyped call sites.
  */
-type VCTableComponent = <Row = Record<string, unknown>>(
+export type VCTableComponent = <Row = Record<string, unknown>>(
     ...args: Parameters<GenericComponentShape<TablePropsGeneric<Row>, TableSlots<Row>>>
 ) => ReturnType<GenericComponentShape<TablePropsGeneric<Row>, TableSlots<Row>>>;
 

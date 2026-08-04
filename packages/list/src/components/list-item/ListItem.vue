@@ -144,7 +144,7 @@ function clickShouldToggle(event: Event): boolean {
  * `SlotsType` below, but threads the inferred `Item` into the
  * data-bearing default slot.
  */
-interface ListItemSlots<Item> {
+export interface ListItemSlots<Item> {
     default?: (props: ListItemSlotProps<Item>) => unknown;
 }
 
@@ -152,7 +152,7 @@ interface ListItemSlots<Item> {
  * Public props with the `Item`-typed `data` arm spliced in. No emits —
  * `<VCListItem>` exposes no events.
  */
-type ListItemPropsGeneric<Item> = & Omit<ListItemProps, 'data'> &
+export type ListItemPropsGeneric<Item> = & Omit<ListItemProps, 'data'> &
     {
         data?: Item;
     } &
@@ -165,7 +165,7 @@ type ListItemPropsGeneric<Item> = & Omit<ListItemProps, 'data'> &
  * `interface User {}` ("index signature is missing"). Defaults to
  * `Record<string, unknown>` for untyped call sites.
  */
-type VCListItemComponent = <Item = Record<string, unknown>>(
+export type VCListItemComponent = <Item = Record<string, unknown>>(
     ...args: Parameters<GenericComponentShape<ListItemPropsGeneric<Item>, ListItemSlots<Item>>>
 ) => ReturnType<GenericComponentShape<ListItemPropsGeneric<Item>, ListItemSlots<Item>>>;
 
