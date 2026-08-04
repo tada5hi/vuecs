@@ -682,6 +682,28 @@
 }
 
 /* ────────────────────────────────────────────────────────────────────────────
+ * @vuecs/button — disabled cue for non-native render targets (#1699).
+ *
+ * Bulma dims a disabled button via `.button[disabled]`, which only matches
+ * form elements — a `<VCButton :as="…">` that rendered an `<a>` (or a
+ * RouterLink / NuxtLink) never does. The component marks those targets with
+ * `aria-disabled="true"` instead, so bridge that attribute onto Bulma's own
+ * disabled treatment.
+ *
+ * Reuses `--bulma-button-disabled-opacity` rather than hard-coding `.5` so a
+ * consumer restyling the variable keeps both paths in sync. Deliberately
+ * only opacity + cursor: Bulma's `[disabled]` rule also repaints
+ * background / border to the neutral disabled tokens, which would erase the
+ * variant color and make a disabled `is-danger` link indistinguishable from
+ * a disabled `is-primary` one. Activation is already blocked JS-side by the
+ * component's capture-phase click guard.
+ * ──────────────────────────────────────────────────────────────────────── */
+.vc-button[aria-disabled="true"] {
+    opacity: var(--bulma-button-disabled-opacity, .5);
+    cursor: not-allowed;
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
  * Size: `xs` gap-fill. Bulma ships `is-small` / `is-medium` / `is-large` but
  * nothing below `is-small`. The vuecs size axis adds `xs`; these helpers
  * supply it. Bulma controls scale padding in `em`, so a font-size reduction
