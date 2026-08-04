@@ -1,5 +1,26 @@
 # Changelog
 
+## [5.4.1](https://github.com/tada5hi/vuecs/compare/theme-bulma-v5.4.0...theme-bulma-v5.4.1) (2026-08-04)
+
+
+### Bug Fixes
+
+* **button:** enforce disabled when `as` renders a non-button element ([#1707](https://github.com/tada5hi/vuecs/issues/1707)) ([c2cba22](https://github.com/tada5hi/vuecs/commit/c2cba226792b3afce283c163fdf29dbf551cda3b)), closes [#1699](https://github.com/tada5hi/vuecs/issues/1699)
+* **deps:** bump @vueuse/core in the minorandpatch group ([#1703](https://github.com/tada5hi/vuecs/issues/1703)) ([d23a7c9](https://github.com/tada5hi/vuecs/commit/d23a7c932022d58b471c59fcfccca58290d9708b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/button bumped from ^1.4.0 to ^1.4.1
+    * @vuecs/design bumped from ^1.1.0 to ^1.2.0
+    * @vuecs/forms bumped from ^5.4.0 to ^5.4.1
+    * @vuecs/list bumped from ^1.2.0 to ^1.2.1
+    * @vuecs/navigation bumped from ^4.4.0 to ^4.4.1
+  * peerDependencies
+    * @vuecs/design bumped from ^1.1.0 to ^1.2.0
+
 ## [5.4.0](https://github.com/tada5hi/vuecs/compare/theme-bulma-v5.3.1...theme-bulma-v5.4.0) (2026-07-29)
 
 

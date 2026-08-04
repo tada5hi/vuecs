@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.4.1](https://github.com/tada5hi/vuecs/compare/forms-v5.4.0...forms-v5.4.1) (2026-08-04)
+
+
+### Bug Fixes
+
+* **deps:** bump @vueuse/core in the minorandpatch group ([#1703](https://github.com/tada5hi/vuecs/issues/1703)) ([d23a7c9](https://github.com/tada5hi/vuecs/commit/d23a7c932022d58b471c59fcfccca58290d9708b))
+
 ## [5.4.0](https://github.com/tada5hi/vuecs/compare/forms-v5.3.3...forms-v5.4.0) (2026-07-29)
 
 

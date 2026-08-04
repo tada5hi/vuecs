@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/locale",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "type": "module",
     "description": "Browser-language-aware, resettable locale source for vuecs — bridges into @vuecs/core's config.",
     "exports": {
