@@ -1,5 +1,21 @@
 # Changelog
 
+## [4.4.1](https://github.com/tada5hi/vuecs/compare/navigation-v4.4.0...navigation-v4.4.1) (2026-08-04)
+
+
+### Bug Fixes
+
+* nameable generic facade types ([#1704](https://github.com/tada5hi/vuecs/issues/1704)) + derived LinkProps ([#1705](https://github.com/tada5hi/vuecs/issues/1705)) ([#1709](https://github.com/tada5hi/vuecs/issues/1709)) ([9fc508d](https://github.com/tada5hi/vuecs/commit/9fc508d75a4492ed81d3100f2bcb16ea2ca05f3f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/link bumped from ^2.1.0 to ^2.1.1
+  * peerDependencies
+    * @vuecs/link bumped from ^2.1.0 to ^2.1.1
+
 ## [4.4.0](https://github.com/tada5hi/vuecs/compare/navigation-v4.3.0...navigation-v4.4.0) (2026-07-29)
 
 

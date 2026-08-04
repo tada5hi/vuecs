@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/tada5hi/vuecs/compare/locale-v1.1.0...locale-v1.1.1) (2026-08-04)
+
+
+### Bug Fixes
+
+* **deps:** bump @vueuse/core in the minorandpatch group ([#1703](https://github.com/tada5hi/vuecs/issues/1703)) ([d23a7c9](https://github.com/tada5hi/vuecs/commit/d23a7c932022d58b471c59fcfccca58290d9708b))
+
 ## [1.1.0](https://github.com/tada5hi/vuecs/compare/locale-v1.0.4...locale-v1.1.0) (2026-07-29)
 
 

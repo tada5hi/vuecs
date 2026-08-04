@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/tada5hi/vuecs/compare/button-v1.4.0...button-v1.4.1) (2026-08-04)
+
+
+### Bug Fixes
+
+* **button:** enforce disabled when `as` renders a non-button element ([#1707](https://github.com/tada5hi/vuecs/issues/1707)) ([c2cba22](https://github.com/tada5hi/vuecs/commit/c2cba226792b3afce283c163fdf29dbf551cda3b)), closes [#1699](https://github.com/tada5hi/vuecs/issues/1699)
+
 ## [1.4.0](https://github.com/tada5hi/vuecs/compare/button-v1.3.0...button-v1.4.0) (2026-07-29)
 
 

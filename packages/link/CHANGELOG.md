@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/tada5hi/vuecs/compare/link-v2.1.0...link-v2.1.1) (2026-08-04)
+
+
+### Bug Fixes
+
+* nameable generic facade types ([#1704](https://github.com/tada5hi/vuecs/issues/1704)) + derived LinkProps ([#1705](https://github.com/tada5hi/vuecs/issues/1705)) ([#1709](https://github.com/tada5hi/vuecs/issues/1709)) ([9fc508d](https://github.com/tada5hi/vuecs/commit/9fc508d75a4492ed81d3100f2bcb16ea2ca05f3f))
+
 ## [2.1.0](https://github.com/tada5hi/vuecs/compare/link-v2.0.3...link-v2.1.0) (2026-07-29)
 
 

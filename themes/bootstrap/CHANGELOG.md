@@ -1,5 +1,22 @@
 # Changelog
 
+## [7.4.1](https://github.com/tada5hi/vuecs/compare/theme-bootstrap-v7.4.0...theme-bootstrap-v7.4.1) (2026-08-04)
+
+
+### Bug Fixes
+
+* **button:** enforce disabled when `as` renders a non-button element ([#1707](https://github.com/tada5hi/vuecs/issues/1707)) ([c2cba22](https://github.com/tada5hi/vuecs/commit/c2cba226792b3afce283c163fdf29dbf551cda3b)), closes [#1699](https://github.com/tada5hi/vuecs/issues/1699)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/button bumped from ^1.4.0 to ^1.4.1
+    * @vuecs/forms bumped from ^5.4.0 to ^5.4.1
+    * @vuecs/list bumped from ^1.2.0 to ^1.2.1
+    * @vuecs/navigation bumped from ^4.4.0 to ^4.4.1
+
 ## [7.4.0](https://github.com/tada5hi/vuecs/compare/theme-bootstrap-v7.3.1...theme-bootstrap-v7.4.0) (2026-07-29)
 
 
