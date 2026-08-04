@@ -8,7 +8,7 @@
 
 ## Test inventory
 
-**14 workspaces** carry tests — **102 `.spec.ts`** total (plus 4 `.test-d.ts`
+**15 workspaces** carry tests — **103 `.spec.ts`** total (plus 4 `.test-d.ts`
 type guards). This is no longer "just core + navigation"; keep this table in
 sync when adding a test dir.
 
@@ -25,6 +25,7 @@ sync when adding a test dir.
 | `@vuecs/locale` | 2 | `bindLocale` / `useLocaleManager` |
 | `@vuecs/pagination` | 2 | Pagination behaviour |
 | `@vuecs/placeholder` | 1 | Placeholder / wrapper |
+| `@vuecs/button` | 1 | Disabled enforcement across native / non-native `as` targets |
 | `@vuecs/theme-tailwind` | 2 | `auditTheme` drift + palette render |
 | `@vuecs/theme-bootstrap` | 1 | `auditTheme` drift |
 | `@vuecs/theme-bulma` | 1 | `auditTheme` drift |

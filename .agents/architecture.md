@@ -1778,6 +1778,48 @@ installed. That trade is fine for affordance chrome; it is not fine for a
 checkbox's state indicator, which is the only thing distinguishing checked
 from indeterminate.
 
+### Disabled state on polymorphic (`as`) targets (#1699)
+
+`disabled` is a `<button>` / form-control concept. A component that renders
+polymorphically (`<VCButton :as>`) can't rely on it: an `<a>`, a
+`RouterLink` / `NuxtLink`, or an arbitrary component keeps its own
+activation behaviour, and CSS's `:disabled` pseudo-class never matches
+them. Marking the element `aria-disabled="true"` *announces* the state
+without *enforcing* it — a permission-guarded row action then looks
+clickable, is clickable, and only gets rejected by the target page.
+
+The split, mirroring the form-glyph rule above:
+
+| Layer | Owns |
+|---|---|
+| Component | *enforcement* — `aria-disabled="true"`, `tabindex="-1"` (parity with what native `disabled` does to the tab order), and a **capture-phase** `onClickCapture` guard that `preventDefault()` + `stopPropagation()` + `stopImmediatePropagation()`s |
+| Theme | the *visual* cue, keyed off `[aria-disabled="true"]` — exactly as the native path's cue comes from the theme's `disabled:` utilities |
+| Structural CSS | nothing. A theme-less consumer gets no disabled cue on either path, so the two stay consistent |
+
+**The capture phase is load-bearing, not stylistic.** At the event target
+the DOM invokes capture-phase listeners before bubble-phase ones (dispatch
+walks the path twice and skips listeners whose capture flag doesn't match
+the current phase), so the guard wins regardless of registration order.
+That matters because Vue merges fallthrough attrs *after* a component's own
+props — a bubble-phase guard on `<VCButton :as="RouterLink">` would be
+registered second and run only after RouterLink had already navigated.
+`stopPropagation()` additionally suppresses the target's own bubble
+listeners, since the stop-propagation flag is checked once per element per
+phase. `packages/button/test/unit/disabled.spec.ts` pins this with a
+component target that navigates from a plain `onClick`; flipping the guard
+to `onClick` fails that spec.
+
+Themes carry the cue as: `aria-disabled:cursor-not-allowed
+aria-disabled:opacity-60` (theme-tailwind, alongside its existing
+`disabled:` pair — same shape as `pagination.link`), and a
+`.vc-button[aria-disabled="true"]` bridge rule in theme-bootstrap /
+theme-bulma, since neither framework's class strings can carry attribute
+selectors. Both bridges reuse the framework's own disabled-opacity
+variable (`--bs-btn-disabled-opacity` / `--bulma-button-disabled-opacity`)
+rather than hard-coding a value, and deliberately omit `pointer-events:
+none` (it would suppress `cursor: not-allowed`, and activation is already
+blocked JS-side).
+
 ## Dependency Flow
 
 ```
