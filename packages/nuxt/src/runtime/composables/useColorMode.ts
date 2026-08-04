@@ -1,5 +1,6 @@
-import { bindColorMode } from '@vuecs/design';
+import { bindColorMode, isColorMode } from '@vuecs/design';
 import type { ColorMode, UseColorModeReturn } from '@vuecs/design';
+import { computed } from 'vue';
 // @ts-expect-error resolved by Nuxt at build time
 import { useCookie, useRuntimeConfig } from '#imports';
 
@@ -37,7 +38,19 @@ export function useColorMode(): UseColorModeReturn {
         watch: true,
     });
 
-    return bindColorMode(cookie);
+    // The cookie is user-writable, so its value is untrusted: a stale
+    // or hand-edited `vc-color-mode` would otherwise round-trip an
+    // arbitrary string through `mode` and onto the `<html>` class.
+    // Reads degrade to the configured initial; writes always come from
+    // `bindColorMode`, which only ever emits a valid mode.
+    const source = computed<ColorMode>({
+        get: () => (isColorMode(cookie.value) ? cookie.value : defaultValue),
+        set: (value) => {
+            cookie.value = value;
+        },
+    });
+
+    return bindColorMode(source);
 }
 
 export type { ColorMode, UseColorModeReturn } from '@vuecs/design';
