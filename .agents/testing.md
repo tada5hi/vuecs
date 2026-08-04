@@ -8,7 +8,7 @@
 
 ## Test inventory
 
-**14 workspaces** carry tests — **101 `.spec.ts`** total (plus 4 `.test-d.ts`
+**14 workspaces** carry tests — **102 `.spec.ts`** total (plus 4 `.test-d.ts`
 type guards). This is no longer "just core + navigation"; keep this table in
 sync when adding a test dir.
 
@@ -19,7 +19,7 @@ sync when adding a test dir.
 | `@vuecs/elements` | 10 | Card / Alert / Collapse / Badge / Avatar / Tag parts |
 | `@vuecs/navigation` | 10 | Registry, resolver, breadcrumb, stepper |
 | `@vuecs/overlays` | 10 | Modal / AlertDialog / Popover / Tooltip / menus, `useToast` / `useModal` / `useAlertDialog` |
-| `@vuecs/design` | 7 | `useColorMode`, palette render/apply, standalone catalog |
+| `@vuecs/design` | 8 | `useColorMode`, color-mode catalog/guard, palette render/apply, standalone catalog |
 | `@vuecs/forms` | 2 | Components (incl. Reka `VCFormSelect`), `useSubmitButton` |
 | `@vuecs/list` | 2 | Components + list context |
 | `@vuecs/locale` | 2 | `bindLocale` / `useLocaleManager` |

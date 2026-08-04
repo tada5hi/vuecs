@@ -7,7 +7,7 @@ import {
 } from 'vitest';
 import { nextTick, ref } from 'vue';
 import { bindColorMode } from '../../../../src/core/color-mode/bind';
-import type { ColorMode } from '../../../../src/core/color-mode/types';
+import type { ColorMode } from '../../../../src/core/color-mode/catalog';
 
 describe('bindColorMode', () => {
     afterEach(() => {

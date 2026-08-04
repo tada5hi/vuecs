@@ -2,7 +2,8 @@ import { usePreferredDark } from '@vueuse/core';
 import { computed, watch } from 'vue';
 import type { Ref } from 'vue';
 import { useThemeRuntimeManager } from '../theme-runtime/composable';
-import type { ColorMode, UseColorModeOptions, UseColorModeReturn } from './types';
+import type { ColorMode } from './catalog';
+import type { UseColorModeOptions, UseColorModeReturn } from './types';
 
 /**
  * Wire any reactive `Ref<ColorMode>` into the design system: track
