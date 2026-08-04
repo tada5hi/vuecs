@@ -1,0 +1,1 @@
+import{At as e}from"./iframe-bridge-DLm22_wn.js";function t(n){return n?n.flatMap(n=>n.type===e?t(n.children):[n]):[]}export{t};
