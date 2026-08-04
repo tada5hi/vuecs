@@ -13,8 +13,18 @@ export { default as VCTableSortIndicators } from './TableSortIndicators.vue';
 export { default as VCTableExpandTrigger } from './TableExpandTrigger.vue';
 export { default as VCTableRowExpansion } from './TableRowExpansion.vue';
 
-export type { TableProps } from './Table.vue';
-export type { TableLiteProps } from './TableLite.vue';
+export type {
+    TableProps,
+    TablePropsGeneric,
+    TableSlots,
+    VCTableComponent,
+} from './Table.vue';
+export type {
+    TableLiteProps,
+    TableLitePropsGeneric,
+    TableLiteSlots,
+    VCTableLiteComponent,
+} from './TableLite.vue';
 export type { TableHeaderProps } from './TableHeader.vue';
 export type { TableBodyProps } from './TableBody.vue';
 export type { TableFooterProps } from './TableFooter.vue';

@@ -127,7 +127,7 @@ export const listThemeDefaults: ComponentThemeDefinition<ListThemeClasses> = {
  * resolved theme `classes`). Declared standalone so the facade alias
  * reads symmetrically with `<VCListItem>`'s.
  */
-interface ListSlots {
+export interface ListSlots {
     default?: (props: { classes: ListThemeClasses }) => unknown;
 }
 
@@ -138,7 +138,7 @@ interface ListSlots {
  * option, so the handler must be declared here for `v-model:selection`
  * to type-check at the call site.
  */
-type ListPropsGeneric<Item> = & Omit<ListProps, 'state' | 'data'> &
+export type ListPropsGeneric<Item> = & Omit<ListProps, 'state' | 'data'> &
     {
         state?: ListState<Item, Record<string, unknown>>;
         data?: Item[];
@@ -152,7 +152,7 @@ type ListPropsGeneric<Item> = & Omit<ListProps, 'state' | 'data'> &
  * infer cleanly. Defaults to `Record<string, unknown>` for untyped call
  * sites.
  */
-type VCListComponent = <Item = Record<string, unknown>>(
+export type VCListComponent = <Item = Record<string, unknown>>(
     ...args: Parameters<GenericComponentShape<ListPropsGeneric<Item>, ListSlots>>
 ) => ReturnType<GenericComponentShape<ListPropsGeneric<Item>, ListSlots>>;
 

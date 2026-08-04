@@ -1,6 +1,11 @@
 export { default as VCList } from './List.vue';
 export { listThemeDefaults } from './List.vue';
-export type { ListProps } from './List.vue';
+export type {
+    ListProps,
+    ListPropsGeneric,
+    ListSlots,
+    VCListComponent,
+} from './List.vue';
 
 export { default as VCListBody } from './ListBody.vue';
 export { listBodyThemeDefaults } from './ListBody.vue';

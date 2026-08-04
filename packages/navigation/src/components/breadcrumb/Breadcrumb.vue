@@ -314,7 +314,7 @@ const VCBreadcrumb = defineComponent({
  * the `#item` / `#item-label` slot props infer richer entities passed via
  * `:items`. `default` is the manual-compound escape hatch.
  */
-interface BreadcrumbSlots<Item extends BreadcrumbItem = BreadcrumbItem> {
+export interface BreadcrumbSlots<Item extends BreadcrumbItem = BreadcrumbItem> {
     default?: () => unknown;
     'item'?: (props: BreadcrumbItemSlotProps<Item>) => unknown;
     'item-label'?: (props: { item: Item; index: number }) => unknown;
@@ -328,7 +328,7 @@ interface BreadcrumbSlots<Item extends BreadcrumbItem = BreadcrumbItem> {
  * `on*` props, so `@select` only type-checks at the call site when the
  * handler prop is declared here.
  */
-type BreadcrumbPropsGeneric<Item extends BreadcrumbItem> = & Omit<BreadcrumbProps, 'items'> &
+export type BreadcrumbPropsGeneric<Item extends BreadcrumbItem> = & Omit<BreadcrumbProps, 'items'> &
     {
         items?: Item[];
         onSelect?: (item: Item, index: number) => void;
@@ -340,7 +340,7 @@ type BreadcrumbPropsGeneric<Item extends BreadcrumbItem> = & Omit<BreadcrumbProp
  * (a named object type, not a `Record` index-signature constraint, so
  * interface-typed items infer cleanly) and defaults to `BreadcrumbItem`.
  */
-type VCBreadcrumbComponent = <Item extends BreadcrumbItem = BreadcrumbItem>(
+export type VCBreadcrumbComponent = <Item extends BreadcrumbItem = BreadcrumbItem>(
     ...args: Parameters<GenericComponentShape<BreadcrumbPropsGeneric<Item>, BreadcrumbSlots<Item>>>
 ) => ReturnType<GenericComponentShape<BreadcrumbPropsGeneric<Item>, BreadcrumbSlots<Item>>>;
 

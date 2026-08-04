@@ -3,9 +3,15 @@ import VCList from '../../dist/components/list/List.vue';
 import VCListItem from '../../dist/components/list-item/ListItem.vue';
 import type {
     ListItemProps,
+    ListItemPropsGeneric,
+    ListItemSlots,
     ListProps,
+    ListPropsGeneric,
+    ListSlots,
     ListState,
     SelectionKey,
+    VCListComponent,
+    VCListItemComponent,
 } from '../../dist';
 
 // Drift guard for the generic-over-`Item` facade (#1660).
@@ -79,4 +85,36 @@ test('Omit key lists stay anchored to the real prop types (rename guard)', () =>
     type ListKeysValid = ('state' | 'data') extends keyof ListProps ? true : never;
     assertType<ItemKeysValid>(true);
     assertType<ListKeysValid>(true);
+});
+
+test('the generic facade types stay nameable by consumers (#1704)', () => {
+    // TS4023 guard. A consumer that registers `<VCList>` / `<VCListItem>` in an
+    // SFC and runs `vue-tsc --declaration` has to WRITE the component's type
+    // into its own emitted `.d.ts`. Every type in that chain must therefore be
+    // exported from the module that declares it — unexported `*Slots` /
+    // `*PropsGeneric` / `VC*Component` aliases fail the CONSUMER build with:
+    //
+    //   TS4023: Exported variable '__VLS_export' has or is using name
+    //   'ListSlots' ... but cannot be named.
+    //
+    // Nothing in vuecs's own build reproduces that (the names resolve fine
+    // in-package), so these imports ARE the guard: `export`-ability is exactly
+    // the condition TS4023 checks, and dropping any `export` breaks this file.
+    // Imported from the top-level barrel (not the deep `.vue` path) so
+    // consumers also get the short, stable name.
+    expectTypeOf<VCListComponent>().not.toBeAny();
+    expectTypeOf<VCListItemComponent>().not.toBeAny();
+    expectTypeOf<ListSlots>().not.toBeAny();
+    expectTypeOf<ListItemSlots<User>>().not.toBeAny();
+    expectTypeOf<ListPropsGeneric<User>>().not.toBeAny();
+    expectTypeOf<ListItemPropsGeneric<User>>().not.toBeAny();
+
+    // The facade aliases are the same callables the default exports are cast to.
+    expectTypeOf<VCListComponent>().toEqualTypeOf<typeof VCList>();
+    expectTypeOf<VCListItemComponent>().toEqualTypeOf<typeof VCListItem>();
+    // …and they really do thread `Item` (not a vacuous `any` passthrough).
+    expectTypeOf<NonNullable<ListPropsGeneric<User>['data']>>().toEqualTypeOf<User[]>();
+    expectTypeOf<NonNullable<ListItemPropsGeneric<User>['data']>>().toEqualTypeOf<User>();
+    expectTypeOf<Parameters<NonNullable<ListItemSlots<User>['default']>>[0]['data']>()
+        .toEqualTypeOf<User>();
 });

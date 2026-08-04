@@ -64,6 +64,52 @@ For external links, set `href` directly and leave `to` empty — the component r
 | `disabled` | `boolean` | `false` | Adds `disabled` class and prevents click events |
 | `query` | `LinkQuery` | — | Extra query params to merge into the URL |
 
+`query` applies on **both** render paths: it is appended to `href` on the
+plain-`<a>` path, and merged into `to` on the router path (for a string `to`
+it is appended to the path; for an object `to` it is merged into `to.query`,
+where an explicit key already on `to.query` wins).
+
+```vue
+<!-- renders <a href="/settings?ref=%2Faccount"> -->
+<VCLink href="/settings" :query="{ ref: '/account' }">Settings</VCLink>
+
+<!-- router path — to becomes { path: '/settings', query: { ref: '/account' } } -->
+<VCLink :to="{ path: '/settings' }" :query="{ ref: '/account' }">Settings</VCLink>
+```
+
+## Types
+
+`LinkProps` is the exported type of the prop table above. It is derived from
+the component's own prop declaration via Vue's `ExtractPublicPropTypes`, so it
+can never drift from what `<VCLink>` actually accepts:
+
+```ts
+import type { LinkProps, LinkQuery } from '@vuecs/link';
+
+// A link descriptor threaded through your own data, then `v-bind`-ed.
+const link: LinkProps = { to: '/password', query: { ref: '/account' } };
+```
+
+Because `LinkProps` declares its keys exactly, a misspelled prop is a compile
+error rather than a silent no-op:
+
+```ts
+// ✗ Object literal may only specify known properties — the prop is `query`.
+const broken: LinkProps = { to: '/x', queries: { a: '1' } };
+```
+
+If you additionally thread arbitrary fallthrough attributes (`class`,
+`data-*`, `aria-*`) through the same object, widen at your own call site —
+`LinkProps & Record<string, unknown>` — so the known props stay checked.
+
+::: warning Replaces `LinkProperties`
+`LinkProperties` was a separate, hand-maintained copy of this surface carrying
+a `[key: string]: any` index signature. It had gone stale (it never listed
+`query`) and its index signature accepted any typo. It has been removed —
+import `LinkProps` instead. See
+[#1705](https://github.com/tada5hi/vuecs/issues/1705).
+:::
+
 ## Events
 
 | Event | Payload | Description |

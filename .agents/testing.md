@@ -8,7 +8,7 @@
 
 ## Test inventory
 
-**15 workspaces** carry tests — **103 `.spec.ts`** total (plus 4 `.test-d.ts`
+**16 workspaces** carry tests — **104 `.spec.ts`** total (plus 5 `.test-d.ts`
 type guards). This is no longer "just core + navigation"; keep this table in
 sync when adding a test dir.
 
@@ -26,6 +26,7 @@ sync when adding a test dir.
 | `@vuecs/pagination` | 2 | Pagination behaviour |
 | `@vuecs/placeholder` | 1 | Placeholder / wrapper |
 | `@vuecs/button` | 1 | Disabled enforcement across native / non-native `as` targets |
+| `@vuecs/link` | 1 | Render-path resolution, `query` href merging, active / disabled |
 | `@vuecs/theme-tailwind` | 2 | `auditTheme` drift + palette render |
 | `@vuecs/theme-bootstrap` | 1 | `auditTheme` drift |
 | `@vuecs/theme-bulma` | 1 | `auditTheme` drift |
@@ -48,7 +49,7 @@ npm run test --workspace=packages/table --if-present
 
 ## Type-level tests (drift guards)
 
-Four `*.test-d.ts` files assert that the **built `dist` declarations** keep
+Five `*.test-d.ts` files assert that the **built `dist` declarations** keep
 their generic-over-data / model-value inference. They run via each package's
 Vitest `typecheck` block (its own `test/tsconfig.json`), not the runtime
 `.spec.ts` path:
@@ -58,7 +59,14 @@ packages/table/test/types/generic-row.test-d.ts       # <VCTable> Row inference
 packages/list/test/types/generic-item.test-d.ts        # <VCList>/<VCListItem> Item inference
 packages/navigation/test/types/breadcrumb.test-d.ts    # <VCBreadcrumb> Item inference
 packages/forms/test/types/model-value.test-d.ts        # form model-value typing
+packages/link/test/types/link-props.test-d.ts          # LinkProps surface + no index signature
 ```
+
+The three generic-component guards additionally pin that the facade types
+(`*Slots` / `*PropsGeneric` / `VC*Component`) stay **exported from the package
+barrel** — the TS4023 condition from #1704, which only ever manifests in a
+downstream package's declaration emit. See
+[Conventions → Every type in the facade chain MUST be exported](conventions.md#every-type-in-the-facade-chain-must-be-exported-1704).
 
 The generic-component pattern these guard is documented in
 [Conventions → Generic-over-data components](conventions.md#generic-over-data-components--definecomponent--cast-not-script-setup-generic) —

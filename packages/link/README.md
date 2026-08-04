@@ -25,6 +25,17 @@ npm install @vuecs/link
 <VCLink to="/dashboard">Dashboard</VCLink>
 <VCLink href="https://github.com/tada5hi/vuecs" target="_blank">GitHub</VCLink>
 <VCLink :to="{ name: 'user', params: { id } }" :disabled="!canVisit">Profile</VCLink>
+<VCLink to="/password" :query="{ ref: '/account' }">Change password</VCLink>
+```
+
+Threading a link descriptor through your own data? Type it with `LinkProps` —
+derived from the component's prop declaration, so it can't drift, and free of
+an index signature, so misspelled props are compile errors:
+
+```ts
+import type { LinkProps } from '@vuecs/link';
+
+const link: LinkProps = { to: '/password', query: { ref: '/account' } };
 ```
 
 ## 📚 Documentation

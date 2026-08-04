@@ -4,8 +4,14 @@ import VCTableLite from '../../dist/components/TableLite.vue';
 import type {
     TableColumn,
     TableLiteProps,
+    TableLitePropsGeneric,
+    TableLiteSlots,
     TableProps,
+    TablePropsGeneric,
+    TableSlots,
     TableSortState,
+    VCTableComponent,
+    VCTableLiteComponent,
 } from '../../dist';
 
 // Drift guard for the generic-over-`Row` facade (#1601).
@@ -97,4 +103,35 @@ test('Omit key lists stay anchored to the real prop types (rename guard)', () =>
     type LiteRowKeysValid = ('data' | 'columns') extends keyof TableLiteProps ? true : never;
     assertType<TableRowKeysValid>(true);
     assertType<LiteRowKeysValid>(true);
+});
+
+test('the generic facade types stay nameable by consumers (#1704)', () => {
+    // TS4023 guard. A consumer that registers `<VCTable>` in an SFC and runs
+    // `vue-tsc --declaration` has to WRITE the component's type into its own
+    // emitted `.d.ts`. Every type in that chain must therefore be exported from
+    // the module that declares it — unexported `*Slots` / `*PropsGeneric` /
+    // `VC*Component` aliases fail the CONSUMER build with:
+    //
+    //   TS4023: Exported variable '__VLS_export' has or is using name
+    //   'TableSlots' ... but cannot be named.
+    //
+    // Nothing in vuecs's own build reproduces that (the names resolve fine
+    // in-package), so these imports ARE the guard: `export`-ability is exactly
+    // the condition TS4023 checks, and dropping any `export` breaks this file.
+    // Imported from the top-level barrel (not the deep `.vue` path) so
+    // consumers also get the short, stable name.
+    expectTypeOf<VCTableComponent>().not.toBeAny();
+    expectTypeOf<VCTableLiteComponent>().not.toBeAny();
+    expectTypeOf<TableSlots<User>>().not.toBeAny();
+    expectTypeOf<TableLiteSlots<User>>().not.toBeAny();
+    expectTypeOf<TablePropsGeneric<User>>().not.toBeAny();
+    expectTypeOf<TableLitePropsGeneric<User>>().not.toBeAny();
+
+    // The facade aliases are the same callables the default exports are cast to.
+    expectTypeOf<VCTableComponent>().toEqualTypeOf<typeof VCTable>();
+    expectTypeOf<VCTableLiteComponent>().toEqualTypeOf<typeof VCTableLite>();
+    // …and they really do thread `Row` (not a vacuous `any` passthrough).
+    expectTypeOf<NonNullable<TablePropsGeneric<User>['data']>>().toEqualTypeOf<User[]>();
+    expectTypeOf<NonNullable<TableLitePropsGeneric<User>['data']>>().toEqualTypeOf<User[]>();
+    expectTypeOf<Parameters<TableSlots<User>[`cell-${string}`]>[0]['row']>().toEqualTypeOf<User>();
 });

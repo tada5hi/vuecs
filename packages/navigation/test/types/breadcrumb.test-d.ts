@@ -5,6 +5,9 @@ import type {
     BreadcrumbItemSlotProps,
     BreadcrumbListProps,
     BreadcrumbProps,
+    BreadcrumbPropsGeneric,
+    BreadcrumbSlots,
+    VCBreadcrumbComponent,
 } from '../../dist';
 
 // Drift guard for the generic-over-`Item` facade (#1659).
@@ -92,6 +95,34 @@ test('VCBreadcrumb infers Item into its select handler-prop', () => {
         void item.bogus;
     };
     onSelect({ label: 'Home', id: 1 }, 0);
+});
+
+test('the generic facade types stay nameable by consumers (#1704)', () => {
+    // TS4023 guard. A consumer that registers `<VCBreadcrumb>` in an SFC and
+    // runs `vue-tsc --declaration` has to WRITE the component's type into its
+    // own emitted `.d.ts`. Every type in that chain must therefore be exported
+    // from the module that declares it — an unexported `BreadcrumbSlots` made
+    // the whole consumer build fail with:
+    //
+    //   TS4023: Exported variable '__VLS_export' has or is using name
+    //   'BreadcrumbSlots' ... but cannot be named.
+    //
+    // Nothing in vuecs's own build reproduces that (the names resolve fine
+    // in-package), so these imports ARE the guard: `export`-ability is exactly
+    // the condition TS4023 checks, and dropping any `export` below breaks this
+    // file. Imported from the top-level barrel (not the deep `.vue` path) so
+    // consumers also get the short, stable name.
+    expectTypeOf<VCBreadcrumbComponent>().not.toBeAny();
+    expectTypeOf<BreadcrumbSlots<Crumb>>().not.toBeAny();
+    expectTypeOf<BreadcrumbPropsGeneric<Crumb>>().not.toBeAny();
+
+    // The facade alias is the same callable the default export is cast to.
+    expectTypeOf<VCBreadcrumbComponent>().toEqualTypeOf<typeof VCBreadcrumb>();
+    // …and it really does thread `Item` (not a vacuous `any` passthrough).
+    expectTypeOf<NonNullable<BreadcrumbSlots<Crumb>['item']>>()
+        .parameter(0).toEqualTypeOf<BreadcrumbItemSlotProps<Crumb>>();
+    expectTypeOf<NonNullable<BreadcrumbPropsGeneric<Crumb>['items']>>()
+        .toEqualTypeOf<Crumb[]>();
 });
 
 test('BreadcrumbItem and part prop types stay importable', () => {

@@ -1,6 +1,6 @@
 import { hasNormalizedSlot, normalizeSlot, useComponentTheme } from '@vuecs/core';
 import type { ThemeClassesOverride, UseComponentThemeProps, VariantValues } from '@vuecs/core';
-import type { LinkProperties } from '@vuecs/link';
+import type { LinkProps } from '@vuecs/link';
 import { VCLink } from '@vuecs/link';
 import type {
     Component,
@@ -197,7 +197,7 @@ export const VCNavItem = defineComponent({
                 }, slots);
             }
 
-            const linkProps: LinkProperties = {
+            const linkProps: LinkProps = {
                 active: data.value.active,
                 disabled: false,
                 prefetch: true,
