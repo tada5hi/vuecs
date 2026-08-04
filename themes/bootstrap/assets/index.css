@@ -497,6 +497,27 @@
 }
 
 /* ────────────────────────────────────────────────────────────────────────────
+ * @vuecs/button — disabled cue for non-native render targets (#1699).
+ *
+ * Bootstrap dims a disabled button through `.btn:disabled, .btn.disabled`.
+ * Neither matches a `<VCButton :as="…">` that rendered an `<a>` (or a
+ * RouterLink / NuxtLink): `:disabled` is form-elements-only, and `.disabled`
+ * is a class the component can't add from a static theme string. The
+ * component marks those targets with `aria-disabled="true"` instead, so
+ * bridge that attribute onto Bootstrap's own disabled treatment.
+ *
+ * Reuses `--bs-btn-disabled-opacity` rather than hard-coding `.65` so a
+ * consumer restyling the variable keeps both paths in sync. No
+ * `pointer-events: none` (unlike Bootstrap's `.btn.disabled`): it would
+ * suppress `cursor: not-allowed`, and activation is already blocked
+ * JS-side by the component's capture-phase click guard.
+ * ──────────────────────────────────────────────────────────────────────── */
+.vc-button[aria-disabled="true"] {
+    opacity: var(--bs-btn-disabled-opacity, .65);
+    cursor: not-allowed;
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
  * Size: `xs` gap-fill. Bootstrap 5 ships `-sm` / `-lg` size modifiers but
  * nothing below `sm`. The vuecs size axis adds `xs` (one notch under `sm`);
  * these helpers supply it by tightening the relevant BS CSS variables /

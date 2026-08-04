@@ -51,9 +51,11 @@ const buttonProps = {
      * Element or component to render as. Pass a string tag (`'a'`, `'div'`)
      * or a component (`RouterLink` / `NuxtLink`) to render a button-styled
      * link / arbitrary element. Native `type` / `disabled` semantics apply
-     * only when this resolves to `'button'`; every other target receives
-     * `aria-disabled` instead. Extra attrs (`to`, `href`, `target`, …)
-     * forward to the rendered element.
+     * only when this resolves to `'button'`; every other target is disabled
+     * via `aria-disabled` + `tabindex="-1"` + a capture-phase click guard
+     * that blocks activation (so a disabled button-link can't navigate).
+     * Extra attrs (`to`, `href`, `target`, …) forward to the rendered
+     * element.
      */
     as: { type: [String, Object, Function] as PropType<string | Component>, default: 'button' },
     /**
@@ -81,6 +83,34 @@ export const VCButton = defineComponent({
         trailing: ButtonSlotProps;
     }>,
     setup(props, { attrs, slots }) {
+        /*
+         * Activation guard for non-native render targets (#1699).
+         *
+         * `disabled` is a `<button>` / form-control attribute — an `<a>`,
+         * a `RouterLink` / `NuxtLink`, or any other `as` target keeps its
+         * own click behaviour, so a disabled button-link still navigated.
+         * `aria-disabled` alone announces the state without enforcing it.
+         *
+         * Registered as `onClickCapture` deliberately. At the event target
+         * the DOM runs the capture-phase listeners before the bubble-phase
+         * ones (dispatch walks the path twice — capturing, then bubbling —
+         * and skips listeners whose capture flag doesn't match the current
+         * phase), so this lands ahead of the target's own `onClick`
+         * regardless of registration order. That matters because fallthrough
+         * attrs are merged *after* a component's own props, i.e. a plain
+         * bubble-phase guard would run second — after RouterLink had
+         * already navigated.
+         *
+         * `stopPropagation()` also suppresses the target's bubble listeners:
+         * the stop-propagation flag is checked once per element per phase,
+         * so the element's own bubbling pass returns early.
+         */
+        const guardDisabledActivation = (event: Event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+        };
+
         // The convenience props (color/variant/size/loading) are merged into
         // themeVariant before resolution so themes can drive slot classes off
         // them via the standard variant system. Getter properties keep this
@@ -190,7 +220,19 @@ export const VCButton = defineComponent({
                     ],
                     ...(isNativeButton ? { type: props.type } : {}),
                     ...(isNativeButton ? { disabled: isDisabled || undefined } : {}),
-                    ...(!isNativeButton && isDisabled ? { 'aria-disabled': 'true' } : {}),
+                    // Non-native targets get the full disabled treatment:
+                    // announced (`aria-disabled`), removed from the tab
+                    // order to match what native `disabled` does, and
+                    // blocked from activating. `tabindex="-1"` keeps the
+                    // element focusable programmatically, so it stays
+                    // reachable for tooltips explaining *why* it's off.
+                    // Enter on a focused link dispatches a click, so the
+                    // capture guard covers keyboard activation too.
+                    ...(!isNativeButton && isDisabled ? {
+                        'aria-disabled': 'true',
+                        tabindex: '-1',
+                        onClickCapture: guardDisabledActivation,
+                    } : {}),
                     // Distinguish loading from plain `disabled` for AT —
                     // both still set `disabled` (loading must block clicks
                     // to prevent double-submit), but `aria-busy` lets screen

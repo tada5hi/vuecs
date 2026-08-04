@@ -60,7 +60,7 @@
         "@vuecs/pagination": "^2.2.0",
         "@vuecs/placeholder": "^1.1.0",
         "@vuecs/timeago": "^2.2.0",
-        "@vueuse/core": "^14.3.0",
+        "@vueuse/core": "^14.4.0",
         "culori": "^4.0.1",
         "tailwindcss": "^4.3.3",
         "tsx": "^4.23.1",

@@ -8,7 +8,7 @@
 
 ## Test inventory
 
-**15 workspaces** carry tests — **102 `.spec.ts`** total (plus 5 `.test-d.ts`
+**16 workspaces** carry tests — **104 `.spec.ts`** total (plus 5 `.test-d.ts`
 type guards). This is no longer "just core + navigation"; keep this table in
 sync when adding a test dir.
 
@@ -19,12 +19,13 @@ sync when adding a test dir.
 | `@vuecs/elements` | 10 | Card / Alert / Collapse / Badge / Avatar / Tag parts |
 | `@vuecs/navigation` | 10 | Registry, resolver, breadcrumb, stepper |
 | `@vuecs/overlays` | 10 | Modal / AlertDialog / Popover / Tooltip / menus, `useToast` / `useModal` / `useAlertDialog` |
-| `@vuecs/design` | 7 | `useColorMode`, palette render/apply, standalone catalog |
+| `@vuecs/design` | 8 | `useColorMode`, color-mode catalog/guard, palette render/apply, standalone catalog |
 | `@vuecs/forms` | 2 | Components (incl. Reka `VCFormSelect`), `useSubmitButton` |
 | `@vuecs/list` | 2 | Components + list context |
 | `@vuecs/locale` | 2 | `bindLocale` / `useLocaleManager` |
 | `@vuecs/pagination` | 2 | Pagination behaviour |
 | `@vuecs/placeholder` | 1 | Placeholder / wrapper |
+| `@vuecs/button` | 1 | Disabled enforcement across native / non-native `as` targets |
 | `@vuecs/link` | 1 | Render-path resolution, `query` href merging, active / disabled |
 | `@vuecs/theme-tailwind` | 2 | `auditTheme` drift + palette render |
 | `@vuecs/theme-bootstrap` | 1 | `auditTheme` drift |

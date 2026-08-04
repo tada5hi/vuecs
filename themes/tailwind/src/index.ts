@@ -331,7 +331,13 @@ export default function tailwindTheme(): Theme {
                     // active color's `-500` shade picked per variant. `gap-2`
                     // (8px) keeps the leading-icon / spinner visually
                     // separated from the label without looking spaced-out.
-                    root: 'inline-flex items-center justify-center gap-2 rounded-md font-medium shadow-sm transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60',
+                    // The `disabled:` variant only matches the `:disabled`
+                    // pseudo-class, i.e. form elements — an `<a>` rendered
+                    // via `:as` never matches it. `aria-disabled:` mirrors
+                    // the same cue onto the attribute the component sets on
+                    // non-native targets, so a disabled button-link reads as
+                    // disabled (#1699). Same pairing as `pagination.link`.
+                    root: 'inline-flex items-center justify-center gap-2 rounded-md font-medium shadow-sm transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60 aria-disabled:cursor-not-allowed aria-disabled:opacity-60',
                     leading: 'inline-flex shrink-0 items-center',
                     trailing: 'inline-flex shrink-0 items-center',
                     label: '',

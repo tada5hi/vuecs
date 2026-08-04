@@ -14,7 +14,7 @@ import {
     ref,
 } from 'vue';
 import { bindColorMode } from '../../../../src/core/color-mode/bind';
-import type { ColorMode } from '../../../../src/core/color-mode/types';
+import type { ColorMode } from '../../../../src/core/color-mode/catalog';
 import type { ThemeRuntimeEntry } from '../../../../src/core/theme-runtime/types';
 
 const THEME_MANAGER_SYMBOL = Symbol.for('VCThemeManager');
