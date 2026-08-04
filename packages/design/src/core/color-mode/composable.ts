@@ -2,16 +2,14 @@ import { createSharedComposable, useStorage } from '@vueuse/core';
 import { ref } from 'vue';
 import type { Ref } from 'vue';
 import { bindColorMode } from './bind';
-import type { ColorMode, UseColorModeOptions, UseColorModeReturn } from './types';
+import { isColorMode } from './catalog';
+import type { ColorMode } from './catalog';
+import type { UseColorModeOptions, UseColorModeReturn } from './types';
 
 const DEFAULT_STORAGE_KEY = 'vc-color-mode';
-const COLOR_MODES: readonly ColorMode[] = ['light', 'dark', 'system'];
-const COLOR_MODE_SET = new Set<string>(COLOR_MODES);
 
 const sanitize = (value: unknown, fallback: ColorMode): ColorMode => (
-    typeof value === 'string' && COLOR_MODE_SET.has(value) ?
-        (value as ColorMode) :
-        fallback
+    isColorMode(value) ? value : fallback
 );
 
 /**

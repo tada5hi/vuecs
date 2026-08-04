@@ -1,6 +1,5 @@
 import type { ComputedRef, WritableComputedRef } from 'vue';
-
-export type ColorMode = 'light' | 'dark' | 'system';
+import type { ColorMode } from './catalog';
 
 /**
  * Options for `useColorMode()`. Note that `useColorMode` is wrapped

@@ -347,7 +347,11 @@ const { mode, resolved, isDark, toggle } = useColorMode();
 #### API
 
 ```ts
-type ColorMode = 'light' | 'dark' | 'system';
+const COLOR_MODES = ['light', 'dark', 'system'] as const;
+type ColorMode = typeof COLOR_MODES[number];
+
+/** Runtime guard over COLOR_MODES — narrows untrusted persisted values. */
+function isColorMode(value: unknown): value is ColorMode;
 
 interface UseColorModeOptions {
     /** Initial mode when no persisted value exists. Default: 'system' */
@@ -399,6 +403,38 @@ function bindColorMode(
     options?: { syncClass?: boolean },
 ): UseColorModeReturn;
 ```
+
+#### Narrowing an untrusted source
+
+A persisted backend (cookie, `localStorage`, an SSR hydration payload) is
+user-writable, so it hands you a `Ref<string>` — not a `Ref<ColorMode>`.
+Narrow it with `isColorMode()` before handing it to `bindColorMode`;
+without that step a stale or hand-edited value round-trips into `mode`
+and from there onto the `<html>` class.
+
+```ts
+import { computed, ref } from 'vue';
+import type { Ref } from 'vue';
+import { bindColorMode, isColorMode } from '@vuecs/design';
+import type { ColorMode } from '@vuecs/design';
+
+// Whatever your storage backend hands you — a cookie ref, `useStorage()`,
+// a value read out of an SSR hydration payload …
+const source: Ref<string> = ref(localStorage.getItem('my-color-mode') ?? 'system');
+
+const mode = computed<ColorMode>({
+    // Reads degrade to the configured initial …
+    get: () => (isColorMode(source.value) ? source.value : 'system'),
+    // … writes always come from bindColorMode, which only emits valid modes.
+    set: (value) => { source.value = value; },
+});
+
+bindColorMode(mode);
+```
+
+`useColorMode()` (localStorage) and `@vuecs/nuxt`'s `useColorMode()`
+(cookie) both apply this guard internally — you only need it when you
+wire up your own backend.
 
 The Nuxt module pattern (`@vuecs/nuxt`'s `useColorPalette`):
 

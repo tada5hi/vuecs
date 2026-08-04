@@ -1099,11 +1099,21 @@ via a `<style id="vc-color-palette">` block, leaving layers 1-2 and 4-5 untouche
                             stays unlayered (structural CSS rule); palettes.css too.
   assets/animations.css  <- Motion primitives — vanilla-CSS port of tw-animate-css (MIT, attributed in header)
   src/
-    palette.ts                   <- applyColorPaletteCss(), bindColorPalette<T>(), COLOR_PALETTE_STYLE_ELEMENT_ID
-    composables/
-      use-color-mode.ts          <- bindColorMode(ref, opts), useColorMode(opts)
-      index.ts                   <- composables barrel
-    index.ts                     <- top-level barrel (re-exports composables + palette primitives)
+    core/
+      color-mode/
+        catalog.ts               <- COLOR_MODES tuple, derived ColorMode, isColorMode() guard (#1701)
+        bind.ts                  <- bindColorMode(ref, opts)
+        composable.ts            <- useColorMode(opts) — localStorage-backed, guard-sanitized
+        types.ts                 <- UseColorModeOptions / UseColorModeReturn
+      color-palette/
+        catalog.ts               <- SEMANTIC_SCALES, COLOR_PALETTES, COLOR_PALETTE_SHADES, ColorPaletteConfig
+        apply.ts                 <- applyColorPaletteCss(), COLOR_PALETTE_STYLE_ELEMENT_ID
+        bind.ts                  <- bindColorPalette<T>()
+        composable.ts            <- useColorPalette() / useColorPaletteUnshared()
+        presets.ts render.ts types.ts
+      theme-runtime/             <- useThemeRuntimeManager(), captureColorModeAttrs(),
+                                    renderColorPaletteFromThemes() (SSR dispatch)
+    index.ts                     <- top-level barrel (re-exports every core sub-area, flat)
 
 @vuecs/theme-tailwind/
   assets/index.css       <- @theme { --color-primary-*: var(--vc-color-primary-*) }
@@ -1187,6 +1197,7 @@ data-[state=closed]:animate-out fade-out-0 zoom-out-95` composition.
 - **`useColorPaletteUnshared(options?)`** — un-shared variant. Same surface; one watcher per call. Accepts a custom `source: Ref<T>` for SSR-aware persistence (Nuxt cookie, IndexedDB, etc.). Used internally by `@vuecs/nuxt`'s cookie-backed wrapper.
 - **`useColorMode(options?)`** — reactive light/dark/system mode with localStorage persistence + `<html>` class sync. Returns `{ mode, resolved, isDark, toggle }`. Uses `usePreferredDark` from VueUse to resolve `'system'`.
 - **`bindColorMode(source: Ref<ColorMode>, options?)`** — building block; same pattern as `bindColorPalette`.
+- **`COLOR_MODES` / `ColorMode` / `isColorMode(value)`** — the color-mode vocabulary, in `core/color-mode/catalog.ts` (same tuple-is-the-source-of-truth shape as `color-palette/catalog.ts`: `ColorMode` is *derived* via `typeof COLOR_MODES[number]`, so the union and the runtime list can't drift). `isColorMode` takes `unknown` so consumers can point it straight at untrusted persisted state — the required narrowing step for any `Ref<string>`-backed source before it satisfies `bindColorMode`. `useColorMode`'s `useStorage` serializer and `@vuecs/nuxt`'s cookie-backed `useColorMode` both run it, degrading an invalid stored value to the configured initial rather than round-tripping it onto the `<html>` class (issue #1701).
 
 **`@vuecs/theme-tailwind` (Tailwind-specific palette + class strings):**
 - **`renderColorPaletteStyles(palette): string`** — pure function. Returns a `:root { … }` block that remaps `--vc-color-<scale>-*` onto `var(--color-<palette>-*)` for every scale set in `palette`. Safe on server and client.
