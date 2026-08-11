@@ -136,6 +136,11 @@ export const VCNavItem = defineComponent({
         const hasChildren = computed(() => data.value.children &&
             data.value.children.length > 0);
 
+        // Declared always-open: rendered as a plain section rather than a
+        // disclosure, so there is deliberately no trigger and nothing to
+        // toggle. Meaningless for a `dropdown` flyout, which is gated below.
+        const isPinnedOpen = computed(() => !!data.value.expanded);
+
         // Channel this item's already-scored children down to the nested
         // `<VCNavItems>` that renders its submenu, so the child list renders
         // them as-is instead of re-resolving / re-scoring a subtree. Scoped
@@ -345,6 +350,25 @@ export const VCNavItem = defineComponent({
                         h(NavigationMenuContent, { class: resolved.content || undefined }, { default: () => renderChildren() }),
                     ],
                 });
+            }
+
+            // expanded: a plain always-open section. Deliberately NOT a
+            // Collapsible held open — a disclosure that cannot close is a lie
+            // to assistive tech (`aria-expanded` never changes) and a dead
+            // click target. No trigger is rendered; the title is inert.
+            if (isPinnedOpen.value) {
+                return h(props.as, {
+                    class: [
+                        resolved.item,
+                        resolved.itemNested,
+                        { active: isActive },
+                    ],
+                    'data-active': isActive ? '' : undefined,
+                    'data-expanded': '',
+                }, [
+                    h('div', { class: resolved.trigger || undefined }, [title]),
+                    h('div', { class: resolved.content || undefined }, [renderChildren()]),
+                ]);
             }
 
             // collapse: inline Reka Collapsible

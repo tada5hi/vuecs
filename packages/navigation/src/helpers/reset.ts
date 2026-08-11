@@ -10,13 +10,16 @@ function resetItemsByTraceIF(
         item.active = isEqual;
         item.display = true;
 
+        // `expanded` is a DECLARATION carried on the source item and must
+        // survive this pass; `displayChildren` is derived and is rewritten on
+        // every resolve, which is why a source `displayChildren` never sticks.
         if (isEqual) {
             item.activeWithin = false;
             item.displayChildren = true;
         } else {
             const isAncestor = isTracePartOf(item.trace, trace);
             item.activeWithin = isAncestor;
-            item.displayChildren = isAncestor;
+            item.displayChildren = isAncestor || !!item.expanded;
         }
 
         item.children = resetItemsByTraceIF(item.children, trace);
