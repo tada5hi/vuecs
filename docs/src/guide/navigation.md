@@ -91,6 +91,45 @@ export const primaryItems: NavigationItem[] = [
 
 A real navigation supersedes the selection: as soon as the route changes, the nav clears the selection and hands active state back to path matching. Each root nav has its own selection scope; the registry remains the only channel between navs. The `select` callback is also exposed on the `#link` slot props if you render bespoke link markup.
 
+## Groups
+
+An item with `children` is a **group**. It renders a submenu — a collapsible inline section (`collapse`) or a flyout (`dropdown`) — and its title is the trigger, not a link.
+
+### A group is not a link
+
+Only a **leaf** renders its `url` as a link. Nesting an `<a>` inside the trigger `<button>` would be invalid markup and would swallow the disclosure interaction, so a group that must also be a destination gets a leaf child pointing at it — the conventional "Overview" first child:
+
+```ts
+{
+    name: 'Projects',
+    children: [
+        { name: 'Overview', url: '/projects' },
+        { name: 'Incoming', url: '/projects/in' },
+    ],
+}
+```
+
+A `url` on a group is **not** ignored, though: `findBestItemMatches` scores every item and a group's score seeds its children's, so a group url is how a whole branch is kept on the active trail for nested paths.
+
+### Always-expanded groups
+
+`expanded: true` renders a group's children permanently open, independent of which item is active — for a sidebar group that should read as a titled section rather than a disclosure:
+
+```ts
+{
+    name: 'Projects',
+    expanded: true,
+    children: [
+        { name: 'Outgoing', url: '/projects' },
+        { name: 'Incoming', url: '/projects/in' },
+    ],
+}
+```
+
+No trigger is rendered in this mode. A disclosure that cannot close would report a permanently-true `aria-expanded` to assistive tech and present a dead click target, so the title becomes inert markup instead. Ignored under `dropdown`, where a flyout has no meaningful always-open state.
+
+Do not reach for `displayChildren` to do this: it is **derived output**, recomputed from the active trail on every resolve, so a value set on a source item is always overwritten.
+
 ## Two-call-site pattern (header + sidebar)
 
 The canonical layout: a header nav publishes its top-level sections, and a sidebar nav derives its own list from whichever section is active.
