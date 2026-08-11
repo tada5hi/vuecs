@@ -1,0 +1,1 @@
+import{jt as e}from"./iframe-bridge-BAl_c92E.js";function t(n){return n?n.flatMap(n=>n.type===e?t(n.children):[n]):[]}export{t};
