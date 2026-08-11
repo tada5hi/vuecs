@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.5.0](https://github.com/tada5hi/vuecs/compare/navigation-v4.4.1...navigation-v4.5.0) (2026-08-11)
+
+
+### Features
+
+* **navigation:** add expanded groups and document url-on-group semantics ([#1715](https://github.com/tada5hi/vuecs/issues/1715)) ([e64324d](https://github.com/tada5hi/vuecs/commit/e64324dcb9de2cd941e07d6e90241996d952c65f)), closes [#1714](https://github.com/tada5hi/vuecs/issues/1714)
+
 ## [4.4.1](https://github.com/tada5hi/vuecs/compare/navigation-v4.4.0...navigation-v4.4.1) (2026-08-04)
 
 
