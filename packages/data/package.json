@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/data",
-    "version": "0.0.0",
+    "version": "1.0.0",
     "type": "module",
     "description": "Loader-backed data-source composables for vuecs — collection + record state containers that bind to <VCList> and friends.",
     "exports": {
@@ -47,13 +47,13 @@
     },
     "devDependencies": {
         "@vue/test-utils": "^2.4.11",
-        "@vuecs/core": "^3.5.0",
-        "@vuecs/list": "^1.2.1",
+        "@vuecs/core": "^3.6.0",
+        "@vuecs/list": "^1.3.0",
         "jsdom": "^30.0.1",
         "vue": "^3.5.40"
     },
     "peerDependencies": {
-        "@vuecs/core": "^3.5.0",
+        "@vuecs/core": "^3.6.0",
         "vue": "^3.x"
     },
     "engines": {

@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.2.1](https://github.com/tada5hi/vuecs/compare/timeago-v2.2.0...timeago-v2.2.1) (2026-08-11)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.5.0 to ^3.6.0
+  * peerDependencies
+    * @vuecs/core bumped from ^3.5.0 to ^3.6.0
+
 ## [2.2.0](https://github.com/tada5hi/vuecs/compare/timeago-v2.1.4...timeago-v2.2.0) (2026-07-29)
 
 

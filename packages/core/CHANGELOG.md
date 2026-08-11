@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.6.0](https://github.com/tada5hi/vuecs/compare/core-v3.5.0...core-v3.6.0) (2026-08-11)
+
+
+### Features
+
+* @vuecs/data - loader-backed collection + record data sources ([#1713](https://github.com/tada5hi/vuecs/issues/1713)) ([d2c2f5c](https://github.com/tada5hi/vuecs/commit/d2c2f5c3f3c716b3d6306a45caf0989d4a401f3f))
+
 ## [3.5.0](https://github.com/tada5hi/vuecs/compare/core-v3.4.0...core-v3.5.0) (2026-07-29)
 
 

@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.3.1](https://github.com/tada5hi/vuecs/compare/overlays-v1.3.0...overlays-v1.3.1) (2026-08-11)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.5.0 to ^3.6.0
+  * peerDependencies
+    * @vuecs/core bumped from ^3.5.0 to ^3.6.0
+
 ## [1.3.0](https://github.com/tada5hi/vuecs/compare/overlays-v1.2.0...overlays-v1.3.0) (2026-07-29)
 
 

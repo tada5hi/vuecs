@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.1.2](https://github.com/tada5hi/vuecs/compare/locale-v1.1.1...locale-v1.1.2) (2026-08-11)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.5.0 to ^3.6.0
+  * peerDependencies
+    * @vuecs/core bumped from ^3.5.0 to ^3.6.0
+
 ## [1.1.1](https://github.com/tada5hi/vuecs/compare/locale-v1.1.0...locale-v1.1.1) (2026-08-04)
 
 

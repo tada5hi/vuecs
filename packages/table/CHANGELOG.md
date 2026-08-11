@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.6.2](https://github.com/tada5hi/vuecs/compare/table-v1.6.1...table-v1.6.2) (2026-08-11)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.5.0 to ^3.6.0
+    * @vuecs/placeholder bumped from ^1.1.0 to ^1.1.1
+  * peerDependencies
+    * @vuecs/core bumped from ^3.5.0 to ^3.6.0
+    * @vuecs/placeholder bumped from ^1.1.0 to ^1.1.1
+
 ## [1.6.1](https://github.com/tada5hi/vuecs/compare/table-v1.6.0...table-v1.6.1) (2026-08-04)
 
 
