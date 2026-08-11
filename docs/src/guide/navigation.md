@@ -128,6 +128,8 @@ A `url` on a group is **not** ignored, though: `findBestItemMatches` scores ever
 
 No trigger is rendered in this mode. A disclosure that cannot close would report a permanently-true `aria-expanded` to assistive tech and present a dead click target, so the title becomes inert markup instead. Ignored under `dropdown`, where a flyout has no meaningful always-open state.
 
+It covers the group's own children only — it does **not** force ancestors open. Nested inside a collapsible group, the section renders once that ancestor is opened, and renders already-open. Propagating upwards would let a declaration on a deep group pin its whole ancestor chain open on first paint, overriding the active-trail collapse the rest of the chain follows.
+
 Do not reach for `displayChildren` to do this: it is **derived output**, recomputed from the active trail on every resolve, so a value set on a source item is always overwritten.
 
 ## Two-call-site pattern (header + sidebar)

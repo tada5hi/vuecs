@@ -24,8 +24,10 @@ export type NavigationItem<
      * **Only a LEAF renders it as a link.** An item that has `children`
      * renders as a submenu trigger (a `<button>`) instead — a link nested
      * inside the trigger would be invalid markup and would swallow the
-     * disclosure interaction. A group that must also be a destination needs a
-     * leaf child pointing at it (the conventional "Overview" first child).
+     * disclosure interaction. An {@link NavigationItem.expanded} group has no
+     * trigger at all; its title is inert markup — still not a link. A group
+     * that must also be a destination needs a leaf child pointing at it (the
+     * conventional "Overview" first child).
      *
      * On a group the url is still meaningful: `findBestItemMatches` scores
      * every item and a group's score seeds its children's, so a group url is
@@ -50,6 +52,13 @@ export type NavigationItem<
      * For a sidebar group that should read as a titled section rather than a
      * disclosure. Ignored in `dropdown` submenu mode, where a flyout has no
      * meaningful always-open state.
+     *
+     * **Scoped to this group's own children — it does NOT force ancestors
+     * open.** Nested inside a collapsed group, the section renders once that
+     * ancestor is opened, and renders already-open. Propagating upwards would
+     * let a declaration on a deep group pin its whole ancestor chain open on
+     * first paint, overriding the active-trail collapse the chain otherwise
+     * follows.
      *
      * Contrast with {@link NavigationItem.displayChildren}, which is DERIVED
      * per resolve from the active trail and is overwritten on every pass.
