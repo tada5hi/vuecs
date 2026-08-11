@@ -74,8 +74,10 @@ const source = defineDataCollection<User, UserListMeta>({
 
         const body = await response.json() as { data: User[]; total: number };
 
-        // `total` is optional — omit it and `source.total` falls back
-        // to `data.length`.
+        // `total` is optional — until the server has reported one,
+        // `source.total` falls back to `data.length`. Once reported, the
+        // last known server total sticks: a later response that omits
+        // `total` keeps it (a page fetch shouldn't wipe the count).
         return { data: body.data, total: body.total };
     },
 });
@@ -86,7 +88,7 @@ With `autoLoad` left at its default (`true`), the first fetch fires on mount. Th
 ```ts
 source.data      // ComputedRef<User[]>
 source.busy      // ComputedRef<boolean>
-source.total     // ComputedRef<number>   — server total, else data.length
+source.total     // ComputedRef<number>   — last reported server total, else data.length
 source.isEmpty   // ComputedRef<boolean>  — !busy && total === 0
 source.error     // Ref<unknown>
 source.meta      // UserListMeta          — a reactive plain bag, NOT a ref
@@ -422,7 +424,7 @@ Three details worth pinning:
 
 - **`hydrate` is evaluated once, at construction.** Pass the lazy getter form (`() => payload[key]`) so the store is read at the right moment; the snapshot may also be passed directly.
 - **The snapshot is authoritative for `meta`.** `hydrate` **replaces** the bag rather than merging onto `initialMeta`, so keys the snapshot dropped do not survive rehydration.
-- **`dehydrate()` returns a fresh container with shared rows.** The array (and the meta object) are new, but the rows are the plain objects your loader returned — safe to `JSON.stringify`, but mutating a row in place would still reach the live source.
+- **`dehydrate()` returns a fresh container with shared rows.** The array (and the meta object) are new, but the rows are the plain objects your loader returned — mutating a row in place would still reach the live source. Serialization is your contract: `JSON.stringify` is safe only when rows and meta are JSON-compatible (`Date` becomes a string, `Map`/`Set` collapse to `{}`, `undefined` properties are dropped, `BigInt` throws). If your values aren't plain JSON, run the snapshot through your own serializer before storing it.
 
 `defineDataRecord` follows the same contract, with one difference worth knowing: its snapshot is `{ data?, meta }`, and only `meta` is a fresh object — `data` is the **live record reference itself**, not a copy. The practical rule is the same in both variants, just tighter here: serialize the snapshot, never mutate it in place.
 
@@ -453,7 +455,7 @@ Three details worth pinning:
 
 | Member | Type | Description |
 |---|---|---|
-| `data` / `busy` / `total` / `isEmpty` | `ComputedRef` | Read-only views. `total` falls back to `data.length`. |
+| `data` / `busy` / `total` / `isEmpty` | `ComputedRef` | Read-only views. `total` falls back to `data.length` until a server total has been reported, then keeps the last reported value. |
 | `meta` | `Meta` | Reactive plain bag (`shallowReactive`). |
 | `error` | `Ref<unknown>` | Last captured failure. |
 | `load(next?)` | `Promise<void>` | Merge meta + re-fire. Never rejects. |
