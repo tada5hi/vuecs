@@ -1,4 +1,4 @@
-import { isObject } from '@vuecs/core';
+import { createCollectionMutations } from '@vuecs/core';
 import { computed, isRef, toValue } from 'vue';
 import type { ComputedRef, MaybeRefOrGetter, Ref } from 'vue';
 import { merge } from 'smob';
@@ -140,38 +140,6 @@ export type ListState<
     applyDelete: (current: T[], item: T) => T[];
 };
 
-function resolveItemId<T>(
-    item: T,
-    itemId?: (item: T) => string | number,
-    itemKey?:
-        | Extract<keyof T, string | number> |
-        ((item: T) => Extract<keyof T, string | number>),
-): string | number | undefined {
-    if (itemId) return itemId(item);
-    if (itemKey) {
-        const key = typeof itemKey === 'function' ? itemKey(item) : itemKey;
-        // `key` is a string|number key of T, and we already narrowed against
-        // `itemKey` being defined — so `item[key]` is sound. The runtime
-        // check on `value` covers the case where the field exists but isn't
-        // a string|number (resolveItemId returns undefined; caller falls
-        // through to the `.id` heuristic or the index).
-        const value = item[key];
-        if (typeof value === 'string' || typeof value === 'number') {
-            return value;
-        }
-    }
-    // After `isObject`, item is at least an indexable record. Annotate
-    // a fresh local with the structural shape we care about (`{ id? }`)
-    // so we read `.id` without an `unknown` cast.
-    if (isObject(item)) {
-        const obj: { id?: string | number } = item;
-        if (typeof obj.id === 'string' || typeof obj.id === 'number') {
-            return obj.id;
-        }
-    }
-    return undefined;
-}
-
 /**
  * Container composable for `<VCList>` state. Reactive; accepts plain values,
  * `Ref<T>`, or getters. Consumer-defined data lives under the typed `meta`
@@ -236,60 +204,39 @@ export function defineList<
     // the hook for the resulting undefined accesses.
     const meta = options.meta ?? ({} as Meta);
 
-    const findIndex = (item: T): number => {
-        const target = resolveItemId(item, options.itemId, options.itemKey);
-        if (target === undefined) {
-            // Fall back to reference equality so reactive lists with no
-            // identity hint still resolve when the same object is passed.
-            return data.value.indexOf(item);
-        }
-        return data.value.findIndex((candidate) => (
-            resolveItemId(candidate, options.itemId, options.itemKey) === target
-        ));
-    };
+    // Identity resolution + the pure next-array builders live in
+    // `@vuecs/core` so `@vuecs/data` (and third-party collection
+    // components) share one implementation. `defineList` keeps the
+    // reactive wiring, the writer-resolution ladder, and the mutator
+    // dispatch on top of it.
+    //
+    // The merge adapter is deliberately LEFT-priority (smob keeps the
+    // first-seen value on conflicting keys), so `mergeOnUpdated` fills
+    // gaps in the existing record rather than overwriting it.
+    const mutations = createCollectionMutations<T>({
+        itemId: options.itemId,
+        itemKey: options.itemKey,
+        flags: {
+            mergeOnUpdated: options.mergeOnUpdated,
+            dedupCreated: options.dedupCreated,
+            filterDeleted: options.filterDeleted,
+        },
+        merge: (target, source) => merge({}, target, source),
+    });
 
-    const getItemKey = (item: T): string | number | undefined => (
-        resolveItemId(item, options.itemId, options.itemKey)
-    );
+    const {
+        flags,
+        getItemKey,
+        indexOf,
+        applyCreate,
+        applyUpdate,
+        applyDelete,
+    } = mutations;
 
-    const flags = {
-        mergeOnUpdated: !!options.mergeOnUpdated,
-        dedupCreated: !!options.dedupCreated,
-        filterDeleted: !!options.filterDeleted,
-    };
-
-    const indexOf = (arr: T[], item: T): number => {
-        const target = resolveItemId(item, options.itemId, options.itemKey);
-        if (target === undefined) return arr.indexOf(item);
-        return arr.findIndex((candidate) => (
-            resolveItemId(candidate, options.itemId, options.itemKey) === target
-        ));
-    };
-
-    const applyCreate = (current: T[], item: T): T[] => {
-        if (flags.dedupCreated && indexOf(current, item) >= 0) {
-            return current;
-        }
-        return [...current, item];
-    };
-
-    const applyUpdate = (current: T[], item: T): T[] => {
-        const idx = indexOf(current, item);
-        if (idx < 0) return current;
-        const next = current.slice();
-        next[idx] = flags.mergeOnUpdated ?
-            (merge({}, current[idx] as object, item as object) as T) :
-            item;
-        return next;
-    };
-
-    const applyDelete = (current: T[], item: T): T[] => {
-        const idx = indexOf(current, item);
-        if (idx < 0) {
-            return flags.filterDeleted ? current : current.filter((c) => c !== item);
-        }
-        return [...current.slice(0, idx), ...current.slice(idx + 1)];
-    };
+    // Fall back to reference equality (inside `indexOf`) so reactive
+    // lists with no identity hint still resolve when the same object
+    // is passed.
+    const findIndex = (item: T): number => indexOf(data.value, item);
 
     const base: ListState<T, Meta> = {
         data,
