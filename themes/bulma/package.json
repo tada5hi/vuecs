@@ -63,8 +63,8 @@
         "@vueuse/core": "^14.4.0",
         "culori": "^4.0.1",
         "tailwindcss": "^4.3.3",
-        "tsx": "^4.23.1",
-        "vue": "^3.5.40"
+        "tsx": "^4.23.11",
+        "vue": "^3.5.41"
     },
     "peerDependencies": {
         "@vuecs/core": "^3.5.0",
