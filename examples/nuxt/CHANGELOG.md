@@ -1,5 +1,15 @@
 # Changelog
 
+## [6.3.4](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v6.3.3...examples-nuxt-v6.3.4) (2026-08-11)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/navigation bumped from ^4.4.1 to ^4.5.0
+    * @vuecs/theme-tailwind bumped from ^6.4.1 to ^6.4.2
+
 ## [6.3.3](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v6.3.2...examples-nuxt-v6.3.3) (2026-08-04)
 
 

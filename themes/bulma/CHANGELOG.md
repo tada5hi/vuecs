@@ -1,5 +1,14 @@
 # Changelog
 
+## [5.4.2](https://github.com/tada5hi/vuecs/compare/theme-bulma-v5.4.1...theme-bulma-v5.4.2) (2026-08-11)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/navigation bumped from ^4.4.1 to ^4.5.0
+
 ## [5.4.1](https://github.com/tada5hi/vuecs/compare/theme-bulma-v5.4.0...theme-bulma-v5.4.1) (2026-08-04)
 
 
