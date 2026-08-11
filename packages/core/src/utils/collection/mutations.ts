@@ -51,7 +51,13 @@ export function createCollectionMutations<T>(
     const applyDelete = (current: T[], item: T) : T[] => {
         const idx = indexOf(current, item);
         if (idx < 0) {
-            return flags.filterDeleted ? current : current.filter((c) => c !== item);
+            if (flags.filterDeleted) return current;
+            // The reference filter exists for identity-less items. When it
+            // removes nothing, preserve the ORIGINAL reference — callers key
+            // off `next === current` to skip their write path, and a fresh
+            // same-length array would fire it for a no-op.
+            const next = current.filter((c) => c !== item);
+            return next.length === current.length ? current : next;
         }
         return [...current.slice(0, idx), ...current.slice(idx + 1)];
     };

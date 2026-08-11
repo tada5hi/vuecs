@@ -55,6 +55,18 @@ describe('createCollectionMutations', () => {
         expect(m.applyDelete(current, { id: 2, name: 'x' })).toBe(current);
     });
 
+    it('should preserve the array reference on applyDelete when the item is missing under default flags', () => {
+        const m = createCollectionMutations<Row>({});
+        const current : Row[] = [{ id: 1, name: 'a' }];
+        expect(m.applyDelete(current, { id: 2, name: 'x' })).toBe(current);
+    });
+
+    it('should preserve the array reference on applyDelete for an absent identity-less item', () => {
+        const m = createCollectionMutations<{ label: string }>({});
+        const current = [{ label: 'kept' }];
+        expect(m.applyDelete(current, { label: 'missing' })).toBe(current);
+    });
+
     it('should expose resolved flags and identity helpers', () => {
         const m = createCollectionMutations<Row>({ itemKey: 'name' });
         expect(m.flags).toEqual({
