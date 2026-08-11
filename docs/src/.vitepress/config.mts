@@ -76,6 +76,7 @@ export default defineConfig({
                         { text: 'Behavioral Defaults', link: '/guide/behavioral-defaults' },
                         { text: 'Design Tokens', link: '/guide/design-tokens' },
                         { text: 'Composables', link: '/guide/composables' },
+                        { text: 'Data Sources', link: '/guide/data-source' },
                     ],
                 },
                 {

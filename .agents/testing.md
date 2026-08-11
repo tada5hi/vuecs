@@ -8,18 +8,19 @@
 
 ## Test inventory
 
-**16 workspaces** carry tests — **104 `.spec.ts`** total (plus 5 `.test-d.ts`
+**17 workspaces** carry tests — **107 `.spec.ts`** total (plus 6 `.test-d.ts`
 type guards). This is no longer "just core + navigation"; keep this table in
 sync when adding a test dir.
 
 | Workspace | Specs | Focus |
 |-----------|------:|-------|
-| `@vuecs/core` | 35 | Theme resolve/extend/variant/manager/composable/install, defaults, config, `defineTheme`/`mergeThemes`, `auditTheme`, ported composables (`useSelectionMachine`, primitive, …) |
+| `@vuecs/core` | 36 | Theme resolve/extend/variant/manager/composable/install, defaults, config, `defineTheme`/`mergeThemes`, `auditTheme`, ported composables (`useSelectionMachine`, `createCollectionMutations`, primitive, …) |
 | `@vuecs/table` | 16 | Sort machine, `sortRows`, selection machine, auto-render, driver/columns |
 | `@vuecs/elements` | 10 | Card / Alert / Collapse / Badge / Avatar / Tag parts |
 | `@vuecs/navigation` | 10 | Registry, resolver, breadcrumb, stepper |
 | `@vuecs/overlays` | 10 | Modal / AlertDialog / Popover / Tooltip / menus, `useToast` / `useModal` / `useAlertDialog` |
 | `@vuecs/design` | 8 | `useColorMode`, color-mode catalog/guard, palette render/apply, standalone catalog |
+| `@vuecs/data` | 2 | `defineDataCollection` / `defineDataRecord` — latest-wins token guard, error capture vs rethrow, autoLoad + hydration skip, mutators + gate flags + `total` delta, D12 buffering, patch-merge semantics, snapshot round-trip |
 | `@vuecs/forms` | 2 | Components (incl. Reka `VCFormSelect`), `useSubmitButton` |
 | `@vuecs/list` | 2 | Components + list context |
 | `@vuecs/locale` | 2 | `bindLocale` / `useLocaleManager` |
@@ -49,17 +50,18 @@ npm run test --workspace=packages/table --if-present
 
 ## Type-level tests (drift guards)
 
-Five `*.test-d.ts` files assert that the **built `dist` declarations** keep
-their generic-over-data / model-value inference. They run via each package's
-Vitest `typecheck` block (its own `test/tsconfig.json`), not the runtime
-`.spec.ts` path:
+Six `*.test-d.ts` files assert that the **built `dist` declarations** keep
+their generic-over-data / model-value / cross-package structural inference.
+They run via each package's Vitest `typecheck` block (its own
+`test/tsconfig.json`), not the runtime `.spec.ts` path:
 
 ```
-packages/table/test/types/generic-row.test-d.ts       # <VCTable> Row inference
+packages/table/test/types/generic-row.test-d.ts        # <VCTable> Row inference
 packages/list/test/types/generic-item.test-d.ts        # <VCList>/<VCListItem> Item inference
 packages/navigation/test/types/breadcrumb.test-d.ts    # <VCBreadcrumb> Item inference
 packages/forms/test/types/model-value.test-d.ts        # form model-value typing
 packages/link/test/types/link-props.test-d.ts          # LinkProps surface + no index signature
+packages/data/test/types/list-compat.test-d.ts         # DataCollection assignable to <VCList :state> (ListState & ListMutators)
 ```
 
 The three generic-component guards additionally pin that the facade types

@@ -1,3 +1,4 @@
+export * from './collection';
 export * from './composables';
 export * from './has-own-property';
 export * from './evaluate';

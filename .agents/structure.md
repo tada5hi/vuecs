@@ -7,6 +7,7 @@ vuecs/
   packages/           # Component + infrastructure packages (npm workspaces)
     core/             # @vuecs/core — theme system, defaults manager, utilities
     countdown/        # @vuecs/countdown
+    data/             # @vuecs/data — loader-backed data-source composables: defineDataCollection() (structural superset of ListState & ListMutators; binds to <VCList :state>) + defineDataRecord() (single entity) over one shared async core (counter-busy, token-guarded latest-wins, error ref, mutate(fn), dehydrate/hydrate, D12 mutator buffering). Pure composables — no components, no CSS, no Reka. @experimental (plan 035)
     design/           # @vuecs/design — CSS design tokens (concrete OKLCH defaults) + motion primitives (animations.css) + useColorMode + generic palette primitives (applyColorPaletteCss / bindColorPalette<T> / COLOR_PALETTE_STYLE_ELEMENT_ID) — theme-agnostic, no Tailwind dep (plan 017). `/standalone` subpath additionally inlines the 22-palette Tailwind v4 catalog so setColorPalette() works for BS/Bulma consumers without Tailwind loaded (plan 015 P3). scripts/build-standalone.ts regenerates assets/palettes.css from upstream.
     elements/         # @vuecs/elements — atomic, presentation-only UI elements (Separator, Tag/Tags, Avatar, AspectRatio, VisuallyHidden, Badge) + the Card compound (Card / CardHeader / CardTitle / CardDescription / CardBody / CardFooter, plan 030) + the Alert compound (Alert / Title / Description / Close, plan 031) + the Collapse compound (Collapse / Trigger / Content; Reka Collapsible wrapper, plan 032); thin Reka wrappers + pure-CSS chips (plan 013)
     forms/            # @vuecs/forms (renamed from @vuecs/form-controls in 3.0; checkbox/switch on Reka primitives)
@@ -112,6 +113,13 @@ packages/core/src/
     install.ts        # installDefaultsManager() / injectDefaultsManager()
     index.ts          # Barrel exports
   utils/              # Shared utilities (inject, provide, normalizeSlot, isMeaningfulSlotContent, etc.)
+    collection/       # Identity + pure mutation semantics, promoted out of defineList (plan 035)
+      identity.ts     # resolveItemIdentity() — the itemId -> itemKey -> .id ladder
+      mutations.ts    # createCollectionMutations() -> indexOf / getItemKey / applyCreate / applyUpdate / applyDelete
+                      #   Gate flags (dedupCreated / filterDeleted / mergeOnUpdated); the deep-merge fn is
+                      #   INJECTABLE so core stays zero-dep — @vuecs/list and @vuecs/data each pass smob's merge
+      types.ts        # CollectionMutationFlags, CollectionMutations, CollectionMutationsOptions
+      index.ts        # Barrel exports
   types.ts            # VNodeClass, VNodeProperties, PartialPick, GenericComponentShape
 ```
 

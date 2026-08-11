@@ -338,6 +338,36 @@ Writer resolution order:
 2. `data` is a `Ref<T[]>` — auto-derived setter
 3. Otherwise — no mutators; only the pure helpers
 
+Three optional flags gate what a mutation actually does. All default to
+`false`, and all key off the resolved item identity (`itemId` /
+`itemKey`, falling back to `.id`):
+
+| Flag | Effect when `true` |
+|------|--------------------|
+| `dedupCreated` | `create(item)` is a no-op when the item's identity is already in `data` |
+| `filterDeleted` | `delete(item)` is a no-op when the item is not in `data` |
+| `mergeOnUpdated` | `update(item)` deep-merges into the existing row instead of replacing it |
+
+```ts
+const list = defineList({
+    data: users,
+    itemKey: 'id',
+    dedupCreated: true,
+    filterDeleted: true,
+    mergeOnUpdated: true,
+});
+```
+
+The flags apply to the bound mutators and the pure `apply*` helpers
+alike, so both surfaces stay consistent. A gated no-op returns the
+**original** array reference — a manual call site can therefore skip its
+write when `next === current`. The merger `defineList()` wires is
+left-priority: on conflicting keys the **existing** record wins and the
+incoming item only contributes keys the existing one lacks. One
+exception to note — `mergeOnUpdated` applies to the `setData` /
+`Ref`-auto write paths only; a per-op `onUpdated` handler always
+receives the raw item and owns its own merge policy.
+
 ## Composables
 
 ### `useList<T>()`
