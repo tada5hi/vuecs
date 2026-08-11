@@ -1,0 +1,65 @@
+{
+    "name": "@vuecs/data",
+    "version": "0.0.0",
+    "type": "module",
+    "description": "Loader-backed data-source composables for vuecs — collection + record state containers that bind to <VCList> and friends.",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "sideEffects": false,
+    "keywords": [
+        "vuecs",
+        "data",
+        "data-source",
+        "collection",
+        "record",
+        "list",
+        "pagination",
+        "vue"
+    ],
+    "author": {
+        "name": "Peter Placzek",
+        "email": "contact@tada5hi.net",
+        "url": "https://tada5hi.net"
+    },
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tada5hi/vuecs.git",
+        "directory": "packages/data"
+    },
+    "scripts": {
+        "build:js": "tsdown",
+        "build:types": "tsc --emitDeclarationOnly -p tsconfig.build.json",
+        "build": "rimraf dist && npm run build:js && npm run build:types",
+        "test": "npm run build:types && vitest --config test/vitest.config.ts --run",
+        "test:coverage": "vitest --config test/vitest.config.ts --run --coverage"
+    },
+    "dependencies": {
+        "smob": "^1.6.2"
+    },
+    "devDependencies": {
+        "@vue/test-utils": "^2.4.11",
+        "@vuecs/core": "^3.5.0",
+        "@vuecs/list": "^1.2.1",
+        "jsdom": "^30.0.1",
+        "vue": "^3.5.40"
+    },
+    "peerDependencies": {
+        "@vuecs/core": "^3.5.0",
+        "vue": "^3.x"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

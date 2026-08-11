@@ -7,6 +7,7 @@
         "packages/button": {"component": "button" },
         "packages/core": {"component": "core" },
         "packages/countdown": {"component": "countdown" },
+        "packages/data": {"component": "data" },
         "packages/design": {"component": "design" },
         "packages/elements": {"component": "elements" },
         "packages/forms": {"component": "forms" },

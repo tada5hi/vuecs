@@ -2,6 +2,7 @@
     "packages/button": "1.4.1",
     "packages/core": "3.5.0",
     "packages/countdown": "2.1.0",
+    "packages/data": "0.0.0",
     "packages/design": "1.2.0",
     "packages/elements": "1.5.0",
     "packages/forms": "5.4.1",
