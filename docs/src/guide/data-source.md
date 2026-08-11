@@ -8,7 +8,7 @@
 Both sit on one shared async core: counter-backed `busy`, an `error` ref, token-guarded latest-wins loading, a `mutate()` wrapper for write gestures, and a `dehydrate()` / `hydrate` pair for SSR.
 
 ::: warning Experimental
-`@vuecs/data` is marked `@experimental`. The surface may still change while the first consumer adapters land. It follows the same policy as `useSubmitButton()` — at least one minor before the API freezes.
+`@vuecs/data` is marked `@experimental` and ships on the **alpha pre-release channel** (`x.y.z-alpha.N`, npm dist-tag `alpha`). The API may break between releases without a major bump while the first consumer adapters land; the surface stabilizes to regular releases once they have.
 :::
 
 ## Where it sits vs `defineList()`
@@ -29,7 +29,7 @@ Reach for `defineList()` when the data already lives somewhere else (a Pinia sto
 ## Installation
 
 ```bash
-npm install @vuecs/data
+npm install @vuecs/data@alpha
 ```
 
 Peers: `vue` and `@vuecs/core`. There is **no runtime dependency on `@vuecs/list`** in either direction — the `<VCList :state>` binding works by shape.

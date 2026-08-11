@@ -9,12 +9,12 @@ Loader-backed data-source composables for [vuecs](https://vuecs.dev):
 `defineDataRecord()` (single-entity source), sharing one async core
 (busy / error / latest-wins loading / hydration).
 
-> **Experimental.** The surface may still change while the first consumer adapters land.
+> **Experimental — alpha pre-release channel.** Published as `x.y.z-alpha.N` under the `alpha` npm dist-tag; the API may break between releases without a major bump while the first consumer adapters land.
 
 ## 📦 Installation
 
 ```sh
-npm install @vuecs/data
+npm install @vuecs/data@alpha
 ```
 
 ## 📚 Documentation
