@@ -51,13 +51,13 @@
     "dependencies": {
         "@vueuse/core": "^14.4.0",
         "ohash": "^2.0.11",
-        "reka-ui": "^2.10.1"
+        "reka-ui": "^2.10.3"
     },
     "devDependencies": {
         "@vue/test-utils": "^2.4.11",
         "@vuecs/core": "^3.5.0",
         "jsdom": "^30.0.1",
-        "vue": "^3.5.40"
+        "vue": "^3.5.41"
     },
     "peerDependencies": {
         "@vuecs/core": "^3.5.0",
