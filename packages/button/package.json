@@ -44,11 +44,11 @@
         "test": "vitest --config test/vitest.config.ts --run"
     },
     "devDependencies": {
-        "@vue/test-utils": "^2.4.11",
+        "@vue/test-utils": "^2.5.0",
         "@vuecs/core": "^3.5.0",
         "@vuecs/icon": "^1.1.0",
         "jsdom": "^30.0.1",
-        "vue": "^3.5.40"
+        "vue": "^3.5.42"
     },
     "peerDependencies": {
         "@vuecs/core": "^3.5.0",

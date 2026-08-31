@@ -38,7 +38,7 @@
         "prepack": "npm run build"
     },
     "dependencies": {
-        "@nuxt/kit": "^4.5.1",
+        "@nuxt/kit": "^4.5.2",
         "@vueuse/core": "^14.4.0",
         "@vuecs/core": "^3.5.0",
         "@vuecs/design": "^1.2.0",
@@ -46,9 +46,9 @@
     },
     "devDependencies": {
         "@nuxt/module-builder": "^1.0.3",
-        "@nuxt/schema": "^4.5.1",
-        "nuxt": "^4.5.1",
-        "vue": "^3.5.40"
+        "@nuxt/schema": "^4.5.2",
+        "nuxt": "^4.5.2",
+        "vue": "^3.5.42"
     },
     "peerDependencies": {
         "vue": "^3.x"
