@@ -225,7 +225,7 @@ describe('<VCAlert>', () => {
         it('a whitespace-only / commented slot does not render an icon wrapper when the prop is suppressed', () => {
             const wrapper = mount(defineComponent({
                 setup: () => () => h(VCAlert, { color: 'error', icon: '' }, {
-                    icon: () => [h(Comment, ''), '   '],
+                    icon: () => [h(Comment, ''), ' '.repeat(3)],
                     default: () => 'x',
                 }),
             }), { global: { plugins: [...plugins] } });

@@ -239,9 +239,7 @@ export default defineComponent({
             if (hasMessages) {
                 if (effectiveSeverity === ValidationSeverity.WARNING) {
                     validationClass = resolved.validationWarning;
-                } else if (effectiveSeverity === ValidationSeverity.ERROR) {
-                    validationClass = resolved.validationError;
-                } else if (!usingBundle) {
+                } else if (effectiveSeverity === ValidationSeverity.ERROR || !usingBundle) {
                     validationClass = resolved.validationError;
                 }
             }

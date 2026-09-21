@@ -79,9 +79,7 @@ export const VCTimeago = defineComponent({
 
         const dateTime = computed(() => {
             let value : Date;
-            if (typeof dateTimeProp.value === 'string') {
-                value = new Date(dateTimeProp.value);
-            } else if (typeof dateTimeProp.value === 'number') {
+            if (typeof dateTimeProp.value === 'string' || typeof dateTimeProp.value === 'number') {
                 value = new Date(dateTimeProp.value);
             } else {
                 value = dateTimeProp.value;

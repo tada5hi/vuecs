@@ -92,7 +92,7 @@ describe('<VCTable> driver auto-render (plan 033 v0.2-B)', () => {
 
         const bodyRows = wrapper.element.querySelectorAll('tbody tr');
         expect(bodyRows.length).toBe(2);
-        expect(bodyRows[0].querySelectorAll('td')[0].textContent).toBe('1');
+        expect(bodyRows[0].querySelector('td')?.textContent).toBe('1');
     });
 
     it('honors a consumer-provided <VCTableBody> and auto-renders only the header', () => {

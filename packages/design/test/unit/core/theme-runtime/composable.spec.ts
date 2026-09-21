@@ -95,9 +95,9 @@ describe('bindColorMode — theme dispatch (plan 021)', () => {
         const calls: string[] = [];
         const manager: MockThemeManager = {
             themes: [
-                { colorMode: { handle: () => calls.push('A') } },
-                { colorMode: { handle: () => calls.push('B') } },
-                { colorMode: { handle: () => calls.push('C') } },
+                { colorMode: { handle: () => { calls.push('A'); } } },
+                { colorMode: { handle: () => { calls.push('B'); } } },
+                { colorMode: { handle: () => { calls.push('C'); } } },
             ],
         };
 

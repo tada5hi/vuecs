@@ -42,7 +42,7 @@
         "@vuecs/pagination": "*",
         "@vuecs/timeago": "*",
         "@vuecs/tree": "*",
-        "vue": "^3.5.40"
+        "vue": "^3.5.43"
     },
     "peerDependencies": {
         "vue": "^3.x"

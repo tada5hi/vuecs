@@ -55,7 +55,7 @@ describe('useEmitAsProps', () => {
 
         mount(defineComponent({
             setup() {
-                return () => h(Inner, { onChange: (v: number) => heard.push(v) });
+                return () => h(Inner, { onChange: (v: number) => { heard.push(v); } });
             },
         }));
 
