@@ -14,7 +14,13 @@
  */
 
 .vc-tree {
-    --vc-tree-indent: 0.75rem;
+    /*
+     * One indent step = the chevron column (trigger + gap), so a child's
+     * label lands exactly under its parent's label — the standard file-tree
+     * read. Anything narrower and nesting stops being legible; anything
+     * derived from font size alone drifts when a theme resizes the chevron.
+     */
+    --vc-tree-indent: 1.25rem;
 
     margin: 0;
     padding: 0;
@@ -31,6 +37,16 @@
     align-items: center;
     gap: var(--vc-tree-gap, 0.25rem);
     min-width: 0;
+}
+
+/*
+ * Reserves the chevron column on a leaf. Without it a leaf loses the whole
+ * trigger footprint — wider than one indent step — so it would render to the
+ * LEFT of its own parent.
+ */
+.vc-tree-item-spacer {
+    flex: none;
+    width: var(--vc-tree-trigger-size, 1rem);
 }
 
 .vc-tree-item-label {

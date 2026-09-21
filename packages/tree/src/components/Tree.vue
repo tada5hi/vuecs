@@ -674,6 +674,16 @@ const VCTree = defineComponent({
                         expanded: toggleParams.expanded,
                         loading: toggleParams.loading,
                     }));
+            } else {
+                // A leaf has no chevron, so without this it loses the whole
+                // trigger column — which is WIDER than one indent step, so a
+                // leaf would render visually to the LEFT of its own parent.
+                // Purely structural: no theme slot, nothing to style.
+                children.push(h('span', {
+                    'class': 'vc-tree-item-spacer',
+                    'aria-hidden': 'true',
+                    'data-vc-tree-spacer': '',
+                }));
             }
 
             children.push(slots.item ?

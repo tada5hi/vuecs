@@ -496,6 +496,26 @@ describe('VCTree concurrent lazy reconcile', () => {
     });
 });
 
+// A leaf has no chevron, so without a spacer its label loses the trigger's
+// whole footprint — more than the per-level indent gains back. Children then
+// render visually LEFT of their own parent.
+describe('VCTree leaf alignment', () => {
+    it('reserves the trigger footprint on a row that has no trigger', async () => {
+        const wrapper = mountTree({ defaultExpanded: ['users'] });
+        await nextTick();
+
+        const rows = wrapper.findAll('[role="treeitem"]');
+        const branch = rows[0];
+        const leaf = rows[1];
+
+        expect(branch.find('[data-vc-tree-trigger]').exists()).toBe(true);
+        expect(branch.find('[data-vc-tree-spacer]').exists()).toBe(false);
+
+        expect(leaf.find('[data-vc-tree-trigger]').exists()).toBe(false);
+        expect(leaf.find('[data-vc-tree-spacer]').exists()).toBe(true);
+    });
+});
+
 describe('VCTree leaf detection', () => {
     it('treats an explicitly empty children array as a leaf', () => {
         const wrapper = mountTree({
