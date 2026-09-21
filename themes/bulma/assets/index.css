@@ -805,3 +805,18 @@
     box-shadow: var(--bulma-focus-shadow-size) hsla(var(--bulma-focus-h), var(--bulma-focus-s), var(--bulma-focus-l), var(--bulma-focus-shadow-alpha));
     border-radius: var(--bulma-menu-item-radius, var(--bulma-radius-small));
 }
+
+/*
+ * Muted chevron / icon, but ONLY while the row is not selected.
+ *
+ * Bulma's `.has-text-*` helpers carry `!important`, so colouring the trigger
+ * from the theme's class string would hold the grey through the selected
+ * state as well — and a selected row flips its foreground to
+ * `--bulma-menu-item-selected-color-l` (the inverted, light colour), leaving
+ * a grey chevron on the selected fill. Scoping the mute here lets a selected
+ * row's chevron inherit the row foreground instead.
+ */
+.vc-tree-item:not([data-selected]) > .vc-tree-item-content > .vc-tree-item-trigger,
+.vc-tree-item:not([data-selected]) .vc-tree-item-icon {
+    color: var(--bulma-text-weak);
+}

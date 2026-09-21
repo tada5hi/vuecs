@@ -1224,12 +1224,17 @@ export default function bulmaTheme(): Theme {
                     // `--vc-tree-level` rule, so the row wrapper stays bare.
                     root: '',
                     content: 'menu-item',
-                    trigger: 'has-text-grey',
                     // The chevron is drawn by the package's structural CSS from
-                    // `currentcolor`; the trigger's `has-text-grey` is what
-                    // colours it.
+                    // `currentcolor`, so the trigger's colour is what paints
+                    // it. That muting lives in the bridge CSS, NOT here:
+                    // Bulma's `.has-text-*` helpers are `!important`, so a
+                    // class string would pin the grey through the selected
+                    // state too — where the row flips its foreground to
+                    // `--bulma-menu-item-selected-color-l` and a grey chevron
+                    // is left low-contrast on the selected fill.
+                    trigger: '',
                     triggerIcon: '',
-                    icon: 'has-text-grey',
+                    icon: '',
                     // Take the leftover width so the structural ellipsis rule
                     // has something to clip against.
                     label: 'is-flex-grow-1',
