@@ -43,7 +43,13 @@ describe('bootstrapTheme', () => {
 
     it('should define navigation group and link', () => {
         const entry = preset.elements.navigation as ThemeElementDefinition;
-        expect(entry.classes!.group).toBe('nav-items');
+        // `nav`, NOT `nav-items` — the latter is not a Bootstrap class at all.
+        // It is load-bearing beyond the name: `.nav-link`'s padding is
+        // `var(--bs-nav-link-padding-y) var(--bs-nav-link-padding-x)`, and
+        // Bootstrap declares those variables on `.nav`. Without it every link
+        // and trigger resolves to `padding: 0` and the nav renders as bare
+        // stacked text with icons jammed against their labels.
+        expect(entry.classes!.group).toBe('nav');
         expect(entry.classes!.link).toBe('nav-link');
     });
 });

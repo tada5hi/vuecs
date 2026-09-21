@@ -1,0 +1,177 @@
+/*
+ * Structural CSS for @vuecs/tree.
+ *
+ * Deliberately unlayered — vuecs structural rules must outrank a framework's
+ * unlayered reboot (see .agents/conventions.md). Themes layer colour, focus
+ * rings and spacing on top via the `tree` / `treeItem` theme keys.
+ *
+ * Indentation is the one thing a tree cannot leave to the theme: rows are a
+ * FLAT list (reka's TreeRoot flattens the visible tree into siblings), so
+ * depth has to be painted rather than inherited from DOM nesting. Each row
+ * carries `--vc-tree-level` inline; `--vc-tree-indent` is the step, and a
+ * consumer or theme overrides that one token rather than writing a rule per
+ * level.
+ */
+
+.vc-tree {
+    /*
+     * One indent step = one chevron width. Wider (trigger + gap) aligns a
+     * child's label under its parent's label but reads as too loose at depth;
+     * this keeps the step tied to the chevron so the rails stay legible
+     * without the tree marching off to the right.
+     */
+    --vc-tree-indent: 1rem;
+
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.vc-tree-item {
+    list-style: none;
+    padding-inline-start: calc(var(--vc-tree-indent) * (var(--vc-tree-level, 1) - 1));
+}
+
+.vc-tree-item-content {
+    display: flex;
+    align-items: center;
+    gap: var(--vc-tree-gap, 0.25rem);
+    min-width: 0;
+}
+
+/*
+ * Reserves the chevron column on a leaf. Without it a leaf loses the whole
+ * trigger footprint — wider than one indent step — so it would render to the
+ * LEFT of its own parent.
+ */
+.vc-tree-item-spacer {
+    flex: none;
+    width: var(--vc-tree-trigger-size, 1rem);
+}
+
+.vc-tree-item-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/*
+ * Sized through a custom property, not a literal, for the same reason as the
+ * indent: this stylesheet is deliberately UNLAYERED (so it outranks a
+ * framework reboot), which also means it outranks Tailwind's `@layer
+ * utilities`. A theme writing `h-4 w-4` here would silently lose. Setting
+ * `--vc-tree-trigger-size` works from any layer, because nothing else
+ * declares it.
+ */
+.vc-tree-item-trigger {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: var(--vc-tree-trigger-size, 1rem);
+    height: var(--vc-tree-trigger-size, 1rem);
+    cursor: pointer;
+}
+
+.vc-tree-item-trigger[data-loading] {
+    cursor: progress;
+}
+
+/*
+ * The chevron is drawn, not iconised: a tree must render correctly with no
+ * icon preset installed, and unlike a checkbox glyph the chevron is pure
+ * affordance — the row's `aria-expanded` carries the meaning. Consumers who
+ * want a real icon use the `#toggle` slot.
+ */
+.vc-tree-item-trigger-icon {
+    width: 0.4em;
+    height: 0.4em;
+    border-right: 0.125em solid currentcolor;
+    border-bottom: 0.125em solid currentcolor;
+    transform: rotate(-45deg);
+    transition: transform 150ms ease;
+}
+
+.vc-tree-item-trigger[data-state="open"] .vc-tree-item-trigger-icon {
+    transform: rotate(45deg);
+}
+
+.vc-tree-item-trigger[data-loading] .vc-tree-item-trigger-icon {
+    opacity: 0.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vc-tree-item-trigger-icon {
+        transition: none;
+    }
+}
+
+/*
+ * Guide rails (`<VCTree guides>`).
+ *
+ * The indent is normally one padding on the row. With guides on, the gutters
+ * become real elements instead, because each one has to paint independently:
+ * an ancestor's vertical continues only while that ancestor still has
+ * siblings below, and the row's own gutter carries the elbow. The component
+ * supplies both facts as `data-continues` / `data-elbow`; see
+ * `resolveGuideRails`.
+ */
+.vc-tree[data-guides] .vc-tree-item {
+    position: relative;
+}
+
+/*
+ * Absolutely positioned against the ROW, not laid out inside the content
+ * span. The indent stays a padding on the row, and each rail overlays the
+ * gutter it owns. This is what makes a vertical span the row's full height,
+ * so it meets the next row's — inside the content span the rails inherit its
+ * vertical padding and the line breaks at every row boundary.
+ */
+.vc-tree-item-rail {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: calc(var(--vc-tree-rail-index, 0) * var(--vc-tree-indent));
+    width: var(--vc-tree-indent);
+    pointer-events: none;
+}
+
+/*
+ * The vertical sits at half a TRIGGER width from the gutter's left edge, not
+ * at the gutter's midpoint. Rail `i` starts at `i * indent`, and the chevron
+ * of the ancestor that owns that gutter is centred at `i * indent +
+ * trigger / 2` — so this is what puts the line straight down the middle of
+ * the chevron above it. Using `50%` only coincides when indent === trigger.
+ */
+.vc-tree-item-rail[data-continues]::before,
+.vc-tree-item-rail[data-elbow]::before {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: calc(var(--vc-tree-row-inset, 0px) + var(--vc-tree-trigger-size, 1rem) / 2);
+    border-inline-start: var(--vc-tree-guide-width, 1px) solid var(--vc-tree-guide-color, var(--vc-color-border, currentcolor));
+    opacity: var(--vc-tree-guide-opacity, 1);
+    content: "";
+}
+
+/* Last child: the vertical stops at the elbow instead of running past it. */
+.vc-tree-item-rail[data-elbow]:not([data-continues])::before {
+    inset-block-end: 50%;
+}
+
+/* The elbow's horizontal arm, from the vertical across to the row content. */
+.vc-tree-item-rail[data-elbow]::after {
+    position: absolute;
+    inset-inline: calc(var(--vc-tree-row-inset, 0px) + var(--vc-tree-trigger-size, 1rem) / 2) 0;
+    inset-block-start: 50%;
+    border-block-start: var(--vc-tree-guide-width, 1px) solid var(--vc-tree-guide-color, var(--vc-color-border, currentcolor));
+    opacity: var(--vc-tree-guide-opacity, 1);
+    content: "";
+}
+
+/*
+ * A leaf has no chevron, so its elbow arm runs on through the empty chevron
+ * column to meet the label — `tree(1)`'s `\-- name`. A branch's arm stops at
+ * the rail edge so it does not strike through its own chevron.
+ */
+.vc-tree-item-rail[data-elbow][data-leaf]::after {
+    inset-inline-end: calc(-1 * (var(--vc-tree-row-inset, 0px) + var(--vc-tree-trigger-size, 1rem)));
+}

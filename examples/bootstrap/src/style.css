@@ -18,6 +18,7 @@
 @import "@vuecs/pagination";
 @import "@vuecs/placeholder";
 @import "@vuecs/table";
+@import "@vuecs/tree";
 
 /* Lift body bg/fg into the design tokens so dark mode follows the toggle. */
 body {

@@ -28,6 +28,7 @@
         "icons/font-awesome": {"component": "icons-font-awesome" },
         "icons/lucide": {"component": "icons-lucide" },
         "packages/timeago": {"component": "timeago" },
+        "packages/tree": {"component": "tree" },
         "examples/nuxt": {"component": "examples-nuxt"}
     },
     "plugins": [

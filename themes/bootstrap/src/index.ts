@@ -199,10 +199,10 @@ export default function bootstrapTheme(): Theme {
                 variants: {
                     size: {
                         xs: {
-                            root: 'input-group-sm', 
-                            input: 'form-control-sm vc-form-control-xs', 
-                            decrement: 'btn-sm vc-btn-xs', 
-                            increment: 'btn-sm vc-btn-xs', 
+                            root: 'input-group-sm',
+                            input: 'form-control-sm vc-form-control-xs',
+                            decrement: 'btn-sm vc-btn-xs',
+                            increment: 'btn-sm vc-btn-xs',
                         },
                         sm: {
                             root: 'input-group-sm',
@@ -312,9 +312,9 @@ export default function bootstrapTheme(): Theme {
                     { variants: { variant: 'link', color: 'info' }, class: { root: 'btn-link text-info' } },
                 ],
                 defaultVariants: {
-                    variant: 'solid', 
-                    color: 'primary', 
-                    size: 'md', 
+                    variant: 'solid',
+                    color: 'primary',
+                    size: 'md',
                 },
             },
             formTextarea: {
@@ -393,7 +393,13 @@ export default function bootstrapTheme(): Theme {
             listEmpty: { classes: { root: 'alert alert-warning small p-2' } },
             navigation: {
                 classes: {
-                    group: 'nav-items',
+                    // `.nav`, not `.nav-items` — the latter is not a Bootstrap
+                    // class at all. It matters beyond the dead class name:
+                    // `.nav-link`'s padding is
+                    // `var(--bs-nav-link-padding-y) var(--bs-nav-link-padding-x)`
+                    // and Bootstrap declares those variables **on `.nav`**, so
+                    // without it every link and trigger resolved to `padding: 0`.
+                    group: 'nav',
                     link: 'nav-link',
                     // The structural `.vc-nav-trigger` already resets the
                     // native <button> chrome; `.nav-link` layers Bootstrap's
@@ -603,9 +609,9 @@ export default function bootstrapTheme(): Theme {
                     { variants: { variant: 'outline', color: 'info' }, class: { root: 'vc-alert-outline alert-info' } },
                 ],
                 defaultVariants: {
-                    variant: 'soft', 
-                    color: 'neutral', 
-                    size: 'md', 
+                    variant: 'soft',
+                    color: 'neutral',
+                    size: 'md',
                 },
             },
             alertTitle: { classes: { root: 'fw-semibold mb-1' } },
@@ -1061,23 +1067,23 @@ export default function bootstrapTheme(): Theme {
                 variants: {
                     size: {
                         xs: {
-                            content: 'vc-fs-xs p-1', 
-                            item: 'py-0 px-2', 
-                            subTrigger: 'py-0 px-2', 
-                            subContent: 'vc-fs-xs p-1', 
+                            content: 'vc-fs-xs p-1',
+                            item: 'py-0 px-2',
+                            subTrigger: 'py-0 px-2',
+                            subContent: 'vc-fs-xs p-1',
                         },
                         sm: {
-                            content: 'small p-1', 
-                            item: 'py-1 px-2', 
-                            subTrigger: 'py-1 px-2', 
-                            subContent: 'small p-1', 
+                            content: 'small p-1',
+                            item: 'py-1 px-2',
+                            subTrigger: 'py-1 px-2',
+                            subContent: 'small p-1',
                         },
                         md: { content: '' },
                         lg: {
-                            content: 'fs-6', 
-                            item: 'py-2 px-3', 
-                            subTrigger: 'py-2 px-3', 
-                            subContent: 'fs-6', 
+                            content: 'fs-6',
+                            item: 'py-2 px-3',
+                            subTrigger: 'py-2 px-3',
+                            subContent: 'fs-6',
                         },
                     },
                 },
@@ -1101,23 +1107,23 @@ export default function bootstrapTheme(): Theme {
                 variants: {
                     size: {
                         xs: {
-                            content: 'vc-fs-xs p-1', 
-                            item: 'py-0 px-2', 
-                            subTrigger: 'py-0 px-2', 
-                            subContent: 'vc-fs-xs p-1', 
+                            content: 'vc-fs-xs p-1',
+                            item: 'py-0 px-2',
+                            subTrigger: 'py-0 px-2',
+                            subContent: 'vc-fs-xs p-1',
                         },
                         sm: {
-                            content: 'small p-1', 
-                            item: 'py-1 px-2', 
-                            subTrigger: 'py-1 px-2', 
-                            subContent: 'small p-1', 
+                            content: 'small p-1',
+                            item: 'py-1 px-2',
+                            subTrigger: 'py-1 px-2',
+                            subContent: 'small p-1',
                         },
                         md: { content: '' },
                         lg: {
-                            content: 'fs-6', 
-                            item: 'py-2 px-3', 
-                            subTrigger: 'py-2 px-3', 
-                            subContent: 'fs-6', 
+                            content: 'fs-6',
+                            item: 'py-2 px-3',
+                            subTrigger: 'py-2 px-3',
+                            subContent: 'fs-6',
                         },
                     },
                 },
@@ -1168,6 +1174,48 @@ export default function bootstrapTheme(): Theme {
                 },
             },
             tableExpandTriggerCell: { classes: { root: 'text-center align-middle' } },
+            // Bootstrap ships no tree widget, but `.list-group` IS its
+            // list-of-selectable-rows idiom and — more importantly — it's
+            // the element that declares the `--bs-list-group-*` variable
+            // scope, which the bridge CSS further up already rebinds onto
+            // `--vc-color-*`. Putting it on the `<ul role="tree">` means
+            // every row state below resolves through bridged tokens, so a
+            // runtime `setColorPalette()` reaches the tree for free.
+            //
+            // Deliberately NOT `.list-group-item` on the row: it declares
+            // `padding` (shorthand) and `display: block`, either of which
+            // would fight `@vuecs/tree`'s structural `padding-inline-start`
+            // indent (`--vc-tree-level`) and the content span's flex layout.
+            // Row chrome goes on `content` as utilities instead.
+            //
+            // Selected / indeterminate / busy / disabled state lives as
+            // gap-fill in `assets/index.css` — Bootstrap theme strings can't
+            // carry `[data-selected]` / `[aria-busy]` attribute selectors.
+            tree: {
+                classes: {
+                    root: 'list-group',
+                    empty: 'px-2 py-1 small text-body-secondary',
+                },
+            },
+            treeItem: {
+                classes: {
+                    root: '',
+                    // No cursor utility here: Bootstrap ships none, so the
+                    // click affordance is a gap-fill rule in assets/index.css.
+                    content: 'd-flex align-items-center gap-1 px-2 py-1 rounded user-select-none',
+                    // `trigger` / `triggerIcon` carry no class on purpose:
+                    // Bootstrap's colour utilities are `!important`, so a
+                    // `.text-body-secondary` chevron would stay grey on the
+                    // primary-filled selected row. The bridge CSS colours it
+                    // with a plain (overridable) declaration instead.
+                    trigger: '',
+                    triggerIcon: '',
+                    // Colour inherited from the row so it flips with the
+                    // selected background, same reason as above.
+                    icon: 'flex-shrink-0',
+                    label: 'text-truncate',
+                },
+            },
         },
         /*
          * Theme-runtime hook (plan 021): mirror the resolved color mode

@@ -30,6 +30,7 @@ export default defineNuxtConfig({
         '@vuecs/icons-font-awesome': path.join(__dirname, '..', '..', 'icons', 'font-awesome', 'src'),
         '@vuecs/icons-lucide': path.join(__dirname, '..', '..', 'icons', 'lucide', 'src'),
         '@vuecs/timeago': path.join(__dirname, '..', '..', 'packages', 'timeago', 'src'),
+        '@vuecs/tree': path.join(__dirname, '..', '..', 'packages', 'tree', 'src'),
     },
     modules: [
         path.join(__dirname, '..', '..', 'packages', 'nuxt', 'src', 'module'),

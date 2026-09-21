@@ -871,9 +871,9 @@ export default function tailwindTheme(): Theme {
                     { variants: { variant: 'outline', color: 'info' }, class: { root: 'border-info-600 text-info-700 bg-transparent dark:text-info-200' } },
                 ],
                 defaultVariants: {
-                    variant: 'soft', 
-                    color: 'neutral', 
-                    size: 'md', 
+                    variant: 'soft',
+                    color: 'neutral',
+                    size: 'md',
                 },
             },
             alertTitle: { classes: { root: 'font-semibold leading-tight' } },
@@ -1300,6 +1300,85 @@ export default function tailwindTheme(): Theme {
                 },
             },
             tableExpandTriggerCell: { classes: { root: 'w-px whitespace-nowrap text-center align-middle' } },
+            // `<VCTree>` renders a FLAT `<ul role="tree">` — depth is painted
+            // by `@vuecs/tree`'s own structural CSS from the inline
+            // `--vc-tree-level`, so no per-level padding belongs here. The
+            // `--vc-tree-indent` step (`0.75rem`) is already on Tailwind's
+            // spacing scale (`spacing-3`), so it isn't overridden either.
+            tree: {
+                classes: {
+                    // `TreeRoot` carries `tabindex="0"`, so the container is a
+                    // real focus stop before the roving tabindex hands focus
+                    // to a row.
+                    root: 'rounded-md text-fg outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                    empty: 'px-2 py-1.5 text-sm text-fg-muted',
+                },
+            },
+            // Row state is carried inline via attribute variants — the whole
+            // reason theme-tailwind ships no bridge CSS. `data-selected` is
+            // the universal selection hook: the row swaps between
+            // `aria-selected` (plain tree) and `aria-checked` (cascade /
+            // tree-with-checkboxes) depending on `:cascade`, but
+            // `data-selected` is emitted in BOTH modes.
+            treeItem: {
+                classes: {
+                    // The `<li>`. Full-width highlight (it spans the indent
+                    // too, which is `padding-inline-start` on this element).
+                    // Soft selected fill mirrors `listItem`'s `active` variant
+                    // so a tree and a list read as one system.
+                    root: 'cursor-pointer rounded-md outline-none transition-colors hover:bg-bg-muted focus-visible:ring-2 focus-visible:ring-ring data-[selected]:bg-primary-50 data-[selected]:text-primary-900 data-[indeterminate]:text-primary-700 aria-[busy=true]:cursor-progress aria-[busy=true]:opacity-60 aria-disabled:cursor-not-allowed aria-disabled:opacity-60 dark:data-[selected]:bg-primary-950 dark:data-[selected]:text-primary-100 dark:data-[indeterminate]:text-primary-300',
+                    // The row's flex line. Padding + font size live here (not
+                    // on `root`) so they never collide with the structural
+                    // indent rule.
+                    content: '[--vc-tree-gap:0.375rem]',
+                    trigger: 'shrink-0 rounded-sm text-fg-muted transition-colors hover:bg-bg-muted hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring data-[loading]:opacity-60',
+                    // The chevron is DRAWN by the structural CSS (border
+                    // triangle + `[data-state="open"]` rotation) so it renders
+                    // with no icon preset installed. Nothing to add here —
+                    // repeating the `vc-*` default would trip the audit's
+                    // `redundantStructural` gate.
+                    triggerIcon: '',
+                    // Guide rails inherit `--vc-color-border` structurally;
+                    // this dims them so the chrome stays behind the labels.
+                    rail: '[--vc-tree-guide-opacity:0.6]',
+                    // Not rendered by the default markup — exposed through the
+                    // `#item` slot's `classes` prop for consumer icons.
+                    icon: 'inline-flex h-4 w-4 shrink-0 items-center justify-center text-fg-muted',
+                    label: 'min-w-0 flex-1',
+                },
+                // Size axis runs xs/sm/md/lg with `md` the default (see the
+                // per-component variant catalog in `.agents/architecture.md`).
+                // Row rhythm is padding + font size on `content`; the toggle
+                // and icon boxes scale with it so the chevron stays optically
+                // centred against the label.
+                variants: {
+                    size: {
+                        xs: {
+                            root: '[--vc-tree-row-inset:0.375rem]',
+                            content: 'px-[var(--vc-tree-row-inset)] py-0.5 text-[0.7rem]',
+                            trigger: '[--vc-tree-trigger-size:0.75rem]',
+                            icon: 'h-3 w-3',
+                        },
+                        sm: {
+                            root: '[--vc-tree-row-inset:0.5rem]',
+                            content: 'px-[var(--vc-tree-row-inset)] py-0.5 text-xs',
+                            trigger: '[--vc-tree-trigger-size:0.875rem]',
+                            icon: 'h-3.5 w-3.5',
+                        },
+                        md: {
+                            root: '[--vc-tree-row-inset:0.5rem]',
+                            content: 'px-[var(--vc-tree-row-inset)] py-1 text-sm',
+                        },
+                        lg: {
+                            root: '[--vc-tree-row-inset:0.75rem]',
+                            content: 'px-[var(--vc-tree-row-inset)] py-1.5 text-base',
+                            trigger: '[--vc-tree-trigger-size:1.25rem]',
+                            icon: 'h-5 w-5',
+                        },
+                    },
+                },
+                defaultVariants: { size: 'md' },
+            },
         },
     };
 }

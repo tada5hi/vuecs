@@ -1,0 +1,67 @@
+{
+    "name": "@vuecs/tree",
+    "version": "0.0.0",
+    "type": "module",
+    "description": "Tree view component for vuecs — nested items, key-based selection, expand/collapse, cascade and WAI-ARIA keyboard navigation.",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./dist/index.d.ts",
+            "style": "./dist/style.css",
+            "import": "./dist/index.mjs"
+        },
+        "./style.css": "./dist/style.css",
+        "./dist/style.css": "./dist/style.css"
+    },
+    "style": "./dist/style.css",
+    "files": [
+        "dist"
+    ],
+    "sideEffects": [
+        "./dist/*.css"
+    ],
+    "keywords": [
+        "vue",
+        "vuecs",
+        "tree",
+        "treeview",
+        "component"
+    ],
+    "author": {
+        "name": "Peter Placzek",
+        "email": "contact@tada5hi.net",
+        "url": "https://tada5hi.net"
+    },
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tada5hi/vuecs.git",
+        "directory": "packages/tree"
+    },
+    "scripts": {
+        "build:js": "tsdown",
+        "build:types": "vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json",
+        "build": "rimraf dist && npm run build:js && npm run build:types",
+        "test": "vitest --config test/vitest.config.ts --run"
+    },
+    "dependencies": {
+        "reka-ui": "^2.10.1"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue": "^6.0.8",
+        "@vue/test-utils": "^2.4.11",
+        "@vuecs/core": "^3.5.0",
+        "jsdom": "^30.0.1",
+        "vue": "^3.5.40"
+    },
+    "peerDependencies": {
+        "@vuecs/core": "^3.5.0",
+        "vue": "^3.x"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}
