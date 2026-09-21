@@ -93,7 +93,16 @@ describe('VCTree key resolution', () => {
     });
 
     it('resolves keys through itemKey when given', () => {
-        const wrapper = mountTree({ itemKey: 'label' });
+        // `id` and `label` must DIFFER here. With the shared fixture (where
+        // they are equal) this assertion holds even if `itemKey` is ignored
+        // and the ladder falls through to `.id`, so it would prove nothing.
+        const wrapper = mountTree({
+            items: [
+                { id: 'users-id', label: 'users' },
+                { id: 'sources-id', label: 'sources' },
+            ],
+            itemKey: 'label',
+        });
 
         expect(rowKeys(wrapper)).toEqual(['users', 'sources']);
     });
