@@ -1,0 +1,1 @@
+import{Mt as e}from"./iframe-bridge-DOQyP8-g.js";function t(n){return n?n.flatMap(n=>n.type===e?t(n.children):[n]):[]}export{t};
