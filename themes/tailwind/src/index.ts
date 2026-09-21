@@ -1354,18 +1354,24 @@ export default function tailwindTheme(): Theme {
                 variants: {
                     size: {
                         xs: {
-                            content: 'px-1.5 py-0.5 text-[0.7rem]',
+                            root: '[--vc-tree-row-inset:0.375rem]',
+                            content: 'px-[var(--vc-tree-row-inset)] py-0.5 text-[0.7rem]',
                             trigger: '[--vc-tree-trigger-size:0.75rem]',
                             icon: 'h-3 w-3',
                         },
                         sm: {
-                            content: 'px-2 py-0.5 text-xs',
+                            root: '[--vc-tree-row-inset:0.5rem]',
+                            content: 'px-[var(--vc-tree-row-inset)] py-0.5 text-xs',
                             trigger: '[--vc-tree-trigger-size:0.875rem]',
                             icon: 'h-3.5 w-3.5',
                         },
-                        md: { content: 'px-2 py-1 text-sm' },
+                        md: {
+                            root: '[--vc-tree-row-inset:0.5rem]',
+                            content: 'px-[var(--vc-tree-row-inset)] py-1 text-sm',
+                        },
                         lg: {
-                            content: 'px-3 py-1.5 text-base',
+                            root: '[--vc-tree-row-inset:0.75rem]',
+                            content: 'px-[var(--vc-tree-row-inset)] py-1.5 text-base',
                             trigger: '[--vc-tree-trigger-size:1.25rem]',
                             icon: 'h-5 w-5',
                         },

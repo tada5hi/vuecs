@@ -135,13 +135,18 @@
     pointer-events: none;
 }
 
-/* Ancestor gutter: a full-height vertical, drawn only while that ancestor
-   still has siblings below this row. */
+/*
+ * The vertical sits at half a TRIGGER width from the gutter's left edge, not
+ * at the gutter's midpoint. Rail `i` starts at `i * indent`, and the chevron
+ * of the ancestor that owns that gutter is centred at `i * indent +
+ * trigger / 2` — so this is what puts the line straight down the middle of
+ * the chevron above it. Using `50%` only coincides when indent === trigger.
+ */
 .vc-tree-item-rail[data-continues]::before,
 .vc-tree-item-rail[data-elbow]::before {
     position: absolute;
     inset-block: 0;
-    inset-inline-start: 50%;
+    inset-inline-start: calc(var(--vc-tree-row-inset, 0px) + var(--vc-tree-trigger-size, 1rem) / 2);
     border-inline-start: var(--vc-tree-guide-width, 1px) solid var(--vc-tree-guide-color, var(--vc-color-border, currentcolor));
     opacity: var(--vc-tree-guide-opacity, 1);
     content: "";
@@ -155,7 +160,7 @@
 /* The elbow's horizontal arm, from the vertical across to the row content. */
 .vc-tree-item-rail[data-elbow]::after {
     position: absolute;
-    inset-inline: 50% 0;
+    inset-inline: calc(var(--vc-tree-row-inset, 0px) + var(--vc-tree-trigger-size, 1rem) / 2) 0;
     inset-block-start: 50%;
     border-block-start: var(--vc-tree-guide-width, 1px) solid var(--vc-tree-guide-color, var(--vc-color-border, currentcolor));
     opacity: var(--vc-tree-guide-opacity, 1);
