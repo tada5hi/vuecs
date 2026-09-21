@@ -30,7 +30,9 @@ createApp(App)
         label: 'Use',
         lang: 'vue',
         // Split the closing tag so Vue's SFC parser doesn't terminate the
-        // surrounding script block when reading this file.
+        // surrounding script block when reading this file. Inlining the
+        // expression truncates this file mid-literal, so the rule is off here.
+        // eslint-disable-next-line unicorn/no-useless-template-literals
         code: `<script setup lang="ts">
 import { VCButton } from '@vuecs/button';
 import { VCFormInput } from '@vuecs/forms';

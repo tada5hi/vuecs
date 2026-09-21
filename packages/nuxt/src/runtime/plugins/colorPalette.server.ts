@@ -68,11 +68,10 @@ export default defineNuxtPlugin({
          */
         const palette: Record<string, string> = Object.create(null);
         if (isObject(rawPalette)) {
-            for (const key of Object.keys(rawPalette)) {
+            for (const [key, value] of Object.entries(rawPalette as Record<string, unknown>)) {
                 if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
                     continue;
                 }
-                const value = (rawPalette as Record<string, unknown>)[key];
                 if (typeof value === 'string') {
                     palette[key] = value;
                 }

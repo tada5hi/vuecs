@@ -71,7 +71,7 @@ describe('<VCCardPlaceholder>', () => {
                 noImg: true,
                 noHeader: true,
                 noFooter: true,
-                bodyLines: Number.NaN as never,
+                bodyLines: NaN as never,
             },
             global: { plugins: [...plugins] },
         });

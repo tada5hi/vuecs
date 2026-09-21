@@ -20,7 +20,7 @@ function parseAcceptLanguage(header?: string | null): string | undefined {
         .split(',')
         .map((part) => {
             const [tag, ...params] = part.trim().split(';');
-            const qParam = params.find((p) => p.trim().startsWith('q='));
+            const qParam = params.find((p) => p.trimStart().startsWith('q='));
             const q = qParam ? Number.parseFloat(qParam.trim().slice(2)) : 1;
             return { tag: tag.trim(), q: Number.isNaN(q) ? 0 : q };
         })

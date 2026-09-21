@@ -6,20 +6,6 @@ import { defineDataCollection } from '../../src';
 type Row = { id: number, name: string };
 type Meta = { pagination: { limit: number, offset: number }, filters?: Record<string, unknown> };
 
-const deferred = <V>() => {
-    let resolve!: (v: V) => void;
-    let reject!: (e: unknown) => void;
-    const promise = new Promise<V>((res, rej) => {
-        resolve = res;
-        reject = rej;
-    });
-    return {
-        promise,
-        resolve,
-        reject,
-    };
-};
-
 const baseMeta = () : Meta => ({ pagination: { limit: 10, offset: 0 } });
 
 describe('defineDataCollection', () => {
@@ -64,8 +50,8 @@ describe('defineDataCollection', () => {
     });
 
     it('should let the latest load win over a stale in-flight response', async () => {
-        const first = deferred<Row[]>();
-        const second = deferred<Row[]>();
+        const first = Promise.withResolvers<Row[]>();
+        const second = Promise.withResolvers<Row[]>();
         let call = 0;
         const source = defineDataCollection<Row, Meta>({
             load: async () => {
@@ -119,7 +105,7 @@ describe('defineDataCollection', () => {
             autoLoad: false,
         });
 
-        const gate = deferred<void>();
+        const gate = Promise.withResolvers<void>();
         const op = source.mutate(async () => {
             await gate.promise;
             return 'ok';
@@ -283,7 +269,7 @@ describe('defineDataCollection', () => {
     });
 
     it('should buffer mutators during an in-flight load and drain them in order after the response', async () => {
-        const gate = deferred<Row[]>();
+        const gate = Promise.withResolvers<Row[]>();
         const source = defineDataCollection<Row, Meta>({
             load: async () => ({ data: await gate.promise, total: 1 }),
             initialMeta: baseMeta(),
@@ -320,8 +306,8 @@ describe('defineDataCollection', () => {
     });
 
     it('should discard a stale in-flight rejection', async () => {
-        const first = deferred<Row[]>();
-        const second = deferred<Row[]>();
+        const first = Promise.withResolvers<Row[]>();
+        const second = Promise.withResolvers<Row[]>();
         let call = 0;
         const source = defineDataCollection<Row, Meta>({
             load: async () => {

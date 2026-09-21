@@ -69,10 +69,12 @@ export function useTypeahead<T = unknown>(callback?: (key: string) => void): {
     // post-unmount. `onScopeDispose` outside an active scope is a no-op
     // in production and only warns in dev — safe to call unconditionally.
     onScopeDispose(() => {
-        if (timer) {
-            clearTimeout(timer);
-            timer = null;
+        if (!timer) {
+            return;
         }
+
+        clearTimeout(timer);
+        timer = null;
     });
 
     const setSearch = (value: string) => {

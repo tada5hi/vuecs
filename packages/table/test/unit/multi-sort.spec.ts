@@ -60,7 +60,7 @@ describe('<VCTable> multi-sort + client-sort (plan 033 v1.x-B)', () => {
         let cells = wrapper.element.querySelectorAll('tbody td');
         expect(cells[0].textContent).toBe('3');
         // Click ID header → sort by id asc.
-        const idHeader = wrapper.element.querySelectorAll('thead th')[0] as HTMLElement;
+        const idHeader = wrapper.element.querySelector('thead th') as HTMLElement;
         idHeader.click();
         await wrapper.vm.$nextTick();
         cells = wrapper.element.querySelectorAll('tbody td');
@@ -89,7 +89,7 @@ describe('<VCTable> multi-sort + client-sort (plan 033 v1.x-B)', () => {
         }), { global: { plugins: [...plugins] } });
 
         // Click role header (plain): sort by role asc.
-        const roleHeader = wrapper.element.querySelectorAll('thead th')[0] as HTMLElement;
+        const roleHeader = wrapper.element.querySelector('thead th') as HTMLElement;
         roleHeader.click();
         await wrapper.vm.$nextTick();
         expect(sort.value).toEqual([{ key: 'role', direction: 'asc' }]);
@@ -126,7 +126,7 @@ describe('<VCTable> multi-sort + client-sort (plan 033 v1.x-B)', () => {
             },
         }), { global: { plugins: [...plugins] } });
 
-        const roleHeader = wrapper.element.querySelectorAll('thead th')[0] as HTMLElement;
+        const roleHeader = wrapper.element.querySelector('thead th') as HTMLElement;
         roleHeader.click();
         await wrapper.vm.$nextTick();
         const nameHeader = wrapper.element.querySelectorAll('thead th')[1] as HTMLElement;

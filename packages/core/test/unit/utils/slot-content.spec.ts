@@ -21,7 +21,7 @@ describe('isMeaningfulSlotContent', () => {
 
     it('treats a bare string by trimmed length', () => {
         expect(isMeaningfulSlotContent('')).toBe(false);
-        expect(isMeaningfulSlotContent('   ')).toBe(false);
+        expect(isMeaningfulSlotContent(' '.repeat(3))).toBe(false);
         expect(isMeaningfulSlotContent('x')).toBe(true);
     });
 
@@ -36,7 +36,7 @@ describe('isMeaningfulSlotContent', () => {
     });
 
     it('classifies text vnodes by trimmed content', () => {
-        expect(isMeaningfulSlotContent([createTextVNode('   ')])).toBe(false);
+        expect(isMeaningfulSlotContent([createTextVNode(' '.repeat(3))])).toBe(false);
         expect(isMeaningfulSlotContent([createTextVNode('hi')])).toBe(true);
     });
 

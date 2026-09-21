@@ -86,6 +86,11 @@ const listProps = {
 export type ListProps = ExtractPublicPropTypes<typeof listProps>;
 
 const isDev = (() => {
+    // `process` is a Node global. This module ships to browsers, where a bare
+    // `process` reference throws a ReferenceError at module evaluation — the
+    // `globalThis` probe is the only safe read, and it deliberately avoids
+    // pulling `@types/node` into a browser-facing package.
+    // eslint-disable-next-line unicorn/no-unnecessary-global-this
     const p = (globalThis as { process?: { env?: { NODE_ENV?: string } } }).process;
     return p !== undefined && p.env?.NODE_ENV !== 'production';
 })();

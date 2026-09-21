@@ -44,10 +44,7 @@ describe('defineDataRecord', () => {
 
     it('should coalesce concurrent ensure() calls onto the in-flight load', async () => {
         let loads = 0;
-        let release!: () => void;
-        const gate = new Promise<void>((res) => {
-            release = res;
-        });
+        const { promise: gate, resolve: release } = Promise.withResolvers<void>();
         const source = defineDataRecord<User, Meta>({
             load: async () => {
                 loads += 1;
@@ -78,10 +75,7 @@ describe('defineDataRecord', () => {
         expect(loads).toEqual(1);
         expect(source.data.value).toBeUndefined();
 
-        let release!: () => void;
-        const gate = new Promise<void>((res) => {
-            release = res;
-        });
+        const { promise: gate, resolve: release } = Promise.withResolvers<void>();
         const write = source.mutate(async () => {
             await gate;
             return 'ok';
@@ -206,10 +200,7 @@ describe('defineDataRecord', () => {
     });
 
     it('should buffer set/merge/clear during an in-flight load and drain after the response', async () => {
-        let release!: (u: User) => void;
-        const gate = new Promise<User>((res) => {
-            release = res;
-        });
+        const { promise: gate, resolve: release } = Promise.withResolvers<User>();
         const source = defineDataRecord<User, Meta>({
             load: async () => ({ data: await gate }),
             autoLoad: false,
