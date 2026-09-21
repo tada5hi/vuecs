@@ -34,14 +34,14 @@
         "test:coverage": "vitest --config test/vitest.config.ts --run --coverage"
     },
     "devDependencies": {
-        "@vue/test-utils": "^2.4.11",
-        "jsdom": "^30.0.1",
+        "@vue/test-utils": "^2.5.1",
+        "jsdom": "^30.1.0",
         "smob": "^1.6.2",
-        "vue": "^3.5.40"
+        "vue": "^3.5.43"
     },
     "peerDependencies": {
         "smob": "^1.6.2",
-        "vue": "^3.5.40"
+        "vue": "^3.5.43"
     },
     "engines": {
         "node": ">=22.0.0"
