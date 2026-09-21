@@ -640,3 +640,17 @@
 .vc-tree-item[aria-disabled="true"] .vc-tree-item-content {
     cursor: default;
 }
+
+/*
+ * Bootstrap's `.nav` is a horizontal flex row (`display: flex; flex-wrap:
+ * wrap`), but vuecs navs are vertical unless they are a dropdown bar. We need
+ * `.nav` for its `--bs-nav-link-*` variable scope — `.nav-link`'s padding
+ * resolves through them — so the direction is corrected back here.
+ *
+ * The dropdown case is left alone: @vuecs/navigation's own
+ * `[data-reka-navigation-menu] .vc-nav-items` rule is more specific and
+ * restores `row` for the flyout bar.
+ */
+.vc-nav-items {
+    flex-direction: column;
+}

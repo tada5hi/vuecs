@@ -393,7 +393,13 @@ export default function bootstrapTheme(): Theme {
             listEmpty: { classes: { root: 'alert alert-warning small p-2' } },
             navigation: {
                 classes: {
-                    group: 'nav-items',
+                    // `.nav`, not `.nav-items` — the latter is not a Bootstrap
+                    // class at all. It matters beyond the dead class name:
+                    // `.nav-link`'s padding is
+                    // `var(--bs-nav-link-padding-y) var(--bs-nav-link-padding-x)`
+                    // and Bootstrap declares those variables **on `.nav`**, so
+                    // without it every link and trigger resolved to `padding: 0`.
+                    group: 'nav',
                     link: 'nav-link',
                     // The structural `.vc-nav-trigger` already resets the
                     // native <button> chrome; `.nav-link` layers Bootstrap's
