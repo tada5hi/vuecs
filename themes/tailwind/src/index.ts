@@ -1338,6 +1338,9 @@ export default function tailwindTheme(): Theme {
                     // repeating the `vc-*` default would trip the audit's
                     // `redundantStructural` gate.
                     triggerIcon: '',
+                    // Guide rails inherit `--vc-color-border` structurally;
+                    // this dims them so the chrome stays behind the labels.
+                    rail: '[--vc-tree-guide-opacity:0.6]',
                     // Not rendered by the default markup — exposed through the
                     // `#item` slot's `classes` prop for consumer icons.
                     icon: 'inline-flex h-4 w-4 shrink-0 items-center justify-center text-fg-muted',

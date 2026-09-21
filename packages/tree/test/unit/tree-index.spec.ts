@@ -4,7 +4,7 @@ import {
     it,
     vi,
 } from 'vitest';
-import { buildTreeIndex } from '../../src';
+import { buildTreeIndex, resolveGuideRails } from '../../src';
 
 type Node = { id: string, kids?: Node[] };
 
@@ -93,5 +93,50 @@ describe('buildTreeIndex', () => {
         const index = buildTreeIndex<unknown>([null, 1, 'x'], (i) => String(i), () => undefined);
 
         expect(index.order).toEqual(['null', '1', 'x']);
+    });
+});
+
+// Guide rails: a row at level N has N-1 gutter columns. Column k tracks the
+// ancestor at level k+1, and the LAST column is the row's own elbow. Each
+// entry answers "does that node have a later sibling" — exactly the `├`
+// (true) vs `└` (false) distinction CSS cannot derive on its own.
+describe('resolveGuideRails', () => {
+    // a            (has later sibling: d)
+    // ├ b          (has later sibling: c)
+    // │ └ b1       (last)
+    // └ c          (last)
+    // d            (last)
+    const GUIDE_TREE: Node[] = [
+        {
+            id: 'a',
+            kids: [
+                { id: 'b', kids: [{ id: 'b1' }] },
+                { id: 'c' },
+            ],
+        },
+        { id: 'd' },
+    ];
+
+    const idx = () => buildTreeIndex(GUIDE_TREE, key, kids);
+
+    it('gives a root-level row no gutters', () => {
+        expect(resolveGuideRails(idx(), 'a')).toEqual([]);
+        expect(resolveGuideRails(idx(), 'd')).toEqual([]);
+    });
+
+    it('gives a level-2 row one gutter holding its own elbow state', () => {
+        expect(resolveGuideRails(idx(), 'b')).toEqual([true]);
+        expect(resolveGuideRails(idx(), 'c')).toEqual([false]);
+    });
+
+    it('tracks the ancestor line in the outer gutter of a level-3 row', () => {
+        // b1's outer gutter follows `b`, which still has `c` after it, so the
+        // line must continue past b1 to reach `c`. b1 itself is last, so its
+        // own elbow stops.
+        expect(resolveGuideRails(idx(), 'b1')).toEqual([true, false]);
+    });
+
+    it('returns an empty list for a key it does not know', () => {
+        expect(resolveGuideRails(idx(), 'nope')).toEqual([]);
     });
 });

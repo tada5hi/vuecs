@@ -31,14 +31,14 @@ const items: BreadcrumbItem[] = [
 // an icon preset is installed (the example apps register one).
 const iconItems: BreadcrumbItem[] = [
     {
-        label: 'Home', 
-        to: '/', 
-        icon: 'fa6-solid:house', 
+        label: 'Home',
+        to: '/',
+        icon: 'fa6-solid:house',
     },
     {
-        label: 'Robots', 
-        to: '/robots', 
-        icon: 'fa6-solid:robot', 
+        label: 'Robots',
+        to: '/robots',
+        icon: 'fa6-solid:robot',
     },
     { label: 'Settings', icon: 'fa6-solid:gear' },
 ];

@@ -196,6 +196,7 @@ While a branch is fetching, its row carries `aria-busy="true"` and the trigger `
 | `disabled` | `boolean` | `false` | Disable the whole tree. |
 | `maxDepth` | `number` | `100` | Guard against a cyclic `getChildren`; deeper items are dropped with a dev warning. |
 | `as` | `string \| Component` | `'ul'` | Render target for the tree container. |
+| `guides` | `boolean` | `false` | Draw `\|` / `└─` connector rails in the indent gutters, the way a file explorer does. |
 | `themeClass` / `themeVariant` | | | Per-instance theme overrides (`tree` slot map). |
 | `itemThemeClass` | `ThemeClassesOverride<TreeItemThemeClasses>` | `undefined` | Theme-class overrides applied to **every row**. |
 | `itemThemeVariant` | `VariantValues` | `undefined` | Theme-variant values applied to every row — e.g. `:item-theme-variant="{ size: 'sm' }"` for a compact tree. |
@@ -259,7 +260,7 @@ The trigger carries `data-state="open\|closed"` and `data-loading`.
 | Key | Slot keys |
 |---|---|
 | `tree` | `root`, `empty` |
-| `treeItem` | `root`, `content`, `trigger`, `triggerIcon`, `icon`, `label` |
+| `treeItem` | `root`, `content`, `trigger`, `triggerIcon`, `rail`, `icon`, `label` |
 
 `<VCTreeItemTrigger>` resolves against the same `treeItem` key (`trigger` / `triggerIcon`), so it adds no third entry.
 

@@ -42,6 +42,7 @@ import {
     cascadeSelect,
     normalize,
     orderKeys,
+    resolveGuideRails,
 } from '../utils';
 import type { TreeIndex } from '../utils';
 import VCTreeItem from './TreeItem.vue';
@@ -149,6 +150,14 @@ export const treeProps = {
     maxDepth: {
         type: Number,
         default: undefined,
+    },
+    /**
+     * Draw `|` / `+-` guide rails in the indent gutters, the way a file
+     * explorer does. Off by default — it changes a row's inner DOM.
+     */
+    guides: {
+        type: Boolean,
+        default: false,
     },
     /** Render target for the tree container. */
     as: {
@@ -666,6 +675,23 @@ const VCTree = defineComponent({
 
             const children: VNodeChild[] = [];
 
+            if (props.guides) {
+                // One span per gutter. `data-continues` keeps an ancestor's
+                // vertical running past this row; the last gutter is the
+                // row's own elbow. See `resolveGuideRails` for why this
+                // cannot be a CSS-only effect.
+                const rails = resolveGuideRails(index.value, key);
+                rails.forEach((continues, position) => {
+                    children.push(h('span', {
+                        'class': itemTheme.value.rail,
+                        'aria-hidden': 'true',
+                        'data-vc-tree-rail': '',
+                        'data-continues': continues ? '' : undefined,
+                        'data-elbow': position === rails.length - 1 ? '' : undefined,
+                    }));
+                });
+            }
+
             if (row.hasChildren) {
                 children.push(slots.toggle ?
                     slots.toggle(toggleParams) as VNodeChild :
@@ -717,6 +743,7 @@ const VCTree = defineComponent({
                 'expanded': expandedValue.value,
                 'disabled': props.disabled,
                 'class': theme.value.root,
+                'data-guides': props.guides ? '' : undefined,
                 // The ONE reka selection prop we do pass. It is not used for
                 // selection — we never feed `modelValue` and always
                 // `preventDefault()` — but `TreeRoot` derives

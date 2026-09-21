@@ -516,6 +516,76 @@ describe('VCTree leaf alignment', () => {
     });
 });
 
+describe('VCTree guide rails', () => {
+    const railsOf = (row: ReturnType<typeof mountTree>['findAll'] extends never ? never : any) => row
+        .findAll('[data-vc-tree-rail]')
+        .map((rail: { attributes: (n: string) => string | undefined }) => ({
+            continues: rail.attributes('data-continues') !== undefined,
+            elbow: rail.attributes('data-elbow') !== undefined,
+        }));
+
+    it('renders no rails when guides is off', async () => {
+        const wrapper = mountTree({ defaultExpanded: ['users'] });
+        await nextTick();
+
+        expect(wrapper.findAll('[data-vc-tree-rail]')).toHaveLength(0);
+        expect(wrapper.find('[role="tree"]').attributes('data-guides')).toBeUndefined();
+    });
+
+    it('marks the tree so structural CSS can drop the padding indent', async () => {
+        const wrapper = mountTree({ guides: true });
+        await nextTick();
+
+        expect(wrapper.find('[role="tree"]').attributes('data-guides')).toBeDefined();
+    });
+
+    it('gives a root row no gutters and a level-2 row one elbow gutter', async () => {
+        const wrapper = mountTree({ guides: true, defaultExpanded: ['users'] });
+        await nextTick();
+
+        const rows = wrapper.findAll('[role="treeitem"]');
+
+        expect(railsOf(rows[0])).toEqual([]);
+        // `employees` is followed by `admins`, so its elbow continues (├).
+        expect(railsOf(rows[1])).toEqual([{ continues: true, elbow: true }]);
+        // `admins` is the last child, so its elbow stops (└).
+        expect(railsOf(rows[2])).toEqual([{ continues: false, elbow: true }]);
+    });
+
+    it('continues an ancestor line past a nested last child', async () => {
+        const nested = [
+            {
+                id: 'a',
+                label: 'a',
+                children: [
+                    {
+                        id: 'a/b',
+                        label: 'b',
+                        children: [{ id: 'a/b/c', label: 'c' }],
+                    },
+                    { id: 'a/d', label: 'd' },
+                ],
+            },
+        ];
+        const wrapper = mountTree({
+            items: nested,
+            guides: true,
+            defaultExpanded: ['a', 'a/b'],
+        });
+        await nextTick();
+
+        const rows = wrapper.findAll('[role="treeitem"]');
+        const deepest = rows.find((row) => row.attributes('data-key') === 'a/b/c');
+
+        // Outer gutter follows `b`, which still has `d` after it, so the line
+        // must continue past `c`. `c` itself is last, so its elbow stops.
+        expect(railsOf(deepest)).toEqual([
+            { continues: true, elbow: false },
+            { continues: false, elbow: true },
+        ]);
+    });
+});
+
 describe('VCTree leaf detection', () => {
     it('treats an explicitly empty children array as a leaf', () => {
         const wrapper = mountTree({

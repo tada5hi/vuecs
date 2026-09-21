@@ -99,3 +99,42 @@ export function buildTreeIndex<Item>(
         refKeys,
     };
 }
+
+/**
+ * Resolve the guide-rail gutters for one row.
+ *
+ * A row at level N sits behind N-1 gutter columns. Column `k` tracks the
+ * ancestor at level `k + 1`, and the LAST column is the row's own elbow. Each
+ * entry answers a single question — *does that node have a later sibling?* —
+ * which is precisely the `├` (true) vs `└` (false) distinction, and which
+ * also decides whether an ancestor's vertical continues past this row.
+ *
+ * This cannot be derived in CSS. `:last-child` describes an element's
+ * position among its DOM siblings, but the tree renders as a FLAT list, so
+ * every row is a sibling of every other row; and a row needs the answer for
+ * each of its ancestors, not only for itself.
+ *
+ * Returns `[]` for a root-level row (it owns no gutter) and for an unknown key.
+ */
+export function resolveGuideRails<Item>(index: TreeIndex<Item>, key: string): boolean[] {
+    const rails: boolean[] = [];
+
+    let node = index.nodes.get(key);
+    while (node) {
+        const siblings = typeof node.parentKey === 'undefined' ?
+            index.rootKeys :
+            index.nodes.get(node.parentKey)?.childKeys ?? [];
+
+        rails.unshift(siblings[siblings.length - 1] !== node.key);
+
+        if (typeof node.parentKey === 'undefined') {
+            break;
+        }
+
+        node = index.nodes.get(node.parentKey);
+    }
+
+    // The walk yields one entry per level, root first. A root-level node owns
+    // no gutter to its left, so its entry is dropped — leaving exactly N-1.
+    return rails.slice(1);
+}

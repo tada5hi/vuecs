@@ -23,6 +23,10 @@ const paths = [
 const folders = parseTreePaths(paths);
 
 const selectedPath = ref<string | null>('users/employees');
+
+// `:guides` draws the `|` / `+-` rails in the indent gutters. Off by default
+// because it changes a row's inner DOM; toggled here so both reads are visible.
+const guides = ref(true);
 const expandedPaths = ref<string[]>(['users', 'sources']);
 
 // ── 2. Cascade ────────────────────────────────────────────────────────────
@@ -104,12 +108,20 @@ const grantedSummary = computed(() => (grantedPermissions.value.length > 0 ?
             <h3 class="vc-demo-h">
                 Folder pane — <code>parseTreePaths()</code> + <code>v-model:selection</code>
             </h3>
+            <label class="vc-demo-toggle">
+                <input
+                    v-model="guides"
+                    type="checkbox"
+                >
+                <code>:guides</code> — draw connector rails
+            </label>
             <div class="vc-demo-split">
                 <div class="vc-demo-pane">
                     <VCTree
                         v-model:selection="selectedPath"
                         v-model:expanded="expandedPaths"
                         :items="folders"
+                        :guides="guides"
                     />
                 </div>
 
@@ -219,6 +231,15 @@ const grantedSummary = computed(() => (grantedPermissions.value.length > 0 ?
     border: 1px solid var(--vc-color-border);
     border-radius: 0.375rem;
     padding: 0.5rem;
+}
+.vc-demo-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0 0 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--vc-color-fg-muted);
+    cursor: pointer;
 }
 .vc-demo-pane-narrow {
     max-width: 20rem;

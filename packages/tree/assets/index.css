@@ -105,3 +105,51 @@
         transition: none;
     }
 }
+
+/*
+ * Guide rails (`<VCTree guides>`).
+ *
+ * The indent is normally one padding on the row. With guides on, the gutters
+ * become real elements instead, because each one has to paint independently:
+ * an ancestor's vertical continues only while that ancestor still has
+ * siblings below, and the row's own gutter carries the elbow. The component
+ * supplies both facts as `data-continues` / `data-elbow`; see
+ * `resolveGuideRails`.
+ */
+.vc-tree[data-guides] .vc-tree-item {
+    padding-inline-start: 0;
+}
+
+.vc-tree-item-rail {
+    position: relative;
+    flex: none;
+    align-self: stretch;
+    width: var(--vc-tree-indent);
+}
+
+/* Ancestor gutter: a full-height vertical, drawn only while that ancestor
+   still has siblings below this row. */
+.vc-tree-item-rail[data-continues]::before,
+.vc-tree-item-rail[data-elbow]::before {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 50%;
+    border-inline-start: var(--vc-tree-guide-width, 1px) solid var(--vc-tree-guide-color, var(--vc-color-border, currentcolor));
+    opacity: var(--vc-tree-guide-opacity, 1);
+    content: "";
+}
+
+/* Last child: the vertical stops at the elbow instead of running past it. */
+.vc-tree-item-rail[data-elbow]:not([data-continues])::before {
+    inset-block-end: 50%;
+}
+
+/* The elbow's horizontal arm, from the vertical across to the row content. */
+.vc-tree-item-rail[data-elbow]::after {
+    position: absolute;
+    inset-inline: 50% 0;
+    inset-block-start: 50%;
+    border-block-start: var(--vc-tree-guide-width, 1px) solid var(--vc-tree-guide-color, var(--vc-color-border, currentcolor));
+    opacity: var(--vc-tree-guide-opacity, 1);
+    content: "";
+}

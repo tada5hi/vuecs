@@ -10,6 +10,7 @@ export type TreeItemThemeClasses = {
     content: string,
     trigger: string,
     triggerIcon: string,
+    rail: string,
     icon: string,
     label: string
 };

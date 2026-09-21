@@ -14,6 +14,7 @@ export const treeItemThemeDefaults: ComponentThemeDefinition<TreeItemThemeClasse
         content: 'vc-tree-item-content',
         trigger: 'vc-tree-item-trigger',
         triggerIcon: 'vc-tree-item-trigger-icon',
+        rail: 'vc-tree-item-rail',
         icon: 'vc-tree-item-icon',
         label: 'vc-tree-item-label',
     },
