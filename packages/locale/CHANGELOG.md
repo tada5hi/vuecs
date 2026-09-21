@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.1.2](https://github.com/tada5hi/vuecs/compare/locale-v1.1.1...locale-v1.1.2) (2026-09-21)
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 25 updates ([#1732](https://github.com/tada5hi/vuecs/issues/1732)) ([ab59865](https://github.com/tada5hi/vuecs/commit/ab5986543397cbb9e5d9b2e4b7b52e450c4d6a17))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.5.0 to ^3.6.0
+  * peerDependencies
+    * @vuecs/core bumped from ^3.5.0 to ^3.6.0
+
 ## [1.1.1](https://github.com/tada5hi/vuecs/compare/locale-v1.1.0...locale-v1.1.1) (2026-08-04)
 
 

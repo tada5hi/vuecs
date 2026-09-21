@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/tada5hi/vuecs/compare/icon-v1.1.0...icon-v1.1.1) (2026-09-21)
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 25 updates ([#1732](https://github.com/tada5hi/vuecs/issues/1732)) ([ab59865](https://github.com/tada5hi/vuecs/commit/ab5986543397cbb9e5d9b2e4b7b52e450c4d6a17))
+
 ## [1.1.0](https://github.com/tada5hi/vuecs/compare/icon-v1.0.3...icon-v1.1.0) (2026-07-29)
 
 
