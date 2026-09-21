@@ -26,7 +26,7 @@ npm install @vuecs/tree
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue';
-import { parseTreePaths } from '@vuecs/tree';
+import { VCTree, parseTreePaths } from '@vuecs/tree';
 
 const items = parseTreePaths(['users', 'users/employees', 'sources/ldap']);
 const selection = ref<string | null>(null);
