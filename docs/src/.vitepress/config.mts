@@ -221,6 +221,12 @@ export default defineConfig({
                         { text: 'Timeago', link: '/components/timeago' },
                     ],
                 },
+                {
+                    text: '@vuecs/tree',
+                    items: [
+                        { text: 'Tree', link: '/components/tree' },
+                    ],
+                },
             ],
             '/themes/': [
                 {

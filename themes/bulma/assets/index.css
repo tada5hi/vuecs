@@ -736,3 +736,72 @@
 /* `<VCTags>` container — Bulma's `.are-*` family has no step below the
    default; shrink the child chips for the `xs` container size. */
 .tags.vc-size-xs .tag { font-size: 0.65rem; }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * @vuecs/tree — gap-fill. The theme puts `.menu .menu-list` on the `<ul>` and
+ * `.menu-item` on each row surface, which is Bulma's own hook for a
+ * non-anchor menu row (`.menu-list a, .menu-list button, .menu-list
+ * .menu-item`). Three things can't be expressed as a static class string:
+ *
+ *   1. `.menu-list .menu-item` sets `display: block`, and at (0,2,0) it
+ *      outranks the package's structural `.vc-tree-item-content { display:
+ *      flex }`. The row is a chevron + label pair, so the flex row has to be
+ *      restored at a higher specificity. Everything else `.menu-item`
+ *      contributes (padding, radius, `width: 100%`, hover/active deltas) is
+ *      kept — that's the reason to compose it in the first place.
+ *   2. Selection is an ATTRIBUTE (`data-selected`, set in both the plain
+ *      `aria-selected` mode and the cascade `aria-checked` mode), not Bulma's
+ *      `.is-active` class. The rule below performs the identical
+ *      `--bulma-menu-item-selected-*` variable flip `.is-active` performs, so
+ *      a palette switch or a `data-theme` flip carries through unchanged.
+ *   3. Bulma has no `mixed` / busy / non-form disabled vocabulary at all.
+ *      Indeterminate reuses Bulma's own hover lightness delta so the partial
+ *      branch reads as a weaker version of the selected row; busy and
+ *      disabled are plain opacity.
+ *
+ * Focus lands on the `<li>` (reka's roving tabindex), not on the row surface,
+ * so the ring is drawn there using Bulma's shared `--bulma-focus-*` tokens.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.vc-tree .vc-tree-item-content.menu-item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* Same variable flip as `.menu-list .menu-item.is-active`. */
+.vc-tree-item[data-selected] > .vc-tree-item-content {
+    --bulma-menu-item-h: var(--bulma-menu-item-selected-h);
+    --bulma-menu-item-s: var(--bulma-menu-item-selected-s);
+    --bulma-menu-item-l: var(--bulma-menu-item-selected-l);
+    --bulma-menu-item-background-l: var(--bulma-menu-item-selected-background-l);
+    --bulma-menu-item-color-l: var(--bulma-menu-item-selected-color-l);
+}
+
+/* Partially-selected branch (cascade mode) — Bulma has no `mixed` state, so
+   borrow its hover delta rather than inventing a colour. */
+.vc-tree-item[aria-checked="mixed"] > .vc-tree-item-content,
+.vc-tree-item[data-indeterminate] > .vc-tree-item-content {
+    --bulma-menu-item-background-l-delta: var(--bulma-menu-item-hover-background-l-delta);
+
+    font-weight: var(--bulma-weight-semibold, 600);
+}
+
+.vc-tree-item[aria-busy="true"] > .vc-tree-item-content {
+    opacity: 0.6;
+}
+
+/* Bulma only dims a disabled *form* element (`[disabled]`); a tree row is a
+   `<li>`, so bridge `aria-disabled` onto the same treatment. Deliberately no
+   `pointer-events: none` — it would suppress `cursor: not-allowed`, and reka
+   already refuses to select or focus a disabled item. */
+.vc-tree-item[aria-disabled="true"] > .vc-tree-item-content {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.vc-tree-item:focus-visible {
+    outline: none;
+    box-shadow: var(--bulma-focus-shadow-size) hsla(var(--bulma-focus-h), var(--bulma-focus-s), var(--bulma-focus-l), var(--bulma-focus-shadow-alpha));
+    border-radius: var(--bulma-menu-item-radius, var(--bulma-radius-small));
+}

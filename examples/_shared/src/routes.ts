@@ -269,6 +269,12 @@ export const sharedRoutes: SharedRoute[] = [
         view: () => import('./views/Tooltip.vue').then((m) => m.default),
     },
     {
+        path: '/tree',
+        name: 'tree',
+        label: 'Tree',
+        view: () => import('./views/Tree.vue').then((m) => m.default),
+    },
+    {
         path: '/visually-hidden',
         name: 'visually-hidden',
         label: 'Visually Hidden',

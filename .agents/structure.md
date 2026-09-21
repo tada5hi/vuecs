@@ -23,6 +23,7 @@ vuecs/
     placeholder/      # @vuecs/placeholder — primitive skeleton loading components (VCPlaceholder + Wrapper); shape: rect/pill/circle, wave/glow/none animations; ships its own structural CSS so it works without any theme. Composite skeletons live next to the real components (VCCardPlaceholder in elements, VCTablePlaceholder in table) (issue #1476)
     table/            # @vuecs/table — compound table (Table / Header / Body / Footer / Row / Cell / HeadCell / Empty / Loading) + :columns :data driver, controlled sort, row-meta variants, row keyboard nav (plan 028)
     timeago/          # @vuecs/timeago
+    tree/             # @vuecs/tree — tree view that SELECTS rather than navigates (VCTree / VCTreeItem / VCTreeItemTrigger); wraps reka TreeRoot/TreeItem as a focus+flatten shell via as-child, vuecs owns key-based v-model:selection, v-model:expanded, cascade + indeterminate, lazy load(); Vue-free utils (parseTreePaths / buildTreeIndex / normalize / cascadeSelect / orderKeys); indents via --vc-tree-level in its own CSS (plan 042)
   themes/             # Theme packages (npm workspaces) — pure data, no Vue runtime deps
     bootstrap/        # @vuecs/theme-bootstrap — Bootstrap (currently v5) theme + design-token bridge (assets/index.css)
     bulma/            # @vuecs/theme-bulma — Bulma 1.0+ theme + design-token bridge (assets/index.css)

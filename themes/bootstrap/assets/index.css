@@ -553,3 +553,90 @@
     font-size: 0.7rem;
     border-radius: 0.2rem;
 }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * @vuecs/tree — Bootstrap theme strings can't carry `[data-selected]` /
+ * `[data-indeterminate]` / `[aria-busy]` / `[data-disabled]` attribute
+ * selectors, so every state-dependent row style lives here.
+ *
+ * Colours come from the `--bs-list-group-*` scope the `tree.root` entry opts
+ * into by putting `.list-group` on the `<ul role="tree">`. Those vars are
+ * rebound onto `--vc-color-*` further up this file, so a runtime palette
+ * switch reaches the tree without a single literal colour below.
+ *
+ * Indentation is NOT re-implemented here — `@vuecs/tree`'s own structural
+ * CSS paints it from `--vc-tree-level` / `--vc-tree-indent`.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+/* Hover affordance on an enabled row. Bootstrap's own action-row pair, so
+   it tracks `data-bs-theme` light/dark automatically. */
+.vc-tree-item:not([data-disabled]) > .vc-tree-item-content:hover {
+    color: var(--bs-list-group-action-hover-color);
+    background-color: var(--bs-list-group-action-hover-bg);
+}
+
+/* Selected row. `data-selected` is emitted in BOTH selection modes (plain
+   `aria-selected` and cascade `aria-checked`), so one rule covers both
+   instead of duplicating per ARIA attribute. Listed again with `:hover` so
+   a selected row doesn't lose its fill under the pointer. */
+.vc-tree-item[data-selected] > .vc-tree-item-content,
+.vc-tree-item[data-selected] > .vc-tree-item-content:hover {
+    color: var(--bs-list-group-active-color);
+    background-color: var(--bs-list-group-active-bg);
+}
+
+/* Partially-selected branch (cascade mode, `aria-checked="mixed"`).
+   Bootstrap has no "mixed" token, so this borrows the neutral action-active
+   pair — visibly distinct from both the plain and the selected row. */
+.vc-tree-item[data-indeterminate] > .vc-tree-item-content {
+    color: var(--bs-list-group-action-active-color);
+    background-color: var(--bs-list-group-action-active-bg);
+}
+
+/* Children loading (`:load` in flight). */
+.vc-tree-item[aria-busy="true"] > .vc-tree-item-content {
+    opacity: .65;
+    cursor: progress;
+}
+
+/* Disabled row. Activation is already blocked component-side, so no
+   `pointer-events: none` — it would suppress `cursor: not-allowed`. Same
+   call as the `.vc-button[aria-disabled]` bridge above. */
+.vc-tree-item[data-disabled] > .vc-tree-item-content {
+    color: var(--bs-list-group-disabled-color);
+    background-color: var(--bs-list-group-disabled-bg);
+    cursor: not-allowed;
+}
+
+/* Roving focus ring — reka moves `tabindex="0"` between rows, so the ring
+   belongs on the `<li>`, not the content span. */
+.vc-tree-item:focus-visible {
+    outline: 0;
+    box-shadow: var(--bs-focus-ring-x, 0) var(--bs-focus-ring-y, 0) var(--bs-focus-ring-blur, 0) var(--bs-focus-ring-width, .25rem) var(--bs-focus-ring-color);
+}
+
+/* Chevron. Muted while the row is unselected so it reads as a secondary
+   (expand) affordance; on a selected row it inherits the active foreground
+   so it stays legible against the filled background. Plain declarations —
+   a `.text-body-secondary` utility would be `!important` and win there. */
+.vc-tree-item:not([data-selected]) > .vc-tree-item-content .vc-tree-item-trigger {
+    color: var(--bs-secondary-color);
+}
+
+.vc-tree-item-trigger:hover {
+    color: var(--bs-emphasis-color);
+}
+
+/*
+ * The tree row is click-selectable, but Bootstrap ships no `.cursor-*`
+ * utility, so the affordance cannot come from the theme's class strings.
+ * theme-tailwind and theme-bulma both set one; without this a Bootstrap tree
+ * row reads as inert text.
+ */
+.vc-tree-item-content {
+    cursor: pointer;
+}
+
+.vc-tree-item[aria-disabled="true"] .vc-tree-item-content {
+    cursor: default;
+}

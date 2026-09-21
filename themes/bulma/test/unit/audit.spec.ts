@@ -95,6 +95,7 @@ import {
     tableThemeDefaults,
 } from '@vuecs/table';
 import { timeagoThemeDefaults } from '@vuecs/timeago';
+import { treeItemThemeDefaults, treeThemeDefaults } from '@vuecs/tree';
 import bulmaTheme from '../../src';
 
 /*
@@ -102,7 +103,7 @@ import bulmaTheme from '../../src';
  * slice 7b catalog expansion).
  *
  * The expected catalog now covers every component package that ships
- * a `*ThemeDefaults` export — 43 components total.
+ * a `*ThemeDefaults` export — 45 components total.
  *
  * `missingElements` + `missingSlots` are suppressed via `skip`: many
  * themes legitimately don't override every component (countdown /
@@ -191,6 +192,8 @@ const expectedCatalog = {
     toastTitle: toastTitleThemeDefaults,
     toastViewport: toastViewportThemeDefaults,
     tooltip: tooltipThemeDefaults,
+    tree: treeThemeDefaults,
+    treeItem: treeItemThemeDefaults,
     validationGroup: validationGroupThemeDefaults,
 };
 

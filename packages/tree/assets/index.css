@@ -1,0 +1,91 @@
+/*
+ * Structural CSS for @vuecs/tree.
+ *
+ * Deliberately unlayered — vuecs structural rules must outrank a framework's
+ * unlayered reboot (see .agents/conventions.md). Themes layer colour, focus
+ * rings and spacing on top via the `tree` / `treeItem` theme keys.
+ *
+ * Indentation is the one thing a tree cannot leave to the theme: rows are a
+ * FLAT list (reka's TreeRoot flattens the visible tree into siblings), so
+ * depth has to be painted rather than inherited from DOM nesting. Each row
+ * carries `--vc-tree-level` inline; `--vc-tree-indent` is the step, and a
+ * consumer or theme overrides that one token rather than writing a rule per
+ * level.
+ */
+
+.vc-tree {
+    --vc-tree-indent: 0.75rem;
+
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.vc-tree-item {
+    list-style: none;
+    padding-inline-start: calc(var(--vc-tree-indent) * (var(--vc-tree-level, 1) - 1));
+}
+
+.vc-tree-item-content {
+    display: flex;
+    align-items: center;
+    gap: var(--vc-tree-gap, 0.25rem);
+    min-width: 0;
+}
+
+.vc-tree-item-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/*
+ * Sized through a custom property, not a literal, for the same reason as the
+ * indent: this stylesheet is deliberately UNLAYERED (so it outranks a
+ * framework reboot), which also means it outranks Tailwind's `@layer
+ * utilities`. A theme writing `h-4 w-4` here would silently lose. Setting
+ * `--vc-tree-trigger-size` works from any layer, because nothing else
+ * declares it.
+ */
+.vc-tree-item-trigger {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: var(--vc-tree-trigger-size, 1rem);
+    height: var(--vc-tree-trigger-size, 1rem);
+    cursor: pointer;
+}
+
+.vc-tree-item-trigger[data-loading] {
+    cursor: progress;
+}
+
+/*
+ * The chevron is drawn, not iconised: a tree must render correctly with no
+ * icon preset installed, and unlike a checkbox glyph the chevron is pure
+ * affordance — the row's `aria-expanded` carries the meaning. Consumers who
+ * want a real icon use the `#toggle` slot.
+ */
+.vc-tree-item-trigger-icon {
+    width: 0.4em;
+    height: 0.4em;
+    border-right: 0.125em solid currentcolor;
+    border-bottom: 0.125em solid currentcolor;
+    transform: rotate(-45deg);
+    transition: transform 150ms ease;
+}
+
+.vc-tree-item-trigger[data-state="open"] .vc-tree-item-trigger-icon {
+    transform: rotate(45deg);
+}
+
+.vc-tree-item-trigger[data-loading] .vc-tree-item-trigger-icon {
+    opacity: 0.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vc-tree-item-trigger-icon {
+        transition: none;
+    }
+}

@@ -114,6 +114,12 @@ vuecs ships its components across separate packages — install only what you us
 |-----------|-------|
 | [Timeago](/components/timeago) | Relative time display |
 
+## @vuecs/tree
+
+| Component | Notes |
+|-----------|-------|
+| [Tree](/components/tree) | Tree view that selects rather than navigates — key-based `v-model:selection`, controlled expansion, cascade + indeterminate, lazy children, `parseTreePaths()` |
+
 ## Conventions across components
 
 - Every component takes `themeClass` (slot class overrides) and `themeVariant` (variant values) — see [Theme System](/guide/theme-system).

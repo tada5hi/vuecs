@@ -1191,6 +1191,50 @@ export default function bulmaTheme(): Theme {
                 },
             },
             tableExpandTriggerCell: { classes: { root: 'has-text-centered' } },
+            // Bulma ships `.menu` / `.menu-list` for exactly this shape — a
+            // vertical stack of selectable rows. Since 1.0 the item rule also
+            // matches a plain class (`.menu-list a, .menu-list button,
+            // .menu-list .menu-item`), so vuecs's `<span>` row surface picks up
+            // Bulma's padding / radius / hover + active lightness deltas
+            // without having to be an `<a>`.
+            //
+            // `.menu` has to ride along on the SAME element as `.menu-list`:
+            // every `--bulma-menu-item-*` variable the item rule reads is
+            // declared on `.menu`, so `menu-list` alone leaves them unresolved
+            // and the row renders unpadded, unrounded and transparent.
+            //
+            // Selection / indeterminate / busy / disabled are ATTRIBUTE states
+            // (`[data-selected]`, `[aria-checked="mixed"]`, `[aria-busy]`,
+            // `[aria-disabled]`), and Bulma's `.is-active` is a class — a
+            // static theme string can't toggle it. The gap-fill in
+            // `assets/index.css` performs the very same
+            // `--bulma-menu-item-selected-*` variable flip `.is-active` does,
+            // keyed off the attributes instead. Same file also restores the
+            // flex row that `.menu-list .menu-item { display: block }` would
+            // otherwise win from the structural CSS.
+            tree: {
+                classes: {
+                    root: 'menu menu-list',
+                    empty: 'has-text-grey is-size-7 p-2',
+                },
+            },
+            treeItem: {
+                classes: {
+                    // The `<li>`. Depth is already painted by the package's own
+                    // `--vc-tree-level` rule, so the row wrapper stays bare.
+                    root: '',
+                    content: 'menu-item',
+                    trigger: 'has-text-grey',
+                    // The chevron is drawn by the package's structural CSS from
+                    // `currentcolor`; the trigger's `has-text-grey` is what
+                    // colours it.
+                    triggerIcon: '',
+                    icon: 'has-text-grey',
+                    // Take the leftover width so the structural ellipsis rule
+                    // has something to clip against.
+                    label: 'is-flex-grow-1',
+                },
+            },
         },
         /*
          * Theme-runtime hook (plan 021): mirror the resolved color mode

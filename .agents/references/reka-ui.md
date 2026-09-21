@@ -43,7 +43,13 @@ From `packages/core/src/`:
 
 | Overlap with vuecs | vuecs has, Reka doesn't | Reka has, vuecs is missing |
 |---|---|---|
-| Pagination, Checkbox, Switch, RadioGroup, Select, Slider, NavigationMenu | Button, Countdown, Gravatar, Timeago, themed list controls | Dialog/AlertDialog, DropdownMenu/ContextMenu/Menubar, Tooltip/HoverCard, Popover, Tabs, Accordion, Combobox/Autocomplete, Toast, Calendar/DatePicker family, ColorPicker family, ScrollArea, Splitter, Stepper, Tree, Editable, NumberField, PinInput, TagsInput, Toolbar |
+| Pagination, Checkbox, Switch, RadioGroup, Select, Slider, NavigationMenu, Tree | Button, Countdown, Gravatar, Timeago, themed list controls | Dialog/AlertDialog, DropdownMenu/ContextMenu/Menubar, Tooltip/HoverCard, Popover, Tabs, Accordion, Combobox/Autocomplete, Toast, Calendar/DatePicker family, ColorPicker family, ScrollArea, Splitter, Stepper, Editable, NumberField, PinInput, TagsInput, Toolbar |
+
+> **Row is stale in the "missing" column where vuecs has since shipped.**
+> Tree moved to *Overlap* in plan 042 (`@vuecs/tree`); Dialog/AlertDialog,
+> Popover, Tooltip/HoverCard, DropdownMenu/ContextMenu and Toast are covered
+> by `@vuecs/overlays`, and Stepper by `@vuecs/navigation`. Re-audit the row
+> when adding a package rather than trusting it.
 
 ## Composables (from `packages/core/src/shared/`)
 
@@ -63,6 +69,7 @@ Utility components: `ConfigProvider`, `FocusScope`, `Presence`, `Primitive`, `Ro
 | `FocusScope`, `FocusGuards`, `useBodyScrollLock`, `useHideOthers` | none in vuecs | Required for any modal/drawer/popover work — non-trivial to re-implement |
 | `Popper` (built on `@floating-ui/vue`) | none in vuecs | Required for tooltip/dropdown/popover |
 | `Presence` (mount/unmount with transitions) | none | Useful for any animated overlay |
+| `Tree` (`TreeRoot` / `TreeItem` / `TreeVirtualizer`; `src/Tree/`) | `@vuecs/tree` — `<VCTree>` / `<VCTreeItem>` / `<VCTreeItemTrigger>` (plan 042) | Reka is used as a **focus + flatten shell only**: its `#default="{ flattenItems }"` slot, roving focus, typeahead and Left/Right sibling nav. Its *selection* is never fed — `modelValue` / `multiple` / `propagateSelect` / `bubbleSelect` / `selectionBehavior` are not passed and `select`/`toggle` are always `preventDefault()`ed. `<VCTreeItem>` renders `TreeItem` with **`as-child`** so vuecs's `<li>` is the real element (see the divergence notes below). `TreeVirtualizer` is not wrapped. |
 
 ## How Nuxt UI consumes Reka UI (concrete pattern)
 
@@ -221,6 +228,42 @@ For pagination-style "windowed" lists where the visible items shift but the unde
 
 This pairs with the uniform-root-shape rule above — both are needed for clean reconciliation through Slot.
 
+### `Tree` — upstream defects worked around (reka-ui 2.10.1)
+
+Found while building `@vuecs/tree` (plan 042). Sources:
+`node_modules/reka-ui/src/Tree/{TreeRoot,TreeItem}.vue` + `utils.ts`, and
+`src/Primitive/{Primitive.ts,Slot.ts}`. None of these are documented
+upstream; **re-verify every row on a reka-ui bump.**
+
+| # | Upstream behaviour | Effect | How `@vuecs/tree` avoids it |
+|---|---|---|---|
+| 1 | `TreeRoot`'s internal `flatten()` recurses on a hard-coded `item.children`, ignoring the `getChildren` prop | `propagateSelect` silently selects nothing for a consumer whose children live under another key | Reka's selection is never fed. vuecs's own `buildTreeIndex` walks the **injected** resolver; the literal `children` appears nowhere in the cascade kernel |
+| 2 | `handleBubbleSelect` resolves parents out of the *visible* flattened list | A **collapsed** parent never updates when its children change | `normalize()` iterates the whole index; `expanded` is not an input to it |
+| 3 | `TreeRoot.handleKeydown` feeds *every* `event.key` into `refAutoReset('', 1000)` with no modifier/arrow filtering | ArrowDown appends the literal string `'ArrowDown'` to the typeahead buffer | **Not fixable from outside** — inherited. Documented as a known limit |
+| 4 | `loop` is never forwarded to `RovingFocusGroup` | Focus can't wrap at the ends of the tree | Inherited; documented |
+| 5 | `*` (expand all siblings, in the APG TreeView pattern) is unimplemented | Missing keyboard affordance | Inherited; documented |
+| 6 | `firstValue` (the range anchor) is only assigned in `onSelectItem`'s `'replace'` branch, unreachable under the default `selectionBehavior: 'toggle'` | Shift+**Arrow** range-select is dead upstream | vuecs runs its own `useSelectionMachine` range anchor; Shift+**click** works, Shift+Arrow is out of v1 scope |
+| 7 | `selectedKeys` computes `[props.getKey(modelValue ?? {})]` in single mode, and `modelValue` initialises to `undefined` | Reka calls the consumer's key resolver with a **phantom `{}`** on every render — `(i) => i.id.toString()` throws `TypeError` at mount | The Reka-facing `getKey` reads a `WeakMap<object, string>` built by `buildTreeIndex` and never reaches the consumer's resolver |
+| 8 | `useVModel(props, 'expanded', emits, { passive: (props.expanded === undefined) })` is evaluated **once at setup** | A render path that omits `:expanded` silently hands expansion back to Reka's internal state — no error, no type failure | `<VCTree>` **always** binds `:expanded`, passing its own ref when the consumer binds nothing. Pinned by a spec |
+
+**`asChild` precedence is the mechanism, and it's undocumented.**
+`TreeItem.vue` binds `v-bind="$attrs"` *before* its own `role` /
+`aria-selected`, so a plain wrapper can never repaint them — but
+`Primitive`'s `asChild` path routes through `Slot`, which does
+`mergeProps(attrs, child.props)` with the **child last** (`Slot.ts:26-28`).
+So the child's props win, and `undefined` **removes** an attribute. That is
+what lets `<VCTreeItem>` drop `aria-selected` and emit
+`aria-checked="mixed"` on a partially-selected branch. A future release
+that "fixes" this precedence would silently revert every row to
+`aria-selected="false"`; `packages/tree/test/unit/tree.spec.ts` asserts the
+rendered attributes on the DOM so the regression fails loudly.
+
+Also note `Slot.ts:21` does `delete firstNonCommentChildren.props?.ref` — a
+template `ref` on the child element is silently dropped (the collection ref
+takes it). Reach the element through the collection instead.
+
+Upstream issues to file: 1, 2, 3, 4, 5.
+
 ### Stale dist when iterating
 
 Themes in vuecs are workspace packages. The docs site resolves them through `package.json` exports (`./dist/...`), not source. **After editing a theme, run `npm run build --workspace=packages/theme-<name>` before checking the docs site** — Vite/VitePress will use the rebuilt dist immediately, but won't recompile the dist itself. (`examples/nuxt` aliases directly to `src` so it sees changes without a rebuild — useful for fast iteration; the docs site is where stale-dist confusion shows up.)
@@ -259,7 +302,8 @@ Reka UI is **the natural lower layer** for vuecs's missing overlay/menu/tabs/acc
 ## Areas to Watch
 
 When Reka UI ships major versions, review for:
-- New primitives that close gaps in our roadmap (Tree, Splitter, Stepper, Toast)
+- New primitives that close gaps in our roadmap (Splitter, Editable, Toolbar) — Tree, Stepper and Toast are now wrapped (`@vuecs/tree`, `@vuecs/navigation`, `@vuecs/overlays`)
+- **`Tree` fixes** — the eight divergences in [`Tree` — upstream defects worked around](#tree--upstream-defects-worked-around-reka-ui-2101). A "fix" to `asChild` merge precedence in particular would silently break `@vuecs/tree`'s ARIA
 - API changes to `Primitive` / `asChild` (the slot-as-element pattern is still evolving)
 - `ConfigProvider` extensions (new locale/dir features) — useful for our own provider if we mirror this
 - Composable additions (especially anything around virtualization, drag, or keyboard interaction)

@@ -95,6 +95,7 @@ import {
     tableThemeDefaults,
 } from '@vuecs/table';
 import { timeagoThemeDefaults } from '@vuecs/timeago';
+import { treeItemThemeDefaults, treeThemeDefaults } from '@vuecs/tree';
 import tailwindTheme from '../../src';
 
 /*
@@ -191,6 +192,8 @@ const expectedCatalog = {
     toastTitle: toastTitleThemeDefaults,
     toastViewport: toastViewportThemeDefaults,
     tooltip: tooltipThemeDefaults,
+    tree: treeThemeDefaults,
+    treeItem: treeItemThemeDefaults,
     validationGroup: validationGroupThemeDefaults,
 };
 
