@@ -524,6 +524,29 @@ describe('VCTree guide rails', () => {
             elbow: rail.attributes('data-elbow') !== undefined,
         }));
 
+    // Rails must span the whole ROW. Nested inside the content span they
+    // inherit the theme's vertical padding, so each one stops short of the
+    // row edges and adjacent rails never meet — the line reads as a column
+    // of disconnected stubs.
+    it('renders rails as direct children of the row, not inside the content', async () => {
+        const wrapper = mountTree({ guides: true, defaultExpanded: ['users'] });
+        await nextTick();
+
+        const row = wrapper.findAll('[role="treeitem"]')[1];
+        const rail = row.find('[data-vc-tree-rail]');
+
+        expect(rail.element.parentElement).toBe(row.element);
+    });
+
+    it('positions each rail by index so it can be absolutely placed', async () => {
+        const wrapper = mountTree({ guides: true, defaultExpanded: ['users'] });
+        await nextTick();
+
+        const row = wrapper.findAll('[role="treeitem"]')[1];
+
+        expect(row.find('[data-vc-tree-rail]').attributes('style')).toContain('--vc-tree-rail-index: 0');
+    });
+
     it('renders no rails when guides is off', async () => {
         const wrapper = mountTree({ defaultExpanded: ['users'] });
         await nextTick();

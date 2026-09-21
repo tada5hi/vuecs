@@ -117,14 +117,22 @@
  * `resolveGuideRails`.
  */
 .vc-tree[data-guides] .vc-tree-item {
-    padding-inline-start: 0;
+    position: relative;
 }
 
+/*
+ * Absolutely positioned against the ROW, not laid out inside the content
+ * span. The indent stays a padding on the row, and each rail overlays the
+ * gutter it owns. This is what makes a vertical span the row's full height,
+ * so it meets the next row's — inside the content span the rails inherit its
+ * vertical padding and the line breaks at every row boundary.
+ */
 .vc-tree-item-rail {
-    position: relative;
-    flex: none;
-    align-self: stretch;
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: calc(var(--vc-tree-rail-index, 0) * var(--vc-tree-indent));
     width: var(--vc-tree-indent);
+    pointer-events: none;
 }
 
 /* Ancestor gutter: a full-height vertical, drawn only while that ancestor

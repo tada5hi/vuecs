@@ -643,6 +643,28 @@ const VCTree = defineComponent({
             return key;
         };
 
+        /**
+         * One span per indent gutter. `data-continues` keeps an ancestor's
+         * vertical running past this row; the last gutter carries the row's
+         * own elbow. See `resolveGuideRails` for why this cannot be CSS-only.
+         */
+        const renderRails = (key: string): VNodeChild[] => {
+            if (!props.guides) {
+                return [];
+            }
+
+            const rails = resolveGuideRails(index.value, key);
+
+            return rails.map((continues, position) => h('span', {
+                'class': itemTheme.value.rail,
+                'style': { '--vc-tree-rail-index': position },
+                'aria-hidden': 'true',
+                'data-vc-tree-rail': '',
+                'data-continues': continues ? '' : undefined,
+                'data-elbow': position === rails.length - 1 ? '' : undefined,
+            }));
+        };
+
         const renderRow = (row: {
             _id: string,
             value: unknown,
@@ -674,23 +696,6 @@ const VCTree = defineComponent({
             };
 
             const children: VNodeChild[] = [];
-
-            if (props.guides) {
-                // One span per gutter. `data-continues` keeps an ancestor's
-                // vertical running past this row; the last gutter is the
-                // row's own elbow. See `resolveGuideRails` for why this
-                // cannot be a CSS-only effect.
-                const rails = resolveGuideRails(index.value, key);
-                rails.forEach((continues, position) => {
-                    children.push(h('span', {
-                        'class': itemTheme.value.rail,
-                        'aria-hidden': 'true',
-                        'data-vc-tree-rail': '',
-                        'data-continues': continues ? '' : undefined,
-                        'data-elbow': position === rails.length - 1 ? '' : undefined,
-                    }));
-                });
-            }
 
             if (row.hasChildren) {
                 children.push(slots.toggle ?
@@ -729,7 +734,18 @@ const VCTree = defineComponent({
                     'aria-setsize': row.bind['aria-setsize'],
                     'aria-posinset': row.bind['aria-posinset'],
                 },
-                { default: () => h('span', { class: itemTheme.value.content }, children) },
+                {
+                    default: () => [
+                        // Rails are siblings of the content span, not children
+                        // of it: they are absolutely positioned against the
+                        // row so a vertical spans the row's FULL height and
+                        // meets the next row's. Nested inside the content they
+                        // would inherit its vertical padding and the line
+                        // would break at every row boundary.
+                        ...renderRails(key),
+                        h('span', { class: itemTheme.value.content }, children),
+                    ],
+                },
             );
         };
 
