@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.6.0](https://github.com/tada5hi/vuecs/compare/core-v3.5.0...core-v3.6.0) (2026-09-21)
+
+
+### Features
+
+* @vuecs/data - loader-backed collection + record data sources ([#1713](https://github.com/tada5hi/vuecs/issues/1713)) ([d2c2f5c](https://github.com/tada5hi/vuecs/commit/d2c2f5c3f3c716b3d6306a45caf0989d4a401f3f))
+* @vuecs/tree - tree view component with selection, cascade and lazy children ([#1730](https://github.com/tada5hi/vuecs/issues/1730)) ([cc98d7c](https://github.com/tada5hi/vuecs/commit/cc98d7c0444a6a1fc83d57771fe1abd0ef332432))
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 25 updates ([#1732](https://github.com/tada5hi/vuecs/issues/1732)) ([ab59865](https://github.com/tada5hi/vuecs/commit/ab5986543397cbb9e5d9b2e4b7b52e450c4d6a17))
+
 ## [3.5.0](https://github.com/tada5hi/vuecs/compare/core-v3.4.0...core-v3.5.0) (2026-07-29)
 
 

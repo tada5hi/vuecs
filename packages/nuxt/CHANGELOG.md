@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.2.1](https://github.com/tada5hi/vuecs/compare/nuxt-v1.2.0...nuxt-v1.2.1) (2026-09-21)
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 25 updates ([#1732](https://github.com/tada5hi/vuecs/issues/1732)) ([ab59865](https://github.com/tada5hi/vuecs/commit/ab5986543397cbb9e5d9b2e4b7b52e450c4d6a17))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @vuecs/core bumped from ^3.5.0 to ^3.6.0
+    * @vuecs/design bumped from ^1.2.0 to ^1.2.1
+    * @vuecs/locale bumped from ^1.1.1 to ^1.1.2
+
 ## [1.2.0](https://github.com/tada5hi/vuecs/compare/nuxt-v1.1.5...nuxt-v1.2.0) (2026-08-04)
 
 

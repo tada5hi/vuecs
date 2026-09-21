@@ -1,5 +1,40 @@
 # Changelog
 
+## [5.5.0](https://github.com/tada5hi/vuecs/compare/theme-bulma-v5.4.2...theme-bulma-v5.5.0) (2026-09-21)
+
+
+### Features
+
+* @vuecs/tree - tree view component with selection, cascade and lazy children ([#1730](https://github.com/tada5hi/vuecs/issues/1730)) ([cc98d7c](https://github.com/tada5hi/vuecs/commit/cc98d7c0444a6a1fc83d57771fe1abd0ef332432))
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 25 updates ([#1732](https://github.com/tada5hi/vuecs/issues/1732)) ([ab59865](https://github.com/tada5hi/vuecs/commit/ab5986543397cbb9e5d9b2e4b7b52e450c4d6a17))
+* **theme-bulma:** mute the tree chevron only while the row is unselected ([#1733](https://github.com/tada5hi/vuecs/issues/1733)) ([cb27bc4](https://github.com/tada5hi/vuecs/commit/cb27bc484b6f999ea7437a4183d9c45151049aed))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/button bumped from ^1.4.1 to ^1.4.2
+    * @vuecs/core bumped from ^3.5.0 to ^3.6.0
+    * @vuecs/countdown bumped from ^2.1.0 to ^2.1.1
+    * @vuecs/design bumped from ^1.2.0 to ^1.2.1
+    * @vuecs/elements bumped from ^1.5.0 to ^1.5.1
+    * @vuecs/forms bumped from ^5.4.1 to ^5.4.2
+    * @vuecs/gravatar bumped from ^2.1.0 to ^2.1.1
+    * @vuecs/list bumped from ^1.2.1 to ^1.3.0
+    * @vuecs/navigation bumped from ^4.5.0 to ^4.5.1
+    * @vuecs/overlays bumped from ^1.3.0 to ^1.3.1
+    * @vuecs/pagination bumped from ^2.2.0 to ^2.2.1
+    * @vuecs/placeholder bumped from ^1.1.0 to ^1.1.1
+    * @vuecs/timeago bumped from ^2.2.0 to ^2.2.1
+  * peerDependencies
+    * @vuecs/core bumped from ^3.5.0 to ^3.6.0
+    * @vuecs/design bumped from ^1.2.0 to ^1.2.1
+
 ## [5.4.2](https://github.com/tada5hi/vuecs/compare/theme-bulma-v5.4.1...theme-bulma-v5.4.2) (2026-08-11)
 
 
