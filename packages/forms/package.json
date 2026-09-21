@@ -49,7 +49,7 @@
         "test:coverage": "vitest --config test/vitest.config.ts --run --coverage"
     },
     "dependencies": {
-        "@vueuse/core": "^14.4.0",
+        "@vueuse/core": "^15.0.0",
         "ohash": "^2.0.12",
         "reka-ui": "^2.10.4"
     },
