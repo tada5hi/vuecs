@@ -547,6 +547,40 @@ describe('VCTree guide rails', () => {
         expect(row.find('[data-vc-tree-rail]').attributes('style')).toContain('--vc-tree-rail-index: 0');
     });
 
+    // A leaf's chevron column is empty, so its elbow arm runs through it to
+    // the label — `tree(1)`'s `└── name`. A branch's arm has to stop at the
+    // chevron instead, so the two cases are tagged apart.
+    it('marks the elbow rail of a leaf so its arm can reach the label', async () => {
+        // `b` is a branch and `c` a leaf, both at level 2 under `a`.
+        const mixed = [
+            {
+                id: 'a',
+                label: 'a',
+                children: [
+                    {
+                        id: 'a/b',
+                        label: 'b',
+                        children: [{ id: 'a/b/x', label: 'x' }],
+                    },
+                    { id: 'a/c', label: 'c' },
+                ],
+            },
+        ];
+        const wrapper = mountTree({
+            items: mixed,
+            guides: true,
+            defaultExpanded: ['a'],
+        });
+        await nextTick();
+
+        const rows = wrapper.findAll('[role="treeitem"]');
+        const branch = rows.find((row) => row.attributes('data-key') === 'a/b');
+        const leaf = rows.find((row) => row.attributes('data-key') === 'a/c');
+
+        expect(branch?.find('[data-vc-tree-rail]').attributes('data-leaf')).toBeUndefined();
+        expect(leaf?.find('[data-vc-tree-rail]').attributes('data-leaf')).toBeDefined();
+    });
+
     it('renders no rails when guides is off', async () => {
         const wrapper = mountTree({ defaultExpanded: ['users'] });
         await nextTick();

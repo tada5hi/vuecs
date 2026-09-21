@@ -648,7 +648,7 @@ const VCTree = defineComponent({
          * vertical running past this row; the last gutter carries the row's
          * own elbow. See `resolveGuideRails` for why this cannot be CSS-only.
          */
-        const renderRails = (key: string): VNodeChild[] => {
+        const renderRails = (key: string, hasChildren: boolean): VNodeChild[] => {
             if (!props.guides) {
                 return [];
             }
@@ -662,6 +662,9 @@ const VCTree = defineComponent({
                 'data-vc-tree-rail': '',
                 'data-continues': continues ? '' : undefined,
                 'data-elbow': position === rails.length - 1 ? '' : undefined,
+                // A leaf's chevron column is empty, so its arm runs through
+                // it to the label. A branch's has to stop at the chevron.
+                'data-leaf': position === rails.length - 1 && !hasChildren ? '' : undefined,
             }));
         };
 
@@ -742,7 +745,7 @@ const VCTree = defineComponent({
                         // meets the next row's. Nested inside the content they
                         // would inherit its vertical padding and the line
                         // would break at every row boundary.
-                        ...renderRails(key),
+                        ...renderRails(key, row.hasChildren),
                         h('span', { class: itemTheme.value.content }, children),
                     ],
                 },

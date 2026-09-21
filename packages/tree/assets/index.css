@@ -15,12 +15,12 @@
 
 .vc-tree {
     /*
-     * One indent step = the chevron column (trigger + gap), so a child's
-     * label lands exactly under its parent's label — the standard file-tree
-     * read. Anything narrower and nesting stops being legible; anything
-     * derived from font size alone drifts when a theme resizes the chevron.
+     * One indent step = one chevron width. Wider (trigger + gap) aligns a
+     * child's label under its parent's label but reads as too loose at depth;
+     * this keeps the step tied to the chevron so the rails stay legible
+     * without the tree marching off to the right.
      */
-    --vc-tree-indent: 1.25rem;
+    --vc-tree-indent: 1rem;
 
     margin: 0;
     padding: 0;
@@ -165,4 +165,13 @@
     border-block-start: var(--vc-tree-guide-width, 1px) solid var(--vc-tree-guide-color, var(--vc-color-border, currentcolor));
     opacity: var(--vc-tree-guide-opacity, 1);
     content: "";
+}
+
+/*
+ * A leaf has no chevron, so its elbow arm runs on through the empty chevron
+ * column to meet the label — `tree(1)`'s `\-- name`. A branch's arm stops at
+ * the rail edge so it does not strike through its own chevron.
+ */
+.vc-tree-item-rail[data-elbow][data-leaf]::after {
+    inset-inline-end: calc(-1 * (var(--vc-tree-row-inset, 0px) + var(--vc-tree-trigger-size, 1rem)));
 }

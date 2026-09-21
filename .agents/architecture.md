@@ -3167,7 +3167,7 @@ so depth has to be painted rather than inherited from DOM nesting. Each
 does:
 
 ```css
-.vc-tree { --vc-tree-indent: 0.75rem; }
+.vc-tree { --vc-tree-indent: 1rem; }
 .vc-tree-item { padding-inline-start: calc(var(--vc-tree-indent) * (var(--vc-tree-level, 1) - 1)); }
 ```
 

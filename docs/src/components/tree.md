@@ -264,10 +264,10 @@ The trigger carries `data-state="open\|closed"` and `data-loading`.
 
 `<VCTreeItemTrigger>` resolves against the same `treeItem` key (`trigger` / `triggerIcon`), so it adds no third entry.
 
-**Indentation is not a theme concern.** Rows are a flat list (the visible tree is flattened into siblings), so depth is painted rather than inherited from DOM nesting: each row carries `--vc-tree-level` inline, and the package's own structural CSS steps it by `--vc-tree-indent` (default `0.75rem`). A theme that needs a different rhythm overrides that one token on `.vc-tree` rather than writing a rule per level:
+**Indentation is not a theme concern.** Rows are a flat list (the visible tree is flattened into siblings), so depth is painted rather than inherited from DOM nesting: each row carries `--vc-tree-level` inline, and the package's own structural CSS steps it by `--vc-tree-indent` (default `1rem`, one chevron width). A theme that needs a different rhythm overrides that one token on `.vc-tree` rather than writing a rule per level:
 
 ```css
-.vc-tree { --vc-tree-indent: 1.25rem; }
+.vc-tree { --vc-tree-indent: 1.5rem; }
 ```
 
 ## Limitations
