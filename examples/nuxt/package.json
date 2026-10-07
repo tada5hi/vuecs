@@ -27,7 +27,7 @@
     "homepage": "https://github.com/Tada5hi/vuecs#readme",
     "devDependencies": {
         "@iconify-json/fa6-solid": "^1.2.0",
-        "@iconify/vue": "^5.0.2",
+        "@iconify/vue": "^5.0.3",
         "@tailwindcss/vite": "^4.3.3",
         "@vuecs-examples/shared": "*",
         "@vuecs/button": "^1.4.2",
