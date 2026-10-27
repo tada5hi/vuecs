@@ -350,7 +350,7 @@ This is the fix for two failure modes the hand-rolled containers this package re
 ```ts
 import { DataLoadStatus } from '@vuecs/data';
 
-const outcome = await source.load({ search: 'ada' });
+const outcome = await source.load((current) => ({ ...current, search: 'ada' }));
 if (outcome.status === DataLoadStatus.FAILED) {
     emit('failed', outcome.error);   // only ever for the latest load
 }
@@ -363,15 +363,15 @@ The statuses are a `DataLoadStatus` enum; the `status` fields are typed as its s
 `load(next)` doesn't write `next` into `meta` up front. It resolves `next` onto a **draft**, hands the draft to the loader, and replaces the bag with it only when the call comes back `applied` — then applies the loader's `meta` patch-back on top. A load that fails or is superseded leaves `meta` at whatever the last successful request used:
 
 ```ts
-await source.load({ filters: { name: 'x' } });   // loader throws
-source.meta.filters;                              // unchanged — the failed search didn't stick
-await source.load({ pagination: { limit: 10, offset: 10 } });
-// this request does NOT carry the failed filter
+await source.load((current) => ({ ...current, search: 'x' }));   // loader throws
+source.meta.search;                                               // unchanged — the failed search didn't stick
+await source.load((current) => ({ ...current, pagination: { limit: 10, offset: 10 } }));
+// this request does NOT carry the failed search
 ```
 
 While the request is in flight `meta` still shows the previous value, so a pagination control bound to `meta` moves once the new page has actually arrived.
 
-Back-to-back calls compose as you'd expect: each draft is built on the latest pending one, so `load({ filters })` followed by `load({ pagination })` sends both, and the winner commits both.
+Back-to-back calls compose as you'd expect: each draft is built on the latest pending one, so a load that sets `search` followed by one that sets `pagination` sends both, and the winner commits both.
 
 ### `autoLoad`
 
@@ -546,7 +546,7 @@ Three details worth pinning:
 - **The snapshot is authoritative for `meta`.** `hydrate` **replaces** the bag rather than merging onto `initialMeta`, so keys the snapshot dropped do not survive rehydration.
 - **`dehydrate()` returns a fresh container with shared rows.** The array (and the meta object) are new, but the rows are the plain objects your loader returned — mutating a row in place would still reach the live source. Serialization is your contract: `JSON.stringify` is safe only when rows and meta are JSON-compatible (`Date` becomes a string, `Map`/`Set` collapse to `{}`, `undefined` properties are dropped, `BigInt` throws). If your values aren't plain JSON, run the snapshot through your own serializer before storing it.
 
-`defineDataRecord` follows the same contract, with one difference worth knowing: its snapshot is `{ data?, meta }`, and only `meta` is a fresh object — `data` is the **live record reference itself**, not a copy. The practical rule is the same in both variants, just tighter here: serialize the snapshot, never mutate it in place.
+`defineDataRecord` follows the same contract, with one difference worth knowing: its snapshot is `{ data?, meta, input? }`, and only `meta` is a fresh object — `data` is the **live record reference itself**, not a copy. `input` is the input that produced the held record, so a hydrated `ensure(input)` resolves `cached` (see [`ensure()`](#ensure-fetch-only-when-unresolved)); it must be JSON-compatible too. The practical rule is the same in both variants, just tighter here: serialize the snapshot, never mutate it in place.
 
 ## Boundaries
 
@@ -608,7 +608,7 @@ Three details worth pinning:
 | `set` / `clear` | `(…, { onSettled?, immediate? }?) => DataMutationStatus` | Local mutators; buffered during a load unless `immediate`. |
 | `merge` | `(partial, { onSettled? }?) => DataMutationStatus` | Buffered during a load. |
 | `mutate(fn)` | `Promise<R>` | Rethrows. |
-| `dehydrate()` | `{ data?, meta }` | JSON-able snapshot. |
+| `dehydrate()` | `{ data?, meta, input? }` | JSON-able snapshot; `input` is the input that produced the held record. |
 
 ## See also
 
