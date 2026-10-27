@@ -1,1 +1,0 @@
-import{Mt as e}from"./iframe-bridge-DtEhmm4D.js";function t(n){return n?n.flatMap(n=>n.type===e?t(n.children):[n]):[]}export{t};
