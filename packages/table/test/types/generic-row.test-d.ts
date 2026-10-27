@@ -1,6 +1,6 @@
 import { assertType, expectTypeOf, test } from 'vitest';
-import VCTable from '../../dist/components/Table.vue';
-import VCTableLite from '../../dist/components/TableLite.vue';
+import type VCTable from '../../dist/components/Table.vue';
+import type VCTableLite from '../../dist/components/TableLite.vue';
 import type {
     TableColumn,
     TableLiteProps,
@@ -42,11 +42,11 @@ interface User {
 // shapes can be extracted. Volar threads slot types through the `__ctx` member
 // on the return type (the same shape vue-tsc emits for `<script setup
 // generic>`), so the slot map is read from there.
-const tableOfUser = VCTable<User>;
+declare const tableOfUser: typeof VCTable<User>;
 type TableUserProps = Parameters<typeof tableOfUser>[0];
 type TableUserSlots = NonNullable<ReturnType<typeof tableOfUser>['__ctx']>['slots'];
 
-const liteOfUser = VCTableLite<User>;
+declare const liteOfUser: typeof VCTableLite<User>;
 type LiteUserProps = Parameters<typeof liteOfUser>[0];
 type LiteUserSlots = NonNullable<ReturnType<typeof liteOfUser>['__ctx']>['slots'];
 

@@ -1,6 +1,6 @@
 import { assertType, expectTypeOf, test } from 'vitest';
-import VCTree from '../../dist/components/Tree.vue';
-import VCTreeItem from '../../dist/components/TreeItem.vue';
+import type VCTree from '../../dist/components/Tree.vue';
+import type VCTreeItem from '../../dist/components/TreeItem.vue';
 import type {
     TreeItemPropsGeneric,
     TreeItemSlotProps,
@@ -38,11 +38,11 @@ interface Folder {
 // runtime, but pin `Item = Folder` at the type level. Volar threads slot types
 // through the `__ctx` member on the RETURN type (the same shape vue-tsc emits
 // for `<script setup generic>`).
-const treeOfFolder = VCTree<Folder>;
+declare const treeOfFolder: typeof VCTree<Folder>;
 type TreeFolderProps = Parameters<typeof treeOfFolder>[0];
 type TreeFolderSlots = NonNullable<ReturnType<typeof treeOfFolder>['__ctx']>['slots'];
 
-const itemOfFolder = VCTreeItem<Folder>;
+declare const itemOfFolder: typeof VCTreeItem<Folder>;
 type ItemFolderProps = Parameters<typeof itemOfFolder>[0];
 type ItemFolderSlots = NonNullable<ReturnType<typeof itemOfFolder>['__ctx']>['slots'];
 

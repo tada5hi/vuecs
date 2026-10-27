@@ -1,3 +1,4 @@
+import { test } from 'vitest';
 import type { ListMutators, ListPropsGeneric, ListState } from '@vuecs/list';
 import type { DataCollection } from '../../dist';
 
@@ -30,16 +31,18 @@ type Meta = { pagination: { limit: number, offset: number } };
 
 declare const source : DataCollection<Row, Meta>;
 
-// The actual published binding surface — Meta pinned to
-// `Record<string, unknown>` and no mutators, exactly what <VCList :state>
-// receives. This is the assertion that literally pins the prop; the two
-// below pin the wider shape the mutator-driven call sites rely on.
-const bound : NonNullable<ListPropsGeneric<Row>['state']> = source;
+test('DataCollection binds to <VCList :state>', () => {
+    // The actual published binding surface — Meta pinned to
+    // `Record<string, unknown>` and no mutators, exactly what <VCList :state>
+    // receives. This is the assertion that literally pins the prop; the two
+    // below pin the wider shape the mutator-driven call sites rely on.
+    const bound : NonNullable<ListPropsGeneric<Row>['state']> = source;
 
-// The load-bearing guarantee: a DataCollection binds to <VCList :state>.
-const state : ListState<Row, Meta> & ListMutators<Row> = source;
+    // The load-bearing guarantee: a DataCollection binds to <VCList :state>.
+    const state : ListState<Row, Meta> & ListMutators<Row> = source;
 
-// @ts-expect-error — a mismatched item type must NOT be assignable.
-const wrong : ListState<{ other: boolean }, Meta> & ListMutators<{ other: boolean }> = source;
+    // @ts-expect-error — a mismatched item type must NOT be assignable.
+    const wrong : ListState<{ other: boolean }, Meta> & ListMutators<{ other: boolean }> = source;
 
-export { bound, state, wrong };
+    void [bound, state, wrong];
+});

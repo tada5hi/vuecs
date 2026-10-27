@@ -1,6 +1,6 @@
 import { assertType, expectTypeOf, test } from 'vitest';
-import VCList from '../../dist/components/list/List.vue';
-import VCListItem from '../../dist/components/list-item/ListItem.vue';
+import type VCList from '../../dist/components/list/List.vue';
+import type VCListItem from '../../dist/components/list-item/ListItem.vue';
 import type {
     ListItemProps,
     ListItemPropsGeneric,
@@ -43,11 +43,11 @@ interface User {
 // slot shapes can be extracted. Volar threads slot types through the `__ctx`
 // member on the return type (the same shape vue-tsc emits for `<script setup
 // generic>`), so the slot map is read from there.
-const itemOfUser = VCListItem<User>;
+declare const itemOfUser: typeof VCListItem<User>;
 type ItemUserProps = Parameters<typeof itemOfUser>[0];
 type ItemUserSlots = NonNullable<ReturnType<typeof itemOfUser>['__ctx']>['slots'];
 
-const listOfUser = VCList<User>;
+declare const listOfUser: typeof VCList<User>;
 type ListUserProps = Parameters<typeof listOfUser>[0];
 
 test('VCListItem threads Item into its default slot props', () => {
