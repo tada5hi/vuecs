@@ -1,5 +1,34 @@
 # Changelog
 
+## [6.4.1](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v6.4.0...examples-nuxt-v6.4.1) (2026-10-27)
+
+
+### Bug Fixes
+
+* **deps:** bump dependencies and allow @vueuse/core v15 ([aabaa13](https://github.com/tada5hi/vuecs/commit/aabaa13fc9cc89c1d417ef66732cf253bf6c5176))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/button bumped from ^1.4.2 to ^1.4.3
+    * @vuecs/countdown bumped from ^2.1.1 to ^2.1.2
+    * @vuecs/design bumped from ^1.2.1 to ^1.2.2
+    * @vuecs/elements bumped from ^1.5.1 to ^1.5.2
+    * @vuecs/forms bumped from ^5.4.2 to ^5.4.3
+    * @vuecs/gravatar bumped from ^2.1.1 to ^2.1.2
+    * @vuecs/icon bumped from ^1.1.1 to ^1.1.2
+    * @vuecs/icons-font-awesome bumped from ^1.3.1 to ^1.3.2
+    * @vuecs/link bumped from ^2.1.2 to ^2.1.3
+    * @vuecs/list bumped from ^1.3.0 to ^1.3.1
+    * @vuecs/navigation bumped from ^4.5.1 to ^4.5.2
+    * @vuecs/nuxt bumped from ^1.2.1 to ^1.2.2
+    * @vuecs/overlays bumped from ^1.3.1 to ^1.3.2
+    * @vuecs/pagination bumped from ^2.2.1 to ^2.2.2
+    * @vuecs/theme-tailwind bumped from ^6.5.0 to ^6.5.1
+    * @vuecs/timeago bumped from ^2.2.1 to ^2.2.2
+
 ## [6.4.0](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v6.3.4...examples-nuxt-v6.4.0) (2026-09-21)
 
 
