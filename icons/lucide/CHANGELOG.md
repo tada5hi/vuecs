@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.3.2](https://github.com/tada5hi/vuecs/compare/icons-lucide-v1.3.1...icons-lucide-v1.3.2) (2026-10-27)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.6.0 to ^3.6.1
+  * peerDependencies
+    * @vuecs/core bumped from ^3.6.0 to ^3.6.1
+
 ## [1.3.1](https://github.com/tada5hi/vuecs/compare/icons-lucide-v1.3.0...icons-lucide-v1.3.1) (2026-09-21)
 
 

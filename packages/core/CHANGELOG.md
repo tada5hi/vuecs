@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.6.1](https://github.com/tada5hi/vuecs/compare/core-v3.6.0...core-v3.6.1) (2026-10-27)
+
+
+### Bug Fixes
+
+* **deps:** bump dependencies and allow @vueuse/core v15 ([aabaa13](https://github.com/tada5hi/vuecs/commit/aabaa13fc9cc89c1d417ef66732cf253bf6c5176))
+
 ## [3.6.0](https://github.com/tada5hi/vuecs/compare/core-v3.5.0...core-v3.6.0) (2026-09-21)
 
 

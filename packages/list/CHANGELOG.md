@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.3.1](https://github.com/tada5hi/vuecs/compare/list-v1.3.0...list-v1.3.1) (2026-10-27)
+
+
+### Bug Fixes
+
+* **deps:** bump dependencies and allow @vueuse/core v15 ([aabaa13](https://github.com/tada5hi/vuecs/commit/aabaa13fc9cc89c1d417ef66732cf253bf6c5176))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.6.0 to ^3.6.1
+  * peerDependencies
+    * @vuecs/core bumped from ^3.6.0 to ^3.6.1
+
 ## [1.3.0](https://github.com/tada5hi/vuecs/compare/list-v1.2.1...list-v1.3.0) (2026-09-21)
 
 

@@ -1,5 +1,27 @@
 # Changelog
 
+## [7.5.1](https://github.com/tada5hi/vuecs/compare/theme-bootstrap-v7.5.0...theme-bootstrap-v7.5.1) (2026-10-27)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/button bumped from ^1.4.2 to ^1.4.3
+    * @vuecs/core bumped from ^3.6.0 to ^3.6.1
+    * @vuecs/countdown bumped from ^2.1.1 to ^2.1.2
+    * @vuecs/elements bumped from ^1.5.1 to ^1.5.2
+    * @vuecs/forms bumped from ^5.4.2 to ^5.4.3
+    * @vuecs/gravatar bumped from ^2.1.1 to ^2.1.2
+    * @vuecs/list bumped from ^1.3.0 to ^1.3.1
+    * @vuecs/navigation bumped from ^4.5.1 to ^4.5.2
+    * @vuecs/overlays bumped from ^1.3.1 to ^1.3.2
+    * @vuecs/pagination bumped from ^2.2.1 to ^2.2.2
+    * @vuecs/placeholder bumped from ^1.1.1 to ^1.1.2
+    * @vuecs/timeago bumped from ^2.2.1 to ^2.2.2
+  * peerDependencies
+    * @vuecs/core bumped from ^3.6.0 to ^3.6.1
+
 ## [7.5.0](https://github.com/tada5hi/vuecs/compare/theme-bootstrap-v7.4.2...theme-bootstrap-v7.5.0) (2026-09-21)
 
 

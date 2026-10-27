@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/tada5hi/vuecs/compare/icon-v1.1.1...icon-v1.1.2) (2026-10-27)
+
+
+### Bug Fixes
+
+* **deps:** bump dependencies and allow @vueuse/core v15 ([aabaa13](https://github.com/tada5hi/vuecs/commit/aabaa13fc9cc89c1d417ef66732cf253bf6c5176))
+
 ## [1.1.1](https://github.com/tada5hi/vuecs/compare/icon-v1.1.0...icon-v1.1.1) (2026-09-21)
 
 

@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.2.2](https://github.com/tada5hi/vuecs/compare/design-v1.2.1...design-v1.2.2) (2026-10-27)
+
+
+### Bug Fixes
+
+* **deps:** bump dependencies and allow @vueuse/core v15 ([aabaa13](https://github.com/tada5hi/vuecs/commit/aabaa13fc9cc89c1d417ef66732cf253bf6c5176))
+* **deps:** use @vueuse/core v15 ([81ba487](https://github.com/tada5hi/vuecs/commit/81ba4870b7e10d98c3f08545b8f843e20bdd1fd4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/core bumped from ^3.6.0 to ^3.6.1
+
 ## [1.2.1](https://github.com/tada5hi/vuecs/compare/design-v1.2.0...design-v1.2.1) (2026-09-21)
 
 
