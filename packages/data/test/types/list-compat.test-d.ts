@@ -1,6 +1,7 @@
-import { test } from 'vitest';
+import { expectTypeOf, test } from 'vitest';
 import type { ListMutators, ListPropsGeneric, ListState } from '@vuecs/list';
-import type { DataCollection } from '../../dist';
+import type { DataCollection, DataRecord } from '../../dist';
+import { defineDataCollection } from '../../dist';
 
 // Structural drift guard for the `<VCList :state="source">` binding.
 //
@@ -45,4 +46,31 @@ test('DataCollection binds to <VCList :state>', () => {
     const wrong : ListState<{ other: boolean }, Meta> & ListMutators<{ other: boolean }> = source;
 
     void [bound, state, wrong];
+});
+
+type Query = { search?: string };
+
+declare const typed : DataCollection<Row, Meta, Query>;
+declare const typedRecord : DataRecord<Row, Meta, number>;
+
+test('a typed-input source stays assignable to its default-input form', () => {
+    // `load` / `refresh` / `ensure` are declared with method syntax so they
+    // are checked bivariantly in `Input`. As property arrows they would be
+    // contravariant, and `DataCollection<Row, Meta>` (Input = unknown) would
+    // reject every source whose loader declares a typed input.
+    const widened : DataCollection<Row, Meta> = typed;
+    const widenedRecord : DataRecord<Row, Meta> = typedRecord;
+    const state : ListState<Row, Meta> & ListMutators<Row> = typed;
+
+    void [widened, widenedRecord, state];
+});
+
+test('the loader input type is inferred from the definition', () => {
+    const source = defineDataCollection({
+        load: async (_meta: Meta, query?: Query) => ({ data: [] as Row[], total: query ? 0 : 1 }),
+        autoLoad: false,
+    });
+
+    expectTypeOf(source).toEqualTypeOf<DataCollection<Row, Meta, Query>>();
+    expectTypeOf(source.load).parameter(1).toEqualTypeOf<Query | undefined>();
 });

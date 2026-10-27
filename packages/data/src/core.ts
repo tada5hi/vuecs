@@ -7,7 +7,14 @@ import {
     shallowReactive,
 } from 'vue';
 import type { ComputedRef, Ref } from 'vue';
-import type { DataSourceMetaInput } from './types';
+import { DataLoadStatus, DataMutationStatus } from './constants';
+import type {
+    DataLoadOutcome,
+    DataMutationOptions,
+    DataMutationSettledStatus,
+    DataMutationStatusLiteral,
+    DataSourceMetaInput,
+} from './types';
 
 /**
  * Patch semantics for `@vuecs/data` — the single merger both the record and
@@ -74,13 +81,18 @@ export type AsyncSourceCore = {
     /**
      * Token-guarded latest-wins runner. `apply` only fires when this
      * call is still the latest; rejections are captured into `error`
-     * (never rethrown — safe for autoLoad).
+     * (never rethrown — safe for autoLoad). Resolves to the call's own
+     * outcome, so a caller never has to infer it from the shared `error`.
+     *
+     * `work` is invoked synchronously, before the first `await`.
      */
-    run: <R>(work: () => Promise<R>, apply: (result: R) => void) => Promise<void>,
+    run: <R>(work: () => Promise<R>, apply: (result: R) => void) => Promise<DataLoadOutcome>,
+    /** Invalidate every in-flight `run` — each resolves `superseded`. */
+    supersede: () => void,
     /** Run a consumer async op under busy/error accounting; rethrows. */
     mutate: <R>(fn: () => Promise<R>) => Promise<R>,
     /** Register onMounted(fire) when inside a component; dev-warn otherwise. */
-    scheduleAutoLoad: (fire: () => Promise<void>) => void,
+    scheduleAutoLoad: (fire: () => Promise<unknown>) => void,
 };
 
 export function createAsyncSourceCore() : AsyncSourceCore {
@@ -90,25 +102,27 @@ export function createAsyncSourceCore() : AsyncSourceCore {
 
     let token = 0;
 
-    const run = async <R>(work: () => Promise<R>, apply: (result: R) => void) : Promise<void> => {
+    const run = async <R>(work: () => Promise<R>, apply: (result: R) => void) : Promise<DataLoadOutcome> => {
         token += 1;
         const current = token;
         busyCount.value += 1;
         error.value = undefined;
-        const promise = (async () => {
-            try {
-                const result = await work();
-                if (current !== token) return;
-                apply(result);
-            } catch (e) {
-                if (current === token) {
-                    error.value = e;
-                }
-            } finally {
-                busyCount.value -= 1;
-            }
-        })();
-        return promise;
+        try {
+            const result = await work();
+            if (current !== token) return { status: DataLoadStatus.SUPERSEDED };
+            apply(result);
+            return { status: DataLoadStatus.APPLIED };
+        } catch (e) {
+            if (current !== token) return { status: DataLoadStatus.SUPERSEDED };
+            error.value = e;
+            return { status: DataLoadStatus.FAILED, error: e };
+        } finally {
+            busyCount.value -= 1;
+        }
+    };
+
+    const supersede = () => {
+        token += 1;
     };
 
     const mutate = async <R>(fn: () => Promise<R>) : Promise<R> => {
@@ -123,7 +137,7 @@ export function createAsyncSourceCore() : AsyncSourceCore {
         }
     };
 
-    const scheduleAutoLoad = (fire: () => Promise<void>) => {
+    const scheduleAutoLoad = (fire: () => Promise<unknown>) => {
         if (getCurrentInstance()) {
             onMounted(() => {
                 fire();
@@ -144,6 +158,7 @@ export function createAsyncSourceCore() : AsyncSourceCore {
         busy,
         error,
         run,
+        supersede,
         mutate,
         scheduleAutoLoad,
     };
@@ -156,19 +171,33 @@ export function createAsyncSourceCore() : AsyncSourceCore {
 export function createMetaBag<Meta extends object>(initial?: Meta) {
     const meta = shallowReactive({ ...(initial ?? {}) }) as Meta;
 
-    const applyInput = (next?: DataSourceMetaInput<Meta>) => {
-        if (!next) return;
+    const snapshot = () : Meta => ({ ...meta });
+
+    /**
+     * Pure: what `next` turns `base` into, without touching the bag.
+     * Object = shallow top-level merge; updater fn = wholesale replace.
+     */
+    const resolve = (base: Meta, next?: DataSourceMetaInput<Meta>) : Meta => {
+        if (!next) return { ...base };
         if (typeof next === 'function') {
-            const replacement = next({ ...meta });
-            for (const key of Object.keys(meta)) {
-                if (!(key in replacement)) {
-                    delete (meta as Record<string, unknown>)[key];
-                }
+            return { ...next({ ...base }) };
+        }
+        return { ...base, ...next };
+    };
+
+    /** Make the bag equal `next` — keys absent from it are deleted. */
+    const replace = (next: Meta) => {
+        for (const key of Object.keys(meta)) {
+            if (!(key in next)) {
+                delete (meta as Record<string, unknown>)[key];
             }
-            Object.assign(meta, replacement);
-            return;
         }
         Object.assign(meta, next);
+    };
+
+    const applyInput = (next?: DataSourceMetaInput<Meta>) => {
+        if (!next) return;
+        replace(resolve(snapshot(), next));
     };
 
     const patch = (partial?: Partial<Meta>) => {
@@ -176,12 +205,152 @@ export function createMetaBag<Meta extends object>(initial?: Meta) {
         Object.assign(meta, partial);
     };
 
-    const snapshot = () : Meta => ({ ...meta });
-
     return {
         meta,
+        resolve,
+        replace,
         applyInput,
         patch,
         snapshot,
+    };
+}
+
+export type MetaBag<Meta extends object> = ReturnType<typeof createMetaBag<Meta>>;
+
+/**
+ * Make `target` equal `source` IN PLACE: keys absent from `source` are
+ * deleted, the rest assigned. Used by `deep: true` sources so a held
+ * record / row keeps its identity (and its reactive proxy) across updates.
+ */
+export function assignInPlace(target: Record<string, any>, source: Record<string, any>) {
+    for (const key of Object.keys(target)) {
+        if (!(key in source)) {
+            delete target[key];
+        }
+    }
+    Object.assign(target, source);
+}
+
+type LoadControllerOptions<Meta extends object, Input, R> = {
+    core: AsyncSourceCore,
+    bag: MetaBag<Meta>,
+    fetch: (meta: Meta, input: Input | undefined) => Promise<R>,
+    /** Commit a winning result (and the input that produced it) into the container's state. */
+    apply: (result: R, input: Input | undefined) => void,
+};
+
+export type ActiveLoad<Input> = {
+    promise: Promise<DataLoadOutcome>,
+    input: Input | undefined,
+};
+
+/**
+ * The load + mutation-ordering machinery both containers share.
+ *
+ * - **Meta commits on success.** `load(next)` resolves `next` onto a
+ *   *draft* — based on the latest pending draft, so back-to-back calls
+ *   compose exactly as they did when meta committed eagerly — and hands
+ *   that draft to the loader. The bag only becomes the draft when the call
+ *   applies; a failed or superseded call leaves `meta` at the last request
+ *   that actually succeeded.
+ * - **Per-call input** is forwarded to the loader untouched.
+ * - **D12 buffering.** Mutators arriving while a load is in flight are
+ *   buffered and drained FIFO after every in-flight load settles (winner
+ *   applied via the token guard; drain also fires on load error — realtime
+ *   events must never be silently clobbered by a wholesale response
+ *   assignment). Accepted v1 limitation: unbounded while a load never
+ *   settles.
+ * - **Immediate writes** drain the buffer (earlier writes stay earlier),
+ *   supersede every in-flight load, then apply — so no older response can
+ *   clobber them.
+ */
+export function createLoadController<Meta extends object, Input, R>(
+    options: LoadControllerOptions<Meta, Input, R>,
+) {
+    const { core, bag } = options;
+
+    let inFlight = 0;
+    let buffered : Array<() => void> = [];
+    let pendingDraft : Meta | undefined;
+    let active : ActiveLoad<Input> | undefined;
+
+    // A buffered op runs inside the load's promise chain (or ahead of an
+    // immediate write), where a throw would reject a `load()` that promises
+    // never to reject and drop every op queued behind it. Each op is
+    // isolated instead; a failure lands in the shared `error` ref, the same
+    // place a failed load reports to.
+    const drain = () => {
+        const ops = buffered;
+        buffered = [];
+        for (const op of ops) {
+            try {
+                op();
+            } catch (e) {
+                core.error.value = e;
+            }
+        }
+    };
+
+    const load = (next?: DataSourceMetaInput<Meta>, input?: Input) : Promise<DataLoadOutcome> => {
+        const draft = bag.resolve(pendingDraft ?? bag.snapshot(), next);
+        pendingDraft = draft;
+        inFlight += 1;
+
+        const promise : Promise<DataLoadOutcome> = core.run(
+            () => options.fetch({ ...draft }, input),
+            (result) => {
+                bag.replace(draft);
+                options.apply(result, input);
+            },
+        ).then((outcome) => {
+            inFlight -= 1;
+            if (active?.promise === promise) {
+                active = undefined;
+                pendingDraft = undefined;
+            }
+            if (inFlight === 0) {
+                drain();
+            }
+            return outcome;
+        });
+
+        active = { promise, input };
+
+        return promise;
+    };
+
+    const settle = (apply: () => boolean, opts?: DataMutationOptions) : DataMutationSettledStatus => {
+        const status = apply() ? DataMutationStatus.APPLIED : DataMutationStatus.NOOP;
+        opts?.onSettled?.(status);
+        return status;
+    };
+
+    /** `apply` returns whether it changed state (`false` = no-op). */
+    const enqueueOrApply = (apply: () => boolean, opts?: DataMutationOptions) : DataMutationStatusLiteral => {
+        if (opts?.immediate) {
+            drain();
+            if (inFlight > 0) {
+                core.supersede();
+                active = undefined;
+                pendingDraft = undefined;
+            }
+            return settle(apply, opts);
+        }
+
+        if (inFlight > 0) {
+            buffered.push(() => {
+                settle(apply, opts);
+            });
+            return DataMutationStatus.BUFFERED;
+        }
+
+        return settle(apply, opts);
+    };
+
+    return {
+        load,
+        enqueueOrApply,
+        /** The latest in-flight load, if any (superseded loads excluded). */
+        active: () => active,
     };
 }

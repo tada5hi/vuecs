@@ -127,7 +127,7 @@ const source = defineDataCollection<User, UserListMeta>({ /* … as above */ });
 
 ### Wiring pagination
 
-`load(next)` merges `next` into the meta bag and re-fires the adapter. `<VCPagination>` emits a `PaginationMeta` payload carrying the new `limit` / `offset`:
+`load(next)` merges `next` into a draft of the meta bag and re-fires the adapter with it; the bag itself only takes the new value once that load succeeds (see [Meta commits on success](#meta-commits-on-success)). `<VCPagination>` emits a `PaginationMeta` payload carrying the new `limit` / `offset`:
 
 ```vue
 <script setup lang="ts">
@@ -175,6 +175,23 @@ The updater form spread over `current` is the idiomatic way to touch one key whe
 
 There is deliberately no deep-merge policy on `meta`. Composing a query (filters, sort, includes) is your layer, not vuecs's; the bag is forwarded to `load` verbatim.
 
+### Per-call input
+
+Not everything a request needs belongs in `meta`. Pass it as the second argument to `load()` / `refresh()` and the loader receives it as its own second argument, untouched:
+
+```ts
+type Query = { search?: string; sort?: string };
+
+const source = defineDataCollection<User, UserListMeta, Query>({
+    load: async (meta, query) => fetchUsers({ ...meta.pagination, ...query }),
+});
+
+source.load(undefined, { search: 'ada' });
+source.refresh({ sort: 'name' });
+```
+
+The input is never stored — it lives for that one call. Anything that should persist across loads goes in `meta`.
+
 ## Record quickstart
 
 `defineDataRecord()` is the single-entity sibling. It drops the collection machinery (`total`, `isEmpty`, identity resolution, gate flags) and adds `ensure()` plus local mutators named for what they actually do.
@@ -216,6 +233,23 @@ const openEditor = async () => {
 
 `ensure()` deliberately ignores a concurrent `mutate()` — a write in flight is not a load, so `ensure()` still fetches.
 
+`ensure(input)` forwards an input to the loader. With one, "resolved" is stricter: the held record must come from a load with the **same** input, and `ensure()` only coalesces onto an in-flight load with the same input. Otherwise it loads:
+
+```ts
+const source = defineDataRecord<User, Record<string, unknown>, number>({
+    load: async (_meta, id) => ({ data: await fetchUser(id!) }),
+    autoLoad: false,
+});
+
+await source.ensure(1);   // loads user 1
+await source.ensure(1);   // { status: 'cached' }
+await source.ensure(2);   // loads user 2 — not coalesced onto user 1
+```
+
+Inputs compare with `Object.is`, so pass a primitive (an id) or a stable reference — a fresh object literal never matches. `ensure()` without an input keeps the original contract: any held record or in-flight load satisfies it.
+
+The source remembers which input produced the held record. A load sets it. `dehydrate()` writes it into the snapshot (`snapshot.input`) and `hydrate` restores it, so `ensure(id)` on the client resolves `cached` instead of refetching. For a record adopted through `initialData`, pass `initialInput` alongside it. `set()` and `clear()` forget it — a record you put in by hand didn't come from any input.
+
 ### `mutate()` — write gestures under the source's accounting
 
 `mutate(fn)` runs any consumer async operation while raising `busy` and recording failures into `error`. Unlike `load()`, it **rethrows** — an explicit user gesture should surface its failure to the caller:
@@ -255,6 +289,18 @@ source.clear();                  // back to undefined
 
 The names are deliberately *not* `create` / `update` / `delete`: the record variant has no `ListMutators` compatibility constraint, and the honest local-state names avoid implying an HTTP call.
 
+#### Immediate writes
+
+By default a mutator called during a load is [buffered](#mutator-buffering-during-a-load) until the load settles. `set()` and `clear()` accept `{ immediate: true }` to apply right away instead — for a write that must win over the response in flight, such as adopting the server's reply to a save:
+
+```ts
+source.load();                                   // in flight
+source.set(savedRecord, { immediate: true });    // applies now
+// the in-flight load resolves { status: 'superseded' } and changes nothing
+```
+
+An immediate write first drains anything already buffered (so earlier writes stay earlier), then supersedes every in-flight load, so neither their data nor their meta can land afterwards. Those loads resolve `superseded`. `ensure()` called afterwards starts a fresh load rather than coalescing onto a superseded one.
+
 ### Adoption via `initialData`
 
 When a parent already has the record (a prop, a row clicked in a list), seed it and skip the mount-time fetch:
@@ -284,11 +330,48 @@ This is the fix for two failure modes the hand-rolled containers this package re
 
 | Call | On start | On failure |
 |---|---|---|
-| `load()` / `refresh()` | clears `error` | **captures** into `error`; the promise resolves |
+| `load()` / `refresh()` | clears `error` | **captures** into `error`; the promise resolves `{ status: 'failed', error }` |
 | `ensure()` | clears `error` *when it actually fetches* | as `load()` |
 | `mutate(fn)` | leaves `error` alone | records into `error` and **rethrows** |
 
 `load()` never rejects. That is what makes `autoLoad` safe — a mount-time fetch cannot produce an unhandled rejection. Render `source.error` for the failed-load state, and `catch` around `mutate()` for gestures.
+
+### Load outcomes
+
+`error` is shared, so it can't tell you whether *your* call failed or a later one did. The promise can: every `load()` / `refresh()` resolves to that call's own outcome.
+
+| `status` | Meaning |
+|---|---|
+| `applied` | This call was the latest; its data and meta are committed. |
+| `superseded` | A newer load (or an [immediate write](#immediate-writes)) took over. This call changed nothing — whether it succeeded or failed. |
+| `failed` | This call was the latest and its loader threw. `error` is the same value `source.error` now holds. |
+| `cached` | `ensure()` only — the held record already satisfied it; no load ran. |
+
+```ts
+import { DataLoadStatus } from '@vuecs/data';
+
+const outcome = await source.load((current) => ({ ...current, search: 'ada' }));
+if (outcome.status === DataLoadStatus.FAILED) {
+    emit('failed', outcome.error);   // only ever for the latest load
+}
+```
+
+The statuses are a `DataLoadStatus` enum; the `status` fields are typed as its string literals (`` `${DataLoadStatus}` ``), so comparing against the plain string (`'failed'`) works too.
+
+### Meta commits on success
+
+`load(next)` doesn't write `next` into `meta` up front. It resolves `next` onto a **draft**, hands the draft to the loader, and replaces the bag with it only when the call comes back `applied` — then applies the loader's `meta` patch-back on top. A load that fails or is superseded leaves `meta` at whatever the last successful request used:
+
+```ts
+await source.load((current) => ({ ...current, search: 'x' }));   // loader throws
+source.meta.search;                                               // unchanged — the failed search didn't stick
+await source.load((current) => ({ ...current, pagination: { limit: 10, offset: 10 } }));
+// this request does NOT carry the failed search
+```
+
+While the request is in flight `meta` still shows the previous value, so a pagination control bound to `meta` moves once the new page has actually arrived.
+
+Back-to-back calls compose as you'd expect: each draft is built on the latest pending one, so a load that sets `search` followed by one that sets `pagination` sends both, and the winner commits both.
 
 ### `autoLoad`
 
@@ -346,6 +429,28 @@ This covers `create` / `update` / `delete` on the collection and `set` / `merge`
 
 Known v1 limitation: the buffer is unbounded while a load never settles.
 
+### Mutation outcomes
+
+Every mutator returns what it did, as a `DataMutationStatus` string literal:
+
+| Return | Meaning |
+|---|---|
+| `applied` | State changed now. |
+| `noop` | Nothing changed — a create dropped by `dedupCreated`, an update or delete of an absent row, a `merge()` / `clear()` with no record held. |
+| `buffered` | A load is in flight; the mutation replays once it settles. |
+
+A `buffered` mutation doesn't know yet whether it will change anything. Pass `onSettled` to find out once it actually runs. It fires synchronously for an unbuffered call:
+
+```ts
+socket.on('user.created', (user) => {
+    source.create(user, {
+        onSettled: (status) => {
+            if (status === 'applied') emit('created', user);
+        },
+    });
+});
+```
+
 ### `total` auto-adjustment
 
 When the server reported a `total`, `create()` and `delete()` adjust it by the **delta between array lengths** — never a hardcoded ±1. A `deleted` event for a row that is not on the current page therefore leaves `total` alone, instead of decrementing it toward a number that drifts further from truth with every off-page event.
@@ -354,7 +459,7 @@ When the loader never reported a total, `source.total` simply tracks `data.lengt
 
 ### Reactivity depth
 
-The internal data ref is a **`shallowRef`**. Every mutation flow replaces the array (or record) wholesale, so per-row deep reactivity would buy nothing while costing a proxy per row, breaking loader row identity, and leaking reactive proxies out through `dehydrate()`.
+By default the internal data ref is a **`shallowRef`**. Every mutation flow replaces the array (or record) wholesale, so per-row deep reactivity would buy nothing while costing a proxy per row and breaking loader row identity.
 
 The practical consequence: **rows are not deep-reactive**. Mutating a field in place does not re-render.
 
@@ -365,6 +470,21 @@ source.data.value[0].name = 'Ada';
 // ✓ replace the row
 source.update({ ...source.data.value[0], name: 'Ada' });
 ```
+
+If your UI mutates the held data in place (a form bound straight to the record), opt into **`deep: true`**:
+
+```ts
+const source = defineDataRecord<Policy>({ load, deep: true });
+
+source.data.value!.parentId = 'abc';   // ✓ re-renders
+source.merge({ name: 'x' });           // keys assigned onto the held record
+```
+
+With `deep: true` the ref is a `ref`, not a `shallowRef`. `merge()` (record) and `update()` (collection) then assign keys onto the held object instead of replacing it, so it keeps its identity. `update()` without `mergeOnUpdated` still has replace semantics: keys the incoming row lacks are deleted from the held row. `set()`, `create()` and loads still replace. The cost: `data.value` (and each row) is a reactive proxy, not the object your loader returned. `dehydrate()` reads through `toRaw` in both modes, so snapshots never carry proxies. Primitive rows have no keys to assign, so `update()` still replaces them.
+
+::: warning The held object is written in place
+Under `deep: true`, `merge()` / `update()` and any write through `data.value` mutate the object the source holds. That is whatever you handed in: the loader's result, `initialData`, a hydrated snapshot's data, or a `set()` / `create()` argument. Pass objects you are done with, or copy them first.
+:::
 
 The same applies to the `meta` bag, which is `shallowReactive` — replace whole sub-objects (`meta.pagination = { … }`) rather than writing nested fields.
 
@@ -426,7 +546,7 @@ Three details worth pinning:
 - **The snapshot is authoritative for `meta`.** `hydrate` **replaces** the bag rather than merging onto `initialMeta`, so keys the snapshot dropped do not survive rehydration.
 - **`dehydrate()` returns a fresh container with shared rows.** The array (and the meta object) are new, but the rows are the plain objects your loader returned — mutating a row in place would still reach the live source. Serialization is your contract: `JSON.stringify` is safe only when rows and meta are JSON-compatible (`Date` becomes a string, `Map`/`Set` collapse to `{}`, `undefined` properties are dropped, `BigInt` throws). If your values aren't plain JSON, run the snapshot through your own serializer before storing it.
 
-`defineDataRecord` follows the same contract, with one difference worth knowing: its snapshot is `{ data?, meta }`, and only `meta` is a fresh object — `data` is the **live record reference itself**, not a copy. The practical rule is the same in both variants, just tighter here: serialize the snapshot, never mutate it in place.
+`defineDataRecord` follows the same contract, with one difference worth knowing: its snapshot is `{ data?, meta, input? }`, and only `meta` is a fresh object — `data` is the **live record reference itself**, not a copy. `input` is the input that produced the held record, so a hydrated `ensure(input)` resolves `cached` (see [`ensure()`](#ensure-fetch-only-when-unresolved)); it must be JSON-compatible too. The practical rule is the same in both variants, just tighter here: serialize the snapshot, never mutate it in place.
 
 ## Boundaries
 
@@ -444,11 +564,12 @@ Three details worth pinning:
 
 | Option | Type | Default | Description |
 |---|---|---|---|
-| `load` | `(meta: Meta) => Promise<{ data: T[]; total?: number; meta?: Partial<Meta> }>` | — | **Required.** The only adapter. Optional `meta` in the result patches the bag back (server-corrected pagination). |
+| `load` | `(meta: Meta, input?: Input) => Promise<{ data: T[]; total?: number; meta?: Partial<Meta> }>` | — | **Required.** The only adapter. `meta` is the draft this call commits on success; `input` is the call's [per-call input](#per-call-input). Optional `meta` in the result patches the bag back (server-corrected pagination). |
 | `initialMeta` | `Meta` | `{}` | Seed for the reactive meta bag. |
 | `initialData` | `T[]` | `[]` | Seed rows. |
 | `autoLoad` | `boolean` | `true` | Fire one `load()` from `onMounted`. |
 | `hydrate` | `Snapshot \| (() => Snapshot \| null \| undefined)` | — | SSR/persistence seed; skips `autoLoad`. |
+| `deep` | `boolean` | `false` | Deep-reactive rows; `update()` assigns in place. See [Reactivity depth](#reactivity-depth). |
 | `itemId` | `(item: T) => string \| number` | — | Identity resolver. |
 | `itemKey` | `Extract<keyof T, string \| number> \| ((item: T) => Extract<keyof T, string \| number>)` | `'id'` fallback | Identity by key. Constrained to string / number keys — symbol keys are rejected (they can't be safely cast to a property accessor at runtime). |
 | `dedupCreated` / `filterDeleted` / `mergeOnUpdated` | `boolean` | `false` | Gate flags — see above. |
@@ -456,12 +577,12 @@ Three details worth pinning:
 | Member | Type | Description |
 |---|---|---|
 | `data` / `busy` / `total` / `isEmpty` | `ComputedRef` | Read-only views. `total` falls back to `data.length` until a server total has been reported, then keeps the last reported value. |
-| `meta` | `Meta` | Reactive plain bag (`shallowReactive`). |
+| `meta` | `Meta` | Reactive plain bag (`shallowReactive`). Meta of the last load that applied. |
 | `error` | `Ref<unknown>` | Last captured failure. |
-| `load(next?)` | `Promise<void>` | Merge meta + re-fire. Never rejects. |
-| `refresh()` | `Promise<void>` | `load()` with meta unchanged. |
+| `load(next?, input?)` | `Promise<DataLoadOutcome>` | Draft meta + re-fire; commits on success. Never rejects. |
+| `refresh(input?)` | `Promise<DataLoadOutcome>` | `load()` with meta unchanged. |
 | `mutate(fn)` | `Promise<R>` | Run a write under busy/error accounting. Rethrows. |
-| `create` / `update` / `delete` | `(item: T) => void` | Local mutators; buffered during a load. |
+| `create` / `update` / `delete` | `(item: T, { onSettled? }?) => 'applied' \| 'buffered' \| 'noop'` | Local mutators; buffered during a load. See [Mutation outcomes](#mutation-outcomes). |
 | `applyCreate` / `applyUpdate` / `applyDelete` | `(current: T[], item: T) => T[]` | Pure next-array builders. |
 | `findIndex` / `getItemKey` / `flags` | — | Identity + flag introspection (part of the `ListState` contract). |
 | `dehydrate()` | `{ data, total?, meta }` | JSON-able snapshot. |
@@ -470,21 +591,24 @@ Three details worth pinning:
 
 | Option | Type | Default | Description |
 |---|---|---|---|
-| `load` | `(meta: Meta) => Promise<{ data: T \| undefined; meta?: Partial<Meta> }>` | — | **Required.** |
+| `load` | `(meta: Meta, input?: Input) => Promise<{ data: T \| undefined; meta?: Partial<Meta> }>` | — | **Required.** |
 | `initialMeta` | `Meta` | `{}` | Seed for the meta bag. |
 | `initialData` | `T` | — | Adoption path; skips `autoLoad`. Aliased, not cloned. |
 | `autoLoad` | `boolean` | `true` | |
 | `hydrate` | `Snapshot \| (() => Snapshot \| null \| undefined)` | — | |
+| `initialInput` | `Input` | — | The input `initialData` corresponds to, so `ensure(input)` resolves `cached`. |
+| `deep` | `boolean` | `false` | Deep-reactive record; `merge()` assigns in place. |
 
 | Member | Type | Description |
 |---|---|---|
 | `data` | `ComputedRef<T \| undefined>` | |
 | `busy` / `error` / `meta` | — | As the collection variant. |
-| `load(next?)` / `refresh()` | `Promise<void>` | |
-| `ensure()` | `Promise<void>` | Fetch only when unresolved; coalesces onto an in-flight load. |
-| `set` / `merge` / `clear` | — | Local mutators; buffered during a load. |
+| `load(next?, input?)` / `refresh(input?)` | `Promise<DataLoadOutcome>` | As the collection variant. |
+| `ensure(input?)` | `Promise<DataEnsureOutcome>` | Fetch only when unresolved for `input`; coalesces onto an in-flight load with the same input. |
+| `set` / `clear` | `(…, { onSettled?, immediate? }?) => DataMutationStatus` | Local mutators; buffered during a load unless `immediate`. |
+| `merge` | `(partial, { onSettled? }?) => DataMutationStatus` | Buffered during a load. |
 | `mutate(fn)` | `Promise<R>` | Rethrows. |
-| `dehydrate()` | `{ data?, meta }` | JSON-able snapshot. |
+| `dehydrate()` | `{ data?, meta, input? }` | JSON-able snapshot; `input` is the input that produced the held record. |
 
 ## See also
 

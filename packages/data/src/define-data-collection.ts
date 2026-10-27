@@ -1,16 +1,24 @@
-import { createCollectionMutations } from '@vuecs/core';
+import { createCollectionMutations, isObject } from '@vuecs/core';
 import {
     computed,
     ref,
     shallowRef,
     toRaw,
 } from 'vue';
-import { createAsyncSourceCore, createMetaBag, mergePatch } from './core';
+import type { Ref } from 'vue';
+import {
+    assignInPlace,
+    createAsyncSourceCore,
+    createLoadController,
+    createMetaBag,
+    mergePatch,
+} from './core';
 import type {
+    DataBufferedMutationOptions,
     DataCollection,
     DataCollectionDefinition,
+    DataCollectionLoadResult,
     DataCollectionSnapshot,
-    DataSourceMetaInput,
 } from './types';
 
 /**
@@ -18,24 +26,38 @@ import type {
  * `@vuecs/list`'s `ListState & ListMutators`, so it binds directly to
  * `<VCList :state>`.
  *
- * Rows are NOT deep-reactive (the data ref is a `shallowRef`) — replace
- * a row via `update()` rather than mutating its fields in place.
+ * Rows are NOT deep-reactive by default (the data ref is a `shallowRef`) —
+ * replace a row via `update()` rather than mutating its fields in place, or
+ * opt into `deep: true`.
  *
  * @experimental Surface may still change while consumer adapters land.
  */
 export function defineDataCollection<
     T,
     Meta extends object = Record<string, unknown>,
->(options: DataCollectionDefinition<T, Meta>) : DataCollection<T, Meta> {
+    Input = unknown,
+>(options: DataCollectionDefinition<T, Meta, Input>) : DataCollection<T, Meta, Input> {
     const core = createAsyncSourceCore();
     const bag = createMetaBag<Meta>(options.initialMeta);
+    const deep = !!options.deep;
 
-    // `shallowRef`, not `ref`: every mutation flow below replaces the array
+    // `shallowRef` by default: every mutation flow below replaces the array
     // wholesale, so deep reactivity buys nothing and costs plenty — a proxy
-    // per row, loader row identity broken (`data[0] !== theRowTheLoaderReturned`),
-    // and reactive proxies leaking out through `dehydrate()`.
-    const dataRef = shallowRef<T[]>(options.initialData ?? []);
+    // per row and loader row identity broken
+    // (`data[0] !== theRowTheLoaderReturned`). `deep: true` opts into exactly
+    // that trade. Every read that feeds the mutation kernel or `dehydrate()`
+    // goes through `raw()`, so the array the kernel sees — and every array
+    // written back — holds raw rows, never proxies.
+    const dataRef = (deep ?
+        ref(options.initialData ?? []) :
+        shallowRef(options.initialData ?? [])) as Ref<T[]>;
     const totalRef = ref<number | undefined>(undefined);
+
+    const raw = () : T[] => toRaw(dataRef.value);
+    // Deep mode stores raw rows (Vue unwraps on write anyway), so an incoming
+    // proxy is unwrapped to compare against them. Shallow mode stores exactly
+    // what it is handed — a reactive row passed in stays reactive.
+    const ingest = (item: T) : T => (deep ? toRaw(item) : item);
 
     let hydrated = false;
     if (options.hydrate) {
@@ -80,49 +102,20 @@ export function defineDataCollection<
         merge: (target, source) => mergePatch({}, toRaw(source), toRaw(target)),
     });
 
-    // D12: mutators arriving while a load is in flight are buffered and
-    // drained FIFO after every in-flight load settles (winner applied via
-    // the token guard; drain also fires on load error — realtime events
-    // must never be silently clobbered by a wholesale response assignment).
-    let inFlightLoads = 0;
-    // Accepted v1 limitation: unbounded while a load never settles.
-    let bufferedOps : Array<() => void> = [];
-
-    const drainBufferedOps = () => {
-        const ops = bufferedOps;
-        bufferedOps = [];
-        for (const op of ops) {
-            op();
-        }
-    };
-
-    const enqueueOrApply = (apply: () => void) => {
-        if (inFlightLoads > 0) {
-            bufferedOps.push(apply);
-            return;
-        }
-        apply();
-    };
-
-    const load = (next?: DataSourceMetaInput<Meta>) : Promise<void> => {
-        bag.applyInput(next);
-        inFlightLoads += 1;
-        return core.run(
-            () => options.load(bag.snapshot()),
-            (result) => {
-                dataRef.value = result.data;
-                if (typeof result.total === 'number') {
-                    totalRef.value = result.total;
-                }
-                bag.patch(result.meta);
-            },
-        ).then(() => {
-            inFlightLoads -= 1;
-            if (inFlightLoads === 0) {
-                drainBufferedOps();
+    const controller = createLoadController<Meta, Input, DataCollectionLoadResult<T, Meta>>({
+        core,
+        bag,
+        fetch: (meta, input) => options.load(meta, input),
+        apply: (result) => {
+            dataRef.value = result.data;
+            if (typeof result.total === 'number') {
+                totalRef.value = result.total;
             }
-        });
-    };
+            bag.patch(result.meta);
+        },
+    });
+
+    const { load } = controller;
 
     const adjustTotal = (delta: number) => {
         if (typeof totalRef.value === 'number') {
@@ -136,28 +129,48 @@ export function defineDataCollection<
     // when the item isn't present (it falls back to a `filter` by reference),
     // so a realtime "deleted" event for an off-page row would otherwise
     // decrement `total` with nothing actually removed — corruption that
-    // accumulates over a session.
-    const create = (item: T) => enqueueOrApply(() => {
-        const next = mutations.applyCreate(dataRef.value, item);
-        if (next === dataRef.value) return;
-        const delta = next.length - dataRef.value.length;
+    // accumulates over a session. The same length check decides `noop`.
+    const create = (item: T, opts?: DataBufferedMutationOptions) => controller.enqueueOrApply(() => {
+        const current = raw();
+        const next = mutations.applyCreate(current, ingest(item));
+        if (next === current) return false;
+        const delta = next.length - current.length;
         dataRef.value = next;
         adjustTotal(delta);
-    });
+        return true;
+    }, opts);
 
-    const update = (item: T) => enqueueOrApply(() => {
-        const next = mutations.applyUpdate(dataRef.value, item);
-        if (next === dataRef.value) return;
+    const update = (item: T, opts?: DataBufferedMutationOptions) => controller.enqueueOrApply(() => {
+        const current = raw();
+        const incoming = ingest(item);
+        const next = mutations.applyUpdate(current, incoming);
+        if (next === current) return false;
+
+        if (deep) {
+            // Keys onto the held row — it keeps its identity (and proxy).
+            // Primitive rows have no keys to assign, so they still replace.
+            const index = mutations.indexOf(current, incoming);
+            const held = dataRef.value[index];
+            if (isObject(held) && isObject(next[index])) {
+                assignInPlace(held, next[index] as Record<string, any>);
+                return true;
+            }
+        }
+
         dataRef.value = next;
-    });
+        return true;
+    }, opts);
 
-    const del = (item: T) => enqueueOrApply(() => {
-        const next = mutations.applyDelete(dataRef.value, item);
-        if (next === dataRef.value) return;
-        const delta = next.length - dataRef.value.length;
+    const del = (item: T, opts?: DataBufferedMutationOptions) => controller.enqueueOrApply(() => {
+        const current = raw();
+        const next = mutations.applyDelete(current, ingest(item));
+        if (next === current) return false;
+        const delta = next.length - current.length;
+        if (delta === 0) return false;
         dataRef.value = next;
         adjustTotal(delta);
-    });
+        return true;
+    }, opts);
 
     if (options.autoLoad ?? true) {
         if (!hydrated) {
@@ -172,7 +185,7 @@ export function defineDataCollection<
         meta: bag.meta,
         isEmpty,
         error: core.error,
-        findIndex: (item) => mutations.indexOf(dataRef.value, item),
+        findIndex: (item) => mutations.indexOf(raw(), ingest(item)),
         getItemKey: mutations.getItemKey,
         flags: mutations.flags,
         applyCreate: mutations.applyCreate,
@@ -182,10 +195,10 @@ export function defineDataCollection<
         update,
         delete: del,
         load,
-        refresh: () => load(),
+        refresh: (input?: Input) => load(undefined, input),
         mutate: core.mutate,
         dehydrate: () : DataCollectionSnapshot<T, Meta> => ({
-            data: [...dataRef.value],
+            data: [...raw()],
             total: totalRef.value,
             meta: bag.snapshot(),
         }),

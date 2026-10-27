@@ -319,4 +319,282 @@ describe('defineDataRecord', () => {
         snapshot.meta.fields = ['mutated'];
         expect(source.meta.fields).toEqual(['name']);
     });
+
+    describe('per-call input (#1744)', () => {
+        it('should forward the ensure() input to the loader', async () => {
+            const seen : unknown[] = [];
+            const source = defineDataRecord<User, Meta, number>({
+                load: async (_meta, id) => {
+                    seen.push(id);
+                    return { data: { id: id ?? 0, name: `u${id}` } };
+                },
+                autoLoad: false,
+            });
+
+            expect((await source.ensure(1)).status).toEqual('applied');
+            expect(source.data.value?.id).toEqual(1);
+            expect(seen).toEqual([1]);
+        });
+
+        it('should treat a held record from another input as unresolved', async () => {
+            const source = defineDataRecord<User, Meta, number>({
+                load: async (_meta, id) => ({ data: { id: id ?? 0, name: `u${id}` } }),
+                autoLoad: false,
+            });
+
+            await source.ensure(1);
+            expect(await source.ensure(1)).toEqual({ status: 'cached' });
+            // no input = any held record will do (pre-input contract)
+            expect(await source.ensure()).toEqual({ status: 'cached' });
+
+            expect((await source.ensure(2)).status).toEqual('applied');
+            expect(source.data.value?.id).toEqual(2);
+        });
+
+        it('should only coalesce onto an in-flight load with the same input', async () => {
+            const gates = new Map<number, PromiseWithResolvers<void>>();
+            let calls = 0;
+            const source = defineDataRecord<User, Meta, number>({
+                load: async (_meta, id) => {
+                    calls += 1;
+                    const gate = Promise.withResolvers<void>();
+                    gates.set(id ?? 0, gate);
+                    await gate.promise;
+                    return { data: { id: id ?? 0, name: `u${id}` } };
+                },
+                autoLoad: false,
+            });
+
+            const a = source.ensure(1);
+            const b = source.ensure(1);
+            expect(calls).toEqual(1);
+
+            const c = source.ensure(2);
+            expect(calls).toEqual(2);
+
+            gates.get(1)?.resolve();
+            gates.get(2)?.resolve();
+            expect(await a).toEqual({ status: 'superseded' });
+            expect(await b).toEqual({ status: 'superseded' });
+            expect(await c).toEqual({ status: 'applied' });
+            expect(source.data.value?.id).toEqual(2);
+        });
+    });
+
+    describe('load outcome (#1745)', () => {
+        it('should resolve failed without rejecting', async () => {
+            const source = defineDataRecord<User, Meta>({
+                load: async () => { throw new Error('boom'); },
+                autoLoad: false,
+            });
+            const outcome = await source.load();
+            expect(outcome.status).toEqual('failed');
+            expect(source.error.value).toBeInstanceOf(Error);
+        });
+    });
+
+    describe('mutation outcome (#1746)', () => {
+        it('should report noop for a merge/clear with no record held', () => {
+            const source = defineDataRecord<User, Meta>({
+                load: async () => ({ data: undefined }),
+                autoLoad: false,
+            });
+            expect(source.merge({ name: 'x' })).toEqual('noop');
+            expect(source.clear()).toEqual('noop');
+            expect(source.set({ id: 1, name: 'a' })).toEqual('applied');
+            expect(source.merge({ name: 'b' })).toEqual('applied');
+            expect(source.clear()).toEqual('applied');
+        });
+
+        it('should report buffered during an in-flight load', async () => {
+            const gate = Promise.withResolvers<User>();
+            const source = defineDataRecord<User, Meta>({
+                load: async () => ({ data: await gate.promise }),
+                autoLoad: false,
+            });
+            const settled : string[] = [];
+            const p = source.load();
+            expect(source.merge({ name: 'live' }, { onSettled: (s) => { settled.push(s); } })).toEqual('buffered');
+            gate.resolve({ id: 1, name: 'server' });
+            await p;
+            expect(settled).toEqual(['applied']);
+            expect(source.data.value?.name).toEqual('live');
+        });
+    });
+
+    describe('meta commit on success (#1747)', () => {
+        it('should not commit meta from a failed load', async () => {
+            const source = defineDataRecord<User, Meta>({
+                load: async () => { throw new Error('boom'); },
+                initialMeta: { fields: ['name'] },
+                autoLoad: false,
+            });
+            await source.load({ fields: ['secret'] });
+            expect(source.meta.fields).toEqual(['name']);
+        });
+    });
+
+    describe('deep reactivity (#1748)', () => {
+        it('should re-render on an in-place write and merge in place when deep', async () => {
+            const source = defineDataRecord<User, Meta>({
+                load: async () => ({
+                    data: {
+                        id: 1, 
+                        name: 'a', 
+                        profile: { email: 'e' }, 
+                    }, 
+                }),
+                autoLoad: false,
+                deep: true,
+            });
+            await source.load();
+
+            const Comp = defineComponent({ setup: () => () => source.data.value?.name });
+            const wrapper = mount(Comp);
+            const held = source.data.value;
+            (source.data.value as User).name = 'mutated';
+            await flushPromises();
+            expect(wrapper.text()).toEqual('mutated');
+
+            source.merge({ profile: { phone: 'p' } });
+            expect(source.data.value).toBe(held);
+            expect(source.data.value?.profile).toEqual({ email: 'e', phone: 'p' });
+            expect(source.data.value?.name).toEqual('mutated');
+
+            const snapshot = source.dehydrate();
+            expect(() => structuredClone(snapshot)).not.toThrow();
+        });
+    });
+
+    describe('immediate set/clear (#1749)', () => {
+        it('should apply now and supersede the in-flight load', async () => {
+            const gate = Promise.withResolvers<User>();
+            const source = defineDataRecord<User, Meta>({
+                load: async () => ({ data: await gate.promise }),
+                autoLoad: false,
+            });
+
+            const p = source.load({ fields: ['name'] });
+            expect(source.set({ id: 1, name: 'local' }, { immediate: true })).toEqual('applied');
+            expect(source.data.value?.name).toEqual('local');
+
+            gate.resolve({ id: 1, name: 'stale-server' });
+            expect(await p).toEqual({ status: 'superseded' });
+            expect(source.data.value?.name).toEqual('local');
+            // the superseded load's meta never commits
+            expect(source.meta.fields).toBeUndefined();
+        });
+
+        it('should drain earlier buffered writes before the immediate one', async () => {
+            const gate = Promise.withResolvers<User>();
+            const source = defineDataRecord<User, Meta>({
+                load: async () => ({ data: await gate.promise }),
+                initialData: { id: 1, name: 'seed' },
+                autoLoad: false,
+            });
+
+            const order : string[] = [];
+            const p = source.load();
+            source.merge({ name: 'earlier' }, { onSettled: (s) => { order.push(`merge:${s}`); } });
+            source.clear({ immediate: true, onSettled: (s) => { order.push(`clear:${s}`); } });
+            // the buffered merge ran first (against the seed), then the clear
+            expect(order).toEqual(['merge:applied', 'clear:applied']);
+            expect(source.data.value).toBeUndefined();
+
+            gate.resolve({ id: 1, name: 'server' });
+            await p;
+            expect(source.data.value).toBeUndefined();
+        });
+
+        it('should let ensure() start a fresh load after an immediate clear', async () => {
+            const gate = Promise.withResolvers<void>();
+            let calls = 0;
+            const source = defineDataRecord<User, Meta>({
+                load: async () => {
+                    calls += 1;
+                    if (calls === 1) await gate.promise;
+                    return { data: { id: calls, name: `call${calls}` } };
+                },
+                autoLoad: false,
+            });
+
+            const first = source.load();
+            source.clear({ immediate: true });
+            const outcome = await source.ensure();
+            expect(outcome).toEqual({ status: 'applied' });
+            expect(source.data.value?.name).toEqual('call2');
+
+            gate.resolve();
+            expect(await first).toEqual({ status: 'superseded' });
+            expect(source.data.value?.name).toEqual('call2');
+        });
+    });
+    describe('review follow-ups', () => {
+        it('should keep the resolved input across dehydrate/hydrate', async () => {
+            const server = defineDataRecord<User, Meta, number>({
+                load: async (_meta, id) => ({ data: { id: id ?? 0, name: `u${id}` } }),
+                autoLoad: false,
+            });
+            await server.ensure(7);
+            const snapshot = server.dehydrate();
+            expect(snapshot.input).toEqual(7);
+
+            let calls = 0;
+            const client = defineDataRecord<User, Meta, number>({
+                load: async () => {
+                    calls += 1;
+                    return { data: undefined };
+                },
+                hydrate: JSON.parse(JSON.stringify(snapshot)),
+                autoLoad: false,
+            });
+            expect(await client.ensure(7)).toEqual({ status: 'cached' });
+            expect(calls).toEqual(0);
+        });
+
+        it('should honour initialInput for an adopted record', async () => {
+            let calls = 0;
+            const source = defineDataRecord<User, Meta, number>({
+                load: async () => {
+                    calls += 1;
+                    return { data: undefined };
+                },
+                initialData: { id: 3, name: 'adopted' },
+                initialInput: 3,
+            });
+            expect(await source.ensure(3)).toEqual({ status: 'cached' });
+            expect(calls).toEqual(0);
+        });
+
+        it('should forget the resolved input on set()', async () => {
+            const source = defineDataRecord<User, Meta, number>({
+                load: async (_meta, id) => ({ data: { id: id ?? 0, name: `u${id}` } }),
+                autoLoad: false,
+            });
+            await source.ensure(1);
+            source.set({ id: 2, name: 'replaced' });
+            // the held record no longer came from input 1
+            expect((await source.ensure(1)).status).toEqual('applied');
+            expect(source.data.value?.id).toEqual(1);
+        });
+
+        it('should isolate a throwing buffered op: load still resolves, later ops still run', async () => {
+            const gate = Promise.withResolvers<User>();
+            const source = defineDataRecord<User, Meta>({
+                load: async () => ({ data: await gate.promise }),
+                autoLoad: false,
+            });
+
+            const settled : string[] = [];
+            const p = source.load();
+            source.merge({ name: 'boom' }, { onSettled: () => { throw new Error('consumer callback'); } });
+            source.merge({ name: 'after' }, { onSettled: (s) => { settled.push(s); } });
+
+            gate.resolve({ id: 1, name: 'server' });
+            await expect(p).resolves.toEqual({ status: 'applied' });
+            expect(settled).toEqual(['applied']);
+            expect(source.data.value?.name).toEqual('after');
+            expect(source.error.value).toBeInstanceOf(Error);
+        });
+    });
 });
