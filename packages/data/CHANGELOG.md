@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.0-alpha.1](https://github.com/tada5hi/vuecs/compare/data-v1.0.0-alpha.0...data-v1.0.0-alpha.1) (2026-10-27)
+
+
+### Features
+
+* **data:** add load outcomes, per-call input and deep sources ([#1750](https://github.com/tada5hi/vuecs/issues/1750)) ([9f3547d](https://github.com/tada5hi/vuecs/commit/9f3547dd4ea28c9a0d453cfe4ededdc7ae44174b))
+
+
+### Bug Fixes
+
+* **deps:** bump dependencies and allow @vueuse/core v15 ([aabaa13](https://github.com/tada5hi/vuecs/commit/aabaa13fc9cc89c1d417ef66732cf253bf6c5176))
+
 ## [1.0.0-alpha.0](https://github.com/tada5hi/vuecs/compare/data-v1.0.0-alpha.0...data-v1.0.0-alpha.0) (2026-10-27)
 
 
