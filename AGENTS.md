@@ -77,7 +77,6 @@ All four mount the same demo views from `examples/_shared/` (private workspace p
 ## Detailed Guides
 
 
-CLAUDE.md imports AGENTS.md and its explicitly listed core guides. Focused topic files are linked for on-demand reading.
 - **[Project Structure](.agents/structure.md)** — Monorepo layout, package organization, nested core re-exports, build outputs, and docs site layout
 - **[Architecture](.agents/architecture.md)** — Vue plugin pattern, theme system, navigation registry/resolver, and theme architecture
 - **[Testing](.agents/testing.md)** — Vitest setup, test inventory, Nx cache caveat, and the jsdom Reka recipe
@@ -88,7 +87,7 @@ CLAUDE.md imports AGENTS.md and its explicitly listed core guides. Focused topic
 Keep the guides factual and focused on contracts a future change could silently break.
 
 - Keep existing commands, paths and factual descriptions current. Add guide content only for an invariant or cross-cutting rule. Put defect stories and verification details in the PR, and user-facing changes in the documentation site or release notes.
-- Keep subsystem detail in `.agents/topics/` and link it from the relevant guide; do not import topic files into `CLAUDE.md`.
+- Keep subsystem detail in `.agents/topics/` and link it from the relevant guide.
 - Describe current behavior and cite issues or PRs, rather than local plan files or a running history of completed work.
 - `npm run lint` enforces the shared config's agent-doc size, import-budget and history checks. Preserve the critical contracts when splitting a guide.
 
