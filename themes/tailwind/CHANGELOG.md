@@ -1,5 +1,15 @@
 # Changelog
 
+## [6.5.2](https://github.com/tada5hi/vuecs/compare/theme-tailwind-v6.5.1...theme-tailwind-v6.5.2) (2026-11-06)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/button bumped from ^1.4.3 to ^1.4.4
+    * @vuecs/pagination bumped from ^2.2.2 to ^2.2.3
+
 ## [6.5.1](https://github.com/tada5hi/vuecs/compare/theme-tailwind-v6.5.0...theme-tailwind-v6.5.1) (2026-10-27)
 
 
