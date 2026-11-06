@@ -37,10 +37,13 @@ const App = defineComponent({
 });
 
 describe('VCNavItems path source', () => {
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it('softly reads the router $route path for active matching', async () => {
         const router = buildRouter();
+
         await router.push('/users');
         await router.isReady();
 
@@ -48,15 +51,18 @@ describe('VCNavItems path source', () => {
             global: { plugins: [router, [vuecsNav, {}]] },
             attachTo: document.body,
         });
+
         await nextTick();
 
         const active = wrapper.element.querySelector('.vc-nav-link.active') as HTMLElement;
+
         expect(active).not.toBeNull();
         expect(active.textContent).toContain('Users');
     });
 
     it('reacts to route changes', async () => {
         const router = buildRouter();
+
         await router.push('/home');
         await router.isReady();
 
@@ -64,6 +70,7 @@ describe('VCNavItems path source', () => {
             global: { plugins: [router, [vuecsNav, {}]] },
             attachTo: document.body,
         });
+
         await nextTick();
 
         expect(
@@ -84,17 +91,20 @@ describe('VCNavItems path source', () => {
             global: { plugins: [[vuecsNav, {}]] },
             attachTo: document.body,
         });
+
         await nextTick();
 
         // findBestItemMatches' first-item fallback marks index 0 active when
         // nothing matches a (missing) path, so Home — the first leaf — is lit.
         const actives = wrapper.element.querySelectorAll('.vc-nav-link.active');
+
         expect(actives.length).toBe(1);
         expect((actives[0] as HTMLElement).textContent).toContain('Home');
     });
 
     it('explicit :path wins over the router route', async () => {
         const router = buildRouter();
+
         await router.push('/users');
         await router.isReady();
 
@@ -108,6 +118,7 @@ describe('VCNavItems path source', () => {
             global: { plugins: [router, [vuecsNav, {}]] },
             attachTo: document.body,
         });
+
         await nextTick();
 
         expect(

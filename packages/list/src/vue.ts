@@ -5,6 +5,7 @@ import type VCListLoading from './components/list/ListLoading.vue';
 import type VCListEmpty from './components/list/ListEmpty.vue';
 
 declare module 'vue' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public name and declaration merging.
     export interface GlobalComponents {
         VCList: typeof VCList;
         VCListBody: typeof VCListBody;

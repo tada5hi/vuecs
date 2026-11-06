@@ -209,6 +209,7 @@ describe('theme-bootstrap — auditTheme()', () => {
             title: 'theme-bootstrap',
             skip: [...AUDIT_SKIP],
         });
+
         expect(report).toBe('');
     });
 
@@ -218,6 +219,7 @@ describe('theme-bootstrap — auditTheme()', () => {
         // this assertion starts failing and prompts the suppression
         // to be tightened.
         const result = auditTheme(bootstrapTheme(), expectedCatalog);
+
         expect(isAuditClean(result)).toBe(false);
     });
 });

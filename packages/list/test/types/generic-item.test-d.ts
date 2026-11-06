@@ -32,6 +32,9 @@ import type {
 // vitest.config.ts) so the `toEqualTypeOf` assertions don't pass vacuously.
 // Mirrors `packages/table/test/types/generic-row.test-d.ts` (#1601).
 
+
+
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
 interface User {
     id: number;
     name: string;

@@ -1,55 +1,7 @@
+import type { SortMachine, UseSortMachineOptions } from './types';
 import { computed, ref, watch } from 'vue';
-import type { ComputedRef, Ref } from 'vue';
-import type {
-    SortDescriptor,
-    SortDirection,
-    TableColumn,
-    TableSortState,
-} from '../types';
 
-export type UseSortMachineOptions<Row = unknown> = {
-    /** Reactive source-of-truth from the consumer's `v-model:sort`. May be `undefined`. */
-    source: Ref<TableSortState | undefined>;
-    /** Reactive column list — needed to resolve `initialSortDirection`. */
-    columns: Ref<TableColumn<Row>[]>;
-    /** When `true`, the cycle skips the `null` step → `null → asc → desc → asc`. */
-    mustSort: Ref<boolean>;
-    /**
-     * Maximum number of sort keys retained in multi-sort mode (plan 033
-     * v1.x-B). When adding a key past this cap, the oldest descriptor
-     * is dropped. Defaults to `3` in `<VCTable>`.
-     */
-    maxSortKeys: Ref<number>;
-    /** Emit handler that propagates each change back to the consumer. */
-    emit: (next: TableSortState) => void;
-};
-
-export type SortMachine = {
-    state: ComputedRef<TableSortState>;
-    /**
-     * Cycle the sort state for `key`.
-     *
-     * - Plain call (no opts) — replace state with this key alone. Cycles
-     *   through `initial → opposite → cleared` (or `→ initial` when
-     *   `mustSort`).
-     * - `opts.append === true` (Shift-click) — add `key` as a secondary
-     *   descriptor at the end of the array OR cycle its direction if
-     *   already present. Cycling past clears just that key.
-     * - `opts.direction` — jump straight to that direction. Honors
-     *   `append` for placement.
-     */
-    setSort: (key: string, opts?: { append?: boolean; direction?: SortDirection }) => void;
-    /**
-     * Replace the entire sort state directly. Bypasses cycle + multi-sort
-     * gating — used by the chip-row indicator UX which mutates the array
-     * declaratively (remove, reorder, clear).
-     */
-    setState: (next: TableSortState) => void;
-    /** Direction for a key (regardless of sort position), or `null`. */
-    directionFor: (key: string) => SortDirection | null;
-    /** 1-based position of a key within the sort array, or `null`. */
-    positionFor: (key: string) => number | null;
-};
+import type { SortDescriptor, SortDirection, TableSortState } from '../types';
 
 /**
  * Controlled sort machine. The consumer owns the sort state via
@@ -77,6 +29,7 @@ export function useSortMachine<Row = unknown>(
     // Mirror the source into a local ref so we can react to undefined→[],
     // but the source remains the single source of truth.
     const local = ref<TableSortState>(normalize(source.value));
+
     watch(source, (next) => {
         local.value = normalize(next);
     });
@@ -85,6 +38,7 @@ export function useSortMachine<Row = unknown>(
 
     function findInitialDirection(key: string): SortDirection {
         const col = columns.value.find((c) => c.key === key);
+
         return col?.initialSortDirection ?? 'asc';
     }
 
@@ -104,8 +58,10 @@ export function useSortMachine<Row = unknown>(
                     key,
                     direction: opts.direction,
                 }];
+
             local.value = next;
             emit(next);
+
             return;
         }
 
@@ -117,6 +73,7 @@ export function useSortMachine<Row = unknown>(
             //   initial when mustSort).
             const existing = idx >= 0 ? current[idx] : null;
             let next: TableSortState;
+
             if (!existing) {
                 next = [{
                     key,
@@ -135,8 +92,10 @@ export function useSortMachine<Row = unknown>(
                     }] :
                     [];
             }
+
             local.value = next;
             emit(next);
+
             return;
         }
 
@@ -148,14 +107,17 @@ export function useSortMachine<Row = unknown>(
                 key,
                 direction: initial,
             }, maxSortKeys.value);
+
             local.value = next;
             emit(next);
+
             return;
         }
 
         // Key already present in append mode — cycle direction OR remove.
         const existing = current[idx];
         let next: SortDescriptor[];
+
         if (existing.direction === initial) {
             next = current.map((s, i) => (i === idx ?
                 {
@@ -169,17 +131,20 @@ export function useSortMachine<Row = unknown>(
             // a multi-sort consumer can always clear individual keys).
             next = current.filter((_, i) => i !== idx);
         }
+
         local.value = next;
         emit(next);
     }
 
     function directionFor(key: string): SortDirection | null {
         const cur = local.value.find((s) => s.key === key);
+
         return cur ? cur.direction : null;
     }
 
     function positionFor(key: string): number | null {
         const i = local.value.findIndex((s) => s.key === key);
+
         return i < 0 ? null : i + 1;
     }
 
@@ -209,7 +174,10 @@ export function useSortMachine<Row = unknown>(
  * window when consumers still hold `ref<...>(null)`) become `[]`.
  */
 function normalize(v: TableSortState | undefined | null): TableSortState {
-    if (v == null) return [];
+    if (v == null) {
+        return [];
+    }
+
     return v;
 }
 
@@ -223,9 +191,11 @@ function appendCapped(
     max: number,
 ): SortDescriptor[] {
     const next = [...state, descriptor];
+
     if (max > 0 && next.length > max) {
         return next.slice(next.length - max);
     }
+
     return next;
 }
 
@@ -241,6 +211,7 @@ function upsertAppend(
     max: number,
 ): SortDescriptor[] {
     const idx = state.findIndex((s) => s.key === key);
+
     if (idx >= 0) {
         return state.map((s, i) => (i === idx ?
             {
@@ -249,6 +220,7 @@ function upsertAppend(
             } :
             s));
     }
+
     return appendCapped(state, {
         key,
         direction,

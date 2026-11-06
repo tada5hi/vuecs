@@ -7,15 +7,15 @@
 
 import {
     computed,
-    createApp, 
-    ref, 
+    createApp,
+    ref,
     watchEffect,
 } from 'vue';
 import type { Ref } from 'vue';
 import {
-    describe, 
-    expect, 
-    it, 
+    describe,
+    expect,
+    it,
     vi,
 } from 'vitest';
 import { NavigationRegistry, provideNavigationRegistry } from '../../src';
@@ -41,6 +41,7 @@ function makeEntry(initial: NavigationItemNormalized[] = []): {
         active: computed(() => source.value.filter((i) => i.active)),
         activeTrail: computed(() => source.value.filter((i) => i.active)),
     };
+
     return { entry, source };
 }
 
@@ -75,6 +76,7 @@ describe('NavigationRegistry', () => {
         const { entry } = makeEntry();
 
         const unregister = registry.register('a', entry);
+
         unregister();
 
         expect(registry.has('a')).toBe(false);
@@ -106,6 +108,7 @@ describe('NavigationRegistry', () => {
         // handoff order: new occupant registers before the old one unmounts
         const unregisterA = registry.register('x', entryA);
         const unregisterB = registry.register('x', entryB);
+
         unregisterA(); // departing page — stale token captured in the closure
 
         expect(registry.has('x')).toBe(true);
@@ -130,6 +133,7 @@ describe('NavigationRegistry', () => {
         expect(seen).toEqual([0]); // absent → stable empty entry
 
         const unregister = registry.register('a', entry);
+
         expect(seen).toEqual([0, 2]); // occupant filled in reactively
 
         source.value = [item('A')]; // content change on the live entry
@@ -147,6 +151,7 @@ describe('provideNavigationRegistry', () => {
         const app = createApp({ render: () => null });
         const first = provideNavigationRegistry(new NavigationRegistry(), app);
         const second = provideNavigationRegistry(new NavigationRegistry(), app);
+
         expect(second).toBe(first);
     });
 });

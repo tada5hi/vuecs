@@ -10,6 +10,7 @@ export function installDefaultsManager(
     options: DefaultsManagerOptions = {},
 ): DefaultsManager {
     const existing = inject<DefaultsManager>(DEFAULTS_MANAGER_SYMBOL, app);
+
     if (existing) {
         // Merge fresh defaults into the existing manager so the order of
         // `app.use(...)` calls doesn't matter. Mirror of the theme/config
@@ -17,11 +18,14 @@ export function installDefaultsManager(
         if (options.defaults) {
             existing.mergeDefaults(options.defaults);
         }
+
         return existing;
     }
 
     const manager = new DefaultsManager(options);
+
     provide(DEFAULTS_MANAGER_SYMBOL, manager, app);
+
     return manager;
 }
 

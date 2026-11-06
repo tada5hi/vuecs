@@ -1,13 +1,14 @@
 import { isObject, merge } from 'smob';
 import {
-    isReadonly, 
-    isRef, 
+    isReadonly,
+    isRef,
     unref,
 } from 'vue';
 import type { MaybeRef } from 'vue';
 
 export function unrefWithDefault<T>(value: MaybeRef<T>, alt: NonNullable<T>) : NonNullable<T> {
     const raw : T = unref(value);
+
     if (typeof raw === 'undefined') {
         return alt as NonNullable<T>;
     }

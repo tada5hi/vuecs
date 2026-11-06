@@ -6,3 +6,4 @@
  */
 
 export * from './module';
+export type { NavItemProps } from './types';

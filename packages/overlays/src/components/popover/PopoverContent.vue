@@ -52,6 +52,7 @@ export default defineComponent({
             if (props.inline) {
                 return renderContent();
             }
+
             return h(PopoverPortal, null, { default: () => renderContent() });
         };
     },

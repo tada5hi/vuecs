@@ -1,24 +1,18 @@
+import type { TypeaheadItem } from './types';
 import { onScopeDispose, ref } from 'vue';
 import type { Ref } from 'vue';
-
-export type TypeaheadItem<T = unknown> = {
-    ref: HTMLElement;
-    value?: T;
-    // Split out of `value` (was `T & { textValue?: string }`) — the
-    // intersection collapses `value` to `never` when `T` is a primitive
-    // (e.g. `TypeaheadItem<string>`), making the field unusable for
-    // non-object data sources.
-    textValue?: string;
-};
 
 function getActiveElement(): Element | null {
     if (typeof document === 'undefined') {
         return null;
     }
+
     let active: Element | null = document.activeElement;
+
     while (active && (active as HTMLElement & { shadowRoot?: ShadowRoot | null }).shadowRoot?.activeElement) {
         active = (active as HTMLElement & { shadowRoot: ShadowRoot }).shadowRoot.activeElement;
     }
+
     return active;
 }
 
@@ -40,10 +34,13 @@ export function getNextMatch(values: string[], search: string, currentMatch?: st
     const normalized = isRepeated ? search[0] : search;
     const currentIndex = currentMatch ? values.indexOf(currentMatch) : -1;
     let wrapped = wrapArray(values, Math.max(currentIndex, 0));
+
     if (normalized.length === 1) {
         wrapped = wrapped.filter((v) => v !== currentMatch);
     }
+
     const next = wrapped.find((v) => v.toLowerCase().startsWith(normalized.toLowerCase()));
+
     return next !== currentMatch ? next : undefined;
 }
 
@@ -79,9 +76,11 @@ export function useTypeahead<T = unknown>(callback?: (key: string) => void): {
 
     const setSearch = (value: string) => {
         search.value = value;
+
         if (timer) {
             clearTimeout(timer);
         }
+
         if (value !== '') {
             timer = setTimeout(() => {
                 search.value = '';
@@ -95,6 +94,7 @@ export function useTypeahead<T = unknown>(callback?: (key: string) => void): {
 
         if (callback) {
             callback(key);
+
             return undefined;
         }
 
@@ -107,9 +107,11 @@ export function useTypeahead<T = unknown>(callback?: (key: string) => void): {
         const values = itemsWithText.map((item) => item.textValue);
         const nextMatch = getNextMatch(values, search.value, currentMatch?.textValue);
         const newItem = itemsWithText.find((item) => item.textValue === nextMatch);
+
         if (newItem) {
             newItem.ref.focus();
         }
+
         return newItem?.ref;
     };
 
@@ -118,12 +120,13 @@ export function useTypeahead<T = unknown>(callback?: (key: string) => void): {
             clearTimeout(timer);
             timer = null;
         }
+
         search.value = '';
     };
 
     return {
-        search, 
-        handleTypeaheadSearch, 
-        resetTypeahead, 
+        search,
+        handleTypeaheadSearch,
+        resetTypeahead,
     };
 }

@@ -18,3 +18,10 @@ export type { AlertDialogActionProps } from './AlertDialogAction.vue';
 export * from './theme';
 export * from './types';
 export * from './use-alert-dialog';
+export type {
+    AlertDialogTone,
+    AlertDialogOptions,
+    AlertDialogDefaults,
+    AlertDialogRequest,
+    UseAlertDialogReturn,
+} from './types';

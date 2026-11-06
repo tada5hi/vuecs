@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { ExtractPublicPropTypes, PropType } from 'vue';
 import { computed, defineComponent } from 'vue';
-import type { FormOption } from '../../types/option';
+import type { FormOption } from '../../types/types';
 
 const formSelectSearchEntryProps = {
     /** The option this row represents. */

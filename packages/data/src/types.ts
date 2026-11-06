@@ -1,5 +1,6 @@
 import type { ComputedRef, Ref } from 'vue';
 import type { DataLoadStatus, DataMutationStatus } from './constants';
+import type { createMetaBag } from './core';
 
 export type DataSourceMetaInput<Meta extends object> = Meta | ((current: Meta) => Meta);
 
@@ -281,4 +282,39 @@ export type DataRecord<T, Meta extends object, Input = unknown> = {
     clear: (options?: DataMutationOptions) => DataMutationStatusLiteral,
     mutate: <R>(fn: () => Promise<R>) => Promise<R>,
     dehydrate(): DataRecordSnapshot<T, Meta, Input>,
+};
+
+export type AsyncSourceCore = {
+    busy: ComputedRef<boolean>,
+    error: Ref<unknown>,
+    /**
+     * Token-guarded latest-wins runner. `apply` only fires when this
+     * call is still the latest; rejections are captured into `error`
+     * (never rethrown — safe for autoLoad). Resolves to the call's own
+     * outcome, so a caller never has to infer it from the shared `error`.
+     *
+     * `work` is invoked synchronously, before the first `await`.
+     */
+    run: <R>(work: () => Promise<R>, apply: (result: R) => void) => Promise<DataLoadOutcome>,
+    /** Invalidate every in-flight `run` — each resolves `superseded`. */
+    supersede: () => void,
+    /** Run a consumer async op under busy/error accounting; rethrows. */
+    mutate: <R>(fn: () => Promise<R>) => Promise<R>,
+    /** Register onMounted(fire) when inside a component; dev-warn otherwise. */
+    scheduleAutoLoad: (fire: () => Promise<unknown>) => void,
+};
+
+export type MetaBag<Meta extends object> = ReturnType<typeof createMetaBag<Meta>>;
+
+export type LoadControllerOptions<Meta extends object, Input, R> = {
+    core: AsyncSourceCore,
+    bag: MetaBag<Meta>,
+    fetch: (meta: Meta, input: Input | undefined) => Promise<R>,
+    /** Commit a winning result (and the input that produced it) into the container's state. */
+    apply: (result: R, input: Input | undefined) => void,
+};
+
+export type ActiveLoad<Input> = {
+    promise: Promise<DataLoadOutcome>,
+    input: Input | undefined,
 };

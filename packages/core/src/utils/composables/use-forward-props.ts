@@ -23,9 +23,11 @@ export function useForwardProps<T extends Record<string, any>>(props: T): Comput
     const defaultProps = Object.keys(declaredProps).reduce<Record<string, unknown>>((prev, curr) => {
         const declared = declaredProps[curr];
         const defaultValue = isObject(declared) ? declared.default : undefined;
+
         if (defaultValue !== undefined) {
             prev[curr] = defaultValue;
         }
+
         return prev;
     }, {});
 
@@ -34,6 +36,7 @@ export function useForwardProps<T extends Record<string, any>>(props: T): Comput
     return computed(() => {
         const preservedProps: Record<string, unknown> = {};
         const assignedProps = vm?.vnode.props ?? {};
+
         Object.keys(assignedProps).forEach((key) => {
             preservedProps[camelize(key)] = assignedProps[key];
         });
@@ -42,6 +45,7 @@ export function useForwardProps<T extends Record<string, any>>(props: T): Comput
             if ((refProps.value as Record<string, unknown>)[curr] !== undefined) {
                 prev[curr] = (refProps.value as Record<string, unknown>)[curr];
             }
+
             return prev;
         }, {}) as T;
     });

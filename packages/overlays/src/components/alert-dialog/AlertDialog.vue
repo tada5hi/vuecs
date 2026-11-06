@@ -22,6 +22,7 @@ export default defineComponent({
         // `AlertDialogRoot` is always modal (Reka forces `:modal="true"`),
         // so there is no `modal` prop to forward — unlike `<VCModal>`.
         const forwarded = useForwardPropsEmits(props, emit);
+
         return () => h(
             AlertDialogRoot,
             forwarded.value,

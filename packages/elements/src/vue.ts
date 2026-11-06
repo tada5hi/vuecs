@@ -21,6 +21,7 @@ import type VCTags from './components/tag/Tags.vue';
 import type VCVisuallyHidden from './components/visually-hidden/VisuallyHidden.vue';
 
 declare module 'vue' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public name and declaration merging.
     export interface GlobalComponents {
         VCSeparator: typeof VCSeparator,
         VCTag: typeof VCTag,

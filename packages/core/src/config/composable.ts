@@ -24,10 +24,12 @@ function resolveFallbackManager(): ConfigManager {
     const instance = getCurrentInstance();
     const key: App | { __noApp: true } = instance?.appContext.app ?? noAppFallback;
     let manager = fallbackManagers.get(key);
+
     if (!manager) {
         manager = new ConfigManager();
         fallbackManagers.set(key, manager);
     }
+
     return manager;
 }
 
@@ -57,8 +59,10 @@ export function useConfig<K extends keyof Config>(
     fallback?: NonNullable<Config[K]>,
 ): ComputedRef<Config[K] | undefined> {
     const manager = injectConfigManager() ?? resolveFallbackManager();
+
     return computed(() => {
         const value = manager.get(key);
+
         return value === undefined ? fallback : value;
     });
 }

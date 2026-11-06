@@ -23,7 +23,9 @@ function buildApp(open = ref(false)) {
         setup() {
             return () => h(VCPopover, {
                 open: open.value,
-                'onUpdate:open': (v: boolean) => { open.value = v; },
+                'onUpdate:open': (v: boolean) => {
+                    open.value = v;
+                },
             }, {
                 default: () => [
                     h(VCPopoverTrigger, { 'data-testid': 'trigger' }, () => 'Open'),
@@ -40,10 +42,13 @@ function buildApp(open = ref(false)) {
 }
 
 describe('<VCPopover>', () => {
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it('renders trigger but no content while closed', async () => {
         const wrapper = buildApp();
+
         await nextTick();
         expect(wrapper.find('[data-testid="trigger"]').exists()).toBe(true);
         expect(document.body.querySelector('[data-testid="content"]')).toBeNull();
@@ -51,6 +56,7 @@ describe('<VCPopover>', () => {
 
     it('shows content when v-model:open flips to true', async () => {
         const open = ref(false);
+
         buildApp(open);
         await nextTick();
         open.value = true;
@@ -62,8 +68,11 @@ describe('<VCPopover>', () => {
     it('opens when trigger is clicked', async () => {
         const open = ref(false);
         const wrapper = buildApp(open);
+
         await nextTick();
+
         const trigger = wrapper.find('[data-testid="trigger"]').element as HTMLElement;
+
         trigger.click();
         await nextTick();
         expect(open.value).toBe(true);

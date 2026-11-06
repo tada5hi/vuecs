@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import type { DataRecordDefinition } from '../../src';
 import { defineDataRecord } from '../../src';
 
+
 type User = {
     id: number,
     name: string,
@@ -20,6 +21,7 @@ describe('defineDataRecord', () => {
             load: async () => ({ data: { id: 1, name: 'a' } }),
             autoLoad: false,
         });
+
         await source.load();
         expect(source.data.value).toEqual({ id: 1, name: 'a' });
     });
@@ -29,6 +31,7 @@ describe('defineDataRecord', () => {
         const source = defineDataRecord<User, Meta>({
             load: async () => {
                 loads += 1;
+
                 return { data: { id: 1, name: 'a' } };
             },
             autoLoad: false,
@@ -49,6 +52,7 @@ describe('defineDataRecord', () => {
             load: async () => {
                 loads += 1;
                 await gate;
+
                 return { data: { id: 1, name: 'a' } };
             },
             autoLoad: false,
@@ -56,6 +60,7 @@ describe('defineDataRecord', () => {
 
         const a = source.ensure();
         const b = source.ensure();
+
         release();
         await Promise.all([a, b]);
         expect(loads).toEqual(1);
@@ -66,6 +71,7 @@ describe('defineDataRecord', () => {
         const source = defineDataRecord<User, Meta>({
             load: async () => {
                 loads += 1;
+
                 return { data: undefined }; // e.g. a 404 — the record stays unresolved
             },
             autoLoad: false,
@@ -78,8 +84,10 @@ describe('defineDataRecord', () => {
         const { promise: gate, resolve: release } = Promise.withResolvers<void>();
         const write = source.mutate(async () => {
             await gate;
+
             return 'ok';
         });
+
         // a write raises `busy` too, and the settled first load is still the
         // core's "latest" run — neither is proof that a LOAD is in flight
         expect(source.busy.value).toBeTruthy();
@@ -165,6 +173,7 @@ describe('defineDataRecord', () => {
         });
 
         const patch = { profile: { phone: '123' } };
+
         source.merge(patch);
 
         expect(source.data.value?.profile).toEqual({ email: 'a@b.c', phone: '123' });
@@ -195,6 +204,7 @@ describe('defineDataRecord', () => {
             load: async () => ({ data: undefined }),
             autoLoad: false,
         });
+
         source.merge({ name: 'x' });
         expect(source.data.value).toBeUndefined();
     });
@@ -207,6 +217,7 @@ describe('defineDataRecord', () => {
         });
 
         const p = source.load();
+
         source.merge({ name: 'live-update' }); // realtime event mid-flight
         expect(source.data.value).toBeUndefined(); // buffered
 
@@ -230,6 +241,7 @@ describe('defineDataRecord', () => {
             initialMeta: { fields: ['name'] },
             autoLoad: false,
         });
+
         await source.load();
         expect(source.dehydrate()).toEqual({
             data: { id: 1, name: 'a' },
@@ -264,16 +276,19 @@ describe('defineDataRecord', () => {
                 const source = defineDataRecord<User, Meta>({
                     load: async () => {
                         loads += 1;
+
                         return { data: { id: 1, name: 'fetched' } };
                     },
                     ...extra,
                 });
+
                 return { source };
             },
             template: '<div>{{ source.data.value?.name ?? "-" }}</div>',
         });
 
         const auto = mount(build({}));
+
         await flushPromises();
         expect(loads).toEqual(1);
         expect(auto.text()).toEqual('fetched');
@@ -285,12 +300,14 @@ describe('defineDataRecord', () => {
                 meta: {},
             },
         }));
+
         await flushPromises();
         expect(loads).toEqual(1); // hydration skipped the fetch
         expect(hydrated.text()).toEqual('ssr');
         hydrated.unmount();
 
         const adopted = mount(build({ initialData: { id: 8, name: 'prop' } }));
+
         await flushPromises();
         expect(loads).toEqual(1); // adoption skipped the fetch
         expect(adopted.text()).toEqual('prop');
@@ -308,9 +325,11 @@ describe('defineDataRecord', () => {
             initialMeta: { fields: ['name'] },
             autoLoad: false,
         });
+
         await source.load();
 
         const snapshot = source.dehydrate();
+
         // shallowRef keeps the loader-owned record raw — identity survives, no proxy
         expect(snapshot.data).toBe(record);
         // shallow clone: replacing a TOP-LEVEL meta key on the snapshot must not
@@ -326,6 +345,7 @@ describe('defineDataRecord', () => {
             const source = defineDataRecord<User, Meta, number>({
                 load: async (_meta, id) => {
                     seen.push(id);
+
                     return { data: { id: id ?? 0, name: `u${id}` } };
                 },
                 autoLoad: false,
@@ -357,9 +377,12 @@ describe('defineDataRecord', () => {
             const source = defineDataRecord<User, Meta, number>({
                 load: async (_meta, id) => {
                     calls += 1;
+
                     const gate = Promise.withResolvers<void>();
+
                     gates.set(id ?? 0, gate);
                     await gate.promise;
+
                     return { data: { id: id ?? 0, name: `u${id}` } };
                 },
                 autoLoad: false,
@@ -367,9 +390,11 @@ describe('defineDataRecord', () => {
 
             const a = source.ensure(1);
             const b = source.ensure(1);
+
             expect(calls).toEqual(1);
 
             const c = source.ensure(2);
+
             expect(calls).toEqual(2);
 
             gates.get(1)?.resolve();
@@ -384,10 +409,13 @@ describe('defineDataRecord', () => {
     describe('load outcome (#1745)', () => {
         it('should resolve failed without rejecting', async () => {
             const source = defineDataRecord<User, Meta>({
-                load: async () => { throw new Error('boom'); },
+                load: async () => {
+                    throw new Error('boom');
+                },
                 autoLoad: false,
             });
             const outcome = await source.load();
+
             expect(outcome.status).toEqual('failed');
             expect(source.error.value).toBeInstanceOf(Error);
         });
@@ -399,6 +427,7 @@ describe('defineDataRecord', () => {
                 load: async () => ({ data: undefined }),
                 autoLoad: false,
             });
+
             expect(source.merge({ name: 'x' })).toEqual('noop');
             expect(source.clear()).toEqual('noop');
             expect(source.set({ id: 1, name: 'a' })).toEqual('applied');
@@ -414,7 +443,12 @@ describe('defineDataRecord', () => {
             });
             const settled : string[] = [];
             const p = source.load();
-            expect(source.merge({ name: 'live' }, { onSettled: (s) => { settled.push(s); } })).toEqual('buffered');
+
+            expect(source.merge({ name: 'live' }, {
+                onSettled: (s) => {
+                    settled.push(s);
+                },
+            })).toEqual('buffered');
             gate.resolve({ id: 1, name: 'server' });
             await p;
             expect(settled).toEqual(['applied']);
@@ -425,10 +459,13 @@ describe('defineDataRecord', () => {
     describe('meta commit on success (#1747)', () => {
         it('should not commit meta from a failed load', async () => {
             const source = defineDataRecord<User, Meta>({
-                load: async () => { throw new Error('boom'); },
+                load: async () => {
+                    throw new Error('boom');
+                },
                 initialMeta: { fields: ['name'] },
                 autoLoad: false,
             });
+
             await source.load({ fields: ['secret'] });
             expect(source.meta.fields).toEqual(['name']);
         });
@@ -439,19 +476,21 @@ describe('defineDataRecord', () => {
             const source = defineDataRecord<User, Meta>({
                 load: async () => ({
                     data: {
-                        id: 1, 
-                        name: 'a', 
-                        profile: { email: 'e' }, 
-                    }, 
+                        id: 1,
+                        name: 'a',
+                        profile: { email: 'e' },
+                    },
                 }),
                 autoLoad: false,
                 deep: true,
             });
+
             await source.load();
 
             const Comp = defineComponent({ setup: () => () => source.data.value?.name });
             const wrapper = mount(Comp);
             const held = source.data.value;
+
             (source.data.value as User).name = 'mutated';
             await flushPromises();
             expect(wrapper.text()).toEqual('mutated');
@@ -462,6 +501,7 @@ describe('defineDataRecord', () => {
             expect(source.data.value?.name).toEqual('mutated');
 
             const snapshot = source.dehydrate();
+
             expect(() => structuredClone(snapshot)).not.toThrow();
         });
     });
@@ -475,6 +515,7 @@ describe('defineDataRecord', () => {
             });
 
             const p = source.load({ fields: ['name'] });
+
             expect(source.set({ id: 1, name: 'local' }, { immediate: true })).toEqual('applied');
             expect(source.data.value?.name).toEqual('local');
 
@@ -495,8 +536,18 @@ describe('defineDataRecord', () => {
 
             const order : string[] = [];
             const p = source.load();
-            source.merge({ name: 'earlier' }, { onSettled: (s) => { order.push(`merge:${s}`); } });
-            source.clear({ immediate: true, onSettled: (s) => { order.push(`clear:${s}`); } });
+
+            source.merge({ name: 'earlier' }, {
+                onSettled: (s) => {
+                    order.push(`merge:${s}`);
+                },
+            });
+            source.clear({
+                immediate: true,
+                onSettled: (s) => {
+                    order.push(`clear:${s}`);
+                },
+            });
             // the buffered merge ran first (against the seed), then the clear
             expect(order).toEqual(['merge:applied', 'clear:applied']);
             expect(source.data.value).toBeUndefined();
@@ -512,15 +563,22 @@ describe('defineDataRecord', () => {
             const source = defineDataRecord<User, Meta>({
                 load: async () => {
                     calls += 1;
-                    if (calls === 1) await gate.promise;
+
+                    if (calls === 1) {
+                        await gate.promise;
+                    }
+
                     return { data: { id: calls, name: `call${calls}` } };
                 },
                 autoLoad: false,
             });
 
             const first = source.load();
+
             source.clear({ immediate: true });
+
             const outcome = await source.ensure();
+
             expect(outcome).toEqual({ status: 'applied' });
             expect(source.data.value?.name).toEqual('call2');
 
@@ -535,19 +593,24 @@ describe('defineDataRecord', () => {
                 load: async (_meta, id) => ({ data: { id: id ?? 0, name: `u${id}` } }),
                 autoLoad: false,
             });
+
             await server.ensure(7);
+
             const snapshot = server.dehydrate();
+
             expect(snapshot.input).toEqual(7);
 
             let calls = 0;
             const client = defineDataRecord<User, Meta, number>({
                 load: async () => {
                     calls += 1;
+
                     return { data: undefined };
                 },
                 hydrate: JSON.parse(JSON.stringify(snapshot)),
                 autoLoad: false,
             });
+
             expect(await client.ensure(7)).toEqual({ status: 'cached' });
             expect(calls).toEqual(0);
         });
@@ -557,11 +620,13 @@ describe('defineDataRecord', () => {
             const source = defineDataRecord<User, Meta, number>({
                 load: async () => {
                     calls += 1;
+
                     return { data: undefined };
                 },
                 initialData: { id: 3, name: 'adopted' },
                 initialInput: 3,
             });
+
             expect(await source.ensure(3)).toEqual({ status: 'cached' });
             expect(calls).toEqual(0);
         });
@@ -571,6 +636,7 @@ describe('defineDataRecord', () => {
                 load: async (_meta, id) => ({ data: { id: id ?? 0, name: `u${id}` } }),
                 autoLoad: false,
             });
+
             await source.ensure(1);
             source.set({ id: 2, name: 'replaced' });
             // the held record no longer came from input 1
@@ -587,8 +653,17 @@ describe('defineDataRecord', () => {
 
             const settled : string[] = [];
             const p = source.load();
-            source.merge({ name: 'boom' }, { onSettled: () => { throw new Error('consumer callback'); } });
-            source.merge({ name: 'after' }, { onSettled: (s) => { settled.push(s); } });
+
+            source.merge({ name: 'boom' }, {
+                onSettled: () => {
+                    throw new Error('consumer callback');
+                },
+            });
+            source.merge({ name: 'after' }, {
+                onSettled: (s) => {
+                    settled.push(s);
+                },
+            });
 
             gate.resolve({ id: 1, name: 'server' });
             await expect(p).resolves.toEqual({ status: 'applied' });

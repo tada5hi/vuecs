@@ -25,6 +25,7 @@ export default defineComponent({
     props: hoverCardArrowProps,
     setup(props) {
         const theme = useComponentTheme('hoverCard', props, hoverCardThemeDefaults);
+
         return () => h(HoverCardArrow, {
             width: props.width,
             height: props.height,

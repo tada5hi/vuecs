@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 import {
-    afterEach, 
-    describe, 
-    expect, 
+    afterEach,
+    describe,
+    expect,
     it,
 } from 'vitest';
 import { defineComponent, h, ref } from 'vue';
@@ -10,6 +10,7 @@ import { mount } from '@vue/test-utils';
 import vuecsTable, { VCTable, VCTableLite } from '../../src';
 
 const plugins = [[vuecsTable, {}]] as const;
+
 
 type User = { id: number; name: string };
 const data: User[] = [
@@ -22,7 +23,9 @@ const columns = [
 ];
 
 describe('<VCTable :busy :placeholder> integrated skeleton mode', () => {
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it('renders skeleton tbody when :busy && :placeholder are both set', () => {
         const wrapper = mount(defineComponent({
@@ -37,6 +40,7 @@ describe('<VCTable :busy :placeholder> integrated skeleton mode', () => {
         }), { global: { plugins: [...plugins] } });
 
         const skeleton = wrapper.element.querySelector('tbody.vc-table-placeholder-body');
+
         expect(skeleton).not.toBeNull();
         // Real header still renders (column labels from :columns).
         expect(wrapper.element.querySelector('thead')).not.toBeNull();
@@ -57,6 +61,7 @@ describe('<VCTable :busy :placeholder> integrated skeleton mode', () => {
             },
         }), { global: { plugins: [...plugins] } });
         const rows = wrapper.element.querySelectorAll('tbody.vc-table-placeholder-body tr');
+
         expect(rows.length).toBe(2);
     });
 
@@ -72,6 +77,7 @@ describe('<VCTable :busy :placeholder> integrated skeleton mode', () => {
             },
         }), { global: { plugins: [...plugins] } });
         const rows = wrapper.element.querySelectorAll('tbody.vc-table-placeholder-body tr');
+
         expect(rows.length).toBe(5);
     });
 
@@ -88,6 +94,7 @@ describe('<VCTable :busy :placeholder> integrated skeleton mode', () => {
             },
         }), { global: { plugins: [...plugins] } });
         const rows = wrapper.element.querySelectorAll('tbody.vc-table-placeholder-body tr');
+
         expect(rows.length).toBe(8);
     });
 
@@ -108,8 +115,10 @@ describe('<VCTable :busy :placeholder> integrated skeleton mode', () => {
         busy.value = false;
         await wrapper.vm.$nextTick();
         expect(wrapper.element.querySelector('tbody.vc-table-placeholder-body')).toBeNull();
+
         // Real rows show data — each <td> contains the value text.
         const cells = wrapper.element.querySelectorAll('tbody td');
+
         expect(cells.length).toBe(4); // 2 rows × 2 cols
     });
 
@@ -124,6 +133,7 @@ describe('<VCTable :busy :placeholder> integrated skeleton mode', () => {
                 });
             },
         }), { global: { plugins: [...plugins] } });
+
         expect(wrapper.element.querySelector('tbody.vc-table-placeholder-body')).toBeNull();
     });
 
@@ -137,12 +147,15 @@ describe('<VCTable :busy :placeholder> integrated skeleton mode', () => {
                 });
             },
         }), { global: { plugins: [...plugins] } });
+
         expect(wrapper.element.querySelector('tbody.vc-table-placeholder-body')).toBeNull();
     });
 });
 
 describe('<VCTableLite :busy :placeholder> integrated skeleton mode', () => {
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it('renders skeleton tbody when :busy && :placeholder are both set', () => {
         const wrapper = mount(defineComponent({
@@ -156,6 +169,7 @@ describe('<VCTableLite :busy :placeholder> integrated skeleton mode', () => {
             },
         }), { global: { plugins: [...plugins] } });
         const skeleton = wrapper.element.querySelector('tbody.vc-table-placeholder-body');
+
         expect(skeleton).not.toBeNull();
     });
 });

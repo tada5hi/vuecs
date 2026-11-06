@@ -25,6 +25,7 @@ describe('VCPagination', () => {
             props: { total: 50, limit: 10 },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.find('.vc-pagination').exists()).toBe(true);
     });
 
@@ -38,6 +39,7 @@ describe('VCPagination', () => {
             global: { plugins: [themePlugin] },
         });
         const pageButtons = wrapper.findAll('button[data-type="page"]');
+
         expect(pageButtons.length).toBeGreaterThanOrEqual(3);
     });
 
@@ -51,10 +53,13 @@ describe('VCPagination', () => {
             global: { plugins: [themePlugin] },
         });
         const pageTwo = findPageButton(wrapper, 2);
+
         expect(pageTwo).toBeTruthy();
         await pageTwo!.trigger('click');
         expect(wrapper.emitted('load')).toBeTruthy();
+
         const loadData = wrapper.emitted('load')![0][0] as any;
+
         expect(loadData.page).toBe(2);
         expect(loadData.offset).toBe(10);
         expect(loadData.limit).toBe(10);
@@ -70,6 +75,7 @@ describe('VCPagination', () => {
             global: { plugins: [themePlugin] },
         });
         const pageOne = findPageButton(wrapper, 1);
+
         expect(pageOne).toBeTruthy();
         await pageOne!.trigger('click');
         expect(wrapper.emitted('load')).toBeFalsy();
@@ -86,6 +92,7 @@ describe('VCPagination', () => {
             global: { plugins: [themePlugin] },
         });
         const pageTwo = findPageButton(wrapper, 2);
+
         expect(pageTwo).toBeTruthy();
         await pageTwo!.trigger('click');
         expect(wrapper.emitted('load')).toBeFalsy();
@@ -101,6 +108,7 @@ describe('VCPagination', () => {
             global: { plugins: [themePlugin] },
         });
         const activeButtons = wrapper.findAll('.active');
+
         expect(activeButtons).toHaveLength(1);
     });
 
@@ -114,6 +122,7 @@ describe('VCPagination', () => {
             global: { plugins: [themePlugin] },
         });
         const activeButtons = wrapper.findAll('.active');
+
         expect(activeButtons).toHaveLength(1);
         expect(activeButtons[0].text().trim()).toBe('2');
     });
@@ -128,6 +137,7 @@ describe('VCPagination', () => {
             },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.find('button[aria-label="First Page"]').exists()).toBe(false);
         expect(wrapper.find('button[aria-label="Previous Page"]').exists()).toBe(false);
         expect(wrapper.find('button[aria-label="Next Page"]').exists()).toBe(true);
@@ -144,6 +154,7 @@ describe('VCPagination', () => {
             },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.find('button[aria-label="First Page"]').exists()).toBe(true);
         expect(wrapper.find('button[aria-label="Previous Page"]').exists()).toBe(true);
         expect(wrapper.find('button[aria-label="Next Page"]').exists()).toBe(false);
@@ -160,6 +171,7 @@ describe('VCPagination', () => {
             },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.find('button[aria-label="First Page"]').exists()).toBe(true);
         expect(wrapper.find('button[aria-label="Previous Page"]').exists()).toBe(true);
         expect(wrapper.find('button[aria-label="Next Page"]').exists()).toBe(true);
@@ -178,6 +190,7 @@ describe('VCPagination', () => {
         });
         const first = wrapper.find('button[aria-label="First Page"]');
         const prev = wrapper.find('button[aria-label="Previous Page"]');
+
         expect(first.exists()).toBe(true);
         expect(prev.exists()).toBe(true);
         expect(first.attributes('disabled')).toBeDefined();
@@ -194,6 +207,7 @@ describe('VCPagination', () => {
             global: { plugins: [themePlugin] },
         });
         const pageButtons = wrapper.findAll('button[data-type="page"]');
+
         expect(pageButtons).toHaveLength(1);
         expect(pageButtons[0].text().trim()).toBe('1');
     });
@@ -210,6 +224,7 @@ describe('VCPagination', () => {
             },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.find('button[aria-label="First Page"]').text()).toBe('First');
         expect(wrapper.find('button[aria-label="Previous Page"]').text()).toBe('Previous');
         expect(wrapper.find('button[aria-label="Next Page"]').text()).toBe('Next');
@@ -232,6 +247,7 @@ describe('VCPagination', () => {
             },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.find('button[aria-label="First Page"]').text()).toBe('');
         expect(wrapper.find('button[aria-label="Previous Page"]').text()).toBe('');
         expect(wrapper.find('button[aria-label="Next Page"]').text()).toBe('');
@@ -252,6 +268,7 @@ describe('VCPagination', () => {
             },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.find('button[aria-label="First Page"]').text()).toBe('First');
         expect(wrapper.find('button[aria-label="Previous Page"]').text()).toBe('Previous');
         expect(wrapper.find('button[aria-label="Next Page"]').text()).toBe('Next');
@@ -269,6 +286,7 @@ describe('VCPagination', () => {
             },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.find('button[aria-label="Previous Page"]').text()).toBe('Zurück');
         expect(wrapper.find('button[aria-label="Next Page"]').text()).toBe('Weiter');
     });
@@ -289,6 +307,7 @@ describe('VCPagination', () => {
             global: { plugins: [themePlugin] },
         });
         const prev = wrapper.find('button[aria-label="Previous Page"]');
+
         expect(prev.text()).toBe('');
         expect(prev.attributes('aria-label')).toBe('Previous Page');
     });
@@ -313,6 +332,7 @@ describe('VCPagination', () => {
             global: { plugins: [themePlugin] },
         });
         const prev = wrapper.find('button[aria-label="Previous Page"]');
+
         expect(prev.text()).not.toMatch(/Prev page/i);
     });
 
@@ -328,6 +348,7 @@ describe('VCPagination', () => {
             global: { plugins: [themePlugin] },
         });
         const prev = wrapper.find('button[aria-label="Previous Page"]');
+
         expect(prev.find('.custom-prev').exists()).toBe(true);
         expect(prev.text()).toBe('go back');
         // Icon prop ignored when full slot present

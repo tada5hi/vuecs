@@ -25,6 +25,7 @@ export default defineComponent({
     props: hoverCardTriggerProps,
     setup(props, { slots }) {
         const theme = useComponentTheme('hoverCard', props, hoverCardThemeDefaults);
+
         return () => h(
             HoverCardTrigger,
             {

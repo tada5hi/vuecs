@@ -35,6 +35,7 @@ export function parseTreePaths(paths: string[], delimiter = '/'): TreeNode[] {
             id = id.length > 0 ? `${id}${delimiter}${segment}` : segment;
 
             let node = byId.get(id);
+
             if (!node) {
                 node = { id, label: segment };
                 byId.set(id, node);

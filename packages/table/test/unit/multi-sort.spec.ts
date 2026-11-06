@@ -12,10 +12,11 @@ import type { TableSortState } from '../../src';
 
 const plugins = [[vuecsTable, {}]] as const;
 
+
 type User = {
-    id: number; 
-    name: string; 
-    role: string 
+    id: number;
+    name: string;
+    role: string
 };
 
 const data: User[] = [
@@ -37,7 +38,9 @@ const data: User[] = [
 ];
 
 describe('<VCTable> multi-sort + client-sort (plan 033 v1.x-B)', () => {
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it(':client-sort reorders data internally when sort state changes', async () => {
         const sort = ref<TableSortState>([]);
@@ -51,16 +54,21 @@ describe('<VCTable> multi-sort + client-sort (plan 033 v1.x-B)', () => {
                     data: data as never,
                     sort: sort.value,
                     clientSort: true,
-                    'onUpdate:sort': (next: TableSortState) => { sort.value = next; },
+                    'onUpdate:sort': (next: TableSortState) => {
+                        sort.value = next;
+                    },
                 });
             },
         }), { global: { plugins: [...plugins] } });
 
         // Initial order: data as supplied.
         let cells = wrapper.element.querySelectorAll('tbody td');
+
         expect(cells[0].textContent).toBe('3');
+
         // Click ID header → sort by id asc.
         const idHeader = wrapper.element.querySelector('thead th') as HTMLElement;
+
         idHeader.click();
         await wrapper.vm.$nextTick();
         cells = wrapper.element.querySelectorAll('tbody td');
@@ -83,19 +91,23 @@ describe('<VCTable> multi-sort + client-sort (plan 033 v1.x-B)', () => {
                     sort: sort.value,
                     multiSort: true,
                     clientSort: true,
-                    'onUpdate:sort': (next: TableSortState) => { sort.value = next; },
+                    'onUpdate:sort': (next: TableSortState) => {
+                        sort.value = next;
+                    },
                 });
             },
         }), { global: { plugins: [...plugins] } });
 
         // Click role header (plain): sort by role asc.
         const roleHeader = wrapper.element.querySelector('thead th') as HTMLElement;
+
         roleHeader.click();
         await wrapper.vm.$nextTick();
         expect(sort.value).toEqual([{ key: 'role', direction: 'asc' }]);
 
         // Shift-click name header: add as secondary.
         const nameHeader = wrapper.element.querySelectorAll('thead th')[1] as HTMLElement;
+
         nameHeader.dispatchEvent(new MouseEvent('click', { shiftKey: true, bubbles: true }));
         await wrapper.vm.$nextTick();
         expect(sort.value).toEqual([
@@ -105,6 +117,7 @@ describe('<VCTable> multi-sort + client-sort (plan 033 v1.x-B)', () => {
 
         // Visible data reordered: role asc (admin, admin, editor), then name asc within ties.
         const cells = wrapper.element.querySelectorAll('tbody td');
+
         expect(cells[1].textContent).toBe('Alice'); // first admin
         expect(cells[3].textContent).toBe('Carol'); // second admin
         expect(cells[5].textContent).toBe('Bob'); // editor
@@ -121,15 +134,20 @@ describe('<VCTable> multi-sort + client-sort (plan 033 v1.x-B)', () => {
                     ] as never,
                     data: data as never,
                     sort: sort.value,
-                    'onUpdate:sort': (next: TableSortState) => { sort.value = next; },
+                    'onUpdate:sort': (next: TableSortState) => {
+                        sort.value = next;
+                    },
                 });
             },
         }), { global: { plugins: [...plugins] } });
 
         const roleHeader = wrapper.element.querySelector('thead th') as HTMLElement;
+
         roleHeader.click();
         await wrapper.vm.$nextTick();
+
         const nameHeader = wrapper.element.querySelectorAll('thead th')[1] as HTMLElement;
+
         nameHeader.dispatchEvent(new MouseEvent('click', { shiftKey: true, bubbles: true }));
         await wrapper.vm.$nextTick();
         // `<VCTable>` strips `opts.append` when `:multi-sort` is off,
@@ -158,6 +176,7 @@ describe('<VCTable> multi-sort + client-sort (plan 033 v1.x-B)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const headers = wrapper.element.querySelectorAll('thead th');
+
         // Position 1 (role) → no data-sort-index (primary keeps just the arrow).
         expect(headers[0].hasAttribute('data-sort-index')).toBe(false);
         // Position 2 (name) → data-sort-index="2".
@@ -178,12 +197,15 @@ describe('<VCTable> multi-sort + client-sort (plan 033 v1.x-B)', () => {
                     sort: sort.value,
                     multiSort: true,
                     maxSortKeys: 2,
-                    'onUpdate:sort': (next: TableSortState) => { sort.value = next; },
+                    'onUpdate:sort': (next: TableSortState) => {
+                        sort.value = next;
+                    },
                 });
             },
         }), { global: { plugins: [...plugins] } });
 
         const headers = wrapper.element.querySelectorAll('thead th');
+
         (headers[0] as HTMLElement).click(); // plain → [id]
         await wrapper.vm.$nextTick();
         headers[1].dispatchEvent(new MouseEvent('click', { shiftKey: true, bubbles: true })); // append → [id, name]

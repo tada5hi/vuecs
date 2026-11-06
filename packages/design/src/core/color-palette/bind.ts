@@ -31,6 +31,7 @@ export function bindColorPalette<T>(
     if (document) {
         applyColorPaletteCss(render(source.value), document, resolveNonce());
     }
+
     /*
      * Watch both the palette source AND the resolved nonce. The nonce
      * getter form (e.g. `() => useConfig('nonce').value`) reads a

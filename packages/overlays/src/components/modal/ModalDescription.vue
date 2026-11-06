@@ -21,6 +21,7 @@ export default defineComponent({
     props: modalDescriptionProps,
     setup(props, { slots }) {
         const theme = useComponentTheme('modal', props, modalThemeDefaults);
+
         return () => h(
             DialogDescription,
             { class: theme.value.description || undefined },

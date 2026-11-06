@@ -9,6 +9,7 @@ const app = createApp({
         return () => h(FormNumber, { themeVariant: variantState.value });
     },
 });
+
 installVuecs(app);
 app.use(forms);
 app.mount('#app');

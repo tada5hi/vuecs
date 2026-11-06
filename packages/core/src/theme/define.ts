@@ -25,9 +25,18 @@ export function defineTheme(config: ThemeConfig): Theme {
     const bases = resolveExtends(config.extends);
 
     const ownTheme: Theme = { elements: config.elements ?? {} };
-    if (config.classesMergeFn) ownTheme.classesMergeFn = config.classesMergeFn;
-    if (config.colorMode) ownTheme.colorMode = config.colorMode;
-    if (config.palette) ownTheme.palette = config.palette;
+
+    if (config.classesMergeFn) {
+        ownTheme.classesMergeFn = config.classesMergeFn;
+    }
+
+    if (config.colorMode) {
+        ownTheme.colorMode = config.colorMode;
+    }
+
+    if (config.palette) {
+        ownTheme.palette = config.palette;
+    }
 
     return mergeThemes([...bases, ownTheme]);
 }

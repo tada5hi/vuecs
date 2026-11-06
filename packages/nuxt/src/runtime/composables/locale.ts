@@ -1,3 +1,4 @@
+/* eslint-disable @tada5hi/no-reexport-shims -- Preserve this existing public forwarding module. */
 /**
  * Locale composables, re-exported for Nuxt auto-import.
  *

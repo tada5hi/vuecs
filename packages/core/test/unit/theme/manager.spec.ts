@@ -8,6 +8,7 @@ describe('ThemeManager', () => {
         const manager = new ThemeManager();
         const defaults = { classes: { root: 'vc-btn', icon: 'vc-btn-icon' } };
         const result = manager.resolve('button', defaults);
+
         expect(result).toEqual(defaults.classes);
     });
 
@@ -19,6 +20,7 @@ describe('ThemeManager', () => {
         });
         const defaults = { classes: { root: 'vc-btn', icon: 'vc-btn-icon' } };
         const result = manager.resolve('button', defaults);
+
         expect(result.root).toBe('vc-btn btn btn-primary');
         expect(result.icon).toBe('vc-btn-icon fa fa-check');
     });
@@ -27,6 +29,7 @@ describe('ThemeManager', () => {
         const manager = new ThemeManager();
         const defaults = { classes: { root: 'vc-btn' } };
         const result = manager.resolve('button', defaults, { root: 'custom' });
+
         expect(result.root).toBe('custom');
     });
 
@@ -39,6 +42,7 @@ describe('ThemeManager', () => {
         const manager = new ThemeManager({ overrides: { elements: {}, classesMergeFn: dedupMerge } });
         const defaults = { classes: { root: 'a b' } };
         const result = manager.resolve('button', defaults, { root: extend('b c') });
+
         expect(result.root).toBe('a b c');
     });
 
@@ -51,6 +55,7 @@ describe('ThemeManager', () => {
         const manager = new ThemeManager({ themes: [theme] });
         const defaults = { classes: { root: 'default' } };
         const result = manager.resolve('button', defaults, { root: extend('extra') });
+
         expect(result.root).toBe('default|base|extra');
     });
 
@@ -107,6 +112,7 @@ describe('ThemeManager', () => {
         };
 
         const result = manager.resolve('button', defaults, undefined, { size: 'lg' });
+
         expect(result.root).toBe('vc-btn btn-lg');
     });
 
@@ -150,9 +156,11 @@ describe('ThemeManager', () => {
 
         // sm is overridden by theme, lg kept from defaults
         const resultSm = manager.resolve('button', defaults, undefined, { size: 'sm' });
+
         expect(resultSm.root).toBe('vc-btn btn theme-sm');
 
         const resultLg = manager.resolve('button', defaults, undefined, { size: 'lg' });
+
         expect(resultLg.root).toBe('vc-btn btn default-lg');
     });
 });

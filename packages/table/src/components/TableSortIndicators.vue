@@ -180,9 +180,9 @@ export default defineComponent({
         clear(props: TableSortIndicatorsClearSlotProps): unknown;
     }>,
     setup(props, {
-        attrs, 
-        emit, 
-        slots, 
+        attrs,
+        emit,
+        slots,
     }) {
         const ctx = useTable();
         const defaults = useComponentDefaults('tableSortIndicators', props, behavioralDefaults);
@@ -203,11 +203,17 @@ export default defineComponent({
         // floor makes `.map` etc safe.
         const sortPropProvided = computed<boolean>(() => props.sort !== undefined);
         const resolvedSort = computed<TableSortState>(() => {
-            if (sortPropProvided.value) return (props.sort ?? []) as TableSortState;
+            if (sortPropProvided.value) {
+                return (props.sort ?? []) as TableSortState;
+            }
+
             return (ctx?.sort.value ?? []) as TableSortState;
         });
         const resolvedColumns = computed<TableColumn[]>(() => {
-            if (props.columns !== undefined) return props.columns;
+            if (props.columns !== undefined) {
+                return props.columns;
+            }
+
             return (ctx?.columns.value ?? []) as TableColumn[];
         });
 
@@ -216,38 +222,48 @@ export default defineComponent({
                 // v-model mode — emit only; consumer's binding owns
                 // the writeback path.
                 emit('update:sort', next);
+
                 return;
             }
+
             // Context-fallback mode — push into the table's machine.
             // No `update:sort` emit here (the table emits its own
             // `update:sort` once the machine state lands), so a
             // double-emit doesn't fire for consumers who happen to
             // listen on the chip row.
-            if (ctx) {
-                // `globalThis.process` is the safe lookup in browser
-                // ESM builds where `process` isn't a global; raw
-                // `process.env.NODE_ENV` would throw ReferenceError.
-                if (
-                    (globalThis as { process?: { env?: { NODE_ENV?: string } } }).process?.env?.NODE_ENV !== 'production' &&
-                    !ctx.supportsSortMutation
-                ) {
-                    // eslint-disable-next-line no-console
-                    console.warn(
-                        '[VCTableSortIndicators] mounted inside a table context that does not support sort mutation (likely <VCTableLite>). Clicks will be swallowed. Either bind :sort + :columns directly for v-model mode, or use <VCTable> instead of Lite.',
-                    );
-                }
-                ctx.setSortState(next);
+            if (!ctx) {
+                return;
             }
+
+            // `globalThis.process` is the safe lookup in browser
+            // ESM builds where `process` isn't a global; raw
+            // `process.env.NODE_ENV` would throw ReferenceError.
+            if (
+                (globalThis as { process?: { env?: { NODE_ENV?: string } } }).process?.env?.NODE_ENV !== 'production' &&
+                !ctx.supportsSortMutation
+            ) {
+                // eslint-disable-next-line no-console
+                console.warn(
+                    '[VCTableSortIndicators] mounted inside a table context that does not support sort mutation (likely <VCTableLite>). Clicks will be swallowed. Either bind :sort + :columns directly for v-model mode, or use <VCTable> instead of Lite.',
+                );
+            }
+
+            ctx.setSortState(next);
         }
 
         const columnByKey = computed(() => {
             const map = new Map<string, TableColumn>();
-            for (const col of resolvedColumns.value) map.set(col.key, col);
+
+            for (const col of resolvedColumns.value) {
+                map.set(col.key, col);
+            }
+
             return map;
         });
 
         const unsortedSortable = computed<TableColumn[]>(() => {
             const inSort = new Set(resolvedSort.value.map((s) => s.key));
+
             return resolvedColumns.value.filter((c) => c.sortable && !inSort.has(c.key));
         });
 
@@ -262,12 +278,18 @@ export default defineComponent({
         }
 
         const resolvedMaxSortKeys = computed<number>(() => {
-            if (props.maxSortKeys !== undefined) return props.maxSortKeys;
+            if (props.maxSortKeys !== undefined) {
+                return props.maxSortKeys;
+            }
+
             return ctx?.maxSortKeys.value ?? 0;
         });
 
         function appendKey(key: string) {
-            if (!key) return;
+            if (!key) {
+                return;
+            }
+
             // Defense-in-depth: the native `<select>` is already
             // filtered to sortable columns, but slot-prop callers
             // (custom `#add` UIs) may pass any string. Reject:
@@ -277,15 +299,25 @@ export default defineComponent({
             //     to `undefined` (= not sortable); only an explicit
             //     `true` opts in)
             const col = columnByKey.value.get(key);
-            if (!col || !col.sortable) return;
+
+            if (!col || !col.sortable) {
+                return;
+            }
+
             // Don't re-add a key that's already in the sort.
-            if (resolvedSort.value.some((s) => s.key === key)) return;
+            const matchesValue = resolvedSort.value.some((s) => s.key === key);
+
+            if (matchesValue) {
+                return;
+            }
+
             const next: TableSortState = [...resolvedSort.value, { key, direction: 'asc' }];
             const cap = resolvedMaxSortKeys.value;
             // Evict from the front (oldest first) to match the
             // sort machine's `appendCapped` semantic. `cap <= 0`
             // means unlimited.
             const capped = cap > 0 && next.length > cap ? next.slice(next.length - cap) : next;
+
             commitSort(capped);
         }
 
@@ -306,7 +338,9 @@ export default defineComponent({
         return () => {
             // Render nothing when we have neither v-model state nor a
             // table context — there's no useful interaction to expose.
-            if (!sortPropProvided.value && !ctx) return null;
+            if (!sortPropProvided.value && !ctx) {
+                return null;
+            }
 
             const sortState = resolvedSort.value;
             const t = theme.value;
@@ -319,8 +353,12 @@ export default defineComponent({
             const clearSlotProps: TableSortIndicatorsClearSlotProps = { clear: clearAll };
 
             const renderChip = (chip: TableSortIndicatorsChipSlotProps) => {
-                if (slots.chip) return slots.chip(chip);
+                if (slots.chip) {
+                    return slots.chip(chip);
+                }
+
                 const isAsc = chip.descriptor.direction === 'asc';
+
                 // Two real `<button>`s wrapped in a non-interactive
                 // `<div>`. Putting a `<button>` inside another
                 // `<button>` is invalid HTML (browsers hoist the
@@ -366,13 +404,20 @@ export default defineComponent({
             ));
 
             const renderAdd = () => {
-                if (props.hideAdd || addSlotProps.options.length === 0) return null;
-                if (slots.add) return slots.add(addSlotProps);
+                if (props.hideAdd || addSlotProps.options.length === 0) {
+                    return null;
+                }
+
+                if (slots.add) {
+                    return slots.add(addSlotProps);
+                }
+
                 const selectNode = h('select', {
                     class: t.add || undefined,
                     'aria-label': d.addLabel,
                     onChange: (e: Event) => {
                         const target = e.target as globalThis.HTMLSelectElement;
+
                         appendKey(target.value);
                         target.value = '';
                     },
@@ -384,19 +429,29 @@ export default defineComponent({
                         col.label ?? col.key,
                     )),
                 ]);
+
                 // Some themes (Bulma) style a wrapper element rather
                 // than the `<select>` itself — `.select` in Bulma 1.x
                 // is a wrapper pattern, not a direct-on-select class.
                 // Themes that style the select directly (Tailwind,
                 // Bootstrap) leave `addWrapper` empty and we render
                 // the bare select.
-                if (!t.addWrapper) return selectNode;
+                if (!t.addWrapper) {
+                    return selectNode;
+                }
+
                 return h('div', { class: t.addWrapper }, [selectNode]);
             };
 
             const renderClear = () => {
-                if (props.hideClear || sortState.length === 0) return null;
-                if (slots.clear) return slots.clear(clearSlotProps);
+                if (props.hideClear || sortState.length === 0) {
+                    return null;
+                }
+
+                if (slots.clear) {
+                    return slots.clear(clearSlotProps);
+                }
+
                 return h('button', {
                     type: 'button',
                     class: t.clear || undefined,

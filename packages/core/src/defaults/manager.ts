@@ -17,7 +17,9 @@ export class DefaultsManager {
     setDefaults(defaults: Partial<ComponentDefaults> | undefined): void {
         const next = defaults || {};
         const isSameRef = this.defaultsRef.value === next;
+
         this.defaultsRef.value = next;
+
         if (isSameRef) {
             triggerRef(this.defaultsRef);
         }
@@ -33,16 +35,25 @@ export class DefaultsManager {
      * so install-order doesn't silently drop options (see #1591).
      */
     mergeDefaults(partial: Partial<ComponentDefaults> | undefined): void {
-        if (!partial) return;
+        if (!partial) {
+            return;
+        }
+
         const next: Record<string, any> = { ...this.defaultsRef.value };
+
         for (const [name, value] of Object.entries(partial)) {
-            if (!isObject(value)) continue;
+            if (!isObject(value)) {
+                continue;
+            }
+
             const existing = next[name] || Object.create(null);
             const incoming = Object.fromEntries(
                 Object.entries(value).filter(([, v]) => v !== undefined),
             );
+
             next[name] = { ...existing, ...incoming };
         }
+
         this.defaultsRef.value = next as Partial<ComponentDefaults>;
     }
 

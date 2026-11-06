@@ -36,13 +36,20 @@ export function applyColorPaletteCss(
     doc: Document | undefined = globalThis.document,
     nonce?: string,
 ): void {
-    if (!doc) return;
+    if (!doc) {
+        return;
+    }
 
     let style = doc.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID) as HTMLStyleElement | null;
+
     if (!style) {
         style = doc.createElement('style');
         style.id = COLOR_PALETTE_STYLE_ELEMENT_ID;
-        if (nonce) style.setAttribute('nonce', nonce);
+
+        if (nonce) {
+            style.setAttribute('nonce', nonce);
+        }
+
         doc.head.appendChild(style);
     } else if (nonce) {
         if (style.getAttribute('nonce') !== nonce) {
@@ -51,5 +58,6 @@ export function applyColorPaletteCss(
     } else if (style.hasAttribute('nonce')) {
         style.removeAttribute('nonce');
     }
+
     style.textContent = css;
 }

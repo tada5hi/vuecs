@@ -2,22 +2,25 @@ import { describe, expect, it } from 'vitest';
 import { ref } from 'vue';
 import { defineList } from '../../src';
 
+
 type User = {
-    id: number; 
-    name: string; 
-    email?: string 
+    id: number;
+    name: string;
+    email?: string
 };
 
 describe('defineList', () => {
     describe('reactive sources', () => {
         it('reads plain arrays', () => {
             const list = defineList<User>({ data: [{ id: 1, name: 'a' }] });
+
             expect(list.data.value).toEqual([{ id: 1, name: 'a' }]);
         });
 
         it('unwraps refs', () => {
             const data = ref<User[]>([{ id: 1, name: 'a' }]);
             const list = defineList<User>({ data });
+
             expect(list.data.value).toEqual(data.value);
             data.value = [{ id: 2, name: 'b' }];
             expect(list.data.value).toEqual([{ id: 2, name: 'b' }]);
@@ -26,6 +29,7 @@ describe('defineList', () => {
         it('evaluates getters', () => {
             const ext = ref('a');
             const list = defineList<User>({ data: () => [{ id: 1, name: ext.value }] });
+
             expect(list.data.value[0].name).toBe('a');
             ext.value = 'b';
             expect(list.data.value[0].name).toBe('b');
@@ -35,11 +39,13 @@ describe('defineList', () => {
     describe('total', () => {
         it('falls back to data.length when not provided', () => {
             const list = defineList<User>({ data: [{ id: 1, name: 'a' }, { id: 2, name: 'b' }] });
+
             expect(list.total.value).toBe(2);
         });
 
         it('uses the declared total when set', () => {
             const list = defineList<User>({ data: [{ id: 1, name: 'a' }], total: 100 });
+
             expect(list.total.value).toBe(100);
         });
 
@@ -48,6 +54,7 @@ describe('defineList', () => {
                 data: [{ id: 1, name: 'a' }, { id: 2, name: 'b' }],
                 total: () => undefined,
             });
+
             expect(list.total.value).toBe(2);
         });
     });
@@ -55,16 +62,19 @@ describe('defineList', () => {
     describe('isEmpty', () => {
         it('is true when not busy and total === 0', () => {
             const list = defineList<User>({ data: [] });
+
             expect(list.isEmpty.value).toBe(true);
         });
 
         it('is false while busy even with zero data', () => {
             const list = defineList<User>({ data: [], busy: true });
+
             expect(list.isEmpty.value).toBe(false);
         });
 
         it('is false when data is non-empty', () => {
             const list = defineList<User>({ data: [{ id: 1, name: 'a' }] });
+
             expect(list.isEmpty.value).toBe(false);
         });
     });
@@ -78,26 +88,31 @@ describe('defineList', () => {
 
         it('uses itemId function when provided', () => {
             const list = defineList<User>({ data: items, itemId: (u) => u.name });
+
             expect(list.findIndex({ id: 99, name: 'b' })).toBe(1);
         });
 
         it('uses itemKey when provided as a key', () => {
             const list = defineList<User>({ data: items, itemKey: 'id' });
+
             expect(list.findIndex({ id: 3, name: 'whatever' })).toBe(2);
         });
 
         it('uses itemKey when provided as a function', () => {
             const list = defineList<User>({ data: items, itemKey: () => 'name' });
+
             expect(list.findIndex({ id: 99, name: 'a' })).toBe(0);
         });
 
         it('falls back to .id when nothing else is set', () => {
             const list = defineList<User>({ data: items });
+
             expect(list.findIndex({ id: 2, name: 'whatever' })).toBe(1);
         });
 
         it('returns -1 when not found', () => {
             const list = defineList<User>({ data: items });
+
             expect(list.findIndex({ id: 999, name: 'z' })).toBe(-1);
         });
     });
@@ -107,16 +122,19 @@ describe('defineList', () => {
 
         it('returns the resolved id from itemId fn', () => {
             const list = defineList<User>({ data: items, itemId: (u) => u.name });
+
             expect(list.getItemKey(items[0])).toBe('a');
         });
 
         it('returns the resolved id from itemKey', () => {
             const list = defineList<User>({ data: items, itemKey: 'id' });
+
             expect(list.getItemKey(items[1])).toBe(2);
         });
 
         it('falls back to .id when no hint is configured', () => {
             const list = defineList<User>({ data: items });
+
             expect(list.getItemKey(items[0])).toBe(1);
         });
 
@@ -124,6 +142,7 @@ describe('defineList', () => {
             type Bare = { name: string };
             const bareItems: Bare[] = [{ name: 'a' }];
             const list = defineList<Bare>({ data: bareItems });
+
             expect(list.getItemKey(bareItems[0])).toBeUndefined();
         });
     });
@@ -136,6 +155,7 @@ describe('defineList', () => {
 
         it('defaults all three flags to false', () => {
             const list = defineList<User>({ data: items });
+
             expect(list.flags).toEqual({
                 mergeOnUpdated: false,
                 dedupCreated: false,
@@ -146,6 +166,7 @@ describe('defineList', () => {
         it('applyCreate appends by default', () => {
             const list = defineList<User>({ data: items });
             const next = list.applyCreate(items, { id: 3, name: 'c' });
+
             expect(next).toHaveLength(3);
             expect(next[2]).toEqual({ id: 3, name: 'c' });
         });
@@ -153,34 +174,39 @@ describe('defineList', () => {
         it('applyCreate dedups when dedupCreated is true', () => {
             const list = defineList<User>({ data: items, dedupCreated: true });
             const next = list.applyCreate(items, { id: 1, name: 'a-renamed' });
+
             expect(next).toBe(items); // same reference — no-op
         });
 
         it('applyUpdate replaces by default', () => {
             const list = defineList<User>({ data: items });
             const next = list.applyUpdate(items, { id: 2, name: 'b-new' });
+
             expect(next[1]).toEqual({ id: 2, name: 'b-new' });
         });
 
         it('applyUpdate deep-merges when mergeOnUpdated is true', () => {
             const list = defineList<User>({ data: items, mergeOnUpdated: true });
             const next = list.applyUpdate(items, { id: 2, email: 'b@example.com' } as User);
+
             expect(next[1]).toEqual({
-                id: 2, 
-                name: 'b', 
-                email: 'b@example.com', 
+                id: 2,
+                name: 'b',
+                email: 'b@example.com',
             });
         });
 
         it('applyDelete removes the matching record', () => {
             const list = defineList<User>({ data: items });
             const next = list.applyDelete(items, { id: 1, name: 'a' });
+
             expect(next).toEqual([{ id: 2, name: 'b' }]);
         });
 
         it('applyDelete leaves the array unchanged when filterDeleted is true and item missing', () => {
             const list = defineList<User>({ data: items, filterDeleted: true });
             const next = list.applyDelete(items, { id: 99, name: 'z' });
+
             expect(next).toBe(items);
         });
     });
@@ -189,6 +215,7 @@ describe('defineList', () => {
         it('exposes mutators automatically when data is a Ref (no setData needed)', () => {
             const ref_ = ref<User[]>(items_());
             const list = defineList<User>({ data: ref_ });
+
             expect(typeof list.create).toBe('function');
             list.create({ id: 3, name: 'c' });
             expect(ref_.value).toHaveLength(3);
@@ -197,6 +224,7 @@ describe('defineList', () => {
 
         it('does NOT expose mutators when data is a getter and no setData is provided', () => {
             const list = defineList<User>({ data: () => items_() });
+
             expect((list as Record<string, unknown>).create).toBeUndefined();
             expect((list as Record<string, unknown>).update).toBeUndefined();
             expect((list as Record<string, unknown>).delete).toBeUndefined();
@@ -204,6 +232,7 @@ describe('defineList', () => {
 
         it('does NOT expose mutators for plain-array data without setData', () => {
             const list = defineList<User>({ data: items_() });
+
             expect((list as Record<string, unknown>).create).toBeUndefined();
         });
 
@@ -212,8 +241,11 @@ describe('defineList', () => {
             const calls: User[][] = [];
             const list = defineList<User>({
                 data: ref_,
-                setData: (next) => { calls.push(next); /* deliberately do NOT mutate ref_ */ },
+                setData: (next) => {
+                    calls.push(next); /* deliberately do NOT mutate ref_ */
+                },
             });
+
             list.create({ id: 3, name: 'c' });
             expect(calls).toHaveLength(1);
             expect(calls[0]).toHaveLength(3);
@@ -225,8 +257,11 @@ describe('defineList', () => {
             const captured: User[][] = [];
             const list = defineList<User>({
                 data: () => items_(),
-                setData: (next) => { captured.push(next); },
+                setData: (next) => {
+                    captured.push(next);
+                },
             });
+
             expect(typeof list.create).toBe('function');
             list.create({ id: 3, name: 'c' });
             expect(captured).toHaveLength(1);
@@ -237,8 +272,11 @@ describe('defineList', () => {
             const ref_ = ref<User[]>(items_());
             const list = defineList<User>({
                 data: ref_,
-                setData: (next) => { ref_.value = next; },
+                setData: (next) => {
+                    ref_.value = next;
+                },
             });
+
             list.create({ id: 3, name: 'c' });
             expect(ref_.value).toHaveLength(3);
             expect(ref_.value[2]).toEqual({ id: 3, name: 'c' });
@@ -249,13 +287,16 @@ describe('defineList', () => {
             const list = defineList<User>({
                 data: ref_,
                 mergeOnUpdated: true,
-                setData: (next) => { ref_.value = next; },
+                setData: (next) => {
+                    ref_.value = next;
+                },
             });
+
             list.update({ id: 2, email: 'b@example.com' } as User);
             expect(ref_.value[1]).toEqual({
-                id: 2, 
-                name: 'b', 
-                email: 'b@example.com', 
+                id: 2,
+                name: 'b',
+                email: 'b@example.com',
             });
         });
 
@@ -263,8 +304,11 @@ describe('defineList', () => {
             const ref_ = ref<User[]>(items_());
             const list = defineList<User>({
                 data: ref_,
-                setData: (next) => { ref_.value = next; },
+                setData: (next) => {
+                    ref_.value = next;
+                },
             });
+
             list.delete({ id: 1, name: 'a' });
             expect(ref_.value).toEqual([{ id: 2, name: 'b' }]);
         });
@@ -273,8 +317,11 @@ describe('defineList', () => {
             const ref_ = ref<User[]>(items_());
             const list = defineList<User>({
                 data: ref_,
-                setData: (next) => { ref_.value = next; },
+                setData: (next) => {
+                    ref_.value = next;
+                },
             });
+
             list.create({ id: 3, name: 'c' });
             list.create({ id: 4, name: 'd' });
             expect(ref_.value).toHaveLength(4);
@@ -287,8 +334,11 @@ describe('defineList', () => {
             const list = defineList<User>({
                 data: ref_,
                 dedupCreated: true,
-                setData: (next) => { calls.push(next); ref_.value = next; },
+                setData: (next) => {
+                    calls.push(next); ref_.value = next;
+                },
             });
+
             list.create({ id: 1, name: 'a-renamed' });    // gate fires → applyCreate returns same array
             expect(calls).toEqual([]);
             list.create({ id: 99, name: 'new' });          // not in list → real append
@@ -300,8 +350,11 @@ describe('defineList', () => {
             const calls: User[][] = [];
             const list = defineList<User>({
                 data: ref_,
-                setData: (next) => { calls.push(next); ref_.value = next; },
+                setData: (next) => {
+                    calls.push(next); ref_.value = next;
+                },
             });
+
             list.update({ id: 999, name: 'ghost' });       // not in list → no-op
             expect(calls).toEqual([]);
             list.update({ id: 1, name: 'a-renamed' });     // present → real write
@@ -314,8 +367,11 @@ describe('defineList', () => {
             const list = defineList<User>({
                 data: ref_,
                 filterDeleted: true,
-                setData: (next) => { calls.push(next); ref_.value = next; },
+                setData: (next) => {
+                    calls.push(next); ref_.value = next;
+                },
             });
+
             list.delete({ id: 999, name: 'ghost' });       // gate fires → applyDelete returns same array
             expect(calls).toEqual([]);
             list.delete({ id: 1, name: 'a' });             // present → real write
@@ -328,8 +384,11 @@ describe('defineList', () => {
             const seen: User[] = [];
             const list = defineList<User>({
                 data: () => items_(),
-                onCreated: (item) => { seen.push(item); },
+                onCreated: (item) => {
+                    seen.push(item);
+                },
             });
+
             list.create({ id: 3, name: 'c' });
             expect(seen).toEqual([{ id: 3, name: 'c' }]);
         });
@@ -339,8 +398,11 @@ describe('defineList', () => {
             const list = defineList<User>({
                 data: () => items_(),
                 mergeOnUpdated: true,            // ignored on the per-op path
-                onUpdated: (item) => { seen.push(item); },
+                onUpdated: (item) => {
+                    seen.push(item);
+                },
             });
+
             list.update({ id: 2, email: 'b@example.com' } as User);
             // Handler receives the raw partial item, NOT a merged record.
             expect(seen[0]).toEqual({ id: 2, email: 'b@example.com' });
@@ -350,8 +412,11 @@ describe('defineList', () => {
             const seen: User[] = [];
             const list = defineList<User>({
                 data: () => items_(),
-                onDeleted: (item) => { seen.push(item); },
+                onDeleted: (item) => {
+                    seen.push(item);
+                },
             });
+
             list.delete({ id: 1, name: 'a' });
             expect(seen).toEqual([{ id: 1, name: 'a' }]);
         });
@@ -362,8 +427,11 @@ describe('defineList', () => {
             const list = defineList<User>({
                 data: ref_,
                 dedupCreated: true,
-                onCreated: (item) => { seen.push(item); },
+                onCreated: (item) => {
+                    seen.push(item);
+                },
             });
+
             list.create({ id: 1, name: 'a-renamed' });
             expect(seen).toEqual([]);            // gate fired
             list.create({ id: 99, name: 'new' });
@@ -376,8 +444,11 @@ describe('defineList', () => {
             const list = defineList<User>({
                 data: ref_,
                 filterDeleted: true,
-                onDeleted: (item) => { seen.push(item); },
+                onDeleted: (item) => {
+                    seen.push(item);
+                },
             });
+
             list.delete({ id: 999, name: 'gone' });
             expect(seen).toEqual([]);            // gate fired
             list.delete({ id: 1, name: 'a' });
@@ -389,9 +460,14 @@ describe('defineList', () => {
             const seenCreated: User[] = [];
             const list = defineList<User>({
                 data: ref_,
-                onCreated: (item) => { seenCreated.push(item); },
-                setData: (next) => { ref_.value = next; },
+                onCreated: (item) => {
+                    seenCreated.push(item);
+                },
+                setData: (next) => {
+                    ref_.value = next;
+                },
             });
+
             list.create({ id: 3, name: 'c' });
             // onCreated handled it; setData NOT called → ref unchanged
             expect(seenCreated).toEqual([{ id: 3, name: 'c' }]);
@@ -407,8 +483,11 @@ describe('defineList', () => {
             let createCount = 0;
             const list = defineList<User>({
                 data: ref_,
-                onCreated: () => { createCount += 1; },
+                onCreated: () => {
+                    createCount += 1;
+                },
             });
+
             list.create({ id: 3, name: 'c' });
             // onCreated fired; ref untouched (no fallback ran)
             expect(createCount).toBe(1);
@@ -424,6 +503,7 @@ describe('defineList', () => {
                 data: () => items_(),
                 onCreated: () => { /* no-op */ },
             });
+
             // All three present in the type and at runtime — but update/delete
             // have no writer here, so they're silent no-ops.
             expect(typeof list.create).toBe('function');
@@ -440,6 +520,7 @@ describe('defineList', () => {
                 data: items_(),
                 meta: { foo: 'bar' },
             });
+
             expect(list.meta).toEqual({ foo: 'bar' });
         });
 
@@ -449,11 +530,13 @@ describe('defineList', () => {
                 data: items_(),
                 meta,
             });
+
             expect(list.meta).toBe(meta);
         });
 
         it('defaults meta to an empty object when omitted', () => {
             const list = defineList<User>({ data: items_() });
+
             expect(list.meta).toEqual({});
         });
 
@@ -464,6 +547,7 @@ describe('defineList', () => {
                 data: items_(),
                 meta: { refresh, cursor },
             });
+
             expect(list.meta.refresh).toBe(refresh);
             expect(list.meta.cursor).toBe(cursor);
             // Nested Ref stays reactive on its own:

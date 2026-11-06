@@ -28,9 +28,11 @@ export type PaginationDefaults = {
 };
 
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
     interface ThemeElements {
         pagination?: ThemeElementDefinition<PaginationThemeClasses>;
     }
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
     interface ComponentDefaults {
         pagination?: ComponentDefaultValues<PaginationDefaults>;
     }

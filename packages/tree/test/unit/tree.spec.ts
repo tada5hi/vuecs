@@ -52,6 +52,7 @@ describe('VCTree rendering', () => {
 
     it('renders descendants only once their parent is expanded', async () => {
         const wrapper = mountTree({ defaultExpanded: ['users'] });
+
         await nextTick();
 
         expect(rowKeys(wrapper)).toEqual(['users', 'users/employees', 'users/admins', 'sources']);
@@ -59,6 +60,7 @@ describe('VCTree rendering', () => {
 
     it('exposes the depth as a --vc-tree-level custom property', async () => {
         const wrapper = mountTree({ defaultExpanded: ['users'] });
+
         await nextTick();
 
         const rows = wrapper.findAll('[role="treeitem"]');
@@ -115,6 +117,7 @@ describe('VCTree key resolution', () => {
 describe('VCTree as-child attribute ownership', () => {
     it('paints its own aria-selected rather than rekas', async () => {
         const wrapper = mountTree({ selection: 'sources' });
+
         await nextTick();
 
         const rows = wrapper.findAll('[role="treeitem"]');
@@ -137,6 +140,7 @@ describe('VCTree as-child attribute ownership', () => {
             cascade: true,
             selection: ['sources'],
         });
+
         await nextTick();
 
         const rows = wrapper.findAll('[role="treeitem"]');
@@ -185,6 +189,7 @@ describe('VCTree selection', () => {
             selection: ['users/employees'],
             defaultExpanded: ['users'],
         });
+
         await nextTick();
 
         const parent = wrapper.findAll('[role="treeitem"]')[0];
@@ -204,6 +209,7 @@ describe('VCTree selection', () => {
             selection: ['users/employees', 'users/admins'],
             defaultExpanded: ['users'],
         });
+
         await nextTick();
 
         const parent = wrapper.findAll('[role="treeitem"]')[0];
@@ -217,6 +223,7 @@ describe('VCTree selection', () => {
             selection: ['users/employees', 'users/admins'],
             defaultExpanded: ['users'],
         });
+
         await nextTick();
 
         const parent = wrapper.findAll('[role="treeitem"]')[0];
@@ -260,6 +267,7 @@ describe('VCTree expansion', () => {
             props: { items: TREE, expanded: expanded.value },
             global: { plugins: plugins as never },
         });
+
         await nextTick();
 
         expect(rowKeys(wrapper)).toHaveLength(4);
@@ -312,6 +320,7 @@ describe('VCTree lazy loading', () => {
         });
 
         const trigger = wrapper.find('[data-vc-tree-trigger]');
+
         await trigger.trigger('click');
         await nextTick();
         await trigger.trigger('click');
@@ -326,7 +335,9 @@ describe('VCTree lazy loading', () => {
         const error = new Error('nope');
         const wrapper = mountTree({
             items: lazyItems,
-            load: async () => { throw error; },
+            load: async () => {
+                throw error;
+            },
             hasChildren: () => true,
         });
 
@@ -354,6 +365,7 @@ describe('VCTree lazy loading', () => {
         await nextTick();
 
         const emitted = wrapper.emitted('update:selection');
+
         expect(emitted?.[emitted.length - 1]).toEqual([['root', 'root/a', 'root/b']]);
     });
 });
@@ -399,6 +411,7 @@ describe('VCTree slots', () => {
             slots: { item: '<span class="custom">{{ params.item.label }}</span>' },
             global: { plugins: plugins as never },
         });
+
         await nextTick();
 
         expect(wrapper.findAll('.custom').map((n) => n.text())).toEqual(['users', 'sources']);
@@ -428,6 +441,7 @@ describe('VCTree lazy-load concurrency', () => {
         });
 
         const trigger = wrapper.find('[data-vc-tree-trigger]');
+
         await trigger.trigger('click');
         await trigger.trigger('click');
         await trigger.trigger('click');
@@ -444,17 +458,20 @@ describe('VCTree lazy-load concurrency', () => {
         });
 
         const trigger = wrapper.find('[data-vc-tree-trigger]');
+
         await trigger.trigger('click');
         await trigger.trigger('click');
 
         for (const resolve of resolvers) {
             resolve([{ id: 'root/a', label: 'a' }]);
         }
+
         await nextTick();
         await nextTick();
 
         for (const [value] of wrapper.emitted('update:expanded') ?? []) {
             const keys = value as string[];
+
             expect(new Set(keys).size).toBe(keys.length);
         }
     });
@@ -496,6 +513,7 @@ describe('VCTree concurrent lazy reconcile', () => {
         for (const resolve of resolvers) {
             resolve([]);
         }
+
         await nextTick();
         await nextTick();
         await nextTick();
@@ -511,6 +529,7 @@ describe('VCTree concurrent lazy reconcile', () => {
 describe('VCTree leaf alignment', () => {
     it('reserves the trigger footprint on a row that has no trigger', async () => {
         const wrapper = mountTree({ defaultExpanded: ['users'] });
+
         await nextTick();
 
         const rows = wrapper.findAll('[role="treeitem"]');
@@ -539,6 +558,7 @@ describe('VCTree guide rails', () => {
     // of disconnected stubs.
     it('renders rails as direct children of the row, not inside the content', async () => {
         const wrapper = mountTree({ guides: true, defaultExpanded: ['users'] });
+
         await nextTick();
 
         const row = wrapper.findAll('[role="treeitem"]')[1];
@@ -549,6 +569,7 @@ describe('VCTree guide rails', () => {
 
     it('positions each rail by index so it can be absolutely placed', async () => {
         const wrapper = mountTree({ guides: true, defaultExpanded: ['users'] });
+
         await nextTick();
 
         const row = wrapper.findAll('[role="treeitem"]')[1];
@@ -580,6 +601,7 @@ describe('VCTree guide rails', () => {
             guides: true,
             defaultExpanded: ['a'],
         });
+
         await nextTick();
 
         const rows = wrapper.findAll('[role="treeitem"]');
@@ -592,6 +614,7 @@ describe('VCTree guide rails', () => {
 
     it('renders no rails when guides is off', async () => {
         const wrapper = mountTree({ defaultExpanded: ['users'] });
+
         await nextTick();
 
         expect(wrapper.findAll('[data-vc-tree-rail]')).toHaveLength(0);
@@ -600,6 +623,7 @@ describe('VCTree guide rails', () => {
 
     it('marks the tree so structural CSS can drop the padding indent', async () => {
         const wrapper = mountTree({ guides: true });
+
         await nextTick();
 
         expect(wrapper.find('[role="tree"]').attributes('data-guides')).toBeDefined();
@@ -607,6 +631,7 @@ describe('VCTree guide rails', () => {
 
     it('gives a root row no gutters and a level-2 row one elbow gutter', async () => {
         const wrapper = mountTree({ guides: true, defaultExpanded: ['users'] });
+
         await nextTick();
 
         const rows = wrapper.findAll('[role="treeitem"]');
@@ -638,6 +663,7 @@ describe('VCTree guide rails', () => {
             guides: true,
             defaultExpanded: ['a', 'a/b'],
         });
+
         await nextTick();
 
         const rows = wrapper.findAll('[role="treeitem"]');
@@ -678,6 +704,7 @@ describe('VCTree leaf detection', () => {
         await nextTick();
 
         const row = wrapper.find('[role="treeitem"]');
+
         expect(row.attributes('aria-expanded')).toBeUndefined();
         expect(wrapper.find('[data-vc-tree-trigger]').exists()).toBe(false);
     });
@@ -705,6 +732,7 @@ describe('VCTree selection shape coercion', () => {
     // selection the next mutation will silently discard.
     it('paints only one row when an array is bound in single-select mode', async () => {
         const wrapper = mountTree({ selection: ['users', 'sources'] });
+
         await nextTick();
 
         const painted = wrapper.findAll('[role="treeitem"]')

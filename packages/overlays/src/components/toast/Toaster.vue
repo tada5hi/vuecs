@@ -21,8 +21,6 @@ import VCToastDescription from './ToastDescription.vue';
 import VCToastAction from './ToastAction.vue';
 import VCToastClose from './ToastClose.vue';
 import { useToast } from './use-toast';
-import type { UseToastReturn } from './use-toast';
-import { toastThemeDefaults, toastViewportThemeDefaults } from './theme';
 import type {
     ToastActionRenderFn,
     ToastEntry,
@@ -31,7 +29,9 @@ import type {
     ToastThemeClasses,
     ToastViewportPosition,
     ToastViewportThemeClasses,
+    UseToastReturn,
 } from './types';
+import { toastThemeDefaults, toastViewportThemeDefaults } from './theme';
 
 const toasterProps = {
     /**
@@ -103,8 +103,15 @@ export default defineComponent({
 
         const rekaProps = computed(() => {
             const out: Record<string, unknown> = {};
-            if (props.hotkey) out.hotkey = props.hotkey;
-            if (props.label) out.label = props.label;
+
+            if (props.hotkey) {
+                out.hotkey = props.hotkey;
+            }
+
+            if (props.label) {
+                out.label = props.label;
+            }
+
             return out;
         });
 
@@ -126,7 +133,11 @@ export default defineComponent({
                         color: entry.color,
                         variant: entry.variant,
                         duration: entry.duration,
-                        'onUpdate:open': (open: boolean) => { if (!open) onClose(); },
+                        'onUpdate:open': (open: boolean) => {
+                            if (!open) {
+                                onClose();
+                            }
+                        },
                     },
                     () => h(entry.component!, {
                         // Spread `componentProps` FIRST so the contract-
@@ -153,6 +164,7 @@ export default defineComponent({
                     dismiss: onClose,
                     classes: toastTheme.value,
                 }) as VNode[];
+
                 return h(Fragment, { key: entry.id }, children);
             }
 
@@ -175,14 +187,21 @@ export default defineComponent({
                     color: entry.color,
                     variant: entry.variant,
                     duration: entry.duration,
-                    'onUpdate:open': (open: boolean) => { if (!open) onClose(); },
+                    'onUpdate:open': (open: boolean) => {
+                        if (!open) {
+                            onClose();
+                        }
+                    },
                 },
                 () => [body, closable ? h(VCToastClose) : null],
             );
         }
 
         function renderAction(entry: ToastEntry, api: UseToastReturn): VNode | null {
-            if (!entry.action) return null;
+            if (!entry.action) {
+                return null;
+            }
+
             if (isActionRenderFn(entry.action)) {
                 // Custom action content — pass `(id, toast)` so the render
                 // fn can wire its own dismiss / update / add handlers
@@ -190,7 +209,9 @@ export default defineComponent({
                 // sees a single vnode.
                 return h('div', null, entry.action(entry.id, api));
             }
+
             const structured = entry.action;
+
             return h(
                 VCToastAction,
                 {

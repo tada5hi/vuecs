@@ -9,6 +9,7 @@ const app = createApp({
         return () => h(Modal, { themeVariant: variantState.value });
     },
 });
+
 installVuecs(app);
 app.use(overlays);
 app.mount('#app');

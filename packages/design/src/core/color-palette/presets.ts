@@ -1,4 +1,4 @@
-import type { ColorPaletteConfig } from './catalog';
+import type { ColorPaletteConfig } from './types';
 
 /**
  * A color-vision-deficiency (CVD) conscious palette preset.

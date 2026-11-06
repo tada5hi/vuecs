@@ -9,7 +9,7 @@
 ## Test inventory
 
 **18 workspaces** carry tests — **112 `.spec.ts`** total (plus 7 `.test-d.ts`
-type guards). This is no longer "just core + navigation"; keep this table in
+type guards). Keep this table in
 sync when adding a test dir.
 
 | Workspace | Specs | Focus |

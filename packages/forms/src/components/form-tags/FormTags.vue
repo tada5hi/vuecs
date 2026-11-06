@@ -30,6 +30,7 @@ export type FormTagsThemeClasses = {
 };
 
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
     interface ThemeElements {
         formTags?: ThemeElementDefinition<FormTagsThemeClasses>;
     }

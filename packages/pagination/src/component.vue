@@ -14,7 +14,7 @@ import {
 } from 'reka-ui';
 import { computed, defineComponent } from 'vue';
 import type { Component, ExtractPublicPropTypes, PropType } from 'vue';
-import type { PaginationDefaults, PaginationMeta, PaginationThemeClasses } from './type';
+import type { PaginationDefaults, PaginationMeta, PaginationThemeClasses } from './types';
 import {
     calculateOffset,
     calculatePage,
@@ -164,26 +164,44 @@ export default defineComponent({
 
         const pageItemClass = (active: boolean): string | undefined => {
             const parts: string[] = [];
-            if (theme.value.link) parts.push(theme.value.link);
-            if (active && theme.value.linkActive) parts.push(theme.value.linkActive);
+
+            if (theme.value.link) {
+                parts.push(theme.value.link);
+            }
+
+            if (active && theme.value.linkActive) {
+                parts.push(theme.value.linkActive);
+            }
+
             return parts.length ? parts.join(' ') : undefined;
         };
 
         const ellipsisClass = computed<string | undefined>(() => {
             const parts: string[] = [];
-            if (theme.value.link) parts.push(theme.value.link);
-            if (theme.value.ellipsis) parts.push(theme.value.ellipsis);
+
+            if (theme.value.link) {
+                parts.push(theme.value.link);
+            }
+
+            if (theme.value.ellipsis) {
+                parts.push(theme.value.ellipsis);
+            }
+
             return parts.length ? parts.join(' ') : undefined;
         });
 
         const onPageUpdate = (newPage: number) => {
-            if (props.busy || newPage === currentPage.value) return;
+            if (props.busy || newPage === currentPage.value) {
+                return;
+            }
+
             const meta: PaginationMeta = {
                 page: newPage,
                 offset: calculateOffset({ page: newPage, limit: effectiveLimit.value }),
                 limit: effectiveLimit.value,
                 total: pageCount.value,
             };
+
             emit('load', meta);
         };
 

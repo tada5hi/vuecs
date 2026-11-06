@@ -1,7 +1,7 @@
 import type { App } from 'vue';
-import type { Locales } from './type';
+import type { Locales } from './types';
 import {
-    inject, 
+    inject,
     provide,
 } from './utils';
 

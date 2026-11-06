@@ -18,6 +18,7 @@ import {
 // (`scrollLockTarget` lives in `@vuecs/overlays` in production) without
 // reaching for `as any`. Same pattern as defaults/composable.spec.ts.
 declare module '../../../src/config/types' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
     interface Config {
         scrollLockTarget?: string | HTMLElement;
     }
@@ -27,10 +28,12 @@ describe('useConfig', () => {
     it('returns core framework defaults when no manager is installed', () => {
         let dir: string | undefined;
         let locale: string | undefined;
+
         mount(defineComponent({
             setup() {
                 dir = useConfig('dir').value;
                 locale = useConfig('locale').value;
+
                 return () => h('div');
             },
         }));
@@ -42,9 +45,11 @@ describe('useConfig', () => {
         // Core's Config knows only `dir` + `locale`. Augmented keys (added
         // by child packages via declaration merging) are unset by default.
         let scrollLockTarget: string | HTMLElement | undefined;
+
         mount(defineComponent({
             setup() {
                 scrollLockTarget = useConfig('scrollLockTarget').value;
+
                 return () => h('div');
             },
         }));
@@ -53,9 +58,11 @@ describe('useConfig', () => {
 
     it('reads installed config values', () => {
         let dir: string | undefined;
+
         mount(defineComponent({
             setup() {
                 dir = useConfig('dir').value;
+
                 return () => h('div');
             },
         }), {
@@ -77,6 +84,7 @@ describe('useConfig', () => {
         mount(defineComponent({
             setup() {
                 cfg = useConfig('dir');
+
                 return () => h('div');
             },
         }), {
@@ -98,9 +106,11 @@ describe('useConfig', () => {
     describe('fallback overload', () => {
         it('uses the fallback when the manager would return undefined', () => {
             let resolved: string | HTMLElement | undefined;
+
             mount(defineComponent({
                 setup() {
                     resolved = useConfig('scrollLockTarget', 'body').value;
+
                     return () => h('div');
                 },
             }));
@@ -109,9 +119,11 @@ describe('useConfig', () => {
 
         it('does NOT override an explicitly configured value', () => {
             let resolved: string | undefined;
+
             mount(defineComponent({
                 setup() {
                     resolved = useConfig('dir', 'rtl').value;
+
                     return () => h('div');
                 },
             }), {
@@ -135,6 +147,7 @@ describe('useConfig', () => {
             const Inner = defineComponent({
                 setup() {
                     innerDir = useConfig('dir').value;
+
                     return () => h('div');
                 },
             });
@@ -142,6 +155,7 @@ describe('useConfig', () => {
             const Outer = defineComponent({
                 setup() {
                     outerDir = useConfig('dir').value;
+
                     return () => h(VCConfigProvider, { config: { dir: 'rtl' } }, () => h(Inner));
                 },
             });
@@ -166,6 +180,7 @@ describe('useConfig', () => {
             const Inner = defineComponent({
                 setup() {
                     resolved = useConfig('scrollLockTarget').value;
+
                     return () => h('div');
                 },
             });
@@ -181,6 +196,7 @@ describe('useConfig', () => {
                     plugins: [{
                         install(app: App) {
                             const mgr = installConfigManager(app);
+
                             mgr.withDefaults({ scrollLockTarget: 'body' });
                         },
                     }],

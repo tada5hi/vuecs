@@ -11,8 +11,11 @@ import {
 } from 'vue';
 import { isObject } from '@vuecs/core';
 import { useColorPalette } from '@vuecs/design';
-import type { PropCatalog, PropSpec, PropValues } from '../../../../demos/src/iframe-bridge';
+import type { PropCatalog, PropSpec, PropValues } from '../../../../demos/src/types';
 
+
+
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
 interface Props {
     title?: string;
     /**
@@ -67,13 +70,20 @@ const { isDark } = useData();
 const frameSrc = computed(() => withBase(`/demos/${props.name}.html`));
 
 const componentName = computed(() => {
-    if (props.component) return props.component;
+    if (props.component) {
+        return props.component;
+    }
+
     const camel = props.name.split('-').map((p) => p.charAt(0).toUpperCase() + p.slice(1)).join('');
+
     return `VC${camel}`;
 });
 
 const frameTitle = computed(() => {
-    if (props.title) return `${props.title} playground`;
+    if (props.title) {
+        return `${props.title} playground`;
+    }
+
     return `${componentName.value} playground`;
 });
 
@@ -84,19 +94,29 @@ const hasProps = computed(() => Object.keys(propCatalog.value).length > 0);
 // related controls land together. Each group renders its own row.
 const propSections = computed(() => {
     const sections = new Map<string, Array<{ key: string; spec: PropSpec }>>();
+
     for (const [key, spec] of Object.entries(propCatalog.value)) {
         const section = spec.section ?? 'General';
-        if (!sections.has(section)) sections.set(section, []);
+
+        if (!sections.has(section)) {
+            sections.set(section, []);
+        }
+
         sections.get(section)!.push({ key, spec });
     }
+
     return Array.from(sections.entries()).map(([title, entries]) => ({ title, entries }));
 });
 
 // Display label — explicit `label` wins, otherwise prettify the key.
 // `themeVariant.size` → `size`, `hideDisabled` → `hide disabled`.
 const labelFor = (key: string, spec: PropSpec): string => {
-    if (spec.label) return spec.label;
+    if (spec.label) {
+        return spec.label;
+    }
+
     const tail = key.includes('.') ? key.split('.').pop()! : key;
+
     return tail.replace(/([A-Z])/g, ' $1').trim().toLowerCase();
 };
 
@@ -107,7 +127,11 @@ const labelFor = (key: string, spec: PropSpec): string => {
  */
 const postColorMode = (): void => {
     const win = frameRef.value?.contentWindow;
-    if (!win) return;
+
+    if (!win) {
+        return;
+    }
+
     win.postMessage(
         { type: 'set-color-mode', mode: isDark.value ? 'dark' : 'light' },
         globalThis.location.origin,
@@ -116,8 +140,11 @@ const postColorMode = (): void => {
 
 const postVariants = (): void => {
     const win = frameRef.value?.contentWindow;
-    if (!win) return;
-    if (Object.keys(variantValues).length === 0) return;
+
+    if (!win || (Object.keys(variantValues).length === 0)) {
+        return;
+    }
+
     win.postMessage(
         { type: 'set-variants', values: { ...variantValues } },
         globalThis.location.origin,
@@ -126,8 +153,11 @@ const postVariants = (): void => {
 
 const postProps = (): void => {
     const win = frameRef.value?.contentWindow;
-    if (!win) return;
-    if (Object.keys(propValues).length === 0) return;
+
+    if (!win || (Object.keys(propValues).length === 0)) {
+        return;
+    }
+
     win.postMessage(
         { type: 'set-props', values: { ...propValues } },
         globalThis.location.origin,
@@ -136,7 +166,11 @@ const postProps = (): void => {
 
 const postPalette = (): void => {
     const win = frameRef.value?.contentWindow;
-    if (!win) return;
+
+    if (!win) {
+        return;
+    }
+
     win.postMessage(
         {
             type: 'set-palette',
@@ -168,25 +202,37 @@ const onFrameLoad = (): void => {
 };
 
 const onFrameMessage = (event: MessageEvent): void => {
-    if (event.origin !== globalThis.location.origin) return;
-    if (event.source !== frameRef.value?.contentWindow) return;
-    const { data } = event;
-    if (!isObject(data)) return;
-    if (data.type === 'demo-resize' && typeof data.height === 'number') {
-        frameHeight.value = data.height;
+    if ((event.origin !== globalThis.location.origin) || (event.source !== frameRef.value?.contentWindow)) {
         return;
     }
+
+    const { data } = event;
+
+    if (!isObject(data)) {
+        return;
+    }
+
+    if (data.type === 'demo-resize' && typeof data.height === 'number') {
+        frameHeight.value = data.height;
+
+        return;
+    }
+
     if (data.type === 'demo-variants' && data.catalog && data.defaults) {
         variantCatalog.value = data.catalog as Record<string, readonly string[]>;
         Object.keys(variantValues).forEach((k) => delete variantValues[k]);
         Object.assign(variantValues, data.defaults);
+
         return;
     }
-    if (data.type === 'demo-props' && data.catalog && data.defaults) {
-        propCatalog.value = data.catalog as PropCatalog;
-        Object.keys(propValues).forEach((k) => delete propValues[k]);
-        Object.assign(propValues, data.defaults);
+
+    if (!(data.type === 'demo-props' && data.catalog && data.defaults)) {
+        return;
     }
+
+    propCatalog.value = data.catalog as PropCatalog;
+    Object.keys(propValues).forEach((k) => delete propValues[k]);
+    Object.assign(propValues, data.defaults);
 };
 
 watch(isDark, () => {
@@ -217,20 +263,38 @@ onBeforeUnmount(() => {
 });
 
 const copy = async () => {
-    if (!codeRoot.value) return;
+    if (!codeRoot.value) {
+        return;
+    }
+
     const pre = codeRoot.value.querySelector('.vp-code-group .blocks > .active pre') ??
         codeRoot.value.querySelector('pre');
-    if (!pre) return;
+
+    if (!pre) {
+        return;
+    }
+
     const text = pre.textContent ?? '';
-    if (!navigator?.clipboard) return;
+
+    if (!navigator?.clipboard) {
+        return;
+    }
+
     try {
         await navigator.clipboard.writeText(text);
     } catch {
         return;
     }
+
     copied.value = true;
-    if (copyTimer) clearTimeout(copyTimer);
-    copyTimer = setTimeout(() => { copied.value = false; }, 1500);
+
+    if (copyTimer) {
+        clearTimeout(copyTimer);
+    }
+
+    copyTimer = setTimeout(() => {
+        copied.value = false;
+    }, 1500);
 };
 </script>
 

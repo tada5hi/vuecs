@@ -12,12 +12,15 @@ type ElementOrComponent = Element | ComponentPublicInstance | null | undefined;
 
 function unrefElement(elRef: Ref<ElementOrComponent>): Element | null | undefined {
     const plain = unref(elRef) as ElementOrComponent;
+
     if (plain == null) {
         return plain as null | undefined;
     }
+
     if ('$el' in plain) {
         return (plain as ComponentPublicInstance).$el as Element;
     }
+
     return plain as Element;
 }
 
@@ -31,6 +34,7 @@ function unrefElement(elRef: Ref<ElementOrComponent>): Element | null | undefine
  */
 export function useForwardExpose() {
     const instance = getCurrentInstance();
+
     if (!instance) {
         throw new Error('[vuecs] useForwardExpose must be called inside setup()');
     }
@@ -39,19 +43,24 @@ export function useForwardExpose() {
     const currentElement = computed(() => resolveCurrentElement());
 
     onUpdated(() => {
-        if (currentElement.value !== resolveCurrentElement()) {
-            triggerRef(currentRef);
+        if (!(currentElement.value !== resolveCurrentElement())) {
+            return;
         }
+
+        triggerRef(currentRef);
     });
 
     function resolveCurrentElement(): Element | null | undefined {
         const value = currentRef.value as ElementOrComponent;
+
         if (value && '$el' in value) {
             const el = (value as ComponentPublicInstance).$el as Node | null;
+
             if (el && (el.nodeName === '#text' || el.nodeName === '#comment')) {
                 return (el as unknown as Element).nextElementSibling;
             }
         }
+
         return unrefElement(currentRef as Ref<ElementOrComponent>);
     }
 
@@ -86,6 +95,7 @@ export function useForwardExpose() {
 
     function forwardRef(refValue: ElementOrComponent) {
         currentRef.value = refValue;
+
         if (!refValue) {
             return;
         }
@@ -96,21 +106,25 @@ export function useForwardExpose() {
             get: () => (refValue instanceof Element ? refValue : (refValue as ComponentPublicInstance).$el),
         });
 
-        if (!(refValue instanceof Element) && !Object.hasOwn(refValue, '$el')) {
-            const childExposed = (refValue as ComponentPublicInstance & { $: { exposed?: Record<string, unknown> } }).$.exposed;
-            const merged: Record<string, unknown> = { ...ret };
-            for (const key in childExposed) {
-                Object.defineProperty(merged, key, {
-                    enumerable: true,
-                    configurable: true,
-                    get: () => childExposed[key],
-                });
-            }
-            // `instance` is non-null (guarded with a throw at the top of
-            // `useForwardExpose`); the `!` restores that narrowing, which TS
-            // drops inside this closure.
-            instance!.exposed = merged;
+        if ((refValue instanceof Element) || Object.hasOwn(refValue, '$el')) {
+            return;
         }
+
+        const childExposed = (refValue as ComponentPublicInstance & { $: { exposed?: Record<string, unknown> } }).$.exposed;
+        const merged: Record<string, unknown> = { ...ret };
+
+        for (const key in childExposed) {
+            Object.defineProperty(merged, key, {
+                enumerable: true,
+                configurable: true,
+                get: () => childExposed[key],
+            });
+        }
+
+        // `instance` is non-null (guarded with a throw at the top of
+        // `useForwardExpose`); the `!` restores that narrowing, which TS
+        // drops inside this closure.
+        instance!.exposed = merged;
     }
 
     return {

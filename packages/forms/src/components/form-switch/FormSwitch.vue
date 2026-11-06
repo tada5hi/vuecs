@@ -28,9 +28,11 @@ export type FormSwitchDefaults = {
 };
 
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
     interface ThemeElements {
         formSwitch?: ThemeElementDefinition<FormSwitchThemeClasses>;
     }
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
     interface ComponentDefaults {
         formSwitch?: ComponentDefaultValues<FormSwitchDefaults>;
     }

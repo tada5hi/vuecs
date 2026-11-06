@@ -23,6 +23,7 @@ export default defineComponent({
     props: dropdownMenuItemIndicatorProps,
     setup(props, { slots }) {
         const theme = useComponentTheme('dropdownMenu', props, dropdownMenuThemeDefaults);
+
         return () => h(
             DropdownMenuItemIndicator,
             {

@@ -39,15 +39,18 @@ describe('VCNavItems click-driven selection', () => {
             global: { plugins: [withManagers()] },
             attachTo: document.body,
         });
+
         await nextTick();
 
         // path '/' → Home is the best match initially.
         let active = wrapper.element.querySelectorAll('.vc-nav-link.active');
+
         expect(active.length).toBe(1);
         expect((active[0] as HTMLElement).textContent).toContain('Home');
 
         // Click the url-less Admin tab — no navigation, just selection.
         const links = wrapper.findAll('[data-vc-collection-item]');
+
         await links[1].trigger('click');
         await nextTick();
 
@@ -90,6 +93,7 @@ describe('VCNavItems click-driven selection', () => {
             },
             attachTo: document.body,
         });
+
         await nextTick();
 
         // Before selection the dependent nav shows its default list.
@@ -99,6 +103,7 @@ describe('VCNavItems click-driven selection', () => {
         // Click the url-less Admin tab in the top nav.
         const topLinks = wrapper.findAll('[data-vc-collection-item]');
         const admin = topLinks.find((w) => w.text().includes('Admin'));
+
         await admin!.trigger('click');
         await nextTick();
         await nextTick();

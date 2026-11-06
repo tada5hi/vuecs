@@ -29,9 +29,11 @@ export type FormRadioDefaults = {
 };
 
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
     interface ThemeElements {
         formRadio?: ThemeElementDefinition<FormRadioThemeClasses>;
     }
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
     interface ComponentDefaults {
         formRadio?: ComponentDefaultValues<FormRadioDefaults>;
     }

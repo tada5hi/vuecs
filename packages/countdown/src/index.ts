@@ -1,13 +1,14 @@
 import { installDefaultsManager, installThemeManager } from '@vuecs/core';
 import type { App, Plugin } from 'vue';
-import type { Options } from './type';
+import type { Options } from './types';
 
 import './vue';
 
 import { VCCountdown } from './component';
 
 export * from './component';
-export * from './type';
+export type { CountdownThemeClasses, CountdownSlotProps, CountdownProps } from './types';
+export * from './types';
 
 export function install(instance: App, options: Options = {}): void {
     installThemeManager(instance, options);

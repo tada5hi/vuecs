@@ -7,9 +7,11 @@ import { useId } from '../../../src';
 describe('useId', () => {
     it('returns the deterministic id when provided', () => {
         let resolved: string | undefined;
+
         mount(defineComponent({
             setup() {
                 resolved = useId('my-id');
+
                 return () => h('div');
             },
         }));
@@ -18,9 +20,11 @@ describe('useId', () => {
 
     it('generates an id with the default prefix', () => {
         let resolved: string | undefined;
+
         mount(defineComponent({
             setup() {
                 resolved = useId();
+
                 return () => h('div');
             },
         }));
@@ -29,9 +33,11 @@ describe('useId', () => {
 
     it('respects a custom prefix', () => {
         let resolved: string | undefined;
+
         mount(defineComponent({
             setup() {
                 resolved = useId(undefined, 'foo');
+
                 return () => h('div');
             },
         }));
@@ -40,9 +46,11 @@ describe('useId', () => {
 
     it('returns the bare Vue id when prefix is the empty string', () => {
         let resolved: string | undefined;
+
         mount(defineComponent({
             setup() {
                 resolved = useId(undefined, '');
+
                 return () => h('div');
             },
         }));

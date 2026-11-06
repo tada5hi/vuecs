@@ -20,6 +20,7 @@ import vuecsTable, {
 
 const plugins = [[vuecsTable, {}]] as const;
 
+
 type User = { id: number; name: string };
 
 const data: User[] = [
@@ -46,7 +47,9 @@ const columns = [
 ];
 
 describe('<VCTable> driver auto-render (plan 033 v0.2-B)', () => {
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it('renders header + body automatically with no default slot', () => {
         const wrapper = mount(defineComponent({
@@ -56,18 +59,22 @@ describe('<VCTable> driver auto-render (plan 033 v0.2-B)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const root = wrapper.element;
+
         expect(root.querySelectorAll('thead').length).toBe(1);
         expect(root.querySelectorAll('tbody').length).toBe(1);
 
         const headers = root.querySelectorAll('thead th');
+
         expect(headers.length).toBe(2);
         expect(headers[0].textContent?.trim()).toBe('ID');
         expect(headers[1].textContent?.trim()).toBe('Name');
 
         const bodyRows = root.querySelectorAll('tbody tr');
+
         expect(bodyRows.length).toBe(2);
 
         const firstRowCells = bodyRows[0].querySelectorAll('td');
+
         expect(firstRowCells[0].textContent).toBe('1');
         expect(firstRowCells[1].textContent).toBe('Alice');
     });
@@ -87,10 +94,12 @@ describe('<VCTable> driver auto-render (plan 033 v0.2-B)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const headers = wrapper.element.querySelectorAll('thead th');
+
         expect(headers[0].textContent?.trim()).toBe('Custom ID');
         expect(headers[1].textContent?.trim()).toBe('Custom Name');
 
         const bodyRows = wrapper.element.querySelectorAll('tbody tr');
+
         expect(bodyRows.length).toBe(2);
         expect(bodyRows[0].querySelector('td')?.textContent).toBe('1');
     });
@@ -111,10 +120,12 @@ describe('<VCTable> driver auto-render (plan 033 v0.2-B)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const headers = wrapper.element.querySelectorAll('thead th');
+
         expect(headers.length).toBe(2);
         expect(headers[0].textContent?.trim()).toBe('ID');
 
         const bodyCells = wrapper.element.querySelectorAll('tbody td');
+
         expect(bodyCells[0].textContent).toBe('manual:Alice');
         expect(bodyCells[1].textContent).toBe('manual:Bob');
     });
@@ -139,7 +150,9 @@ describe('<VCTable> driver auto-render (plan 033 v0.2-B)', () => {
 
         expect(wrapper.element.querySelectorAll('thead').length).toBe(1);
         expect(wrapper.element.querySelectorAll('tbody').length).toBe(1);
+
         const headerCells = wrapper.element.querySelectorAll('thead th');
+
         expect(headerCells.length).toBe(1);
         expect(headerCells[0].textContent?.trim()).toBe('HDR');
     });
@@ -165,12 +178,14 @@ describe('<VCTable> driver auto-render (plan 033 v0.2-B)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const headers = wrapper.element.querySelectorAll('thead th');
+
         expect(headers.length).toBe(2);
         // startCase('id') → 'Id', startCase('name') → 'Name'.
         expect(headers[0].textContent?.trim()).toBe('Id');
         expect(headers[1].textContent?.trim()).toBe('Name');
 
         const bodyRows = wrapper.element.querySelectorAll('tbody tr');
+
         expect(bodyRows.length).toBe(2);
     });
 
@@ -182,6 +197,7 @@ describe('<VCTable> driver auto-render (plan 033 v0.2-B)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const tbodies = wrapper.element.querySelectorAll('tbody');
+
         // Auto-body returns null when data is empty, so only the Empty
         // band's <tbody> ends up in the DOM. The header still auto-renders.
         expect(wrapper.element.querySelectorAll('thead').length).toBe(1);
@@ -197,6 +213,7 @@ describe('<VCTable> driver auto-render (plan 033 v0.2-B)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const ths = wrapper.element.querySelectorAll('thead th');
+
         for (const th of ths) {
             expect(th.hasAttribute('is-row-header')).toBe(false);
         }
@@ -225,6 +242,7 @@ describe('<VCTable> driver auto-render (plan 033 v0.2-B)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const th = wrapper.element.querySelector('thead th') as HTMLTableCellElement;
+
         expect(th.classList.contains('shared-class')).toBe(true);
         expect(th.classList.contains('h-class')).toBe(true);
         expect(th.classList.contains('c-class')).toBe(false);
@@ -233,6 +251,7 @@ describe('<VCTable> driver auto-render (plan 033 v0.2-B)', () => {
         expect(th.hasAttribute('data-sticky-column')).toBe(true);
 
         const td = wrapper.element.querySelector('tbody td') as HTMLTableCellElement;
+
         expect(td.classList.contains('shared-class')).toBe(true);
         expect(td.classList.contains('c-class')).toBe(true);
         expect(td.classList.contains('h-class')).toBe(false);
@@ -250,6 +269,7 @@ describe('<VCTable> driver auto-render (plan 033 v0.2-B)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const cell = wrapper.element.querySelector('tbody tr > *');
+
         expect(cell?.tagName).toBe('TH');
         expect(cell?.getAttribute('scope')).toBe('row');
     });
@@ -271,6 +291,7 @@ describe('<VCTable> driver auto-render (plan 033 v0.2-B)', () => {
         const theadIdx = sections.indexOf('THEAD');
         const tbodyIdx = sections.indexOf('TBODY');
         const tfootIdx = sections.indexOf('TFOOT');
+
         expect(theadIdx).toBeLessThan(tbodyIdx);
         expect(tbodyIdx).toBeLessThan(tfootIdx);
     });
@@ -293,7 +314,9 @@ describe('<VCTable> driver auto-render (plan 033 v0.2-B)', () => {
         // Auto-header should NOT fire because containsComponent recurses
         // into the array (Fragment-ish) and finds the manual VCTableHeader.
         expect(wrapper.element.querySelectorAll('thead').length).toBe(1);
+
         const headerCells = wrapper.element.querySelectorAll('thead th');
+
         expect(headerCells.length).toBe(1);
         expect(headerCells[0].textContent?.trim()).toBe('WRAPPED');
     });
@@ -309,9 +332,9 @@ describe('<VCTable> driver auto-render (plan 033 v0.2-B)', () => {
                         data: data as never,
                     }, {
                         'cell-name': (slotProps: {
-                            row: User; 
-                            value: unknown; 
-                            index: number 
+                            row: User;
+                            value: unknown;
+                            index: number
                         }) => h(
                             'button',
                             { class: 'edit-btn' },
@@ -322,6 +345,7 @@ describe('<VCTable> driver auto-render (plan 033 v0.2-B)', () => {
             }), { global: { plugins: [...plugins] } });
 
             const cells = wrapper.element.querySelectorAll('tbody td');
+
             // Two columns × two rows = 4 cells; second column (name) is the slot.
             expect(cells[1].querySelector('button.edit-btn')?.textContent).toBe('edit:1:Alice:0');
             expect(cells[3].querySelector('button.edit-btn')?.textContent).toBe('edit:2:Bob:1');
@@ -347,6 +371,7 @@ describe('<VCTable> driver auto-render (plan 033 v0.2-B)', () => {
             }), { global: { plugins: [...plugins] } });
 
             const headers = wrapper.element.querySelectorAll('thead th');
+
             expect(headers[0].textContent?.trim()).toBe('ID');
             expect(headers[1].querySelector('span.custom-header')?.textContent).toBe('name:Name');
         });
@@ -370,6 +395,7 @@ describe('<VCTable> driver auto-render (plan 033 v0.2-B)', () => {
                     }, {
                         'cell-fullName': ({ value }: { value: unknown }) => {
                             observedValues.push(value);
+
                             return h('span', null, String(value));
                         },
                     });
@@ -380,10 +406,12 @@ describe('<VCTable> driver auto-render (plan 033 v0.2-B)', () => {
             // matches TableColumnFormatterCtx.value semantics.
             expect(observedValues).toContain('Sir Alice');
             expect(observedValues).toContain('Sir Bob');
+
             // The slot wins over `formatter` (which would have wrapped
             // the value in brackets — no `[…]` in the rendered cell).
             const rendered = Array.from(wrapper.element.querySelectorAll('tbody td:nth-child(2) span'))
                 .map((el) => el.textContent);
+
             expect(rendered).toEqual(['Sir Alice', 'Sir Bob']);
         });
     });

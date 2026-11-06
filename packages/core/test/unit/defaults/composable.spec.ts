@@ -22,6 +22,7 @@ type TestSubmitDefaults = {
 };
 
 declare module '../../../src/defaults/types' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
     interface ComponentDefaults {
         __testSubmit?: ComponentDefaultValues<TestSubmitDefaults>;
     }
@@ -44,6 +45,7 @@ describe('useComponentDefaults', () => {
             mount(defineComponent({
                 setup() {
                     useComponentDefaults('__testSubmit', {}, { createText: 'Create' });
+
                     return () => h('div');
                 },
             }));
@@ -59,7 +61,9 @@ describe('useComponentDefaults', () => {
                 { createText: undefined, updateText: undefined },
                 { createText: 'Create', updateText: 'Update' },
             );
+
             resolved = defaults.value;
+
             return () => h('div');
         });
 
@@ -77,7 +81,9 @@ describe('useComponentDefaults', () => {
                     { createText: 'Instance' },
                     { createText: 'Hardcoded' },
                 );
+
                 resolved = defaults.value;
+
                 return () => h('div');
             },
         );
@@ -96,7 +102,9 @@ describe('useComponentDefaults', () => {
                     { createText: undefined },
                     { createText: 'Create' },
                 );
+
                 resolved = defaults.value;
+
                 return () => h('div');
             },
         );
@@ -116,7 +124,9 @@ describe('useComponentDefaults', () => {
                     { createText: undefined },
                     { createText: 'Create' },
                 );
+
                 resolved = defaults.value;
+
                 return () => h('div');
             },
         );
@@ -139,8 +149,10 @@ describe('useComponentDefaults', () => {
                     { createText: undefined },
                     { createText: 'Create' },
                 );
+
                 return () => {
                     resolved = defaults.value;
+
                     return h('div');
                 };
             },
@@ -164,7 +176,9 @@ describe('useComponentDefaults', () => {
                     { createText: undefined },
                     { createText: 'Create' },
                 );
+
                 resolved = defaults.value;
+
                 return () => h('div');
             },
         );
@@ -188,17 +202,19 @@ describe('useComponentDefaults', () => {
                 const defaults = useComponentDefaults(
                     '__testSubmit',
                     {
-                        createText: 'Instance-Create', 
-                        updateText: undefined, 
-                        icon: undefined, 
+                        createText: 'Instance-Create',
+                        updateText: undefined,
+                        icon: undefined,
                     },
                     {
-                        createText: 'HC-Create', 
-                        updateText: 'HC-Update', 
-                        icon: true, 
+                        createText: 'HC-Create',
+                        updateText: 'HC-Update',
+                        icon: true,
                     },
                 );
+
                 resolved = defaults.value;
+
                 return () => h('div');
             },
         );

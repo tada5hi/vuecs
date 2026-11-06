@@ -22,6 +22,7 @@ export function useEmitAsProps<E extends EmitFn>(emit: E): Record<string, (...ar
     // those events into the empty fallback below.
     const declared = (vm?.type as { emits?: string[] | Record<string, unknown> })?.emits;
     let events: string[];
+
     if (Array.isArray(declared)) {
         events = declared;
     } else if (declared) {
@@ -29,11 +30,13 @@ export function useEmitAsProps<E extends EmitFn>(emit: E): Record<string, (...ar
     } else {
         events = [];
     }
+
     const result: Record<string, (...args: any[]) => void> = {};
 
     if (!events.length) {
         // eslint-disable-next-line no-console
         console.warn(`[vuecs] No emitted event found. Please check component: ${(vm?.type as { __name?: string })?.__name ?? '<anonymous>'}`);
+
         return result;
     }
 

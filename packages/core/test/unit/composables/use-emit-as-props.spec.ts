@@ -13,6 +13,7 @@ import { useEmitAsProps } from '../../../src';
 
 describe('useEmitAsProps', () => {
     let warnSpy: ReturnType<typeof vi.spyOn>;
+
     beforeEach(() => {
         warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     });
@@ -27,6 +28,7 @@ describe('useEmitAsProps', () => {
             name: 'Silent',
             setup(_, { emit }) {
                 resolved = useEmitAsProps(emit);
+
                 return () => h('div');
             },
         });
@@ -49,13 +51,18 @@ describe('useEmitAsProps', () => {
             },
             setup(_, { emit }) {
                 resolved = useEmitAsProps(emit);
+
                 return () => h('div');
             },
         });
 
         mount(defineComponent({
             setup() {
-                return () => h(Inner, { onChange: (v: number) => { heard.push(v); } });
+                return () => h(Inner, {
+                    onChange: (v: number) => {
+                        heard.push(v);
+                    },
+                });
             },
         }));
 
@@ -73,13 +80,18 @@ describe('useEmitAsProps', () => {
             emits: ['change', 'update:modelValue'],
             setup(_, { emit }) {
                 resolved = useEmitAsProps(emit);
+
                 return () => h('div');
             },
         });
 
         const wrapper = mount(defineComponent({
             setup() {
-                return () => h(Inner, { onChange: (v: number) => { (wrapper.vm as any).changed = v; } });
+                return () => h(Inner, {
+                    onChange: (v: number) => {
+                        (wrapper.vm as any).changed = v;
+                    },
+                });
             },
             data: () => ({ changed: 0 }),
         }));

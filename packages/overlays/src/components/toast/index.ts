@@ -17,3 +17,4 @@ export type { ToastCloseProps } from './ToastClose.vue';
 export * from './theme';
 export * from './types';
 export * from './use-toast';
+export type { UseToastReturn } from './types';

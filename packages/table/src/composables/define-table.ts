@@ -1,38 +1,9 @@
+import type { DefineTableOptions, TableState } from './types';
 import { computed, ref } from 'vue';
-import type { ComputedRef, Ref } from 'vue';
-import type {
-    SortDirection,
-    TableColumn,
-    TableColumnRaw,
-    TableSortState,
-} from '../types';
+import type { Ref } from 'vue';
+import type { TableColumnRaw, TableSortState } from '../types';
 import { useSortMachine } from './sort';
 import { normalizeColumns } from '../utils/render-utils';
-
-export type DefineTableOptions<Row> = {
-    /** Initial data array. */
-    data?: Row[];
-    /** Initial column definitions (TableColumn or bare-string shorthand). */
-    columns?: TableColumnRaw<Row>[];
-    /** Initial busy flag. */
-    busy?: boolean;
-    /** Initial sort state (array of descriptors). Empty array means no sort. */
-    sort?: TableSortState;
-    /** Max sort keys retained in multi-sort mode. `0` = unlimited. Default `3`. */
-    maxSortKeys?: number;
-    /** When `true`, the sort cycle skips the `null` step. Mirrors `<VCTable :must-sort>`. */
-    mustSort?: boolean;
-};
-
-export type TableState<Row> = {
-    data: Ref<Row[]>;
-    columns: ComputedRef<TableColumn<Row>[]>;
-    rawColumns: Ref<TableColumnRaw<Row>[]>;
-    busy: Ref<boolean>;
-    mustSort: Ref<boolean>;
-    sort: Ref<TableSortState>;
-    setSort: (key: string, opts?: { append?: boolean; direction?: SortDirection }) => void;
-};
 
 /**
  * Pinia-style factory mirroring `defineList()`. Returns reactive state
@@ -76,7 +47,9 @@ export function defineTable<Row = unknown>(
         columns,
         mustSort,
         maxSortKeys,
-        emit: (next) => { sort.value = next; },
+        emit: (next) => {
+            sort.value = next;
+        },
     });
 
     return {

@@ -42,6 +42,7 @@ export default defineComponent({
             useThemeProps(props, 'color', 'variant', 'size'),
             badgeThemeDefaults,
         );
+
         return () => h(
             props.tag ?? props.as,
             mergeProps(attrs, { class: theme.value.root || undefined }),

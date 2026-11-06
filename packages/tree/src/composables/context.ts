@@ -1,29 +1,7 @@
+import type { TreeContext } from './types';
 import { inject, provide } from 'vue';
-import type { ComputedRef, InjectionKey } from 'vue';
-import type { TreeItemThemeClasses } from '../types';
+import type { InjectionKey } from 'vue';
 
-export type TreeSelectOptions = {
-    /** Shift-click — extend from the range anchor. */
-    range?: boolean,
-    /** Ctrl / Cmd-click — toggle one without affecting the rest. */
-    toggle?: boolean
-};
-
-export type TreeContext = {
-    classes: ComputedRef<TreeItemThemeClasses>,
-    /**
-     * `true` when rows should render the WAI-ARIA *tree with checkboxes*
-     * pattern (`aria-checked`, which can be `"mixed"`) rather than the plain
-     * *tree* pattern (`aria-selected`, which is binary) — i.e. whenever a
-     * cascade can produce a partially-selected branch.
-     */
-    checkboxMode: ComputedRef<boolean>,
-    isSelected: (key: string) => boolean,
-    isIndeterminate: (key: string) => boolean,
-    isLoading: (key: string) => boolean,
-    select: (key: string, options?: TreeSelectOptions) => void,
-    toggle: (key: string) => void
-};
 
 const TREE_CONTEXT_KEY: InjectionKey<TreeContext> = Symbol.for('VCTreeContext');
 
@@ -37,6 +15,7 @@ export function provideTreeContext(context: TreeContext): void {
  */
 export function useTree(): TreeContext {
     const context = inject(TREE_CONTEXT_KEY, null);
+
     if (!context) {
         throw new Error('[vuecs/tree] <VCTreeItem> must be rendered inside a <VCTree>.');
     }

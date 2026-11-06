@@ -52,7 +52,11 @@ export default defineComponent({
 
         const measureNow = () => {
             const el = innerRef.value;
-            if (!el) return;
+
+            if (!el) {
+                return;
+            }
+
             measuredHeight.value = el.offsetHeight;
         };
 
@@ -65,16 +69,23 @@ export default defineComponent({
             measureNow();
 
             const el = innerRef.value;
+
             if (!el || typeof globalThis.ResizeObserver === 'undefined') {
                 return;
             }
+
             observer = new globalThis.ResizeObserver((entries) => {
                 const entry = entries[0];
-                if (!entry) return;
+
+                if (!entry) {
+                    return;
+                }
+
                 // `contentRect.height` excludes inner padding/border —
                 // exactly what we need for the outer animated wrapper
                 // (whose `height` should match the natural content size).
                 const next = entry.contentRect.height;
+
                 if (next !== measuredHeight.value) {
                     measuredHeight.value = next;
                 }
@@ -84,7 +95,11 @@ export default defineComponent({
 
         onBeforeUnmount(() => {
             const el = innerRef.value;
-            if (observer && el) observer.unobserve(el);
+
+            if (observer && el) {
+                observer.unobserve(el);
+            }
+
             observer?.disconnect();
             observer = null;
         });
@@ -97,7 +112,9 @@ export default defineComponent({
         // `nextTick` call) so we don't schedule extra microtasks on
         // every render cycle — including during SSR.
         watch(() => props.open, (open) => {
-            if (open) nextTick(measureNow);
+            if (open) {
+                nextTick(measureNow);
+            }
         });
 
         return () => {

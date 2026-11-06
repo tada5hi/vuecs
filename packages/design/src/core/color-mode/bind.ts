@@ -2,8 +2,7 @@ import { usePreferredDark } from '@vueuse/core';
 import { computed, watch } from 'vue';
 import type { Ref } from 'vue';
 import { useThemeRuntimeManager } from '../theme-runtime/composable';
-import type { ColorMode } from './catalog';
-import type { UseColorModeOptions, UseColorModeReturn } from './types';
+import type { ColorMode, UseColorModeOptions, UseColorModeReturn  } from './types';
 
 /**
  * Wire any reactive `Ref<ColorMode>` into the design system: track
@@ -21,8 +20,14 @@ export function bindColorMode(
     const preferredDark = usePreferredDark();
 
     const resolved = computed<'light' | 'dark'>(() => {
-        if (source.value === 'dark') return 'dark';
-        if (source.value === 'light') return 'light';
+        if (source.value === 'dark') {
+            return 'dark';
+        }
+
+        if (source.value === 'light') {
+            return 'light';
+        }
+
         return preferredDark.value ? 'dark' : 'light';
     });
 
@@ -67,11 +72,15 @@ export function bindColorMode(
      * `shallowRef`) re-fires the dispatch with the new theme list.
      */
     const manager = useThemeRuntimeManager();
+
     if (typeof document !== 'undefined') {
         watch(
             [resolved, () => manager?.themes],
             ([value, themes]) => {
-                if (!themes) return;
+                if (!themes) {
+                    return;
+                }
+
                 for (const theme of themes) {
                     theme.colorMode?.handle(document, value);
                 }

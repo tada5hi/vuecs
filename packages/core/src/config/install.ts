@@ -15,6 +15,7 @@ export function installConfigManager(
     options: ConfigManagerOptions = {},
 ): ConfigManager {
     const existing = inject<ConfigManager>(CONFIG_MANAGER_SYMBOL, app);
+
     if (existing) {
         // Merge fresh config into the existing manager so the order of
         // `app.use(...)` calls doesn't matter. Mirror of the theme/defaults
@@ -22,11 +23,14 @@ export function installConfigManager(
         if (options.config) {
             existing.setConfig({ ...existing.config, ...options.config });
         }
+
         return existing;
     }
 
     const manager = new ConfigManager(options);
+
     provide(CONFIG_MANAGER_SYMBOL, manager, app);
+
     return manager;
 }
 

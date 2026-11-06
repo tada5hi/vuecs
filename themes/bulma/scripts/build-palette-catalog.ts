@@ -39,9 +39,9 @@ type PaletteName = ColorPaletteName;
 type Shade = typeof COLOR_PALETTE_SHADES[number];
 
 type Hsl = {
-    h: number; 
-    s: number; 
-    l: number 
+    h: number;
+    s: number;
+    l: number
 };
 
 const toHsl = converter('hsl');
@@ -52,23 +52,29 @@ function parseTailwindTheme(): Map<string, string> {
     // Match `--color-<palette>-<shade>: oklch(...)` declarations.
     const re = /--color-([a-z]+)-(\d+):\s*(oklch\([^)]+\))/g;
     let match: RegExpExecArray | null;
+
     while ((match = re.exec(css)) !== null) {
         const [, palette, shade, value] = match;
+
         out.set(`${palette}-${shade}`, value);
     }
+
     return out;
 }
 
 function oklchToHsl(oklchString: string): Hsl {
     const hsl = toHsl(oklchString);
+
     if (!hsl) {
         throw new Error(`culori failed to parse: ${oklchString}`);
     }
+
     // culori returns h: 0-360 (or NaN for achromatic), s/l: 0-1.
     // Bulma reads h as `<number>deg`, s/l as `<number>%`. NaN hue happens
     // for pure greys (achromatic) — collapse to 0deg; saturation will be
     // 0% so the hue value is decorative anyway.
     const h = Number.isFinite(hsl.h) ? hsl.h! : 0;
+
     return {
         h: round(h, 2),
         s: round((hsl.s ?? 0) * 100, 2),
@@ -78,6 +84,7 @@ function oklchToHsl(oklchString: string): Hsl {
 
 function round(value: number, digits: number): number {
     const factor = 10 ** digits;
+
     return Math.round(value * factor) / factor;
 }
 
@@ -87,16 +94,20 @@ function buildCatalog(): Record<PaletteName, Record<Shade, Hsl>> {
 
     for (const palette of COLOR_PALETTES) {
         const shades = {} as Record<Shade, Hsl>;
+
         for (const shade of COLOR_PALETTE_SHADES) {
             const oklch = tokens.get(`${palette}-${shade}`);
+
             if (!oklch) {
                 throw new Error(
                     `Missing --color-${palette}-${shade} in ${TAILWIND_THEME_CSS}. ` +
                     'Did Tailwind drop a shade or rename a palette?',
                 );
             }
+
             shades[shade] = oklchToHsl(oklch);
         }
+
         catalog[palette] = shades;
     }
 
@@ -110,12 +121,14 @@ function emitTypeScript(catalog: Record<PaletteName, Record<Shade, Hsl>>): strin
     const palettes = COLOR_PALETTES.map((palette) => {
         const shades = COLOR_PALETTE_SHADES.map((shade) => {
             const {
-                h, 
-                s, 
-                l, 
+                h,
+                s,
+                l,
             } = catalog[palette][shade];
+
             return `        '${shade}': { h: ${h}, s: ${s}, l: ${l} },`;
         }).join('\n');
+
         return `    ${palette}: {\n${shades}\n    },`;
     }).join('\n');
 
@@ -147,6 +160,7 @@ ${palettes}
 function readPackageVersion(name: string): string {
     const pkgPath = resolve(REPO_ROOT, 'node_modules', name, 'package.json');
     const pkg = JSON.parse(readFileSync(pkgPath, 'utf8')) as { version: string };
+
     return pkg.version;
 }
 
@@ -157,13 +171,16 @@ function main(): void {
 
     if (checkOnly) {
         const existing = readFileSync(OUTPUT_FILE, 'utf8');
+
         if (existing !== output) {
             console.error(
                 `palette-catalog drift detected. Re-run \`npm run --workspace=themes/bulma palette-catalog:build\` and commit ${OUTPUT_FILE}.`,
             );
             process.exit(1);
         }
+
         console.log('palette-catalog up to date.');
+
         return;
     }
 

@@ -10,6 +10,7 @@ export function installThemeManager(
     options: ThemeManagerOptions = {},
 ): ThemeManager {
     const existing = inject<ThemeManager>(THEME_MANAGER_SYMBOL, app);
+
     if (existing) {
         // Merge fresh options into the existing manager so the order of
         // `app.use(...)` calls doesn't matter. Without this, a per-package
@@ -20,14 +21,18 @@ export function installThemeManager(
         if (options.themes && options.themes.length > 0) {
             existing.setThemes([...existing.themes, ...options.themes]);
         }
+
         if (options.overrides !== undefined) {
             existing.setOverrides(options.overrides);
         }
+
         return existing;
     }
 
     const manager = new ThemeManager(options);
+
     provide(THEME_MANAGER_SYMBOL, manager, app);
+
     return manager;
 }
 

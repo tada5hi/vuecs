@@ -1,6 +1,7 @@
+import type { Options } from './types';
 import type { App, Plugin } from 'vue';
 import { installConfigManager, installDefaultsManager, installThemeManager } from '@vuecs/core';
-import type { CoreOptions } from '@vuecs/core';
+
 
 import './vue';
 import { registerOverlayConfigDefaults } from './config';
@@ -78,12 +79,12 @@ import {
 
 export * from './components';
 
-export type Options = CoreOptions;
-
 export function install(app: App, options: Options = {}): void {
     installThemeManager(app, options);
     installDefaultsManager(app, options);
+
     const config = installConfigManager(app, options);
+
     registerOverlayConfigDefaults(config);
 
     // App-scoped imperative queues (toast + confirm) — one manager per app so
@@ -164,3 +165,5 @@ export function install(app: App, options: Options = {}): void {
 }
 
 export default { install } satisfies Plugin<[Options?]>;
+
+export type { Options } from './types';

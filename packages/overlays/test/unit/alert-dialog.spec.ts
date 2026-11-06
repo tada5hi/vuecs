@@ -27,14 +27,16 @@ function buildApp(open = ref(false), noEscape = false) {
         setup() {
             return () => h(VCAlertDialog, {
                 open: open.value,
-                'onUpdate:open': (v: boolean) => { open.value = v; },
+                'onUpdate:open': (v: boolean) => {
+                    open.value = v;
+                },
             }, {
                 default: () => [
                     h(VCAlertDialogTrigger, { 'data-testid': 'trigger' }, () => 'Open'),
                     h(VCAlertDialogContent, {
-                        inline: true, 
-                        noEscape, 
-                        'data-testid': 'content', 
+                        inline: true,
+                        noEscape,
+                        'data-testid': 'content',
                     }, {
                         default: () => [
                             h(VCAlertDialogTitle, () => 'Delete?'),
@@ -69,6 +71,7 @@ describe('<VCAlertDialog>', () => {
 
     it('renders a trigger but no content while closed', async () => {
         const wrapper = buildApp();
+
         await nextTick();
 
         expect(wrapper.find('[data-testid="trigger"]').exists()).toBe(true);
@@ -78,6 +81,7 @@ describe('<VCAlertDialog>', () => {
     it('opens with role="alertdialog" when v-model:open flips to true', async () => {
         const open = ref(false);
         const wrapper = buildApp(open);
+
         await nextTick();
 
         open.value = true;
@@ -93,6 +97,7 @@ describe('<VCAlertDialog>', () => {
     it('closes when the Action button is clicked', async () => {
         const open = ref(true);
         const wrapper = buildApp(open);
+
         await nextTick();
         await nextTick();
 
@@ -105,6 +110,7 @@ describe('<VCAlertDialog>', () => {
     it('closes when the Cancel button is clicked', async () => {
         const open = ref(true);
         const wrapper = buildApp(open);
+
         await nextTick();
         await nextTick();
 
@@ -116,6 +122,7 @@ describe('<VCAlertDialog>', () => {
 
     it('closes on Escape by default', async () => {
         const open = ref(true);
+
         buildApp(open);
         await nextTick();
         await nextTick();
@@ -128,6 +135,7 @@ describe('<VCAlertDialog>', () => {
 
     it('keeps open on Escape when noEscape is set', async () => {
         const open = ref(true);
+
         buildApp(open, true);
         await nextTick();
         await nextTick();
@@ -151,7 +159,9 @@ describe('<VCAlertDialogAction> / <VCAlertDialogCancel> manual mode', () => {
             setup() {
                 return () => h(VCAlertDialog, {
                     open: open.value,
-                    'onUpdate:open': (v: boolean) => { open.value = v; },
+                    'onUpdate:open': (v: boolean) => {
+                        open.value = v;
+                    },
                 }, {
                     default: () => h(VCAlertDialogContent, { inline: true }, {
                         default: () => [
@@ -159,6 +169,7 @@ describe('<VCAlertDialogAction> / <VCAlertDialogCancel> manual mode', () => {
                             h(VCAlertDialogAction, { manual: true, 'data-testid': 'action' }, {
                                 default: (p: { confirm: () => void }) => {
                                     confirmFn = p.confirm;
+
                                     return 'Go';
                                 },
                             }),
@@ -167,6 +178,7 @@ describe('<VCAlertDialogAction> / <VCAlertDialogCancel> manual mode', () => {
                 });
             },
         });
+
         mount(App, { global: { plugins: [[vuecsOverlays, {}]] }, attachTo: document.body });
         await nextTick();
         await nextTick();
@@ -189,7 +201,9 @@ describe('<VCAlertDialogAction> / <VCAlertDialogCancel> manual mode', () => {
             setup() {
                 return () => h(VCAlertDialog, {
                     open: open.value,
-                    'onUpdate:open': (v: boolean) => { open.value = v; },
+                    'onUpdate:open': (v: boolean) => {
+                        open.value = v;
+                    },
                 }, {
                     default: () => h(VCAlertDialogContent, { inline: true }, {
                         default: () => [
@@ -197,6 +211,7 @@ describe('<VCAlertDialogAction> / <VCAlertDialogCancel> manual mode', () => {
                             h(VCAlertDialogCancel, { manual: true }, {
                                 default: (p: { cancel: () => void }) => {
                                     cancelFn = p.cancel;
+
                                     return 'Cancel';
                                 },
                             }),
@@ -205,6 +220,7 @@ describe('<VCAlertDialogAction> / <VCAlertDialogCancel> manual mode', () => {
                 });
             },
         });
+
         mount(App, { global: { plugins: [[vuecsOverlays, {}]] }, attachTo: document.body });
         await nextTick();
         await nextTick();

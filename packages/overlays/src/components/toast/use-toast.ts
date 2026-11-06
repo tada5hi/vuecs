@@ -1,7 +1,7 @@
+import type { ToastEntry, ToastEntryInput, UseToastReturn  } from './types';
 import { inject, provide } from '@vuecs/core';
 import { readonly, ref } from 'vue';
 import type { App, Ref } from 'vue';
-import type { ToastEntry, ToastEntryInput } from './types';
 
 // ──────────────────────────────────────────────────────────────────────────
 // App-scoped manager (one per app — provided by the @vuecs/overlays plugin)
@@ -20,6 +20,7 @@ export class ToastManager {
 
     generateId(): string {
         this.seq += 1;
+
         return `vc-toast-${this.seq}`;
     }
 }
@@ -32,9 +33,11 @@ export function tryInjectToastManager(app?: App): ToastManager | undefined {
 
 export function injectToastManager(app?: App): ToastManager {
     const instance = tryInjectToastManager(app);
+
     if (!instance) {
         throw new Error('[vuecs] No ToastManager available. Install @vuecs/overlays (app.use) and call useToast() from a component setup / inject context.');
     }
+
     return instance;
 }
 
@@ -43,26 +46,15 @@ export function provideToastManager(manager: ToastManager = new ToastManager(), 
     // safety). Return the *provided* manager so callers never get an orphan
     // instance that `useToast()` / `<VCToaster>` won't inject.
     const existing = tryInjectToastManager(app);
-    if (existing) return existing;
+
+    if (existing) {
+        return existing;
+    }
+
     provide(TOAST_MANAGER_KEY, manager, app);
+
     return manager;
 }
-
-export type UseToastReturn = {
-    /** Readonly queue — drives `<VCToaster>`'s iteration. */
-    entries: Readonly<Ref<ReadonlyArray<ToastEntry>>>;
-    /**
-     * Push a new toast onto the queue. Returns the entry's `id` so callers
-     * can later `dismiss(id)` or `update(id, ...)`.
-     */
-    add: (entry: ToastEntryInput) => string;
-    /** Remove a toast by id. Fires its `onDismiss` callback if set. No-op when id isn't in the queue. */
-    dismiss: (id: string) => void;
-    /** Patch a queued toast in place (e.g. progress updates). No-op when id isn't in the queue. */
-    update: (id: string, patch: Partial<Omit<ToastEntry, 'id'>>) => void;
-    /** Remove every queued toast. Fires each entry's `onDismiss`. */
-    clear: () => void;
-};
 
 /**
  * App-scoped toast queue. Injects the per-app `ToastManager` (provided by the
@@ -89,6 +81,7 @@ export function useToast(): UseToastReturn {
         if (typeof window === 'undefined') {
             return entry.id ?? '';
         }
+
         // Caller-provided `entry.id` is a hint, not a guarantee — if it's
         // absent or collides with an existing entry we generate a fresh one,
         // and keep regenerating until it's unique (a custom id in the
@@ -98,6 +91,7 @@ export function useToast(): UseToastReturn {
         const isTaken = (candidate: string) => entries.value.some((e) => e.id === candidate);
         const suggested = entry.id;
         let id: string;
+
         if (suggested !== undefined && !isTaken(suggested)) {
             id = suggested;
         } else {
@@ -105,30 +99,46 @@ export function useToast(): UseToastReturn {
                 id = manager.generateId();
             } while (isTaken(id));
         }
+
         entries.value = [...entries.value, { ...entry, id }];
+
         return id;
     }
 
     function dismiss(id: string): void {
         const idx = entries.value.findIndex((e) => e.id === id);
-        if (idx === -1) return;
+
+        if (idx === -1) {
+            return;
+        }
+
         const removed = entries.value[idx];
+
         entries.value = entries.value.filter((e) => e.id !== id);
         removed?.onDismiss?.(id, toastApi);
     }
 
     function update(id: string, patch: Partial<Omit<ToastEntry, 'id'>>): void {
         const idx = entries.value.findIndex((e) => e.id === id);
-        if (idx === -1) return;
+
+        if (idx === -1) {
+            return;
+        }
+
         const next = [...entries.value];
+
         next[idx] = { ...next[idx], ...patch };
         entries.value = next;
     }
 
     function clear(): void {
         const toFire = entries.value;
+
         entries.value = [];
-        for (const e of toFire) e.onDismiss?.(e.id, toastApi);
+
+        for (const e of toFire) {
+            e.onDismiss?.(e.id, toastApi);
+        }
     }
 
     const toastApi: UseToastReturn = {
@@ -138,5 +148,6 @@ export function useToast(): UseToastReturn {
         update,
         clear,
     };
+
     return toastApi;
 }

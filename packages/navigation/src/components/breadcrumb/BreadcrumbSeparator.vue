@@ -27,8 +27,12 @@ export default defineComponent({
     setup(props, { attrs, slots }) {
         const ctx = useBreadcrumbContext();
         const themeProps: UseComponentThemeProps<BreadcrumbSeparatorThemeClasses> = {
-            get themeClass() { return props.themeClass; },
-            get themeVariant() { return { ...(ctx?.themeVariant() ?? {}), ...(props.themeVariant ?? {}) }; },
+            get themeClass() {
+                return props.themeClass;
+            },
+            get themeVariant() {
+                return { ...(ctx?.themeVariant() ?? {}), ...(props.themeVariant ?? {}) };
+            },
         };
         const theme = useComponentTheme('breadcrumbSeparator', themeProps, breadcrumbSeparatorThemeDefaults);
         const defaults = useComponentDefaults('breadcrumb', {}, breadcrumbBehavioralDefaults);
@@ -37,10 +41,13 @@ export default defineComponent({
             if (slots.default) {
                 return slots.default();
             }
+
             const icon = defaults.value.separatorIcon;
+
             if (icon) {
                 return renderBreadcrumbIcon(icon);
             }
+
             return defaults.value.separatorGlyph;
         };
 

@@ -28,6 +28,7 @@ describe('unrefWithDefault', () => {
 describe('setMaybeRefValue', () => {
     it('writes to a writable ref', () => {
         const r = ref('a');
+
         setMaybeRefValue(r, 'b');
         expect(r.value).toBe('b');
     });
@@ -35,6 +36,7 @@ describe('setMaybeRefValue', () => {
     it('is a no-op for a readonly ref', () => {
         const r = ref('a');
         const ro = readonly(r);
+
         setMaybeRefValue(ro as any, 'b');
         expect(r.value).toBe('a');
     });
@@ -48,12 +50,14 @@ describe('setMaybeRefValue', () => {
 describe('pushMaybeRefArrayValue', () => {
     it('pushes onto a ref array', () => {
         const r = ref([1, 2]);
+
         pushMaybeRefArrayValue(r, 3);
         expect(r.value).toEqual([1, 2, 3]);
     });
 
     it('pushes onto a plain array', () => {
         const arr = [1, 2];
+
         pushMaybeRefArrayValue(arr, 3);
         expect(arr).toEqual([1, 2, 3]);
     });
@@ -66,12 +70,14 @@ describe('pushMaybeRefArrayValue', () => {
 describe('spliceMaybeRefArray', () => {
     it('splices a ref array', () => {
         const r = ref([1, 2, 3, 4]);
+
         spliceMaybeRefArray(r, 1, 2);
         expect(r.value).toEqual([1, 4]);
     });
 
     it('splices a plain array', () => {
         const arr = [1, 2, 3, 4];
+
         spliceMaybeRefArray(arr, 1, 2);
         expect(arr).toEqual([1, 4]);
     });
@@ -80,6 +86,7 @@ describe('spliceMaybeRefArray', () => {
 describe('getMaybeRefArrayValue', () => {
     it('reads from a ref array', () => {
         const r = ref(['a', 'b']);
+
         expect(getMaybeRefArrayValue(r, 1)).toBe('b');
     });
 
@@ -91,12 +98,14 @@ describe('getMaybeRefArrayValue', () => {
 describe('extendMaybeRefArrayValue', () => {
     it('merges into an object element of a ref array', () => {
         const r = ref<Record<string, any>[]>([{ a: 1 }, { b: 2 }]);
+
         extendMaybeRefArrayValue(r, 0, { c: 3 });
         expect(r.value[0]).toEqual({ a: 1, c: 3 });
     });
 
     it('merges into an object element of a plain array', () => {
         const arr: Record<string, any>[] = [{ a: 1 }];
+
         extendMaybeRefArrayValue(arr, 0, { b: 2 });
         expect(arr[0]).toEqual({ a: 1, b: 2 });
     });
@@ -104,6 +113,7 @@ describe('extendMaybeRefArrayValue', () => {
     it('returns the input unchanged when the new value is not object-like', () => {
         const arr = [{ a: 1 }];
         const result = extendMaybeRefArrayValue(arr as any, 0, 42 as any);
+
         expect(result).toBe(arr);
         expect(arr[0]).toEqual({ a: 1 });
     });
@@ -111,12 +121,14 @@ describe('extendMaybeRefArrayValue', () => {
     it('returns the input unchanged when the existing element is not object-like', () => {
         const arr: any[] = ['scalar'];
         const result = extendMaybeRefArrayValue(arr, 0, { a: 1 });
+
         expect(result).toBe(arr);
         expect(arr[0]).toBe('scalar');
     });
 
     it('merges into array-typed elements', () => {
         const arr: number[][] = [[1, 2]];
+
         extendMaybeRefArrayValue(arr as any, 0, [3, 4] as any);
         expect(arr[0]).toEqual(expect.arrayContaining([1, 2, 3, 4]));
     });
@@ -125,6 +137,7 @@ describe('extendMaybeRefArrayValue', () => {
 describe('findIndexOfMaybeRefArray', () => {
     it('finds an index in a ref array', () => {
         const r = ref([10, 20, 30]);
+
         expect(findIndexOfMaybeRefArray(r, (x) => x === 20)).toBe(1);
     });
 

@@ -3,7 +3,7 @@ export { defaultClassesMergeFn, resolveComponentTheme } from './resolve';
 export { ThemeManager } from './manager';
 export { installThemeManager, injectThemeManager } from './install';
 export { useComponentTheme } from './composable';
-export type { UseComponentThemeProps } from './composable';
+export type { UseComponentThemeProps } from './types';
 export { extractVariantConfig, resolveVariantClasses } from './variant';
 export { defineTheme } from './define';
 export { mergeThemes } from './merge-themes';
@@ -13,11 +13,7 @@ export {
     formatAuditResult,
     isAuditClean,
 } from './audit';
-export type {
-    AuditResult,
-    ExpectedThemeCatalog,
-    FormatAuditResultOptions,
-} from './audit';
+export type { AuditResult, ExpectedThemeCatalog, FormatAuditResultOptions } from './types';
 export type {
     ExtendValue,
     ClassesMergeFn,

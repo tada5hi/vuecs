@@ -32,12 +32,16 @@ export default defineComponent({
             const data = ctx?.data.value ?? [];
 
             let children: unknown[];
+
             if (rowSlot) {
                 // Driver path — auto-iterate `<VCTable>` data. Suppress
                 // the entire `<tbody>` when there's nothing to render so
                 // `<VCTableEmpty>` / `<VCTableLoading>` get the spotlight
                 // (decoupled render conditions per the compound layout).
-                if (data.length === 0) return null;
+                if (data.length === 0) {
+                    return null;
+                }
+
                 children = data.map((row, index) => rowSlot({ row, index } as TableBodyRowSlotProps));
             } else {
                 // Manual Shape B markup — consumers writing their own

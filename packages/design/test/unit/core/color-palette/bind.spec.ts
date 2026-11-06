@@ -22,23 +22,30 @@ describe('bindColorPalette (generic)', () => {
 
     it('renders + applies the initial value', () => {
         const source = ref<FakePalette>({ primary: 'green' });
+
         bindColorPalette(source, { render: renderFake, extend: shallowMerge });
+
         const style = document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID);
+
         expect(style?.textContent).toBe(':root { --primary: green; }');
     });
 
     it('re-renders on source mutation', async () => {
         const source = ref<FakePalette>({ primary: 'blue' });
+
         bindColorPalette(source, { render: renderFake, extend: shallowMerge });
         source.value = { primary: 'rose' };
         await nextTick();
+
         const style = document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID);
+
         expect(style?.textContent).toBe(':root { --primary: rose; }');
     });
 
     it('set() replaces the entire value', () => {
         const source = ref<FakePalette>({ primary: 'blue' });
         const { current, set } = bindColorPalette(source, { render: renderFake, extend: shallowMerge });
+
         set({ primary: 'orange' });
         expect(current.value).toEqual({ primary: 'orange' });
     });
@@ -50,6 +57,7 @@ describe('bindColorPalette (generic)', () => {
             render: () => '',
             extend: shallowMerge,
         });
+
         extend({ primary: 'green' });
         expect(current.value).toEqual({ primary: 'green', neutral: 'zinc' });
     });
@@ -61,6 +69,7 @@ describe('bindColorPalette (generic)', () => {
             render: () => '',
             extend: (_current, partial) => partial as MultiKey,
         });
+
         extend({ primary: 'green' });
         expect(current.value).toEqual({ primary: 'green' });
     });
@@ -69,24 +78,29 @@ describe('bindColorPalette (generic)', () => {
         type MultiKey = { primary?: string; neutral?: string };
         const source = ref<MultiKey>({ primary: 'blue', neutral: 'zinc' });
         const { current, set } = bindColorPalette(source, { render: () => '', extend: shallowMerge });
+
         set({});
         expect(current.value).toEqual({});
     });
 
     it('forwards a static nonce string to the <style> element', () => {
         const source = ref<FakePalette>({ primary: 'red' });
+
         bindColorPalette(source, {
             render: renderFake,
             extend: shallowMerge,
             nonce: 'static-nonce',
         });
+
         const style = document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID);
+
         expect(style?.getAttribute('nonce')).toBe('static-nonce');
     });
 
     it('invokes the nonce getter on each re-render (reactive nonce support)', async () => {
         const nonceRef = ref<string | undefined>('first');
         const source = ref<FakePalette>({ primary: 'red' });
+
         bindColorPalette(source, {
             render: renderFake,
             extend: shallowMerge,
@@ -104,6 +118,7 @@ describe('bindColorPalette (generic)', () => {
     it('re-applies the <style> nonce on nonce-only changes (no source mutation)', async () => {
         const nonceRef = ref<string | undefined>('first');
         const source = ref<FakePalette>({ primary: 'red' });
+
         bindColorPalette(source, {
             render: renderFake,
             extend: shallowMerge,
@@ -125,12 +140,15 @@ describe('bindColorPalette (generic)', () => {
 
     it('omits the nonce attribute when the getter returns undefined', () => {
         const source = ref<FakePalette>({ primary: 'red' });
+
         bindColorPalette(source, {
             render: renderFake,
             extend: shallowMerge,
             nonce: () => undefined,
         });
+
         const style = document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID);
+
         expect(style?.hasAttribute('nonce')).toBe(false);
     });
 });

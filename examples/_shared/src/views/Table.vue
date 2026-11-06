@@ -14,6 +14,7 @@ import {
 } from '@vuecs/table';
 import type { TableColumn, TableSortState, WithRowMeta } from '@vuecs/table';
 
+
 type User = {
     id: number;
     name: string;
@@ -54,7 +55,10 @@ const props = withDefaults(defineProps<{
 // so we expose an in-page checkbox that drives the same state. The
 // watch keeps the local ref in sync when the playground toggles.
 const multiSortLocal = ref(props.multiSort);
-watch(() => props.multiSort, (v) => { multiSortLocal.value = v; });
+
+watch(() => props.multiSort, (v) => {
+    multiSortLocal.value = v;
+});
 
 const sort = ref<TableSortState>([]);
 const selection = ref<number | number[] | null>(null);
@@ -171,17 +175,26 @@ const data: WithRowMeta<User>[] = [
 // observability (the demo logs the current state below the table).
 
 const lastClicked = ref<User | null>(null);
-function onRowClick(row: User) { lastClicked.value = row; }
+function onRowClick(row: User) {
+    lastClicked.value = row;
+}
 
 // Human-readable selection summary for the playground.
 const selectionSummary = computed(() => {
     const v = selection.value;
-    if (v === null || (Array.isArray(v) && v.length === 0)) return 'none';
+
+    if (v === null || (Array.isArray(v) && v.length === 0)) {
+        return 'none';
+    }
+
     if (Array.isArray(v)) {
         const names = v.map((id) => data.find((d) => d.id === id)?.name ?? id);
+
         return `${v.length} row(s): ${names.join(', ')}`;
     }
+
     const found = data.find((d) => d.id === v);
+
     return found?.name ?? String(v);
 });
 

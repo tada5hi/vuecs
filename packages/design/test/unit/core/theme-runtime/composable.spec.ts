@@ -14,11 +14,14 @@ import {
     ref,
 } from 'vue';
 import { bindColorMode } from '../../../../src/core/color-mode/bind';
-import type { ColorMode } from '../../../../src/core/color-mode/catalog';
+import type { ColorMode } from '../../../../src/core/color-mode/types';
 import type { ThemeRuntimeEntry } from '../../../../src/core/theme-runtime/types';
 
 const THEME_MANAGER_SYMBOL = Symbol.for('VCThemeManager');
 
+
+
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
 interface MockThemeManager {
     themes: ThemeRuntimeEntry[];
 }
@@ -30,14 +33,19 @@ function mountWithManager(
     const app = createApp(defineComponent({
         setup() {
             setupFn();
+
             return () => h('div');
         },
     }));
+
     if (manager) {
         app.provide(THEME_MANAGER_SYMBOL, manager);
     }
+
     const root = document.createElement('div');
+
     app.mount(root);
+
     return {
         unmount() {
             app.unmount();
@@ -67,6 +75,7 @@ describe('bindColorMode — theme dispatch (plan 021)', () => {
         const { unmount } = mountWithManager(manager, () => {
             bindColorMode(source);
         });
+
         await nextTick();
 
         expect(bsApply).toHaveBeenCalledWith(document, 'dark');
@@ -82,6 +91,7 @@ describe('bindColorMode — theme dispatch (plan 021)', () => {
         const { unmount } = mountWithManager(manager, () => {
             bindColorMode(source);
         });
+
         await nextTick();
         expect(handle).toHaveBeenLastCalledWith(document, 'light');
 
@@ -95,9 +105,27 @@ describe('bindColorMode — theme dispatch (plan 021)', () => {
         const calls: string[] = [];
         const manager: MockThemeManager = {
             themes: [
-                { colorMode: { handle: () => { calls.push('A'); } } },
-                { colorMode: { handle: () => { calls.push('B'); } } },
-                { colorMode: { handle: () => { calls.push('C'); } } },
+                {
+                    colorMode: {
+                        handle: () => {
+                            calls.push('A');
+                        },
+                    },
+                },
+                {
+                    colorMode: {
+                        handle: () => {
+                            calls.push('B');
+                        },
+                    },
+                },
+                {
+                    colorMode: {
+                        handle: () => {
+                            calls.push('C');
+                        },
+                    },
+                },
             ],
         };
 
@@ -105,6 +133,7 @@ describe('bindColorMode — theme dispatch (plan 021)', () => {
         const { unmount } = mountWithManager(manager, () => {
             bindColorMode(source);
         });
+
         await nextTick();
 
         expect(calls).toEqual(['A', 'B', 'C']);
@@ -125,6 +154,7 @@ describe('bindColorMode — theme dispatch (plan 021)', () => {
         const { unmount } = mountWithManager(manager, () => {
             bindColorMode(source);
         });
+
         await nextTick();
 
         expect(handle).toHaveBeenCalledTimes(1);
@@ -138,6 +168,7 @@ describe('bindColorMode — theme dispatch (plan 021)', () => {
         const { unmount } = mountWithManager(undefined, () => {
             bindColorMode(source);
         });
+
         await nextTick();
 
         // The .dark class still toggles (that's the design-system-level behaviour).
@@ -158,6 +189,7 @@ describe('bindColorMode — theme dispatch (plan 021)', () => {
         const { unmount } = mountWithManager(manager, () => {
             bindColorMode(source);
         });
+
         await nextTick();
         // No themes installed yet → no dispatch.
         expect(handle).not.toHaveBeenCalled();
@@ -189,6 +221,7 @@ describe('bindColorMode — theme dispatch (plan 021)', () => {
         const { unmount } = mountWithManager(manager, () => {
             bindColorMode(source);
         });
+
         await nextTick();
         expect(document.documentElement.getAttribute('data-bs-theme')).toBe('dark');
 

@@ -16,6 +16,7 @@ describe('hasOwnProperty', () => {
 
     it('handles symbol keys', () => {
         const sym = Symbol('x');
+
         expect(hasOwnProperty({ [sym]: 1 }, sym)).toBe(true);
         expect(hasOwnProperty({}, sym)).toBe(false);
     });

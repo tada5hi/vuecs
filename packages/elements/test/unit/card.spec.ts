@@ -19,7 +19,9 @@ import vuecsElements, {
 const plugins = [[vuecsElements, {}]] as const;
 
 describe('<VCCard>', () => {
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it('renders all six compound parts with their vc-card-* classes', () => {
         const wrapper = mount(defineComponent({
@@ -40,6 +42,7 @@ describe('<VCCard>', () => {
         }), { global: { plugins: [...plugins] } });
 
         const root = wrapper.element as HTMLElement;
+
         expect(root.classList.contains('vc-card')).toBe(true);
         expect(root.querySelector('.vc-card-header')!.textContent).toContain('Title');
         expect(root.querySelector('.vc-card-title')!.textContent).toBe('Title');
@@ -50,11 +53,13 @@ describe('<VCCard>', () => {
 
     it('defaults to a <div> root', () => {
         const wrapper = mount(defineComponent({ setup: () => () => h(VCCard, null, { default: () => 'x' }) }), { global: { plugins: [...plugins] } });
+
         expect((wrapper.element as HTMLElement).tagName).toBe('DIV');
     });
 
     it('respects the as prop', () => {
         const wrapper = mount(defineComponent({ setup: () => () => h(VCCard, { as: 'article' }, { default: () => 'x' }) }), { global: { plugins: [...plugins] } });
+
         expect((wrapper.element as HTMLElement).tagName).toBe('ARTICLE');
     });
 
@@ -71,6 +76,7 @@ describe('<VCCard>', () => {
                 },
             }), { global: { plugins: [...plugins] } });
             const body = (wrapper.element as HTMLElement).querySelector('.vc-card-body');
+
             expect(body).not.toBeNull();
             expect(body!.textContent).toBe('Body');
         });
@@ -86,6 +92,7 @@ describe('<VCCard>', () => {
                     });
                 },
             }), { global: { plugins: [...plugins] } });
+
             // The per-band themeVariant should win; assertion via class
             // marker proves the prop reaches the band.
             expect((wrapper.element as HTMLElement)
@@ -98,6 +105,7 @@ describe('<VCCard>', () => {
             // The context bridge is optional — children fall back to plain
             // theme resolution when mounted standalone (unit tests, ad-hoc).
             const wrapper = mount(defineComponent({ setup: () => () => h(VCCardBody, null, { default: () => 'Bare' }) }), { global: { plugins: [...plugins] } });
+
             expect((wrapper.element as HTMLElement).textContent).toBe('Bare');
             expect((wrapper.element as HTMLElement).classList.contains('vc-card-body')).toBe(true);
         });

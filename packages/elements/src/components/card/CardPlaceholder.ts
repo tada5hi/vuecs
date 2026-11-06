@@ -1,35 +1,11 @@
-import {
-    defineComponent,
-    h,
-} from 'vue';
-import type { ExtractPublicPropTypes, PropType } from 'vue';
-import {
-    themableProps,
-    useComponentTheme,
-    useThemeProps,
-} from '@vuecs/core';
+import { cardPlaceholderProps } from './props';
+import { defineComponent, h } from 'vue';
+
+import { useComponentTheme, useThemeProps } from '@vuecs/core';
 import { VCPlaceholder } from '@vuecs/placeholder';
-import type { PlaceholderAnimation } from '@vuecs/placeholder';
+
 import { cardPlaceholderThemeDefaults } from './theme';
-import type { CardPlaceholderThemeClasses } from './types';
 
-const cardPlaceholderProps = {
-    /** Skip the header line. */
-    noHeader: { type: Boolean, default: false },
-    /** Skip the footer block. */
-    noFooter: { type: Boolean, default: false },
-    /** Skip the cover-image placeholder. */
-    noImg: { type: Boolean, default: false },
-    /** Cover-image placeholder height. CSS length (`'180px'`, `'12rem'`). */
-    imgHeight: { type: String, default: '180px' },
-    /** Number of body lines below the header. */
-    bodyLines: { type: Number, default: 3 },
-    /** Animation pattern. Forwarded to every inner `<VCPlaceholder>`. */
-    animation: { type: String as PropType<PlaceholderAnimation>, default: 'wave' },
-    ...themableProps<CardPlaceholderThemeClasses>(),
-};
-
-export type CardPlaceholderProps = ExtractPublicPropTypes<typeof cardPlaceholderProps>;
 
 /**
  * Card-shaped skeleton — cover image + header line + body lines +
@@ -50,6 +26,7 @@ export const VCCardPlaceholder = defineComponent({
             useThemeProps(props),
             cardPlaceholderThemeDefaults,
         );
+
         return () => {
             const t = theme.value;
             const children: unknown[] = [];
@@ -86,13 +63,16 @@ export const VCCardPlaceholder = defineComponent({
             const bodyLines = Number.isFinite(props.bodyLines) ?
                 Math.min(MAX_BODY_LINES, Math.max(0, Math.floor(props.bodyLines))) :
                 0;
+
             if (bodyLines > 0) {
                 const widths = ['100%', '95%', '90%', '88%', '92%'];
                 const bodyChildren = Array.from({ length: bodyLines }, (_, i) => {
                     const last = i === bodyLines - 1;
                     const width = last ? '60%' : widths[i % widths.length];
+
                     return h(VCPlaceholder, { animation: props.animation, width });
                 });
+
                 children.push(h(
                     'div',
                     { class: t.body || undefined },

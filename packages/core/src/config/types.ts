@@ -19,6 +19,7 @@ export type Direction = 'ltr' | 'rtl';
  * AND ship a side-effect import (e.g. `import '@vuecs/yourpkg/config'`) so
  * the augmentation file is loaded.
  */
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public name and declaration merging.
 export interface Config {
     /** Reading direction. Used by `useArrowNavigation` and overlay positioning. */
     dir?: Direction;

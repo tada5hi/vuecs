@@ -1,3 +1,4 @@
+/* eslint-disable @tada5hi/no-reexport-shims -- Preserve this existing public forwarding module. */
 import type { Theme } from '@vuecs/core';
 import { COLOR_PALETTES } from '@vuecs/design';
 import './config';
@@ -257,9 +258,9 @@ export default function bulmaTheme(): Theme {
                 variants: {
                     size: {
                         xs: {
-                            input: 'is-small vc-size-xs', 
-                            decrement: 'is-small vc-size-xs', 
-                            increment: 'is-small vc-size-xs', 
+                            input: 'is-small vc-size-xs',
+                            decrement: 'is-small vc-size-xs',
+                            increment: 'is-small vc-size-xs',
                         },
                         sm: {
                             input: 'is-small',
@@ -647,9 +648,9 @@ export default function bulmaTheme(): Theme {
                     { variants: { variant: 'outline', color: 'info' }, class: { root: 'vc-toast-outline-info' } },
                 ],
                 defaultVariants: {
-                    variant: 'soft', 
-                    color: 'neutral', 
-                    size: 'md', 
+                    variant: 'soft',
+                    color: 'neutral',
+                    size: 'md',
                 },
             },
             alertTitle: { classes: { root: 'has-text-weight-semibold mb-1' } },
@@ -1110,20 +1111,20 @@ export default function bulmaTheme(): Theme {
                 variants: {
                     size: {
                         xs: {
-                            indicator: 'vc-stepper-indicator-xs', 
-                            title: 'vc-fs-xs', 
-                            description: 'vc-fs-xs', 
+                            indicator: 'vc-stepper-indicator-xs',
+                            title: 'vc-fs-xs',
+                            description: 'vc-fs-xs',
                         },
                         sm: {
-                            indicator: 'vc-stepper-indicator-sm', 
-                            title: 'is-size-7', 
-                            description: 'is-size-7', 
+                            indicator: 'vc-stepper-indicator-sm',
+                            title: 'is-size-7',
+                            description: 'is-size-7',
                         },
                         md: { indicator: '' },
                         lg: {
-                            indicator: 'vc-stepper-indicator-lg', 
-                            title: 'is-size-5', 
-                            description: 'is-size-6', 
+                            indicator: 'vc-stepper-indicator-lg',
+                            title: 'is-size-5',
+                            description: 'is-size-6',
                         },
                     },
                 },

@@ -19,6 +19,7 @@ export type TagsThemeClasses = {
 };
 
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
     interface ThemeElements {
         tag?: ThemeElementDefinition<TagThemeClasses>;
         tags?: ThemeElementDefinition<TagsThemeClasses>;

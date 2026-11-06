@@ -1,6 +1,13 @@
 export * from './apply';
 export * from './bind';
 export * from './catalog';
+export type {
+    SemanticScaleName,
+    ExtraColorPaletteNames,
+    ColorPaletteName,
+    ColorPaletteShade,
+    ColorPaletteConfig,
+} from './types';
 export * from './composable';
 export * from './presets';
 export * from './render';

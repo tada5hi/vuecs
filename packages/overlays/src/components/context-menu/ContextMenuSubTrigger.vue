@@ -30,6 +30,7 @@ export default defineComponent({
     props: contextMenuSubTriggerProps,
     setup(props, { slots, attrs }) {
         const theme = useComponentTheme('contextMenu', props, contextMenuThemeDefaults);
+
         return () => h(
             ContextMenuSubTrigger,
             mergeProps(attrs, {

@@ -18,6 +18,7 @@ import type { UseLocaleReturn } from './types';
  */
 export function useLocaleManager(): UseLocaleReturn {
     const handles = inject<UseLocaleReturn>(LOCALE_MANAGER_SYMBOL);
+
     if (!handles) {
         throw new Error(
             '[@vuecs/locale] No locale manager found. Install the plugin via `app.use(locale, { /* options */ })`.',

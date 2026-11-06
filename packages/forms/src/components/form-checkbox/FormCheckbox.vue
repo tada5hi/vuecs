@@ -1,9 +1,9 @@
 <script lang="ts">
-import { 
-    isMeaningfulSlotContent, 
-    useComponentDefaults, 
-    useComponentTheme, 
-    useId, 
+import {
+    isMeaningfulSlotContent,
+    useComponentDefaults,
+    useComponentTheme,
+    useId,
 } from '@vuecs/core';
 import { useFormInputThemeProps } from '../form-group/context';
 import type {
@@ -14,11 +14,11 @@ import type {
     VariantValues,
 } from '@vuecs/core';
 import { CheckboxIndicator, CheckboxRoot } from 'reka-ui';
-import type { 
-    ExtractPublicPropTypes, 
-    PropType, 
-    SlotsType, 
-    VNode, 
+import type {
+    ExtractPublicPropTypes,
+    PropType,
+    SlotsType,
+    VNode,
 } from 'vue';
 import {
     defineComponent,
@@ -38,9 +38,11 @@ export type FormCheckboxDefaults = {
 };
 
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
     interface ThemeElements {
         formCheckbox?: ThemeElementDefinition<FormCheckboxThemeClasses>;
     }
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
     interface ComponentDefaults {
         formCheckbox?: ComponentDefaultValues<FormCheckboxDefaults>;
     }
@@ -203,6 +205,7 @@ export default defineComponent({
                         {
                             default: () => {
                                 const content = slots.indicator?.({ class: resolved.indicator, state });
+
                                 return isMeaningfulSlotContent(content) ?
                                     content :
                                     renderCheckboxGlyph(state);

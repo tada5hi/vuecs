@@ -55,6 +55,7 @@ export default defineComponent({
             if (props.inline) {
                 return renderContent();
             }
+
             return h(DropdownMenuPortal, null, { default: () => renderContent() });
         };
     },

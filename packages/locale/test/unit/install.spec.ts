@@ -40,9 +40,11 @@ describe('installLocale — config bridge', () => {
             setup() {
                 read = useLocale();
                 manager = useLocaleManager();
+
                 return () => h('span', read!.value);
             },
         });
+
         app.use(localePlugin, { persist: false });
         app.mount(document.createElement('div'));
 
@@ -74,9 +76,11 @@ describe('installLocale — config bridge', () => {
             setup() {
                 read = useLocale();
                 manager = useLocaleManager();
+
                 return () => h('span', read!.value);
             },
         });
+
         app.use(localePlugin, { persist: false });
         // A later install with an explicit static locale merges over the
         // plugin's ComputedRef — last install wins.
@@ -95,12 +99,14 @@ describe('installLocale — config bridge', () => {
     it('persists the source across installs when persist is enabled', async () => {
         const app1 = createApp({ setup: () => () => h('span') });
         const h1 = installLocale(app1, { persist: true });
+
         h1.set('es-ES');
         await nextTick();
         expect(localStorage.getItem('vc-locale')).toBe('es-ES');
 
         const app2 = createApp({ setup: () => () => h('span') });
         const h2 = installLocale(app2, { persist: true });
+
         expect(h2.source.value).toBe('es-ES');
         expect(h2.resolved.value).toBe('es-ES');
     });
@@ -121,6 +127,7 @@ describe('installLocale — config bridge', () => {
     it('stops its effect scope on app unmount (no further <html lang> writes)', async () => {
         const source = ref<LocaleSource>('de-DE');
         const app = createApp({ setup: () => () => h('span') });
+
         installLocale(app, { source });
         app.mount(document.createElement('div'));
         await nextTick();
@@ -138,9 +145,11 @@ describe('installLocale — config bridge', () => {
         const app = createApp({
             setup() {
                 read = useLocale();
+
                 return () => h('span', read!.value);
             },
         });
+
         app.mount(document.createElement('div'));
         expect(read!.value).toBe('en-US');
         app.unmount();

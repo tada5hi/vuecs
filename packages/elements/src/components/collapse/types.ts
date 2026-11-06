@@ -26,11 +26,13 @@ export type CollapseTriggerDefaults = {
 };
 
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
     interface ThemeElements {
         collapse?: ThemeElementDefinition<CollapseThemeClasses>;
         collapseTrigger?: ThemeElementDefinition<CollapseTriggerThemeClasses>;
         collapseContent?: ThemeElementDefinition<CollapseContentThemeClasses>;
     }
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
     interface ComponentDefaults {
         collapseTrigger?: ComponentDefaultValues<CollapseTriggerDefaults>;
     }

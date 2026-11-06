@@ -31,12 +31,15 @@ export default defineComponent({
         // indicator. Per-instance `props.themeVariant` still wins.
         const ctx = useStepperContext();
         const themeProps: UseComponentThemeProps<StepperThemeClasses> = {
-            get themeClass() { return { ...(ctx?.themeClass() ?? {}), ...(props.themeClass ?? {}) }; },
+            get themeClass() {
+                return { ...(ctx?.themeClass() ?? {}), ...(props.themeClass ?? {}) };
+            },
             get themeVariant() {
                 return { ...(ctx?.themeVariant() ?? {}), ...(props.themeVariant ?? {}) };
             },
         };
         const theme = useComponentTheme('stepper', themeProps, stepperThemeDefaults);
+
         return () => h(
             StepperIndicator,
             mergeProps(attrs, {

@@ -33,7 +33,9 @@ function resolveFor(path: string) {
     const normalized = normalizeItems(items);
     const [match] = findBestItemMatches(normalized, { path });
     const trace = match ? match.trace : [];
+
     resetItemsByTrace(normalized, trace);
+
     return { normalized, trace };
 }
 

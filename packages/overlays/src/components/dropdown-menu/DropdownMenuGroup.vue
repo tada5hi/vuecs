@@ -21,6 +21,7 @@ export default defineComponent({
     props: dropdownMenuGroupProps,
     setup(props, { slots }) {
         const theme = useComponentTheme('dropdownMenu', props, dropdownMenuThemeDefaults);
+
         return () => h(
             DropdownMenuGroup,
             { class: theme.value.group || undefined },

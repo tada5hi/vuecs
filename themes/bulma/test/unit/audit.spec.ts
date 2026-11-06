@@ -206,6 +206,7 @@ describe('theme-bulma — auditTheme()', () => {
             title: 'theme-bulma',
             skip: [...AUDIT_SKIP],
         });
+
         expect(report).toBe('');
     });
 
@@ -215,6 +216,7 @@ describe('theme-bulma — auditTheme()', () => {
         // this assertion starts failing and prompts the suppression
         // to be tightened.
         const result = auditTheme(bulmaTheme(), expectedCatalog);
+
         expect(isAuditClean(result)).toBe(false);
     });
 });

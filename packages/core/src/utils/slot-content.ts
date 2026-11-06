@@ -24,21 +24,40 @@ import type { VNode } from 'vue';
  * whether a cell should auto-render its column value (`<VCTableCell>`).
  */
 export function isMeaningfulSlotContent(nodes: unknown): boolean {
-    if (nodes == null || nodes === false) return false;
-    if (typeof nodes === 'string') return nodes.trim().length > 0;
-    if (typeof nodes === 'number') return true;
+    if (nodes == null || nodes === false) {
+        return false;
+    }
+
+    if (typeof nodes === 'string') {
+        return nodes.trim().length > 0;
+    }
+
+    if (typeof nodes === 'number') {
+        return true;
+    }
+
     if (Array.isArray(nodes)) {
         return nodes.some((child) => isMeaningfulSlotContent(child));
     }
-    if (typeof nodes !== 'object') return false;
+
+    if (typeof nodes !== 'object') {
+        return false;
+    }
+
     const v = nodes as VNode;
-    if (v.type === Comment) return false;
+
+    if (v.type === Comment) {
+        return false;
+    }
+
     if (v.type === Text) {
         return typeof v.children === 'string' && v.children.trim().length > 0;
     }
+
     if (v.type === Fragment) {
         return isMeaningfulSlotContent(v.children);
     }
+
     // Element or component vnode (string tag, object component, or a
     // symbol type other than the ones handled above).
     return true;

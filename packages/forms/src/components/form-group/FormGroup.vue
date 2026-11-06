@@ -14,7 +14,7 @@ import type {
 } from 'vue';
 import { defineComponent, h, mergeProps } from 'vue';
 import { ValidationSeverity } from '../constants';
-import type { FieldValidation, ValidationMessages } from '../type';
+import type { FieldValidation, ValidationMessages } from '../types';
 import {
     VCValidationGroup,
     type ValidationGroupDefaultSlotProps,
@@ -31,6 +31,7 @@ export type FormGroupThemeClasses = {
 };
 
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
     interface ThemeElements {
         formGroup?: ThemeElementDefinition<FormGroupThemeClasses>;
     }
@@ -137,15 +138,18 @@ export default defineComponent({
                 if (props.validation != null) {
                     return props.validation.severity;
                 }
+
                 if (props.validationSeverity !== undefined) {
                     return props.validationSeverity;
                 }
+
                 const messages = props.validationMessages;
                 const hasMessages = !!messages && (
                     Array.isArray(messages) ?
                         messages.length > 0 :
                         Object.keys(messages).length > 0
                 );
+
                 return hasMessages ? ValidationSeverity.ERROR : undefined;
             },
         });
@@ -236,6 +240,7 @@ export default defineComponent({
             // no `validationSuccess` theme slot yet, so it also resolves to no
             // class today.
             let validationClass: string | undefined;
+
             if (hasMessages) {
                 if (effectiveSeverity === ValidationSeverity.WARNING) {
                     validationClass = resolved.validationWarning;

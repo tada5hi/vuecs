@@ -1,14 +1,9 @@
+import { navItemProps } from './props';
 import { hasNormalizedSlot, normalizeSlot, useComponentTheme } from '@vuecs/core';
-import type { ThemeClassesOverride, UseComponentThemeProps, VariantValues } from '@vuecs/core';
+import type { UseComponentThemeProps } from '@vuecs/core';
 import type { LinkProps } from '@vuecs/link';
 import { VCLink } from '@vuecs/link';
-import type {
-    Component,
-    ExtractPublicPropTypes,
-    PropType,
-    SlotsType,
-    VNodeChild,
-} from 'vue';
+import type { SlotsType, VNodeChild } from 'vue';
 import {
     computed,
     defineComponent,
@@ -28,11 +23,7 @@ import {
     NavigationMenuLink,
     NavigationMenuTrigger,
 } from 'reka-ui';
-import type {
-    NavigationItemNormalized,
-    NavigationOrientation,
-    NavigationSubmenuMode,
-} from '../../types';
+
 import type { NavigationThemeClasses } from '../../helpers/component/types';
 import { isAbsoluteURL } from '../../helpers';
 import { ElementType, SlotName } from '../../constants';
@@ -42,62 +33,9 @@ import type {
     NavItemSubItemsSlotProps,
     NavItemSubSlotProps,
     NavItemSubTitleSlotProps,
-} from '../type';
+} from '../types';
 import { navigationThemeDefaults } from '../items/theme';
 import { NAVIGATION_NODES_KEY, NAVIGATION_SELECT_KEY } from '../select-context';
-
-const navItemProps = {
-    data: {
-        type: Object as PropType<NavigationItemNormalized>,
-        required: true,
-    },
-    variant: {
-        type: String,
-        default: undefined,
-    },
-    orientation: {
-        type: String as PropType<NavigationOrientation>,
-        default: undefined,
-    },
-    /**
-     * Resolved submenu presentation handed down by the parent
-     * `<VCNavItems>`. `collapse` renders groups as an inline
-     * Reka `Collapsible`; `dropdown` renders them as Reka
-     * `NavigationMenu` flyouts.
-     */
-    submenu: {
-        type: String as PropType<NavigationSubmenuMode>,
-        default: 'collapse',
-    },
-    /**
-     * The tag (or component) this item renders as — its own wrapper
-     * (`<li>` by default). Receives `<VCNavItems>`' `itemAs`. Honored in
-     * collapse mode only.
-     */
-    as: {
-        type: [String, Object, Function] as PropType<string | Component>,
-        default: 'li',
-    },
-    /**
-     * The list-container tag for this item's nested submenu
-     * `<VCNavItems>` (`<ul>` by default). Receives `<VCNavItems>`' `as`.
-     * Honored in collapse mode only.
-     */
-    itemsAs: {
-        type: [String, Object, Function] as PropType<string | Component>,
-        default: 'ul',
-    },
-    themeClass: {
-        type: Object as PropType<ThemeClassesOverride<NavigationThemeClasses>>,
-        default: undefined,
-    },
-    themeVariant: {
-        type: Object as PropType<VariantValues>,
-        default: undefined,
-    },
-};
-
-export type NavItemProps = ExtractPublicPropTypes<typeof navItemProps>;
 
 export const VCNavItem = defineComponent({
     name: 'VCNavItem',
@@ -151,6 +89,7 @@ export const VCNavItem = defineComponent({
         // (driven by active-trail matching upstream) and resynced whenever
         // that recomputes, so a path change auto-opens the active branch.
         const open = ref(!!data.value.displayChildren);
+
         watch(() => data.value.displayChildren, (value) => {
             open.value = !!value;
         });
@@ -179,6 +118,7 @@ export const VCNavItem = defineComponent({
             if (icon.includes(':')) {
                 return h(resolveComponent('VCIcon'), { name: icon });
             }
+
             return h('i', { class: icon });
         };
 
@@ -214,6 +154,7 @@ export const VCNavItem = defineComponent({
                     data.value.url.startsWith('#')
                 ) {
                     linkProps.href = data.value.url;
+
                     if (data.value.urlTarget) {
                         linkProps.target = data.value.urlTarget;
                     }
@@ -275,6 +216,7 @@ export const VCNavItem = defineComponent({
                 if (isDropdown) {
                     return h(NavigationMenuItem, { class: [resolved.item] }, { default: () => body });
                 }
+
                 return h(props.as, { class: [resolved.item] }, [body]);
             }
 
@@ -315,6 +257,7 @@ export const VCNavItem = defineComponent({
                         'data-active': isActive ? '' : undefined,
                     }, { default: () => body });
                 }
+
                 return h(props.as, {
                     class: [resolved.item, resolved.itemNested, { active: isActive }],
                     'data-active': isActive ? '' : undefined,

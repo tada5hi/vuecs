@@ -7,31 +7,31 @@ vuecs/
   packages/           # Component + infrastructure packages (npm workspaces)
     core/             # @vuecs/core — theme system, defaults manager, utilities
     countdown/        # @vuecs/countdown
-    data/             # @vuecs/data — loader-backed data-source composables: defineDataCollection() (structural superset of ListState & ListMutators; binds to <VCList :state>) + defineDataRecord() (single entity) over one shared async core (counter-busy, token-guarded latest-wins, error ref, mutate(fn), dehydrate/hydrate, D12 mutator buffering). Pure composables — no components, no CSS, no Reka. @experimental (plan 035)
-    design/           # @vuecs/design — CSS design tokens (concrete OKLCH defaults) + motion primitives (animations.css) + useColorMode + generic palette primitives (applyColorPaletteCss / bindColorPalette<T> / COLOR_PALETTE_STYLE_ELEMENT_ID) — theme-agnostic, no Tailwind dep (plan 017). `/standalone` subpath additionally inlines the 22-palette Tailwind v4 catalog so setColorPalette() works for BS/Bulma consumers without Tailwind loaded (plan 015 P3). scripts/build-standalone.ts regenerates assets/palettes.css from upstream.
-    elements/         # @vuecs/elements — atomic, presentation-only UI elements (Separator, Tag/Tags, Avatar, AspectRatio, VisuallyHidden, Badge) + the Card compound (Card / CardHeader / CardTitle / CardDescription / CardBody / CardFooter, plan 030) + the Alert compound (Alert / Title / Description / Close, plan 031) + the Collapse compound (Collapse / Trigger / Content; Reka Collapsible wrapper, plan 032); thin Reka wrappers + pure-CSS chips (plan 013)
+    data/             # @vuecs/data — loader-backed data-source composables: defineDataCollection() (structural superset of ListState & ListMutators; binds to <VCList :state>) + defineDataRecord() (single entity) over one shared async core (counter-busy, token-guarded latest-wins, error ref, mutate(fn), dehydrate/hydrate, D12 mutator buffering). Pure composables — no components, no CSS, no Reka. @experimental
+    design/           # @vuecs/design — CSS design tokens (concrete OKLCH defaults) + motion primitives (animations.css) + useColorMode + generic palette primitives (applyColorPaletteCss / bindColorPalette<T> / COLOR_PALETTE_STYLE_ELEMENT_ID) — theme-agnostic, no Tailwind dep. `/standalone` subpath additionally inlines the 22-palette Tailwind v4 catalog so setColorPalette() works for BS/Bulma consumers without Tailwind loaded. scripts/build-standalone.ts regenerates assets/palettes.css from upstream.
+    elements/         # @vuecs/elements — atomic, presentation-only UI elements (Separator, Tag/Tags, Avatar, AspectRatio, VisuallyHidden, Badge) + the Card compound + the Alert compound + the Collapse compound; thin Reka wrappers + pure-CSS chips
     forms/            # @vuecs/forms (renamed from @vuecs/form-controls in 3.0; checkbox/switch on Reka primitives)
-    gravatar/         # @vuecs/gravatar — composes <VCAvatar> from @vuecs/elements (2.0.0 breaking change in plan 013)
+    gravatar/         # @vuecs/gravatar — composes <VCAvatar> from @vuecs/elements
     icon/             # @vuecs/icon — <VCIcon> component wrapping @iconify/vue
     link/             # @vuecs/link
-    list/             # @vuecs/list — compound List / Header / Body / Item / ItemText / ItemActions / Footer / Loading / Empty + defineList() / useList() (renamed from @vuecs/list-controls in plan 010; sub-component split + Empty rename + Pinia-rename + meta unification per plan-010 addenda)
+    list/             # @vuecs/list — compound List / Header / Body / Item / ItemText / ItemActions / Footer / Loading / Empty + defineList() / useList()
     locale/           # @vuecs/locale — browser-language-aware, resettable locale source (useNavigatorLanguage-backed); install plugin bridges resolved locale into @vuecs/core Config['locale']; useLocaleManager() (set/reset) + bindLocale() building block. Read side is useLocale() in @vuecs/core.
-    navigation/       # @vuecs/navigation — multi-level nav with NavigationManager + <VCStepper> compound (Reka StepperRoot/Item/Trigger/Indicator/Title/Description/Separator) (plan 013)
-    nuxt/             # @vuecs/nuxt — theme-agnostic Nuxt module: tokens injection + SSR colorMode + palette + locale plugins + useColorMode / useColorPalette / useLocale / useLocaleManager auto-imports + optional themes: string[] auto-load plugin (plan 025 collapsed the per-theme Nuxt sub-module split). Locale plugin is universal (server+client), cookie-backed, resolves 'auto' via Accept-Language server-side, bridges into Config['locale'].
-    overlays/         # @vuecs/overlays — Modal (+ useModal view-stack), AlertDialog (Reka AlertDialog confirm primitive + useAlertDialog() / VCAlertDialogProvider host, plan 040), Popover, HoverCard (plan 013), Tooltip (+ TooltipProvider), DropdownMenu, ContextMenu, Toast (+ useToast shared queue, plan 029) — all on Reka primitives
+    navigation/       # @vuecs/navigation — multi-level nav with NavigationManager + <VCStepper> compound (Reka StepperRoot/Item/Trigger/Indicator/Title/Description/Separator)
+    nuxt/             # @vuecs/nuxt — theme-agnostic Nuxt module: tokens injection + SSR colorMode + palette + locale plugins + useColorMode / useColorPalette / useLocale / useLocaleManager auto-imports + optional themes: string[] auto-load plugin. Locale plugin is universal (server+client), cookie-backed, resolves 'auto' via Accept-Language server-side, bridges into Config['locale'].
+    overlays/         # @vuecs/overlays — Modal (+ useModal view-stack), AlertDialog (Reka AlertDialog confirm primitive + useAlertDialog() / VCAlertDialogProvider host), Popover, HoverCard, Tooltip (+ TooltipProvider), DropdownMenu, ContextMenu, Toast — all on Reka primitives
     pagination/       # @vuecs/pagination
     placeholder/      # @vuecs/placeholder — primitive skeleton loading components (VCPlaceholder + Wrapper); shape: rect/pill/circle, wave/glow/none animations; ships its own structural CSS so it works without any theme. Composite skeletons live next to the real components (VCCardPlaceholder in elements, VCTablePlaceholder in table) (issue #1476)
-    table/            # @vuecs/table — compound table (Table / Header / Body / Footer / Row / Cell / HeadCell / Empty / Loading) + :columns :data driver, controlled sort, row-meta variants, row keyboard nav (plan 028)
+    table/            # @vuecs/table — compound table (Table / Header / Body / Footer / Row / Cell / HeadCell / Empty / Loading) + :columns :data driver, controlled sort, row-meta variants, row keyboard nav
     timeago/          # @vuecs/timeago
-    tree/             # @vuecs/tree — tree view that SELECTS rather than navigates (VCTree / VCTreeItem / VCTreeItemTrigger); wraps reka TreeRoot/TreeItem as a focus+flatten shell via as-child, vuecs owns key-based v-model:selection, v-model:expanded, cascade + indeterminate, lazy load(); Vue-free utils (parseTreePaths / buildTreeIndex / normalize / cascadeSelect / orderKeys); indents via --vc-tree-level in its own CSS (plan 042)
+    tree/             # @vuecs/tree — tree view that SELECTS rather than navigates (VCTree / VCTreeItem / VCTreeItemTrigger); wraps reka TreeRoot/TreeItem as a focus+flatten shell via as-child, vuecs owns key-based v-model:selection, v-model:expanded, cascade + indeterminate, lazy load(); Vue-free utils (parseTreePaths / buildTreeIndex / normalize / cascadeSelect / orderKeys); indents via --vc-tree-level in its own CSS
   themes/             # Theme packages (npm workspaces) — pure data, no Vue runtime deps
     bootstrap/        # @vuecs/theme-bootstrap — Bootstrap (currently v5) theme + design-token bridge (assets/index.css)
     bulma/            # @vuecs/theme-bulma — Bulma 1.0+ theme + design-token bridge (assets/index.css)
-    tailwind/         # @vuecs/theme-tailwind — Tailwind v4 theme (class strings) + Tailwind palette runtime (setColorPalette / renderColorPaletteStyles) + Tailwind rebind / @theme / @source inline safelist; contributes its palette.handle to @vuecs/design's theme-aware useColorPalette (plan 026 collapsed the per-theme useColorPalette + ColorPaletteConfig into @vuecs/design)
+    tailwind/         # @vuecs/theme-tailwind — Tailwind v4 theme (class strings) + Tailwind palette runtime (setColorPalette / renderColorPaletteStyles) + Tailwind rebind / @theme / @source inline safelist; contributes its palette.handle to @vuecs/design's theme-aware useColorPalette
   icons/              # Icon-preset packages (npm workspaces) — Iconify-name vocabularies for @vuecs/icon, no runtime icon data
     font-awesome/     # @vuecs/icons-font-awesome — Font Awesome 6 Solid icon names (replaces the removed @vuecs/theme-font-awesome)
     lucide/           # @vuecs/icons-lucide — Lucide icon names (modern default)
-  examples/           # Runnable example apps — one per theme (plan 019)
+  examples/           # Runnable example apps — one per theme
     _shared/          # @vuecs-examples/shared — private workspace package
                       #   src/views/<Name>.vue — theme-agnostic demo bodies
                       #     (vanilla CSS only; no Tailwind / BS / Bulma utilities)
@@ -50,7 +50,7 @@ vuecs/
                         # CI compares on PR; baselines committed under
                         # specs/__snapshots__/ (regenerate via the
                         # visual-regression-update workflow on Ubuntu).
-                        # See plan 015 P2 / .agents/architecture.md.
+                        # See P2 / .agents/architecture.md.
   docs/               # @vuecs/docs — VitePress documentation site (deployed to vuecs.dev)
     src/
       .vitepress/
@@ -114,7 +114,7 @@ packages/core/src/
     install.ts        # installDefaultsManager() / injectDefaultsManager()
     index.ts          # Barrel exports
   utils/              # Shared utilities (inject, provide, normalizeSlot, isMeaningfulSlotContent, etc.)
-    collection/       # Identity + pure mutation semantics, promoted out of defineList (plan 035)
+    collection/       # Identity + pure mutation semantics, promoted out of defineList
       identity.ts     # resolveItemIdentity() — the itemId -> itemKey -> .id ladder
       mutations.ts    # createCollectionMutations() -> indexOf / getItemKey / applyCreate / applyUpdate / applyDelete
                       #   Gate flags (dedupCreated / filterDeleted / mergeOnUpdated); the deep-merge fn is
@@ -149,7 +149,7 @@ packages/list/src/
   vue.ts               # GlobalComponents augmentation
 ```
 
-The compound shape is five components (plan 027): `<VCList>` (outer
+The compound shape is five components: `<VCList>` (outer
 container + state + selection coordinator), `<VCListBody>` (the
 `<ul>`), `<VCListItem>` (the `<li>`), `<VCListEmpty>`,
 `<VCListLoading>`. Header / footer chrome and the per-row text /
@@ -158,7 +158,7 @@ exposes `{ classes }` (with `classes.header` / `classes.footer`) and
 `<VCListItem>`'s default slot exposes `{ classes }` (with
 `classes.text` / `classes.actions`). The previous
 `<VCListHeader>` / `<VCListFooter>` / `<VCListItemText>` /
-`<VCListItemActions>` components were removed in the plan 027 rewrite.
+`<VCListItemActions>` components were removed in the rewrite.
 
 ## Build Outputs
 

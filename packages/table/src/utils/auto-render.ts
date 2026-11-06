@@ -29,17 +29,34 @@ import { resolveCellValue } from './render-utils';
  * missing band itself.
  */
 export function containsComponent(nodes: unknown, target: unknown): boolean {
-    if (nodes == null || nodes === false) return false;
-    if (Array.isArray(nodes)) {
-        for (const child of nodes) {
-            if (containsComponent(child, target)) return true;
-        }
+    if (nodes == null || nodes === false) {
         return false;
     }
-    if (typeof nodes !== 'object') return false;
+
+    if (Array.isArray(nodes)) {
+        for (const child of nodes) {
+            if (containsComponent(child, target)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    if (typeof nodes !== 'object') {
+        return false;
+    }
+
     const v = nodes as VNode;
-    if (v.type === target) return true;
-    if (v.type === Fragment) return containsComponent(v.children, target);
+
+    if (v.type === target) {
+        return true;
+    }
+
+    if (v.type === Fragment) {
+        return containsComponent(v.children, target);
+    }
+
     return false;
 }
 
@@ -50,11 +67,24 @@ export function containsComponent(nodes: unknown, target: unknown): boolean {
  * when flattened.
  */
 function flattenSlot(nodes: unknown): unknown[] {
-    if (nodes == null || nodes === false) return [];
-    if (Array.isArray(nodes)) return nodes.flatMap(flattenSlot);
-    if (typeof nodes !== 'object') return [nodes];
+    if (nodes == null || nodes === false) {
+        return [];
+    }
+
+    if (Array.isArray(nodes)) {
+        return nodes.flatMap(flattenSlot);
+    }
+
+    if (typeof nodes !== 'object') {
+        return [nodes];
+    }
+
     const v = nodes as VNode;
-    if (v.type === Fragment) return flattenSlot(v.children);
+
+    if (v.type === Fragment) {
+        return flattenSlot(v.children);
+    }
+
     return [nodes];
 }
 
@@ -78,6 +108,7 @@ function partitionBeforeAfterBody(nodes: unknown): { before: unknown[]; after: u
     const flat = flattenSlot(nodes);
     const before: unknown[] = [];
     const after: unknown[] = [];
+
     for (const n of flat) {
         if (n && typeof n === 'object' && (n as VNode).type === VCTableFooter) {
             after.push(n);
@@ -85,6 +116,7 @@ function partitionBeforeAfterBody(nodes: unknown): { before: unknown[]; after: u
             before.push(n);
         }
     }
+
     return {
         before,
         after,
@@ -176,8 +208,14 @@ export function composeTableInner(opts: {
     const injectTrigger = expandable && expandableTrigger !== 'none';
 
     const inner: unknown[] = [];
-    if (captionSlot) inner.push(h('caption', null, captionSlot() as never));
-    if (colgroupSlot) inner.push(h('colgroup', null, colgroupSlot() as never));
+
+    if (captionSlot) {
+        inner.push(h('caption', null, captionSlot() as never));
+    }
+
+    if (colgroupSlot) {
+        inner.push(h('colgroup', null, colgroupSlot() as never));
+    }
 
     const autoRender = cols.length > 0;
     const hasHeader = autoRender && containsComponent(slotChildren, VCTableHeader);
@@ -228,6 +266,7 @@ export function composeTableInner(opts: {
                     // is the header-only additive. Vue normalizes the array.
                     class: [col.class, col.headerClass],
                 };
+
                 if (headerSlot) {
                     const matched = sort?.find((s) => s.key === col.key);
                     const slotProps: TableHeadCellSlotProps<unknown> = {
@@ -235,12 +274,17 @@ export function composeTableInner(opts: {
                         key: col.key,
                         sort: matched ? matched.direction : null,
                         setSort: (direction) => {
-                            if (!setSort) return;
+                            if (!setSort) {
+                                return;
+                            }
+
                             setSort(col.key, direction ? { direction } : undefined);
                         },
                     };
+
                     return h(VCTableHeadCell, cellProps, () => headerSlot(slotProps));
                 }
+
                 return h(VCTableHeadCell, cellProps, () => col.label);
             });
 
@@ -249,7 +293,10 @@ export function composeTableInner(opts: {
             // nesting `[dataHeaders, triggerHeaderCell]` would force
             // Vue to wrap the inner array in a Fragment + extra
             // comment vnodes inside the `<tr>`.
-            if (triggerHeaderCell === null) return dataHeaders;
+            if (triggerHeaderCell === null) {
+                return dataHeaders;
+            }
+
             return expandableTrigger === 'trailing' ?
                 [...dataHeaders, triggerHeaderCell] :
                 [triggerHeaderCell, ...dataHeaders];
@@ -265,7 +312,10 @@ export function composeTableInner(opts: {
     // anyway). Everything else (`<VCTableEmpty>`, `<VCTableLoading>`,
     // ad-hoc consumer nodes) keeps source order in `before`.
     const { before, after } = partitionBeforeAfterBody(slotChildren);
-    if (before.length > 0) inner.push(before);
+
+    if (before.length > 0) {
+        inner.push(before);
+    }
 
     if (placeholderRows !== undefined && cols.length > 0) {
         // Placeholder mode — skip the real body + any
@@ -279,9 +329,11 @@ export function composeTableInner(opts: {
         const widthFor = (rowIdx: number, colIdx: number) => {
             const len = pattern.length;
             const idx = ((rowIdx * 3 + colIdx) % len + len) % len;
+
             return `${pattern[idx]}%`;
         };
         const rowRange = Array.from({ length: Math.max(0, placeholderRows) }, (_, i) => i);
+
         inner.push(h(
             'tbody',
             { class: 'vc-table-placeholder-body', 'aria-hidden': 'true' },
@@ -295,6 +347,7 @@ export function composeTableInner(opts: {
                 )),
             )),
         ));
+
         return inner;
     }
 
@@ -305,10 +358,12 @@ export function composeTableInner(opts: {
                 // overload resolution accepts it — a union props arg trips the
                 // typed-component overload under strict.
                 const rowProps: Record<string, unknown> = { row, index };
+
                 if (expandable) {
                     rowProps.expandable = true;
                     rowProps.expandableTrigger = expandableTrigger;
                 }
+
                 const rowSlots: Record<string, (slotProps?: unknown) => unknown> = {
                     default: () => cols.map((col) => {
                         const cellProps = {
@@ -323,6 +378,7 @@ export function composeTableInner(opts: {
                         // `<VCTableCell>`'s auto-render path. Slot props
                         // mirror `TableCellSlotProps` — see issue #1592.
                         const cellSlot = slots?.[`cell-${col.key}`];
+
                         if (cellSlot) {
                             const slotProps: TableCellSlotProps<unknown> = {
                                 row,
@@ -331,11 +387,14 @@ export function composeTableInner(opts: {
                                 column: col,
                                 index,
                             };
+
                             return h(VCTableCell, cellProps, () => cellSlot(slotProps));
                         }
+
                         return h(VCTableCell, cellProps);
                     }),
                 };
+
                 // Bridge the table-level `#expansion` slot through to
                 // each row's own `#expansion` slot. Only emit the slot
                 // when the consumer provided one — Vue treats `slots`
@@ -345,12 +404,15 @@ export function composeTableInner(opts: {
                         slotProps as { row: unknown; index: number },
                     );
                 }
+
                 return h(VCTableRow, rowProps, rowSlots);
             },
         }));
     }
 
-    if (after.length > 0) inner.push(after);
+    if (after.length > 0) {
+        inner.push(after);
+    }
 
     return inner;
 }

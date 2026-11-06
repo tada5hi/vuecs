@@ -3,6 +3,7 @@
  * Only the surface design composables actually need is declared
  * locally — keeps the bridge a runtime-only contract.
  */
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public name and declaration merging.
 export interface ThemeRuntimeColorModeHook {
     /**
      * Called when the resolved color mode changes (or on first mount).
@@ -13,6 +14,9 @@ export interface ThemeRuntimeColorModeHook {
     handle(doc: Document, mode: 'light' | 'dark'): void;
 }
 
+
+
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public name and declaration merging.
 export interface ThemeRuntimePaletteHook {
     /**
      * Pure function — receives the resolved palette config and returns
@@ -29,11 +33,17 @@ export interface ThemeRuntimePaletteHook {
     scaleAliases?: Record<string, string>;
 }
 
+
+
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public name and declaration merging.
 export interface ThemeRuntimeEntry {
     colorMode?: ThemeRuntimeColorModeHook;
     palette?: ThemeRuntimePaletteHook;
 }
 
+
+
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public name and declaration merging.
 export interface ThemeRuntimeManager {
     /**
      * Reactive list of installed themes (reads through `ThemeManager`'s

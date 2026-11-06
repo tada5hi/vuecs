@@ -33,6 +33,7 @@ export default defineComponent({
         // `useForwardProps` (not `useForwardPropsEmits`) — `ToastProvider`
         // exposes no events, and `useEmitAsProps` warns about empty `emits`.
         const forwarded = useForwardProps(props);
+
         return () => h(
             ToastProvider,
             forwarded.value,

@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+
+
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
 interface Tab {
     label: string;
     lang: string;
@@ -53,7 +56,10 @@ const copied = ref(false);
 let copyTimer: ReturnType<typeof setTimeout> | null = null;
 
 const copy = async (code: string) => {
-    if (!navigator?.clipboard) return;
+    if (!navigator?.clipboard) {
+        return;
+    }
+
     try {
         await navigator.clipboard.writeText(code);
     } catch {
@@ -62,12 +68,19 @@ const copy = async (code: string) => {
         // doesn't claim success.
         return;
     }
+
     copied.value = true;
+
     // Clear any pending timer so rapid successive clicks restart the
     // 1.5s "Copied" window from the latest click instead of letting an
     // older timer flip back early.
-    if (copyTimer) clearTimeout(copyTimer);
-    copyTimer = setTimeout(() => { copied.value = false; }, 1500);
+    if (copyTimer) {
+        clearTimeout(copyTimer);
+    }
+
+    copyTimer = setTimeout(() => {
+        copied.value = false;
+    }, 1500);
 };
 </script>
 

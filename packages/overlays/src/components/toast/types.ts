@@ -1,6 +1,6 @@
-import type { Component, VNode } from 'vue';
+import type { Component, Ref, VNode  } from 'vue';
 import type { ThemeElementDefinition } from '@vuecs/core';
-import type { UseToastReturn } from './use-toast';
+
 
 // ──────────────────────────────────────────────────────────────────────────
 // Queue entry shape — what consumers push via `useToast().add(...)`.
@@ -53,6 +53,9 @@ export type ToastActionRenderFn = (id: string, toast: UseToastReturn) => VNode |
  */
 export type ToastEntryComponent = Component;
 
+
+
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public name and declaration merging.
 export interface ToastEntry {
     /** Stable id. Auto-generated as `vc-toast-<seq>` if not provided. */
     id: string;
@@ -162,6 +165,7 @@ export type ToastActionThemeClasses = {
 // ──────────────────────────────────────────────────────────────────────────
 
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
     interface ThemeElements {
         toast?: ThemeElementDefinition<ToastThemeClasses>;
         toastViewport?: ThemeElementDefinition<ToastViewportThemeClasses>;
@@ -170,3 +174,19 @@ declare module '@vuecs/core' {
         toastAction?: ThemeElementDefinition<ToastActionThemeClasses>;
     }
 }
+
+export type UseToastReturn = {
+    /** Readonly queue — drives `<VCToaster>`'s iteration. */
+    entries: Readonly<Ref<ReadonlyArray<ToastEntry>>>;
+    /**
+     * Push a new toast onto the queue. Returns the entry's `id` so callers
+     * can later `dismiss(id)` or `update(id, ...)`.
+     */
+    add: (entry: ToastEntryInput) => string;
+    /** Remove a toast by id. Fires its `onDismiss` callback if set. No-op when id isn't in the queue. */
+    dismiss: (id: string) => void;
+    /** Patch a queued toast in place (e.g. progress updates). No-op when id isn't in the queue. */
+    update: (id: string, patch: Partial<Omit<ToastEntry, 'id'>>) => void;
+    /** Remove every queued toast. Fires each entry's `onDismiss`. */
+    clear: () => void;
+};

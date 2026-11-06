@@ -19,8 +19,10 @@ export function collectTrail(
     const output: NavigationItemNormalized[] = [];
 
     let level = items;
+
     for (const name of trace) {
         const found = level.find((item) => item.name === name);
+
         if (!found) {
             break;
         }

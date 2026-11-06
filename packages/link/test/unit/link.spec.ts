@@ -43,6 +43,7 @@ describe('VCLink', () => {
 
         const href = wrapper.attributes('href') as string;
         const { searchParams } = new URL(href);
+
         expect(searchParams.get('keep')).toBe('1');
         expect(searchParams.get('ref')).toBe('x');
     });
@@ -70,9 +71,11 @@ describe('VCLink', () => {
         });
 
         const href = wrapper.attributes('href') as string;
+
         expect(href.endsWith('#install')).toBe(true);
 
         const url = new URL(href, 'http://localhost');
+
         expect(url.searchParams.get('a')).toBe('1');
         expect(url.searchParams.get('ref')).toBe('x');
         expect(url.hash).toBe('#install');

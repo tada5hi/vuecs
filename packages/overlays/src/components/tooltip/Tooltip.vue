@@ -26,6 +26,7 @@ export default defineComponent({
     emits: ['update:open'],
     setup(props, { slots, emit }) {
         const forwarded = useForwardPropsEmits(props, emit);
+
         return () => h(
             TooltipRoot,
             forwarded.value,

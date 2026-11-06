@@ -14,6 +14,7 @@ describe('useForwardExpose', () => {
         const Wrapper = defineComponent({
             setup() {
                 const { forwardRef, currentElement } = useForwardExpose();
+
                 return () => h('button', {
                     ref: forwardRef,
                     'data-current': currentElement.value?.tagName ?? '',
@@ -22,6 +23,7 @@ describe('useForwardExpose', () => {
         });
 
         const wrapper = mount(Wrapper);
+
         await nextTick();
         expect(wrapper.element.tagName).toBe('BUTTON');
     });
@@ -31,11 +33,13 @@ describe('useForwardExpose', () => {
             props: { label: { type: String, default: 'hello' } },
             setup() {
                 const { forwardRef } = useForwardExpose();
+
                 return () => h('span', { ref: forwardRef });
             },
         });
 
         const wrapper = mount(Wrapper, { props: { label: 'world' } });
+
         await nextTick();
 
         expect((wrapper.vm as any).label).toBe('world');
@@ -47,6 +51,7 @@ describe('useForwardExpose', () => {
         const Wrapper = defineComponent({
             setup() {
                 const { forwardRef, currentRef } = useForwardExpose();
+
                 return () => h(toggle.value ? 'section' : 'div', {
                     ref: forwardRef,
                     'data-tag': (currentRef.value as Element | null)?.nodeName ?? '',
@@ -55,6 +60,7 @@ describe('useForwardExpose', () => {
         });
 
         const wrapper = mount(Wrapper);
+
         await nextTick();
 
         toggle.value = true;
@@ -69,6 +75,7 @@ describe('useForwardExpose', () => {
         const Wrapper = defineComponent({
             setup() {
                 api = useForwardExpose();
+
                 return () => h('div', { ref: api.forwardRef });
             },
         });
@@ -84,12 +91,15 @@ describe('useForwardExpose', () => {
         const Wrapper = defineComponent({
             setup(_, { expose }) {
                 expose({ greet: () => 'hi' });
+
                 const { forwardRef } = useForwardExpose();
+
                 return () => h('div', { ref: forwardRef });
             },
         });
 
         const wrapper = mount(Wrapper);
+
         await nextTick();
 
         expect(typeof (wrapper.vm as any).greet).toBe('function');
@@ -100,6 +110,7 @@ describe('useForwardExpose', () => {
         const Child = defineComponent({
             setup(_, { expose }) {
                 expose({ doStuff: () => 'child-value' });
+
                 return () => h('span', 'child');
             },
         });
@@ -107,11 +118,13 @@ describe('useForwardExpose', () => {
         const Wrapper = defineComponent({
             setup() {
                 const { forwardRef } = useForwardExpose();
+
                 return () => h(Child, { ref: forwardRef });
             },
         });
 
         const wrapper = mount(Wrapper);
+
         await nextTick();
 
         expect(typeof (wrapper.vm as any).doStuff).toBe('function');

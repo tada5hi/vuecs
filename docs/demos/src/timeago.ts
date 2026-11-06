@@ -5,6 +5,7 @@ import { installIframeBridge } from './iframe-bridge';
 import { installVuecs } from './shared';
 
 const app = createApp(Timeago);
+
 installVuecs(app);
 app.use(timeago);
 app.mount('#app');

@@ -1,9 +1,9 @@
 import type { ShallowRef } from 'vue';
-import { 
-    isRef, 
-    shallowRef, 
-    triggerRef, 
-    unref, 
+import {
+    isRef,
+    shallowRef,
+    triggerRef,
+    unref,
 } from 'vue';
 import type { Config, ConfigManagerOptions } from './types';
 
@@ -65,7 +65,9 @@ export class ConfigManager {
     setConfig(config: ConfigManagerOptions['config'] | undefined): void {
         const next = config || {};
         const isSameRef = this.configRef.value === next;
+
         this.configRef.value = next;
+
         if (isSameRef) {
             triggerRef(this.configRef);
         }
@@ -96,9 +98,14 @@ export class ConfigManager {
     get<K extends keyof Config>(key: K): Config[K] | undefined {
         const raw = (this.configRef.value as Record<string, unknown>)?.[key];
         const value = isRef(raw) ? unref(raw) : raw;
+
         if (value === undefined || value === null) {
             const local = this.defaultsMap[key];
-            if (local !== undefined) return local;
+
+            if (local !== undefined) {
+                return local;
+            }
+
             // Chain through to the parent manager so a top-level
             // `setConfig` propagates into subtree-scoped consumers for
             // keys the subtree didn't override. Reads `parent.get(key)`
@@ -106,6 +113,7 @@ export class ConfigManager {
             // re-runs when the parent's `configRef` flips.
             return this.parent?.get(key);
         }
+
         return value as Config[K];
     }
 }

@@ -5,6 +5,7 @@ import { installIframeBridge } from './iframe-bridge';
 import { installVuecs } from './shared';
 
 const app = createApp(FormSlider);
+
 installVuecs(app);
 app.use(forms);
 app.mount('#app');

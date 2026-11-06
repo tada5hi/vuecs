@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
 interface ThemeCard {
     name: string;
     accent: string;

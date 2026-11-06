@@ -32,6 +32,7 @@ export default defineComponent({
             useThemeProps(props),
             toastDescriptionThemeDefaults,
         );
+
         return () => h(
             ToastDescription,
             mergeProps(attrs, {

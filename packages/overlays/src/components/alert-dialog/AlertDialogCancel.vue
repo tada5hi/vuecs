@@ -1,10 +1,10 @@
 <script lang="ts">
 import { defineComponent, h } from 'vue';
-import type { 
-    Component, 
-    ExtractPublicPropTypes, 
-    PropType, 
-    SlotsType, 
+import type {
+    Component,
+    ExtractPublicPropTypes,
+    PropType,
+    SlotsType,
 } from 'vue';
 import { AlertDialogCancel, injectDialogRootContext } from 'reka-ui';
 import { VCPrimitive, useComponentTheme } from '@vuecs/core';
@@ -49,24 +49,26 @@ export default defineComponent({
         // Uniform "close" handle exposed to the slot; the real value is in
         // `manual` mode where the click's auto-close is suppressed.
         const cancel = () => rootContext.onOpenChange(false);
+
         return () => {
             if (!props.manual) {
                 return h(
                     AlertDialogCancel,
                     {
-                        as: props.as, 
-                        asChild: props.asChild, 
-                        class: theme.value.cancel || undefined, 
+                        as: props.as,
+                        asChild: props.asChild,
+                        class: theme.value.cancel || undefined,
                     },
                     { default: () => slots.default?.({ cancel }) },
                 );
             }
+
             return h(
                 VCPrimitive,
                 {
-                    as: props.as, 
-                    asChild: props.asChild, 
-                    class: theme.value.cancel || undefined, 
+                    as: props.as,
+                    asChild: props.asChild,
+                    class: theme.value.cancel || undefined,
                 },
                 { default: () => slots.default?.({ cancel }) },
             );

@@ -5,12 +5,12 @@ import '../assets/index.css';
 import './vue';
 
 import VCPagination from './component.vue';
-import type { Options } from './type';
+import type { Options } from './types';
 
 export { VCPagination };
 export { paginationThemeDefaults } from './component.vue';
 export type { PaginationProps } from './component.vue';
-export * from './type';
+export * from './types';
 export * from './utils';
 
 export function install(instance: App, options: Options = {}): void {

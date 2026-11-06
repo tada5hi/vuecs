@@ -18,6 +18,7 @@ export function renderColorPaletteFromThemes(
     palette: Record<string, string>,
 ): string {
     const parts: string[] = [];
+
     for (const theme of themes) {
         if (!theme.palette?.handle) {
             continue;
@@ -37,6 +38,7 @@ export function renderColorPaletteFromThemes(
 
         try {
             const out = handle(input);
+
             if (out) {
                 parts.push(out);
             }
@@ -47,6 +49,7 @@ export function renderColorPaletteFromThemes(
             }
         }
     }
+
     return parts.join('\n');
 }
 
@@ -59,16 +62,23 @@ function applyScaleAliases(
     if (!aliases) {
         return palette;
     }
+
     // Use a prototype-free object + explicit deny-list so a theme-provided
     // `scaleAliases` mapping a canonical key to `__proto__` (or any other
     // prototype-touching name) can't reach Object.prototype. Defense in
     // depth: the upstream sanitize already filters input palette keys to
     // SEMANTIC_SCALES, but `aliases` itself is theme-provided and unsanitized.
     const out: Record<string, string> = Object.create(null);
+
     for (const [k, v] of Object.entries(palette)) {
         const target = aliases[k] ?? k;
-        if (FORBIDDEN_KEYS.has(target)) continue;
+
+        if (FORBIDDEN_KEYS.has(target)) {
+            continue;
+        }
+
         out[target] = v;
     }
+
     return out;
 }

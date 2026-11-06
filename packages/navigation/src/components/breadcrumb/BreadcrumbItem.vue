@@ -26,10 +26,15 @@ export default defineComponent({
         const ctx = useBreadcrumbContext();
         // Only `themeVariant` inherits — the `<li>` carries its own theme key.
         const themeProps: UseComponentThemeProps<BreadcrumbItemThemeClasses> = {
-            get themeClass() { return props.themeClass; },
-            get themeVariant() { return { ...(ctx?.themeVariant() ?? {}), ...(props.themeVariant ?? {}) }; },
+            get themeClass() {
+                return props.themeClass;
+            },
+            get themeVariant() {
+                return { ...(ctx?.themeVariant() ?? {}), ...(props.themeVariant ?? {}) };
+            },
         };
         const theme = useComponentTheme('breadcrumbItem', themeProps, breadcrumbItemThemeDefaults);
+
         return () => h(
             props.as,
             mergeProps(attrs, { class: theme.value.root || undefined }),

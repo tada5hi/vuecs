@@ -35,6 +35,7 @@ export default defineComponent({
     props: separatorProps,
     setup(props, { attrs }) {
         const theme = useComponentTheme('separator', props, separatorThemeDefaults);
+
         return () => h(Separator, mergeProps(attrs, {
             orientation: props.orientation,
             decorative: props.decorative,

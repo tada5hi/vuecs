@@ -31,6 +31,7 @@ export default defineComponent({
     props: tooltipProviderProps,
     setup(props, { slots, emit }) {
         const forwarded = useForwardPropsEmits(props, emit);
+
         return () => h(
             TooltipProvider,
             forwarded.value,

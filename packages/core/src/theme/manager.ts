@@ -32,7 +32,9 @@ export class ThemeManager {
 
     setThemes(themes: Theme[]): void {
         const isSameRef = this.themesRef.value === themes;
+
         this.themesRef.value = themes;
+
         if (isSameRef) {
             triggerRef(this.themesRef);
         }
@@ -40,7 +42,9 @@ export class ThemeManager {
 
     setOverrides(overrides: Theme | undefined): void {
         const isSameRef = this.overridesRef.value === overrides;
+
         this.overridesRef.value = overrides;
+
         if (isSameRef) {
             triggerRef(this.overridesRef);
         }
@@ -59,11 +63,14 @@ export class ThemeManager {
 
         // classesMergeFn: overrides wins, then last theme with one defined
         let classesMergeFn = overrides?.classesMergeFn;
+
         if (!classesMergeFn) {
             for (let i = themes.length - 1; i >= 0; i -= 1) {
                 const themeClassesMergeFn = themes[i]?.classesMergeFn;
+
                 if (themeClassesMergeFn) {
                     classesMergeFn = themeClassesMergeFn;
+
                     break;
                 }
             }
@@ -96,9 +103,14 @@ export class ThemeManager {
         const mutableResult = result as Record<string, string>;
 
         const slots = Object.keys(variantClasses);
+
         for (const slot of slots) {
             const cls = variantClasses[slot];
-            if (!cls) continue;
+
+            if (!cls) {
+                continue;
+            }
+
             mutableResult[slot] = mergeFn(mutableResult[slot] || '', cls);
         }
 

@@ -42,7 +42,9 @@ export default defineComponent({
 
         const themeProps = useThemeProps(props);
         const mergedThemeProps = {
-            get themeClass() { return themeProps.themeClass; },
+            get themeClass() {
+                return themeProps.themeClass;
+            },
             get themeVariant() {
                 return {
                     ...(themeProps.themeVariant ?? {}),
@@ -53,9 +55,13 @@ export default defineComponent({
         const theme = useComponentTheme('tableLoading', mergedThemeProps, tableLoadingThemeDefaults);
 
         const shouldRender = computed(() => {
-            if (!ctx) return true;
+            if (!ctx) {
+                return true;
+            }
+
             const busy = ctx.busy.value;
             const hasData = ctx.data.value.length > 0;
+
             // Default mode: render on first load (busy + no data).
             // Overlay mode: render whenever busy (refresh-on-existing-data pattern).
             return props.overlay ? busy : busy && !hasData;
@@ -64,7 +70,10 @@ export default defineComponent({
         const resolvedColspan = computed(() => props.colspan ?? ctx?.colspan.value ?? 1);
 
         return () => {
-            if (!shouldRender.value) return null;
+            if (!shouldRender.value) {
+                return null;
+            }
+
             const cellContent = slots.default?.() ?? defaults.value.content;
 
             if (props.overlay) {
@@ -86,9 +95,11 @@ export default defineComponent({
                     }),
                     cellContent as never,
                 );
+
                 if (ctx?.wrapperEl.value) {
                     return h(Teleport, { to: ctx.wrapperEl.value }, [overlayNode]);
                 }
+
                 return overlayNode;
             }
 

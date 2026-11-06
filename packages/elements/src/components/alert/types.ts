@@ -38,11 +38,13 @@ export type AlertDefaults = {
 };
 
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
     interface ThemeElements {
         alert?: ThemeElementDefinition<AlertThemeClasses>;
         alertTitle?: ThemeElementDefinition<AlertTitleThemeClasses>;
         alertDescription?: ThemeElementDefinition<AlertDescriptionThemeClasses>;
     }
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
     interface ComponentDefaults {
         alert?: ComponentDefaultValues<AlertDefaults>;
     }

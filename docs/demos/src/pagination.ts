@@ -9,6 +9,7 @@ const app = createApp({
         return () => h(Pagination, propState.value);
     },
 });
+
 installVuecs(app);
 app.use(pagination);
 app.mount('#app');
@@ -16,23 +17,23 @@ app.mount('#app');
 announceProps(
     {
         total: {
-            type: 'number', 
-            default: 100, 
-            min: 1, 
-            max: 1000, 
+            type: 'number',
+            default: 100,
+            min: 1,
+            max: 1000,
             section: 'Data',
         },
         limit: {
-            type: 'number', 
-            default: 10, 
-            min: 1, 
-            max: 100, 
+            type: 'number',
+            default: 10,
+            min: 1,
+            max: 100,
             section: 'Data',
         },
         busy: {
-            type: 'boolean', 
-            default: false, 
-            section: 'State', 
+            type: 'boolean',
+            default: false,
+            section: 'State',
         },
         hideDisabled: {
             type: 'boolean',
@@ -45,15 +46,15 @@ announceProps(
             section: 'State',
         },
         'themeVariant.variant': {
-            type: 'enum', 
-            default: 'outline', 
-            options: ['outline', 'soft', 'ghost'], 
+            type: 'enum',
+            default: 'outline',
+            options: ['outline', 'soft', 'ghost'],
             section: 'Variant',
         },
         'themeVariant.size': {
-            type: 'enum', 
-            default: 'md', 
-            options: ['xs', 'sm', 'md', 'lg'], 
+            type: 'enum',
+            default: 'md',
+            options: ['xs', 'sm', 'md', 'lg'],
             section: 'Variant',
         },
     },

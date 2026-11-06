@@ -21,25 +21,25 @@ export type { BreadcrumbSeparatorProps } from './BreadcrumbSeparator.vue';
 export type { BreadcrumbEllipsisProps } from './BreadcrumbEllipsis.vue';
 
 export { provideBreadcrumbContext, useBreadcrumbContext } from './context';
-export type { BreadcrumbContext } from './context';
+export type { BreadcrumbContext } from './types';
 
 export { breadcrumbBehavioralDefaults } from './defaults';
 
 export { useBreadcrumbFromRegistry } from './use-breadcrumb-from-registry';
 export { useBreadcrumbItems } from './use-breadcrumb-items';
-export type { BreadcrumbMeta, UseBreadcrumbItemsOptions } from './use-breadcrumb-items';
+export type { BreadcrumbMeta, UseBreadcrumbItemsOptions } from './types';
 export {
     createBreadcrumbManager,
     provideBreadcrumbManager,
     useBreadcrumb,
 } from './use-breadcrumb';
-export type { BreadcrumbManager } from './use-breadcrumb';
+export type { BreadcrumbManager } from './types';
 export {
     injectBreadcrumbLeafRegistry,
     provideBreadcrumbLeafRegistry,
     useBreadcrumbLeaf,
 } from './use-breadcrumb-leaf';
-export type { BreadcrumbLeafRegistry } from './use-breadcrumb-leaf';
+export type { BreadcrumbLeafRegistry } from './types';
 
 export * from './theme';
 export * from './types';

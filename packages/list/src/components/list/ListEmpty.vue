@@ -2,11 +2,11 @@
 import { useComponentDefaults, useComponentTheme } from '@vuecs/core';
 import type { ComponentThemeDefinition, ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { defineComponent, h } from 'vue';
-import type { 
-    Component, 
-    ExtractPublicPropTypes, 
-    PropType, 
-    SlotsType, 
+import type {
+    Component,
+    ExtractPublicPropTypes,
+    PropType,
+    SlotsType,
 } from 'vue';
 import { useList } from '../../composables';
 import { applyAsChild, hasMeaningfulVNodes } from '../../utils';
@@ -61,7 +61,9 @@ export default defineComponent({
             // makes Default-Sibling loading (sibling spinner) the
             // exclusive state during first-load instead of stacking with
             // Empty.
-            if (state.busy.value || state.data.value.length > 0) return null;
+            if (state.busy.value || state.data.value.length > 0) {
+                return null;
+            }
 
             const rootClass = theme.value.root || undefined;
             const slotProps: ListEmptySlotProps = {
@@ -78,9 +80,14 @@ export default defineComponent({
 
             if (props.asChild && hasSlotContent) {
                 const cloned = applyAsChild(slotChildren, attrs);
-                if (cloned) return cloned;
+
+                if (cloned) {
+                    return cloned;
+                }
             }
+
             const children = hasSlotContent ? slotChildren : [defaults.value.content];
+
             return h(props.tag ?? props.as, attrs, children);
         };
     },

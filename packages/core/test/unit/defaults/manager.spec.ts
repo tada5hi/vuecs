@@ -15,6 +15,7 @@ type TestOtherDefaults = {
 };
 
 declare module '../../../src/defaults/types' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
     interface ComponentDefaults {
         __testSubmit?: ComponentDefaultValues<TestSubmitDefaults>;
         __testOther?: ComponentDefaultValues<TestOtherDefaults>;
@@ -24,11 +25,13 @@ declare module '../../../src/defaults/types' {
 describe('DefaultsManager', () => {
     it('should return undefined when no defaults registered', () => {
         const manager = new DefaultsManager();
+
         expect(manager.get('__testSubmit')).toBeUndefined();
     });
 
     it('should return defaults registered via constructor', () => {
         const manager = new DefaultsManager({ defaults: { __testSubmit: { createText: 'Create', updateText: 'Update' } } });
+
         expect(manager.get('__testSubmit')).toEqual({ createText: 'Create', updateText: 'Update' });
     });
 
@@ -39,6 +42,7 @@ describe('DefaultsManager', () => {
         const manager = new DefaultsManager({ defaults: { __testSubmit: { createText, updateText } } });
 
         const entry = manager.get('__testSubmit');
+
         expect(entry?.createText).toBe(createText);
         expect(entry?.updateText).toBe(updateText);
     });
@@ -46,11 +50,13 @@ describe('DefaultsManager', () => {
     it('should expose defaults via getter', () => {
         const defaults = { __testSubmit: { createText: 'X' } };
         const manager = new DefaultsManager({ defaults });
+
         expect(manager.defaults).toBe(defaults);
     });
 
     it('should update defaults via setDefaults()', () => {
         const manager = new DefaultsManager();
+
         expect(manager.get('__testSubmit')).toBeUndefined();
 
         manager.setDefaults({ __testSubmit: { createText: 'Erstellen' } });
@@ -59,6 +65,7 @@ describe('DefaultsManager', () => {
 
     it('should clear defaults when set to undefined', () => {
         const manager = new DefaultsManager({ defaults: { __testSubmit: { createText: 'Create' } } });
+
         expect(manager.get('__testSubmit')).toBeDefined();
 
         manager.setDefaults(undefined);
@@ -102,6 +109,7 @@ describe('DefaultsManager', () => {
         const manager = new DefaultsManager({ defaults });
 
         let runs = 0;
+
         effect(() => {
             // Track the ref's value each run.
             void manager.defaults;

@@ -29,6 +29,7 @@ for (const theme of themes) {
                 await page.waitForLoadState('networkidle');
                 await page.waitForFunction(() => {
                     const main = document.querySelector('main');
+
                     return main !== null && main.children.length > 0;
                 });
 

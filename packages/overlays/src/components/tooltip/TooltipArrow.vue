@@ -25,6 +25,7 @@ export default defineComponent({
     props: tooltipArrowProps,
     setup(props) {
         const theme = useComponentTheme('tooltip', props, tooltipThemeDefaults);
+
         return () => h(TooltipArrow, {
             width: props.width,
             height: props.height,

@@ -85,6 +85,7 @@ function pointer(el: Element, type: string) {
 function openFlyoutLinks(root: Element): string[] {
     const contents = Array.from(root.querySelectorAll('.vc-nav-content'));
     const open = contents.find((c) => c.querySelector('.vc-nav-link'));
+
     return open ?
         Array.from(open.querySelectorAll('.vc-nav-link')).map((l) => (l.textContent || '').trim()) :
         [];
@@ -98,15 +99,19 @@ describe('VCNavItems submenu presentation', () => {
         Element.prototype.scrollIntoView = Element.prototype.scrollIntoView || (() => undefined);
     });
 
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it('defaults to collapse — renders a <ul> with a Collapsible trigger', async () => {
         const wrapper = buildApp({ items });
+
         await nextTick();
 
         expect((wrapper.element as HTMLElement).tagName).toBe('UL');
 
         const trigger = wrapper.element.querySelector('.vc-nav-trigger') as HTMLElement;
+
         expect(trigger).not.toBeNull();
         // Reka CollapsibleTrigger renders a native <button> exposing
         // aria-expanded + data-state.
@@ -116,9 +121,11 @@ describe('VCNavItems submenu presentation', () => {
 
     it('collapse: clicking the trigger toggles aria-expanded and reveals children', async () => {
         const wrapper = buildApp({ items });
+
         await nextTick();
 
         const trigger = wrapper.element.querySelector('.vc-nav-trigger') as HTMLElement;
+
         expect(trigger.getAttribute('aria-expanded')).toBe('false');
         // Closed: Reka unmounts the content, so only the Home leaf renders.
         expect(wrapper.element.querySelectorAll('[data-vc-collection-item]').length).toBe(2);
@@ -135,23 +142,29 @@ describe('VCNavItems submenu presentation', () => {
 
     it('collapse: an active descendant auto-opens its parent branch', async () => {
         const wrapper = buildApp({ items, path: '/resources/users' });
+
         await nextTick();
 
         const trigger = wrapper.element.querySelector('.vc-nav-trigger') as HTMLElement;
+
         expect(trigger.getAttribute('aria-expanded')).toBe('true');
 
         const active = wrapper.element.querySelector('.vc-nav-link.active') as HTMLElement;
+
         expect(active).not.toBeNull();
         expect(active.textContent).toContain('Users');
     });
 
     it('dropdown: orientation="horizontal" mounts a NavigationMenu (auto)', async () => {
         const wrapper = buildApp({ items, orientation: 'horizontal' });
+
         await nextTick();
 
         // NavigationMenuRoot renders a <nav>, not the collapse-mode <ul>.
         expect((wrapper.element as HTMLElement).tagName).toBe('NAV');
+
         const trigger = wrapper.element.querySelector('.vc-nav-trigger') as HTMLElement;
+
         expect(trigger).not.toBeNull();
         expect(trigger.tagName).toBe('BUTTON');
     });
@@ -162,6 +175,7 @@ describe('VCNavItems submenu presentation', () => {
             orientation: 'vertical',
             submenu: 'dropdown',
         });
+
         await nextTick();
 
         expect((wrapper.element as HTMLElement).tagName).toBe('NAV');
@@ -173,6 +187,7 @@ describe('VCNavItems submenu presentation', () => {
             orientation: 'horizontal',
             submenu: 'collapse',
         });
+
         await nextTick();
 
         expect((wrapper.element as HTMLElement).tagName).toBe('UL');
@@ -185,8 +200,10 @@ describe('VCNavItems submenu presentation', () => {
         // hover state machine (the panel only opens on the first hover and
         // never reopens). The flyout children must render as a plain <ul>.
         vi.useFakeTimers();
+
         try {
             const wrapper = buildApp({ items, orientation: 'horizontal' });
+
             await nextTick();
 
             // The owning root is the only NavigationMenu marker in the tree —
@@ -198,6 +215,7 @@ describe('VCNavItems submenu presentation', () => {
             // Hover the group trigger to open the flyout (Reka unmounts it
             // while closed, so it must be opened to inspect its contents).
             const trigger = wrapper.element.querySelector('.vc-nav-trigger') as HTMLElement;
+
             trigger.dispatchEvent(new PointerEvent('pointerenter', { bubbles: true, pointerType: 'mouse' } as PointerEventInit));
             trigger.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerType: 'mouse' } as PointerEventInit));
             vi.advanceTimersByTime(500);
@@ -208,6 +226,7 @@ describe('VCNavItems submenu presentation', () => {
             // The flyout content mounts its child links as a plain list, with
             // no nested NavigationMenu root inside it.
             const flyout = wrapper.element.querySelector('.vc-nav-content') as HTMLElement;
+
             expect(flyout).not.toBeNull();
             expect(flyout.querySelector('.vc-nav-items')).not.toBeNull();
             expect(flyout.querySelector('[data-reka-navigation-menu]')).toBeNull();
@@ -221,8 +240,10 @@ describe('VCNavItems submenu presentation', () => {
         // empty on the second item": each flyout must remount its own children
         // every time it opens, not be consumed/emptied by the first open.
         vi.useFakeTimers();
+
         try {
             const wrapper = buildApp({ items: twoGroups, orientation: 'horizontal' });
+
             await nextTick();
 
             const triggers = wrapper.element.querySelectorAll('.vc-nav-trigger');

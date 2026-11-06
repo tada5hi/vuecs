@@ -33,8 +33,6 @@ export const SEMANTIC_SCALES = [
     'info',
 ] as const;
 
-export type SemanticScaleName = typeof SEMANTIC_SCALES[number];
-
 /**
  * The 22 catalog palettes shipped with `@vuecs/design` (sourced
  * verbatim from Tailwind v4). Any of these can be assigned to a
@@ -66,27 +64,6 @@ export const COLOR_PALETTES = [
 ] as const;
 
 /**
- * Augmentation hook for community themes that extend the catalog with
- * their own palette names. Defaults to empty — `ColorPaletteName` is just
- * the 22-name Tailwind-derived catalog. A theme that ships extra palettes
- * widens the union via declaration merging:
- *
- *     declare module '@vuecs/design' {
- *         interface ExtraColorPaletteNames {
- *             'acme-blue': true;
- *             'acme-orange': true;
- *         }
- *     }
- *
- * Both the SPA composables (`@vuecs/theme-tailwind`'s `useColorPalette`,
- * etc.) and `@vuecs/nuxt`'s `colorPalette.value` option pick up the
- * extension automatically because both type against `ColorPaletteName`.
- */
-export interface ExtraColorPaletteNames {}
-
-export type ColorPaletteName = typeof COLOR_PALETTES[number] | keyof ExtraColorPaletteNames;
-
-/**
  * Tailwind-style 11-stop shade ladder. The same ladder appears in
  * every catalog entry (the standalone subpath's `palettes.css` and
  * Tailwind's own `theme.css` both emit `--color-<palette>-<shade>`
@@ -105,22 +82,3 @@ export const COLOR_PALETTE_SHADES = [
     '900',
     '950',
 ] as const;
-
-export type ColorPaletteShade = typeof COLOR_PALETTE_SHADES[number];
-
-/**
- * Canonical runtime palette config — a partial mapping of every
- * semantic scale to a catalog palette name. Used by every theme that
- * opts into runtime palette switching (`theme-tailwind`, `theme-bulma`,
- * and any future palette-aware theme).
- *
- * Both keys (`SemanticScaleName`) and values (`ColorPaletteName`)
- * widen automatically via declaration merging: `ExtraColorPaletteNames`
- * adds value-side names; the canonical scale list is fixed at six.
- *
- * Themes whose internal scale names diverge from the canonical six
- * declare a `scaleAliases` map on their `Theme.palette` slot — the
- * dispatcher translates input keys before calling `palette.handle`,
- * so the public-facing config still uses canonical names.
- */
-export type ColorPaletteConfig = Partial<Record<SemanticScaleName, ColorPaletteName>>;

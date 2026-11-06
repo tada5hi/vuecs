@@ -60,10 +60,12 @@ export function defineDataCollection<
     const ingest = (item: T) : T => (deep ? toRaw(item) : item);
 
     let hydrated = false;
+
     if (options.hydrate) {
         const snapshot = typeof options.hydrate === 'function' ?
             options.hydrate() :
             options.hydrate;
+
         if (snapshot) {
             dataRef.value = [...snapshot.data];
             totalRef.value = snapshot.total;
@@ -108,9 +110,11 @@ export function defineDataCollection<
         fetch: (meta, input) => options.load(meta, input),
         apply: (result) => {
             dataRef.value = result.data;
+
             if (typeof result.total === 'number') {
                 totalRef.value = result.total;
             }
+
             bag.patch(result.meta);
         },
     });
@@ -133,10 +137,16 @@ export function defineDataCollection<
     const create = (item: T, opts?: DataBufferedMutationOptions) => controller.enqueueOrApply(() => {
         const current = raw();
         const next = mutations.applyCreate(current, ingest(item));
-        if (next === current) return false;
+
+        if (next === current) {
+            return false;
+        }
+
         const delta = next.length - current.length;
+
         dataRef.value = next;
         adjustTotal(delta);
+
         return true;
     }, opts);
 
@@ -144,31 +154,46 @@ export function defineDataCollection<
         const current = raw();
         const incoming = ingest(item);
         const next = mutations.applyUpdate(current, incoming);
-        if (next === current) return false;
+
+        if (next === current) {
+            return false;
+        }
 
         if (deep) {
             // Keys onto the held row — it keeps its identity (and proxy).
             // Primitive rows have no keys to assign, so they still replace.
             const index = mutations.indexOf(current, incoming);
             const held = dataRef.value[index];
+
             if (isObject(held) && isObject(next[index])) {
                 assignInPlace(held, next[index] as Record<string, any>);
+
                 return true;
             }
         }
 
         dataRef.value = next;
+
         return true;
     }, opts);
 
     const del = (item: T, opts?: DataBufferedMutationOptions) => controller.enqueueOrApply(() => {
         const current = raw();
         const next = mutations.applyDelete(current, ingest(item));
-        if (next === current) return false;
+
+        if (next === current) {
+            return false;
+        }
+
         const delta = next.length - current.length;
-        if (delta === 0) return false;
+
+        if (delta === 0) {
+            return false;
+        }
+
         dataRef.value = next;
         adjustTotal(delta);
+
         return true;
     }, opts);
 

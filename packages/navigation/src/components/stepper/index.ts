@@ -7,7 +7,7 @@ export { default as VCStepperDescription } from './StepperDescription.vue';
 export { default as VCStepperSeparator } from './StepperSeparator.vue';
 
 export { provideStepperContext, useStepperContext } from './context';
-export type { StepperContext } from './context';
+export type { StepperContext } from './types';
 
 export type { StepperProps } from './Stepper.vue';
 export type { StepperItemProps, StepperItemSlotProps } from './StepperItem.vue';

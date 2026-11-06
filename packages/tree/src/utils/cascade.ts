@@ -42,6 +42,7 @@ export function normalize<Item>(index: TreeIndex<Item>, selected: Set<string>): 
 
     for (let i = index.order.length - 1; i >= 0; i -= 1) {
         const node = index.nodes.get(index.order[i]);
+
         if (!node || !node.resolved || node.childKeys.length === 0) {
             continue;
         }
@@ -52,6 +53,7 @@ export function normalize<Item>(index: TreeIndex<Item>, selected: Set<string>): 
 
         for (const childKey of node.childKeys) {
             const child = index.nodes.get(childKey);
+
             if (!child || child.disabled) {
                 continue;
             }
@@ -61,6 +63,7 @@ export function normalize<Item>(index: TreeIndex<Item>, selected: Set<string>): 
             if (indeterminate.has(childKey)) {
                 any = true;
                 all = false;
+
                 continue;
             }
 

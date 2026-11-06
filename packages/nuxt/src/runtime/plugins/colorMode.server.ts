@@ -37,7 +37,10 @@ export default defineNuxtPlugin({
     setup(nuxtApp: NuxtAppLike) {
         const config = useRuntimeConfig();
         const colorModeConfig = config.public.vuecs?.colorMode;
-        if (!colorModeConfig?.enabled) return;
+
+        if (!colorModeConfig?.enabled) {
+            return;
+        }
 
         const cookieName = colorModeConfig.cookieName || 'vc-color-mode';
         const cookie = useCookie<'light' | 'dark' | 'system' | undefined>(
@@ -47,13 +50,16 @@ export default defineNuxtPlugin({
 
         const stored = cookie.value;
         let effective: 'light' | 'dark' | undefined;
+
         if (stored === 'light' || stored === 'dark') {
             effective = stored;
         } else if (colorModeConfig.value === 'light' || colorModeConfig.value === 'dark') {
             effective = colorModeConfig.value;
         }
 
-        if (!effective) return;
+        if (!effective) {
+            return;
+        }
 
         const htmlAttrs: Record<string, string> = { class: effective };
 
@@ -68,6 +74,7 @@ export default defineNuxtPlugin({
 
         if (manager) {
             const captured = captureColorModeAttrs(manager.themes, effective);
+
             Object.assign(htmlAttrs, captured);
         }
 

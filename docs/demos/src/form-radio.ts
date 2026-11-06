@@ -9,6 +9,7 @@ const app = createApp({
         return () => h(FormRadio, { themeVariant: variantState.value });
     },
 });
+
 installVuecs(app);
 app.use(forms);
 app.mount('#app');

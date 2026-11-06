@@ -9,6 +9,7 @@ const app = createApp({
         return () => h(FormSelect, { themeVariant: variantState.value });
     },
 });
+
 installVuecs(app);
 app.use(formControls);
 app.mount('#app');

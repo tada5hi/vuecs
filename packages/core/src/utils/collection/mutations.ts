@@ -14,7 +14,11 @@ export function createCollectionMutations<T>(
 
     const indexOf = (arr: T[], item: T) : number => {
         const target = getItemKey(item);
-        if (target === undefined) return arr.indexOf(item);
+
+        if (target === undefined) {
+            return arr.indexOf(item);
+        }
+
         return arr.findIndex((candidate) => getItemKey(candidate) === target);
     };
 
@@ -22,13 +26,19 @@ export function createCollectionMutations<T>(
         if (flags.dedupCreated && indexOf(current, item) >= 0) {
             return current;
         }
+
         return [...current, item];
     };
 
     const applyUpdate = (current: T[], item: T) : T[] => {
         const idx = indexOf(current, item);
-        if (idx < 0) return current;
+
+        if (idx < 0) {
+            return current;
+        }
+
         const next = current.slice();
+
         if (flags.mergeOnUpdated) {
             if (options.merge) {
                 next[idx] = options.merge(current[idx] as object, item as object) as T;
@@ -40,25 +50,33 @@ export function createCollectionMutations<T>(
                     // eslint-disable-next-line no-console
                     console.warn('createCollectionMutations: mergeOnUpdated is set but no merge fn was provided; falling back to replace.');
                 }
+
                 next[idx] = item;
             }
         } else {
             next[idx] = item;
         }
+
         return next;
     };
 
     const applyDelete = (current: T[], item: T) : T[] => {
         const idx = indexOf(current, item);
+
         if (idx < 0) {
-            if (flags.filterDeleted) return current;
+            if (flags.filterDeleted) {
+                return current;
+            }
+
             // The reference filter exists for identity-less items. When it
             // removes nothing, preserve the ORIGINAL reference — callers key
             // off `next === current` to skip their write path, and a fresh
             // same-length array would fire it for a no-op.
             const next = current.filter((c) => c !== item);
+
             return next.length === current.length ? current : next;
         }
+
         return [...current.slice(0, idx), ...current.slice(idx + 1)];
     };
 

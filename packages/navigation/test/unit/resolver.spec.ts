@@ -50,6 +50,7 @@ describe('VCNavItems resolver', () => {
                 { name: 'Add', url: '/robots/add' },
             ] as NavigationItem[],
         });
+
         await nextTick();
 
         expect(linkCount(wrapper.element)).toBe(2);
@@ -63,6 +64,7 @@ describe('VCNavItems resolver', () => {
         ];
 
         const wrapper = buildApp({ data: resolver });
+
         await nextTick();
 
         expect(linkCount(wrapper.element)).toBe(3);
@@ -74,6 +76,7 @@ describe('VCNavItems resolver', () => {
         ];
 
         const wrapper = buildApp({ data: resolver });
+
         await nextTick();
         await nextTick();
 
@@ -92,6 +95,7 @@ describe('VCNavItems resolver', () => {
             ]);
 
         const wrapper = buildApp({ data: resolver });
+
         await nextTick();
         expect(linkCount(wrapper.element)).toBe(1);
 
@@ -105,6 +109,7 @@ describe('VCNavItems resolver', () => {
         const token: Ref<string | undefined> = ref(undefined);
         const resolver: NavigationResolver = async () => {
             await Promise.resolve();
+
             // read AFTER the await — auto-track can't see this
             return token.value ?
                 [
@@ -115,6 +120,7 @@ describe('VCNavItems resolver', () => {
         };
 
         const wrapper = buildApp({ data: resolver, watch: [token] });
+
         await nextTick();
         await nextTick();
         expect(linkCount(wrapper.element)).toBe(0);
@@ -130,6 +136,7 @@ describe('VCNavItems resolver', () => {
         let calls = 0;
         const resolver: NavigationResolver = () => {
             calls += 1;
+
             return [{ name: 'Overview', url: '/robots' }];
         };
 
@@ -139,6 +146,7 @@ describe('VCNavItems resolver', () => {
                 return () => h(VCNavItems, { data: resolver, ref: exposed });
             },
         });
+
         mount(App, {
             global: {
                 plugins: [{
@@ -152,7 +160,9 @@ describe('VCNavItems resolver', () => {
         });
 
         await nextTick();
+
         const before = calls;
+
         await exposed.value?.refresh();
         expect(calls).toBe(before + 1);
     });

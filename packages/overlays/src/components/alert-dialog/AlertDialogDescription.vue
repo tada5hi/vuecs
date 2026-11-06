@@ -21,6 +21,7 @@ export default defineComponent({
     props: alertDialogDescriptionProps,
     setup(props, { slots }) {
         const theme = useComponentTheme('alertDialog', props, alertDialogThemeDefaults);
+
         return () => h(
             AlertDialogDescription,
             { class: theme.value.description || undefined },

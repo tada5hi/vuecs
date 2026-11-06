@@ -15,13 +15,14 @@ import type {
 } from 'vue';
 import { defineComponent, h } from 'vue';
 import { ValidationSeverity } from '../constants';
-import type { ValidationMessages, ValidationMessagesArrayStyle } from '../type';
+import type { ValidationMessages, ValidationMessagesArrayStyle } from '../types';
 
 export type ValidationGroupThemeClasses = {
     item: string;
 };
 
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
     interface ThemeElements {
         validationGroup?: ThemeElementDefinition<ValidationGroupThemeClasses>;
     }
@@ -107,11 +108,14 @@ export default defineComponent({
             const resolved = theme.value;
 
             let errors: ValidationMessagesArrayStyle;
+
             if (Array.isArray(props.messages)) {
                 errors = props.messages;
             } else {
                 errors = [];
+
                 const keys = Object.keys(props.messages);
+
                 for (const key of keys) {
                     errors.push({ key, value: props.messages[key] });
                 }

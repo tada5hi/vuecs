@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 import {
-    afterEach, 
-    describe, 
-    expect, 
+    afterEach,
+    describe,
+    expect,
     it,
 } from 'vitest';
 import { mount } from '@vue/test-utils';
@@ -11,10 +11,13 @@ import vuecsElements, { VCCardPlaceholder } from '../../src';
 const plugins = [[vuecsElements, {}]] as const;
 
 describe('<VCCardPlaceholder>', () => {
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it('renders image + header + body + footer by default', () => {
         const wrapper = mount(VCCardPlaceholder, { global: { plugins: [...plugins] } });
+
         expect(wrapper.element.querySelector('.vc-card-placeholder-image')).not.toBeNull();
         expect(wrapper.element.querySelector('.vc-card-placeholder-header')).not.toBeNull();
         expect(wrapper.element.querySelector('.vc-card-placeholder-body')).not.toBeNull();
@@ -30,6 +33,7 @@ describe('<VCCardPlaceholder>', () => {
             },
             global: { plugins: [...plugins] },
         });
+
         expect(wrapper.element.querySelector('.vc-card-placeholder-image')).toBeNull();
         expect(wrapper.element.querySelector('.vc-card-placeholder-header')).toBeNull();
         expect(wrapper.element.querySelector('.vc-card-placeholder-footer')).toBeNull();
@@ -48,6 +52,7 @@ describe('<VCCardPlaceholder>', () => {
             global: { plugins: [...plugins] },
         });
         const body = wrapper.element.querySelector('.vc-card-placeholder-body')!;
+
         expect(body.querySelectorAll('.vc-placeholder').length).toBe(7);
     });
 
@@ -62,6 +67,7 @@ describe('<VCCardPlaceholder>', () => {
             global: { plugins: [...plugins] },
         });
         const body = wrapper.element.querySelector('.vc-card-placeholder-body')!;
+
         expect(body.querySelectorAll('.vc-placeholder').length).toBe(20);
     });
 
@@ -75,6 +81,7 @@ describe('<VCCardPlaceholder>', () => {
             },
             global: { plugins: [...plugins] },
         });
+
         // bodyLines === 0 → body section not rendered at all.
         expect(wrapper.element.querySelector('.vc-card-placeholder-body')).toBeNull();
     });

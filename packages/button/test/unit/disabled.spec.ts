@@ -31,14 +31,21 @@ const LinkStub = defineComponent({
     setup(props, { slots }) {
         return () => h(
             'a',
-            { href: props.to, onClick: () => { navigations.push(props.to); } },
+            {
+                href: props.to,
+                onClick: () => {
+                    navigations.push(props.to);
+                },
+            },
             slots.default?.(),
         );
     },
 });
 
 describe('<VCButton> disabled — native button', () => {
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it('uses the native disabled attribute, not the aria/tabindex fallback', () => {
         const el = mountButton({ props: { disabled: true } }).element as HTMLElement;
@@ -54,6 +61,7 @@ describe('<VCButton> disabled — native button', () => {
 
     it('is not marked disabled when enabled', () => {
         const el = mountButton().element as HTMLElement;
+
         expect((el as HTMLButtonElement).disabled).toBe(false);
         expect(el.hasAttribute('aria-disabled')).toBe(false);
     });
@@ -83,6 +91,7 @@ describe('<VCButton> disabled — non-native render targets (#1699)', () => {
         }).element as HTMLElement;
 
         const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+
         el.dispatchEvent(event);
 
         expect(event.defaultPrevented).toBe(true);
@@ -92,7 +101,12 @@ describe('<VCButton> disabled — non-native render targets (#1699)', () => {
         const clicks: string[] = [];
         const el = mountButton({
             props: { as: 'a', disabled: true },
-            attrs: { href: '/x', onClick: () => { clicks.push('consumer'); } },
+            attrs: {
+                href: '/x',
+                onClick: () => {
+                    clicks.push('consumer');
+                },
+            },
         }).element as HTMLElement;
 
         el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
@@ -139,6 +153,7 @@ describe('<VCButton> disabled — non-native render targets (#1699)', () => {
         expect(el.hasAttribute('tabindex')).toBe(false);
 
         const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+
         el.dispatchEvent(event);
         expect(event.defaultPrevented).toBe(false);
     });
@@ -153,6 +168,7 @@ describe('<VCButton> disabled — non-native render targets (#1699)', () => {
         expect(el.getAttribute('aria-busy')).toBe('true');
 
         const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+
         el.dispatchEvent(event);
         expect(event.defaultPrevented).toBe(true);
     });
@@ -166,10 +182,12 @@ describe('<VCButton> disabled — non-native render targets (#1699)', () => {
         await wrapper.setProps({ disabled: false });
 
         const el = wrapper.element as HTMLElement;
+
         expect(el.hasAttribute('aria-disabled')).toBe(false);
         expect(el.hasAttribute('tabindex')).toBe(false);
 
         const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+
         el.dispatchEvent(event);
         expect(event.defaultPrevented).toBe(false);
     });

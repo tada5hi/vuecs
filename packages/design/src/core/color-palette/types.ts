@@ -1,5 +1,11 @@
 import type { ComputedRef, Ref } from 'vue';
 
+
+import type { COLOR_PALETTES, COLOR_PALETTE_SHADES, SEMANTIC_SCALES  } from './catalog';
+
+
+
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public name and declaration merging.
 export interface UseColorPaletteReturn<T> {
     /** Read-only view of the current palette. */
     current: ComputedRef<T>;
@@ -16,6 +22,9 @@ export interface UseColorPaletteReturn<T> {
     extend(partial: Partial<T>): void;
 }
 
+
+
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public name and declaration merging.
 export interface BindColorPaletteOptions<T> {
     /** Render the palette value as a CSS string applied to `<style id="vc-color-palette">`. */
     render: (value: T) => string;
@@ -51,6 +60,7 @@ export interface BindColorPaletteOptions<T> {
  * a silent no-op. For per-call configuration with custom storage,
  * compose `bindColorPalette()` directly with your own ref.
  */
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public name and declaration merging.
 export interface UseColorPaletteOptions<T extends Record<string, unknown>> {
     /** Initial palette when no persisted value exists. Default: `{}` (cast to `T`). */
     initial?: T;
@@ -107,3 +117,46 @@ export interface UseColorPaletteOptions<T extends Record<string, unknown>> {
      */
     nonce?: string | (() => string | undefined);
 }
+
+export type SemanticScaleName = typeof SEMANTIC_SCALES[number];
+
+/**
+ * Augmentation hook for community themes that extend the catalog with
+ * their own palette names. Defaults to empty — `ColorPaletteName` is just
+ * the 22-name Tailwind-derived catalog. A theme that ships extra palettes
+ * widens the union via declaration merging:
+ *
+ *     declare module '@vuecs/design' {
+ *         interface ExtraColorPaletteNames {
+ *             'acme-blue': true;
+ *             'acme-orange': true;
+ *         }
+ *     }
+ *
+ * Both the SPA composables (`@vuecs/theme-tailwind`'s `useColorPalette`,
+ * etc.) and `@vuecs/nuxt`'s `colorPalette.value` option pick up the
+ * extension automatically because both type against `ColorPaletteName`.
+ */
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public name and declaration merging.
+export interface ExtraColorPaletteNames {}
+
+export type ColorPaletteName = typeof COLOR_PALETTES[number] | keyof ExtraColorPaletteNames;
+
+export type ColorPaletteShade = typeof COLOR_PALETTE_SHADES[number];
+
+/**
+ * Canonical runtime palette config — a partial mapping of every
+ * semantic scale to a catalog palette name. Used by every theme that
+ * opts into runtime palette switching (`theme-tailwind`, `theme-bulma`,
+ * and any future palette-aware theme).
+ *
+ * Both keys (`SemanticScaleName`) and values (`ColorPaletteName`)
+ * widen automatically via declaration merging: `ExtraColorPaletteNames`
+ * adds value-side names; the canonical scale list is fixed at six.
+ *
+ * Themes whose internal scale names diverge from the canonical six
+ * declare a `scaleAliases` map on their `Theme.palette` slot — the
+ * dispatcher translates input keys before calling `palette.handle`,
+ * so the public-facing config still uses canonical names.
+ */
+export type ColorPaletteConfig = Partial<Record<SemanticScaleName, ColorPaletteName>>;

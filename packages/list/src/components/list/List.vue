@@ -92,6 +92,7 @@ const isDev = (() => {
     // pulling `@types/node` into a browser-facing package.
     // eslint-disable-next-line unicorn/no-unnecessary-global-this
     const p = (globalThis as { process?: { env?: { NODE_ENV?: string } } }).process;
+
     return p !== undefined && p.env?.NODE_ENV !== 'production';
 })();
 
@@ -132,6 +133,7 @@ export const listThemeDefaults: ComponentThemeDefinition<ListThemeClasses> = {
  * resolved theme `classes`). Declared standalone so the facade alias
  * reads symmetrically with `<VCListItem>`'s.
  */
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
 export interface ListSlots {
     default?: (props: { classes: ListThemeClasses }) => unknown;
 }
@@ -234,7 +236,11 @@ const VCList = defineComponent({
         const selectionValue = computed(() => props.selection);
         const keyAt = (index: number): SelectionKey | undefined => {
             const item = state.data.value[index];
-            if (item === undefined) return undefined;
+
+            if (item === undefined) {
+                return undefined;
+            }
+
             return state.getItemKey(item);
         };
         const selection = useSelectionMachine({
@@ -255,20 +261,30 @@ const VCList = defineComponent({
         // `interactiveRows` pattern).
         const eligibleIndices = shallowRef<Set<number>>(new Set());
         const registerEligibleItem = (index: number) => {
-            if (eligibleIndices.value.has(index)) return;
+            if (eligibleIndices.value.has(index)) {
+                return;
+            }
+
             eligibleIndices.value.add(index);
             triggerRef(eligibleIndices);
         };
         const unregisterEligibleItem = (index: number) => {
-            if (!eligibleIndices.value.has(index)) return;
+            if (!eligibleIndices.value.has(index)) {
+                return;
+            }
+
             eligibleIndices.value.delete(index);
             triggerRef(eligibleIndices);
         };
         const firstTabStopIndex = computed<number | null>(() => {
             let min: number | null = null;
+
             for (const i of eligibleIndices.value) {
-                if (min === null || i < min) min = i;
+                if (min === null || i < min) {
+                    min = i;
+                }
             }
+
             return min;
         });
 

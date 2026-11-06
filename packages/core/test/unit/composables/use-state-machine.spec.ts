@@ -12,11 +12,13 @@ describe('useStateMachine', () => {
 
     it('initializes with the provided state', () => {
         const { state } = useStateMachine<State, Event>('closed', machine);
+
         expect(state.value).toBe('closed');
     });
 
     it('transitions on a known event', () => {
         const { state, dispatch } = useStateMachine<State, Event>('closed', machine);
+
         dispatch('OPEN');
         expect(state.value).toBe('open');
         dispatch('CLOSE');
@@ -25,12 +27,14 @@ describe('useStateMachine', () => {
 
     it('keeps the current state on an unknown event', () => {
         const { state, dispatch } = useStateMachine<State, Event>('closed', machine);
+
         dispatch('CLOSE'); // not a valid transition from `closed`
         expect(state.value).toBe('closed');
     });
 
     it('supports toggle-style transitions', () => {
         const { state, dispatch } = useStateMachine<State, Event>('closed', machine);
+
         dispatch('TOGGLE');
         expect(state.value).toBe('open');
         dispatch('TOGGLE');

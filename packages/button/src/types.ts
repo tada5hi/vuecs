@@ -1,5 +1,8 @@
 import type { CoreOptions } from '@vuecs/core';
 
+import type { buttonProps } from './props';
+import type { ExtractPublicPropTypes } from 'vue';
+
 export type Options = CoreOptions;
 
 export type ButtonColor = 'primary' | 'neutral' | 'success' | 'warning' | 'error' | 'info';
@@ -17,3 +20,5 @@ export type ButtonSlotProps = {
     loading: boolean;
     disabled: boolean;
 };
+
+export type ButtonProps = ExtractPublicPropTypes<typeof buttonProps>;

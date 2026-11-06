@@ -5,6 +5,7 @@ import { installIframeBridge } from './iframe-bridge';
 import { installVuecs } from './shared';
 
 const app = createApp(FormSelectSearchMultiple);
+
 installVuecs(app);
 app.use(formControls);
 app.mount('#app');

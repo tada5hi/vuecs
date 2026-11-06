@@ -33,6 +33,7 @@ function withTheme(component: any, options: Parameters<typeof installThemeManage
 describe('themableProps', () => {
     it('returns the standard themeClass + themeVariant prop declarations', () => {
         const declarations = themableProps<CardThemeClasses>();
+
         expect(declarations.themeClass.type).toBe(Object);
         expect(declarations.themeClass.default).toBeUndefined();
         expect(declarations.themeVariant.type).toBe(Object);
@@ -51,11 +52,13 @@ describe('themableProps', () => {
                     useThemeProps(props, 'size'),
                     cardDefaults,
                 );
+
                 return () => h('div', { class: theme.value.root });
             },
         });
 
         const wrapper = withTheme(Card);
+
         expect(wrapper.element.outerHTML).toContain('vc-card');
     });
 });
@@ -67,6 +70,7 @@ describe('useThemeProps', () => {
             themeVariant: { size: 'sm' },
         };
         const out = useThemeProps<CardThemeClasses>(props as any);
+
         expect(out.themeClass).toEqual({ root: 'a' });
         expect(out.themeVariant).toEqual({ size: 'sm' });
     });
@@ -78,6 +82,7 @@ describe('useThemeProps', () => {
             themeVariant: undefined,
         } as any;
         const out = useThemeProps<CardThemeClasses>(props, 'color', 'size');
+
         expect(out.themeVariant).toEqual({ color: 'primary', size: 'sm' });
     });
 
@@ -88,6 +93,7 @@ describe('useThemeProps', () => {
             themeVariant: undefined,
         } as any;
         const out = useThemeProps<CardThemeClasses>(props, 'color', 'size');
+
         expect(out.themeVariant).toEqual({ size: 'lg' });
     });
 
@@ -97,6 +103,7 @@ describe('useThemeProps', () => {
             themeVariant: { color: 'danger' },
         } as any;
         const out = useThemeProps<CardThemeClasses>(props, 'color');
+
         expect(out.themeVariant).toEqual({ color: 'primary' });
     });
 
@@ -106,6 +113,7 @@ describe('useThemeProps', () => {
             themeVariant: undefined,
         } as any;
         const out = useThemeProps<CardThemeClasses>(props, 'color');
+
         expect(out.themeVariant).not.toBe(out.themeVariant);
     });
 
@@ -121,6 +129,7 @@ describe('useThemeProps', () => {
                     useThemeProps(props, 'size'),
                     cardDefaults,
                 );
+
                 return () => h('div', { class: theme.value.root });
             },
         });

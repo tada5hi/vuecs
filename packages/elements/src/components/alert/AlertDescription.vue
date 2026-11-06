@@ -23,6 +23,7 @@ export default defineComponent({
             useThemeProps(props),
             alertDescriptionThemeDefaults,
         );
+
         return () => h(
             props.as,
             mergeProps(attrs, { class: theme.value.root || undefined }),

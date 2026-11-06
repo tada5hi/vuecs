@@ -10,6 +10,7 @@ const app = createApp({
         return () => h(Card, propState.value);
     },
 });
+
 installVuecs(app);
 app.use(elements);
 app.use(button);

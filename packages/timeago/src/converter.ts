@@ -1,12 +1,12 @@
 import type { App } from 'vue';
 import { formatDistanceToNow } from 'date-fns';
 import type {
-    Converter, 
-    ConverterOptions, 
+    Converter,
+    ConverterOptions,
     Locale,
-} from './type';
+} from './types';
 import {
-    inject, 
+    inject,
     provide,
 } from './utils';
 

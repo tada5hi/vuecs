@@ -29,6 +29,7 @@ describe('useComponentTheme', () => {
             mount(defineComponent({
                 setup() {
                     useComponentTheme('test', {}, { classes: { root: '' } });
+
                     return () => h('div');
                 },
             }));
@@ -40,7 +41,9 @@ describe('useComponentTheme', () => {
 
         mountWithTheme({}, () => {
             const theme = useComponentTheme('button', {}, { classes: { root: 'vc-btn', icon: 'vc-btn-icon' } });
+
             resolved = theme.value;
+
             return () => h('div');
         });
 
@@ -53,7 +56,9 @@ describe('useComponentTheme', () => {
 
         mountWithTheme({ themes: [preset] }, () => {
             const theme = useComponentTheme('button', {}, { classes: { root: 'vc-btn', icon: 'vc-btn-icon' } });
+
             resolved = theme.value;
+
             return () => h('div');
         });
 
@@ -66,7 +71,9 @@ describe('useComponentTheme', () => {
 
         mountWithTheme({ overrides: { elements: { button: { classes: { root: 'user-class' } } } } }, () => {
             const theme = useComponentTheme('button', {}, { classes: { root: 'vc-btn' } });
+
             resolved = theme.value;
+
             return () => h('div');
         });
 
@@ -82,7 +89,9 @@ describe('useComponentTheme', () => {
                 { themeClass: { root: 'instance-class' } },
                 { classes: { root: 'vc-btn' } },
             );
+
             resolved = theme.value;
+
             return () => h('div');
         });
 
@@ -98,7 +107,9 @@ describe('useComponentTheme', () => {
                 { themeClass: { root: extend('extra') } },
                 { classes: { root: 'vc-btn' } },
             );
+
             resolved = theme.value;
+
             return () => h('div');
         });
 
@@ -111,6 +122,7 @@ describe('useComponentTheme', () => {
 
         mountWithTheme({}, () => {
             themeRef = useComponentTheme('button', props, { classes: { root: 'vc-btn' } });
+
             return () => h('div', { class: themeRef.value.root });
         });
 
@@ -127,7 +139,9 @@ describe('useComponentTheme', () => {
 
         mountWithTheme({}, () => {
             const theme = useComponentTheme('button', {}, { classes: { root: 'vc-btn' } });
+
             resolved = theme.value;
+
             return () => h('div');
         });
 
@@ -141,9 +155,18 @@ describe('useComponentTheme', () => {
         const wrapper = mount(defineComponent({
             setup() {
                 themeRef = useComponentTheme('button', {}, { classes: { root: 'vc-btn' } });
+
                 return () => h('div', { class: themeRef.value.root });
             },
-        }), { global: { plugins: [[{ install: (app: any) => { manager = installThemeManager(app); } }]] } });
+        }), {
+            global: {
+                plugins: [[{
+                    install: (app: any) => {
+                        manager = installThemeManager(app);
+                    },
+                }]],
+            },
+        });
 
         expect(themeRef.value.root).toBe('vc-btn');
 
@@ -161,9 +184,18 @@ describe('useComponentTheme', () => {
         const wrapper = mount(defineComponent({
             setup() {
                 themeRef = useComponentTheme('button', {}, { classes: { root: 'vc-btn' } });
+
                 return () => h('div', { class: themeRef.value.root });
             },
-        }), { global: { plugins: [[{ install: (app: any) => { manager = installThemeManager(app); } }]] } });
+        }), {
+            global: {
+                plugins: [[{
+                    install: (app: any) => {
+                        manager = installThemeManager(app);
+                    },
+                }]],
+            },
+        });
 
         expect(themeRef.value.root).toBe('vc-btn');
 
@@ -181,6 +213,7 @@ describe('useComponentTheme', () => {
         const wrapper = mount(defineComponent({
             setup() {
                 themeRef = useComponentTheme('button', {}, { classes: { root: 'vc-btn' } });
+
                 return () => h('div', { class: themeRef.value.root });
             },
         }), {
@@ -196,6 +229,7 @@ describe('useComponentTheme', () => {
         expect(themeRef.value.root).toBe('vc-btn btn-light');
 
         const { themes } = (manager!);
+
         themes[0] = { elements: { button: { classes: { root: 'btn-dark' } } } };
         manager!.setThemes(themes);
         await nextTick();
@@ -221,7 +255,9 @@ describe('useComponentTheme', () => {
                     },
                 },
             );
+
             resolved = theme.value;
+
             return () => h('div');
         });
 
@@ -246,6 +282,7 @@ describe('useComponentTheme', () => {
                     },
                 },
             );
+
             return () => h('div', { class: themeRef.value.root });
         });
 

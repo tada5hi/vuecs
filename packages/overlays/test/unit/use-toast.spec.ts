@@ -21,19 +21,23 @@ describe('useToast (app-scoped)', () => {
         const Harness = defineComponent({
             setup() {
                 api = useToast();
+
                 return () => h('div');
             },
         });
+
         mount(Harness, {
             global: { plugins: [[vuecsOverlays, {}]] },
             attachTo: document.body,
         });
+
         return api;
     }
 
     it('add() enqueues and returns the id; dismiss() removes', () => {
         const toast = mountToast();
         const id = toast.add({ title: 'Saved' });
+
         expect(toast.entries.value.length).toBe(1);
         expect(toast.entries.value[0]?.id).toBe(id);
 
@@ -43,6 +47,7 @@ describe('useToast (app-scoped)', () => {
 
     it('clear() empties the queue', () => {
         const toast = mountToast();
+
         toast.add({ title: 'a' });
         toast.add({ title: 'b' });
         expect(toast.entries.value.length).toBe(2);
@@ -54,6 +59,7 @@ describe('useToast (app-scoped)', () => {
     it('is app-scoped — separate apps keep isolated queues', () => {
         const app1 = mountToast();
         const app2 = mountToast();
+
         app1.add({ title: 'only-in-app1' });
         expect(app1.entries.value.length).toBe(1);
         expect(app2.entries.value.length).toBe(0);
@@ -65,10 +71,15 @@ describe('useToast (app-scoped)', () => {
 
     it('generated ids never collide with a custom vc-toast-N id', () => {
         const toast = mountToast();
+
         toast.add({ id: 'vc-toast-1' }); // custom id in the generator's own format
+
         const generated = toast.add({}); // auto-generated
+
         expect(generated).not.toBe('vc-toast-1');
+
         const ids = toast.entries.value.map((e) => e.id);
+
         expect(new Set(ids).size).toBe(ids.length); // all unique
     });
 
@@ -76,6 +87,7 @@ describe('useToast (app-scoped)', () => {
         const app = createApp({ render: () => null });
         const first = provideToastManager(new ToastManager(), app);
         const second = provideToastManager(new ToastManager(), app);
+
         expect(second).toBe(first);
     });
 });

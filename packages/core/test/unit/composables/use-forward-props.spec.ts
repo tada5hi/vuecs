@@ -16,8 +16,10 @@ describe('useForwardProps', () => {
             },
             setup(props) {
                 const forwarded = useForwardProps(props);
+
                 return () => {
                     resolved = forwarded.value;
+
                     return h('div');
                 };
             },
@@ -36,8 +38,10 @@ describe('useForwardProps', () => {
             props: { color: { type: String, default: undefined } },
             setup(props) {
                 const forwarded = useForwardProps(props);
+
                 return () => {
                     resolved = forwarded.value;
+
                     return h('div');
                 };
             },
@@ -56,8 +60,10 @@ describe('useForwardProps', () => {
             props: { fooBar: { type: String, default: undefined } },
             setup(props) {
                 const forwarded = useForwardProps(props);
+
                 return () => {
                     resolved = forwarded.value;
+
                     return h('div');
                 };
             },
@@ -80,8 +86,10 @@ describe('useForwardProps', () => {
             props: { size: { type: String, default: 'md' } },
             setup(props) {
                 const forwarded = useForwardProps(props);
+
                 return () => {
                     resolved = forwarded.value;
+
                     return h('div');
                 };
             },

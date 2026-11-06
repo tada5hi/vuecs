@@ -155,6 +155,7 @@ const app = createApp({
         ]);
     },
 });
+
 installVuecs(app);
 app.use(tree);
 app.mount('#app');

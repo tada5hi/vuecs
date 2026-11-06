@@ -16,6 +16,7 @@ import type {} from '@vuecs/core';
  * augmentations harmless when both themes are installed.
  */
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
     interface Config {
         /**
          * CSP nonce written onto inline `<style>` tags created at

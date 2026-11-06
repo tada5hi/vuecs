@@ -1,6 +1,9 @@
 import type { CoreOptions } from '@vuecs/core';
 import type { Locale } from 'date-fns';
 
+import type { timeagoProps } from './props';
+import type { ExtractPublicPropTypes } from 'vue';
+
 export {
     Locale,
 };
@@ -36,3 +39,9 @@ type Options = CoreOptions & {
 export type {
     Options,
 };
+
+export type TimeagoThemeClasses = {
+    root: string;
+};
+
+export type TimeagoProps = ExtractPublicPropTypes<typeof timeagoProps>;

@@ -12,7 +12,9 @@ import vuecsTable, { VCTable } from '../../src';
 const plugins = [[vuecsTable, {}]] as const;
 
 describe('<VCTable> stacked responsive mode (plan 033 v0.2-D)', () => {
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it('does NOT emit data-responsive when the prop is omitted', () => {
         const wrapper = mount(defineComponent({
@@ -22,6 +24,7 @@ describe('<VCTable> stacked responsive mode (plan 033 v0.2-D)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const table = wrapper.element.querySelector('table');
+
         expect(table?.hasAttribute('data-responsive')).toBe(false);
     });
 
@@ -37,6 +40,7 @@ describe('<VCTable> stacked responsive mode (plan 033 v0.2-D)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const table = wrapper.element.querySelector('table');
+
         expect(table?.getAttribute('data-responsive')).toBe('true');
     });
 
@@ -55,6 +59,7 @@ describe('<VCTable> stacked responsive mode (plan 033 v0.2-D)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const cells = wrapper.element.querySelectorAll('tbody td');
+
         expect(cells[0].getAttribute('data-label')).toBe('Full Name');
         expect(cells[1].getAttribute('data-label')).toBe('Email Address');
     });

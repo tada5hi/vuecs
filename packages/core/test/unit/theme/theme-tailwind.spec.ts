@@ -17,6 +17,7 @@ describe('tailwindTheme', () => {
 
     it('should define formInput group addon classes with matching radii', () => {
         const entry = theme.elements.formInput as ThemeElementDefinition;
+
         expect(entry).toBeDefined();
         expect(entry.classes!.groupPrepend).toContain('rounded-l-md');
         expect(entry.classes!.groupAppend).toContain('rounded-r-md');
@@ -46,6 +47,7 @@ describe('tailwindTheme', () => {
         // Tailwind v4 deprecated the prefix `!class` form (silently no-ops);
         // the suffix `class!` form is the only working syntax.
         const entry = theme.elements.pagination as ThemeElementDefinition;
+
         expect(entry.classes!.linkActive).toContain('bg-primary-600!');
         expect(entry.classes!.linkActive).toContain('text-on-primary!');
     });
@@ -58,24 +60,24 @@ describe('tailwindTheme', () => {
         // resolved class strings would bypass `--vc-color-*` and must be
         // flagged by this guard.
         const RAW_PALETTES = [
-            'slate', 
-            'gray', 
-            'zinc', 
+            'slate',
+            'gray',
+            'zinc',
             'stone',
-            'red', 
-            'orange', 
-            'amber', 
-            'yellow', 
+            'red',
+            'orange',
+            'amber',
+            'yellow',
             'lime',
-            'green', 
-            'emerald', 
-            'teal', 
-            'cyan', 
+            'green',
+            'emerald',
+            'teal',
+            'cyan',
             'sky',
-            'blue', 
-            'indigo', 
-            'violet', 
-            'purple', 
+            'blue',
+            'indigo',
+            'violet',
+            'purple',
             'fuchsia',
             'pink',
             'rose',
@@ -90,8 +92,12 @@ describe('tailwindTheme', () => {
         );
 
         const check = (where: string, value: unknown): void => {
-            if (typeof value !== 'string') return;
+            if (typeof value !== 'string') {
+                return;
+            }
+
             const match = pattern.exec(value);
+
             if (match) {
                 throw new Error(
                     `${where} contains raw palette class "${match[0]}" — use semantic tokens (primary-/neutral-/success-/etc.)`,
@@ -121,8 +127,10 @@ describe('tailwindTheme', () => {
 
             // 3. compoundVariants — [{ variants, class: { slot: 'classes' } }, ...]
             const compounds = element.compoundVariants || [];
+
             for (const [i, compound] of compounds.entries()) {
                 const compoundClasses = compound?.class || {};
+
                 for (const [slot, value] of Object.entries(compoundClasses)) {
                     check(`theme.elements.${name}.compoundVariants[${i}].class.${slot}`, value);
                 }
@@ -132,6 +140,7 @@ describe('tailwindTheme', () => {
 
     it('should define navigation slots without rounded corners (flat by default)', () => {
         const entry = theme.elements.navigation as ThemeElementDefinition;
+
         expect(entry.classes!.link).not.toContain(' rounded ');
         expect(entry.classes!.group).toContain('list-none');
     });
@@ -139,6 +148,7 @@ describe('tailwindTheme', () => {
     it('should define list slots', () => {
         const list = theme.elements.list as ThemeElementDefinition;
         const listItem = theme.elements.listItem as ThemeElementDefinition;
+
         expect(list.classes!.root).toContain('flex');
         expect(listItem.classes!.root).toContain('flex-row');
     });
@@ -147,6 +157,7 @@ describe('tailwindTheme', () => {
 describe('merge helper', () => {
     it('should conform to the ClassesMergeFn (base, override) => string signature', () => {
         const result = merge('px-2 py-1', 'px-4');
+
         expect(typeof result).toBe('string');
         expect(result).toContain('px-4');
         // twMerge resolves the px conflict, preserving py-1 from base.

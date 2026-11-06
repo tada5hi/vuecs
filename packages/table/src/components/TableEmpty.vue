@@ -1,9 +1,9 @@
 <script lang="ts">
-import { 
-    computed, 
-    defineComponent, 
-    h, 
-    mergeProps, 
+import {
+    computed,
+    defineComponent,
+    h,
+    mergeProps,
 } from 'vue';
 import type { ExtractPublicPropTypes } from 'vue';
 import {
@@ -46,7 +46,9 @@ export default defineComponent({
 
         const themeProps = useThemeProps(props);
         const mergedThemeProps = {
-            get themeClass() { return themeProps.themeClass; },
+            get themeClass() {
+                return themeProps.themeClass;
+            },
             get themeVariant() {
                 return {
                     ...(themeProps.themeVariant ?? {}),
@@ -59,16 +61,23 @@ export default defineComponent({
         const shouldRender = computed(() => {
             // Empty band renders only when there's no data AND we're not busy
             // (busy + no-data is the loading-band's first-load case).
-            if (!ctx) return true;
+            if (!ctx) {
+                return true;
+            }
+
             return ctx.data.value.length === 0 && !ctx.busy.value;
         });
 
         const resolvedColspan = computed(() => props.colspan ?? ctx?.colspan.value ?? 1);
 
         return () => {
-            if (!shouldRender.value) return null;
+            if (!shouldRender.value) {
+                return null;
+            }
+
             const cellContent = slots.default?.() ??
                 (props.filtered ? defaults.value.filteredContent : defaults.value.content);
+
             // ARIA live-region attributes (`role`, `aria-live`) do NOT
             // belong on `<tbody>` — they override the native `rowgroup`
             // semantics and break table-structure recognition for

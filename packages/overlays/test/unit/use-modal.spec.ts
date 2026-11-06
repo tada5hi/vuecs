@@ -1,8 +1,8 @@
-import { 
-    describe, 
-    expect, 
-    it, 
-    vi, 
+import {
+    describe,
+    expect,
+    it,
+    vi,
 } from 'vitest';
 import { defineComponent, h } from 'vue';
 import { useModal } from '../../src';
@@ -14,6 +14,7 @@ const View3 = defineComponent({ name: 'View3', render: () => h('div', '3') });
 describe('useModal', () => {
     it('starts closed with empty stack', () => {
         const m = useModal();
+
         expect(m.isOpen.value).toBe(false);
         expect(m.depth.value).toBe(0);
         expect(m.currentView.value).toBeUndefined();
@@ -22,6 +23,7 @@ describe('useModal', () => {
 
     it('open() with a view sets the stack and opens', () => {
         const m = useModal();
+
         m.open({ component: View1 });
         expect(m.isOpen.value).toBe(true);
         expect(m.depth.value).toBe(1);
@@ -30,6 +32,7 @@ describe('useModal', () => {
 
     it('open() with no view falls back to initialView', () => {
         const m = useModal({ initialView: { component: View1 } });
+
         m.open();
         expect(m.depth.value).toBe(1);
         expect(m.currentView.value?.component).toBe(View1);
@@ -37,6 +40,7 @@ describe('useModal', () => {
 
     it('open() without view or initialView still opens', () => {
         const m = useModal();
+
         m.open();
         expect(m.isOpen.value).toBe(true);
         expect(m.depth.value).toBe(0);
@@ -45,6 +49,7 @@ describe('useModal', () => {
     it('close() clears the stack and fires onClose', () => {
         const onClose = vi.fn();
         const m = useModal({ onClose });
+
         m.open({ component: View1 });
         m.pushView({ component: View2 });
         m.close();
@@ -55,6 +60,7 @@ describe('useModal', () => {
 
     it('pushView() adds to the stack and opens if needed', () => {
         const m = useModal();
+
         m.pushView({ component: View1 });
         expect(m.isOpen.value).toBe(true);
         expect(m.depth.value).toBe(1);
@@ -67,6 +73,7 @@ describe('useModal', () => {
 
     it('popView() goes back when there is history', () => {
         const m = useModal();
+
         m.pushView({ component: View1 });
         m.pushView({ component: View2 });
         m.pushView({ component: View3 });
@@ -83,6 +90,7 @@ describe('useModal', () => {
     it('popView() at the bottom of the stack closes the modal', () => {
         const onClose = vi.fn();
         const m = useModal({ onClose });
+
         m.pushView({ component: View1 });
 
         m.popView();
@@ -94,6 +102,7 @@ describe('useModal', () => {
     it('does NOT fire onClose when close() is called on an already-closed modal', () => {
         const onClose = vi.fn();
         const m = useModal({ onClose });
+
         // Already closed — close() should be a no-op, not re-fire onClose.
         m.close();
         expect(onClose).not.toHaveBeenCalled();
@@ -102,6 +111,7 @@ describe('useModal', () => {
     it('does NOT fire onClose when popView() runs on an empty stack', () => {
         const onClose = vi.fn();
         const m = useModal({ onClose });
+
         // No views pushed yet, modal is closed → popView falls through to
         // close() but onClose must not double-fire.
         m.popView();
@@ -111,6 +121,7 @@ describe('useModal', () => {
     it('does NOT fire onClose on duplicate setOpen(false)', () => {
         const onClose = vi.fn();
         const m = useModal({ onClose });
+
         m.open({ component: View1 });
         m.setOpen(false);
         expect(onClose).toHaveBeenCalledOnce();
@@ -121,6 +132,7 @@ describe('useModal', () => {
 
     it('replaceView() swaps the entire stack', () => {
         const m = useModal();
+
         m.pushView({ component: View1 });
         m.pushView({ component: View2 });
         m.replaceView({ component: View3 });
@@ -130,12 +142,14 @@ describe('useModal', () => {
 
     it('replaceView() opens the modal if it was closed', () => {
         const m = useModal();
+
         m.replaceView({ component: View1 });
         expect(m.isOpen.value).toBe(true);
     });
 
     it('setOpen(true|false) drives the v-model contract', () => {
         const m = useModal({ initialView: { component: View1 } });
+
         m.setOpen(true);
         expect(m.isOpen.value).toBe(true);
         expect(m.depth.value).toBe(1);
@@ -147,6 +161,7 @@ describe('useModal', () => {
 
     it('hasHistory toggles correctly across pushView / popView', () => {
         const m = useModal();
+
         m.pushView({ component: View1 });
         expect(m.hasHistory.value).toBe(false);
         m.pushView({ component: View2 });

@@ -1,11 +1,11 @@
 <script lang="ts">
-import { 
-    computed, 
-    defineComponent, 
-    h, 
-    mergeProps, 
-    onBeforeUnmount, 
-    onMounted, 
+import {
+    computed,
+    defineComponent,
+    h,
+    mergeProps,
+    onBeforeUnmount,
+    onMounted,
 } from 'vue';
 import type { ExtractPublicPropTypes, PropType } from 'vue';
 import { themableProps, useComponentTheme, useThemeProps } from '@vuecs/core';
@@ -27,12 +27,21 @@ function renderHeadContent(args: {
     onSelectorClick: () => void;
     defaultSlot: (() => unknown) | undefined;
 }): unknown {
-    if (!args.isSelector) return args.defaultSlot?.();
+    if (!args.isSelector) {
+        return args.defaultSlot?.();
+    }
+
     // Empty in single mode — "select-all" doesn't apply.
-    if (args.selectionMode === 'single') return null;
+    if (args.selectionMode === 'single') {
+        return null;
+    }
+
     // No selection mode at all → fall back to whatever the consumer
     // put in the slot so the column doesn't visually collapse.
-    if (args.selectionMode === undefined) return args.defaultSlot?.();
+    if (args.selectionMode === undefined) {
+        return args.defaultSlot?.();
+    }
+
     return h('input', {
         type: 'checkbox',
         class: 'vc-table-selector-checkbox',
@@ -106,6 +115,7 @@ export default defineComponent({
         // colspan. The `<VCTableFooter>` provides a no-op variant, so
         // cells in the footer skip this.
         const countCtx = useHeadCellCountContext();
+
         onMounted(() => countCtx?.register());
         onBeforeUnmount(() => countCtx?.unregister());
 
@@ -114,18 +124,28 @@ export default defineComponent({
         // Sort state is `SortDescriptor[]` since v1.x-B. Find THIS
         // column's entry to drive the indicator arrow + numeric badge.
         const sortDirection = computed<SortDirection | null>(() => {
-            if (!props.sortable || !props.columnKey || !ctx) return null;
+            if (!props.sortable || !props.columnKey || !ctx) {
+                return null;
+            }
+
             const found = ctx.sort.value.find((s) => s.key === props.columnKey);
+
             return found ? found.direction : null;
         });
         const sortIndex = computed<number | null>(() => {
-            if (!props.sortable || !props.columnKey || !ctx) return null;
+            if (!props.sortable || !props.columnKey || !ctx) {
+                return null;
+            }
+
             const i = ctx.sort.value.findIndex((s) => s.key === props.columnKey);
+
             return i < 0 ? null : i + 1;
         });
 
         const mergedThemeProps = {
-            get themeClass() { return themeProps.themeClass; },
+            get themeClass() {
+                return themeProps.themeClass;
+            },
             get themeVariant() {
                 return {
                     ...(themeProps.themeVariant ?? {}),
@@ -138,22 +158,44 @@ export default defineComponent({
         // Smart scope default — col / colgroup / rowgroup per the multi-axis
         // span hints. Consumers can still override via `:scope`.
         const resolvedScope = computed(() => {
-            if (props.scope) return props.scope;
-            if (props.colspan && props.colspan > 1) return 'colgroup';
-            if (props.rowspan && props.rowspan > 1) return 'rowgroup';
+            if (props.scope) {
+                return props.scope;
+            }
+
+            if (props.colspan && props.colspan > 1) {
+                return 'colgroup';
+            }
+
+            if (props.rowspan && props.rowspan > 1) {
+                return 'rowgroup';
+            }
+
             return 'col';
         });
 
         const ariaSort = computed(() => {
-            if (!props.sortable) return undefined;
+            if (!props.sortable) {
+                return undefined;
+            }
+
             const d = sortDirection.value;
-            if (d === 'asc') return 'ascending';
-            if (d === 'desc') return 'descending';
+
+            if (d === 'asc') {
+                return 'ascending';
+            }
+
+            if (d === 'desc') {
+                return 'descending';
+            }
+
             return 'none';
         });
 
         function onClick(event: globalThis.MouseEvent) {
-            if (!props.sortable || !props.columnKey) return;
+            if (!props.sortable || !props.columnKey) {
+                return;
+            }
+
             event.preventDefault();
             ctx?.setSort(props.columnKey, { append: event.shiftKey });
         }
@@ -169,14 +211,25 @@ export default defineComponent({
         // (`getRowKey(row, i) ?? props.index`) so a misbehaving
         // resolver can't push invalid keys into the select-all set.
         const allRowKeys = computed<(string | number)[]>(() => {
-            if (!ctx) return [];
+            if (!ctx) {
+                return [];
+            }
+
             const data = ctx.data.value;
+
             return data.map((row, i) => ctx.getRowKey(row, i) ?? i);
         });
         const selectAllState = computed<'all' | 'some' | 'none'>(() => {
-            if (!ctx || ctx.selection.mode.value !== 'multi') return 'none';
+            if (!ctx || ctx.selection.mode.value !== 'multi') {
+                return 'none';
+            }
+
             const keys = allRowKeys.value;
-            if (keys.length === 0) return 'none';
+
+            if (keys.length === 0) {
+                return 'none';
+            }
+
             // Pre-build a Set from the current selection so membership
             // checks are O(1) per row — `isSelected` falls back to
             // `Array.includes`, making the worst case O(visible *
@@ -185,15 +238,34 @@ export default defineComponent({
             const selectedSet = new Set<string | number>(
                 Array.isArray(sel) ? sel : [],
             );
-            if (selectedSet.size === 0) return 'none';
+
+            if (selectedSet.size === 0) {
+                return 'none';
+            }
+
             let selectedCount = 0;
-            for (const k of keys) if (selectedSet.has(k)) selectedCount += 1;
-            if (selectedCount === 0) return 'none';
-            if (selectedCount === keys.length) return 'all';
+
+            for (const k of keys) {
+                if (selectedSet.has(k)) {
+                    selectedCount += 1;
+                }
+            }
+
+            if (selectedCount === 0) {
+                return 'none';
+            }
+
+            if (selectedCount === keys.length) {
+                return 'all';
+            }
+
             return 'some';
         });
         function onSelectorClick() {
-            if (!ctx || ctx.selection.mode.value !== 'multi') return;
+            if (!ctx || ctx.selection.mode.value !== 'multi') {
+                return;
+            }
+
             // Cross-page-safe semantics: union with the current
             // selection rather than overwriting. This way, a row
             // selected on page 1 doesn't get clobbered when the user
@@ -203,23 +275,34 @@ export default defineComponent({
             const existing = new Set<string | number>(
                 Array.isArray(current) ? current : [],
             );
+
             if (selectAllState.value === 'all') {
                 // Clear every VISIBLE row's key from the existing set;
                 // off-screen selections are preserved.
-                for (const k of allRowKeys.value) existing.delete(k);
+                for (const k of allRowKeys.value) {
+                    existing.delete(k);
+                }
             } else {
                 // Add every visible row's key to the existing set.
-                for (const k of allRowKeys.value) existing.add(k);
+                for (const k of allRowKeys.value) {
+                    existing.add(k);
+                }
             }
+
             ctx.selection.setValue(Array.from(existing));
         }
 
         function onKeydown(event: globalThis.KeyboardEvent) {
-            if (!props.sortable || !props.columnKey) return;
-            if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault();
-                ctx?.setSort(props.columnKey, { append: event.shiftKey });
+            if (!props.sortable || !props.columnKey) {
+                return;
             }
+
+            if (!(event.key === 'Enter' || event.key === ' ')) {
+                return;
+            }
+
+            event.preventDefault();
+            ctx?.setSort(props.columnKey, { append: event.shiftKey });
         }
 
         return () => h(

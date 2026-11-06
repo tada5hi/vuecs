@@ -25,6 +25,7 @@ export default defineComponent({
     props: contextMenuLabelProps,
     setup(props, { slots }) {
         const theme = useComponentTheme('contextMenu', props, contextMenuThemeDefaults);
+
         return () => h(
             ContextMenuLabel,
             {
