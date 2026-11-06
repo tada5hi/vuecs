@@ -23,7 +23,7 @@ npm run lint           # ESLint on all packages
 npm run lint:fix       # Auto-fix lint issues
 ```
 
-- **Development Node.js**: 24.11+ on the 24.x line, or 26+ (CI runs on 24). Published runtime requirements are declared in each package manifest.
+- **Development Node.js**: 24.15+ on the 24.x line, or 26+ (CI runs on 24). Published runtime requirements are declared in each package manifest.
 - **Package manager**: npm (workspaces)
 - **Task runner**: Nx (caches build and test)
 
