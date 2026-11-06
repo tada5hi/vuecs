@@ -76,6 +76,8 @@ All four mount the same demo views from `examples/_shared/` (private workspace p
 
 ## Detailed Guides
 
+
+AGENTS.md is the loaded entry point and the guide index. Read the linked guides when working on their topics.
 - **[Project Structure](.agents/structure.md)** — Monorepo layout, package organization, nested core re-exports, build outputs, and docs site layout
 - **[Architecture](.agents/architecture.md)** — Vue plugin pattern, theme system, navigation registry/resolver, and theme architecture
 - **[Testing](.agents/testing.md)** — Vitest setup, test inventory, Nx cache caveat, and the jsdom Reka recipe
