@@ -23,7 +23,7 @@ npm run lint           # ESLint on all packages
 npm run lint:fix       # Auto-fix lint issues
 ```
 
-- **Development Node.js**: 24.11+ on the 24.x line, or 26+ (CI runs on 24). Published runtime requirements are declared in each package manifest.
+- **Development Node.js**: 24.15+ on the 24.x line, or 26+ (CI runs on 24). Published runtime requirements are declared in each package manifest.
 - **Package manager**: npm (workspaces)
 - **Task runner**: Nx (caches build and test)
 
@@ -76,6 +76,7 @@ All four mount the same demo views from `examples/_shared/` (private workspace p
 
 ## Detailed Guides
 
+
 - **[Project Structure](.agents/structure.md)** — Monorepo layout, package organization, nested core re-exports, build outputs, and docs site layout
 - **[Architecture](.agents/architecture.md)** — Vue plugin pattern, theme system, navigation registry/resolver, and theme architecture
 - **[Testing](.agents/testing.md)** — Vitest setup, test inventory, Nx cache caveat, and the jsdom Reka recipe
@@ -86,7 +87,7 @@ All four mount the same demo views from `examples/_shared/` (private workspace p
 Keep the guides factual and focused on contracts a future change could silently break.
 
 - Keep existing commands, paths and factual descriptions current. Add guide content only for an invariant or cross-cutting rule. Put defect stories and verification details in the PR, and user-facing changes in the documentation site or release notes.
-- Keep subsystem detail in `.agents/topics/` and link it from the relevant guide; do not import topic files into `CLAUDE.md`.
+- Keep subsystem detail in `.agents/topics/` and link it from the relevant guide.
 - Describe current behavior and cite issues or PRs, rather than local plan files or a running history of completed work.
 - `npm run lint` enforces the shared config's agent-doc size, import-budget and history checks. Preserve the critical contracts when splitting a guide.
 
