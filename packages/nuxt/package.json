@@ -2,7 +2,7 @@
     "name": "@vuecs/nuxt",
     "version": "1.2.2",
     "type": "module",
-    "description": "Nuxt module for vuecs — auto-imports @vuecs/design tokens and ships SSR-safe color-mode, palette, and locale plugins. Theme-agnostic; dispatches palette/colorMode runtime hooks through whichever themes the consumer installs.",
+    "description": "Nuxt module for vuecs \u2014 auto-imports @vuecs/design tokens and ships SSR-safe color-mode, palette, and locale plugins. Theme-agnostic; dispatches palette/colorMode runtime hooks through whichever themes the consumer installs.",
     "exports": {
         "./package.json": "./package.json",
         ".": {
@@ -35,7 +35,8 @@
     },
     "scripts": {
         "build": "rimraf dist && nuxt-module-build build --fail-on-warn=false",
-        "prepack": "npm run build"
+        "prepack": "npm run build",
+        "test": "npm run build && tsc --noEmit -p test/tsconfig.json"
     },
     "dependencies": {
         "@nuxt/kit": "^4.6.3",

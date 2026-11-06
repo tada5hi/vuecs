@@ -179,3 +179,5 @@ Each package has its own `tsdown.config.ts`.
 | `commitlint.config.js` | Commit message validation (extends `@tada5hi/commitlint-config`) |
 | `tsconfig.build.json` | Base TypeScript config (ESNext target, declarations enabled) |
 | `tsconfig.json` | Root config extending build config with `noEmit` |
+
+The [package contract inventory](topics/package-inventory.md) maps each workspace to its public integration surface.
