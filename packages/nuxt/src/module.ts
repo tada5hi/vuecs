@@ -213,3 +213,12 @@ export default defineNuxtPlugin({
         ]);
     },
 });
+
+// eslint-disable-next-line @tada5hi/no-reexport-shims -- module.ts is the published Nuxt entry point; preserve its named option types.
+export type {
+    ColorModeOptions,
+    ColorPaletteOptions,
+    CookieOptions,
+    LocaleOptions,
+    ModuleOptions,
+} from './types';

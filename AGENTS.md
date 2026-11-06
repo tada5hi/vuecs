@@ -1,5 +1,3 @@
-<!-- NOTE: Keep this file and all corresponding files in the .agents directory updated as the project evolves. When making architectural changes, adding new patterns, or discovering important conventions, update the relevant sections. -->
-
 # vuecs — Agent Guide
 
 A Vue 3 **theming framework** with shipped components — published as scoped `@vuecs/*` packages on npm.
@@ -45,7 +43,7 @@ Versions are owned by release-please — read them from `.release-please-manifes
 | `@vuecs/gravatar` | Gravatar avatar component — composes `<VCAvatar>` from `@vuecs/elements` for fallback support (DOM shape changed; major bump on next release-please run) |
 | `@vuecs/icon` | `<VCIcon>` component — thin Iconify wrapper for vuecs's icon-string-prop slots and consumer slot content |
 | `@vuecs/link` | Router-aware link component (vue-router/nuxt). Public prop type is `LinkProps`, derived from the prop declaration via `ExtractPublicPropTypes` — the hand-written `LinkProperties` mirror (stale, and index-signature'd so typos compiled) was removed in #1705. |
-| `@vuecs/list` | Compound list (List / Body / Item / Empty / Loading) + `defineList()` factory + `useList()` / `useListItem()` injectors + built-in `v-model:selection` (single / multi, ARIA listbox). Header / footer / item-text / item-actions are consumer markup driven by slot-prop class strings. `VCList` / `VCListItem` are **generic over `Item`** so `<VCListItem :data>`'s `#default` slot (and `<VCList>`'s `:data` / `:state`) infer the consumer's row type (issue #1660 — same `defineComponent` + generic-cast facade as `@vuecs/table`; context-reading parts stay non-generic). Successor to `@vuecs/list-controls` — clean break. Its identity + pure mutation machinery was promoted to `@vuecs/core` in (public surface unchanged). |
+| `@vuecs/list` | Compound list (List / Body / Item / Empty / Loading) + `defineList()` factory + `useList()` / `useListItem()` injectors + built-in `v-model:selection` (single / multi, ARIA listbox). Header / footer / item-text / item-actions are consumer markup driven by slot-prop class strings. `VCList` / `VCListItem` are **generic over `Item`** so `<VCListItem :data>`'s `#default` slot (and `<VCList>`'s `:data` / `:state`) infer the consumer's row type (issue #1660 — same `defineComponent` + generic-cast facade as `@vuecs/table`; context-reading parts stay non-generic). Successor to `@vuecs/list-controls` — clean break. Shared identity and mutation helpers live in `@vuecs/core`. |
 | `@vuecs/locale` | Browser-language-aware, resettable locale source. `useNavigatorLanguage`-backed (via `@vueuse/core`); source is a BCP-47 tag or the `'auto'` sentinel (color-mode `'system'` analog) that defers to the browser. Install plugin bridges the resolved value into `@vuecs/core`'s `Config['locale']`, persists the source, and syncs `<html lang>`. `useLocaleManager()` exposes `set` (apply a backend-saved override) / `reset` (back to `'auto'`) / `source` / `resolved` / `isAuto`; `bindLocale()` is the lower-level building block (parallels `bindColorMode`). Read-side consumers use `useLocale()` from `@vuecs/core`. |
 | `@vuecs/navigation` | Multi-level navigation — per-call-site `:data` items + a shared reactive registry for dependent navs + `<VCStepper>` compound for multi-step wizards + the `<VCBreadcrumb>` compound (7 parts, generic over `Item`; `:items` driver / manual compound / registry-`activeTrail` derivation; `useBreadcrumb()` app-scoped push/pop manager, `useBreadcrumbItems()` route-meta floor, `useBreadcrumbLeaf()` dynamic-`/:id` leaf override) |
 | `@vuecs/nuxt` | Theme-agnostic Nuxt module — auto-imports `@vuecs/design` tokens, ships SSR-safe color-mode + palette + locale plugins (`useColorMode` / `useColorPalette` / `useLocale` / `useLocaleManager` auto-imports). Dispatches palette + colorMode runtime hooks through whichever themes the consumer installs. The cookie-backed locale plugin is universal (server+client), resolves `'auto'` from `Accept-Language` server-side, bridges into `Config['locale']`, and emits `<html lang>`. Optional `themes: string[]` config auto-generates a plugin that installs listed theme packages. |
@@ -101,11 +99,20 @@ All four mount the same demo views from `examples/_shared/` (private workspace p
 - **[Testing](.agents/testing.md)** — Vitest setup, test inventory, Nx cache caveat, and the jsdom Reka recipe
 - **[Conventions](.agents/conventions.md)** — Commit messages, linting, release-please, CI/CD, and **documentation update rules**
 
+### Writing agent docs
+
+Keep the guides factual and focused on contracts a future change could silently break.
+
+- Update an existing line when an invariant or cross-cutting rule changes. Put defect stories and verification details in the PR, and user-facing changes in the documentation site or release notes.
+- Keep subsystem detail in `.agents/topics/` and link it from the relevant guide; do not import topic files into `CLAUDE.md`.
+- Describe current behavior and cite issues or PRs, rather than local plan files or a running history of completed work.
+- `npm run lint` enforces the shared config's agent-doc size, import-budget and history checks. Preserve the critical contracts when splitting a guide.
+
 ## External References
 
 vuecs draws directly from upstream projects. When working on related areas, read the matching reference for context, version snapshots, and concept mappings:
 
-- **[Tailwind CSS](.agents/references/tailwind.md)** — required runtime for `@vuecs/theme-tailwind` (and any consumer using vuecs's Tailwind utility classes / runtime palette switching). v4-only; documents our JIT-internals dependency on `@source inline()` palette emission. `@vuecs/design` is Tailwind-agnostic since
+- **[Tailwind CSS](.agents/references/tailwind.md)** — required runtime for `@vuecs/theme-tailwind` (and any consumer using vuecs's Tailwind utility classes / runtime palette switching). v4-only; documents our JIT-internals dependency on `@source inline()` palette emission. `@vuecs/design` remains theme-agnostic.
 - **[Nuxt UI](.agents/references/nuxt-ui.md)** — primary inspiration for the design-token + runtime palette + dark-mode-via-tokens architecture. Useful when watching for upstream patterns to adopt
 - **[Reka UI](.agents/references/reka-ui.md)** — headless Vue 3 primitives (Vue port of Radix UI; the layer Nuxt UI is built on). Source of architectural lessons (compound components, `data-state` styling, headless composables, `ConfigProvider`) and the lower-layer dep underneath `@vuecs/overlays`, `@vuecs/pagination`, and the Reka-backed `@vuecs/forms` family
 

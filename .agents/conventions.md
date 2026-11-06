@@ -10,7 +10,7 @@ type(scope): description
 # Examples:
 feat(navigation): add keyboard navigation support
 fix(form-controls): correct checkbox toggle state
-chore(deps): bump rollup to v4.58
+build: update bundler tooling
 ```
 
 ## Linting
@@ -131,8 +131,7 @@ primitive (e.g. the Card compound bands), the inner render target is
 **`VCPrimitive` from `@vuecs/core`**, NOT `Primitive` from `reka-ui`.
 `VCPrimitive` is a line-for-line port of Reka's `Primitive` kept in
 `@vuecs/core` so `@vuecs/core` (and any component that uses it) stays
-free of a runtime `reka-ui` dep. See
-([`.agents/plans/034-vc-primitive-wrapper.md`](plans/034-vc-primitive-wrapper.md)).
+free of a runtime `reka-ui` dependency. Read the [primitive contract](topics/reka-primitives.md).
 Themed Reka primitives (DialogContent, PopoverContent, StepperRoot,
 …) keep importing from `reka-ui` directly — the wrap-in-VC contract
 applies to the bare `Primitive` only.
@@ -478,10 +477,10 @@ related controls into a single labeled row.
    - Sidebar entry in `docs/src/.vitepress/config.mts` (grouped by package)
    - Row in `docs/src/components/index.md` under the matching package section
    - If the package adds new exports, plugin install glue, or auto-imports — update `docs/src/.vitepress/theme/index.ts` so demos can use it
-7. If the package ships its own CSS, add the `style` conditional export in `package.json` so consumers can use `@import "@vuecs/<name>"` (see [architecture.md → Short-form CSS imports](architecture.md))
+7. If the package ships its own CSS, add the `style` conditional export in `package.json` so consumers can use `@import "@vuecs/<name>"` (see [short-form CSS imports](topics/design-system.md#short-form-css-imports))
 
 ## References
-External project references live in .agents/references/. When looking up source code in a referenced project (e.g., tsoa), always update the corresponding reference file with:
+External project references live in .agents/references/. When looking up source code in a referenced project (Reka UI, Nuxt UI or Tailwind CSS), always update the corresponding reference file with:
 
 The source file path / function name in the external project
 The corresponding vuecs file path / function name
