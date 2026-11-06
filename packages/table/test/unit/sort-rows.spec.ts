@@ -46,6 +46,7 @@ const data: Row[] = [
 describe('sortRows', () => {
     it('empty sorts → returns a shallow copy of the input', () => {
         const out = sortRows(data, { columns: cols, sorts: [] });
+
         expect(out).not.toBe(data);
         expect(out).toEqual(data);
     });
@@ -55,12 +56,14 @@ describe('sortRows', () => {
             columns: cols,
             sorts: [{ key: 'id', direction: 'asc' }],
         });
+
         expect(asc.map((r) => r.id)).toEqual([1, 2, 3, 4]);
 
         const desc = sortRows(data, {
             columns: cols,
             sorts: [{ key: 'id', direction: 'desc' }],
         });
+
         expect(desc.map((r) => r.id)).toEqual([4, 3, 2, 1]);
     });
 
@@ -69,12 +72,14 @@ describe('sortRows', () => {
             columns: cols,
             sorts: [{ key: 'score', direction: 'asc' }],
         });
+
         expect(asc.map((r) => r.score)).toEqual([50, 80, 80, null]);
 
         const desc = sortRows(data, {
             columns: cols,
             sorts: [{ key: 'score', direction: 'desc' }],
         });
+
         expect(desc.map((r) => r.score)).toEqual([80, 80, 50, null]);
     });
 
@@ -86,6 +91,7 @@ describe('sortRows', () => {
             columns: colsWithNullsFirst,
             sorts: [{ key: 'score', direction: 'asc' }],
         });
+
         expect(asc.map((r) => r.score)).toEqual([null, 50, 80, 80]);
     });
 
@@ -98,6 +104,7 @@ describe('sortRows', () => {
                 { key: 'name', direction: 'asc' },
             ],
         });
+
         expect(out.map((r) => r.name)).toEqual(['Bob', 'Dave', 'Carol', 'Alice']);
     });
 
@@ -110,6 +117,7 @@ describe('sortRows', () => {
             columns: colsWithFn,
             sorts: [{ key: 'id', direction: 'asc' }],
         });
+
         // Reversed because sortFn flips the sign — asc now reads as desc.
         expect(asc.map((r) => r.id)).toEqual([4, 3, 2, 1]);
     });
@@ -127,6 +135,7 @@ describe('sortRows', () => {
             columns: colsWithFmt,
             sorts: [{ key: 'id', direction: 'asc' }],
         });
+
         // ids 1 + 2 → 'A'; ids 3 + 4 → 'B'. Among ties, stable-sort
         // preserves input order: 1, 2 (the input order of A's) then 3, 4.
         expect(asc.map((r) => r.id)).toEqual([1, 2, 3, 4]);
@@ -140,12 +149,14 @@ describe('sortRows', () => {
                 { key: 'name', direction: 'asc' },
             ],
         });
+
         // Falls through to the second descriptor.
         expect(out.map((r) => r.name)).toEqual(['Alice', 'Bob', 'Carol', 'Dave']);
     });
 
     it('input array is not mutated', () => {
         const before = data.map((r) => r.id);
+
         sortRows(data, { columns: cols, sorts: [{ key: 'id', direction: 'desc' }] });
         expect(data.map((r) => r.id)).toEqual(before);
     });
@@ -160,6 +171,7 @@ describe('sortRows', () => {
             columns: [{ key: 'name' }],
             sorts: [{ key: 'name', direction: 'asc' }],
         });
+
         // localeCompare with `numeric: true` puts '2' before '10'.
         expect(out.map((r) => r.name)).toEqual(['item 1', 'item 2', 'item 10']);
     });

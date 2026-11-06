@@ -12,5 +12,6 @@ export function renderBreadcrumbIcon(icon: string): VNodeChild {
     if (icon.includes(':')) {
         return h(resolveComponent('VCIcon'), { name: icon });
     }
+
     return h('i', { class: icon });
 }

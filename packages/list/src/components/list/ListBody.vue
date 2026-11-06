@@ -89,15 +89,19 @@ export default defineComponent({
             // Loading-Skeleton patterns coexist with default sibling
             // loading. When data is empty, sibling `<VCListEmpty>` /
             // `<VCListLoading>` cover the state.
-            if (state.data.value.length === 0) return null;
+            if (state.data.value.length === 0) {
+                return null;
+            }
 
             const rootClass = theme.value.root || undefined;
 
             // ARIA role transition when selection is active. Listbox
             // semantics override the implicit `role="list"` of `<ul>`.
             const ariaAttrs: Record<string, string | boolean> = {};
+
             if (selection.mode.value !== undefined) {
                 ariaAttrs.role = 'listbox';
+
                 if (selection.mode.value === 'multi') {
                     ariaAttrs['aria-multiselectable'] = 'true';
                 }
@@ -105,11 +109,16 @@ export default defineComponent({
 
             // Manual mode: invoke default once, dispatch based on result.
             const defaultVNodes = slots.default?.({ data: state.data.value });
+
             if (hasMeaningfulVNodes(defaultVNodes)) {
                 if (props.asChild) {
                     const cloned = applyAsChild(defaultVNodes, { class: rootClass, ...ariaAttrs });
-                    if (cloned) return cloned;
+
+                    if (cloned) {
+                        return cloned;
+                    }
                 }
+
                 return h(props.tag ?? props.as, { class: rootClass, ...ariaAttrs }, defaultVNodes);
             }
 
@@ -121,11 +130,14 @@ export default defineComponent({
                     const slotProps: ListBodyItemSlotProps = { data: item, index };
                     const result = slots.item!(slotProps);
                     const meaningful = meaningfulVNodes(result);
+
                     if (meaningful.length === 1) {
                         return cloneVNode(meaningful[0]!, { key });
                     }
+
                     return h(Fragment, { key }, result);
                 });
+
                 return h(props.tag ?? props.as, { class: rootClass, ...ariaAttrs }, rows);
             }
 

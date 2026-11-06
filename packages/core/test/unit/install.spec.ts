@@ -11,6 +11,7 @@ type TestPaginationDefaults = {
 };
 
 declare module '../../src/defaults/types' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
     interface ComponentDefaults {
         __testPagination?: ComponentDefaultValues<TestPaginationDefaults>;
     }
@@ -28,8 +29,11 @@ describe('install — icons option', () => {
         };
 
         const app = createApp({ render: () => null });
+
         app.use(vuecs, { icons: [lucide] });
+
         const manager = injectDefaultsManager(app)!;
+
         expect(manager.get('__testPagination')).toEqual({
             prevIcon: 'lucide:chevron-left',
             nextIcon: 'lucide:chevron-right',
@@ -41,8 +45,11 @@ describe('install — icons option', () => {
         const fa: Icon = { defaults: { __testPagination: { prevIcon: 'fa6-solid:chevron-left' } } };
 
         const app = createApp({ render: () => null });
+
         app.use(vuecs, { icons: [lucide, fa] });
+
         const manager = injectDefaultsManager(app)!;
+
         expect(manager.get('__testPagination')).toEqual({ prevIcon: 'fa6-solid:chevron-left' });
     });
 
@@ -57,11 +64,14 @@ describe('install — icons option', () => {
         };
 
         const app = createApp({ render: () => null });
+
         app.use(vuecs, {
             icons: [lucide],
             defaults: { __testPagination: { prevLabel: 'Zurück' } },
         });
+
         const manager = injectDefaultsManager(app)!;
+
         expect(manager.get('__testPagination')).toEqual({
             prevIcon: 'lucide:chevron-left',
             prevLabel: 'Zurück',
@@ -80,8 +90,11 @@ describe('install — icons option', () => {
         const labelsOnly: Icon = { defaults: { __testPagination: { prevLabel: 'Vorherige' } } };
 
         const app = createApp({ render: () => null });
+
         app.use(vuecs, { icons: [iconsOnly, labelsOnly] });
+
         const manager = injectDefaultsManager(app)!;
+
         expect(manager.get('__testPagination')).toEqual({
             prevIcon: 'lucide:chevron-left',
             nextIcon: 'lucide:chevron-right',
@@ -91,8 +104,11 @@ describe('install — icons option', () => {
 
     it('falls through to consumer defaults when icons option is omitted', () => {
         const app = createApp({ render: () => null });
+
         app.use(vuecs, { defaults: { __testPagination: { prevLabel: 'Previous' } } });
+
         const manager = injectDefaultsManager(app)!;
+
         expect(manager.get('__testPagination')).toEqual({ prevLabel: 'Previous' });
     });
 
@@ -100,11 +116,14 @@ describe('install — icons option', () => {
         const noopPreset: Icon = {};
 
         const app = createApp({ render: () => null });
+
         app.use(vuecs, {
             icons: [noopPreset],
             defaults: { __testPagination: { prevLabel: 'Previous' } },
         });
+
         const manager = injectDefaultsManager(app)!;
+
         expect(manager.get('__testPagination')).toEqual({ prevLabel: 'Previous' });
     });
 
@@ -119,12 +138,15 @@ describe('install — icons option', () => {
         };
 
         const app = createApp({ render: () => null });
+
         app.use(vuecs, {
             icons: [lucide],
             // Consumer cares only about prevLabel; prevIcon is undefined.
             defaults: { __testPagination: { prevIcon: undefined, prevLabel: 'Zurück' } },
         });
+
         const manager = injectDefaultsManager(app)!;
+
         expect(manager.get('__testPagination')).toEqual({
             prevIcon: 'lucide:chevron-left',
             prevLabel: 'Zurück',
@@ -135,11 +157,14 @@ describe('install — icons option', () => {
         const lucide: Icon = { defaults: { __testPagination: { prevIcon: 'lucide:chevron-left' } } };
 
         const app = createApp({ render: () => null });
+
         app.use(vuecs, {
             icons: [lucide],
             defaults: { __testPagination: { prevIcon: '' } },
         });
+
         const manager = injectDefaultsManager(app)!;
+
         expect(manager.get('__testPagination')).toEqual({ prevIcon: '' });
     });
 
@@ -149,6 +174,7 @@ describe('install — icons option', () => {
         const malicious = { __proto__: { polluted: 'yes' } } as any;
 
         const app = createApp({ render: () => null });
+
         app.use(vuecs, { defaults: malicious, icons: [{}] });
 
         // Confirm no leakage on Object.prototype.

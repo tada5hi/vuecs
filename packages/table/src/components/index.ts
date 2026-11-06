@@ -33,7 +33,7 @@ export type { TableCellProps } from './TableCell.vue';
 export type { TableHeadCellProps } from './TableHeadCell.vue';
 export type { TableEmptyProps } from './TableEmpty.vue';
 export type { TableLoadingProps } from './TableLoading.vue';
-export type { TablePlaceholderProps } from './TablePlaceholder';
+export type { TablePlaceholderProps } from './types';
 export type { TableExpandTriggerProps } from './TableExpandTrigger.vue';
 export type { TableRowExpansionProps } from './TableRowExpansion.vue';
 export type {

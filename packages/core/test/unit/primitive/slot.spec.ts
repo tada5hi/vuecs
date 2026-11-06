@@ -15,6 +15,7 @@ import { VCPrimitive } from '../../../src';
 describe('Slot (via VCPrimitive asChild)', () => {
     it('returns null when no default slot is provided', () => {
         const wrapper = mount(VCPrimitive, { props: { asChild: true } });
+
         // No element rendered; the test-utils root resolves to a comment node.
         expect(wrapper.element.nodeType).toBe(Node.COMMENT_NODE);
     });
@@ -25,9 +26,9 @@ describe('Slot (via VCPrimitive asChild)', () => {
                 return () => h(
                     VCPrimitive,
                     {
-                        asChild: true, 
-                        id: 'x', 
-                        class: 'wrap', 
+                        asChild: true,
+                        id: 'x',
+                        class: 'wrap',
                     },
                     { default: () => h('button', { type: 'button', class: 'child' }, 'go') },
                 );
@@ -52,9 +53,9 @@ describe('Slot (via VCPrimitive asChild)', () => {
                 return () => h(
                     VCPrimitive,
                     {
-                        asChild: true, 
-                        class: 'foo', 
-                        id: 'wrapper-id', 
+                        asChild: true,
+                        class: 'foo',
+                        id: 'wrapper-id',
                     },
                     { default: () => h('div', { class: 'bar', id: 'child-id' }) },
                 );
@@ -111,6 +112,7 @@ describe('Slot (via VCPrimitive asChild)', () => {
         });
 
         const wrapper = mount(Consumer);
+
         await nextTick();
 
         // The consumer's `$refs.consumerRef` resolves to the cloned <a>,

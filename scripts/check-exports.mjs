@@ -28,33 +28,54 @@ const GROUPS = ['packages', 'themes', 'icons'];
 
 function publishablePackages() {
     const found = [];
+
     for (const group of GROUPS) {
         for (const entry of readdirSync(join(ROOT, group), { withFileTypes: true })) {
-            if (!entry.isDirectory()) continue;
+            if (!entry.isDirectory()) {
+                continue;
+            }
+
             const dir = join(ROOT, group, entry.name);
             let pkg;
+
             try {
                 pkg = JSON.parse(readFileSync(join(dir, 'package.json'), 'utf8'));
             } catch {
                 continue;
             }
-            if (pkg.private) continue;
+
+            if (pkg.private) {
+                continue;
+            }
+
             found.push({ dir, pkg });
         }
     }
+
     return found;
 }
 
 let errorCount = 0;
+
 for (const { dir, pkg } of publishablePackages()) {
     const { messages } = await publint({ pkgDir: dir, level: 'warning' });
-    if (messages.length === 0) continue;
+
+    if (messages.length === 0) {
+        continue;
+    }
 
     console.log(`\n${pkg.name}`);
+
     for (const message of messages) {
         const formatted = formatMessage(message, pkg);
-        if (formatted) console.log(`  [${message.type}] ${formatted}`);
-        if (message.type === 'error') errorCount += 1;
+
+        if (formatted) {
+            console.log(`  [${message.type}] ${formatted}`);
+        }
+
+        if (message.type === 'error') {
+            errorCount += 1;
+        }
     }
 }
 
@@ -62,4 +83,5 @@ if (errorCount > 0) {
     console.error(`\n✗ publint: ${errorCount} error(s) across publishable packages`);
     process.exit(1);
 }
+
 console.log('✓ publint: no errors across publishable packages');

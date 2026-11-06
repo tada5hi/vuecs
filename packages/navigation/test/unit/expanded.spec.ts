@@ -32,7 +32,9 @@ const childLabels = (root: Element) => Array
     .map((l) => (l.textContent || '').trim());
 
 describe('NavigationItem.expanded', () => {
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it('renders children without a trigger when declared expanded', async () => {
         const wrapper = buildApp([
@@ -46,6 +48,7 @@ describe('NavigationItem.expanded', () => {
                 ],
             },
         ], '/home');
+
         await nextTick();
 
         // The title keeps the trigger CLASS so the group still looks like one,
@@ -53,6 +56,7 @@ describe('NavigationItem.expanded', () => {
         // close would report a permanently-true aria-expanded to assistive
         // tech and present a dead click target.
         const title = wrapper.element.querySelector('.vc-nav-trigger') as HTMLElement;
+
         expect(title).not.toBeNull();
         expect(title.tagName).not.toBe('BUTTON');
         expect(title.getAttribute('aria-expanded')).toBeNull();
@@ -74,6 +78,7 @@ describe('NavigationItem.expanded', () => {
         // `/home` elects the leaf, so the group is neither active nor an
         // ancestor of the active item — the case that collapses it normally.
         const wrapper = buildApp(items, '/home');
+
         await nextTick();
 
         expect(childLabels(wrapper.element)).toContain('Outgoing');
@@ -87,9 +92,11 @@ describe('NavigationItem.expanded', () => {
                 children: [{ name: 'Outgoing', url: '/projects' }],
             },
         ], '/home');
+
         await nextTick();
 
         const trigger = wrapper.element.querySelector('.vc-nav-trigger') as HTMLElement;
+
         expect(trigger).not.toBeNull();
         expect(trigger.getAttribute('aria-expanded')).toBe('false');
     });
@@ -121,6 +128,7 @@ describe('NavigationItem.expanded', () => {
         resetItemsByTrace(normalized, ['Home']);
 
         const group = normalized.find((item) => item.name === 'Projects');
+
         expect(group?.active).toBe(false);
         expect(group?.activeWithin).toBe(false);
         expect(group?.displayChildren).toBe(true);
@@ -135,9 +143,11 @@ describe('NavigationItem.expanded', () => {
                 children: [{ name: 'Outgoing', url: '/projects' }],
             },
         ], '/home');
+
         await nextTick();
 
         const trigger = wrapper.element.querySelector('.vc-nav-trigger') as HTMLElement;
+
         expect(trigger.getAttribute('aria-expanded')).toBe('false');
     });
 });

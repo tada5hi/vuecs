@@ -19,6 +19,7 @@ import vuecsTable, {
 
 const plugins = [[vuecsTable, {}]] as const;
 
+
 type User = { id: number; name: string };
 type SelectionValue = number | number[] | null;
 
@@ -41,7 +42,9 @@ function mountTable(selection: Ref<SelectionValue>, mode: 'single' | 'multi' = '
                 data: data as never,
                 selectionMode: mode,
                 selection: selection.value,
-                'onUpdate:selection': (next: SelectionValue) => { selection.value = next; },
+                'onUpdate:selection': (next: SelectionValue) => {
+                    selection.value = next;
+                },
             }, () => [
                 h(VCTableHeader, () => h(VCTableRow, () => [
                     h(VCTableHeadCell, { isSelector: true }),
@@ -60,7 +63,9 @@ function mountTable(selection: Ref<SelectionValue>, mode: 'single' | 'multi' = '
 }
 
 describe('<VCTableHeadCell isSelector> + <VCTableCell isSelector> (plan 033 v1.x-D)', () => {
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it('renders an indeterminate-capable checkbox in multi mode', () => {
         const selection = ref<SelectionValue>([]);
@@ -68,6 +73,7 @@ describe('<VCTableHeadCell isSelector> + <VCTableCell isSelector> (plan 033 v1.x
         const headerCheckbox = wrapper.element.querySelector(
             'thead .vc-table-selector-checkbox',
         ) as HTMLInputElement;
+
         expect(headerCheckbox).not.toBeNull();
         expect(headerCheckbox.type).toBe('checkbox');
         expect(headerCheckbox.checked).toBe(false);
@@ -80,6 +86,7 @@ describe('<VCTableHeadCell isSelector> + <VCTableCell isSelector> (plan 033 v1.x
         const bodyInputs = wrapper.element.querySelectorAll(
             'tbody .vc-table-selector-checkbox',
         ) as NodeListOf<HTMLInputElement>;
+
         expect(bodyInputs.length).toBe(3);
         expect(bodyInputs[0].type).toBe('radio');
     });
@@ -99,6 +106,7 @@ describe('<VCTableHeadCell isSelector> + <VCTableCell isSelector> (plan 033 v1.x
         const refreshed = wrapper.element.querySelector(
             'thead .vc-table-selector-checkbox',
         ) as HTMLInputElement;
+
         expect(refreshed.checked).toBe(true);
 
         refreshed.click();
@@ -112,6 +120,7 @@ describe('<VCTableHeadCell isSelector> + <VCTableCell isSelector> (plan 033 v1.x
         const headerCheckbox = wrapper.element.querySelector(
             'thead .vc-table-selector-checkbox',
         ) as HTMLInputElement;
+
         expect(headerCheckbox.indeterminate).toBe(true);
         expect(headerCheckbox.checked).toBe(false);
     });
@@ -122,6 +131,7 @@ describe('<VCTableHeadCell isSelector> + <VCTableCell isSelector> (plan 033 v1.x
         const bodyCheckboxes = wrapper.element.querySelectorAll(
             'tbody .vc-table-selector-checkbox',
         ) as NodeListOf<HTMLInputElement>;
+
         bodyCheckboxes[1].click(); // toggle Bob
         await wrapper.vm.$nextTick();
         expect(selection.value).toEqual([2]);
@@ -133,6 +143,7 @@ describe('<VCTableHeadCell isSelector> + <VCTableCell isSelector> (plan 033 v1.x
         const headerCheckbox = wrapper.element.querySelector(
             'thead .vc-table-selector-checkbox',
         );
+
         expect(headerCheckbox).toBeNull();
     });
 
@@ -145,6 +156,7 @@ describe('<VCTableHeadCell isSelector> + <VCTableCell isSelector> (plan 033 v1.x
         const headerCheckbox = wrapper.element.querySelector(
             'thead .vc-table-selector-checkbox',
         ) as HTMLInputElement;
+
         headerCheckbox.click();
         await wrapper.vm.$nextTick();
         // 99 (off-screen) preserved + visible rows added.
@@ -158,6 +170,7 @@ describe('<VCTableHeadCell isSelector> + <VCTableCell isSelector> (plan 033 v1.x
         const headerCheckbox = wrapper.element.querySelector(
             'thead .vc-table-selector-checkbox',
         ) as HTMLInputElement;
+
         // All 3 visible rows are selected → state is 'all'. Click clears them.
         headerCheckbox.click();
         await wrapper.vm.$nextTick();

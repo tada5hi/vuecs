@@ -69,6 +69,7 @@ export default defineComponent({
             if (props.inline) {
                 return renderInner();
             }
+
             return h(AlertDialogPortal, null, { default: () => renderInner() });
         };
     },

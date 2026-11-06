@@ -17,6 +17,7 @@ const app = createApp({
         return () => h(Button, { themeVariant: variantState.value });
     },
 });
+
 installVuecs(app);
 app.use(button);
 app.use(formControls);

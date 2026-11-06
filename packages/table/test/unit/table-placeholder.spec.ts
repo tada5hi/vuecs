@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 import {
-    afterEach, 
-    describe, 
-    expect, 
+    afterEach,
+    describe,
+    expect,
     it,
 } from 'vitest';
 import { mount } from '@vue/test-utils';
@@ -11,11 +11,14 @@ import vuecsTable, { VCTablePlaceholder } from '../../src';
 const plugins = [[vuecsTable, {}]] as const;
 
 describe('<VCTablePlaceholder>', () => {
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it('renders a <table> with default 5 rows × 4 columns + header', () => {
         const wrapper = mount(VCTablePlaceholder, { global: { plugins: [...plugins] } });
         const table = wrapper.element as HTMLTableElement;
+
         expect(table.tagName).toBe('TABLE');
         expect(table.querySelectorAll('thead tr').length).toBe(1);
         expect(table.querySelectorAll('thead th').length).toBe(4);
@@ -34,6 +37,7 @@ describe('<VCTablePlaceholder>', () => {
             },
             global: { plugins: [...plugins] },
         });
+
         expect(wrapper.element.querySelectorAll('tfoot tr').length).toBe(1);
         expect(wrapper.element.querySelectorAll('tfoot td').length).toBe(3);
     });
@@ -47,6 +51,7 @@ describe('<VCTablePlaceholder>', () => {
             },
             global: { plugins: [...plugins] },
         });
+
         expect(wrapper.element.querySelectorAll('thead').length).toBe(0);
     });
 
@@ -59,6 +64,7 @@ describe('<VCTablePlaceholder>', () => {
             },
             global: { plugins: [...plugins] },
         });
+
         expect(wrapper.element.querySelectorAll('tbody tr').length).toBe(0);
     });
 
@@ -76,6 +82,7 @@ describe('<VCTablePlaceholder>', () => {
         const headerBars = wrapper.element.querySelectorAll(
             'thead .vc-placeholder',
         ) as NodeListOf<HTMLElement>;
+
         expect(headerBars.length).toBe(4);
         headerBars.forEach((bar) => {
             expect(bar.style.width).toMatch(/^\d+%$/);
@@ -88,6 +95,7 @@ describe('<VCTablePlaceholder>', () => {
             slots: { thead: '<tr><th data-test="custom-thead">CUSTOM</th></tr>' },
             global: { plugins: [...plugins] },
         });
+
         expect(wrapper.element.querySelector('thead [data-test="custom-thead"]')).not.toBeNull();
         expect(wrapper.element.querySelectorAll('thead .vc-placeholder').length).toBe(0);
     });
@@ -102,6 +110,7 @@ describe('<VCTablePlaceholder>', () => {
             slots: { tfoot: '<tr><td data-test="custom-tfoot">CUSTOM</td></tr>' },
             global: { plugins: [...plugins] },
         });
+
         expect(wrapper.element.querySelector('tfoot [data-test="custom-tfoot"]')).not.toBeNull();
         expect(wrapper.element.querySelectorAll('tfoot .vc-placeholder').length).toBe(0);
     });

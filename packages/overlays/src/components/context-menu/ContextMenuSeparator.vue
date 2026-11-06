@@ -21,6 +21,7 @@ export default defineComponent({
     props: contextMenuSeparatorProps,
     setup(props) {
         const theme = useComponentTheme('contextMenu', props, contextMenuThemeDefaults);
+
         return () => h(ContextMenuSeparator, { class: theme.value.separator || undefined });
     },
 });

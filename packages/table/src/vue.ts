@@ -14,6 +14,7 @@ import type VCTableRowExpansion from './components/TableRowExpansion.vue';
 import type VCTableSortIndicators from './components/TableSortIndicators.vue';
 
 declare module 'vue' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public name and declaration merging.
     export interface GlobalComponents {
         VCTable: typeof VCTable;
         VCTableLite: typeof VCTableLite;

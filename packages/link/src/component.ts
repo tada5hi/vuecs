@@ -1,10 +1,5 @@
-import type {
-    DefineComponent,
-    ExtractPublicPropTypes,
-    PropType,
-    VNodeProps,
-    VNodeTypes,
-} from 'vue';
+import { linkProps } from './props';
+import type { DefineComponent, VNodeProps, VNodeTypes } from 'vue';
 import {
     computed,
     defineComponent,
@@ -12,38 +7,8 @@ import {
     resolveDynamicComponent,
     toRef,
 } from 'vue';
-import type { LinkQuery } from './types';
+
 import { isObject } from './utils';
-
-const linkProps = {
-    active: {
-        type: Boolean,
-        default: false,
-    },
-    disabled: {
-        type: Boolean,
-        default: false,
-    },
-    href: {
-        type: String,
-        default: undefined,
-    },
-    prefetch: {
-        type: Boolean,
-        default: true,
-    },
-    target: {
-        type: String,
-        default: '_self',
-    },
-    to: {
-        type: [String, Object] as PropType<string | Record<string, any>>,
-        default: undefined,
-    },
-    query: { type: Object as PropType<LinkQuery> },
-};
-
-export type LinkProps = ExtractPublicPropTypes<typeof linkProps>;
 
 export const VCLink = defineComponent({
     name: 'VCLink',
@@ -71,6 +36,7 @@ export const VCLink = defineComponent({
 
         const extendLinkWithQuery = (link: string, query: Record<string, any>) => {
             const keys = Object.keys(query);
+
             if (keys.length === 0) {
                 return link;
             }
@@ -83,14 +49,17 @@ export const VCLink = defineComponent({
             // link carrying both. Re-attached after the query is built.
             let fragment = '';
             const fragmentIndex = link.indexOf('#');
+
             if (fragmentIndex !== -1) {
                 fragment = link.slice(fragmentIndex);
                 link = link.slice(0, fragmentIndex);
             }
 
             let searchParams : URLSearchParams;
+
             if (link.includes('?')) {
                 const url = new URL(link, 'http://localhost:3000');
+
                 for (const key of keys) {
                     url.searchParams.set(key, query[key]);
                 }
@@ -188,15 +157,15 @@ export const VCLink = defineComponent({
                     emit('clicked', event);
                 }
 
-                if (
-                    isEvent &&
+                if (!(isEvent &&
                     !isRouterLink.value &&
-                    computedHref.value === '#'
-                ) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    event.stopImmediatePropagation();
+                    computedHref.value === '#')) {
+                    return;
                 }
+
+                event.preventDefault();
+                event.stopPropagation();
+                event.stopImmediatePropagation();
             };
 
             const vNodeProps: VNodeProps & Record<string, any> = {
@@ -228,6 +197,7 @@ export const VCLink = defineComponent({
 
         return () => {
             const component = resolvedComponent.value;
+
             if (typeof component === 'string') {
                 return h(
                     component,
@@ -237,6 +207,7 @@ export const VCLink = defineComponent({
                     ],
                 );
             }
+
             return h(
                 component as DefineComponent,
                 buildVNodeProps(),

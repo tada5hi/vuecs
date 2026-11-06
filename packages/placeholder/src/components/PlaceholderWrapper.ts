@@ -1,39 +1,9 @@
-import {
-    defineComponent, 
-    h, 
-    mergeProps,
-} from 'vue';
-import type { 
-    Component, 
-    ExtractPublicPropTypes, 
-    PropType, 
-    SlotsType, 
-} from 'vue';
-import {
-    themableProps, 
-    useComponentTheme, 
-    useThemeProps,
-} from '@vuecs/core';
+import { placeholderWrapperProps } from './props';
+import { defineComponent, h, mergeProps } from 'vue';
+import type { SlotsType } from 'vue';
+import { useComponentTheme, useThemeProps } from '@vuecs/core';
 import { placeholderWrapperThemeDefaults } from '../theme';
-import type { PlaceholderWrapperThemeClasses } from '../types';
 
-const placeholderWrapperProps = {
-    /** When `true`, the `#loading` slot renders; otherwise `#default`. */
-    loading: { type: Boolean, default: false },
-    /**
-     * Element or component to render as. Defaults to `'div'`. Pass a string
-     * tag or a component (`RouterLink` / `NuxtLink`).
-     */
-    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'div' },
-    /**
-     * @deprecated Use `as` instead. Non-breaking alias — takes precedence
-     * over `as` when set.
-     */
-    tag: { type: [String, Object, Function] as PropType<string | Component>, default: undefined },
-    ...themableProps<PlaceholderWrapperThemeClasses>(),
-};
-
-export type PlaceholderWrapperProps = ExtractPublicPropTypes<typeof placeholderWrapperProps>;
 
 /**
  * Conditional wrapper — renders `#loading` when `:loading` is true,
@@ -69,6 +39,7 @@ export const VCPlaceholderWrapper = defineComponent({
             useThemeProps(props),
             placeholderWrapperThemeDefaults,
         );
+
         return () => h(
             props.tag ?? props.as,
             mergeProps(attrs, {

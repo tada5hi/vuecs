@@ -1,10 +1,10 @@
 <script lang="ts">
 import { defineComponent, h, mergeProps } from 'vue';
-import type { 
-    ExtractPublicPropTypes, 
-    PropType, 
-    SlotsType, 
-    VNode, 
+import type {
+    ExtractPublicPropTypes,
+    PropType,
+    SlotsType,
+    VNode,
 } from 'vue';
 import { AvatarFallback, AvatarImage, AvatarRoot } from 'reka-ui';
 import { useComponentTheme } from '@vuecs/core';
@@ -77,9 +77,11 @@ export default defineComponent({
             },
         };
         const theme = useComponentTheme('avatar', themeProps, avatarThemeDefaults);
+
         return () => {
             const resolved = theme.value;
             const children: VNode[] = [];
+
             if (props.src) {
                 children.push(h(AvatarImage, {
                     src: props.src,
@@ -87,6 +89,7 @@ export default defineComponent({
                     class: resolved.image || undefined,
                 }));
             }
+
             children.push(h(AvatarFallback, {
                 // Reka's AvatarFallback treats `delayMs: 0` as "wait
                 // forever" — only forward when the consumer set a strictly
@@ -97,6 +100,7 @@ export default defineComponent({
                     {}),
                 class: resolved.fallback || undefined,
             }, { default: () => slots.fallback?.({ class: resolved.fallback }) ?? '' }));
+
             return h(AvatarRoot, mergeProps(attrs, { class: resolved.root || undefined }), { default: () => children });
         };
     },

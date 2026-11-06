@@ -39,7 +39,9 @@ export default defineComponent({
     setup(props, { attrs, slots }) {
         const ctx = useBreadcrumbContext();
         const themeProps: UseComponentThemeProps<BreadcrumbThemeClasses> = {
-            get themeClass() { return { ...(ctx?.themeClass() ?? {}), ...(props.themeClass ?? {}) }; },
+            get themeClass() {
+                return { ...(ctx?.themeClass() ?? {}), ...(props.themeClass ?? {}) };
+            },
             get themeVariant() {
                 return {
                     ...(ctx?.themeVariant() ?? {}),

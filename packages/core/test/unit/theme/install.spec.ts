@@ -24,8 +24,10 @@ describe('installThemeManager', () => {
     // app.use(vuecs, { themes: [...] }) must still apply.
     it('should merge themes from a second call into the existing manager', () => {
         const app = createApp({ render: () => h('div') });
+
         // First call: simulates a per-package install with no themes.
         installThemeManager(app);
+
         // Second call: simulates app.use(vuecs, { themes: [...] }) afterwards.
         const tailwind: Theme = { elements: { button: { classes: { root: 'btn-tailwind' } } } };
         const manager = installThemeManager(app, { themes: [tailwind] });
@@ -38,7 +40,9 @@ describe('installThemeManager', () => {
         const app = createApp({ render: () => h('div') });
         const a: Theme = { elements: { button: { classes: { root: 'btn-a' } } } };
         const b: Theme = { elements: { button: { classes: { root: 'btn-b' } } } };
+
         installThemeManager(app, { themes: [a] });
+
         const manager = installThemeManager(app, { themes: [b] });
 
         expect(manager.themes).toEqual([a, b]);
@@ -46,7 +50,9 @@ describe('installThemeManager', () => {
 
     it('should apply overrides from a second call to the existing manager', () => {
         const app = createApp({ render: () => h('div') });
+
         installThemeManager(app);
+
         const overrides: Theme = { elements: { button: { classes: { root: 'custom' } } } };
         const manager = installThemeManager(app, { overrides });
 
@@ -81,6 +87,7 @@ describe('installThemeManager', () => {
 describe('injectThemeManager', () => {
     it('should return undefined when no manager is installed', () => {
         const result = injectThemeManager();
+
         expect(result).toBeUndefined();
     });
 

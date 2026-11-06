@@ -4,6 +4,7 @@ import { evaluateFnOrValue } from '../../../src';
 describe('src/utils/evaluate', () => {
     it('should evaluate value', () => {
         const output = evaluateFnOrValue('foo');
+
         expect(output).toEqual('foo');
     });
 
@@ -11,6 +12,7 @@ describe('src/utils/evaluate', () => {
         const output = evaluateFnOrValue((
             input: string,
         ) => `foo:${input}`, 'bar');
+
         expect(output).toEqual('foo:bar');
     });
 

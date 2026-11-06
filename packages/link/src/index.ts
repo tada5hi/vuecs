@@ -9,6 +9,7 @@ import {
 import type { Options } from './types';
 
 export * from './component';
+export type { LinkProps } from './types';
 export * from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

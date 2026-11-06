@@ -35,6 +35,7 @@ export default defineComponent({
     props: popoverCloseProps,
     setup(props, { slots, attrs }) {
         const theme = useComponentTheme('popover', props, popoverThemeDefaults);
+
         return () => {
             // When the consumer doesn't supply slot content the rendered
             // button only contains the "×" glyph (U+00D7), which screen
@@ -50,6 +51,7 @@ export default defineComponent({
             // Explicit `icon` always wins; a slot with content implies the
             // labelled-button presentation.
             const slotKey = props.icon || !hasSlot ? 'closeIcon' : 'close';
+
             return h(
                 PopoverClose,
                 mergeProps(attrs, {

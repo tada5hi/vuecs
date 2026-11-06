@@ -23,14 +23,20 @@ export function extractVariantConfig(
 
     // Helper: deep merge variant definitions (variant-name → variant-value level)
     function mergeVariants(source: VariantDefinitions | undefined) {
-        if (!source) return;
+        if (!source) {
+            return;
+        }
+
         const names = Object.keys(source);
+
         for (const name of names) {
             if (!variants[name]) {
                 variants[name] = {};
             }
+
             const def = source[name];
             const values = Object.keys(def);
+
             for (const value of values) {
                 variants[name][value] = { ...def[value] };
             }
@@ -38,12 +44,18 @@ export function extractVariantConfig(
     }
 
     function mergeDefaults(source: DefaultVariants | undefined) {
-        if (!source) return;
+        if (!source) {
+            return;
+        }
+
         Object.assign(defaultVariants, source);
     }
 
     function mergeCompounds(source: CompoundVariantDefinition[] | undefined) {
-        if (!source) return;
+        if (!source) {
+            return;
+        }
+
         for (const compound of source) {
             compoundVariants.push(compound);
         }
@@ -58,7 +70,10 @@ export function extractVariantConfig(
     for (const theme of themes) {
         const elements = theme.elements as Record<string, ThemeElementDefinition>;
         const entry = elements[componentName];
-        if (!entry) continue;
+
+        if (!entry) {
+            continue;
+        }
 
         mergeVariants(entry.variants);
         mergeCompounds(entry.compoundVariants);
@@ -68,6 +83,7 @@ export function extractVariantConfig(
     // Layer 3: Overrides
     if (overrideElements) {
         const entry = overrideElements[componentName];
+
         if (entry) {
             mergeVariants(entry.variants);
             mergeCompounds(entry.compoundVariants);
@@ -76,9 +92,9 @@ export function extractVariantConfig(
     }
 
     return {
-        variants, 
-        compoundVariants, 
-        defaultVariants, 
+        variants,
+        compoundVariants,
+        defaultVariants,
     };
 }
 
@@ -91,14 +107,15 @@ export function resolveVariantClasses(
     const result: Record<string, string> = {};
 
     const {
-        variants, 
-        compoundVariants, 
-        defaultVariants, 
+        variants,
+        compoundVariants,
+        defaultVariants,
     } = config;
 
     // Build resolved values from explicit values + defaultVariants
     const resolvedValues: Record<string, string> = {};
     const allNames = new Set([...Object.keys(variants), ...Object.keys(values), ...Object.keys(defaultVariants)]);
+
     for (const name of allNames) {
         let value = values[name];
 
@@ -108,25 +125,39 @@ export function resolveVariantClasses(
         }
 
         // Still undefined — skip
-        if (value === undefined) continue;
+        if (value === undefined) {
+            continue;
+        }
 
         resolvedValues[name] = String(value);
     }
 
     // Apply variant definitions
     const variantNames = Object.keys(variants);
+
     for (const name of variantNames) {
         const key = resolvedValues[name];
-        if (key === undefined) continue;
+
+        if (key === undefined) {
+            continue;
+        }
 
         const definition = variants[name];
         const slotClasses = definition[key];
-        if (!slotClasses) continue;
+
+        if (!slotClasses) {
+            continue;
+        }
 
         const slots = Object.keys(slotClasses);
+
         for (const slot of slots) {
             const cls = slotClasses[slot];
-            if (!cls) continue;
+
+            if (!cls) {
+                continue;
+            }
+
             result[slot] = merge(result[slot] || '', cls);
         }
     }
@@ -137,19 +168,28 @@ export function resolveVariantClasses(
         let match = true;
 
         const conditionKeys = Object.keys(conditions);
+
         for (const condKey of conditionKeys) {
             if (resolvedValues[condKey] !== String(conditions[condKey])) {
                 match = false;
+
                 break;
             }
         }
 
-        if (!match) continue;
+        if (!match) {
+            continue;
+        }
 
         const slots = Object.keys(compound.class);
+
         for (const slot of slots) {
             const cls = compound.class[slot];
-            if (!cls) continue;
+
+            if (!cls) {
+                continue;
+            }
+
             result[slot] = merge(result[slot] || '', cls);
         }
     }

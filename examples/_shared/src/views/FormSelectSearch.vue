@@ -6,6 +6,7 @@ import { ref } from 'vue';
 const value = ref<number | null | undefined>(undefined);
 
 const options: FormOption<number>[] = [];
+
 for (let i = 1; i <= 100; i++) {
     options.push({
         value: i,

@@ -1,3 +1,4 @@
+import { navItemsProps } from './props';
 import {
     hasNormalizedSlot,
     isPromise,
@@ -5,16 +6,8 @@ import {
     useArrowNavigation,
     useComponentTheme,
 } from '@vuecs/core';
-import type { ThemeClassesOverride, UseComponentThemeProps, VariantValues } from '@vuecs/core';
-import type {
-    Component,
-    ExtractPublicPropTypes,
-    PropType,
-    SlotsType,
-    VNodeArrayChildren,
-    VNodeChild,
-    WatchSource,
-} from 'vue';
+import type { UseComponentThemeProps } from '@vuecs/core';
+import type { SlotsType, VNodeArrayChildren, VNodeChild } from 'vue';
 import {
     computed,
     defineComponent,
@@ -30,13 +23,7 @@ import {
 } from 'vue';
 import { NavigationMenuList, NavigationMenuRoot } from 'reka-ui';
 import { SlotName } from '../../constants';
-import type {
-    NavigationItem,
-    NavigationItemNormalized,
-    NavigationOrientation,
-    NavigationResolver,
-    NavigationSubmenu,
-} from '../../types';
+import type { NavigationItem, NavigationItemNormalized } from '../../types';
 import type { NavigationThemeClasses } from '../../helpers/component/types';
 import {
     collectTrail,
@@ -49,65 +36,8 @@ import {
 import { NavigationRegistry, tryInjectNavigationRegistry } from '../../registry';
 import { VCNavItem } from '../item';
 import { NAVIGATION_NODES_KEY, NAVIGATION_SELECT_KEY } from '../select-context';
-import type { NavItemsItemSlotProps } from '../type';
+import type { NavItemsItemSlotProps } from '../types';
 import { navigationThemeDefaults } from './theme';
-
-const navItemsProps = {
-    /**
-     * The source of this nav's items. Plain array, sync fn, or async fn.
-     * A fn receives a NavigationResolverContext and may read reactive
-     * state freely — the nav re-runs it automatically when that state
-     * changes.
-     *
-     * When omitted, the nav checks whether it is a nested submenu of a
-     * parent `<VCNavItem>` (via the {@link NAVIGATION_NODES_KEY} inject)
-     * and, if so, renders that parent's already-scored children as-is.
-     */
-    data: {
-        type: [Array, Function] as PropType<NavigationItem[] | NavigationResolver>,
-        default: undefined,
-    },
-    /** Opt in to publishing this nav's resolved output into the registry. */
-    registry: { type: Boolean, default: false },
-    /** The key under which to publish. Required when `registry` is true. */
-    registryId: { type: String, default: undefined },
-    /**
-     * Current path for active-state matching. When omitted, the nav softly
-     * reads vue-router's current route (via the `$route` global property)
-     * if a router is installed; router-free apps simply get `undefined`.
-     */
-    path: { type: String, default: undefined },
-    /**
-     * Extra reactive deps that should retrigger the resolver — for state
-     * read only AFTER the first `await` in an async resolver (auto-track
-     * can't see past an await).
-     */
-    watch: { type: Array as PropType<WatchSource[]>, default: undefined },
-    variant: { type: String, default: undefined },
-    orientation: { type: String as PropType<NavigationOrientation>, default: undefined },
-    /**
-     * How items with children render their submenu. `auto` derives from
-     * orientation (horizontal → dropdown, otherwise collapse).
-     */
-    submenu: { type: String as PropType<NavigationSubmenu>, default: 'auto' },
-    /**
-     * The tag (or component) for this nav's list container. Defaults to
-     * `'ul'`. Forwarded unchanged to every nesting level so the whole tree
-     * renders the same container tag. Honored in collapse mode only —
-     * dropdown mode keeps Reka's NavigationMenu primitives.
-     */
-    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'ul' },
-    /**
-     * The tag (or component) for each item wrapper. Defaults to `'li'`.
-     * Forwarded unchanged to every nesting level. Honored in collapse mode
-     * only — dropdown mode keeps Reka's NavigationMenu primitives.
-     */
-    itemAs: { type: [String, Object, Function] as PropType<string | Component>, default: 'li' },
-    themeClass: { type: Object as PropType<ThemeClassesOverride<NavigationThemeClasses>>, default: undefined },
-    themeVariant: { type: Object as PropType<VariantValues>, default: undefined },
-};
-
-export type NavItemsProps = ExtractPublicPropTypes<typeof navItemsProps>;
 
 export const VCNavItems = defineComponent({
     name: 'VCNavItems',
@@ -163,7 +93,9 @@ export const VCNavItems = defineComponent({
             if (typeof props.path !== 'undefined') {
                 return props.path;
             }
+
             const route = globals?.$route as { path?: string } | undefined;
+
             return route?.path;
         });
 
@@ -183,6 +115,7 @@ export const VCNavItems = defineComponent({
         // Only a root nav holds this state and provides the bridge —
         // nested `<VCNavItems>` let the click bubble up to their owning root.
         const selectedTrace = ref<string[] | null>(null);
+
         if (!isNested.value) {
             provide(NAVIGATION_SELECT_KEY, {
                 select: (item) => {
@@ -214,11 +147,13 @@ export const VCNavItems = defineComponent({
 
             if (!isPromise(value)) {
                 raw.value = value ?? [];
+
                 return;
             }
 
             try {
                 const awaited = (await value) ?? [];
+
                 if (token === runToken) {
                     raw.value = awaited;
                 }
@@ -235,6 +170,7 @@ export const VCNavItems = defineComponent({
         if (!isNested.value) {
             // Auto-track: reactive reads in `run` BEFORE the first await retrigger it.
             watchEffect(run);
+
             // Escape hatch for state read AFTER an await:
             if (props.watch) {
                 watch(props.watch, run);
@@ -255,8 +191,10 @@ export const VCNavItems = defineComponent({
             // A click-driven selection (url-less switcher) overrides the
             // path match until the next real navigation clears it.
             const trace = selectedTrace.value ?? (match ? match.trace : []);
+
             // sets per item: .active (exact) AND .activeWithin (ancestor)
             resetItemsByTrace(normalized, trace);
+
             return { items: normalized, trace };
         });
 
@@ -278,8 +216,10 @@ export const VCNavItems = defineComponent({
                 if (!props.registryId) {
                     // eslint-disable-next-line no-console
                     console.warn('[vuecs] <VCNavItems registry> requires a `registry-id`.');
+
                     return;
                 }
+
                 unsubscribeFn = registry.register(props.registryId, entry);
             });
             onUnmounted(() => {
@@ -299,11 +239,13 @@ export const VCNavItems = defineComponent({
 
             for (let i = 0; i < tree.value.length; i++) {
                 const item = tree.value[i];
+
                 if (!item.display && !item.displayChildren) {
                     continue;
                 }
 
                 let vNode: VNodeChild;
+
                 if (hasNormalizedSlot(SlotName.ITEM, slots)) {
                     vNode = normalizeSlot(SlotName.ITEM, { data: item }, slots);
                 } else {

@@ -24,6 +24,7 @@ export default defineComponent({
     props: aspectRatioProps,
     setup(props, { attrs, slots }) {
         const theme = useComponentTheme('aspectRatio', props, aspectRatioThemeDefaults);
+
         return () => h(AspectRatio, mergeProps(attrs, {
             ratio: props.ratio,
             class: theme.value.root || undefined,

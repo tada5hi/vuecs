@@ -21,6 +21,7 @@ export default defineComponent({
     props: contextMenuGroupProps,
     setup(props, { slots }) {
         const theme = useComponentTheme('contextMenu', props, contextMenuThemeDefaults);
+
         return () => h(
             ContextMenuGroup,
             { class: theme.value.group || undefined },

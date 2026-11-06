@@ -206,6 +206,7 @@ describe('theme-tailwind — auditTheme()', () => {
             title: 'theme-tailwind',
             skip: [...AUDIT_SKIP],
         });
+
         expect(report).toBe('');
     });
 
@@ -215,6 +216,7 @@ describe('theme-tailwind — auditTheme()', () => {
         // this assertion starts failing and prompts the suppression
         // to be tightened.
         const result = auditTheme(tailwindTheme(), expectedCatalog);
+
         expect(isAuditClean(result)).toBe(false);
     });
 });

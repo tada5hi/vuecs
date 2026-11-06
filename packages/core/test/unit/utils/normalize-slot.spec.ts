@@ -1,8 +1,8 @@
-import { 
-    describe, 
-    expect, 
-    it, 
-    vi, 
+import {
+    describe,
+    expect,
+    it,
+    vi,
 } from 'vitest';
 import type { Slot, Slots } from 'vue';
 import { hasNormalizedSlot, normalizeSlot } from '../../../src';
@@ -10,6 +10,7 @@ import { hasNormalizedSlot, normalizeSlot } from '../../../src';
 describe('hasNormalizedSlot', () => {
     it('returns true when the named slot exists', () => {
         const slots: Slots = { default: (() => []) as Slot };
+
         expect(hasNormalizedSlot('default', slots)).toBe(true);
     });
 

@@ -25,6 +25,7 @@ export default defineComponent({
     props: dropdownMenuTriggerProps,
     setup(props, { slots }) {
         const theme = useComponentTheme('dropdownMenu', props, dropdownMenuThemeDefaults);
+
         return () => h(
             DropdownMenuTrigger,
             {

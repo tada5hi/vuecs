@@ -23,6 +23,3 @@ export const NEUTRAL_PALETTES = [
     'zinc',
     'stone',
 ] as const;
-
-export type PrimaryPalette = (typeof PRIMARY_PALETTES)[number];
-export type NeutralPalette = (typeof NEUTRAL_PALETTES)[number];

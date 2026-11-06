@@ -7,12 +7,14 @@ import { inject, provide } from '../../../src';
 describe('provide / inject (utility wrappers)', () => {
     it('provides + injects on a Vue App instance', () => {
         const app = createApp({ render: () => null });
+
         provide('foo', 'bar', app);
         expect(inject('foo', app)).toBe('bar');
     });
 
     it('skips re-provide when the key is already present on the app', () => {
         const app = createApp({ render: () => null });
+
         provide('foo', 'first', app);
         provide('foo', 'second', app);
         expect(inject('foo', app)).toBe('first');
@@ -20,6 +22,7 @@ describe('provide / inject (utility wrappers)', () => {
 
     it('returns undefined when injecting a missing key from an app', () => {
         const app = createApp({ render: () => null });
+
         expect(inject('missing', app)).toBeUndefined();
     });
 
@@ -29,6 +32,7 @@ describe('provide / inject (utility wrappers)', () => {
         const Child = defineComponent({
             setup() {
                 injected = inject('parent-key');
+
                 return () => h('div');
             },
         });
@@ -36,6 +40,7 @@ describe('provide / inject (utility wrappers)', () => {
         const Parent = defineComponent({
             setup() {
                 provide('parent-key', 'value');
+
                 return () => h(Child);
             },
         });
@@ -56,9 +61,11 @@ describe('provide / inject (utility wrappers)', () => {
                 const Leaf = defineComponent({
                     setup() {
                         inner = inject('shared');
+
                         return () => h('span');
                     },
                 });
+
                 return () => h(Leaf);
             },
         });
@@ -66,6 +73,7 @@ describe('provide / inject (utility wrappers)', () => {
         const Outer = defineComponent({
             setup() {
                 provide('shared', 'outer-value');
+
                 return () => h(Inner);
             },
         });

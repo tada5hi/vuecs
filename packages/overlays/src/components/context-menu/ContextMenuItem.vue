@@ -35,6 +35,7 @@ export default defineComponent({
         attrs,
     }) {
         const theme = useComponentTheme('contextMenu', props, contextMenuThemeDefaults);
+
         return () => h(
             ContextMenuItem,
             mergeProps(attrs, {

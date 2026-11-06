@@ -25,6 +25,7 @@ export default defineComponent({
     props: modalTriggerProps,
     setup(props, { slots }) {
         const theme = useComponentTheme('modal', props, modalThemeDefaults);
+
         return () => h(
             DialogTrigger,
             {

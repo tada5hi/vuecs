@@ -39,9 +39,11 @@ export function bindLocale(
 
     const resolved = computed<string>(() => {
         const { value } = source;
+
         if (value && value !== AUTO_LOCALE) {
             return value;
         }
+
         return language.value || fallback;
     });
 

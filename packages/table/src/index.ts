@@ -1,6 +1,7 @@
+import type { Options } from './types';
 import type { App, Component, Plugin } from 'vue';
 import { installDefaultsManager, installThemeManager } from '@vuecs/core';
-import type { CoreOptions } from '@vuecs/core';
+
 
 import '../assets/index.css';
 import './defaults';
@@ -29,8 +30,12 @@ export * from './theme';
 export * from './types';
 export * from './utils';
 export type * from './defaults';
-
-export type Options = CoreOptions;
+export type {
+    TableEmptyDefaults,
+    TableLoadingDefaults,
+    TableExpandTriggerDefaults,
+    TableSortIndicatorsDefaults,
+} from './types';
 
 export function install(app: App, options: Options = {}): void {
     installThemeManager(app, options);

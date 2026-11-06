@@ -22,6 +22,7 @@ export type FormTextareaThemeClasses = {
 };
 
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
     interface ThemeElements {
         formTextarea?: ThemeElementDefinition<FormTextareaThemeClasses>;
     }
@@ -58,6 +59,7 @@ export default defineComponent({
         const theme = useComponentTheme('formTextarea', useFormInputThemeProps(props), formTextareaThemeDefaults);
 
         const localValue = ref<string | null | undefined>(props.modelValue);
+
         watch(() => props.modelValue, (value) => {
             localValue.value = value;
         });
@@ -69,9 +71,15 @@ export default defineComponent({
             // Vue patches `composing` onto the target during IME composition;
             // skip the emit until composition ends to avoid duplicate updates.
             const target = $event.target as globalThis.HTMLTextAreaElement & { composing?: boolean };
-            if (target.composing) return;
+
+            if (target.composing) {
+                return;
+            }
+
             const { value } = target;
+
             localValue.value = value;
+
             if (props.debounce > 0) {
                 emitUpdateDebounced(value);
             } else {

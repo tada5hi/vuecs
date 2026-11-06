@@ -14,12 +14,15 @@ type ElementOrComponent = Element | ComponentPublicInstance | null | undefined;
  */
 function unrefElement(elRef: Ref<ElementOrComponent>): Element | null | undefined {
     const { value } = elRef;
+
     if (value == null) {
         return value as null | undefined;
     }
+
     if ('$el' in value) {
         return (value as ComponentPublicInstance).$el as Element;
     }
+
     return value as Element;
 }
 
@@ -41,9 +44,11 @@ export function usePrimitiveElement<T extends ComponentPublicInstance>() {
     const currentElement = computed<Element | null | undefined>(() => {
         const raw = primitiveElement.value;
         const $el = raw?.$el as Node | null | undefined;
+
         if ($el && ($el.nodeName === '#text' || $el.nodeName === '#comment')) {
             return ($el as unknown as Element).nextElementSibling;
         }
+
         return unrefElement(primitiveElement as Ref<ElementOrComponent>);
     });
 

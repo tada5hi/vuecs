@@ -47,6 +47,7 @@ export function renderColorPaletteStyles(palette: ColorPaletteConfig): string {
             PALETTE_NAME_SET.has(entry[1])
         ),
     );
+
     if (entries.length === 0) {
         return '';
     }
@@ -56,6 +57,7 @@ export function renderColorPaletteStyles(palette: ColorPaletteConfig): string {
     // --vc-color-info, so when the consumer rebinds `info`, propagate to
     // `link` too. Other axes don't have a Bulma-side alias to chase.
     const declarations: string[] = [];
+
     for (const [scale, paletteName] of entries) {
         const shades = COLOR_PALETTE_HSL[paletteName];
         const base = shades['500'];
@@ -63,11 +65,13 @@ export function renderColorPaletteStyles(palette: ColorPaletteConfig): string {
         // (1) HSL channel vars — drive Bulma's auto-derivation on
         //     .button, .tag, .notification, etc.
         const bulmaScale = scale === 'error' ? 'danger' : scale;
+
         declarations.push(
             `    --bulma-${bulmaScale}-h: ${base.h}deg;`,
             `    --bulma-${bulmaScale}-s: ${base.s}%;`,
             `    --bulma-${bulmaScale}-l: ${base.l}%;`,
         );
+
         if (scale === 'info') {
             // `link` is a Bulma axis with no vuecs counterpart; align with `info`.
             declarations.push(
@@ -79,7 +83,9 @@ export function renderColorPaletteStyles(palette: ColorPaletteConfig): string {
 
         // (2) Direct semantic vars — read by `.has-background-*` / `.has-text-*`.
         const baseHsl = `hsl(${base.h}deg, ${base.s}%, ${base.l}%)`;
+
         declarations.push(`    --bulma-${bulmaScale}: ${baseHsl};`);
+
         if (scale === 'info') {
             declarations.push(`    --bulma-link: ${baseHsl};`);
         }
@@ -89,10 +95,11 @@ export function renderColorPaletteStyles(palette: ColorPaletteConfig): string {
         //     palette switch.
         for (const shade of COLOR_PALETTE_SHADES) {
             const {
-                h, 
-                s, 
-                l, 
+                h,
+                s,
+                l,
             } = shades[shade];
+
             declarations.push(
                 `    --vc-color-${scale}-${shade}: hsl(${h}deg, ${s}%, ${l}%);`,
             );
@@ -104,6 +111,7 @@ export function renderColorPaletteStyles(palette: ColorPaletteConfig): string {
         //     `@supports` block in `@vuecs/design`; browsers without
         //     relative-color-syntax drop this line and keep the literal token.
         const surface = shades['600'];
+
         declarations.push(
             `    --vc-color-on-${scale}: oklch(from hsl(${surface.h}deg, ${surface.s}%, ${surface.l}%) clamp(0, (0.62 - l) * 1000, 1) 0 0);`,
         );

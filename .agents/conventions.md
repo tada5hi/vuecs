@@ -131,7 +131,7 @@ primitive (e.g. the Card compound bands), the inner render target is
 **`VCPrimitive` from `@vuecs/core`**, NOT `Primitive` from `reka-ui`.
 `VCPrimitive` is a line-for-line port of Reka's `Primitive` kept in
 `@vuecs/core` so `@vuecs/core` (and any component that uses it) stays
-free of a runtime `reka-ui` dep. See plan 034
+free of a runtime `reka-ui` dep. See
 ([`.agents/plans/034-vc-primitive-wrapper.md`](plans/034-vc-primitive-wrapper.md)).
 Themed Reka primitives (DialogContent, PopoverContent, StepperRoot,
 …) keep importing from `reka-ui` directly — the wrap-in-VC contract
@@ -360,8 +360,8 @@ Crossing the line from "bridge" to "shadow stylesheet" produces:
 | Framework exposes `--bs-primary` / `--bulma-primary` | ✅ map to `--vc-color-primary-500` | |
 | Framework exposes `--bs-btn-bg` / per-variant button vars | ✅ map per variant to `--vc-color-<scale>-600` | |
 | Framework's `.bg-body` resolves through `--bs-body-bg-rgb` (no triplet bridge in pure CSS) | | ❌ don't override `body { background: ... }` directly — accept the limitation; document it; consumers that need it set a CSS var themselves (the `examples/bootstrap/` app does exactly this with `.vc-app-bar { background: var(--vc-color-bg) }`) |
-| Bulma 1.0 routes `.button.is-primary` through `--bulma-button-h/s/l` channels | | ❌ don't redefine `.button.is-primary { background-color: ... }` — accept the limitation OR ship a runtime palette renderer (per plan 018) that writes the channels JS-side |
-| Framework doesn't ship dark-mode for chrome under our `.dark` toggle | ⚠️ mirror the framework's own attribute (`data-bs-theme`, `data-theme`) at app level — the example apps' watchEffect mirror is the doctrinal pattern. (Plan 021 will move this into the theme itself.) | ❌ don't redeclare every navbar / form-control rule under `.dark` |
+| Bulma 1.0 routes `.button.is-primary` through `--bulma-button-h/s/l` channels | | ❌ don't redefine `.button.is-primary { background-color: ... }` — accept the limitation OR ship a runtime palette renderer that writes the channels JS-side |
+| Framework doesn't ship dark-mode for chrome under our `.dark` toggle | ⚠️ mirror the framework's own attribute (`data-bs-theme`, `data-theme`) at app level — the example apps' watchEffect mirror is the doctrinal pattern. | ❌ don't redeclare every navbar / form-control rule under `.dark` |
 
 ### Trade-off
 

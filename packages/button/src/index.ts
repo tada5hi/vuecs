@@ -5,10 +5,11 @@ import '../assets/index.css';
 import './vue';
 
 import { VCButton } from './component';
-import type { Options } from './type';
+import type { Options } from './types';
 
 export * from './component';
-export * from './type';
+export type { ButtonProps } from './types';
+export * from './types';
 
 export function install(instance: App, options: Options = {}): void {
     installThemeManager(instance, options);

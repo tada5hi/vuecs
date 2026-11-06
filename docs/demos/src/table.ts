@@ -16,6 +16,7 @@ const app = createApp({
         return () => {
             const props = propState.value as Record<string, unknown>;
             const selectionMode = props.selectionMode === '' ? undefined : props.selectionMode;
+
             return h(Table, {
                 ...props,
                 selectionMode,
@@ -23,6 +24,7 @@ const app = createApp({
         };
     },
 });
+
 installVuecs(app);
 app.use(table);
 app.mount('#app');

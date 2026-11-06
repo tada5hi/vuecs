@@ -9,11 +9,15 @@ import type { VNode } from 'vue';
  * https://github.com/unovue/reka-ui) so `@vuecs/core` stays zero-dep beyond Vue.
  */
 export function renderSlotFragments(children?: VNode[]): VNode[] {
-    if (!children) return [];
+    if (!children) {
+        return [];
+    }
+
     return children.flatMap((child) => {
         if (child.type === Fragment) {
             return renderSlotFragments(child.children as VNode[]);
         }
+
         return [child];
     });
 }

@@ -27,6 +27,7 @@ const Host = defineComponent({
 describe('useSubmitButton', () => {
     it('returns create-mode bindings by default', () => {
         const wrapper = mount(Host, { global: { plugins: [themePlugin] } });
+
         expect(wrapper.text()).toBe('Create|success|_');
     });
 
@@ -35,11 +36,13 @@ describe('useSubmitButton', () => {
             props: { isEditing: true },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.text()).toBe('Update|primary|_');
     });
 
     it('reacts to isEditing changes', async () => {
         const wrapper = mount(Host, { global: { plugins: [themePlugin] } });
+
         await wrapper.setProps({ isEditing: true });
         expect(wrapper.text()).toBe('Update|primary|_');
     });
@@ -60,6 +63,7 @@ describe('useSubmitButton', () => {
             },
         };
         const wrapper = mount(Host, { global: { plugins: [PluginWithDefaults] } });
+
         expect(wrapper.text()).toBe('Save|info|fa fa-plus');
     });
 
@@ -72,6 +76,7 @@ describe('useSubmitButton', () => {
             },
         };
         const wrapper = mount(Host, { global: { plugins: [PluginWithReactive] } });
+
         expect(wrapper.text()).toContain('Erstellen');
         label.value = 'Anlegen';
         await wrapper.vm.$nextTick();

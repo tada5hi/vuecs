@@ -1,5 +1,6 @@
 import type { EXTEND_SYMBOL } from './constants';
 
+
 export type ExtendValue = {
     __extend: typeof EXTEND_SYMBOL;
     value: string;
@@ -64,6 +65,9 @@ export type ThemeElementDefinition<T extends ThemeClasses = ThemeClasses> = {
     defaultVariants?: DefaultVariants;
 };
 
+
+
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public name and declaration merging.
 export interface ThemeElements {}
 
 /**
@@ -159,4 +163,64 @@ export type ThemeConfig = {
 export type ThemeManagerOptions = {
     themes?: Theme[];
     overrides?: Theme;
+};
+
+/**
+ * Result of `auditTheme()` — a structured drift report with five
+ * fields: two top-level string arrays (`missingElements`,
+ * `unknownElements`) for element-level drift, plus three records
+ * (`missingSlots`, `unknownSlots`, `redundantStructural`) keyed by
+ * component name where the value is the list of slots that drifted.
+ */
+export type AuditResult = {
+    /** Component names present in `expected` but missing from `theme.elements`. */
+    missingElements: string[];
+    /** Component names present in `theme.elements` but absent from `expected` (typos / unsupported slots). */
+    unknownElements: string[];
+    /** Per-component slot keys present in `expected.classes` but missing from the theme entry. */
+    missingSlots: Record<string, string[]>;
+    /** Per-component slot keys present in the theme entry but absent from `expected.classes`. */
+    unknownSlots: Record<string, string[]>;
+    /**
+     * Per-component slot keys whose theme value is identical to the
+     * structural default (i.e. the theme adds nothing — likely a
+     * copy-paste mistake; `defaults` are merged automatically). Slots
+     * marked with `extend()` are never flagged here.
+     */
+    redundantStructural: Record<string, string[]>;
+};
+
+/**
+ * The shape `auditTheme()` audits against. Maps component name →
+ * `ComponentThemeDefinition` (the same `defaults` value each component
+ * package exports for its `useComponentTheme` call). Pass the
+ * defaults verbatim — the audit only reads `classes` keys + values.
+ */
+export type ExpectedThemeCatalog = Record<string, ComponentThemeDefinition>;
+
+export type FormatAuditResultOptions = {
+    /** Title for the rendered output. Default: `'Theme audit'`. */
+    title?: string;
+    /**
+     * Categories to suppress in the output. Useful when the audit is
+     * advisory (e.g. you accept `redundantStructural` warnings during
+     * an in-progress migration).
+     */
+    skip?: ReadonlyArray<keyof AuditResult>;
+};
+
+/**
+ * Shape of the `props` argument expected by `useComponentTheme`.
+ *
+ * The composable relies on Vue's reactive props proxy to track changes:
+ * passing the live `props` object from `setup(props)` works out-of-the-box
+ * and the returned `ComputedRef<T>` recomputes when `props.themeClass`
+ * or `props.themeVariant` change. Passing a plain, non-reactive object
+ * literal will resolve once but will NOT recompute — only use that form
+ * for one-shot resolution (e.g. in tests) or pass a `reactive(...)`
+ * object.
+ */
+export type UseComponentThemeProps<T extends ThemeClasses> = {
+    themeClass?: ThemeClassesOverride<T>;
+    themeVariant?: VariantValues;
 };

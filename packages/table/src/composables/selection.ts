@@ -1,3 +1,4 @@
+/* eslint-disable @tada5hi/no-reexport-shims -- Preserve this existing public forwarding module. */
 /**
  * Thin re-export over `@vuecs/core`'s shared `useSelectionMachine` —
  * the same composable powers `@vuecs/list` (ARIA listbox) and

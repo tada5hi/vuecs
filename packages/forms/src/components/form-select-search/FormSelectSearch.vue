@@ -20,7 +20,7 @@ import {
     toRef,
     watch,
 } from 'vue';
-import type { FormOption } from '../../types/option';
+import type { FormOption } from '../../types/types';
 import FormSelectSearchEntry from './FormSelectSearchEntry.vue';
 
 export type FormSelectSearchThemeClasses = {
@@ -37,6 +37,7 @@ export type FormSelectSearchThemeClasses = {
 };
 
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
     interface ThemeElements {
         formSelectSearch?: ThemeElementDefinition<FormSelectSearchThemeClasses>;
     }
@@ -145,16 +146,19 @@ export default defineComponent({
                 selected.value = props.modelValue
                     .map((value) => findOption(value))
                     .filter((option): option is FormOption => option !== undefined);
+
                 return;
             }
 
             if (typeof props.modelValue === 'undefined' || props.modelValue === null) {
                 selected.value = [];
                 q.value = '';
+
                 return;
             }
 
             const found = findOption(props.modelValue);
+
             if (found) {
                 selected.value = [found];
                 q.value = found.label;
@@ -176,11 +180,14 @@ export default defineComponent({
             if (!q.value || q.value.length < 1) {
                 return props.options;
             }
+
             // User input goes straight into a RegExp — escape special
             // chars so typing `(`, `[`, `*`, `+`, `?` etc. doesn't
             // throw SyntaxError and crash the filter mid-render.
+            // eslint-disable-next-line unicorn/prefer-regexp-escape -- Preserve the supported runtime/browser baseline.
             const escaped = q.value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
             const pattern = new RegExp(escaped, 'ig');
+
             return props.options.filter((option) => option.label.match(pattern));
         });
 
@@ -199,9 +206,11 @@ export default defineComponent({
         const showMoreItemsDisplayed = () => {
             const startIndex = itemsDisplayed.value.length;
             const endIndex = Math.min(startIndex + pageStep.value, items.value.length);
+
             if (startIndex >= endIndex) {
                 return;
             }
+
             itemsDisplayed.value.push(...items.value.slice(startIndex, endIndex));
         };
 
@@ -250,6 +259,7 @@ export default defineComponent({
 
             if (isMulti.value) {
                 const index = selected.value.findIndex((el) => el.value === option.value);
+
                 if (index === -1) {
                     selected.value.push(option);
                 } else {
@@ -257,17 +267,20 @@ export default defineComponent({
                 }
 
                 const values = selected.value.map((el) => el.value);
+
                 emit('update:modelValue', values);
                 emit('change', values);
 
                 if (shouldCloseOnSelect()) {
                     isDisplayed.value = false;
                 }
+
                 return;
             }
 
             let isBlank = false;
             const [selectedValue] = selected.value;
+
             if (selectedValue) {
                 if (selectedValue.value === option.value) {
                     q.value = '';
@@ -289,6 +302,7 @@ export default defineComponent({
             if (isBlank) {
                 emit('update:modelValue', null);
                 emit('change', null);
+
                 return;
             }
 
@@ -297,7 +311,9 @@ export default defineComponent({
         };
 
         const display = () => {
-            if (props.disabled) return;
+            if (props.disabled) {
+                return;
+            }
 
             isDisplayed.value = true;
         };
@@ -352,6 +368,7 @@ export default defineComponent({
 
                 if (itemsDisplayed.value.length === 1) {
                     toggle(itemsDisplayed.value[0]);
+
                     return;
                 }
 

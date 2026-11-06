@@ -27,6 +27,7 @@ export default defineComponent({
     props: contextMenuTriggerProps,
     setup(props, { slots }) {
         const theme = useComponentTheme('contextMenu', props, contextMenuThemeDefaults);
+
         return () => h(
             ContextMenuTrigger,
             {

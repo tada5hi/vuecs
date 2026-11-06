@@ -51,9 +51,11 @@ describe('VCNavItems standalone (manager-less)', () => {
                 { name: 'Add', url: '/robots/add' },
             ],
         });
+
         await nextTick();
 
         const links = wrapper.element.querySelectorAll('[data-vc-collection-item]');
+
         expect(links.length).toBe(2);
     });
 
@@ -65,9 +67,11 @@ describe('VCNavItems standalone (manager-less)', () => {
             ],
             path: '/robots/add',
         });
+
         await nextTick();
 
         const active = wrapper.element.querySelectorAll('.vc-nav-link.active');
+
         expect(active.length).toBe(1);
         expect((active[0] as HTMLElement).textContent).toContain('Add');
     });
@@ -81,9 +85,11 @@ describe('VCNavItems standalone (manager-less)', () => {
             variant: 'pills',
             orientation: 'vertical',
         });
+
         await nextTick();
 
         const group = wrapper.element as HTMLElement;
+
         expect(group.tagName).toBe('UL');
         expect(group.classList.contains('vc-nav-items--pills')).toBe(true);
         expect(group.classList.contains('vc-nav-items--vertical')).toBe(true);

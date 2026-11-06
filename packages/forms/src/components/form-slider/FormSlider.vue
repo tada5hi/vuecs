@@ -29,6 +29,7 @@ export type FormSliderThemeClasses = {
 };
 
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
     interface ThemeElements {
         formSlider?: ThemeElementDefinition<FormSliderThemeClasses>;
     }
@@ -102,6 +103,7 @@ export default defineComponent({
             if (props.modelValue === undefined || props.modelValue === null) {
                 return [props.min];
             }
+
             return Array.isArray(props.modelValue) ? props.modelValue : [props.modelValue];
         });
 

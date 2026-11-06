@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
-import { 
-    afterEach, 
-    describe, 
-    expect, 
-    it, 
+import {
+    afterEach,
+    describe,
+    expect,
+    it,
 } from 'vitest';
 import { COLOR_PALETTE_STYLE_ELEMENT_ID } from '@vuecs/design';
 import { renderColorPaletteStyles, setColorPalette } from '../../src/palette';
@@ -15,7 +15,9 @@ describe('renderColorPaletteStyles', () => {
 
     it('should emit all 11 shades for each scale assignment', () => {
         const css = renderColorPaletteStyles({ primary: 'green' });
+
         expect(css).toContain(':root {');
+
         for (const shade of ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950']) {
             expect(css).toContain(`--vc-color-primary-${shade}: var(--color-green-${shade});`);
         }
@@ -27,6 +29,7 @@ describe('renderColorPaletteStyles', () => {
             success: 'emerald',
             error: 'rose',
         });
+
         expect(css).toContain('--vc-color-primary-500: var(--color-blue-500);');
         expect(css).toContain('--vc-color-success-500: var(--color-emerald-500);');
         expect(css).toContain('--vc-color-error-500: var(--color-rose-500);');
@@ -38,6 +41,7 @@ describe('renderColorPaletteStyles', () => {
         // dark text instead of keeping the hardcoded white (WCAG). Degrades to
         // the literal token on browsers without relative-color-syntax.
         const css = renderColorPaletteStyles({ primary: 'amber' });
+
         expect(css).toContain('--vc-color-on-primary: oklch(from var(--color-amber-600)');
     });
 });
@@ -45,7 +49,10 @@ describe('renderColorPaletteStyles', () => {
 describe('setColorPalette', () => {
     afterEach(() => {
         const existing = document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID);
-        if (existing) existing.remove();
+
+        if (existing) {
+            existing.remove();
+        }
     });
 
     it('should be a no-op when no document is provided', () => {
@@ -54,7 +61,9 @@ describe('setColorPalette', () => {
 
     it('should create a <style id="vc-color-palette"> element on first call', () => {
         setColorPalette({ primary: 'green' });
+
         const style = document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID);
+
         expect(style).not.toBeNull();
         expect(style!.tagName).toBe('STYLE');
         expect(style!.textContent).toContain('--vc-color-primary-500: var(--color-green-500);');
@@ -65,6 +74,7 @@ describe('setColorPalette', () => {
         setColorPalette({ primary: 'violet' });
 
         const styles = document.querySelectorAll(`style#${COLOR_PALETTE_STYLE_ELEMENT_ID}`);
+
         expect(styles.length).toBe(1);
         expect(styles[0].textContent).toContain('--vc-color-primary-500: var(--color-violet-500);');
         expect(styles[0].textContent).not.toContain('--color-green-500');

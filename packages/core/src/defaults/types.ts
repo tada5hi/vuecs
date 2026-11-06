@@ -8,6 +8,7 @@ import type { MaybeRef } from 'vue';
  *
  * Values may be `MaybeRef` to support reactive sources (e.g. i18n `computed()`).
  */
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public name and declaration merging.
 export interface ComponentDefaults {}
 
 export type ComponentDefaultValues<T> = {

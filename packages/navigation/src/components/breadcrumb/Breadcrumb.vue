@@ -85,9 +85,9 @@ export type BreadcrumbItemSlotProps<Item extends BreadcrumbItem = BreadcrumbItem
 };
 
 type SequenceEntry =    | {
-    type: 'item'; 
-    item: BreadcrumbItem; 
-    index: number 
+    type: 'item';
+    item: BreadcrumbItem;
+    index: number
 } |
     { type: 'ellipsis'; hidden: BreadcrumbItem[] };
 
@@ -111,6 +111,7 @@ function buildSequence(
             index,
         }));
     }
+
     const head: SequenceEntry[] = items
         .slice(0, safeBefore)
         .map((item, index) => ({
@@ -126,6 +127,7 @@ function buildSequence(
             item,
             index: tailStart + k,
         }));
+
     return [...head, { type: 'ellipsis', hidden: items.slice(safeBefore, tailStart) }, ...tail];
 }
 
@@ -135,13 +137,17 @@ const VCBreadcrumb = defineComponent({
     props: breadcrumbProps,
     emits: ['select'],
     setup(props, {
-        attrs, 
-        emit, 
-        slots, 
+        attrs,
+        emit,
+        slots,
     }) {
         const themeProps: UseComponentThemeProps<BreadcrumbThemeClasses> = {
-            get themeClass() { return props.themeClass; },
-            get themeVariant() { return props.themeVariant; },
+            get themeClass() {
+                return props.themeClass;
+            },
+            get themeVariant() {
+                return props.themeVariant;
+            },
         };
         const theme = useComponentTheme('breadcrumb', themeProps, breadcrumbThemeDefaults);
         const defaults = useComponentDefaults('breadcrumb', props, breadcrumbBehavioralDefaults);
@@ -154,10 +160,18 @@ const VCBreadcrumb = defineComponent({
             () => (globals?.$route as { path?: string } | undefined)?.path,
         );
         const leafOverride = ref<string | undefined>(undefined);
-        watch(currentPath, () => { leafOverride.value = undefined; });
+
+        watch(currentPath, () => {
+            leafOverride.value = undefined;
+        });
+
         const leafHandle = {
-            set: (label: string) => { leafOverride.value = label; },
-            clear: () => { leafOverride.value = undefined; },
+            set: (label: string) => {
+                leafOverride.value = label;
+            },
+            clear: () => {
+                leafOverride.value = undefined;
+            },
         };
 
         // Propagate theme-variant (e.g. size) + the root theme-class to parts,
@@ -171,8 +185,10 @@ const VCBreadcrumb = defineComponent({
         // `:leaf-id` registration (the two-breadcrumb disambiguator).
         if (props.leafId != null) {
             const registry = injectBreadcrumbLeafRegistry();
+
             if (registry) {
                 const id = props.leafId;
+
                 registry.set(id, leafHandle);
                 onScopeDispose(() => {
                     if (registry.get(id) === leafHandle) {
@@ -188,11 +204,15 @@ const VCBreadcrumb = defineComponent({
         const effectiveItems = computed<BreadcrumbItem[]>(() => {
             const base = props.items ?? (props.registryId != null ? registryItems.value : []);
             const override = leafOverride.value;
+
             if (override == null || base.length === 0) {
                 return base;
             }
+
             const out = base.slice();
+
             out[out.length - 1] = { ...out[out.length - 1], label: override };
+
             return out;
         });
 
@@ -202,17 +222,19 @@ const VCBreadcrumb = defineComponent({
             if (slots['item-label']) {
                 return slots['item-label']({ item, index });
             }
+
             return item.label;
         };
 
         const renderCrumbContent = (item: BreadcrumbItem, index: number, current: boolean): VNodeChild => {
             if (slots.item) {
                 return slots.item({
-                    item, 
-                    index, 
-                    current, 
+                    item,
+                    index,
+                    current,
                 });
             }
+
             return [
                 item.icon ? renderBreadcrumbIcon(item.icon) : null,
                 renderLabel(item, index),
@@ -229,17 +251,19 @@ const VCBreadcrumb = defineComponent({
                 // disabled — otherwise it silently loses `aria-current="page"`.
                 return h(VCBreadcrumbPage, { disabled: true, current }, { default: () => content });
             }
+
             if (item.to != null || item.href != null) {
                 return h(
                     VCBreadcrumbLink,
                     {
-                        to: item.to, 
-                        href: item.href, 
-                        active: current, 
+                        to: item.to,
+                        href: item.href,
+                        active: current,
                     },
                     { default: () => content },
                 );
             }
+
             // url-less node: non-navigable text that can still drive `select`.
             return h(
                 VCBreadcrumbPage,
@@ -263,10 +287,12 @@ const VCBreadcrumb = defineComponent({
                 props.itemsAfterCollapse,
             );
             const out: VNodeChild[] = [];
+
             sequence.forEach((entry, i) => {
                 if (i > 0) {
                     out.push(renderSeparator());
                 }
+
                 if (entry.type === 'ellipsis') {
                     out.push(h(
                         VCBreadcrumbItem,
@@ -279,14 +305,17 @@ const VCBreadcrumb = defineComponent({
                             ),
                         },
                     ));
+
                     return;
                 }
+
                 out.push(h(
                     VCBreadcrumbItem,
                     { key: entry.index },
                     { default: () => renderCrumb(entry.item, entry.index) },
                 ));
             });
+
             return out;
         };
 
@@ -297,6 +326,7 @@ const VCBreadcrumb = defineComponent({
             const navChildren = (props.items == null && props.registryId == null && slots.default) ?
                 slots.default() :
                 h(VCBreadcrumbList, null, { default: () => renderItems() });
+
             return h(
                 props.as,
                 mergeProps(attrs, {
@@ -314,6 +344,7 @@ const VCBreadcrumb = defineComponent({
  * the `#item` / `#item-label` slot props infer richer entities passed via
  * `:items`. `default` is the manual-compound escape hatch.
  */
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
 export interface BreadcrumbSlots<Item extends BreadcrumbItem = BreadcrumbItem> {
     default?: () => unknown;
     'item'?: (props: BreadcrumbItemSlotProps<Item>) => unknown;

@@ -45,6 +45,7 @@ describe('bindLocale', () => {
 
     it('falls back when the source is "auto" and no navigator language exists', () => {
         setNavigatorLanguage(undefined);
+
         const source = ref<LocaleSource>('auto');
         const { resolved } = bindLocale(source, { fallback: 'en-GB', syncLang: false });
 
@@ -53,6 +54,7 @@ describe('bindLocale', () => {
 
     it('uses en-US as the default fallback', () => {
         setNavigatorLanguage(undefined);
+
         const source = ref<LocaleSource>('auto');
         const { resolved } = bindLocale(source, { syncLang: false });
 
@@ -62,10 +64,10 @@ describe('bindLocale', () => {
     it('set() applies an override and reset() returns to the default', () => {
         const source = ref<LocaleSource>('auto');
         const {
-            resolved, 
-            isAuto, 
-            set, 
-            reset, 
+            resolved,
+            isAuto,
+            set,
+            reset,
         } = bindLocale(source, { syncLang: false });
 
         expect(resolved.value).toBe('fr-FR');
@@ -95,6 +97,7 @@ describe('bindLocale', () => {
     it('resolves "auto" from an injected navigatorLanguage ref (SSR path)', () => {
         // No browser navigator — the injected ref is the only source.
         setNavigatorLanguage(undefined);
+
         const source = ref<LocaleSource>('auto');
         const nav = ref<string | undefined>('de-DE');
         const { resolved } = bindLocale(source, { navigatorLanguage: nav, syncLang: false });

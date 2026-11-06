@@ -1,18 +1,16 @@
+import type { BreadcrumbLeafHandle, BreadcrumbLeafRegistry  } from './types';
 import { inject, provide } from '@vuecs/core';
 import type { App } from 'vue';
 import { useBreadcrumbContext } from './context';
-import type { BreadcrumbLeafHandle } from './types';
 
 const BREADCRUMB_LEAF_REGISTRY_SYMBOL = Symbol.for('VCBreadcrumbLeafRegistry');
-
-/** App-scoped map of `:leaf-id` → leaf handle, for the rare two-breadcrumb case. */
-export type BreadcrumbLeafRegistry = Map<string, BreadcrumbLeafHandle>;
 
 export function provideBreadcrumbLeafRegistry(
     registry: BreadcrumbLeafRegistry = new Map(),
     app?: App,
 ): BreadcrumbLeafRegistry {
     provide(BREADCRUMB_LEAF_REGISTRY_SYMBOL, registry, app);
+
     return registry;
 }
 
@@ -39,6 +37,7 @@ export function injectBreadcrumbLeafRegistry(app?: App): BreadcrumbLeafRegistry 
 export function useBreadcrumbLeaf(id?: string): BreadcrumbLeafHandle {
     if (id != null) {
         const registry = injectBreadcrumbLeafRegistry();
+
         // Lazy delegation so the handle works even if the target
         // `<VCBreadcrumb :leaf-id>` mounts after this call.
         return {
@@ -48,10 +47,12 @@ export function useBreadcrumbLeaf(id?: string): BreadcrumbLeafHandle {
     }
 
     const ctx = useBreadcrumbContext();
+
     if (!ctx) {
         // Outside a `<VCBreadcrumb>` and no id — no-op rather than throw, so
         // a page `setup` can call it unconditionally.
         return { set: () => {}, clear: () => {} };
     }
+
     return ctx.leaf;
 }

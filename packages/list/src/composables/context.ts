@@ -1,7 +1,7 @@
 import { inject, provide } from 'vue';
 import type { ComputedRef, InjectionKey, Ref } from 'vue';
 import type { ListItemThemeClasses, ListThemeClasses } from '../types';
-import type { ListState } from './define-list';
+import type { ListState } from './types';
 import type { SelectionState } from './selection';
 
 /**
@@ -46,6 +46,7 @@ export function provideListContext(ctx: ListContext): void {
 
 function injectListContext(componentName?: string): ListContext {
     const ctx = inject(LIST_CONTEXT_KEY, undefined);
+
     if (!ctx) {
         throw new Error(
             componentName ?
@@ -53,6 +54,7 @@ function injectListContext(componentName?: string): ListContext {
                 '[@vuecs/list] useList() must be called inside a <VCList>.',
         );
     }
+
     return ctx;
 }
 
@@ -71,6 +73,7 @@ export function useList<
     state: ListState<T, Meta>;
 } {
     const ctx = injectListContext(componentName);
+
     // Type-erased context narrowed by the consumer's explicit type
     // parameters. Same pattern as the previous `useList<T, Meta>()`
     // overload — the cast is bounded by the caller's intent.
@@ -138,6 +141,7 @@ export function useListItem<T = unknown>(componentName?: string): ListItemContex
     data: ComputedRef<T>;
 } {
     const ctx = inject(LIST_ITEM_CONTEXT_KEY, undefined);
+
     if (!ctx) {
         throw new Error(
             componentName ?
@@ -145,6 +149,7 @@ export function useListItem<T = unknown>(componentName?: string): ListItemContex
                 '[@vuecs/list] useListItem() must be called inside a <VCListItem>.',
         );
     }
+
     return ctx as ListItemContext & { data: ComputedRef<T> };
 }
 

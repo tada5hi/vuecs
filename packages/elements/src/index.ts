@@ -1,6 +1,7 @@
+import type { Options } from './types';
 import type { App, Plugin } from 'vue';
 import { installDefaultsManager, installThemeManager } from '@vuecs/core';
-import type { CoreOptions } from '@vuecs/core';
+
 
 import '../assets/alert.css';
 import '../assets/aspect-ratio.css';
@@ -38,8 +39,6 @@ import {
 
 export * from './components';
 
-export type Options = CoreOptions;
-
 export function install(app: App, options: Options = {}): void {
     installThemeManager(app, options);
     installDefaultsManager(app, options);
@@ -72,3 +71,5 @@ export function install(app: App, options: Options = {}): void {
 }
 
 export default { install } satisfies Plugin<[Options?]>;
+
+export type { Options } from './types';

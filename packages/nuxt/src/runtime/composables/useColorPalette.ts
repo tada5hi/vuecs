@@ -1,24 +1,12 @@
+/* eslint-disable @tada5hi/no-reexport-shims -- Preserve this existing public forwarding module. */
+import type { NuxtColorPaletteConfig } from './types';
 import { useConfig } from '@vuecs/core';
 import { useColorPaletteUnshared } from '@vuecs/design';
-import type {
-    ColorPaletteName,
-    SemanticScaleName,
-    UseColorPaletteReturn,
-} from '@vuecs/design';
+import type { UseColorPaletteReturn } from '@vuecs/design';
 // Side-effect import: loads the `Config['nonce']` augmentation.
 import '../../config';
 // @ts-expect-error resolved by Nuxt at build time
 import { useCookie, useRuntimeConfig } from '#imports';
-
-/**
- * Generic palette config typed against the design-system catalog.
- *
- * Widens automatically when community themes augment
- * `ExtraColorPaletteNames` in `@vuecs/design` — consumers installing
- * such a theme keep autocomplete on its extra names without any
- * Nuxt-side wiring.
- */
-export type NuxtColorPaletteConfig = Partial<Record<SemanticScaleName, ColorPaletteName>>;
 
 /**
  * SSR-safe palette composable. Backed by a Nuxt cookie so the server

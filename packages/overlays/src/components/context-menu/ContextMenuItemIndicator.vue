@@ -23,6 +23,7 @@ export default defineComponent({
     props: contextMenuItemIndicatorProps,
     setup(props, { slots }) {
         const theme = useComponentTheme('contextMenu', props, contextMenuThemeDefaults);
+
         return () => h(
             ContextMenuItemIndicator,
             {

@@ -10,6 +10,7 @@ type Row = {
 describe('resolveItemIdentity', () => {
     it('should prefer itemId over itemKey over the .id heuristic', () => {
         const item : Row = { id: 1, name: 'a' };
+
         expect(resolveItemIdentity(item, () => 99)).toEqual(99);
         expect(resolveItemIdentity(item, undefined, 'name')).toEqual('a');
         expect(resolveItemIdentity(item)).toEqual(1);
@@ -21,6 +22,7 @@ describe('createCollectionMutations', () => {
     it('should append on applyCreate and dedup when flagged', () => {
         const m = createCollectionMutations<Row>({ flags: { dedupCreated: true } });
         const current : Row[] = [{ id: 1, name: 'a' }];
+
         expect(m.applyCreate(current, { id: 2, name: 'b' })).toHaveLength(2);
         // gated no-op returns the SAME reference (callers key off identity)
         expect(m.applyCreate(current, { id: 1, name: 'dup' })).toBe(current);
@@ -35,9 +37,11 @@ describe('createCollectionMutations', () => {
         }];
 
         const replace = createCollectionMutations<Row>({});
+
         expect(replace.applyUpdate(current, { id: 1, name: 'b' })[0]).toEqual({ id: 1, name: 'b' });
 
         const merging = createCollectionMutations<Row>({ flags: { mergeOnUpdated: true }, merge });
+
         expect(merging.applyUpdate(current, { id: 1, name: 'b' } as Row)[0])
             .toEqual({
                 id: 1,
@@ -51,6 +55,7 @@ describe('createCollectionMutations', () => {
     it('should remove on applyDelete and no-op when flagged + missing', () => {
         const m = createCollectionMutations<Row>({ flags: { filterDeleted: true } });
         const current : Row[] = [{ id: 1, name: 'a' }];
+
         expect(m.applyDelete(current, { id: 1, name: 'a' })).toHaveLength(0);
         expect(m.applyDelete(current, { id: 2, name: 'x' })).toBe(current);
     });
@@ -58,17 +63,20 @@ describe('createCollectionMutations', () => {
     it('should preserve the array reference on applyDelete when the item is missing under default flags', () => {
         const m = createCollectionMutations<Row>({});
         const current : Row[] = [{ id: 1, name: 'a' }];
+
         expect(m.applyDelete(current, { id: 2, name: 'x' })).toBe(current);
     });
 
     it('should preserve the array reference on applyDelete for an absent identity-less item', () => {
         const m = createCollectionMutations<{ label: string }>({});
         const current = [{ label: 'kept' }];
+
         expect(m.applyDelete(current, { label: 'missing' })).toBe(current);
     });
 
     it('should expose resolved flags and identity helpers', () => {
         const m = createCollectionMutations<Row>({ itemKey: 'name' });
+
         expect(m.flags).toEqual({
             mergeOnUpdated: false,
             dedupCreated: false,

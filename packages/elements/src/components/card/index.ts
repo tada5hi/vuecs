@@ -12,8 +12,9 @@ export type { CardTitleProps } from './CardTitle.vue';
 export type { CardDescriptionProps } from './CardDescription.vue';
 export type { CardBodyProps } from './CardBody.vue';
 export type { CardFooterProps } from './CardFooter.vue';
-export type { CardPlaceholderProps } from './CardPlaceholder';
+export type { CardPlaceholderProps } from './types';
 
 export * from './context';
+export type { CardContext } from './types';
 export * from './theme';
 export * from './types';

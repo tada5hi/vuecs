@@ -33,6 +33,7 @@ function defaultSanitize<T>(value: unknown): T {
     }
 
     const out: Record<string, string> = {};
+
     for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
         if (
             SEMANTIC_SCALE_SET.has(k) &&
@@ -42,6 +43,7 @@ function defaultSanitize<T>(value: unknown): T {
             out[k] = v;
         }
     }
+
     return out as T;
 }
 
@@ -118,6 +120,7 @@ export function useColorPaletteUnshared<
 
     const renderConcatenated = (palette: T): string => {
         const themes = manager?.themes;
+
         if (!themes || themes.length === 0) {
             return '';
         }
@@ -133,6 +136,7 @@ export function useColorPaletteUnshared<
          * second line of defense rather than the only one.
          */
         const sanitized = sanitize(palette);
+
         return renderColorPaletteFromThemes(themes, sanitized as Record<string, string>);
     };
 

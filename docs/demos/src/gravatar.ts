@@ -5,6 +5,7 @@ import { installIframeBridge } from './iframe-bridge';
 import { installVuecs } from './shared';
 
 const app = createApp(Gravatar);
+
 installVuecs(app);
 app.use(gravatar);
 app.mount('#app');

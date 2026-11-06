@@ -11,6 +11,7 @@ const app = createApp({
         return () => h(Placeholder, propState.value);
     },
 });
+
 installVuecs(app);
 // The demo composes the primitive `<VCPlaceholder>` (placeholder
 // package) with `<VCCardPlaceholder>` (elements) + `<VCTablePlaceholder>`

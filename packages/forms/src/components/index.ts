@@ -14,4 +14,4 @@ export * from './form-tags';
 export * from './form-textarea';
 export * from './validation-group';
 export * from './constants';
-export * from './type';
+export * from './types';

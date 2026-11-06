@@ -9,6 +9,7 @@ const app = createApp({
         return () => h(FormInput, propState.value);
     },
 });
+
 installVuecs(app);
 app.use(formControls);
 app.mount('#app');
@@ -22,14 +23,14 @@ announceProps(
             section: 'Variant',
         },
         disabled: {
-            type: 'boolean', 
-            default: false, 
-            section: 'State', 
+            type: 'boolean',
+            default: false,
+            section: 'State',
         },
         placeholder: {
-            type: 'string', 
-            default: 'Enter your email', 
-            section: 'Content', 
+            type: 'string',
+            default: 'Enter your email',
+            section: 'Content',
         },
     },
     {

@@ -119,7 +119,11 @@ function clickShouldToggle(event: Event): boolean {
     // lint config doesn't need `dom` globals; any event target with a
     // `.closest()` is a DOM element by convention.
     const target = event.target as { closest?: (s: string) => unknown } | null;
-    if (!target || typeof target.closest !== 'function') return true;
+
+    if (!target || typeof target.closest !== 'function') {
+        return true;
+    }
+
     return target.closest(NATIVE_INTERACTIVE_SELECTOR) === null;
 }
 
@@ -144,6 +148,7 @@ function clickShouldToggle(event: Event): boolean {
  * `SlotsType` below, but threads the inferred `Item` into the
  * data-bearing default slot.
  */
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
 export interface ListItemSlots<Item> {
     default?: (props: ListItemSlotProps<Item>) => unknown;
 }
@@ -191,12 +196,18 @@ const VCListItem = defineComponent({
         const { state, selection } = list;
 
         const key = computed(() => {
-            if (props.data === undefined) return undefined;
+            if (props.data === undefined) {
+                return undefined;
+            }
+
             return state.getItemKey(props.data);
         });
 
         const isSelected = computed(() => {
-            if (!props.selectable || key.value === undefined) return false;
+            if (!props.selectable || key.value === undefined) {
+                return false;
+            }
+
             return selection.isSelected(key.value);
         });
 
@@ -219,9 +230,19 @@ const VCListItem = defineComponent({
             },
             get themeVariant() {
                 const base = { ...(props.themeVariant ?? {}) };
-                if (isDisabled.value) base.disabled = true;
-                if (isActive.value) base.active = true;
-                if (isSelected.value) base.selected = true;
+
+                if (isDisabled.value) {
+                    base.disabled = true;
+                }
+
+                if (isActive.value) {
+                    base.active = true;
+                }
+
+                if (isSelected.value) {
+                    base.selected = true;
+                }
+
                 return base;
             },
         };
@@ -237,6 +258,7 @@ const VCListItem = defineComponent({
         const isEligibleTabStop = computed(() => (
             props.selectable && !props.disabled
         ));
+
         // Watch eligibility AND index together. If the row's index
         // changes mid-life (list reorder / splice), the old index
         // must unregister before the new one registers — otherwise
@@ -246,17 +268,25 @@ const VCListItem = defineComponent({
             [isEligibleTabStop, () => props.index],
             ([eligible, newIndex], oldValues) => {
                 const oldIndex = oldValues?.[1];
+
                 if (oldIndex !== undefined && oldIndex !== newIndex) {
                     list.unregisterEligibleItem(oldIndex);
                 }
-                if (eligible) list.registerEligibleItem(newIndex);
-                else list.unregisterEligibleItem(newIndex);
+
+                if (eligible) {
+                    list.registerEligibleItem(newIndex);
+                } else {
+                    list.unregisterEligibleItem(newIndex);
+                }
             },
             { immediate: true },
         );
         onBeforeUnmount(() => {
-            if (isEligibleTabStop.value) list.unregisterEligibleItem(props.index);
+            if (isEligibleTabStop.value) {
+                list.unregisterEligibleItem(props.index);
+            }
         });
+
         const isTabStop = computed(() => (
             isEligibleTabStop.value && list.firstTabStopIndex.value === props.index
         ));
@@ -268,8 +298,10 @@ const VCListItem = defineComponent({
         const isFocused = ref(false);
 
         const toggle = (opts: { range?: boolean; toggle?: boolean } = {}): void => {
-            if (props.disabled || !props.selectable || key.value === undefined) return;
-            if (selection.mode.value === undefined) return;
+            if (props.disabled || !props.selectable || key.value === undefined || (selection.mode.value === undefined)) {
+                return;
+            }
+
             selection.toggle(key.value, opts);
         };
 
@@ -287,13 +319,16 @@ const VCListItem = defineComponent({
         });
 
         const onClick = (event: Event): void => {
-            if (!props.selectable || props.disabled) return;
-            if (!clickShouldToggle(event)) return;
+            if (!props.selectable || props.disabled || !clickShouldToggle(event)) {
+                return;
+            }
+
             const m = event as {
-                shiftKey?: boolean; 
-                ctrlKey?: boolean; 
-                metaKey?: boolean 
+                shiftKey?: boolean;
+                ctrlKey?: boolean;
+                metaKey?: boolean
             };
+
             toggle({
                 range: !!m.shiftKey,
                 toggle: !!m.ctrlKey || !!m.metaKey,
@@ -301,21 +336,27 @@ const VCListItem = defineComponent({
         };
 
         const onKeydown = (event: Event): void => {
-            if (!props.selectable || props.disabled) return;
-            const k = event as {
-                key?: string; 
-                shiftKey?: boolean; 
-                ctrlKey?: boolean; 
-                metaKey?: boolean; 
-                preventDefault: () => void 
-            };
-            if (k.key === ' ' || k.key === 'Enter') {
-                k.preventDefault();
-                toggle({
-                    range: !!k.shiftKey,
-                    toggle: !!k.ctrlKey || !!k.metaKey,
-                });
+            if (!props.selectable || props.disabled) {
+                return;
             }
+
+            const k = event as {
+                key?: string;
+                shiftKey?: boolean;
+                ctrlKey?: boolean;
+                metaKey?: boolean;
+                preventDefault: () => void
+            };
+
+            if (!(k.key === ' ' || k.key === 'Enter')) {
+                return;
+            }
+
+            k.preventDefault();
+            toggle({
+                range: !!k.shiftKey,
+                toggle: !!k.ctrlKey || !!k.metaKey,
+            });
         };
 
         return () => {
@@ -340,16 +381,22 @@ const VCListItem = defineComponent({
                 elementAttrs['aria-disabled'] = 'true';
                 elementAttrs['data-disabled'] = '';
             }
+
             if (isActive.value) {
                 elementAttrs['aria-current'] = props.active === true ? 'true' : props.active;
                 elementAttrs['data-active'] = '';
             }
+
             if (inListbox) {
                 elementAttrs.role = 'option';
                 elementAttrs['aria-selected'] = isSelected.value ? 'true' : 'false';
                 elementAttrs.tabindex = isTabStop.value ? 0 : -1;
-                elementAttrs.onFocusin = () => { isFocused.value = true; };
-                elementAttrs.onFocusout = () => { isFocused.value = false; };
+                elementAttrs.onFocusin = () => {
+                    isFocused.value = true;
+                };
+                elementAttrs.onFocusout = () => {
+                    isFocused.value = false;
+                };
                 elementAttrs['data-selected'] = isSelected.value ? '' : undefined;
                 elementAttrs.onClick = onClick;
                 // Keyboard activation only when listbox semantics are on.
@@ -375,10 +422,15 @@ const VCListItem = defineComponent({
             // the same merge into the cloned vnode so both render paths
             // honour `attrs` consistently.
             const mergedAttrs = mergeProps(attrs, elementAttrs);
+
             if (props.asChild) {
                 const cloned = applyAsChild(children, mergedAttrs);
-                if (cloned) return cloned;
+
+                if (cloned) {
+                    return cloned;
+                }
             }
+
             return h(props.tag ?? props.as, mergedAttrs, children);
         };
     },

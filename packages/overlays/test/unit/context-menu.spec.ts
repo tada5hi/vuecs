@@ -39,10 +39,13 @@ function buildApp() {
 }
 
 describe('<VCContextMenu>', () => {
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it('renders trigger and keeps content closed by default', async () => {
         const wrapper = buildApp();
+
         await nextTick();
         expect(wrapper.find('[data-testid="trigger"]').exists()).toBe(true);
         expect(document.body.querySelector('[data-testid="content"]')).toBeNull();
@@ -50,9 +53,11 @@ describe('<VCContextMenu>', () => {
 
     it('opens the content on contextmenu (right-click) event', async () => {
         const wrapper = buildApp();
+
         await nextTick();
 
         const trigger = wrapper.find('[data-testid="trigger"]').element as HTMLElement;
+
         trigger.dispatchEvent(new MouseEvent('contextmenu', {
             bubbles: true,
             cancelable: true,

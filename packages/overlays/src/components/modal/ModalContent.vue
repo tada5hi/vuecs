@@ -70,6 +70,7 @@ export default defineComponent({
             if (props.inline) {
                 return renderInner();
             }
+
             return h(DialogPortal, null, { default: () => renderInner() });
         };
     },

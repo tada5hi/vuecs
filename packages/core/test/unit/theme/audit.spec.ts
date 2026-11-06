@@ -4,9 +4,8 @@ import {
     formatAuditResult,
     isAuditClean,
 } from '../../../src/theme/audit';
-import type { ExpectedThemeCatalog } from '../../../src/theme/audit';
+import type { ExpectedThemeCatalog, Theme  } from '../../../src/theme/types';
 import { extend } from '../../../src/theme/extend';
-import type { Theme } from '../../../src/theme/types';
 
 const expected: ExpectedThemeCatalog = {
     button: {
@@ -28,6 +27,7 @@ describe('auditTheme', () => {
         };
 
         const result = auditTheme(theme, expected);
+
         expect(isAuditClean(result)).toBe(true);
     });
 
@@ -35,6 +35,7 @@ describe('auditTheme', () => {
         const theme: Theme = { elements: { button: { classes: { root: 'btn', icon: 'h-4' } } } as Theme['elements'] };
 
         const result = auditTheme(theme, expected);
+
         expect(result.missingElements).toEqual(['badge']);
         expect(isAuditClean(result)).toBe(false);
     });
@@ -49,6 +50,7 @@ describe('auditTheme', () => {
         };
 
         const result = auditTheme(theme, expected);
+
         expect(result.unknownElements).toEqual(['mystery']);
         expect(isAuditClean(result)).toBe(false);
     });
@@ -62,13 +64,16 @@ describe('auditTheme', () => {
         };
 
         const result = auditTheme(theme, expected);
+
         expect(result.missingSlots).toEqual({ button: ['icon'] });
         expect(isAuditClean(result)).toBe(false);
     });
 
     it('flags unknown slots per element', () => {
         const buttonClasses: Record<string, string> = { root: 'btn', icon: 'h-4' };
+
         buttonClasses.extraSlot = 'mystery';
+
         const theme: Theme = {
             elements: {
                 button: { classes: buttonClasses },
@@ -77,6 +82,7 @@ describe('auditTheme', () => {
         };
 
         const result = auditTheme(theme, expected);
+
         expect(result.unknownSlots).toEqual({ button: ['extraSlot'] });
         expect(isAuditClean(result)).toBe(false);
     });
@@ -90,6 +96,7 @@ describe('auditTheme', () => {
         };
 
         const result = auditTheme(theme, expected);
+
         expect(result.redundantStructural).toEqual({ button: ['root'] });
         expect(isAuditClean(result)).toBe(false);
     });
@@ -108,6 +115,7 @@ describe('auditTheme', () => {
         };
 
         const result = auditTheme(theme, expected);
+
         expect(result.redundantStructural).toEqual({});
         expect(isAuditClean(result)).toBe(true);
     });
@@ -118,6 +126,7 @@ describe('auditTheme', () => {
         const theme: Theme = { elements: { button: { classes: { root: 'btn', icon: 'h-4' } } } as Theme['elements'] };
 
         const result = auditTheme(theme, expected);
+
         expect(result.missingElements).toEqual(['badge']);
         expect(result.missingSlots).toEqual({});
     });
@@ -125,6 +134,7 @@ describe('auditTheme', () => {
     it('handles a theme with empty elements gracefully', () => {
         const theme: Theme = { elements: {} };
         const result = auditTheme(theme, expected);
+
         expect(result.missingElements.sort()).toEqual(['badge', 'button']);
         expect(result.unknownElements).toEqual([]);
         expect(result.missingSlots).toEqual({});
@@ -141,6 +151,7 @@ describe('auditTheme', () => {
         };
 
         const result = auditTheme(theme, expected);
+
         // Theme has no classes for button → both slots missing.
         expect(result.missingSlots).toEqual({ button: ['root', 'icon'] });
     });
@@ -155,6 +166,7 @@ describe('auditTheme', () => {
         };
 
         const result = auditTheme(theme, expected);
+
         expect(result.missingElements).toEqual(['badge']);
         expect(result.unknownElements).toEqual(['mystery']);
         expect(result.missingSlots).toEqual({ button: ['icon'] });
@@ -200,6 +212,7 @@ describe('formatAuditResult', () => {
             unknownSlots: {},
             redundantStructural: {},
         });
+
         expect(out).toBe('');
     });
 
@@ -236,6 +249,7 @@ describe('formatAuditResult', () => {
             },
             { title: 'theme-tailwind audit' },
         );
+
         expect(out).toContain('theme-tailwind audit:');
     });
 
@@ -250,6 +264,7 @@ describe('formatAuditResult', () => {
             },
             { skip: ['redundantStructural', 'unknownElements'] },
         );
+
         expect(out).toContain('Missing elements');
         expect(out).not.toContain('Unknown elements');
         expect(out).not.toContain('Redundant structural');
@@ -266,6 +281,7 @@ describe('formatAuditResult', () => {
         const alpha = out.indexOf('alpha');
         const mike = out.indexOf('mike');
         const zebra = out.indexOf('zebra');
+
         expect(alpha).toBeGreaterThan(0);
         expect(alpha).toBeLessThan(mike);
         expect(mike).toBeLessThan(zebra);

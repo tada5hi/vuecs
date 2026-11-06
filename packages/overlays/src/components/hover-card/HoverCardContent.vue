@@ -52,6 +52,7 @@ export default defineComponent({
             if (props.inline) {
                 return renderContent();
             }
+
             return h(HoverCardPortal, null, { default: () => renderContent() });
         };
     },

@@ -1,7 +1,7 @@
 import {
-    Comment, 
-    cloneVNode, 
-    defineComponent, 
+    Comment,
+    cloneVNode,
+    defineComponent,
     mergeProps,
 } from 'vue';
 import { renderSlotFragments } from './render-slot-fragments';
@@ -29,6 +29,7 @@ export const Slot = defineComponent({
             const firstNonCommentChildrenIndex = children.findIndex(
                 (child) => child.type !== Comment,
             );
+
             if (firstNonCommentChildrenIndex === -1) {
                 return children;
             }
@@ -72,6 +73,7 @@ export const Slot = defineComponent({
             }
 
             children[firstNonCommentChildrenIndex] = cloned;
+
             return children;
         };
     },

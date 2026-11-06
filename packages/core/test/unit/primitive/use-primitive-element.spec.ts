@@ -20,6 +20,7 @@ describe('usePrimitiveElement', () => {
         const Wrapper = defineComponent({
             setup() {
                 const { primitiveElement, currentElement } = usePrimitiveElement();
+
                 return () => h(Inner, {
                     ref: primitiveElement,
                     'data-tag': currentElement.value?.tagName ?? '',
@@ -28,6 +29,7 @@ describe('usePrimitiveElement', () => {
         });
 
         const wrapper = mount(Wrapper);
+
         await nextTick();
         expect(wrapper.element.tagName).toBe('SECTION');
     });
@@ -36,11 +38,13 @@ describe('usePrimitiveElement', () => {
         const Wrapper = defineComponent({
             setup() {
                 const { currentElement } = usePrimitiveElement();
+
                 return () => h('div', { 'data-empty': currentElement.value == null ? '1' : '0' });
             },
         });
 
         const wrapper = mount(Wrapper);
+
         expect(wrapper.element.getAttribute('data-empty')).toBe('1');
     });
 
@@ -62,6 +66,7 @@ describe('usePrimitiveElement', () => {
         const Wrapper = defineComponent({
             setup() {
                 const { primitiveElement, currentElement } = usePrimitiveElement();
+
                 // Project the resolved tag onto a DOM attribute so we
                 // can assert against the final settled value rather than
                 // racing the reactive update.
@@ -74,6 +79,7 @@ describe('usePrimitiveElement', () => {
         });
 
         const wrapper = mount(Wrapper);
+
         await nextTick();
         await nextTick();
 
@@ -87,6 +93,7 @@ describe('usePrimitiveElement', () => {
         const Wrapper = defineComponent({
             setup() {
                 const { primitiveElement, currentElement } = usePrimitiveElement();
+
                 return () => h(
                     'div',
                     null,
@@ -103,6 +110,7 @@ describe('usePrimitiveElement', () => {
         });
 
         const wrapper = mount(Wrapper);
+
         await nextTick();
         await nextTick();
 
@@ -110,6 +118,7 @@ describe('usePrimitiveElement', () => {
         // text/comment placeholder. The span next to it carries the tag name
         // resolved via currentElement.
         const span = wrapper.element.querySelector('span[data-resolved]');
+
         expect(span?.getAttribute('data-resolved')).toBe('P');
     });
 });

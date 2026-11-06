@@ -23,7 +23,9 @@ function buildApp(open = ref(false)) {
         setup() {
             return () => h(VCHoverCard, {
                 open: open.value,
-                'onUpdate:open': (v: boolean) => { open.value = v; },
+                'onUpdate:open': (v: boolean) => {
+                    open.value = v;
+                },
             }, {
                 default: () => [
                     h(VCHoverCardTrigger, { 'data-testid': 'trigger' }, () => '@octocat'),
@@ -40,10 +42,13 @@ function buildApp(open = ref(false)) {
 }
 
 describe('<VCHoverCard>', () => {
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it('renders trigger but no content while closed', async () => {
         const wrapper = buildApp();
+
         await nextTick();
         expect(wrapper.find('[data-testid="trigger"]').exists()).toBe(true);
         expect(document.body.querySelector('[data-testid="content"]')).toBeNull();
@@ -51,6 +56,7 @@ describe('<VCHoverCard>', () => {
 
     it('shows content when controlled open flips true', async () => {
         const open = ref(false);
+
         buildApp(open);
         await nextTick();
         open.value = true;

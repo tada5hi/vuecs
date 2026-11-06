@@ -14,8 +14,10 @@ describe('useForwardPropsEmits', () => {
             emits: ['change'],
             setup(props, { emit }) {
                 const forwarded = useForwardPropsEmits(props, emit);
+
                 return () => {
                     resolved = forwarded.value;
+
                     return h('div');
                 };
             },
@@ -36,8 +38,10 @@ describe('useForwardPropsEmits', () => {
             props: { size: { type: String, default: 'md' } },
             setup(props) {
                 const forwarded = useForwardPropsEmits(props);
+
                 return () => {
                     resolved = forwarded.value;
+
                     return h('div');
                 };
             },

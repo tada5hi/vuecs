@@ -3,8 +3,7 @@ import { ref } from 'vue';
 import type { Ref } from 'vue';
 import { bindColorMode } from './bind';
 import { isColorMode } from './catalog';
-import type { ColorMode } from './catalog';
-import type { UseColorModeOptions, UseColorModeReturn } from './types';
+import type { ColorMode, UseColorModeOptions, UseColorModeReturn  } from './types';
 
 const DEFAULT_STORAGE_KEY = 'vc-color-mode';
 

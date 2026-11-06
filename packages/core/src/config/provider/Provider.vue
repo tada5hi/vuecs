@@ -48,7 +48,9 @@ export default defineComponent({
             config: props.config,
             parent,
         });
+
         provideConfigManager(local);
+
         return () => slots.default?.();
     },
 });

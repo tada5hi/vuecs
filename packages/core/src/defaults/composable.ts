@@ -34,6 +34,7 @@ export function useComponentDefaults<
     hardcoded: H,
 ): ComputedRef<H> {
     const manager = injectDefaultsManager();
+
     if (!manager) {
         throw new Error(
             'DefaultsManager is not installed. Call app.use(vuecs) or installDefaultsManager(app) before using components.',
@@ -45,17 +46,22 @@ export function useComponentDefaults<
         const result = {} as Record<string, any>;
 
         const keys = Object.keys(hardcoded);
+
         for (const key of keys) {
             const propValue = props[key];
+
             if (typeof propValue !== 'undefined') {
                 result[key] = propValue;
+
                 continue;
             }
 
             if (globalDefaults) {
                 const globalValue = unref(globalDefaults[key]);
+
                 if (typeof globalValue !== 'undefined') {
                     result[key] = globalValue;
+
                     continue;
                 }
             }

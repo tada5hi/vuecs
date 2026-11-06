@@ -104,6 +104,9 @@ export type TableLiteProps = ExtractPublicPropTypes<typeof tableLiteProps>;
 // + the cell / header / default slots.
 // ──────────────────────────────────────────────────────────────────────────
 
+
+
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
 export interface TableLiteSlots<Row> {
     default?: (props: TableSlotProps<Row>) => unknown;
     caption?: () => unknown;
@@ -177,18 +180,30 @@ const VCTableLite = defineComponent({
         // (`<VCTableHeader>` written manually) keeps auto-resolving
         // colspan for `<VCTableEmpty>` / `<VCTableLoading>`.
         const childCellCount = ref(0);
+
         provideHeadCellCountContext({
-            register: () => { childCellCount.value += 1; },
-            unregister: () => { childCellCount.value = Math.max(0, childCellCount.value - 1); },
+            register: () => {
+                childCellCount.value += 1;
+            },
+            unregister: () => {
+                childCellCount.value = Math.max(0, childCellCount.value - 1);
+            },
         });
+
         const colspan = computed(() => {
-            if (columns.value.length > 0) return columns.value.length;
+            if (columns.value.length > 0) {
+                return columns.value.length;
+            }
+
             return Math.max(1, childCellCount.value);
         });
+
         watch(
             () => columns.value.length > 0,
             (hasColumns) => {
-                if (hasColumns) childCellCount.value = 0;
+                if (hasColumns) {
+                    childCellCount.value = 0;
+                }
             },
         );
 
@@ -207,8 +222,12 @@ const VCTableLite = defineComponent({
         const liteGetRowKey = (row: unknown, index: number): RowSelectionKey => {
             if (row && typeof row === 'object') {
                 const { id } = (row as { id?: unknown });
-                if (typeof id === 'string' || typeof id === 'number') return id;
+
+                if (typeof id === 'string' || typeof id === 'number') {
+                    return id;
+                }
             }
+
             return index;
         };
 
@@ -293,7 +312,9 @@ const VCTableLite = defineComponent({
                 [tableNode],
             );
 
-            if (!props.scrollable) return wrapper;
+            if (!props.scrollable) {
+                return wrapper;
+            }
 
             return h(
                 'div',

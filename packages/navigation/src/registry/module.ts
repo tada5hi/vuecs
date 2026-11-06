@@ -16,6 +16,7 @@ type Occupant = {
 
 function createEmptyEntry(): NavigationRegistryEntry {
     const items = ref<NavigationItemNormalized[]>([]);
+
     return {
         items,
         active: computed(() => []),
@@ -69,6 +70,7 @@ export class NavigationRegistry {
 
         return () => {
             const occupant = this.map.get(id);
+
             if (occupant && occupant.token === token) {
                 this.map.delete(id);
             }
@@ -78,11 +80,13 @@ export class NavigationRegistry {
     /** Reactive, empty-safe read. Never returns `undefined`. */
     get<META = any>(id: string): NavigationRegistryEntry<META> {
         const occupant = this.map.get(id);
+
         if (occupant) {
             return occupant.entry as NavigationRegistryEntry<META>;
         }
 
         let empty = this.empties.get(id);
+
         if (!empty) {
             empty = createEmptyEntry();
             this.empties.set(id, empty);

@@ -7,7 +7,10 @@ import type { TableColumn, TableColumnRaw } from '../types';
  * a label when only the key is given.
  */
 export function startCase(input: string): string {
-    if (!input) return '';
+    if (!input) {
+        return '';
+    }
+
     return input
         .replace(/[_-]+/g, ' ')
         .replace(/([a-z])([A-Z])/g, '$1 $2')
@@ -38,6 +41,7 @@ export function normalizeColumns<Row>(
         if (typeof col === 'string') {
             return { key: col, label: startCase(col) };
         }
+
         // Spread first, then fold in `label` so a consumer-passed
         // `label: undefined` doesn't clobber the computed default.
         return { ...col, label: col.label ?? startCase(col.key) };
@@ -47,9 +51,12 @@ export function normalizeColumns<Row>(
         return columns.map(fromRaw);
     }
 
-    if (data.length === 0 || !isObject(data[0])) return [];
+    if (data.length === 0 || !isObject(data[0])) {
+        return [];
+    }
 
     const first = data[0] as Record<string, unknown>;
+
     return Object.keys(first)
         .filter((key) => !key.startsWith('_'))
         .map((key) => ({ key, label: startCase(key) }));
@@ -64,25 +71,37 @@ export function normalizeColumns<Row>(
  */
 export function resolveCellValue<Row>(column: TableColumn<Row>, row: Row): unknown {
     const { accessor } = column;
+
     if (typeof accessor === 'function') {
         return accessor(row);
     }
+
     if (typeof accessor === 'string') {
         return resolveDotPath(row, accessor);
     }
+
     if (isObject(row)) {
         return (row as Record<string, unknown>)[column.key];
     }
+
     return undefined;
 }
 
 function resolveDotPath(obj: unknown, path: string): unknown {
-    if (!isObject(obj)) return undefined;
+    if (!isObject(obj)) {
+        return undefined;
+    }
+
     let cur: unknown = obj;
+
     for (const part of path.split('.')) {
-        if (!isObject(cur)) return undefined;
+        if (!isObject(cur)) {
+            return undefined;
+        }
+
         cur = (cur as Record<string, unknown>)[part];
     }
+
     return cur;
 }
 
@@ -94,7 +113,10 @@ export function resolveAttrs<Ctx>(
     attrs: Record<string, unknown> | ((ctx: Ctx) => Record<string, unknown>) | undefined,
     ctx: Ctx,
 ): Record<string, unknown> | undefined {
-    if (!attrs) return undefined;
+    if (!attrs) {
+        return undefined;
+    }
+
     return typeof attrs === 'function' ? attrs(ctx) : attrs;
 }
 
@@ -140,12 +162,23 @@ const INTERACTIVE_SELECTOR = [
  */
 export function filterRowClickEvent(event: Event, rowEl?: Element | null): boolean {
     const { target } = event;
-    if (!(target instanceof Element)) return false;
+
+    if (!(target instanceof Element)) {
+        return false;
+    }
+
     const hit = target.closest(INTERACTIVE_SELECTOR);
-    if (hit === null) return false;
+
+    if (hit === null) {
+        return false;
+    }
+
     // If the only match is the row itself (which carries `tabindex="0"`
     // when clickable), this is a real row click, not a click on an
     // interactive descendant — let it through.
-    if (rowEl && hit === rowEl) return false;
+    if (rowEl && hit === rowEl) {
+        return false;
+    }
+
     return true;
 }

@@ -1,10 +1,10 @@
 <script lang="ts">
 import { defineComponent, h } from 'vue';
-import type { 
-    Component, 
-    ExtractPublicPropTypes, 
-    PropType, 
-    SlotsType, 
+import type {
+    Component,
+    ExtractPublicPropTypes,
+    PropType,
+    SlotsType,
 } from 'vue';
 import { AlertDialogAction, injectDialogRootContext } from 'reka-ui';
 import { VCPrimitive, useComponentTheme } from '@vuecs/core';
@@ -53,24 +53,26 @@ export default defineComponent({
         // default mode the button already closes on click, so it's mainly of
         // use in `manual` mode (where the auto-close is suppressed).
         const confirm = () => rootContext.onOpenChange(false);
+
         return () => {
             if (!props.manual) {
                 return h(
                     AlertDialogAction,
                     {
-                        as: props.as, 
-                        asChild: props.asChild, 
-                        class: theme.value.action || undefined, 
+                        as: props.as,
+                        asChild: props.asChild,
+                        class: theme.value.action || undefined,
                     },
                     { default: () => slots.default?.({ confirm }) },
                 );
             }
+
             return h(
                 VCPrimitive,
                 {
-                    as: props.as, 
-                    asChild: props.asChild, 
-                    class: theme.value.action || undefined, 
+                    as: props.as,
+                    asChild: props.asChild,
+                    class: theme.value.action || undefined,
                 },
                 { default: () => slots.default?.({ confirm }) },
             );

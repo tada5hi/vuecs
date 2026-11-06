@@ -29,6 +29,9 @@ import type {
 // Mirrors `packages/list/test/types/generic-item.test-d.ts` (#1660) and
 // `packages/table/test/types/generic-row.test-d.ts` (#1601).
 
+
+
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
 interface Crumb extends BreadcrumbItem {
     id: number;
 }
@@ -94,6 +97,7 @@ test('VCBreadcrumb infers Item into its select handler-prop', () => {
         // @ts-expect-error — `bogus` is not a key of Crumb.
         void item.bogus;
     };
+
     onSelect({ label: 'Home', id: 1 }, 0);
 });
 

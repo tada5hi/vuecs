@@ -9,6 +9,7 @@ const app = createApp({
         return () => h(Stepper, { themeVariant: variantState.value });
     },
 });
+
 installVuecs(app);
 app.use(navigation);
 app.mount('#app');

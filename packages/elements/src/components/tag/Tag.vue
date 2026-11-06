@@ -1,9 +1,9 @@
 <script lang="ts">
-import { 
-    defineComponent, 
-    h, 
-    mergeProps, 
-    resolveComponent, 
+import {
+    defineComponent,
+    h,
+    mergeProps,
+    resolveComponent,
 } from 'vue';
 import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
 import { useComponentTheme } from '@vuecs/core';
@@ -83,6 +83,7 @@ export default defineComponent({
             },
         };
         const theme = useComponentTheme('tag', themeProps, tagThemeDefaults);
+
         return () => {
             const resolved = theme.value;
             const label = props.label ?? (props.value !== undefined ? String(props.value) : '');
@@ -96,9 +97,15 @@ export default defineComponent({
                 // text so the chip is still visually distinct rather
                 // than crashing with an unknown component error.
                 let iconNode: unknown;
-                if (iconSlot) iconNode = iconSlot({ class: resolved.icon });
-                else if (hasIconComponent) iconNode = [h(VCIcon, { name: props.icon })];
-                else iconNode = [props.icon];
+
+                if (iconSlot) {
+                    iconNode = iconSlot({ class: resolved.icon });
+                } else if (hasIconComponent) {
+                    iconNode = [h(VCIcon, { name: props.icon })];
+                } else {
+                    iconNode = [props.icon];
+                }
+
                 children.push(h('span', { class: resolved.icon || undefined }, iconNode as never));
             }
 
@@ -108,6 +115,7 @@ export default defineComponent({
 
             if (props.removable) {
                 const remove = () => emit('remove', props.value);
+
                 children.push(slots.remove ?
                     slots.remove({ class: resolved.remove, remove }) :
                     h('button', {

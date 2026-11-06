@@ -25,6 +25,7 @@ export default defineComponent({
     props: dropdownMenuArrowProps,
     setup(props) {
         const theme = useComponentTheme('dropdownMenu', props, dropdownMenuThemeDefaults);
+
         return () => h(DropdownMenuArrow, {
             width: props.width,
             height: props.height,

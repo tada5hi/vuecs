@@ -47,7 +47,9 @@ export default defineComponent({
             themeClass: () => props.themeClass,
             themeVariant: () => props.themeVariant,
         });
+
         const theme = useComponentTheme('stepper', props, stepperThemeDefaults);
+
         return () => h(
             StepperRoot,
             mergeProps(attrs, {

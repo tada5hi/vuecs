@@ -1,8 +1,8 @@
 import type { PropType } from 'vue';
-import type { UseComponentThemeProps } from './composable';
 import type {
     ThemeClasses,
     ThemeClassesOverride,
+    UseComponentThemeProps,
     VariantValues,
 } from './types';
 
@@ -65,12 +65,15 @@ export function useThemeProps<T extends ThemeClasses>(
         },
         get themeVariant() {
             const result: VariantValues = { ...(props.themeVariant ?? {}) };
+
             for (const key of shorthandVariantKeys) {
                 const value = props[key];
+
                 if (value !== undefined) {
                     result[key] = value as string | boolean;
                 }
             }
+
             return result;
         },
     };

@@ -30,6 +30,7 @@ export default defineComponent({
     props: dropdownMenuSubTriggerProps,
     setup(props, { slots, attrs }) {
         const theme = useComponentTheme('dropdownMenu', props, dropdownMenuThemeDefaults);
+
         return () => h(
             DropdownMenuSubTrigger,
             mergeProps(attrs, {

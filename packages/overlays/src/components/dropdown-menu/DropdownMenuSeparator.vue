@@ -21,6 +21,7 @@ export default defineComponent({
     props: dropdownMenuSeparatorProps,
     setup(props) {
         const theme = useComponentTheme('dropdownMenu', props, dropdownMenuThemeDefaults);
+
         return () => h(DropdownMenuSeparator, { class: theme.value.separator || undefined });
     },
 });

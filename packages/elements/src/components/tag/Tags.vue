@@ -38,6 +38,7 @@ function normalize(item: TagsItem): TagItem {
     if (typeof item === 'string' || typeof item === 'number') {
         return { value: item, label: String(item) };
     }
+
     return item;
 }
 
@@ -55,10 +56,12 @@ export default defineComponent({
         emit,
     }) {
         const theme = useComponentTheme('tags', props, tagsThemeDefaults);
+
         return () => {
             const resolved = theme.value;
             const children = props.items.map((raw, index) => {
                 const item = normalize(raw);
+
                 if (slots.item) {
                     return slots.item({
                         item,
@@ -66,6 +69,7 @@ export default defineComponent({
                         class: resolved.item,
                     });
                 }
+
                 return h(VCTag, {
                     key: item.value,
                     value: item.value,
@@ -77,6 +81,7 @@ export default defineComponent({
                     onRemove: (value: string | number | undefined) => emit('remove', value, item),
                 });
             });
+
             return h('div', mergeProps(attrs, { class: resolved.root || undefined }), children);
         };
     },

@@ -14,7 +14,9 @@ type NuxtAppLike = { vueApp: App };
  * honoring `q=` weights (default `q=1`). `*` is ignored.
  */
 function parseAcceptLanguage(header?: string | null): string | undefined {
-    if (!header) return undefined;
+    if (!header) {
+        return undefined;
+    }
 
     const ranked = header
         .split(',')
@@ -22,6 +24,7 @@ function parseAcceptLanguage(header?: string | null): string | undefined {
             const [tag, ...params] = part.trim().split(';');
             const qParam = params.find((p) => p.trimStart().startsWith('q='));
             const q = qParam ? Number.parseFloat(qParam.trim().slice(2)) : 1;
+
             return { tag: tag.trim(), q: Number.isNaN(q) ? 0 : q };
         })
         .filter((entry) => entry.tag.length > 0 && entry.tag !== '*')
@@ -56,7 +59,10 @@ export default defineNuxtPlugin({
     setup(nuxtApp: NuxtAppLike) {
         const config = useRuntimeConfig();
         const localeConfig = config.public.vuecs?.locale;
-        if (!localeConfig?.enabled) return;
+
+        if (!localeConfig?.enabled) {
+            return;
+        }
 
         const cookieName = localeConfig.cookieName || 'vc-locale';
         const initial = (localeConfig.value || 'auto') as LocaleSource;

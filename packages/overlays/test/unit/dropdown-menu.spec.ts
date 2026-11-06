@@ -26,7 +26,9 @@ function buildApp(open = ref(false), onSelect: (key: string) => void = () => {})
         setup() {
             return () => h(VCDropdownMenu, {
                 open: open.value,
-                'onUpdate:open': (v: boolean) => { open.value = v; },
+                'onUpdate:open': (v: boolean) => {
+                    open.value = v;
+                },
             }, {
                 default: () => [
                     h(VCDropdownMenuTrigger, { 'data-testid': 'trigger' }, () => 'Menu'),
@@ -53,10 +55,13 @@ function buildApp(open = ref(false), onSelect: (key: string) => void = () => {})
 }
 
 describe('<VCDropdownMenu>', () => {
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it('renders trigger but no content while closed', async () => {
         const wrapper = buildApp();
+
         await nextTick();
         expect(wrapper.find('[data-testid="trigger"]').exists()).toBe(true);
         expect(document.body.querySelector('[data-testid="content"]')).toBeNull();
@@ -64,6 +69,7 @@ describe('<VCDropdownMenu>', () => {
 
     it('shows content with items when open', async () => {
         const open = ref(true);
+
         buildApp(open);
         await nextTick();
         await nextTick();
@@ -74,10 +80,13 @@ describe('<VCDropdownMenu>', () => {
     it('fires select event when an item is clicked', async () => {
         const open = ref(true);
         const onSelect = vi.fn();
+
         buildApp(open, onSelect);
         await nextTick();
         await nextTick();
+
         const item = document.body.querySelector<HTMLElement>('[data-testid="item-edit"]');
+
         item!.click();
         await nextTick();
         expect(onSelect).toHaveBeenCalledWith('edit');

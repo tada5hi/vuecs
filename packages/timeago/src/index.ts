@@ -6,10 +6,11 @@ import './vue';
 import { VCTimeago } from './component';
 import { provideConverter } from './converter';
 import { provideLocales } from './locales';
-import type { Options } from './type';
+import type { Options } from './types';
 
 export * from './component';
-export * from './type';
+export type { TimeagoThemeClasses, TimeagoProps } from './types';
+export * from './types';
 
 export function install(app: App, options: Options = {}): void {
     installThemeManager(app, options);

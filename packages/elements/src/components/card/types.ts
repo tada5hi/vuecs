@@ -1,4 +1,8 @@
-import type { ThemeElementDefinition } from '@vuecs/core';
+import type { ThemeElementDefinition, VariantValues  } from '@vuecs/core';
+
+import type { cardPlaceholderProps } from './props';
+import type { ExtractPublicPropTypes } from 'vue';
+
 
 export type CardVariant = 'outline' | 'soft' | 'elevated';
 export type CardPadding = 'compact' | 'normal' | 'spacious';
@@ -47,6 +51,7 @@ export type CardPlaceholderThemeClasses = {
 };
 
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
     interface ThemeElements {
         card?: ThemeElementDefinition<CardThemeClasses>;
         cardHeader?: ThemeElementDefinition<CardHeaderThemeClasses>;
@@ -57,3 +62,19 @@ declare module '@vuecs/core' {
         cardPlaceholder?: ThemeElementDefinition<CardPlaceholderThemeClasses>;
     }
 }
+
+/**
+ * Context shared from `<VCCard>` to its descendant parts so that the
+ * variant axes applied to the root (notably `padding`) propagate
+ * automatically to header / body / footer / title / description without
+ * the consumer repeating the prop on every child. Per-instance values
+ * on a child still win over inherited ones.
+ *
+ * Optional — children render bare when mounted outside `<VCCard>` (for
+ * unit tests or ad-hoc composition).
+ */
+export type CardContext = {
+    themeVariant: () => VariantValues | undefined;
+};
+
+export type CardPlaceholderProps = ExtractPublicPropTypes<typeof cardPlaceholderProps>;

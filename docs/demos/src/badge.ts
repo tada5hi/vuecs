@@ -9,6 +9,7 @@ const app = createApp({
         return () => h(Badge, propState.value);
     },
 });
+
 installVuecs(app);
 app.use(elements);
 app.mount('#app');

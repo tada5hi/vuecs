@@ -25,6 +25,7 @@ export default defineComponent({
     props: popoverArrowProps,
     setup(props) {
         const theme = useComponentTheme('popover', props, popoverThemeDefaults);
+
         return () => h(PopoverArrow, {
             width: props.width,
             height: props.height,

@@ -6,6 +6,7 @@ export type SeparatorThemeClasses = {
 };
 
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
     interface ThemeElements {
         separator?: ThemeElementDefinition<SeparatorThemeClasses>;
     }

@@ -17,29 +17,30 @@ import vuecsTable, {
 
 const plugins = [[vuecsTable, {}]] as const;
 
+
 type User = {
-    id: number; 
-    name: string; 
-    profile: { email: string } 
+    id: number;
+    name: string;
+    profile: { email: string }
 };
 
 const data: User[] = [
     {
-        id: 1, 
-        name: 'Alice', 
-        profile: { email: 'alice@example.com' }, 
+        id: 1,
+        name: 'Alice',
+        profile: { email: 'alice@example.com' },
     },
     {
-        id: 2, 
-        name: 'Bob', 
-        profile: { email: 'bob@example.com' }, 
+        id: 2,
+        name: 'Bob',
+        profile: { email: 'bob@example.com' },
     },
 ];
 
 function mountTable(opts: {
-    columns?: unknown; 
-    cellSlot?: () => unknown; 
-    cellAttrs?: Record<string, unknown> 
+    columns?: unknown;
+    cellSlot?: () => unknown;
+    cellAttrs?: Record<string, unknown>
 } = {}) {
     return mount(defineComponent({
         setup() {
@@ -61,11 +62,14 @@ function mountTable(opts: {
 }
 
 describe('<VCTableCell> default renderer', () => {
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it('renders row[columnKey] when no accessor / formatter / slot', () => {
         const wrapper = mountTable({ columns: [{ key: 'id' }, { key: 'name' }] });
         const cells = wrapper.element.querySelectorAll('tbody td');
+
         expect(cells[0].textContent).toBe('1');
         expect(cells[1].textContent).toBe('Alice');
         expect(cells[2].textContent).toBe('2');
@@ -103,6 +107,7 @@ describe('<VCTableCell> default renderer', () => {
         }), { global: { plugins: [...plugins] } });
 
         const cells = wrapper.element.querySelectorAll('tbody td');
+
         expect(cells[0].textContent).toBe('Alice');
         expect(cells[1].textContent).toBe('');
         expect(cells[2].textContent).toBe('Bob');
@@ -135,6 +140,7 @@ describe('<VCTableCell> default renderer', () => {
         }), { global: { plugins: [...plugins] } });
 
         const cells = wrapper.element.querySelectorAll('tbody td');
+
         expect(cells[0].textContent).toBe('Alice');
         expect(cells[1].textContent).toBe('alice@example.com');
         expect(cells[2].textContent).toBe('Bob');
@@ -167,6 +173,7 @@ describe('<VCTableCell> default renderer', () => {
         }), { global: { plugins: [...plugins] } });
 
         const cells = wrapper.element.querySelectorAll('tbody td');
+
         expect(cells[1].textContent).toBe('ALICE');
         expect(cells[3].textContent).toBe('BOB');
     });
@@ -197,6 +204,7 @@ describe('<VCTableCell> default renderer', () => {
         }), { global: { plugins: [...plugins] } });
 
         const cells = wrapper.element.querySelectorAll('tbody td');
+
         expect(cells[0].textContent).toBe('#1');
         expect(cells[1].textContent).toBe('Mr Alice');
     });
@@ -211,6 +219,7 @@ describe('<VCTableCell> default renderer', () => {
                             key: 'name',
                             formatter: (ctx) => {
                                 ctxSeen = ctx;
+
                                 return String(ctx.value);
                             },
                         },
@@ -226,9 +235,9 @@ describe('<VCTableCell> default renderer', () => {
         }), { global: { plugins: [...plugins] } });
 
         expect(ctxSeen).toEqual({
-            value: 'Alice', 
-            key: 'name', 
-            row: data[0], 
+            value: 'Alice',
+            key: 'name',
+            row: data[0],
         });
         wrapper.unmount();
     });
@@ -255,6 +264,7 @@ describe('<VCTableCell> default renderer', () => {
                 });
             },
         }), { global: { plugins: [...plugins] } });
+
         // Without Fragment-aware walk the cell would render 'AUTO'.
         expect(wrapper.element.querySelector('tbody td')!.textContent).toBe('FRAGMENT');
     });
@@ -281,6 +291,7 @@ describe('<VCTableCell> default renderer', () => {
                 });
             },
         }), { global: { plugins: [...plugins] } });
+
         expect(wrapper.element.querySelector('tbody td')!.textContent).toBe('CUSTOM');
     });
 
@@ -304,6 +315,7 @@ describe('<VCTableCell> default renderer', () => {
                 });
             },
         }), { global: { plugins: [...plugins] } });
+
         // No matching column → no auto-render → empty cell.
         expect(wrapper.element.querySelector('tbody td')!.textContent).toBe('');
     });
@@ -318,6 +330,7 @@ describe('<VCTableCell> default renderer', () => {
                 ])])]);
             },
         }), { global: { plugins: [...plugins] } });
+
         expect(wrapper.element.querySelector('td')!.textContent).toBe('');
     });
 });

@@ -14,10 +14,7 @@ import {
 } from '@vuecs/core';
 import { useTableRow } from '../composables/context';
 import { tableExpandTriggerThemeDefaults } from '../theme';
-import type {
-    TableExpandTriggerDefaults,
-} from '../defaults';
-import type { TableExpandTriggerThemeClasses } from '../types';
+import type { TableExpandTriggerDefaults, TableExpandTriggerThemeClasses  } from '../types';
 
 const tableExpandTriggerProps = {
     /**
@@ -66,6 +63,7 @@ export default defineComponent({
                 // eslint-disable-next-line no-console
                 console.warn('[VCTableExpandTrigger] mounted outside an expandable <VCTableRow>. Set `expandable` on the row (or `:expandable` on <VCTable>).');
             }
+
             return () => null;
         }
 
@@ -77,6 +75,7 @@ export default defineComponent({
             const showChevron = chevron === 'auto' && !!chevronIcon && hasIconComponent;
 
             let ariaLabel: string | undefined;
+
             if (!hasSlot) {
                 ariaLabel = open ? defaults.value.collapseLabel : defaults.value.expandLabel;
             }

@@ -1,4 +1,4 @@
-import type { FormOption } from '../../types/option';
+import type { FormOption } from '../../types/types';
 
 export type FormSelectSearchSelectedSlotProps = {
     items: FormOption[];

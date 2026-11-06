@@ -19,6 +19,9 @@ import type { ThemeRuntimeEntry } from '../../../../src/core/theme-runtime/types
 
 const THEME_MANAGER_SYMBOL = Symbol.for('VCThemeManager');
 
+
+
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
 interface MockThemeManager {
     themes: ThemeRuntimeEntry[];
 }
@@ -30,14 +33,19 @@ function mountWithManager(
     const app = createApp(defineComponent({
         setup() {
             setupFn();
+
             return () => h('div');
         },
     }));
+
     if (manager) {
         app.provide(THEME_MANAGER_SYMBOL, manager);
     }
+
     const root = document.createElement('div');
+
     app.mount(root);
+
     return {
         unmount() {
             app.unmount();
@@ -53,6 +61,7 @@ function readPaletteStyle(): string {
 let nextStorageKey = 0;
 function freshStorageKey(): string {
     nextStorageKey += 1;
+
     return `vc-color-palette-test-${nextStorageKey}`;
 }
 
@@ -71,6 +80,7 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
                 storageKey: freshStorageKey(),
             });
         });
+
         await nextTick();
         expect(readPaletteStyle()).toBe('');
         unmount();
@@ -87,6 +97,7 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
                 storageKey: freshStorageKey(),
             });
         });
+
         await nextTick();
         expect(handle).toHaveBeenCalledWith({ primary: 'blue' });
         expect(readPaletteStyle()).toContain('--primary: blue');
@@ -110,8 +121,11 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
                 storageKey: freshStorageKey(),
             });
         });
+
         await nextTick();
+
         const css = readPaletteStyle();
+
         expect(css).toContain('--tw-primary: green');
         expect(css).toContain('--bulma-primary: green');
         // Tailwind block precedes Bulma block (install order).
@@ -136,6 +150,7 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
                 storageKey: freshStorageKey(),
             });
         });
+
         await nextTick();
         expect(handle).toHaveBeenCalledTimes(1);
         expect(readPaletteStyle()).toBe(':root { --primary: red; }');
@@ -154,6 +169,7 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
                 storageKey: freshStorageKey(),
             });
         });
+
         await nextTick();
         expect(readPaletteStyle()).toContain('--primary: blue');
 
@@ -175,6 +191,7 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
                 storageKey: freshStorageKey(),
             });
         });
+
         await nextTick();
         expect(readPaletteStyle()).toContain('--primary: blue');
         expect(readPaletteStyle()).toContain('--neutral: zinc');
@@ -203,6 +220,7 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
                 storageKey: freshStorageKey(),
             });
         });
+
         await nextTick();
         // No theme installed initially → empty.
         expect(readPaletteStyle()).toBe('');
@@ -223,6 +241,7 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
                 storageKey: freshStorageKey(),
             });
         });
+
         await nextTick();
         expect(readPaletteStyle()).toBe('');
         unmount();
@@ -249,15 +268,20 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
                 storageKey: freshStorageKey(),
             });
         });
+
         await nextTick();
+
         const css = readPaletteStyle();
+
         expect(css).toContain('--primary: green');
         expect(css).toContain('--neutral: unset');
         // Verify the dispatcher dropped invalid entries BEFORE forwarding
         // to handle — the css assertion alone is ambiguous (handle ignores
         // unknown keys), so inspect the actual payload it received.
         expect(handle).toHaveBeenCalled();
+
         const forwarded = handle.mock.calls.at(-1)?.[0] ?? {};
+
         expect(forwarded).not.toHaveProperty('bogus');
         expect(forwarded).not.toHaveProperty('neutral');
         expect(forwarded).toEqual({ primary: 'green' });
@@ -267,12 +291,17 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
     it('applies sanitize to the initial palette', async () => {
         const handle = (p: Record<string, string>) => `:root { --primary: ${p.primary ?? 'unset'}; }`;
         const sanitize = (raw: unknown): { primary?: string } => {
-            if (!raw || typeof raw !== 'object') return {};
+            if (!raw || typeof raw !== 'object') {
+                return {};
+            }
+
             const input = raw as Record<string, unknown>;
+
             // Only allow specific palette names.
             if (typeof input.primary === 'string' && ['blue', 'green'].includes(input.primary)) {
                 return { primary: input.primary };
             }
+
             return {};
         };
         const manager: MockThemeManager = { themes: [{ palette: { handle } }] };
@@ -285,6 +314,7 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
                 sanitize,
             });
         });
+
         await nextTick();
         // Sanitize stripped the invalid value.
         expect(readPaletteStyle()).toContain('--primary: unset');
@@ -303,6 +333,7 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
                 storageKey: freshStorageKey(),
             });
         });
+
         await nextTick();
         expect(api!.current.value).toEqual({ primary: 'blue' });
 
@@ -324,8 +355,11 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
                 nonce: 'csp-static',
             });
         });
+
         await nextTick();
+
         const style = document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID);
+
         expect(style?.getAttribute('nonce')).toBe('csp-static');
         unmount();
     });
@@ -344,6 +378,7 @@ describe('useColorPalette (generic dispatcher) — plan 021 slice 2', () => {
                 nonce: () => nonceRef.value,
             });
         });
+
         await nextTick();
         expect(document.getElementById(COLOR_PALETTE_STYLE_ELEMENT_ID)?.getAttribute('nonce')).toBe('initial');
 

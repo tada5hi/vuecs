@@ -37,12 +37,15 @@ export default defineComponent({
     setup(props, { attrs, slots }) {
         const ctx = useStepperContext();
         const themeProps: UseComponentThemeProps<StepperThemeClasses> = {
-            get themeClass() { return { ...(ctx?.themeClass() ?? {}), ...(props.themeClass ?? {}) }; },
+            get themeClass() {
+                return { ...(ctx?.themeClass() ?? {}), ...(props.themeClass ?? {}) };
+            },
             get themeVariant() {
                 return { ...(ctx?.themeVariant() ?? {}), ...(props.themeVariant ?? {}) };
             },
         };
         const theme = useComponentTheme('stepper', themeProps, stepperThemeDefaults);
+
         return () => h(
             StepperItem,
             // `step` is required on StepperItem; vue-tsc loses that

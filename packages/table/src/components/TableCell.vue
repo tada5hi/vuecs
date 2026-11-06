@@ -61,11 +61,14 @@ export default defineComponent({
         const themeProps = useThemeProps(props, 'align', 'stickyColumn');
 
         const mergedThemeProps = {
-            get themeClass() { return themeProps.themeClass; },
+            get themeClass() {
+                return themeProps.themeClass;
+            },
             get themeVariant() {
                 const cellVariant = props.columnKey ?
                     rowCtx?.cellVariants.value[props.columnKey] ?? undefined :
                     undefined;
+
                 return {
                     ...(themeProps.themeVariant ?? {}),
                     ...(cellVariant ? { cellVariant } : {}),
@@ -85,6 +88,7 @@ export default defineComponent({
                 const rowKey = rowCtx.selectionKey.value;
                 const mode = tableCtx.selection.mode.value;
                 const checked = tableCtx.selection.isSelected(rowKey);
+
                 // ARIA grid role is always required here — the outer
                 // guard already established `mode !== undefined`, so
                 // the parent `<table>` carries `role="grid"`.
@@ -105,7 +109,11 @@ export default defineComponent({
                             checked,
                             onClick: (e: globalThis.MouseEvent) => {
                                 e.stopPropagation();
-                                if (rowKey === undefined) return;
+
+                                if (rowKey === undefined) {
+                                    return;
+                                }
+
                                 tableCtx.selection.toggle(rowKey);
                             },
                         }),
@@ -120,6 +128,7 @@ export default defineComponent({
             // anything. Invoke `slots.default` at most once per render.
             const slotVNodes = slots.default?.();
             let content: unknown = slotVNodes;
+
             if (
                 props.columnKey &&
                 tableCtx &&
@@ -128,8 +137,10 @@ export default defineComponent({
             ) {
                 const column = tableCtx.columns.value
                     .find((c) => c.key === props.columnKey);
+
                 if (column) {
                     const value = resolveCellValue(column, rowCtx.row.value);
+
                     if (column.formatter) {
                         content = column.formatter({
                             value,
@@ -151,7 +162,11 @@ export default defineComponent({
             // sees a complete grid structure.
             const inGrid = tableCtx?.selection.mode.value !== undefined;
             let cellRole: 'rowheader' | 'gridcell' | undefined;
-            if (inGrid) cellRole = props.isRowHeader ? 'rowheader' : 'gridcell';
+
+            if (inGrid) {
+                cellRole = props.isRowHeader ? 'rowheader' : 'gridcell';
+            }
+
             const ariaAttrs: Record<string, unknown> = inGrid ? { role: cellRole } : {};
 
             return h(

@@ -6,9 +6,9 @@ import {
     it,
 } from 'vitest';
 import {
-    defineComponent, 
-    h, 
-    nextTick, 
+    defineComponent,
+    h,
+    nextTick,
     ref,
 } from 'vue';
 import { mount } from '@vue/test-utils';
@@ -22,6 +22,7 @@ import vuecsTable, {
 } from '../../src';
 
 const plugins = [[vuecsTable, {}]] as const;
+
 
 type User = { id: number; name: string };
 
@@ -41,7 +42,9 @@ const data: User[] = [
 ];
 
 describe('<VCTable> selection (plan 033 v1.x-A)', () => {
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it('emits role="grid" + aria-multiselectable on <table> when selection mode is set', () => {
         const wrapper = mount(defineComponent({
@@ -55,6 +58,7 @@ describe('<VCTable> selection (plan 033 v1.x-A)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const table = wrapper.element.querySelector('table');
+
         expect(table?.getAttribute('role')).toBe('grid');
         expect(table?.getAttribute('aria-multiselectable')).toBe('true');
     });
@@ -70,6 +74,7 @@ describe('<VCTable> selection (plan 033 v1.x-A)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const table = wrapper.element.querySelector('table');
+
         expect(table?.hasAttribute('role')).toBe(false);
         expect(table?.hasAttribute('aria-multiselectable')).toBe(false);
     });
@@ -86,7 +91,9 @@ describe('<VCTable> selection (plan 033 v1.x-A)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const rows = wrapper.element.querySelectorAll('tbody tr');
+
         expect(rows.length).toBe(3);
+
         for (const tr of rows) {
             expect(tr.getAttribute('role')).toBe('row');
             expect(tr.getAttribute('aria-selected')).toBe('false');
@@ -112,6 +119,7 @@ describe('<VCTable> selection (plan 033 v1.x-A)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const rows = wrapper.element.querySelectorAll('tbody tr');
+
         (rows[1] as HTMLElement).click();
         await nextTick();
 
@@ -129,12 +137,15 @@ describe('<VCTable> selection (plan 033 v1.x-A)', () => {
                     data: data as never,
                     selectionMode: 'multi',
                     selection: selectionRef.value,
-                    'onUpdate:selection': (next: unknown) => { selectionRef.value = next; },
+                    'onUpdate:selection': (next: unknown) => {
+                        selectionRef.value = next;
+                    },
                 });
             },
         }), { global: { plugins: [...plugins] } });
 
         const rows = wrapper.element.querySelectorAll('tbody tr');
+
         // Plain click row 0 → [1]
         (rows[0] as HTMLElement).click();
         await nextTick();
@@ -158,12 +169,15 @@ describe('<VCTable> selection (plan 033 v1.x-A)', () => {
                     data: data as never,
                     selectionMode: 'multi',
                     selection: selectionRef.value,
-                    'onUpdate:selection': (next: unknown) => { selectionRef.value = next; },
+                    'onUpdate:selection': (next: unknown) => {
+                        selectionRef.value = next;
+                    },
                 });
             },
         }), { global: { plugins: [...plugins] } });
 
         const rows = wrapper.element.querySelectorAll('tbody tr');
+
         (rows[0] as HTMLElement).click(); // anchor + [1]
         await nextTick();
         rows[2].dispatchEvent(new MouseEvent('click', { shiftKey: true, bubbles: true }));
@@ -182,12 +196,15 @@ describe('<VCTable> selection (plan 033 v1.x-A)', () => {
                     selectionMode: 'single',
                     selection: selectionRef.value,
                     getRowKey: (row: unknown) => `user-${(row as User).id}`,
-                    'onUpdate:selection': (next: unknown) => { selectionRef.value = next; },
+                    'onUpdate:selection': (next: unknown) => {
+                        selectionRef.value = next;
+                    },
                 });
             },
         }), { global: { plugins: [...plugins] } });
 
         const rows = wrapper.element.querySelectorAll('tbody tr');
+
         (rows[1] as HTMLElement).click();
         await nextTick();
         expect(selectionRef.value).toBe('user-2');
@@ -205,6 +222,7 @@ describe('<VCTable> selection (plan 033 v1.x-A)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const rows = wrapper.element.querySelectorAll('tbody tr');
+
         // Default focus on row 0.
         expect(rows[0].getAttribute('tabindex')).toBe('0');
         expect(rows[1].getAttribute('tabindex')).toBe('-1');
@@ -238,6 +256,7 @@ describe('<VCTable> selection (plan 033 v1.x-A)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const rows = wrapper.element.querySelectorAll('tbody tr');
+
         // selection prop says 1 + 2 selected, but row index 2 (id=3) is force-selected via prop.
         // Auto-resolved: rows 0,1 = true; row 2 manual = true.
         expect(rows[0].getAttribute('aria-selected')).toBe('true');
@@ -272,6 +291,7 @@ describe('<VCTable> selection (plan 033 v1.x-A)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const rows = wrapper.element.querySelectorAll('tbody tr');
+
         for (const tr of rows) {
             // role="row" + aria-selected only render when selectionActive AND
             // index is defined (TableRow guards the provide+ARIA on index).
@@ -301,6 +321,7 @@ describe('<VCTable> selection (plan 033 v1.x-A)', () => {
         // shrinking the data prop. The initial render has focusedRow=null
         // → row 0 should have tabindex=0 (the inBounds=false branch).
         const rows = wrapper.element.querySelectorAll('tbody tr');
+
         expect(rows[0].getAttribute('tabindex')).toBe('0');
         // Other rows have tabindex=-1 (roving).
         expect(rows[1].getAttribute('tabindex')).toBe('-1');
@@ -315,12 +336,15 @@ describe('<VCTable> selection (plan 033 v1.x-A)', () => {
                     data: data as never,
                     selectionMode: 'multi',
                     selection: selectionRef.value,
-                    'onUpdate:selection': (next: unknown) => { selectionRef.value = next; },
+                    'onUpdate:selection': (next: unknown) => {
+                        selectionRef.value = next;
+                    },
                 });
             },
         }), { global: { plugins: [...plugins] } });
 
         const rows = wrapper.element.querySelectorAll('tbody tr');
+
         // Focus row 0 first (via direct .focus() to set focusedRow).
         (rows[0] as HTMLElement).focus();
         await nextTick();
@@ -350,6 +374,7 @@ describe('<VCTable> selection (plan 033 v1.x-A)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const rows = wrapper.element.querySelectorAll('tbody tr');
+
         // Initial state: row 0 = tab stop.
         expect(rows[0].getAttribute('tabindex')).toBe('0');
         // ArrowDown on row 0 → focusedRow=1 → roving shifts.
@@ -379,6 +404,7 @@ describe('<VCTable> selection (plan 033 v1.x-A)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const rows = wrapper.element.querySelectorAll('tbody tr');
+
         // Move to middle first via ArrowDown.
         rows[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
         await nextTick();
@@ -399,12 +425,15 @@ describe('<VCTable> selection (plan 033 v1.x-A)', () => {
                     data: data as never,
                     selectionMode: 'multi',
                     selection: selectionRef.value,
-                    'onUpdate:selection': (next: unknown) => { selectionRef.value = next; },
+                    'onUpdate:selection': (next: unknown) => {
+                        selectionRef.value = next;
+                    },
                 });
             },
         }), { global: { plugins: [...plugins] } });
 
         const rows = wrapper.element.querySelectorAll('tbody tr');
+
         (rows[0] as HTMLElement).focus();
         await nextTick();
         rows[0].dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
@@ -437,7 +466,9 @@ describe('<VCTable> selection (plan 033 v1.x-A)', () => {
         }), { global: { plugins: [...plugins] } });
 
         await nextTick();
+
         const rows = wrapper.element.querySelectorAll('tbody tr');
+
         // Row 0 is disabled → no tabindex (not interactive).
         expect(rows[0].hasAttribute('tabindex')).toBe(false);
         // First INTERACTIVE row (row 1) gets the tab stop, not blindly row 0.
@@ -470,7 +501,9 @@ describe('<VCTable> selection (plan 033 v1.x-A)', () => {
         }), { global: { plugins: [...plugins] } });
 
         await nextTick();
+
         const rows = wrapper.element.querySelectorAll('tbody tr');
+
         // Row 1 (id=2) is disabled → no tabindex.
         expect(rows[1].hasAttribute('tabindex')).toBe(false);
         // ArrowDown from row 0 should skip the disabled middle row
@@ -498,10 +531,13 @@ describe('<VCTable> selection (plan 033 v1.x-A)', () => {
         const firstRow = wrapper.element.querySelector('tbody tr');
         const rowheader = firstRow?.querySelector('th[scope="row"]');
         const cell = firstRow?.querySelector('td');
+
         expect(rowheader?.getAttribute('role')).toBe('rowheader');
         expect(cell?.getAttribute('role')).toBe('gridcell');
+
         // Header cells under role=grid get explicit columnheader.
         const headerCells = wrapper.element.querySelectorAll('thead th');
+
         for (const th of headerCells) {
             expect(th.getAttribute('role')).toBe('columnheader');
         }
@@ -518,15 +554,20 @@ describe('<VCTable> selection (plan 033 v1.x-A)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const table = wrapper.element.querySelector('table');
+
         // No role attribute (plain table semantics, v0.1 behavior).
         expect(table?.hasAttribute('role')).toBe(false);
         expect(table?.hasAttribute('aria-multiselectable')).toBe(false);
+
         const rows = wrapper.element.querySelectorAll('tbody tr');
+
         for (const tr of rows) {
             expect(tr.hasAttribute('role')).toBe(false);
             expect(tr.hasAttribute('aria-selected')).toBe(false);
         }
+
         const cells = wrapper.element.querySelectorAll('tbody td');
+
         for (const td of cells) {
             // Cells get NO explicit role outside grid mode.
             expect(td.hasAttribute('role')).toBe(false);
@@ -552,6 +593,7 @@ describe('<VCTable> selection (plan 033 v1.x-A)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const headers = wrapper.element.querySelectorAll('thead th');
+
         expect(headers.length).toBe(1);
         expect(headers[0].textContent?.trim()).toBe('Name');
     });

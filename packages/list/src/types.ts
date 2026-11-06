@@ -1,4 +1,6 @@
-import type { ComponentDefaultValues, ThemeElementDefinition } from '@vuecs/core';
+import type { ComponentDefaultValues, CoreOptions, ThemeElementDefinition  } from '@vuecs/core';
+
+import './vue';
 
 // Five theme entries (was nine). `<VCListItemText>` / `<VCListItemActions>`
 // / `<VCListHeader>` / `<VCListFooter>` were deleted in plan 027 — their
@@ -33,6 +35,7 @@ export type ListEmptyDefaults = {
 };
 
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
     interface ThemeElements {
         list?: ThemeElementDefinition<ListThemeClasses>;
         listBody?: ThemeElementDefinition<ListBodyThemeClasses>;
@@ -41,7 +44,12 @@ declare module '@vuecs/core' {
         listEmpty?: ThemeElementDefinition<ListEmptyThemeClasses>;
     }
 
+
+
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
     interface ComponentDefaults {
         listEmpty?: ComponentDefaultValues<ListEmptyDefaults>;
     }
 }
+
+export type Options = CoreOptions;

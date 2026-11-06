@@ -32,6 +32,7 @@ export default defineComponent({
             useThemeProps(props),
             toastActionThemeDefaults,
         );
+
         return () => h(
             ToastAction as never,
             mergeProps(attrs, {

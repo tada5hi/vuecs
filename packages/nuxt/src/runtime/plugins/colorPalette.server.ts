@@ -45,7 +45,10 @@ export default defineNuxtPlugin({
     setup(nuxtApp: NuxtAppLike) {
         const config = useRuntimeConfig();
         const colorPaletteConfig = config.public.vuecs?.colorPalette;
-        if (!colorPaletteConfig?.enabled) return;
+
+        if (!colorPaletteConfig?.enabled) {
+            return;
+        }
 
         const cookieName = colorPaletteConfig.cookieName || 'vc-color-palette';
         const fallback = (colorPaletteConfig.value || {}) as Record<string, string>;
@@ -67,11 +70,13 @@ export default defineNuxtPlugin({
          * unknown names; this is defense-in-depth at the SSR boundary.
          */
         const palette: Record<string, string> = Object.create(null);
+
         if (isObject(rawPalette)) {
             for (const [key, value] of Object.entries(rawPalette as Record<string, unknown>)) {
                 if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
                     continue;
                 }
+
                 if (typeof value === 'string') {
                     palette[key] = value;
                 }
@@ -92,14 +97,18 @@ export default defineNuxtPlugin({
          * first-paint palette — same semantic as the client-side
          * dispatcher already follows.
          */
-        if (!manager) return;
+        if (!manager) {
+            return;
+        }
 
         const nonce = nuxtApp.vueApp
             .runWithContext(() => useConfig('nonce').value);
 
         let css = renderColorPaletteFromThemes(manager.themes, palette);
 
-        if (!css) return;
+        if (!css) {
+            return;
+        }
 
         /*
          * Reject CSS containing `</style` to defang any malformed theme
@@ -112,7 +121,10 @@ export default defineNuxtPlugin({
         if (/<\/style/i.test(css)) {
             css = '';
         }
-        if (!css) return;
+
+        if (!css) {
+            return;
+        }
 
         /*
          * `children` (textContent) instead of `innerHTML` for the head

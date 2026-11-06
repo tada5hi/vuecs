@@ -16,6 +16,7 @@ import type {} from '@vuecs/core';
  * when neither theme is installed (e.g. a custom-theme Nuxt app).
  */
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
     interface Config {
         /**
          * CSP nonce written onto inline `<style>` tags created at

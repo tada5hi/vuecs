@@ -10,6 +10,7 @@ export type HoverCardThemeClasses = {
 };
 
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
     interface ThemeElements {
         hoverCard?: ThemeElementDefinition<HoverCardThemeClasses>;
     }

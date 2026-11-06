@@ -25,6 +25,7 @@ export default defineComponent({
     props: alertDialogTriggerProps,
     setup(props, { slots }) {
         const theme = useComponentTheme('alertDialog', props, alertDialogThemeDefaults);
+
         return () => h(
             AlertDialogTrigger,
             {

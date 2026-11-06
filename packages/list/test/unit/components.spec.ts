@@ -13,6 +13,7 @@ import {
     defineList,
 } from '../../src';
 
+
 type User = { id: number; name: string };
 
 function withVuecs(
@@ -20,6 +21,7 @@ function withVuecs(
     themeOptions: Parameters<typeof installThemeManager>[1] = {},
 ) {
     const App = defineComponent({ setup: () => setup });
+
     return mount(App, {
         global: {
             plugins: [{
@@ -37,6 +39,7 @@ describe('VCList — outer container + slot prop', () => {
     it('renders a <div> outer container with the default theme class', () => {
         const wrapper = withVuecs(() => h(VCList, { data: [] }, { default: () => undefined }));
         const root = wrapper.find('.vc-list');
+
         expect(root.exists()).toBe(true);
         expect(root.element.tagName).toBe('DIV');
     });
@@ -52,6 +55,7 @@ describe('VCList — outer container + slot prop', () => {
         }));
 
         const header = wrapper.find('.consumer-header');
+
         expect(header.exists()).toBe(true);
         expect(header.classes()).toContain('vc-list-header');
         expect(wrapper.find('.consumer-footer').classes()).toContain('vc-list-footer');
@@ -59,6 +63,7 @@ describe('VCList — outer container + slot prop', () => {
 
     it('honors the `tag` prop for the outer container', () => {
         const wrapper = withVuecs(() => h(VCList, { data: [], tag: 'section' }, { default: () => undefined }));
+
         expect(wrapper.element.tagName).toBe('SECTION');
     });
 });
@@ -66,9 +71,11 @@ describe('VCList — outer container + slot prop', () => {
 describe('VCListBody — render condition + iteration', () => {
     it('renders the <ul> only when data is present', () => {
         const empty = withVuecs(() => h(VCList, { data: [] }, { default: () => [h(VCListBody)] }));
+
         expect(empty.find('.vc-list-body').exists()).toBe(false);
 
         const populated = withVuecs(() => h(VCList, { data: [{ id: 1, name: 'a' }] as User[] }, { default: () => [h(VCListBody, {}, { item: ({ data }: { data: User }) => h(VCListItem, { data }, { default: () => data.name }) })] }));
+
         expect(populated.find('.vc-list-body').exists()).toBe(true);
         expect(populated.find('.vc-list-body').element.tagName).toBe('UL');
     });
@@ -96,6 +103,7 @@ describe('VCListBody — render condition + iteration', () => {
         }));
 
         const items = wrapper.findAll('.vc-list-item');
+
         expect(items.length).toBe(2);
         expect(items[0]!.element.tagName).toBe('LI');
         expect(items[0]!.text()).toBe('0:a');
@@ -111,12 +119,14 @@ describe('VCListBody — render condition + iteration', () => {
         const wrapper = withVuecs(() => h(VCList, { state }, { default: () => [h(VCListBody, {}, { item: ({ data: row }: { data: User }) => h(VCListItem, { data: row }, { default: () => h('span', { class: 'name', 'data-name': row.name }, row.name) }) })] }));
 
         const initial = wrapper.findAll('.name').map((r) => r.element);
+
         expect(initial.map((el) => (el as HTMLElement).dataset.name)).toEqual(['a', 'b']);
 
         data.value = [data.value[1]!, data.value[0]!];
         await wrapper.vm.$nextTick();
 
         const reordered = wrapper.findAll('.name').map((r) => r.element);
+
         expect(reordered.map((el) => (el as HTMLElement).dataset.name)).toEqual(['b', 'a']);
         expect(reordered[0]).toBe(initial[1]);
         expect(reordered[1]).toBe(initial[0]);
@@ -137,6 +147,7 @@ describe('VCListItem — slot props + row state', () => {
         }));
 
         const item = wrapper.find('.vc-list-item');
+
         expect(item.exists()).toBe(true);
         expect(item.find('.vc-list-item-text').text()).toBe('a');
         expect(item.find('.vc-list-item-actions button').text()).toBe('edit');
@@ -146,6 +157,7 @@ describe('VCListItem — slot props + row state', () => {
         const wrapper = withVuecs(() => h(VCList, { data: [{ id: 1, name: 'a' }] as User[] }, { default: () => [h(VCListBody, {}, { item: ({ data }: { data: User }) => h(VCListItem, { data, disabled: true }, { default: () => data.name }) })] }));
 
         const li = wrapper.find('.vc-list-item');
+
         expect(li.attributes('aria-disabled')).toBe('true');
         expect(li.attributes('data-disabled')).toBe('');
     });
@@ -154,6 +166,7 @@ describe('VCListItem — slot props + row state', () => {
         const wrapper = withVuecs(() => h(VCList, { data: [{ id: 1, name: 'a' }] as User[] }, { default: () => [h(VCListBody, {}, { item: ({ data }: { data: User }) => h(VCListItem, { data, active: 'page' }, { default: () => data.name }) })] }));
 
         const li = wrapper.find('.vc-list-item');
+
         expect(li.attributes('aria-current')).toBe('page');
         expect(li.attributes('data-active')).toBe('');
     });
@@ -188,6 +201,7 @@ describe('VCListItem — slot props + row state', () => {
         });
 
         const items = wrapper.findAll('.vc-list-item');
+
         // First row is selected (id=1 in selection), second row is disabled.
         expect(items[0]!.classes()).toContain('cls-selected');
         expect(items[0]!.classes()).not.toContain('cls-disabled');
@@ -221,6 +235,7 @@ describe('VCListEmpty / VCListLoading — render conditions', () => {
     it('falls back to global default content when Empty has no slot', () => {
         const wrapper = withVuecs(() => h(VCList, { data: [] }, { default: () => [h(VCListEmpty)] }));
         const emptyEl = wrapper.find('.vc-list-empty');
+
         expect(emptyEl.exists()).toBe(true);
         expect(emptyEl.text().length).toBeGreaterThan(0);
     });
@@ -285,6 +300,7 @@ describe('Selection — v-model + ARIA', () => {
         }, { default: () => [h(VCListBody, {}, renderSelectableBody())] }));
 
         const body = wrapper.find('.vc-list-body');
+
         expect(body.attributes('role')).toBe('listbox');
         expect(body.attributes('aria-multiselectable')).toBe('true');
     });
@@ -297,6 +313,7 @@ describe('Selection — v-model + ARIA', () => {
         }, { default: () => [h(VCListBody, {}, renderSelectableBody())] }));
 
         const item = wrapper.find('.vc-list-item');
+
         expect(item.attributes('role')).toBe('option');
         expect(item.attributes('aria-selected')).toBe('true');
     });
@@ -309,8 +326,10 @@ describe('Selection — v-model + ARIA', () => {
         }, { default: () => [h(VCListBody, {}, renderSelectableBody())] }));
 
         await wrapper.findAll('.vc-list-item')[0]!.trigger('click');
+
         const list = wrapper.findComponent(VCList);
         const events = list.emitted('update:selection');
+
         expect(events).toBeTruthy();
         expect(events![0]).toEqual([[1]]);
     });
@@ -332,7 +351,9 @@ describe('Selection — v-model + ARIA', () => {
         }));
 
         await wrapper.find('.inner-btn').trigger('click');
+
         const list = wrapper.findComponent(VCList);
+
         expect(list.emitted('update:selection')).toBeFalsy();
     });
 });
@@ -340,6 +361,7 @@ describe('Selection — v-model + ARIA', () => {
 describe('Misuse / safety', () => {
     it('throws a helpful error when a part is used outside <VCList>', () => {
         const App = defineComponent({ setup: () => () => h(VCListBody) });
+
         expect(() => mount(App, {
             global: {
                 plugins: [{

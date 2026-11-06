@@ -9,6 +9,7 @@ const app = createApp({
         return () => h(Breadcrumb);
     },
 });
+
 installVuecs(app);
 app.use(navigation);
 app.mount('#app');

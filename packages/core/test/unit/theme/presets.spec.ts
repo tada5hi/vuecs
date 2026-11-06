@@ -13,6 +13,7 @@ describe('bootstrapTheme', () => {
 
     it('should define formGroup with root, label, validationError, validationWarning', () => {
         const entry = preset.elements.formGroup as ThemeElementDefinition;
+
         expect(entry).toBeDefined();
         expect(entry.classes!.root).toBe('form-group');
         expect(entry.classes!.label).toBe('form-label');
@@ -22,6 +23,7 @@ describe('bootstrapTheme', () => {
 
     it('should define formInput with Bootstrap classes', () => {
         const entry = preset.elements.formInput as ThemeElementDefinition;
+
         expect(entry).toBeDefined();
         expect(entry.classes!.root).toBe('form-control');
         expect(entry.classes!.group).toBe('input-group');
@@ -29,6 +31,7 @@ describe('bootstrapTheme', () => {
 
     it('should define pagination root', () => {
         const entry = preset.elements.pagination as ThemeElementDefinition;
+
         expect(entry).toBeDefined();
         expect(entry.classes!.root).toContain('pagination');
     });
@@ -36,6 +39,7 @@ describe('bootstrapTheme', () => {
     it('should define list and listItem classes (with text + actions slots)', () => {
         const list = preset.elements.list as ThemeElementDefinition;
         const listItem = preset.elements.listItem as ThemeElementDefinition;
+
         expect(list.classes!.root).toContain('d-flex');
         expect(listItem.classes!.root).toContain('d-flex');
         expect(listItem.classes!.actions).toContain('d-inline-flex');
@@ -43,6 +47,7 @@ describe('bootstrapTheme', () => {
 
     it('should define navigation group and link', () => {
         const entry = preset.elements.navigation as ThemeElementDefinition;
+
         // `nav`, NOT `nav-items` — the latter is not a Bootstrap class at all.
         // It is load-bearing beyond the name: `.nav-link`'s padding is
         // `var(--bs-nav-link-padding-y) var(--bs-nav-link-padding-x)`, and

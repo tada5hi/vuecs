@@ -38,10 +38,12 @@ describe('isColorMode', () => {
 
     it('narrows the value for downstream consumers', () => {
         const raw: unknown = 'dark';
+
         if (isColorMode(raw)) {
             // Type-level assertion — `raw` is `ColorMode` inside this branch,
             // so assigning it to the union compiles without a cast.
             const mode: 'light' | 'dark' | 'system' = raw;
+
             expect(mode).toBe('dark');
         } else {
             expect.unreachable('isColorMode should accept "dark"');

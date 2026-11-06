@@ -58,8 +58,10 @@ describe('useTypeahead', () => {
     function makeItems(labels: string[]) {
         return labels.map((label) => {
             const el = document.createElement('button');
+
             el.textContent = label;
             document.body.appendChild(el);
+
             return { ref: el };
         });
     }
@@ -69,6 +71,7 @@ describe('useTypeahead', () => {
         const { handleTypeaheadSearch } = useTypeahead();
 
         const focused = handleTypeaheadSearch('b', items);
+
         expect(focused).toBe(items[1].ref);
         expect(document.activeElement).toBe(items[1].ref);
     });
@@ -87,9 +90,9 @@ describe('useTypeahead', () => {
     it('resetTypeahead clears the buffer immediately', () => {
         const items = makeItems(['Apple']);
         const {
-            search, 
-            handleTypeaheadSearch, 
-            resetTypeahead, 
+            search,
+            handleTypeaheadSearch,
+            resetTypeahead,
         } = useTypeahead();
 
         handleTypeaheadSearch('a', items);
@@ -105,6 +108,7 @@ describe('useTypeahead', () => {
         const { handleTypeaheadSearch } = useTypeahead(cb);
 
         const result = handleTypeaheadSearch('a', items);
+
         expect(cb).toHaveBeenCalledWith('a');
         expect(result).toBeUndefined();
     });
@@ -125,12 +129,15 @@ describe('useTypeahead', () => {
             setup() {
                 const items = makeItems(['Apple']);
                 const { handleTypeaheadSearch } = useTypeahead();
+
                 handleTypeaheadSearch('a', items);
+
                 return () => h('div');
             },
         });
 
         const wrapper = mount(Owner);
+
         wrapper.unmount();
         // Advancing past the timeout should not throw or reach the cleared callback
         expect(() => vi.advanceTimersByTime(2000)).not.toThrow();

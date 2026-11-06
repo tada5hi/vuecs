@@ -1,3 +1,13 @@
+import type {
+    ActiveLoad,
+    AsyncSourceCore,
+    DataLoadOutcome,
+    DataMutationOptions,
+    DataMutationSettledStatus,
+    DataMutationStatusLiteral,
+    DataSourceMetaInput,
+    LoadControllerOptions,
+} from './types';
 import { createMerger } from 'smob';
 import {
     computed,
@@ -6,15 +16,8 @@ import {
     ref,
     shallowReactive,
 } from 'vue';
-import type { ComputedRef, Ref } from 'vue';
+
 import { DataLoadStatus, DataMutationStatus } from './constants';
-import type {
-    DataLoadOutcome,
-    DataMutationOptions,
-    DataMutationSettledStatus,
-    DataMutationStatusLiteral,
-    DataSourceMetaInput,
-} from './types';
 
 /**
  * Patch semantics for `@vuecs/data` — the single merger both the record and
@@ -68,32 +71,13 @@ export const mergePatch = createMerger({
     strategy: (target, key, value) => {
         if (target[key] === undefined) {
             target[key] = value;
+
             return target;
         }
 
         return undefined;
     },
 });
-
-export type AsyncSourceCore = {
-    busy: ComputedRef<boolean>,
-    error: Ref<unknown>,
-    /**
-     * Token-guarded latest-wins runner. `apply` only fires when this
-     * call is still the latest; rejections are captured into `error`
-     * (never rethrown — safe for autoLoad). Resolves to the call's own
-     * outcome, so a caller never has to infer it from the shared `error`.
-     *
-     * `work` is invoked synchronously, before the first `await`.
-     */
-    run: <R>(work: () => Promise<R>, apply: (result: R) => void) => Promise<DataLoadOutcome>,
-    /** Invalidate every in-flight `run` — each resolves `superseded`. */
-    supersede: () => void,
-    /** Run a consumer async op under busy/error accounting; rethrows. */
-    mutate: <R>(fn: () => Promise<R>) => Promise<R>,
-    /** Register onMounted(fire) when inside a component; dev-warn otherwise. */
-    scheduleAutoLoad: (fire: () => Promise<unknown>) => void,
-};
 
 export function createAsyncSourceCore() : AsyncSourceCore {
     const busyCount = ref(0);
@@ -104,17 +88,29 @@ export function createAsyncSourceCore() : AsyncSourceCore {
 
     const run = async <R>(work: () => Promise<R>, apply: (result: R) => void) : Promise<DataLoadOutcome> => {
         token += 1;
+
         const current = token;
+
         busyCount.value += 1;
         error.value = undefined;
+
         try {
             const result = await work();
-            if (current !== token) return { status: DataLoadStatus.SUPERSEDED };
+
+            if (current !== token) {
+                return { status: DataLoadStatus.SUPERSEDED };
+            }
+
             apply(result);
+
             return { status: DataLoadStatus.APPLIED };
         } catch (e) {
-            if (current !== token) return { status: DataLoadStatus.SUPERSEDED };
+            if (current !== token) {
+                return { status: DataLoadStatus.SUPERSEDED };
+            }
+
             error.value = e;
+
             return { status: DataLoadStatus.FAILED, error: e };
         } finally {
             busyCount.value -= 1;
@@ -127,10 +123,12 @@ export function createAsyncSourceCore() : AsyncSourceCore {
 
     const mutate = async <R>(fn: () => Promise<R>) : Promise<R> => {
         busyCount.value += 1;
+
         try {
             return await fn();
         } catch (e) {
             error.value = e;
+
             throw e;
         } finally {
             busyCount.value -= 1;
@@ -142,6 +140,7 @@ export function createAsyncSourceCore() : AsyncSourceCore {
             onMounted(() => {
                 fire();
             });
+
             return;
         }
 
@@ -178,10 +177,14 @@ export function createMetaBag<Meta extends object>(initial?: Meta) {
      * Object = shallow top-level merge; updater fn = wholesale replace.
      */
     const resolve = (base: Meta, next?: DataSourceMetaInput<Meta>) : Meta => {
-        if (!next) return { ...base };
+        if (!next) {
+            return { ...base };
+        }
+
         if (typeof next === 'function') {
             return { ...next({ ...base }) };
         }
+
         return { ...base, ...next };
     };
 
@@ -192,16 +195,23 @@ export function createMetaBag<Meta extends object>(initial?: Meta) {
                 delete (meta as Record<string, unknown>)[key];
             }
         }
+
         Object.assign(meta, next);
     };
 
     const applyInput = (next?: DataSourceMetaInput<Meta>) => {
-        if (!next) return;
+        if (!next) {
+            return;
+        }
+
         replace(resolve(snapshot(), next));
     };
 
     const patch = (partial?: Partial<Meta>) => {
-        if (!partial) return;
+        if (!partial) {
+            return;
+        }
+
         Object.assign(meta, partial);
     };
 
@@ -215,8 +225,6 @@ export function createMetaBag<Meta extends object>(initial?: Meta) {
     };
 }
 
-export type MetaBag<Meta extends object> = ReturnType<typeof createMetaBag<Meta>>;
-
 /**
  * Make `target` equal `source` IN PLACE: keys absent from `source` are
  * deleted, the rest assigned. Used by `deep: true` sources so a held
@@ -228,21 +236,9 @@ export function assignInPlace(target: Record<string, any>, source: Record<string
             delete target[key];
         }
     }
+
     Object.assign(target, source);
 }
-
-type LoadControllerOptions<Meta extends object, Input, R> = {
-    core: AsyncSourceCore,
-    bag: MetaBag<Meta>,
-    fetch: (meta: Meta, input: Input | undefined) => Promise<R>,
-    /** Commit a winning result (and the input that produced it) into the container's state. */
-    apply: (result: R, input: Input | undefined) => void,
-};
-
-export type ActiveLoad<Input> = {
-    promise: Promise<DataLoadOutcome>,
-    input: Input | undefined,
-};
 
 /**
  * The load + mutation-ordering machinery both containers share.
@@ -281,7 +277,9 @@ export function createLoadController<Meta extends object, Input, R>(
     // place a failed load reports to.
     const drain = () => {
         const ops = buffered;
+
         buffered = [];
+
         for (const op of ops) {
             try {
                 op();
@@ -293,6 +291,7 @@ export function createLoadController<Meta extends object, Input, R>(
 
     const load = (next?: DataSourceMetaInput<Meta>, input?: Input) : Promise<DataLoadOutcome> => {
         const draft = bag.resolve(pendingDraft ?? bag.snapshot(), next);
+
         pendingDraft = draft;
         inFlight += 1;
 
@@ -304,13 +303,16 @@ export function createLoadController<Meta extends object, Input, R>(
             },
         ).then((outcome) => {
             inFlight -= 1;
+
             if (active?.promise === promise) {
                 active = undefined;
                 pendingDraft = undefined;
             }
+
             if (inFlight === 0) {
                 drain();
             }
+
             return outcome;
         });
 
@@ -321,7 +323,9 @@ export function createLoadController<Meta extends object, Input, R>(
 
     const settle = (apply: () => boolean, opts?: DataMutationOptions) : DataMutationSettledStatus => {
         const status = apply() ? DataMutationStatus.APPLIED : DataMutationStatus.NOOP;
+
         opts?.onSettled?.(status);
+
         return status;
     };
 
@@ -329,11 +333,13 @@ export function createLoadController<Meta extends object, Input, R>(
     const enqueueOrApply = (apply: () => boolean, opts?: DataMutationOptions) : DataMutationStatusLiteral => {
         if (opts?.immediate) {
             drain();
+
             if (inFlight > 0) {
                 core.supersede();
                 active = undefined;
                 pendingDraft = undefined;
             }
+
             return settle(apply, opts);
         }
 
@@ -341,6 +347,7 @@ export function createLoadController<Meta extends object, Input, R>(
             buffered.push(() => {
                 settle(apply, opts);
             });
+
             return DataMutationStatus.BUFFERED;
         }
 

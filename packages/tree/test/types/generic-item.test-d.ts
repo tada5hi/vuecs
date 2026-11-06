@@ -28,6 +28,9 @@ import type {
 // Run under a strictNullChecks-on tsconfig (`test/tsconfig.json`, wired via
 // vitest.config.ts) so the assertions don't pass vacuously.
 
+
+
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
 interface Folder {
     id: string;
     label: string;

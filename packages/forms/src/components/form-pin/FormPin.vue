@@ -21,6 +21,7 @@ export type FormPinThemeClasses = {
 };
 
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
     interface ThemeElements {
         formPin?: ThemeElementDefinition<FormPinThemeClasses>;
     }
@@ -95,6 +96,7 @@ export default defineComponent({
             {
                 default: () => {
                     const cells = [];
+
                     for (let i = 0; i < props.length; i += 1) {
                         cells.push(h(PinInputInput, {
                             key: i,
@@ -102,6 +104,7 @@ export default defineComponent({
                             class: theme.value.input || undefined,
                         }));
                     }
+
                     return cells;
                 },
             },

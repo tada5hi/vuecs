@@ -103,7 +103,10 @@ export default defineComponent({
 
         // Resolved icon name — explicit `:icon` wins over color-derived preset default.
         const iconName = computed(() => {
-            if (props.icon !== undefined) return props.icon;
+            if (props.icon !== undefined) {
+                return props.icon;
+            }
+
             switch (props.color) {
                 case 'error': return defaults.value.errorIcon;
                 case 'warning': return defaults.value.warningIcon;
@@ -117,7 +120,10 @@ export default defineComponent({
 
         // Severity-derived ARIA role with explicit override.
         const resolvedRole = computed(() => {
-            if (props.role) return props.role;
+            if (props.role) {
+                return props.role;
+            }
+
             return props.color === 'error' || props.color === 'warning' ? 'alert' : 'status';
         });
 
@@ -138,6 +144,7 @@ export default defineComponent({
             // `display: inline-flex`, so the tag has no layout effect.
             const iconSlot = slots.icon?.({ class: theme.value.icon });
             let iconNode: VNode | null = null;
+
             if (isMeaningfulSlotContent(iconSlot)) {
                 // No `aria-hidden` on the slot path: `#icon` content is
                 // consumer-owned and may be meaningful or interactive (a live
@@ -149,6 +156,7 @@ export default defineComponent({
                 iconNode = h('div', { class: iconClass }, iconSlot);
             } else {
                 const iconValue = iconName.value;
+
                 if (iconValue && hasIconComponent) {
                     // Decorative prop / color-derived icon — hidden from AT;
                     // the alert's `role` + text content carry the semantics.

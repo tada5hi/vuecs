@@ -238,6 +238,7 @@ export type TableProps = ExtractPublicPropTypes<typeof tableProps>;
  * `SlotsType` below, but threads the inferred `Row` into every
  * row-bearing slot.
  */
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
 export interface TableSlots<Row> {
     default?: (props: TableSlotProps<Row>) => unknown;
     caption?: () => unknown;
@@ -366,6 +367,7 @@ const VCTable = defineComponent({
             if (!props.clientSort || sortMachine.state.value.length === 0) {
                 return dataRef.value;
             }
+
             return sortRows(dataRef.value, {
                 columns: columns.value,
                 sorts: sortMachine.state.value,
@@ -375,10 +377,16 @@ const VCTable = defineComponent({
         // D3 — Shape B colspan auto-counting from <VCTableHeadCell> siblings
         // that register via context. Shape A overrides via `columns.length`.
         const childCellCount = ref(0);
+
         provideHeadCellCountContext({
-            register: () => { childCellCount.value += 1; },
-            unregister: () => { childCellCount.value = Math.max(0, childCellCount.value - 1); },
+            register: () => {
+                childCellCount.value += 1;
+            },
+            unregister: () => {
+                childCellCount.value = Math.max(0, childCellCount.value - 1);
+            },
         });
+
         const colspan = computed(() => {
             const base = columns.value.length > 0 ?
                 columns.value.length :
@@ -390,17 +398,23 @@ const VCTable = defineComponent({
             // the consumer keeps the trigger inside a data cell, so
             // no bump is needed.
             const triggerBump = props.expandable && props.expandableTrigger !== 'none' ? 1 : 0;
+
             return base + triggerBump;
         });
+
         watch(
             () => columns.value.length > 0,
             (hasColumns) => {
-                if (hasColumns) childCellCount.value = 0;
+                if (hasColumns) {
+                    childCellCount.value = 0;
+                }
             },
         );
 
         const focusedRow = ref<number | null>(null);
-        const setFocusedRow = (index: number | null) => { focusedRow.value = index; };
+        const setFocusedRow = (index: number | null) => {
+            focusedRow.value = index;
+        };
 
         const emitRowClick = (row: unknown, index: number, event: Event) => {
             emit('row-click', row, index, event);
@@ -421,12 +435,18 @@ const VCTable = defineComponent({
         // (each new row copies the prior Set).
         const interactiveRows = shallowRef<Set<number>>(new Set());
         const registerInteractiveRow = (index: number) => {
-            if (interactiveRows.value.has(index)) return;
+            if (interactiveRows.value.has(index)) {
+                return;
+            }
+
             interactiveRows.value.add(index);
             triggerRef(interactiveRows);
         };
         const unregisterInteractiveRow = (index: number) => {
-            if (!interactiveRows.value.has(index)) return;
+            if (!interactiveRows.value.has(index)) {
+                return;
+            }
+
             interactiveRows.value.delete(index);
             triggerRef(interactiveRows);
         };
@@ -439,11 +459,19 @@ const VCTable = defineComponent({
         const selectionValue = computed(() => props.selection);
         const getRowKey = (row: unknown, index: number): RowSelectionKey => {
             const custom = props.getRowKey;
-            if (typeof custom === 'function') return custom(row, index);
+
+            if (typeof custom === 'function') {
+                return custom(row, index);
+            }
+
             if (row && typeof row === 'object') {
                 const { id } = (row as { id?: unknown });
-                if (typeof id === 'string' || typeof id === 'number') return id;
+
+                if (typeof id === 'string' || typeof id === 'number') {
+                    return id;
+                }
             }
+
             return index;
         };
         const selection = useRowSelectionMachine({
@@ -456,7 +484,11 @@ const VCTable = defineComponent({
                 // index seen in selection events matches the rendered
                 // position, so range-select spans the rendered order.
                 const view = visibleData.value;
-                if (index < 0 || index >= view.length) return undefined;
+
+                if (index < 0 || index >= view.length) {
+                    return undefined;
+                }
+
                 return getRowKey(view[index], index);
             },
         });
@@ -475,13 +507,27 @@ const VCTable = defineComponent({
         // so reads from `expansionValue` don't need re-normalization.
         const initialExpansionInternal = (): RowSelectionKey | RowSelectionKey[] | null => {
             const init = props.expanded;
+
             if (props.expansionMode === 'single') {
-                if (typeof init === 'string' || typeof init === 'number') return init;
-                if (Array.isArray(init) && init.length > 0) return init[0];
+                if (typeof init === 'string' || typeof init === 'number') {
+                    return init;
+                }
+
+                if (Array.isArray(init) && init.length > 0) {
+                    return init[0];
+                }
+
                 return null;
             }
-            if (Array.isArray(init)) return init;
-            if (typeof init === 'string' || typeof init === 'number') return [init];
+
+            if (Array.isArray(init)) {
+                return init;
+            }
+
+            if (typeof init === 'string' || typeof init === 'number') {
+                return [init];
+            }
+
             return [];
         };
         const expansionInternal = ref<RowSelectionKey | RowSelectionKey[] | null>(
@@ -498,12 +544,25 @@ const VCTable = defineComponent({
             mode: RowSelectionMode,
         ): RowSelectionValue<RowSelectionMode> | null => {
             if (mode === 'single') {
-                if (typeof source === 'string' || typeof source === 'number') return source;
-                if (Array.isArray(source)) return source.length > 0 ? source[0] : null;
+                if (typeof source === 'string' || typeof source === 'number') {
+                    return source;
+                }
+
+                if (Array.isArray(source)) {
+                    return source.length > 0 ? source[0] : null;
+                }
+
                 return null;
             }
-            if (Array.isArray(source)) return source;
-            if (typeof source === 'string' || typeof source === 'number') return [source];
+
+            if (Array.isArray(source)) {
+                return source;
+            }
+
+            if (typeof source === 'string' || typeof source === 'number') {
+                return [source];
+            }
+
             return [];
         };
 
@@ -512,8 +571,12 @@ const VCTable = defineComponent({
         // (including empty `[]` for "collapse all"). When unbound,
         // the local internal mirror takes over.
         const expansionValue = computed<RowSelectionValue<RowSelectionMode> | null>(() => {
-            if (!props.expandable) return null;
+            if (!props.expandable) {
+                return null;
+            }
+
             const source = hasExpandedVModel ? props.expanded : expansionInternal.value;
+
             return normalizeForMachine(source as never, props.expansionMode);
         });
 
@@ -525,10 +588,18 @@ const VCTable = defineComponent({
         // async data — `seedAttempted` ensures one-shot semantics.
         let seedAttempted = false;
         const trySeed = () => {
-            if (seedAttempted || !props.expandable) return;
+            if (seedAttempted || !props.expandable) {
+                return;
+            }
+
             const view = visibleData.value;
-            if (view.length === 0) return;
+
+            if (view.length === 0) {
+                return;
+            }
+
             const seeds: RowSelectionKey[] = [];
+
             for (const [i, row] of view.entries()) {
                 if (
                     row && typeof row === 'object' &&
@@ -537,15 +608,25 @@ const VCTable = defineComponent({
                     seeds.push(getRowKey(row, i));
                 }
             }
+
             seedAttempted = true;
-            if (seeds.length === 0) return;
+
+            if (seeds.length === 0) {
+                return;
+            }
+
             // Skip the seed when the consumer already established an
             // initial expanded state — explicit beats implicit.
             const currentValue = hasExpandedVModel ? props.expanded : expansionInternal.value;
             const currentIsEmpty = currentValue == null ||
                 (Array.isArray(currentValue) && currentValue.length === 0);
-            if (!currentIsEmpty) return;
+
+            if (!currentIsEmpty) {
+                return;
+            }
+
             let finalSeed = seeds;
+
             if (props.expansionMode === 'single' && seeds.length > 1) {
                 if ((globalThis as { process?: { env?: { NODE_ENV?: string } } }).process?.env?.NODE_ENV !== 'production') {
                     // eslint-disable-next-line no-console
@@ -553,9 +634,12 @@ const VCTable = defineComponent({
                         '[VCTable] :expansion-mode="single" but multiple rows carry _expanded: true — using the first.',
                     );
                 }
+
                 finalSeed = [seeds[0]];
             }
+
             const writeBack = props.expansionMode === 'single' ? finalSeed[0] : finalSeed;
+
             if (hasExpandedVModel) {
                 emit('update:expanded', writeBack);
             } else {
@@ -566,10 +650,16 @@ const VCTable = defineComponent({
                 // means truly no listener — safe no-op anyway).
             }
         };
-        watch(visibleData, () => { trySeed(); }, { immediate: true });
+
+        watch(visibleData, () => {
+            trySeed();
+        }, { immediate: true });
 
         const expansionMode = computed<RowSelectionMode | undefined>(() => {
-            if (!props.expandable) return undefined;
+            if (!props.expandable) {
+                return undefined;
+            }
+
             return props.expansionMode;
         });
 
@@ -580,7 +670,10 @@ const VCTable = defineComponent({
                 // Guard against late emits after `:expandable` flipped
                 // off (the machine should be no-op in that case, but
                 // belt-and-braces against any setValue() call path).
-                if (!props.expandable) return;
+                if (!props.expandable) {
+                    return;
+                }
+
                 // Mirror to local state in the canonical per-mode
                 // shape so subsequent reads of `expansionValue` (when
                 // no v-model is bound) see the updated set.
@@ -591,11 +684,16 @@ const VCTable = defineComponent({
                         expansionInternal.value = next;
                     }
                 }
+
                 emit('update:expanded', next);
             },
             keyAt: (index) => {
                 const view = visibleData.value;
-                if (index < 0 || index >= view.length) return undefined;
+
+                if (index < 0 || index >= view.length) {
+                    return undefined;
+                }
+
                 return getRowKey(view[index], index);
             },
         });
@@ -724,7 +822,9 @@ const VCTable = defineComponent({
                 [tableNode],
             );
 
-            if (!props.scrollable) return wrapper;
+            if (!props.scrollable) {
+                return wrapper;
+            }
 
             return h(
                 'div',

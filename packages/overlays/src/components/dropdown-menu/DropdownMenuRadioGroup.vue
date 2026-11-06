@@ -29,6 +29,7 @@ export default defineComponent({
         attrs,
     }) {
         const theme = useComponentTheme('dropdownMenu', props, dropdownMenuThemeDefaults);
+
         return () => h(
             DropdownMenuRadioGroup,
             mergeProps(attrs, {

@@ -30,17 +30,20 @@ export function renderColorPaletteStyles(palette: ColorPaletteConfig): string {
             PALETTE_NAME_SET.has(entry[1])
         ),
     );
+
     if (entries.length === 0) {
         return '';
     }
 
     const declarations: string[] = [];
+
     for (const [scale, paletteName] of entries) {
         for (const shade of COLOR_PALETTE_SHADES) {
             declarations.push(
                 `    --vc-color-${scale}-${shade}: var(--color-${paletteName}-${shade});`,
             );
         }
+
         // Adaptive foreground for the swapped surface — snaps on-* to black
         // or white by the new `-600` shade's OKLCH lightness so the pair
         // stays legible (e.g. `primary: 'amber'` must not keep white text).

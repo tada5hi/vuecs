@@ -19,6 +19,7 @@ describe('renderColorPaletteFromThemes', () => {
             { palette: { handle: (p) => `/* bulma */ --bulma-primary: ${p.primary};` } },
         ];
         const css = renderColorPaletteFromThemes(themes, { primary: 'green' });
+
         expect(css).toContain('--primary: green');
         expect(css).toContain('--bulma-primary: green');
         expect(css.indexOf('--primary')).toBeLessThan(css.indexOf('--bulma-primary'));
@@ -26,6 +27,7 @@ describe('renderColorPaletteFromThemes', () => {
 
     it('returns empty string when no theme declares palette.handle', () => {
         const themes: ThemeRuntimeEntry[] = [{ colorMode: { handle: () => {} } }, {}];
+
         expect(renderColorPaletteFromThemes(themes, { primary: 'red' })).toBe('');
     });
 
@@ -34,6 +36,7 @@ describe('renderColorPaletteFromThemes', () => {
             { palette: { handle: () => '' } },
             { palette: { handle: (p) => `--primary: ${p.primary};` } },
         ];
+
         expect(renderColorPaletteFromThemes(themes, { primary: 'red' })).toBe('--primary: red;');
     });
 
@@ -52,6 +55,7 @@ describe('renderColorPaletteFromThemes', () => {
             { palette: { handle: (p) => `--tw-primary: ${p.primary}; --tw-error: ${p.error};` } },
         ];
         const css = renderColorPaletteFromThemes(themes, { primary: 'green', error: 'red' });
+
         // Aliased theme sees translated keys.
         expect(css).toContain('--acme-brand: green');
         expect(css).toContain('--acme-danger: red');
@@ -65,6 +69,7 @@ describe('renderColorPaletteFromThemes', () => {
             { palette: { handle: (p) => `--primary: ${p.primary};` } },
         ];
         const css = renderColorPaletteFromThemes(themes, { primary: 'blue' });
+
         expect(css).toBe('--primary: blue;');
     });
 
@@ -81,6 +86,7 @@ describe('renderColorPaletteFromThemes', () => {
             { palette: { handle: (p) => `--primary: ${p.primary};` } },
         ];
         const css = renderColorPaletteFromThemes(themes, { primary: 'red' });
+
         expect(css).toBe('--primary: red;');
         expect(warn).toHaveBeenCalled();
     });

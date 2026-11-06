@@ -15,6 +15,7 @@ describe('createCaptureDocument', () => {
     it('captures setAttribute calls on documentElement', () => {
         const target: Record<string, string> = {};
         const doc = createCaptureDocument(target);
+
         doc.documentElement.setAttribute('data-bs-theme', 'dark');
         expect(target).toEqual({ 'data-bs-theme': 'dark' });
     });
@@ -22,6 +23,7 @@ describe('createCaptureDocument', () => {
     it('removes attributes via removeAttribute', () => {
         const target: Record<string, string> = { 'data-bs-theme': 'dark' };
         const doc = createCaptureDocument(target);
+
         doc.documentElement.removeAttribute('data-bs-theme');
         expect(target).toEqual({});
     });
@@ -29,6 +31,7 @@ describe('createCaptureDocument', () => {
     it('exposes a no-op classList that does not throw', () => {
         const target: Record<string, string> = {};
         const doc = createCaptureDocument(target);
+
         expect(() => {
             doc.documentElement.classList.add('foo');
             doc.documentElement.classList.remove('foo');
@@ -61,6 +64,7 @@ describe('captureColorModeAttrs', () => {
         ];
 
         const attrs = captureColorModeAttrs(themes, 'dark');
+
         expect(attrs).toEqual({
             'data-bs-theme': 'dark',
             'data-theme': 'dark',
@@ -69,6 +73,7 @@ describe('captureColorModeAttrs', () => {
 
     it('returns an empty object when no theme declares colorMode.handle', () => {
         const themes: ThemeRuntimeEntry[] = [{}, { palette: { handle: () => '' } }];
+
         expect(captureColorModeAttrs(themes, 'light')).toEqual({});
     });
 
@@ -89,6 +94,7 @@ describe('captureColorModeAttrs', () => {
                 },
             },
         ];
+
         expect(captureColorModeAttrs(themes, 'light').shared).toBe('second');
     });
 
@@ -111,12 +117,14 @@ describe('captureColorModeAttrs', () => {
             },
         ];
         const attrs = captureColorModeAttrs(themes, 'dark');
+
         expect(attrs).toEqual({ 'data-theme': 'dark' });
         expect(warn).toHaveBeenCalled();
     });
 
     it('passes the resolved mode through unchanged', () => {
         const handle = vi.fn();
+
         captureColorModeAttrs([{ colorMode: { handle } }], 'light');
         expect(handle).toHaveBeenCalledWith(expect.any(Object), 'light');
     });

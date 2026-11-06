@@ -16,7 +16,9 @@ import vuecsElements, {
 const plugins = [[vuecsElements, {}]] as const;
 
 describe('<VCCollapse>', () => {
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it('renders the root with vc-collapse class', () => {
         const wrapper = mount(defineComponent({
@@ -30,6 +32,7 @@ describe('<VCCollapse>', () => {
             },
         }), { global: { plugins: [...plugins] } });
         const root = wrapper.element as HTMLElement;
+
         expect(root.classList.contains('vc-collapse')).toBe(true);
     });
 
@@ -45,6 +48,7 @@ describe('<VCCollapse>', () => {
             },
         }), { global: { plugins: [...plugins] } });
         const root = wrapper.element as HTMLElement;
+
         expect(root.textContent).not.toContain('Content');
     });
 
@@ -59,6 +63,7 @@ describe('<VCCollapse>', () => {
                 });
             },
         }), { global: { plugins: [...plugins] } });
+
         expect((wrapper.element as HTMLElement).textContent).toContain('Content');
     });
 
@@ -68,7 +73,9 @@ describe('<VCCollapse>', () => {
             setup() {
                 return () => h(VCCollapse, {
                     open: open.value,
-                    'onUpdate:open': (next: boolean) => { open.value = next; },
+                    'onUpdate:open': (next: boolean) => {
+                        open.value = next;
+                    },
                 }, {
                     default: () => [
                         h(VCCollapseTrigger, null, { default: () => 'Toggle' }),
@@ -79,6 +86,7 @@ describe('<VCCollapse>', () => {
         }), { global: { plugins: [...plugins] } });
 
         const trigger = (wrapper.element as HTMLElement).querySelector('button')!;
+
         trigger.click();
         await wrapper.vm.$nextTick();
         expect(open.value).toBe(true);
@@ -97,6 +105,7 @@ describe('<VCCollapse>', () => {
         }), { global: { plugins: [...plugins] } });
 
         const trigger = (wrapper.element as HTMLElement).querySelector('button')!;
+
         expect(trigger.getAttribute('aria-expanded')).toBe('false');
         trigger.click();
         await wrapper.vm.$nextTick();
@@ -105,7 +114,9 @@ describe('<VCCollapse>', () => {
 });
 
 describe('<VCCollapseTrigger>', () => {
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it('defaults to <button type="button"> (Reka primitive default)', () => {
         const wrapper = mount(defineComponent({
@@ -114,6 +125,7 @@ describe('<VCCollapseTrigger>', () => {
             },
         }), { global: { plugins: [...plugins] } });
         const trigger = (wrapper.element as HTMLElement).querySelector('button')!;
+
         expect(trigger).not.toBeNull();
         // Reka's CollapsibleTrigger renders as <button> which defaults to
         // type="button" via the browser. Verify the element type.
@@ -127,6 +139,7 @@ describe('<VCCollapseTrigger>', () => {
             },
         }), { global: { plugins: [...plugins] } });
         const trigger = (wrapper.element as HTMLElement).querySelector('button')!;
+
         expect(trigger.classList.contains('vc-collapse-trigger')).toBe(true);
     });
 
@@ -148,6 +161,7 @@ describe('<VCCollapseTrigger>', () => {
         });
         const trigger = (wrapper.element as HTMLElement).querySelector('button')!;
         const chevron = trigger.querySelector('[data-test-chevron="lucide:chevron-down"]');
+
         expect(chevron).not.toBeNull();
     });
 
@@ -158,6 +172,7 @@ describe('<VCCollapseTrigger>', () => {
             },
         }), { global: { plugins: [[vuecsElements, { defaults: { collapseTrigger: { chevronIcon: 'lucide:chevron-down' } } }]] } });
         const trigger = (wrapper.element as HTMLElement).querySelector('button')!;
+
         expect(trigger.querySelector('.vc-collapse-chevron')).toBeNull();
     });
 
@@ -181,6 +196,7 @@ describe('<VCCollapseTrigger>', () => {
             },
         });
         const root = wrapper.element as HTMLElement;
+
         // The custom child should be in the DOM
         expect(root.querySelector('[data-custom-trigger]')).not.toBeNull();
         // The auto-chevron should NOT have been rendered
@@ -204,12 +220,15 @@ describe('<VCCollapseTrigger>', () => {
             },
         });
         const trigger = (wrapper.element as HTMLElement).querySelector('button')!;
+
         expect(trigger.querySelector('[data-test-chevron]')).toBeNull();
     });
 });
 
 describe('<VCCollapseContent>', () => {
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it('renders the vc-collapse-content class when open', () => {
         const wrapper = mount(defineComponent({
@@ -223,6 +242,7 @@ describe('<VCCollapseContent>', () => {
             },
         }), { global: { plugins: [...plugins] } });
         const content = (wrapper.element as HTMLElement).querySelector('.vc-collapse-content');
+
         expect(content).not.toBeNull();
         expect(content!.textContent).toBe('Content');
     });

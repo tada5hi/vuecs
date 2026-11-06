@@ -4,10 +4,11 @@ import type { App, Plugin } from 'vue';
 import './vue';
 
 import { VCGravatar } from './component';
-import type { Options } from './type';
+import type { Options } from './types';
 
 export * from './component';
-export * from './type';
+export type { GravatarThemeClasses, GravatarFallbackSlotProps, GravatarProps } from './types';
+export * from './types';
 
 export function install(instance: App, options: Options = {}): void {
     installThemeManager(instance, options);

@@ -17,7 +17,9 @@ function setup(initial: TableSortState = []) {
     ]);
     const mustSort = ref(false);
     const maxSortKeys = ref(3);
-    const emit = vi.fn((next: TableSortState) => { source.value = next; });
+    const emit = vi.fn((next: TableSortState) => {
+        source.value = next;
+    });
     const machine = useSortMachine({
         source,
         columns,
@@ -25,6 +27,7 @@ function setup(initial: TableSortState = []) {
         maxSortKeys,
         emit,
     });
+
     return {
         machine,
         source,
@@ -38,18 +41,21 @@ function setup(initial: TableSortState = []) {
 describe('useSortMachine — single-column cycle', () => {
     it('empty → asc on first activation, using initialSortDirection', () => {
         const { machine, emit } = setup();
+
         machine.setSort('name');
         expect(emit).toHaveBeenCalledWith([{ key: 'name', direction: 'asc' }]);
     });
 
     it('respects per-column initialSortDirection on first activation', () => {
         const { machine, emit } = setup();
+
         machine.setSort('createdAt');
         expect(emit).toHaveBeenLastCalledWith([{ key: 'createdAt', direction: 'desc' }]);
     });
 
     it('asc → desc → empty array when not mustSort', () => {
         const { machine, emit } = setup();
+
         machine.setSort('name'); // → [asc]
         machine.setSort('name'); // → [desc]
         machine.setSort('name'); // → []
@@ -66,6 +72,7 @@ describe('useSortMachine — single-column cycle', () => {
             mustSort,
             emit,
         } = setup();
+
         mustSort.value = true;
         machine.setSort('name'); // → [asc]
         machine.setSort('name'); // → [desc]
@@ -79,6 +86,7 @@ describe('useSortMachine — single-column cycle', () => {
 
     it('switching column REPLACES the sort with the new column initial direction', () => {
         const { machine, emit } = setup();
+
         machine.setSort('name'); // → [asc]
         machine.setSort('createdAt'); // → [desc] (column's initialSortDirection)
         expect(emit).toHaveBeenLastCalledWith([{ key: 'createdAt', direction: 'desc' }]);
@@ -86,12 +94,14 @@ describe('useSortMachine — single-column cycle', () => {
 
     it('directionFor returns the current direction, null otherwise', () => {
         const { machine } = setup([{ key: 'name', direction: 'desc' }]);
+
         expect(machine.directionFor('name')).toBe('desc');
         expect(machine.directionFor('createdAt')).toBeNull();
     });
 
     it('explicit direction jumps straight to it', () => {
         const { machine, emit } = setup();
+
         machine.setSort('name', { direction: 'desc' });
         expect(emit).toHaveBeenLastCalledWith([{ key: 'name', direction: 'desc' }]);
     });
@@ -100,6 +110,7 @@ describe('useSortMachine — single-column cycle', () => {
 describe('useSortMachine — multi-column (append) cycling', () => {
     it('append=true adds a secondary key (initialSortDirection)', () => {
         const { machine, emit } = setup();
+
         machine.setSort('name');
         machine.setSort('createdAt', { append: true });
         expect(emit.mock.calls[1][0]).toEqual([
@@ -110,6 +121,7 @@ describe('useSortMachine — multi-column (append) cycling', () => {
 
     it('append=true on an already-sorted key cycles its direction without reordering', () => {
         const { machine, emit } = setup();
+
         machine.setSort('name');
         machine.setSort('createdAt', { append: true }); // adds secondary desc
         machine.setSort('createdAt', { append: true }); // cycles secondary to asc
@@ -121,6 +133,7 @@ describe('useSortMachine — multi-column (append) cycling', () => {
 
     it('append=true cycling past the second direction removes the key', () => {
         const { machine, emit } = setup();
+
         machine.setSort('name');
         machine.setSort('createdAt', { append: true }); // [name asc, createdAt desc]
         machine.setSort('createdAt', { append: true }); // [name asc, createdAt asc]
@@ -130,6 +143,7 @@ describe('useSortMachine — multi-column (append) cycling', () => {
 
     it('plain click on a different column REPLACES the multi-sort', () => {
         const { machine, emit } = setup();
+
         machine.setSort('name');
         machine.setSort('createdAt', { append: true });
         machine.setSort('email'); // not append → replace
@@ -138,10 +152,11 @@ describe('useSortMachine — multi-column (append) cycling', () => {
 
     it('caps the sort array at maxSortKeys (oldest evicted)', () => {
         const {
-            machine, 
-            emit, 
-            maxSortKeys, 
+            machine,
+            emit,
+            maxSortKeys,
         } = setup();
+
         maxSortKeys.value = 2;
         machine.setSort('name'); // [name]
         machine.setSort('createdAt', { append: true }); // [name, createdAt]
@@ -154,10 +169,11 @@ describe('useSortMachine — multi-column (append) cycling', () => {
 
     it('maxSortKeys=0 means unlimited', () => {
         const {
-            machine, 
-            emit, 
-            maxSortKeys, 
+            machine,
+            emit,
+            maxSortKeys,
         } = setup();
+
         maxSortKeys.value = 0;
         machine.setSort('name');
         machine.setSort('createdAt', { append: true });
@@ -170,6 +186,7 @@ describe('useSortMachine — multi-column (append) cycling', () => {
             { key: 'name', direction: 'asc' },
             { key: 'createdAt', direction: 'desc' },
         ]);
+
         expect(machine.positionFor('name')).toBe(1);
         expect(machine.positionFor('createdAt')).toBe(2);
         expect(machine.positionFor('email')).toBeNull();

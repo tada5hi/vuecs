@@ -1,3 +1,4 @@
+/* eslint-disable @tada5hi/no-reexport-shims -- Preserve this existing public forwarding module. */
 import { bindColorMode, isColorMode } from '@vuecs/design';
 import type { ColorMode, UseColorModeReturn } from '@vuecs/design';
 import { computed } from 'vue';

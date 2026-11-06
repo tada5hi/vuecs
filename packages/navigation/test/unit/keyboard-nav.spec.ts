@@ -44,6 +44,7 @@ function getLinks(root: Element): HTMLElement[] {
 describe('VCNavItems keyboard navigation', () => {
     it('marks every rendered link with data-vc-collection-item', async () => {
         const wrapper = await buildApp();
+
         await nextTick();
         await nextTick();
 
@@ -52,25 +53,28 @@ describe('VCNavItems keyboard navigation', () => {
 
     it('moves focus to the next item on ArrowDown', async () => {
         const wrapper = await buildApp();
+
         await nextTick();
         await nextTick();
 
         const links = getLinks(wrapper.element);
+
         expect(links.length).toBe(3);
 
         links[0].focus();
         expect(document.activeElement).toBe(links[0]);
 
         links[0].dispatchEvent(new KeyboardEvent('keydown', {
-            key: 'ArrowDown', 
-            bubbles: true, 
-            cancelable: true, 
+            key: 'ArrowDown',
+            bubbles: true,
+            cancelable: true,
         }));
         expect(document.activeElement).toBe(links[1]);
     });
 
     it('Home / End jump to the first / last item', async () => {
         const wrapper = await buildApp();
+
         await nextTick();
         await nextTick();
 
@@ -78,22 +82,23 @@ describe('VCNavItems keyboard navigation', () => {
 
         links[1].focus();
         links[1].dispatchEvent(new KeyboardEvent('keydown', {
-            key: 'End', 
-            bubbles: true, 
-            cancelable: true, 
+            key: 'End',
+            bubbles: true,
+            cancelable: true,
         }));
         expect(document.activeElement).toBe(links[2]);
 
         links[2].dispatchEvent(new KeyboardEvent('keydown', {
-            key: 'Home', 
-            bubbles: true, 
-            cancelable: true, 
+            key: 'Home',
+            bubbles: true,
+            cancelable: true,
         }));
         expect(document.activeElement).toBe(links[0]);
     });
 
     it('loops from the last item back to the first on ArrowDown', async () => {
         const wrapper = await buildApp();
+
         await nextTick();
         await nextTick();
 
@@ -101,9 +106,9 @@ describe('VCNavItems keyboard navigation', () => {
 
         links[2].focus();
         links[2].dispatchEvent(new KeyboardEvent('keydown', {
-            key: 'ArrowDown', 
-            bubbles: true, 
-            cancelable: true, 
+            key: 'ArrowDown',
+            bubbles: true,
+            cancelable: true,
         }));
         expect(document.activeElement).toBe(links[0]);
     });

@@ -19,12 +19,14 @@ describe('defineTheme', () => {
     describe('leaf themes (no extends)', () => {
         it('returns a Theme with empty elements when config is empty', () => {
             const theme = defineTheme({});
+
             expect(theme.elements).toEqual({});
         });
 
         it('returns a Theme carrying its own elements when no extends', () => {
             const theme = defineTheme({ elements: { button: { classes: { root: 'tw-btn' } } } as Partial<Theme['elements']> });
             const elements = theme.elements as Record<string, { classes?: Record<string, string> }>;
+
             expect(elements.button?.classes).toEqual({ root: 'tw-btn' });
         });
     });
@@ -60,6 +62,7 @@ describe('defineTheme', () => {
             });
 
             const result = resolveComponentTheme('button', buttonDefaults, [merged], undefined, undefined);
+
             expect(result.root).toBe('vc-button plain-current');
         });
     });
@@ -85,6 +88,7 @@ describe('defineTheme', () => {
             });
 
             const result = resolveComponentTheme('button', buttonDefaults, [merged], undefined, undefined);
+
             expect(result.root).toBe('vc-button from-b from-current');
         });
     });
@@ -110,6 +114,7 @@ describe('defineTheme', () => {
             });
 
             const elements = merged.elements as Record<string, { variants?: any }>;
+
             // size.md preserved (deep merge per name); size.sm wholesale-replaced
             // (icon dropped — last-wins per (name, value), not merged per-slot)
             expect(elements.button?.variants?.size).toEqual({
@@ -141,6 +146,7 @@ describe('defineTheme', () => {
             });
 
             const elements = merged.elements as Record<string, { compoundVariants?: any[] }>;
+
             expect(elements.button?.compoundVariants).toHaveLength(2);
         });
 
@@ -153,6 +159,7 @@ describe('defineTheme', () => {
             });
 
             const elements = merged.elements as Record<string, { defaultVariants?: any }>;
+
             expect(elements.button?.defaultVariants).toEqual({ size: 'lg', color: 'primary' });
         });
     });
@@ -198,6 +205,7 @@ describe('defineTheme', () => {
             });
 
             const elements = merged.elements as Record<string, { classes?: Record<string, string> }>;
+
             expect(elements.button?.classes?.root).toBe('base|extra');
         });
     });
@@ -207,11 +215,19 @@ describe('defineTheme', () => {
             const calls: string[] = [];
             const a: Theme = {
                 elements: {},
-                colorMode: { handle: () => { calls.push('A'); } },
+                colorMode: {
+                    handle: () => {
+                        calls.push('A');
+                    },
+                },
             };
             const b: Theme = {
                 elements: {},
-                colorMode: { handle: () => { calls.push('B'); } },
+                colorMode: {
+                    handle: () => {
+                        calls.push('B');
+                    },
+                },
             };
 
             const merged = defineTheme({ extends: [a, b] });
@@ -226,6 +242,7 @@ describe('defineTheme', () => {
                 extends: { elements: {} },
                 colorMode: hook,
             });
+
             expect(merged.colorMode).toBe(hook);
         });
 
@@ -238,11 +255,13 @@ describe('defineTheme', () => {
                     { elements: {}, palette: { handle: renderB } },
                 ],
             });
+
             expect(merged.palette?.handle).toBe(renderB);
         });
 
         it('omits hooks when no layer declares them', () => {
             const merged = defineTheme({ elements: {} });
+
             expect(merged.colorMode).toBeUndefined();
             expect(merged.palette).toBeUndefined();
         });
@@ -256,6 +275,7 @@ describe('defineTheme', () => {
                     { elements: {}, palette: { handle: handleB } },
                 ],
             });
+
             // palette is single-owner; the later layer wholly replaces
             // the earlier one — so scaleAliases from the first layer
             // does NOT bleed into the merged palette.
@@ -270,6 +290,7 @@ describe('defineTheme', () => {
                 extends: { elements: {} },
                 palette: { handle, scaleAliases: aliases },
             });
+
             expect(merged.palette?.scaleAliases).toBe(aliases);
         });
     });
@@ -282,6 +303,7 @@ describe('defineTheme', () => {
         it('returns a defensive shallow clone for single-element array', () => {
             const theme: Theme = { elements: {} };
             const result = mergeThemes([theme]);
+
             expect(result).not.toBe(theme);
             expect(result).toEqual(theme);
         });

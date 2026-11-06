@@ -10,8 +10,14 @@ import type {
 } from './types';
 
 export function defaultClassesMergeFn(base: string, override: string): string {
-    if (!base) return override;
-    if (!override) return base;
+    if (!base) {
+        return override;
+    }
+
+    if (!override) {
+        return base;
+    }
+
     return `${base} ${override}`;
 }
 
@@ -23,6 +29,7 @@ function resolveElementValue(
     if (isExtendValue(override)) {
         return mergeFn(current || '', override.value);
     }
+
     return override;
 }
 
@@ -32,9 +39,13 @@ function applyOverrides(
     mergeFn: ClassesMergeFn,
 ) {
     const keys = Object.keys(overrides);
+
     for (const key of keys) {
         const value = overrides[key];
-        if (typeof value === 'undefined') continue;
+
+        if (typeof value === 'undefined') {
+            continue;
+        }
 
         result[key] = resolveElementValue(result[key], value, mergeFn);
     }
@@ -47,9 +58,13 @@ function applyThemeOverrides(
     mergeFn: ClassesMergeFn,
 ) {
     const keys = Object.keys(overrides);
+
     for (const key of keys) {
         const value = overrides[key];
-        if (typeof value === 'undefined') continue;
+
+        if (typeof value === 'undefined') {
+            continue;
+        }
 
         if (isExtendValue(value)) {
             // extend: merge with current accumulated result
@@ -57,6 +72,7 @@ function applyThemeOverrides(
         } else {
             // replace: merge with defaults (preserving defaults), reset theme contributions
             const defaultValue = defaults[key];
+
             result[key] = defaultValue ? mergeFn(defaultValue, value) : value;
         }
     }
@@ -77,7 +93,10 @@ export function resolveComponentTheme<T extends ThemeClasses>(
     for (const theme of themes) {
         const elements = theme.elements as Record<string, ThemeElementDefinition>;
         const entry = elements[componentName];
-        if (!entry?.classes) continue;
+
+        if (!entry?.classes) {
+            continue;
+        }
 
         applyThemeOverrides(result, defaults.classes as Record<string, string>, entry.classes, merge);
     }
@@ -85,6 +104,7 @@ export function resolveComponentTheme<T extends ThemeClasses>(
     // Layer 3: User overrides
     if (overrideElements) {
         const entry = overrideElements[componentName];
+
         if (entry?.classes) {
             applyOverrides(result, entry.classes, merge);
         }

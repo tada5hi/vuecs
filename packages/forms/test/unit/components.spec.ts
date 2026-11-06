@@ -24,7 +24,7 @@ import { default as VCFormSwitch } from '../../src/components/form-switch/FormSw
 import { default as VCFormTags } from '../../src/components/form-tags/FormTags.vue';
 import { default as VCFormTextarea } from '../../src/components/form-textarea/FormTextarea.vue';
 import { default as VCValidationGroup } from '../../src/components/validation-group/ValidationGroup.vue';
-import type { FieldValidation } from '../../src/components/type';
+import type { FieldValidation } from '../../src/components/types';
 
 // Reka's `useSize` (used by Slider) constructs a `ResizeObserver`. jsdom does
 // not implement it. Reka's `SelectTrigger` calls `target.hasPointerCapture`
@@ -39,12 +39,15 @@ beforeAll(() => {
             disconnect() {}
         } as unknown as typeof globalThis.ResizeObserver;
     }
-    if (typeof Element !== 'undefined' && !Element.prototype.hasPointerCapture) {
-        Element.prototype.hasPointerCapture = () => false;
-        Element.prototype.setPointerCapture = () => {};
-        Element.prototype.releasePointerCapture = () => {};
-        Element.prototype.scrollIntoView = () => {};
+
+    if (typeof Element === 'undefined' || Element.prototype.hasPointerCapture) {
+        return;
     }
+
+    Element.prototype.hasPointerCapture = () => false;
+    Element.prototype.setPointerCapture = () => {};
+    Element.prototype.releasePointerCapture = () => {};
+    Element.prototype.scrollIntoView = () => {};
 });
 
 const themePlugin = {
@@ -57,6 +60,7 @@ const themePlugin = {
 describe('VCFormGroup', () => {
     it('should render a div wrapper', () => {
         const wrapper = mount(VCFormGroup, { global: { plugins: [themePlugin] } });
+
         expect(wrapper.element.tagName).toBe('DIV');
     });
 
@@ -65,6 +69,7 @@ describe('VCFormGroup', () => {
             props: { labelContent: 'My Label' },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.find('label').exists()).toBe(true);
         expect(wrapper.find('label').text()).toBe('My Label');
     });
@@ -74,6 +79,7 @@ describe('VCFormGroup', () => {
             props: { label: false, labelContent: 'Hidden' },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.find('label').exists()).toBe(false);
     });
 
@@ -82,6 +88,7 @@ describe('VCFormGroup', () => {
             global: { plugins: [themePlugin] },
             slots: { label: 'Slot Label' },
         });
+
         expect(wrapper.text()).toContain('Slot Label');
     });
 
@@ -90,6 +97,7 @@ describe('VCFormGroup', () => {
             props: { hintContent: 'Help text' },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.text()).toContain('Help text');
     });
 
@@ -98,6 +106,7 @@ describe('VCFormGroup', () => {
             global: { plugins: [themePlugin] },
             slots: { default: () => h('input', { type: 'text' }) },
         });
+
         expect(wrapper.find('input').exists()).toBe(true);
     });
 
@@ -106,6 +115,7 @@ describe('VCFormGroup', () => {
             props: { validationMessages: { required: 'Field is required' } },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.text()).toContain('Field is required');
     });
 
@@ -131,6 +141,7 @@ describe('VCFormGroup', () => {
                 }],
             },
         });
+
         expect(wrapper.classes()).toContain('has-error');
     });
 
@@ -160,6 +171,7 @@ describe('VCFormGroup', () => {
                 }],
             },
         });
+
         expect(wrapper.classes()).toContain('has-warning');
         expect(wrapper.classes()).not.toContain('has-error');
     });
@@ -173,6 +185,7 @@ describe('VCFormGroup', () => {
             props: { hintContent: 'help' },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.text()).toBe('help');
     });
 
@@ -184,6 +197,7 @@ describe('VCFormGroup', () => {
             global: { plugins: [themePlugin] },
             slots: { validationGroup: () => h('span', { class: 'slot-marker' }, 'slot content') },
         });
+
         expect(wrapper.find('.slot-marker').exists()).toBe(true);
     });
 
@@ -201,6 +215,7 @@ describe('VCFormGroup', () => {
         const labelPos = text.indexOf('Label');
         const errorPos = text.indexOf('Error');
         const hintPos = text.indexOf('Hint');
+
         expect(labelPos).toBeLessThan(errorPos);
         expect(errorPos).toBeLessThan(hintPos);
     });
@@ -224,6 +239,7 @@ describe('VCFormGroup', () => {
                 },
                 global: { plugins: [themePlugin] },
             });
+
             expect(wrapper.text()).toContain('Email is required');
         });
 
@@ -237,6 +253,7 @@ describe('VCFormGroup', () => {
                 },
                 global: { plugins: [themePlugin] },
             });
+
             expect(wrapper.text()).toContain('Email is required');
         });
 
@@ -258,6 +275,7 @@ describe('VCFormGroup', () => {
                     }],
                 },
             });
+
             expect(wrapper.classes()).toContain('is-err');
         });
 
@@ -266,11 +284,11 @@ describe('VCFormGroup', () => {
                 elements: {
                     formGroup: {
                         classes: {
-                            root: 'fg', 
-                            validationError: 'is-err', 
-                            validationWarning: 'is-warn', 
-                        }, 
-                    }, 
+                            root: 'fg',
+                            validationError: 'is-err',
+                            validationWarning: 'is-warn',
+                        },
+                    },
                 },
             };
             const wrapper = mount(VCFormGroup, {
@@ -289,6 +307,7 @@ describe('VCFormGroup', () => {
                     }],
                 },
             });
+
             expect(wrapper.classes()).toContain('is-warn');
             expect(wrapper.classes()).not.toContain('is-err');
         });
@@ -300,11 +319,11 @@ describe('VCFormGroup', () => {
                 elements: {
                     formGroup: {
                         classes: {
-                            root: 'fg', 
-                            validationError: 'is-err', 
-                            validationWarning: 'is-warn', 
-                        }, 
-                    }, 
+                            root: 'fg',
+                            validationError: 'is-err',
+                            validationWarning: 'is-warn',
+                        },
+                    },
                 },
             };
             const wrapper = mount(VCFormGroup, {
@@ -318,6 +337,7 @@ describe('VCFormGroup', () => {
                     }],
                 },
             });
+
             expect(wrapper.classes()).not.toContain('is-err');
             expect(wrapper.classes()).not.toContain('is-warn');
         });
@@ -327,11 +347,11 @@ describe('VCFormGroup', () => {
                 elements: {
                     formGroup: {
                         classes: {
-                            root: 'fg', 
-                            validationError: 'is-err', 
-                            validationWarning: 'is-warn', 
-                        }, 
-                    }, 
+                            root: 'fg',
+                            validationError: 'is-err',
+                            validationWarning: 'is-warn',
+                        },
+                    },
                 },
             };
             const wrapper = mount(VCFormGroup, {
@@ -350,6 +370,7 @@ describe('VCFormGroup', () => {
                     }],
                 },
             });
+
             expect(wrapper.classes()).not.toContain('is-err');
             expect(wrapper.classes()).not.toContain('is-warn');
         });
@@ -366,6 +387,7 @@ describe('VCFormGroup', () => {
                 },
                 global: { plugins: [themePlugin] },
             });
+
             expect(wrapper.text()).toContain('bundle wins');
             expect(wrapper.text()).not.toContain('legacy loses');
         });
@@ -378,6 +400,7 @@ describe('VCFormGroup', () => {
                 },
                 global: { plugins: [themePlugin] },
             });
+
             expect(wrapper.text()).toContain('legacy msg');
         });
 
@@ -396,6 +419,7 @@ describe('VCFormGroup', () => {
                 },
                 global: { plugins: [themePlugin] },
             });
+
             expect(wrapper.text()).toBe('help');
         });
     });
@@ -439,6 +463,7 @@ describe('VCFormGroup', () => {
                 global: { plugins: [buildPlugin()] },
                 slots: { default: () => h(VCFormInput) },
             });
+
             expect(wrapper.find('input').classes()).toContain('severity-error-class');
         });
 
@@ -453,6 +478,7 @@ describe('VCFormGroup', () => {
                 global: { plugins: [buildPlugin()] },
                 slots: { default: () => h(VCFormInput) },
             });
+
             expect(wrapper.find('input').classes()).toContain('severity-warning-class');
         });
 
@@ -468,6 +494,7 @@ describe('VCFormGroup', () => {
                 slots: { default: () => h(VCFormInput) },
             });
             const inputClasses = wrapper.find('input').classes();
+
             expect(inputClasses).not.toContain('severity-error-class');
             expect(inputClasses).not.toContain('severity-warning-class');
         });
@@ -475,6 +502,7 @@ describe('VCFormGroup', () => {
         it('should not inherit severity when input is mounted outside a FormGroup', () => {
             const wrapper = mount(VCFormInput, { global: { plugins: [buildPlugin()] } });
             const inputClasses = wrapper.find('input').classes();
+
             expect(inputClasses).toContain('base-input');
             expect(inputClasses).not.toContain('severity-error-class');
             expect(inputClasses).not.toContain('severity-warning-class');
@@ -497,6 +525,7 @@ describe('VCFormGroup', () => {
                 },
             });
             const inputClasses = wrapper.find('input').classes();
+
             expect(inputClasses).toContain('severity-warning-class');
             expect(inputClasses).not.toContain('severity-error-class');
         });
@@ -518,6 +547,7 @@ describe('VCFormGroup', () => {
                 slots: { default: () => h(VCFormInput, { themeVariant: { severity: undefined } }) },
             });
             const inputClasses = wrapper.find('input').classes();
+
             expect(inputClasses).not.toContain('severity-error-class');
             expect(inputClasses).not.toContain('severity-warning-class');
         });
@@ -534,6 +564,7 @@ describe('VCFormGroup', () => {
                 global: { plugins: [buildPlugin()] },
                 slots: { default: () => h(VCFormInput) },
             });
+
             expect(wrapper.find('input').classes()).toContain('severity-error-class');
         });
 
@@ -550,6 +581,7 @@ describe('VCFormGroup', () => {
                 global: { plugins: [buildPlugin()] },
                 slots: { default: () => h(VCFormInput) },
             });
+
             expect(wrapper.find('input').classes()).toContain('severity-error-class');
         });
 
@@ -582,6 +614,7 @@ describe('VCFormGroup', () => {
                 },
                 slots: { default: () => h(VCFormInput) },
             });
+
             expect(wrapper.find('input').classes()).toContain('severity-success-class');
         });
 
@@ -599,6 +632,7 @@ describe('VCFormGroup', () => {
                 global: { plugins: [buildPlugin()] },
                 slots: { default: () => h(VCFormInput) },
             });
+
             // Initial state — pristine, no severity class.
             expect(wrapper.find('input').classes()).not.toContain('severity-error-class');
             expect(wrapper.find('input').classes()).not.toContain('severity-warning-class');
@@ -634,6 +668,7 @@ describe('VCFormGroup', () => {
                 components: { VCFormGroup, VCFormInput },
             };
             const wrapper = mount(Outer, { global: { plugins: [buildPlugin()] } });
+
             expect(wrapper.find('input').classes()).toContain('severity-warning-class');
             expect(wrapper.find('input').classes()).not.toContain('severity-error-class');
         });
@@ -643,6 +678,7 @@ describe('VCFormGroup', () => {
 describe('VCFormInput', () => {
     it('should render an input element', () => {
         const wrapper = mount(VCFormInput, { global: { plugins: [themePlugin] } });
+
         expect(wrapper.find('input').exists()).toBe(true);
     });
 
@@ -651,6 +687,7 @@ describe('VCFormInput', () => {
             props: { type: 'email' },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.find('input').attributes('type')).toBe('email');
     });
 
@@ -670,12 +707,14 @@ describe('VCFormInput', () => {
             props: { group: true },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.element.tagName).toBe('DIV');
         expect(wrapper.find('input').exists()).toBe(true);
     });
 
     it('should debounce update:modelValue when debounce prop is set', async () => {
         vi.useFakeTimers();
+
         try {
             const wrapper = mount(VCFormInput, {
                 props: { modelValue: '', debounce: 200 },
@@ -691,6 +730,7 @@ describe('VCFormInput', () => {
             await vi.advanceTimersByTimeAsync(200);
 
             const emitted = wrapper.emitted('update:modelValue')!;
+
             expect(emitted.length).toBe(1);
             expect(emitted[0]).toEqual(['hey']);
         } finally {
@@ -700,6 +740,7 @@ describe('VCFormInput', () => {
 
     it('should keep input value responsive while debounced', async () => {
         vi.useFakeTimers();
+
         try {
             const wrapper = mount(VCFormInput, {
                 props: { modelValue: '', debounce: 200 },
@@ -718,6 +759,7 @@ describe('VCFormInput', () => {
 describe('VCFormCheckbox', () => {
     it('should render a Reka checkbox button (role="checkbox")', () => {
         const wrapper = mount(VCFormCheckbox, { global: { plugins: [themePlugin] } });
+
         expect(wrapper.find('button[role="checkbox"]').exists()).toBe(true);
     });
 
@@ -739,6 +781,7 @@ describe('VCFormCheckbox', () => {
         });
         const label = wrapper.find('label');
         const button = wrapper.find('button[role="checkbox"]');
+
         expect(label.exists()).toBe(true);
         expect(label.text()).toBe('Check me');
         expect(label.attributes('for')).toBe(button.attributes('id'));
@@ -750,6 +793,7 @@ describe('VCFormCheckbox', () => {
             global: { plugins: [themePlugin] },
         });
         const btn = wrapper.find('button[role="checkbox"]');
+
         expect(btn.attributes('data-state')).toBe('indeterminate');
     });
 
@@ -759,6 +803,7 @@ describe('VCFormCheckbox', () => {
             global: { plugins: [themePlugin] },
         });
         const btn = wrapper.find('button[role="checkbox"]');
+
         expect(btn.attributes('disabled')).toBeDefined();
     });
 
@@ -770,6 +815,7 @@ describe('VCFormCheckbox', () => {
             global: { plugins: [themePlugin] },
         });
         const glyph = wrapper.find('.vc-form-checkbox-indicator svg.vc-form-checkbox-glyph');
+
         expect(glyph.exists()).toBe(true);
         expect(glyph.find('path').attributes('d')).toBe('M3.5 8.5l3 3 6-7');
     });
@@ -779,6 +825,7 @@ describe('VCFormCheckbox', () => {
             props: { modelValue: 'indeterminate' as const },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.find('svg.vc-form-checkbox-glyph path').attributes('d')).toBe('M4 8h8');
     });
 
@@ -787,6 +834,7 @@ describe('VCFormCheckbox', () => {
             props: { modelValue: false },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.find('svg.vc-form-checkbox-glyph').exists()).toBe(false);
     });
 
@@ -796,6 +844,7 @@ describe('VCFormCheckbox', () => {
             global: { plugins: [themePlugin] },
             slots: { indicator: () => h('i', { class: 'custom-glyph' }) },
         });
+
         expect(wrapper.find('.custom-glyph').exists()).toBe(true);
         expect(wrapper.find('svg.vc-form-checkbox-glyph').exists()).toBe(false);
     });
@@ -806,17 +855,20 @@ describe('VCFormCheckbox', () => {
             global: { plugins: [themePlugin] },
             slots: { indicator: () => null },
         });
+
         expect(wrapper.find('svg.vc-form-checkbox-glyph').exists()).toBe(true);
     });
 
     it('should expose the resolved state on the indicator slot', () => {
         const states: unknown[] = [];
+
         mount(VCFormCheckbox, {
             props: { modelValue: 'indeterminate' as const },
             global: { plugins: [themePlugin] },
             slots: {
                 indicator: (props: { state: unknown }) => {
                     states.push(props.state);
+
                     return h('i');
                 },
             },
@@ -839,12 +891,15 @@ describe('VCFormCheckboxGroup', () => {
         });
 
         const checkboxes = wrapper.findAll('button[role="checkbox"]');
+
         expect(checkboxes).toHaveLength(2);
 
         // Click the unchecked one — group should emit array including its value.
         await checkboxes[1].trigger('click');
         expect(wrapper.emitted('update:modelValue')).toBeTruthy();
+
         const emitted = wrapper.emitted('update:modelValue')![0][0] as string[];
+
         expect(emitted).toContain('b');
     });
 
@@ -853,6 +908,7 @@ describe('VCFormCheckboxGroup', () => {
             props: { modelValue: [] },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.element.getAttribute('data-orientation')).toBe('vertical');
     });
 });
@@ -860,6 +916,7 @@ describe('VCFormCheckboxGroup', () => {
 describe('VCFormSwitch', () => {
     it('should render a Reka switch button (role="switch")', () => {
         const wrapper = mount(VCFormSwitch, { global: { plugins: [themePlugin] } });
+
         expect(wrapper.find('button[role="switch"]').exists()).toBe(true);
     });
 
@@ -868,6 +925,7 @@ describe('VCFormSwitch', () => {
             props: { modelValue: false },
             global: { plugins: [themePlugin] },
         });
+
         await wrapper.find('button[role="switch"]').trigger('click');
         expect(wrapper.emitted('update:modelValue')).toBeTruthy();
         expect(wrapper.emitted('update:modelValue')![0]).toEqual([true]);
@@ -880,6 +938,7 @@ describe('VCFormSwitch', () => {
         });
         const label = wrapper.find('label');
         const button = wrapper.find('button[role="switch"]');
+
         expect(label.exists()).toBe(true);
         expect(label.text()).toBe('Enable');
         expect(label.attributes('for')).toBe(button.attributes('id'));
@@ -896,6 +955,7 @@ describe('VCFormSelect', () => {
     ];
 
     let activeWrapper: ReturnType<typeof mount> | null = null;
+
     afterEach(async () => {
         // Reka schedules microtasks (e.g. closing the dropdown after a pick)
         // that try to insertBefore on the teleport target. Unmount + flush
@@ -904,15 +964,18 @@ describe('VCFormSelect', () => {
             activeWrapper.unmount();
             activeWrapper = null;
         }
+
         await nextTick();
         document.body.innerHTML = '';
     });
 
     const openSelect = async (wrapper: ReturnType<typeof mount>) => {
         activeWrapper = wrapper;
+
         // Reka's SelectTrigger opens on `pointerdown` (not `click`). Triggering
         // a synthetic `click` doesn't dispatch the pointer events jsdom needs.
         const trigger = wrapper.find('button[role="combobox"]');
+
         await trigger.trigger('pointerdown');
         await trigger.trigger('pointerup');
         await nextTick();
@@ -933,6 +996,7 @@ describe('VCFormSelect', () => {
             props: { options },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.find('button[role="combobox"]').exists()).toBe(true);
     });
 
@@ -941,6 +1005,7 @@ describe('VCFormSelect', () => {
             props: { options, placeholder: 'Pick one' },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.find('button[role="combobox"]').text()).toContain('Pick one');
     });
 
@@ -949,6 +1014,7 @@ describe('VCFormSelect', () => {
             props: { options, modelValue: '2' },
             global: { plugins: [themePlugin] },
         });
+
         // The trigger label derives synchronously from `options` — it must
         // not depend on Reka's mount-time textContent registration.
         expect(wrapper.find('button[role="combobox"]').text()).toContain('Option 2');
@@ -962,6 +1028,7 @@ describe('VCFormSelect', () => {
             props: { options: [{ value: '1', label: 'form.key' }], modelValue: '1' },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.find('button[role="combobox"]').text()).toContain('form.key');
         await wrapper.setProps({ options: [{ value: '1', label: 'Translated' }] });
         expect(wrapper.find('button[role="combobox"]').text()).toContain('Translated');
@@ -980,6 +1047,7 @@ describe('VCFormSelect', () => {
             },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.find('button[role="combobox"]').text()).toContain('Germany');
     });
 
@@ -989,6 +1057,7 @@ describe('VCFormSelect', () => {
             global: { plugins: [themePlugin] },
         });
         const trigger = wrapper.find('button[role="combobox"]');
+
         expect(trigger.attributes('disabled')).toBeDefined();
     });
 
@@ -998,8 +1067,11 @@ describe('VCFormSelect', () => {
             global: { plugins: [themePlugin] },
             attachTo: document.body,
         });
+
         await openSelect(wrapper);
+
         const items = document.body.querySelectorAll('[role="option"]');
+
         expect(items.length).toBe(2);
         expect(items[0].textContent).toContain('Option 1');
         expect(items[1].textContent).toContain('Option 2');
@@ -1026,11 +1098,16 @@ describe('VCFormSelect', () => {
             global: { plugins: [themePlugin] },
             attachTo: document.body,
         });
+
         await openSelect(wrapper);
+
         const text = document.body.textContent || '';
+
         expect(text).toContain('Americas');
         expect(text).toContain('Europe');
+
         const items = document.body.querySelectorAll('[role="option"]');
+
         expect(items.length).toBe(3);
     });
 
@@ -1050,8 +1127,11 @@ describe('VCFormSelect', () => {
             global: { plugins: [themePlugin] },
             attachTo: document.body,
         });
+
         await openSelect(wrapper);
+
         const items = document.body.querySelectorAll('[role="option"]');
+
         expect(items.length).toBe(2);
         items.forEach((item) => {
             expect(item.getAttribute('data-disabled')).not.toBeNull();
@@ -1064,17 +1144,20 @@ describe('VCFormSelect', () => {
                 options: [
                     { value: 'a', label: 'A' },
                     {
-                        value: 'b', 
-                        label: 'B', 
-                        disabled: true, 
+                        value: 'b',
+                        label: 'B',
+                        disabled: true,
                     },
                 ],
             },
             global: { plugins: [themePlugin] },
             attachTo: document.body,
         });
+
         await openSelect(wrapper);
+
         const items = document.body.querySelectorAll('[role="option"]');
+
         expect(items[0].getAttribute('data-disabled')).toBeNull();
         expect(items[1].getAttribute('data-disabled')).not.toBeNull();
     });
@@ -1085,8 +1168,11 @@ describe('VCFormSelect', () => {
             global: { plugins: [themePlugin] },
             attachTo: document.body,
         });
+
         await openSelect(wrapper);
+
         const items = document.body.querySelectorAll<HTMLElement>('[role="option"]');
+
         // Reka SelectItem selects on `pointerup` (not `click`). Dispatch a real
         // PointerEvent so Reka's handler accepts it; selection runs in a
         // microtask so we need to await a few ticks.
@@ -1094,7 +1180,9 @@ describe('VCFormSelect', () => {
         items[1].dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
         await nextTick();
         await nextTick();
+
         const emitted = wrapper.emitted('update:modelValue');
+
         expect(emitted).toBeTruthy();
         expect(emitted![0]).toEqual(['2']);
     });
@@ -1124,7 +1212,9 @@ describe('VCFormSelect', () => {
 
         // Reopen: the options must come back — not an empty panel.
         await openSelect(wrapper);
+
         const items = document.body.querySelectorAll('[role="option"]');
+
         expect(items.length).toBe(2);
         expect(items[0].textContent).toContain('Option 1');
         expect(items[1].textContent).toContain('Option 2');
@@ -1134,6 +1224,7 @@ describe('VCFormSelect', () => {
 describe('VCFormTextarea', () => {
     it('should render a textarea', () => {
         const wrapper = mount(VCFormTextarea, { global: { plugins: [themePlugin] } });
+
         expect(wrapper.find('textarea').exists()).toBe(true);
     });
 
@@ -1142,6 +1233,7 @@ describe('VCFormTextarea', () => {
             props: { modelValue: '' },
             global: { plugins: [themePlugin] },
         });
+
         await wrapper.find('textarea').setValue('text');
         expect(wrapper.emitted('update:modelValue')![0]).toEqual(['text']);
     });
@@ -1159,8 +1251,11 @@ describe('VCFormRadioGroup + VCFormRadio', () => {
                 ],
             },
         });
+
         expect(wrapper.find('[role="radiogroup"]').exists()).toBe(true);
+
         const radios = wrapper.findAll('button[role="radio"]');
+
         expect(radios).toHaveLength(2);
     });
 
@@ -1176,6 +1271,7 @@ describe('VCFormRadioGroup + VCFormRadio', () => {
             },
         });
         const radios = wrapper.findAll('button[role="radio"]');
+
         await radios[1].trigger('click');
         expect(wrapper.emitted('update:modelValue')).toBeTruthy();
         expect(wrapper.emitted('update:modelValue')![0]).toEqual(['b']);
@@ -1194,6 +1290,7 @@ describe('VCFormRadioGroup + VCFormRadio', () => {
             global: { plugins: [themePlugin] },
         });
         const radios = wrapper.findAll('button[role="radio"]');
+
         expect(radios).toHaveLength(3);
         expect(wrapper.text()).toContain('Small');
         expect(wrapper.text()).toContain('Medium');
@@ -1213,6 +1310,7 @@ describe('VCFormPin', () => {
             props: { length: 4 },
             global: { plugins: [themePlugin] },
         });
+
         expect(visibleCells(wrapper)).toHaveLength(4);
     });
 
@@ -1222,6 +1320,7 @@ describe('VCFormPin', () => {
             global: { plugins: [themePlugin] },
         });
         const cells = visibleCells(wrapper);
+
         expect(cells[0].attributes('inputmode')).toBe('numeric');
     });
 });
@@ -1230,26 +1329,28 @@ describe('VCFormSlider', () => {
     it('should render with one thumb for scalar modelValue', () => {
         const wrapper = mount(VCFormSlider, {
             props: {
-                modelValue: 50, 
-                min: 0, 
-                max: 100, 
+                modelValue: 50,
+                min: 0,
+                max: 100,
             },
             global: { plugins: [themePlugin] },
         });
         const thumbs = wrapper.findAll('[role="slider"]');
+
         expect(thumbs).toHaveLength(1);
     });
 
     it('should render with two thumbs for [a, b] modelValue', () => {
         const wrapper = mount(VCFormSlider, {
             props: {
-                modelValue: [20, 80], 
-                min: 0, 
-                max: 100, 
+                modelValue: [20, 80],
+                min: 0,
+                max: 100,
             },
             global: { plugins: [themePlugin] },
         });
         const thumbs = wrapper.findAll('[role="slider"]');
+
         expect(thumbs).toHaveLength(2);
     });
 });
@@ -1260,8 +1361,11 @@ describe('VCFormNumber', () => {
             props: { modelValue: 5 },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.find('input').exists()).toBe(true);
+
         const buttons = wrapper.findAll('button');
+
         expect(buttons).toHaveLength(2);
     });
 
@@ -1270,6 +1374,7 @@ describe('VCFormNumber', () => {
             props: { modelValue: 5, steppers: false },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.find('input').exists()).toBe(true);
         expect(wrapper.findAll('button')).toHaveLength(0);
     });
@@ -1281,6 +1386,7 @@ describe('VCFormTags', () => {
             props: { modelValue: ['vue', 'reka'] },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.text()).toContain('vue');
         expect(wrapper.text()).toContain('reka');
         expect(wrapper.find('input').exists()).toBe(true);
@@ -1293,6 +1399,7 @@ describe('VCValidationGroup', () => {
             props: { messages: { required: 'This field is required' } },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.text()).toContain('This field is required');
     });
 
@@ -1301,6 +1408,7 @@ describe('VCValidationGroup', () => {
             props: { messages: [{ key: 'min', value: 'Too short' }] },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.text()).toContain('Too short');
     });
 
@@ -1309,6 +1417,7 @@ describe('VCValidationGroup', () => {
             props: { messages: {} },
             global: { plugins: [themePlugin] },
         });
+
         expect(wrapper.text()).toBe('');
     });
 
@@ -1347,6 +1456,7 @@ describe('VCValidationGroup', () => {
             global: { plugins: [buildPlugin()] },
         });
         const item = warningWrapper.find('div');
+
         expect(item.classes()).toContain('msg-warning');
         expect(item.classes()).not.toContain('msg-error');
 
@@ -1357,6 +1467,7 @@ describe('VCValidationGroup', () => {
             },
             global: { plugins: [buildPlugin()] },
         });
+
         expect(errorWrapper.find('div').classes()).toContain('msg-error');
     });
 });

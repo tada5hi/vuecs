@@ -24,7 +24,7 @@ import {
     provideTableRowContext,
     useTable,
 } from '../composables/context';
-import type { TableRowExpansionState } from '../composables/context';
+import type { TableRowExpansionState } from '../composables/types';
 import type { RowSelectionKey } from '../composables/selection';
 import type {
     TableExpandableTrigger,
@@ -107,17 +107,28 @@ export default defineComponent({
 
         // Resolve row-meta variants from the row payload.
         const rowVariant = computed<string | null>(() => {
-            if (!isObject(props.row)) return null;
+            if (!isObject(props.row)) {
+                return null;
+            }
+
             const v = (props.row as Record<string, unknown>)._rowVariant;
+
             return typeof v === 'string' ? v : null;
         });
         const cellVariants = computed<Record<string, string>>(() => {
-            if (!isObject(props.row)) return {};
+            if (!isObject(props.row)) {
+                return {};
+            }
+
             const v = (props.row as Record<string, unknown>)._cellVariants;
+
             return isObject(v) ? (v as Record<string, string>) : {};
         });
         const focused = computed(() => {
-            if (props.index === undefined) return false;
+            if (props.index === undefined) {
+                return false;
+            }
+
             return ctx?.focusedRow.value === props.index;
         });
 
@@ -126,23 +137,34 @@ export default defineComponent({
         // state. Manual `:selected` on the row wins for declarative
         // marking (the v0.1 escape hatch).
         const selectionKey = computed<RowSelectionKey>(() => {
-            if (props.index === undefined) return -1;
+            if (props.index === undefined) {
+                return -1;
+            }
+
             return ctx?.getRowKey(props.row, props.index) ?? props.index;
         });
         const selectionMode = computed(() => ctx?.selection.mode.value);
         const autoSelected = computed<boolean>(() => {
-            if (props.selected !== undefined) return props.selected;
+            if (props.selected !== undefined) {
+                return props.selected;
+            }
+
             // Short-circuit when this row has no index — the selection
             // key falls back to `-1`, which could phantom-match if a
             // consumer's selection array literally contains `-1`.
-            if (props.index === undefined) return false;
+            if (props.index === undefined) {
+                return false;
+            }
+
             return ctx?.selection.isSelected(selectionKey.value) ?? false;
         });
 
         // Theme — fold row-meta variant + per-row flags into themeVariant
         const themeProps = useThemeProps(props, 'disabled');
         const mergedThemeProps = {
-            get themeClass() { return themeProps.themeClass; },
+            get themeClass() {
+                return themeProps.themeClass;
+            },
             get themeVariant() {
                 return {
                     ...(themeProps.themeVariant ?? {}),
@@ -174,18 +196,28 @@ export default defineComponent({
         // `trySeed`); a parallel row-level seed here would be wasted
         // and could mask bugs in the table-level path.
         const internalOpen = ref<boolean>(false);
+
         if (
             !ctx?.expansion &&
             props.open === undefined &&
             isObject(props.row)
         ) {
             const seed = (props.row as Record<string, unknown>)._expanded;
-            if (seed === true) internalOpen.value = true;
+
+            if (seed === true) {
+                internalOpen.value = true;
+            }
         }
 
         const expansionMode = computed<'controlled' | 'table' | 'internal' | 'off'>(() => {
-            if (!props.expandable) return 'off';
-            if (props.open !== undefined) return 'controlled';
+            if (!props.expandable) {
+                return 'off';
+            }
+
+            if (props.open !== undefined) {
+                return 'controlled';
+            }
+
             // Table-level state requires a stable index (the table's
             // expansion machine resolves the key via `keyAt(index)`).
             // Manual rows without `:index` fall back to internal state
@@ -195,31 +227,50 @@ export default defineComponent({
                 ctx?.expansion &&
                 ctx.expandable.value &&
                 props.index !== undefined
-            ) return 'table';
+            ) {
+                return 'table';
+            }
+
             return 'internal';
         });
 
         const expansionOpen = computed<boolean>(() => {
             const mode = expansionMode.value;
-            if (mode === 'off') return false;
-            if (mode === 'controlled') return props.open === true;
+
+            if (mode === 'off') {
+                return false;
+            }
+
+            if (mode === 'controlled') {
+                return props.open === true;
+            }
+
             if (mode === 'table') {
                 return ctx?.expansion?.isSelected(selectionKey.value) ?? false;
             }
+
             return internalOpen.value;
         });
 
         const toggleExpansion = () => {
             const mode = expansionMode.value;
-            if (mode === 'off') return;
+
+            if (mode === 'off') {
+                return;
+            }
+
             if (mode === 'controlled') {
                 emit('update:open', !(props.open === true));
+
                 return;
             }
+
             if (mode === 'table') {
                 ctx?.expansion?.toggle(selectionKey.value);
+
                 return;
             }
+
             internalOpen.value = !internalOpen.value;
         };
 
@@ -284,12 +335,16 @@ export default defineComponent({
         watch(
             [isInteractive, () => props.index],
             ([active, idx], [, prevIdx]) => {
-                if (!ctx) return;
+                if (!ctx) {
+                    return;
+                }
+
                 // Unregister the previous index whenever it changes
                 // (rare, but covers re-keyed rows).
                 if (prevIdx !== undefined && prevIdx !== idx) {
                     ctx.unregisterInteractiveRow(prevIdx);
                 }
+
                 if (active && idx !== undefined) {
                     ctx.registerInteractiveRow(idx);
                 } else if (idx !== undefined) {
@@ -299,9 +354,11 @@ export default defineComponent({
             { immediate: true },
         );
         onBeforeUnmount(() => {
-            if (ctx && props.index !== undefined) {
-                ctx.unregisterInteractiveRow(props.index);
+            if (!ctx || props.index === undefined) {
+                return;
             }
+
+            ctx.unregisterInteractiveRow(props.index);
         });
 
         // Roving tabindex when grid-mode is active: only the focused
@@ -310,8 +367,14 @@ export default defineComponent({
         // selection mode, every clickable row stays tabindex=0 — the
         // v0.1 behavior.
         const tabindex = computed<number | undefined>(() => {
-            if (!isInteractive.value) return undefined;
-            if (!selectionActive.value) return 0;
+            if (!isInteractive.value) {
+                return undefined;
+            }
+
+            if (!selectionActive.value) {
+                return 0;
+            }
+
             // Grid mode: roving tabindex. Fall back to the FIRST
             // interactive row (read from the registry) when
             // `focusedRow` is unset OR points at a row that is no
@@ -325,19 +388,31 @@ export default defineComponent({
                 focusIdx !== undefined &&
                 interactives !== undefined &&
                 interactives.has(focusIdx);
+
             if (focusActive) {
                 return props.index === focusIdx ? 0 : -1;
             }
-            if (!interactives || interactives.size === 0) return -1;
-            let firstInteractive: number | null = null;
-            for (const idx of interactives) {
-                if (firstInteractive === null || idx < firstInteractive) firstInteractive = idx;
+
+            if (!interactives || interactives.size === 0) {
+                return -1;
             }
+
+            let firstInteractive: number | null = null;
+
+            for (const idx of interactives) {
+                if (firstInteractive === null || idx < firstInteractive) {
+                    firstInteractive = idx;
+                }
+            }
+
             return props.index === firstInteractive ? 0 : -1;
         });
 
         function activateSelection(event: globalThis.MouseEvent | globalThis.KeyboardEvent) {
-            if (!selectionActive.value || props.index === undefined) return;
+            if (!selectionActive.value || props.index === undefined) {
+                return;
+            }
+
             ctx?.selection.toggle(selectionKey.value, {
                 range: event.shiftKey,
                 toggle: event.metaKey || event.ctrlKey,
@@ -346,19 +421,31 @@ export default defineComponent({
         }
 
         function onClick(event: globalThis.MouseEvent) {
-            if (!isInteractive.value) return;
+            if (!isInteractive.value) {
+                return;
+            }
+
             const rowEl = event.currentTarget as globalThis.Element | null;
-            if (filterRowClickEvent(event, rowEl)) return;
-            if (props.index === undefined) return;
+
+            if (filterRowClickEvent(event, rowEl) || (props.index === undefined)) {
+                return;
+            }
+
             ctx?.setFocusedRow(props.index);
             activateSelection(event);
-            if (ctx?.rowClickable.value) {
-                ctx?.emitRowClick(props.row, props.index, event);
+
+            if (!(ctx?.rowClickable.value)) {
+                return;
             }
+
+            ctx?.emitRowClick(props.row, props.index, event);
         }
 
         function onKeydown(event: globalThis.KeyboardEvent) {
-            if (!isInteractive.value || props.index === undefined) return;
+            if (!isInteractive.value || props.index === undefined) {
+                return;
+            }
+
             // W3C grid pattern: when focus is on an interactive
             // descendant (e.g. the expansion trigger button), let the
             // descendant own activation keys. Without this guard,
@@ -372,6 +459,7 @@ export default defineComponent({
             ) {
                 return;
             }
+
             const i = props.index;
 
             // Build a sorted snapshot of currently interactive row
@@ -386,12 +474,22 @@ export default defineComponent({
 
             const moveTo = (target: number) => {
                 event.preventDefault();
-                if (sorted.length === 0) return;
+
+                if (sorted.length === 0) {
+                    return;
+                }
+
                 const clamped = Math.max(0, Math.min(sorted.length - 1, target));
                 const nextIdx = sorted[clamped];
+
                 ctx?.setFocusedRow(nextIdx);
+
                 const tr = event.currentTarget as globalThis.HTMLElement | null;
-                if (!tr) return;
+
+                if (!tr) {
+                    return;
+                }
+
                 // Defer the DOM .focus() until after Vue re-renders
                 // with the updated tabindex. The roving-tabindex
                 // pattern only ever has ONE row carrying `tabindex="0"`
@@ -404,6 +502,7 @@ export default defineComponent({
                 nextTick(() => {
                     const direction = nextIdx > i ? 'nextElementSibling' : 'previousElementSibling';
                     let sibling: globalThis.Element | null = tr[direction];
+
                     while (sibling) {
                         if (
                             sibling instanceof globalThis.HTMLElement &&
@@ -411,29 +510,40 @@ export default defineComponent({
                             sibling.getAttribute('tabindex') === '0'
                         ) {
                             sibling.focus();
+
                             break;
                         }
+
                         sibling = sibling[direction];
                     }
                 });
+
                 // Shift+arrow extends selection from the range anchor
                 // to the new focused row (multi mode only). Seed the
                 // anchor to the CURRENT row when none exists yet, so
                 // the first Shift+arrow press includes the starting
                 // row in the range.
-                if (event.shiftKey && selectionActive.value && selectionMode.value === 'multi' && ctx) {
-                    if (ctx.selection.rangeAnchor.value === null) {
-                        const currentRow = ctx.data.value[i];
-                        if (currentRow !== undefined) {
-                            ctx.selection.rangeAnchor.value = ctx.getRowKey(currentRow, i);
-                        }
-                    }
-                    const targetRow = ctx.data.value[nextIdx];
-                    if (targetRow !== undefined) {
-                        const targetKey = ctx.getRowKey(targetRow, nextIdx);
-                        ctx.selection.toggle(targetKey, { range: true });
+                if (!(event.shiftKey && selectionActive.value && selectionMode.value === 'multi' && ctx)) {
+                    return;
+                }
+
+                if (ctx.selection.rangeAnchor.value === null) {
+                    const currentRow = ctx.data.value[i];
+
+                    if (currentRow !== undefined) {
+                        ctx.selection.rangeAnchor.value = ctx.getRowKey(currentRow, i);
                     }
                 }
+
+                const targetRow = ctx.data.value[nextIdx];
+
+                if (targetRow === undefined) {
+                    return;
+                }
+
+                const targetKey = ctx.getRowKey(targetRow, nextIdx);
+
+                ctx.selection.toggle(targetKey, { range: true });
             };
 
             if (event.key === 'ArrowDown') {
@@ -447,6 +557,7 @@ export default defineComponent({
             } else if (event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault();
                 activateSelection(event);
+
                 if (ctx?.rowClickable.value) {
                     ctx?.emitRowClick(props.row, i, event);
                 }
@@ -454,7 +565,10 @@ export default defineComponent({
         }
 
         function onFocus() {
-            if (!isInteractive.value || props.index === undefined) return;
+            if (!isInteractive.value || props.index === undefined) {
+                return;
+            }
+
             ctx?.setFocusedRow(props.index);
         }
 
@@ -514,6 +628,7 @@ export default defineComponent({
             const dataChildren = Array.isArray(dataSlotChildren) ?
                 dataSlotChildren :
                 [dataSlotChildren];
+
             if (triggerCell === null) {
                 cells = dataChildren;
             } else if (triggerPlacement === 'trailing') {
@@ -536,7 +651,9 @@ export default defineComponent({
                 cells as never,
             );
 
-            if (!isExpandable) return dataRow;
+            if (!isExpandable) {
+                return dataRow;
+            }
 
             // Expansion is on. Build the second `<tr>` and let Reka's
             // `Presence` handle the unmount-delay so close animations

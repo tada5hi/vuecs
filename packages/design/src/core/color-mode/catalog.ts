@@ -1,3 +1,4 @@
+import type { ColorMode } from './types';
 /**
  * Canonical color-mode vocabulary for the vuecs design system.
  *
@@ -29,8 +30,6 @@ export const COLOR_MODES = [
     'dark',
     'system',
 ] as const;
-
-export type ColorMode = typeof COLOR_MODES[number];
 
 const COLOR_MODE_SET = new Set<string>(COLOR_MODES);
 

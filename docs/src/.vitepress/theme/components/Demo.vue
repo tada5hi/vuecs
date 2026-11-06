@@ -11,6 +11,9 @@ import {
 import { isObject } from '@vuecs/core';
 import { useColorPalette } from '@vuecs/design';
 
+
+
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
 interface Props {
     title?: string;
     /**
@@ -54,20 +57,34 @@ const { isDark } = useData();
 const frameSrc = computed(() => (props.name ? withBase(`/demos/${props.name}.html`) : null));
 
 const componentName = computed(() => {
-    if (props.component) return props.component;
-    if (!props.name) return 'VCComponent';
+    if (props.component) {
+        return props.component;
+    }
+
+    if (!props.name) {
+        return 'VCComponent';
+    }
+
     const camel = props.name.split('-').map((p) => p.charAt(0).toUpperCase() + p.slice(1)).join('');
+
     return `VC${camel}`;
 });
 
 const frameTitle = computed(() => {
-    if (props.title) return `${props.title} demo`;
+    if (props.title) {
+        return `${props.title} demo`;
+    }
+
     return `${componentName.value} demo`;
 });
 
 const postColorMode = (): void => {
     const win = frameRef.value?.contentWindow;
-    if (!win) return;
+
+    if (!win) {
+        return;
+    }
+
     win.postMessage(
         { type: 'set-color-mode', mode: isDark.value ? 'dark' : 'light' },
         globalThis.location.origin,
@@ -76,7 +93,11 @@ const postColorMode = (): void => {
 
 const postPalette = (): void => {
     const win = frameRef.value?.contentWindow;
-    if (!win) return;
+
+    if (!win) {
+        return;
+    }
+
     win.postMessage(
         {
             type: 'set-palette',
@@ -93,10 +114,16 @@ const onFrameLoad = (): void => {
 };
 
 const onFrameMessage = (event: MessageEvent): void => {
-    if (event.origin !== globalThis.location.origin) return;
-    if (event.source !== frameRef.value?.contentWindow) return;
+    if ((event.origin !== globalThis.location.origin) || (event.source !== frameRef.value?.contentWindow)) {
+        return;
+    }
+
     const { data } = event;
-    if (!isObject(data)) return;
+
+    if (!isObject(data)) {
+        return;
+    }
+
     if (data.type === 'demo-resize' && typeof data.height === 'number') {
         frameHeight.value = data.height;
     }
@@ -114,23 +141,41 @@ onBeforeUnmount(() => {
 });
 
 const copy = async () => {
-    if (!codeRoot.value) return;
+    if (!codeRoot.value) {
+        return;
+    }
+
     // When the slot contains a VitePress code-group (::: code-group), the
     // active tab carries the `.active` class. Run two queries in priority
     // order so we don't grab the inactive first tab's <pre>.
     const pre = codeRoot.value.querySelector('.vp-code-group .blocks > .active pre') ??
         codeRoot.value.querySelector('pre');
-    if (!pre) return;
+
+    if (!pre) {
+        return;
+    }
+
     const text = pre.textContent ?? '';
-    if (!navigator?.clipboard) return;
+
+    if (!navigator?.clipboard) {
+        return;
+    }
+
     try {
         await navigator.clipboard.writeText(text);
     } catch {
         return;
     }
+
     copied.value = true;
-    if (copyTimer) clearTimeout(copyTimer);
-    copyTimer = setTimeout(() => { copied.value = false; }, 1500);
+
+    if (copyTimer) {
+        clearTimeout(copyTimer);
+    }
+
+    copyTimer = setTimeout(() => {
+        copied.value = false;
+    }, 1500);
 };
 </script>
 

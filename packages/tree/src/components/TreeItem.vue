@@ -56,6 +56,9 @@ export type TreeItemProps = ExtractPublicPropTypes<typeof treeItemProps>;
 // declarations.
 // ──────────────────────────────────────────────────────────────────────────
 
+
+
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
 export interface TreeItemSlots<Item> {
     default?: (props: {
         item: Item,
@@ -128,6 +131,7 @@ const VCTreeItem = defineComponent({
             }
 
             const original = event.detail.originalEvent;
+
             ctx.select(props.itemKey, {
                 range: original.shiftKey,
                 toggle: original.ctrlKey || original.metaKey,
@@ -137,7 +141,7 @@ const VCTreeItem = defineComponent({
         const onToggle = (event: TreeItemToggleEvent<Record<string, unknown>>) => {
             event.preventDefault();
 
-            if (props.disabled) {
+            if ((props.disabled) || (!('key' in event.detail.originalEvent))) {
                 return;
             }
 
@@ -145,9 +149,7 @@ const VCTreeItem = defineComponent({
             // click on the row should select, not expand — the chevron
             // (which stops propagation) is the expand affordance. Keyboard
             // toggles (ArrowRight / ArrowLeft) must always work.
-            if (!('key' in event.detail.originalEvent)) {
-                return;
-            }
+
 
             ctx.toggle(props.itemKey);
         };

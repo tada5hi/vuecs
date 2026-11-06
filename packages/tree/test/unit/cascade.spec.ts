@@ -39,9 +39,11 @@ describe('cascadeSelect', () => {
 
     it('promotes a parent once its last child is selected', () => {
         const step1 = cascadeSelect(index(), new Set(), 'a2x', true);
+
         expect(step1.selected.has('a2')).toBe(false);
 
         const step2 = cascadeSelect(index(), step1.selected, 'a2y', true);
+
         expect(step2.selected.has('a2')).toBe(true);
     });
 
@@ -62,6 +64,7 @@ describe('cascadeSelect', () => {
         // `expanded` is never an input to the kernel — selecting both deep leaves
         // promotes `a2` and then `a` with nothing expanded.
         let state = cascadeSelect(index(), new Set(), 'a2x', true).selected;
+
         state = cascadeSelect(index(), state, 'a2y', true).selected;
         state = cascadeSelect(index(), state, 'a1', true).selected;
 

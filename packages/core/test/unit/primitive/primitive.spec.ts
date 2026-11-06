@@ -84,9 +84,9 @@ describe('VCPrimitive', () => {
                 return () => h(
                     VCPrimitive,
                     {
-                        asChild: true, 
-                        class: 'wrapper-cls', 
-                        'data-w': 'w', 
+                        asChild: true,
+                        class: 'wrapper-cls',
+                        'data-w': 'w',
                     },
                     { default: () => h('a', { href: '/x', class: 'child-cls' }, 'link') },
                 );
@@ -129,6 +129,7 @@ describe('VCPrimitive', () => {
         }));
 
         const span = wrapper.element.querySelector('span.real');
+
         expect(span).not.toBeNull();
         expect(span?.getAttribute('data-w')).toBe('w');
     });
@@ -186,6 +187,7 @@ describe('VCPrimitive', () => {
 
         const first = wrapper.element.querySelector('a.first');
         const second = wrapper.element.querySelector('span.second');
+
         expect(first?.getAttribute('data-x')).toBe('1');
         // Only the first non-comment child carries the merged attrs.
         expect(second?.getAttribute('data-x')).toBeNull();

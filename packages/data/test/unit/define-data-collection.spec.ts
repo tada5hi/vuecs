@@ -33,6 +33,7 @@ describe('defineDataCollection', () => {
         const source = defineDataCollection<Row, Meta>({
             load: async (meta) => {
                 seen.push(meta);
+
                 return { data: [] };
             },
             initialMeta: baseMeta(),
@@ -56,7 +57,9 @@ describe('defineDataCollection', () => {
         const source = defineDataCollection<Row, Meta>({
             load: async () => {
                 call += 1;
+
                 const rows = await (call === 1 ? first.promise : second.promise);
+
                 return { data: rows, total: rows.length };
             },
             initialMeta: baseMeta(),
@@ -65,6 +68,7 @@ describe('defineDataCollection', () => {
 
         const p1 = source.load();
         const p2 = source.load();
+
         expect(source.busy.value).toBeTruthy();
 
         second.resolve([{ id: 2, name: 'newer' }]);
@@ -82,7 +86,10 @@ describe('defineDataCollection', () => {
         let fail = true;
         const source = defineDataCollection<Row, Meta>({
             load: async () => {
-                if (fail) throw new Error('boom');
+                if (fail) {
+                    throw new Error('boom');
+                }
+
                 return { data: [] };
             },
             initialMeta: baseMeta(),
@@ -90,6 +97,7 @@ describe('defineDataCollection', () => {
         });
 
         const outcome = await source.load();
+
         expect(outcome.status).toEqual(DataLoadStatus.FAILED);
         expect(source.error.value).toBeInstanceOf(Error);
         expect(outcome).toEqual({ status: 'failed', error: source.error.value });
@@ -110,8 +118,10 @@ describe('defineDataCollection', () => {
         const gate = Promise.withResolvers<void>();
         const op = source.mutate(async () => {
             await gate.promise;
+
             return 'ok';
         });
+
         expect(source.busy.value).toBeTruthy();
         gate.resolve();
         await expect(op).resolves.toEqual('ok');
@@ -132,6 +142,7 @@ describe('defineDataCollection', () => {
             dedupCreated: true,
             filterDeleted: true,
         });
+
         await source.load();
 
         source.create({ id: 2, name: 'b' });
@@ -163,17 +174,20 @@ describe('defineDataCollection', () => {
                 const source = defineDataCollection<Row, Meta>({
                     load: async () => {
                         loads += 1;
+
                         return { data: [{ id: 1, name: 'a' }] };
                     },
                     initialMeta: baseMeta(),
                     hydrate,
                 });
+
                 return { source };
             },
             template: '<div>{{ source.data.value.length }}</div>',
         });
 
         const auto = mount(build());
+
         await flushPromises();
         expect(loads).toEqual(1);
         auto.unmount();
@@ -183,6 +197,7 @@ describe('defineDataCollection', () => {
             total: 7,
             meta: baseMeta(),
         })));
+
         await flushPromises();
         expect(loads).toEqual(1); // hydration skipped the fetch
         expect(hydrated.text()).toEqual('1');
@@ -195,8 +210,11 @@ describe('defineDataCollection', () => {
             initialMeta: baseMeta(),
             autoLoad: false,
         });
+
         await source.load();
+
         const snapshot = source.dehydrate();
+
         expect(snapshot).toEqual({
             data: [{ id: 1, name: 'a' }],
             total: 9,
@@ -221,6 +239,7 @@ describe('defineDataCollection', () => {
             autoLoad: false,
             mergeOnUpdated: true,
         });
+
         await source.load();
         source.update({ id: 1, name: 'new' });
         // incoming wins on conflict; untouched keys survive the deep merge
@@ -244,6 +263,7 @@ describe('defineDataCollection', () => {
             autoLoad: false,
             mergeOnUpdated: true,
         });
+
         await source.load();
 
         source.update({
@@ -262,6 +282,7 @@ describe('defineDataCollection', () => {
             autoLoad: false,
             mergeOnUpdated: true,
         });
+
         await source.load();
 
         // realistic call site: `source.update(rows.value[0])` off a deep ref.
@@ -279,6 +300,7 @@ describe('defineDataCollection', () => {
         });
 
         const p = source.load();
+
         source.create({ id: 2, name: 'live-created' }); // realtime event mid-flight
         source.delete({ id: 1, name: 'a' }); // realtime event mid-flight
         expect(source.data.value).toHaveLength(0); // buffered, not applied
@@ -301,6 +323,7 @@ describe('defineDataCollection', () => {
         });
 
         const p = source.load();
+
         source.create({ id: 2, name: 'survivor' });
         await p;
         expect(source.error.value).toBeInstanceOf(Error);
@@ -314,6 +337,7 @@ describe('defineDataCollection', () => {
         const source = defineDataCollection<Row, Meta>({
             load: async () => {
                 call += 1;
+
                 return { data: await (call === 1 ? first.promise : second.promise) };
             },
             initialMeta: baseMeta(),
@@ -352,6 +376,7 @@ describe('defineDataCollection', () => {
             initialMeta: baseMeta(),
             autoLoad: false,
         });
+
         await source.load();
 
         // realtime "deleted" for an off-page row: default flags make
@@ -380,6 +405,7 @@ describe('defineDataCollection', () => {
         const source = defineDataCollection<Row, Meta>({
             load: async (meta) => {
                 received = meta;
+
                 return { data: [] };
             },
             initialMeta: baseMeta(),
@@ -399,9 +425,11 @@ describe('defineDataCollection', () => {
             initialMeta: baseMeta(),
             autoLoad: false,
         });
+
         await source.load();
 
         const snap = source.dehydrate();
+
         expect(snap.data).not.toBe(source.data.value);
         snap.data.push({ id: 2, name: 'pushed' });
         expect(source.data.value).toHaveLength(1);
@@ -432,6 +460,7 @@ describe('defineDataCollection', () => {
             const source = defineDataCollection<Row, Meta, { search: string }>({
                 load: async (_meta, input) => {
                     seen.push(input);
+
                     return { data: [] };
                 },
                 initialMeta: baseMeta(),
@@ -453,6 +482,7 @@ describe('defineDataCollection', () => {
             const source = defineDataCollection<Row, Meta>({
                 load: async () => {
                     call += 1;
+
                     return { data: await (call === 1 ? first.promise : second.promise) };
                 },
                 initialMeta: baseMeta(),
@@ -461,6 +491,7 @@ describe('defineDataCollection', () => {
 
             const p1 = source.load();
             const p2 = source.load();
+
             first.reject(new Error('stale failure'));
             second.resolve([]);
 
@@ -479,6 +510,7 @@ describe('defineDataCollection', () => {
                 autoLoad: false,
                 dedupCreated: true,
             });
+
             await source.load();
 
             expect(source.create({ id: 1, name: 'dup' })).toEqual('noop');
@@ -502,8 +534,17 @@ describe('defineDataCollection', () => {
 
             const settled : string[] = [];
             const p = source.load();
-            expect(source.create({ id: 1, name: 'a' }, { onSettled: (s) => { settled.push(`a:${s}`); } })).toEqual('buffered');
-            expect(source.create({ id: 2, name: 'b' }, { onSettled: (s) => { settled.push(`b:${s}`); } })).toEqual('buffered');
+
+            expect(source.create({ id: 1, name: 'a' }, {
+                onSettled: (s) => {
+                    settled.push(`a:${s}`);
+                },
+            })).toEqual('buffered');
+            expect(source.create({ id: 2, name: 'b' }, {
+                onSettled: (s) => {
+                    settled.push(`b:${s}`);
+                },
+            })).toEqual('buffered');
             expect(settled).toEqual([]);
 
             gate.resolve([{ id: 1, name: 'from-server' }]);
@@ -518,7 +559,12 @@ describe('defineDataCollection', () => {
                 autoLoad: false,
             });
             const settled : string[] = [];
-            source.create({ id: 1, name: 'a' }, { onSettled: (s) => { settled.push(s); } });
+
+            source.create({ id: 1, name: 'a' }, {
+                onSettled: (s) => {
+                    settled.push(s);
+                },
+            });
             expect(settled).toEqual(['applied']);
         });
     });
@@ -530,7 +576,11 @@ describe('defineDataCollection', () => {
             const source = defineDataCollection<Row, Meta>({
                 load: async (meta) => {
                     seen.push(meta);
-                    if (fail) throw new Error('boom');
+
+                    if (fail) {
+                        throw new Error('boom');
+                    }
+
                     return { data: [] };
                 },
                 initialMeta: baseMeta(),
@@ -538,7 +588,9 @@ describe('defineDataCollection', () => {
             });
 
             fail = true;
+
             const failed = source.load({ filters: { name: 'x' } });
+
             // not committed while in flight either
             expect(source.meta.filters).toBeUndefined();
             await failed;
@@ -561,6 +613,7 @@ describe('defineDataCollection', () => {
                 load: async (meta) => {
                     call += 1;
                     seen.push(meta);
+
                     return { data: await (call === 1 ? first.promise : second.promise) };
                 },
                 initialMeta: baseMeta(),
@@ -569,6 +622,7 @@ describe('defineDataCollection', () => {
 
             const p1 = source.load({ filters: { name: 'x' } });
             const p2 = source.load({ pagination: { limit: 10, offset: 20 } });
+
             // the second draft builds on the first, as eager commits did
             expect(seen[1]).toEqual({ filters: { name: 'x' }, pagination: { limit: 10, offset: 20 } });
 
@@ -584,6 +638,7 @@ describe('defineDataCollection', () => {
                 initialMeta: baseMeta(),
                 autoLoad: false,
             });
+
             await source.load({ pagination: { limit: 10, offset: 999 } });
             expect(source.meta.pagination.offset).toEqual(0);
         });
@@ -596,10 +651,12 @@ describe('defineDataCollection', () => {
                 autoLoad: false,
                 deep: true,
             });
+
             await source.load();
 
             const Comp = defineComponent({ setup: () => () => source.data.value.map((r) => r.name).join(',') });
             const wrapper = mount(Comp);
+
             source.data.value[0].name = 'mutated';
             await flushPromises();
             expect(wrapper.text()).toEqual('mutated');
@@ -609,15 +666,17 @@ describe('defineDataCollection', () => {
             const source = defineDataCollection<Row & { extra?: string }, Meta>({
                 load: async () => ({
                     data: [{
-                        id: 1, 
-                        name: 'a', 
-                        extra: 'gone', 
-                    }], 
+                        id: 1,
+                        name: 'a',
+                        extra: 'gone',
+                    }],
                 }),
                 autoLoad: false,
                 deep: true,
             });
+
             await source.load();
+
             const held = source.data.value[0];
 
             expect(source.update({ id: 1, name: 'b' })).toEqual('applied');
@@ -627,6 +686,7 @@ describe('defineDataCollection', () => {
             expect('extra' in held).toBe(false);
 
             const snapshot = source.dehydrate();
+
             expect(isProxy(snapshot.data[0])).toBe(false);
             expect(() => structuredClone(snapshot)).not.toThrow();
         });
@@ -636,8 +696,11 @@ describe('defineDataCollection', () => {
                 load: async () => ({ data: [{ id: 1, name: 'a' }] }),
                 autoLoad: false,
             });
+
             await source.load();
+
             const held = source.data.value[0];
+
             source.update({ id: 1, name: 'b' });
             expect(source.data.value[0]).not.toBe(held);
             expect(isProxy(source.data.value[0])).toBe(false);
@@ -650,6 +713,7 @@ describe('defineDataCollection', () => {
                 autoLoad: false,
             });
             const row = reactive({ id: 1, name: 'a' });
+
             source.create(row);
             expect(source.data.value[0]).toBe(row);
             expect(source.findIndex(row)).toEqual(0);
@@ -662,6 +726,7 @@ describe('defineDataCollection', () => {
                 deep: true,
                 itemId: (item) => item,
             });
+
             await source.load();
             expect(() => source.update('a')).not.toThrow();
             expect(source.data.value).toEqual(['a', 'b']);
@@ -674,10 +739,12 @@ describe('defineDataCollection', () => {
                 deep: true,
                 dedupCreated: true,
             });
+
             await source.load();
 
             // a held row read back through data.value is a proxy …
             const held = source.data.value[0];
+
             expect(isProxy(held)).toBe(true);
             // … and still resolves against the raw rows by identity
             expect(source.findIndex(held)).toEqual(0);
@@ -688,6 +755,7 @@ describe('defineDataCollection', () => {
             expect(source.delete(source.data.value[1])).toEqual('applied');
 
             const snapshot = source.dehydrate();
+
             expect(snapshot.data.some((r) => isProxy(r))).toBe(false);
             expect(() => structuredClone(snapshot)).not.toThrow();
         });

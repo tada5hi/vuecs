@@ -34,7 +34,7 @@ import type {
     VariantValues,
 } from '@vuecs/core';
 import { provideTreeContext } from '../composables/context';
-import type { TreeSelectOptions } from '../composables/context';
+import type { TreeSelectOptions } from '../composables/types';
 import { treeItemThemeDefaults, treeThemeDefaults } from '../theme';
 import type { TreeItemThemeClasses, TreeThemeClasses } from '../types';
 import {
@@ -53,7 +53,7 @@ import VCTreeItemTrigger from './TreeItemTrigger.vue';
  * `selectedKeys` as `[getKey(modelValue ?? {})]` in single-select mode, so it
  * calls the resolver with a phantom `{}` on every render.
  */
-const EMPTY_KEY = '\u0000vc-tree-none';
+const EMPTY_KEY = '\0vc-tree-none';
 
 /**
  * Marks "this branch has children we haven't fetched yet". An EMPTY array is
@@ -218,6 +218,9 @@ export type TreeToggleSlotProps = {
 // aliases are re-exported from the package barrel (#1704).
 // ──────────────────────────────────────────────────────────────────────────
 
+
+
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
 export interface TreeSlots<Item> {
     item?: (props: TreeItemSlotProps<Item>) => unknown;
     toggle?: (props: TreeToggleSlotProps) => unknown;
@@ -536,12 +539,15 @@ const VCTree = defineComponent({
             // fall out of the idempotent kernel.
             if (next.has(key)) {
                 const stack = [...(index.value.nodes.get(key)?.childKeys ?? [])];
+
                 while (stack.length > 0) {
                     const childKey = stack.pop() as string;
                     const child = index.value.nodes.get(childKey);
+
                     if (child && !child.disabled) {
                         next.add(childKey);
                     }
+
                     for (const grandChild of child?.childKeys ?? []) {
                         stack.push(grandChild);
                     }
@@ -555,8 +561,11 @@ const VCTree = defineComponent({
             // — a consumer watching that channel would see a "change" that
             // carries the same keys it already holds.
             const current = orderKeys(index.value, boundSet.value);
-            if (resolved.length === current.length &&
-                resolved.every((entry, i) => entry === current[i])) {
+
+            const matchesResolved = resolved.length === current.length &&
+                resolved.every((entry, i) => entry === current[i]);
+
+            if (matchesResolved) {
                 return;
             }
 
@@ -565,7 +574,7 @@ const VCTree = defineComponent({
         };
 
         const toggle = (key: string) => {
-            if (props.disabled) {
+            if ((props.disabled) || (loading.value.has(key))) {
                 return;
             }
 
@@ -573,9 +582,7 @@ const VCTree = defineComponent({
             // repeats — so a slow fetch is easy to re-enter. Without this the
             // second call re-runs `load()` and appends the key to `expanded` a
             // second time, so the emitted array carries a duplicate.
-            if (loading.value.has(key)) {
-                return;
-            }
+
 
             if (isExpanded(key)) {
                 setExpanded(expandedValue.value.filter((entry) => entry !== key));
@@ -613,6 +620,7 @@ const VCTree = defineComponent({
                 })
                 .finally(() => {
                     const next = new Set(loading.value);
+
                     next.delete(key);
                     loading.value = next;
                 });
@@ -635,6 +643,7 @@ const VCTree = defineComponent({
 
             if (isObject(item)) {
                 const record: { label?: unknown } = item;
+
                 if (typeof record.label === 'string') {
                     return record.label;
                 }

@@ -5,6 +5,7 @@ import { installIframeBridge } from './iframe-bridge';
 import { installVuecs } from './shared';
 
 const app = createApp(ModalViewStack);
+
 installVuecs(app);
 app.use(overlays);
 app.mount('#app');

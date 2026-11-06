@@ -10,9 +10,12 @@ function makeArgs(initial: SelectionValue<Mode> | null, mode: Mode | undefined, 
     const args = {
         mode: computed<Mode | undefined>(() => mode),
         value: computed(() => v.value),
-        emit: (next: SelectionValue<Mode> | null) => { v.value = next; },
+        emit: (next: SelectionValue<Mode> | null) => {
+            v.value = next;
+        },
         keyAt: (i: number): SelectionKey | undefined => keys[i],
     };
+
     return { args, v };
 }
 
@@ -20,6 +23,7 @@ describe('useSelectionMachine', () => {
     it('single mode — toggle replaces value; second toggle clears', () => {
         const { args, v } = makeArgs(null, 'single', ['a', 'b']);
         const m = useSelectionMachine(args);
+
         m.toggle('a');
         expect(v.value).toBe('a');
         m.toggle('a');
@@ -31,6 +35,7 @@ describe('useSelectionMachine', () => {
     it('multi mode — plain toggle adds/removes membership; range select fills inclusive span', () => {
         const { args, v } = makeArgs([], 'multi', ['a', 'b', 'c', 'd']);
         const m = useSelectionMachine(args);
+
         m.toggle('a');                       // [a]
         expect(v.value).toEqual(['a']);
         m.toggle('c', { range: true });      // Shift from anchor a -> c
@@ -42,6 +47,7 @@ describe('useSelectionMachine', () => {
     it('multi mode — Shift+click with no anchor degrades to plain toggle', () => {
         const { args, v } = makeArgs([], 'multi', ['a', 'b', 'c']);
         const m = useSelectionMachine(args);
+
         // No prior plain click — rangeAnchor is null. Shift+click
         // falls through to plain toggle semantics.
         m.toggle('b', { range: true });
@@ -55,6 +61,7 @@ describe('useSelectionMachine', () => {
     it('multi mode — Ctrl/Cmd+click toggles single membership without affecting others', () => {
         const { args, v } = makeArgs(['a', 'b'], 'multi', ['a', 'b', 'c']);
         const m = useSelectionMachine(args);
+
         m.toggle('c', { toggle: true });
         expect(v.value).toEqual(['a', 'b', 'c']);
         m.toggle('a', { toggle: true });
@@ -64,6 +71,7 @@ describe('useSelectionMachine', () => {
     it('isSelected reflects mode-aware membership', () => {
         const { args } = makeArgs(['a', 'b'], 'multi', ['a', 'b', 'c']);
         const m = useSelectionMachine(args);
+
         expect(m.isSelected('a')).toBe(true);
         expect(m.isSelected('c')).toBe(false);
         expect(m.isSelected(undefined)).toBe(false);
@@ -72,6 +80,7 @@ describe('useSelectionMachine', () => {
     it('setValue replaces the whole selection directly (bypasses cycle/toggle/range)', () => {
         const { args, v } = makeArgs([], 'multi', ['a', 'b', 'c']);
         const m = useSelectionMachine(args);
+
         m.setValue(['a', 'c']);
         expect(v.value).toEqual(['a', 'c']);
         m.setValue([]);
@@ -84,6 +93,7 @@ describe('useSelectionMachine', () => {
     it('setValue updates the range anchor to the last selected key', () => {
         const { args } = makeArgs([], 'multi', ['a', 'b', 'c']);
         const m = useSelectionMachine(args);
+
         m.setValue(['a', 'b']);
         expect(m.rangeAnchor.value).toBe('b');
     });
@@ -91,6 +101,7 @@ describe('useSelectionMachine', () => {
     it('mode === undefined makes toggle a no-op', () => {
         const { args, v } = makeArgs(null, undefined, ['a']);
         const m = useSelectionMachine(args);
+
         m.toggle('a');
         expect(v.value).toBeNull();
     });
@@ -98,6 +109,7 @@ describe('useSelectionMachine', () => {
     it('setValue normalizes cross-mode misuse — single + array writes the last element', () => {
         const { args, v } = makeArgs(null, 'single', ['a', 'b', 'c']);
         const m = useSelectionMachine(args);
+
         m.setValue(['a', 'b', 'c'] as never);
         expect(v.value).toBe('c');
         m.setValue([] as never);
@@ -107,6 +119,7 @@ describe('useSelectionMachine', () => {
     it('setValue normalizes cross-mode misuse — multi + bare key wraps as a one-element array', () => {
         const { args, v } = makeArgs([], 'multi', ['a', 'b', 'c']);
         const m = useSelectionMachine(args);
+
         m.setValue('a' as never);
         expect(v.value).toEqual(['a']);
     });
@@ -114,6 +127,7 @@ describe('useSelectionMachine', () => {
     it('setValue is a no-op when selection is disabled (mode === undefined)', () => {
         const { args, v } = makeArgs(null, undefined, ['a']);
         const m = useSelectionMachine(args);
+
         m.setValue(['a'] as never);
         expect(v.value).toBeNull();
     });
@@ -121,6 +135,7 @@ describe('useSelectionMachine', () => {
     it('range select with a stale anchor (key no longer in data) refreshes the anchor + no-ops', () => {
         const { args, v } = makeArgs([], 'multi', ['a', 'b', 'c']);
         const m = useSelectionMachine(args);
+
         m.toggle('a');                   // anchor = 'a'
         // Simulate row 'a' being removed from data
         args.keyAt = (i: number) => (['b', 'c'][i]);

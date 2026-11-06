@@ -21,6 +21,7 @@ describe('resolveVariantClasses', () => {
         };
 
         const result = resolveVariantClasses(config, { size: 'sm' });
+
         expect(result.root).toBe('py-1');
     });
 
@@ -38,6 +39,7 @@ describe('resolveVariantClasses', () => {
         };
 
         const result = resolveVariantClasses(config, { size: 'lg', busy: true });
+
         expect(result.root).toBe('py-3 opacity-50');
         expect(result.icon).toBe('size-6');
     });
@@ -71,6 +73,7 @@ describe('resolveVariantClasses', () => {
         };
 
         const result = resolveVariantClasses(config, {});
+
         expect(result.root).toBe('py-2');
     });
 
@@ -82,6 +85,7 @@ describe('resolveVariantClasses', () => {
         };
 
         const result = resolveVariantClasses(config, {});
+
         expect(result).toEqual({});
     });
 
@@ -93,6 +97,7 @@ describe('resolveVariantClasses', () => {
         };
 
         const result = resolveVariantClasses(config, { size: 'xl' });
+
         expect(result).toEqual({});
     });
 
@@ -109,6 +114,7 @@ describe('resolveVariantClasses', () => {
         };
 
         const result = resolveVariantClasses(config, { busy: true, size: 'lg' });
+
         expect(result.root).toBe('opacity-50 py-3 cursor-wait');
     });
 
@@ -125,6 +131,7 @@ describe('resolveVariantClasses', () => {
         };
 
         const result = resolveVariantClasses(config, { busy: true, size: 'sm' });
+
         expect(result.root).toBe('opacity-50');
     });
 
@@ -139,6 +146,7 @@ describe('resolveVariantClasses', () => {
         };
 
         const result = resolveVariantClasses(config, { a: 'x' });
+
         expect(result.root).toBe('first second');
     });
 
@@ -153,11 +161,18 @@ describe('resolveVariantClasses', () => {
         };
 
         const pipeMerge = (a: string, b: string) => {
-            if (!a) return b;
-            if (!b) return a;
+            if (!a) {
+                return b;
+            }
+
+            if (!b) {
+                return a;
+            }
+
             return `${a}|${b}`;
         };
         const result = resolveVariantClasses(config, { a: 'x', b: 'y' }, pipeMerge);
+
         expect(result.root).toBe('cls-a|cls-b');
     });
 
@@ -169,6 +184,7 @@ describe('resolveVariantClasses', () => {
         };
 
         const result = resolveVariantClasses(config, { size: 'sm' });
+
         expect(result).toEqual({});
     });
 });

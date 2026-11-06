@@ -1,56 +1,16 @@
+import type {
+    AlertDialogDefaults,
+    AlertDialogOptions,
+    AlertDialogRequest,
+    UseAlertDialogReturn,
+} from './types';
 import { inject, provide } from '@vuecs/core';
 import { shallowRef } from 'vue';
-import type { App, Component, Ref } from 'vue';
+import type { App, Ref } from 'vue';
 import type { ComponentDefaultValues } from '@vuecs/core';
 
-// ──────────────────────────────────────────────────────────────────────────
-// Public option / default shapes
-// ──────────────────────────────────────────────────────────────────────────
-
-/**
- * Semantic tone driving the Action button's color (and nothing else). Mirrors
- * the canonical six-color set used across `@vuecs/button` / `@vuecs/elements`
- * — no `danger` alias. Destructive confirms use `tone: 'error'`.
- */
-export type AlertDialogTone = 'neutral' | 'primary' | 'info' | 'success' | 'warning' | 'error';
-
-export type AlertDialogOptions = {
-    /** Heading text. Falls through to `useComponentDefaults('alertDialog').title`. */
-    title?: string;
-    /**
-     * Optional body text. Omitting it is valid, but — like any Reka dialog
-     * with no description — triggers Reka's "Missing Description" dev-only
-     * console warning (never emitted in production). Pass a description to
-     * silence it.
-     */
-    description?: string;
-    /** Action (confirm) button label. Falls through to the `confirmLabel` default. */
-    confirmLabel?: string;
-    /** Cancel button label. Falls through to the `cancelLabel` default. */
-    cancelLabel?: string;
-    /** Tone for the Action button. Default `'primary'`. */
-    tone?: AlertDialogTone;
-    /** When `true`, Escape no longer cancels — the user must pick a button. */
-    noEscape?: boolean;
-    /**
-     * Escape hatch: render a fully custom body component instead of the
-     * default title/description/buttons layout. The component receives
-     * `confirm()` + `cancel()` callbacks (plus `componentProps`) and owns its
-     * own action buttons.
-     */
-    component?: Component;
-    /** Extra props passed to `component`. Merged with `{ confirm, cancel }`. */
-    componentProps?: Record<string, unknown>;
-};
-
-/** Behavioral-default keys resolved via `useComponentDefaults('alertDialog', …)`. */
-export type AlertDialogDefaults = {
-    title: string;
-    confirmLabel: string;
-    cancelLabel: string;
-};
-
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
     interface ComponentDefaults {
         alertDialog?: ComponentDefaultValues<AlertDialogDefaults>;
     }
@@ -61,17 +21,6 @@ export const alertDialogHardcodedDefaults: AlertDialogDefaults = {
     title: 'Are you sure?',
     confirmLabel: 'Confirm',
     cancelLabel: 'Cancel',
-};
-
-export type AlertDialogRequest = {
-    /**
-     * Opaque per-request token, used only as the host's Vue `:key` (to remount
-     * between sequential dialogs). Never a DOM id, never returned to the
-     * caller — a fresh `Symbol` is the cleanest unique value.
-     */
-    id: symbol;
-    options: AlertDialogOptions;
-    resolve: (value: boolean) => void;
 };
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -96,12 +45,14 @@ export class AlertDialogManager {
         return new Promise<boolean>((resolve) => {
             if (typeof window === 'undefined') {
                 resolve(false);
+
                 return;
             }
+
             this.queue.value = [...this.queue.value, {
-                id: Symbol('vc-alert-dialog'), 
-                options, 
-                resolve, 
+                id: Symbol('vc-alert-dialog'),
+                options,
+                resolve,
             }];
         });
     }
@@ -109,7 +60,11 @@ export class AlertDialogManager {
     /** Resolve + dequeue the head request. */
     settle(value: boolean): void {
         const head = this.queue.value[0];
-        if (!head) return;
+
+        if (!head) {
+            return;
+        }
+
         this.queue.value = this.queue.value.slice(1);
         head.resolve(value);
     }
@@ -117,8 +72,12 @@ export class AlertDialogManager {
     /** Cancel every pending request (resolves `false`) — e.g. on route change. */
     clear(): void {
         const pending = this.queue.value;
+
         this.queue.value = [];
-        for (const req of pending) req.resolve(false);
+
+        for (const req of pending) {
+            req.resolve(false);
+        }
     }
 }
 
@@ -130,9 +89,11 @@ export function tryInjectAlertDialogManager(app?: App): AlertDialogManager | und
 
 export function injectAlertDialogManager(app?: App): AlertDialogManager {
     const instance = tryInjectAlertDialogManager(app);
+
     if (!instance) {
         throw new Error('[vuecs] No AlertDialogManager available. Install @vuecs/overlays (app.use) and call useAlertDialog() from a component setup / inject context.');
     }
+
     return instance;
 }
 
@@ -141,12 +102,15 @@ export function provideAlertDialogManager(manager: AlertDialogManager = new Aler
     // safety). Return the *provided* manager so callers never get an orphan
     // instance that `useAlertDialog()` / `<VCAlertDialogProvider>` won't inject.
     const existing = tryInjectAlertDialogManager(app);
-    if (existing) return existing;
+
+    if (existing) {
+        return existing;
+    }
+
     provide(ALERT_DIALOG_MANAGER_KEY, manager, app);
+
     return manager;
 }
-
-export type UseAlertDialogReturn = (options?: AlertDialogOptions) => Promise<boolean>;
 
 /**
  * Imperative confirmation dialog. Injects the per-app `AlertDialogManager`, so it
@@ -163,5 +127,6 @@ export type UseAlertDialogReturn = (options?: AlertDialogOptions) => Promise<boo
  */
 export function useAlertDialog(): UseAlertDialogReturn {
     const manager = injectAlertDialogManager();
+
     return (options: AlertDialogOptions = {}) => manager.confirm(options);
 }

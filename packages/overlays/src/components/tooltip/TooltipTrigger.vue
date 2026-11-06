@@ -26,6 +26,7 @@ export default defineComponent({
     props: tooltipTriggerProps,
     setup(props, { attrs, slots }) {
         const theme = useComponentTheme('tooltip', props, tooltipThemeDefaults);
+
         return () => h(
             TooltipTrigger,
             mergeProps(attrs, {

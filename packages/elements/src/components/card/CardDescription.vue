@@ -31,7 +31,9 @@ export default defineComponent({
     setup(props, { attrs, slots }) {
         const ctx = useCardContext();
         const themeProps: UseComponentThemeProps<CardDescriptionThemeClasses> = {
-            get themeClass() { return props.themeClass; },
+            get themeClass() {
+                return props.themeClass;
+            },
             get themeVariant() {
                 return { ...(ctx?.themeVariant() ?? {}), ...(props.themeVariant ?? {}) };
             },

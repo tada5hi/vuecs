@@ -31,6 +31,9 @@ import type {
 // Run under a strictNullChecks-on tsconfig (`test/tsconfig.json`, wired via
 // vitest.config.ts) so the `toEqualTypeOf` assertions don't pass vacuously.
 
+
+
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
 interface User {
     id: number;
     name: string;

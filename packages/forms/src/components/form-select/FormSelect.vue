@@ -36,12 +36,8 @@ import {
     h,
     mergeProps,
 } from 'vue';
-import {
-    type FormOption,
-    type FormOptionGroup,
-    type FormOptionItems,
-    isFormOptionGroup,
-} from '../../types/option';
+import { isFormOptionGroup } from '../../types/option';
+import type { FormOption, FormOptionGroup, FormOptionItems } from '../../types/types';
 
 export type FormSelectThemeClasses = {
     trigger: string;
@@ -64,9 +60,11 @@ export type FormSelectDefaults = {
 };
 
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
     interface ThemeElements {
         formSelect?: ThemeElementDefinition<FormSelectThemeClasses>;
     }
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
     interface ComponentDefaults {
         formSelect?: ComponentDefaultValues<FormSelectDefaults>;
     }
@@ -166,6 +164,7 @@ export default defineComponent({
         const renderItems = (): VNodeChild[] => {
             const classes = theme.value;
             const items: VNodeChild[] = [];
+
             // `options` is `required: true`; the `!` counters the separate-const
             // props widening to `| undefined` under strict.
             for (const item of props.options!) {
@@ -185,9 +184,11 @@ export default defineComponent({
             if (props.modelValue === undefined || props.modelValue === null) {
                 return false;
             }
+
             if (typeof value === 'string') {
                 return value === props.modelValue;
             }
+
             return isEqual(value, props.modelValue);
         };
 
@@ -202,6 +203,7 @@ export default defineComponent({
             for (const item of props.options!) {
                 if (isFormOptionGroup(item)) {
                     const match = item.options.find((option) => isSelected(option.value));
+
                     if (match) {
                         return match.label;
                     }

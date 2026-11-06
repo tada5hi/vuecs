@@ -20,6 +20,7 @@ export default defineComponent({
             useThemeProps(props),
             tableHeaderThemeDefaults,
         );
+
         return () => h(
             'thead',
             mergeProps(attrs, { class: theme.value.root || undefined }),

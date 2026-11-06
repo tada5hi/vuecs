@@ -40,16 +40,20 @@ function parseTailwindTheme(): Map<string, string> {
     // Match `--color-<palette>-<shade>: oklch(...)` declarations.
     const re = /--color-([a-z]+)-(\d+):\s*(oklch\([^)]+\))/g;
     let match: RegExpExecArray | null;
+
     while ((match = re.exec(css)) !== null) {
         const [, palette, shade, value] = match;
+
         out.set(`${palette}-${shade}`, value);
     }
+
     return out;
 }
 
 function readPackageVersion(name: string): string {
     const pkgPath = resolve(REPO_ROOT, 'node_modules', name, 'package.json');
     const pkg = JSON.parse(readFileSync(pkgPath, 'utf8')) as { version: string };
+
     return pkg.version;
 }
 
@@ -60,14 +64,17 @@ function emitCss(): string {
     const blocks = COLOR_PALETTES.map((palette) => {
         const shadeLines = COLOR_PALETTE_SHADES.map((shade) => {
             const value = tokens.get(`${palette}-${shade}`);
+
             if (!value) {
                 throw new Error(
                     `Missing --color-${palette}-${shade} in ${TAILWIND_THEME_CSS}. ` +
                     'Did Tailwind drop a shade or rename a palette?',
                 );
             }
+
             return `    --color-${palette}-${shade}: ${value};`;
         }).join('\n');
+
         return `    /* ${palette} */\n${shadeLines}`;
     }).join('\n\n');
 
@@ -104,14 +111,18 @@ function main(): void {
             );
             process.exit(1);
         }
+
         const existing = readFileSync(OUTPUT_FILE, 'utf8');
+
         if (existing !== output) {
             console.error(
                 `${OUTPUT_FILE} drift detected. Re-run \`npm run --workspace=packages/design standalone:build\` and commit the result.`,
             );
             process.exit(1);
         }
+
         console.log('palettes.css up to date.');
+
         return;
     }
 

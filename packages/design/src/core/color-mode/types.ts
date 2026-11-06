@@ -1,5 +1,7 @@
 import type { ComputedRef, WritableComputedRef } from 'vue';
-import type { ColorMode } from './catalog';
+
+
+import type { COLOR_MODES } from './catalog';
 
 /**
  * Options for `useColorMode()`. Note that `useColorMode` is wrapped
@@ -11,6 +13,7 @@ import type { ColorMode } from './catalog';
  * If you need a per-call configuration, call `bindColorMode()`
  * directly with your own reactive ref instead.
  */
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public name and declaration merging.
 export interface UseColorModeOptions {
     /** Initial mode when no persisted value exists. Default: `'system'`. */
     initial?: ColorMode;
@@ -22,6 +25,9 @@ export interface UseColorModeOptions {
     syncClass?: boolean;
 }
 
+
+
+// eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public name and declaration merging.
 export interface UseColorModeReturn {
     /** Selected mode — may be `'system'` to defer to OS preference. */
     mode: WritableComputedRef<ColorMode>;
@@ -35,3 +41,5 @@ export interface UseColorModeReturn {
     /** Flip between light and dark. Always sets a concrete mode (no `'system'`). */
     toggle(): void;
 }
+
+export type ColorMode = typeof COLOR_MODES[number];

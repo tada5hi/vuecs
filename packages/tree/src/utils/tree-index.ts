@@ -120,6 +120,7 @@ export function resolveGuideRails<Item>(index: TreeIndex<Item>, key: string): bo
     const rails: boolean[] = [];
 
     let node = index.nodes.get(key);
+
     while (node) {
         const siblings = typeof node.parentKey === 'undefined' ?
             index.rootKeys :

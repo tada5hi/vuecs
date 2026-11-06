@@ -29,6 +29,7 @@ async function runConfirm() {
         cancelLabel: 'Keep',
         tone: 'error',
     });
+
     lastResult.value = ok ?
         'Confirmed — the project would be deleted.' :
         'Cancelled — nothing happened.';

@@ -28,6 +28,7 @@ export type FormNumberThemeClasses = {
 };
 
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
     interface ThemeElements {
         formNumber?: ThemeElementDefinition<FormNumberThemeClasses>;
     }
@@ -106,13 +107,17 @@ export default defineComponent({
             {
                 default: () => {
                     const children = [];
+
                     if (props.steppers) {
                         children.push(h(NumberFieldDecrement, { class: theme.value.decrement || undefined }, { default: () => '−' }));
                     }
+
                     children.push(h(NumberFieldInput, { class: theme.value.input || undefined }));
+
                     if (props.steppers) {
                         children.push(h(NumberFieldIncrement, { class: theme.value.increment || undefined }, { default: () => '+' }));
                     }
+
                     return children;
                 },
             },

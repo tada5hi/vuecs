@@ -1,3 +1,4 @@
+/* eslint-disable @tada5hi/no-reexport-shims -- Preserve this existing public forwarding module. */
 import type { ClassesMergeFn, Theme } from '@vuecs/core';
 import { COLOR_PALETTES } from '@vuecs/design';
 import { twMerge } from 'tailwind-merge';
@@ -28,11 +29,7 @@ export type { UseColorPaletteOptions, UseColorPaletteReturn } from '@vuecs/desig
 // can import them from either source; we keep the re-export so downstream
 // code that picked up the imports from theme-tailwind in earlier versions
 // keeps working.
-export {
-    COLOR_PALETTE_STYLE_ELEMENT_ID,
-    applyColorPaletteCss,
-    bindColorPalette,
-} from '@vuecs/design';
+export { COLOR_PALETTE_STYLE_ELEMENT_ID, applyColorPaletteCss, bindColorPalette } from '@vuecs/design';
 /** @deprecated Import from `@vuecs/design` instead — the canonical `ColorPaletteConfig` lives there since plan 026. */
 export type { ColorPaletteConfig } from '@vuecs/design';
 

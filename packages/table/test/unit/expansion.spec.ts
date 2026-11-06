@@ -31,6 +31,7 @@ beforeAll(() => {
 
 const plugins = [[vuecsTable, {}]] as const;
 
+
 type User = { id: number; name: string };
 
 const data: User[] = [
@@ -40,7 +41,9 @@ const data: User[] = [
 ];
 
 describe('<VCTable> expansion (plan 038 v2-A)', () => {
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it('auto-injects a leading trigger column in the header when :expandable', () => {
         const wrapper = mount(defineComponent({
@@ -54,6 +57,7 @@ describe('<VCTable> expansion (plan 038 v2-A)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const headers = wrapper.element.querySelectorAll('thead th');
+
         // 1 placeholder for trigger + 1 for 'name'
         expect(headers.length).toBe(2);
         expect(headers[0].getAttribute('aria-hidden')).toBe('true');
@@ -71,12 +75,17 @@ describe('<VCTable> expansion (plan 038 v2-A)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const firstRow = wrapper.element.querySelector('tbody tr');
+
         expect(firstRow).not.toBeNull();
+
         // First cell is the trigger TD (carries our marker attr).
         const firstCell = firstRow!.querySelector(':scope > td:first-child');
+
         expect(firstCell?.getAttribute('data-expand-trigger-cell')).toBe('true');
+
         // Trigger button inside
         const button = firstCell!.querySelector('button.vc-table-expand-trigger');
+
         expect(button).not.toBeNull();
         expect(button?.getAttribute('aria-expanded')).toBe('false');
     });
@@ -95,6 +104,7 @@ describe('<VCTable> expansion (plan 038 v2-A)', () => {
 
         const firstRow = wrapper.element.querySelector('tbody tr');
         const lastCell = firstRow!.querySelector(':scope > td:last-child');
+
         expect(lastCell?.getAttribute('data-expand-trigger-cell')).toBe('true');
     });
 
@@ -111,6 +121,7 @@ describe('<VCTable> expansion (plan 038 v2-A)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const triggerCells = wrapper.element.querySelectorAll('[data-expand-trigger-cell]');
+
         expect(triggerCells.length).toBe(0);
         // Header also has no placeholder cell
         expect(wrapper.element.querySelectorAll('thead th').length).toBe(1);
@@ -120,6 +131,7 @@ describe('<VCTable> expansion (plan 038 v2-A)', () => {
         const wrapper = mount(defineComponent({
             setup() {
                 const expanded = ref<(string | number)[]>([]);
+
                 return () => h(VCTable, {
                     columns: [{ key: 'name' }] as never,
                     data: data as never,
@@ -135,12 +147,14 @@ describe('<VCTable> expansion (plan 038 v2-A)', () => {
         const trigger = wrapper.element.querySelector(
             'tbody tr:first-child button.vc-table-expand-trigger',
         ) as HTMLButtonElement;
+
         expect(trigger).not.toBeNull();
 
         trigger.click();
         await nextTick();
 
         const panels = wrapper.element.querySelectorAll('[data-state="open"]');
+
         expect(panels.length).toBeGreaterThan(0);
         expect(wrapper.element.textContent).toContain('Details for Alice');
         expect(trigger.getAttribute('aria-expanded')).toBe('true');
@@ -151,6 +165,7 @@ describe('<VCTable> expansion (plan 038 v2-A)', () => {
         const wrapper = mount(defineComponent({
             setup() {
                 const expanded = ref<(string | number)[]>([]);
+
                 return () => h(VCTable, {
                     columns: [{ key: 'name' }] as never,
                     data: data as never,
@@ -159,13 +174,17 @@ describe('<VCTable> expansion (plan 038 v2-A)', () => {
                     expanded: expanded.value,
                     'onUpdate:expanded': (next: unknown) => {
                         lastEmit = next;
-                        if (Array.isArray(next)) expanded.value = next as (string | number)[];
+
+                        if (Array.isArray(next)) {
+                            expanded.value = next as (string | number)[];
+                        }
                     },
                 }, { expansion: ({ row }: { row: User }) => h('p', row.name) });
             },
         }), { global: { plugins: [...plugins] } });
 
         const triggers = wrapper.element.querySelectorAll('button.vc-table-expand-trigger');
+
         (triggers[0] as HTMLButtonElement).click();
         await nextTick();
         (triggers[1] as HTMLButtonElement).click();
@@ -179,6 +198,7 @@ describe('<VCTable> expansion (plan 038 v2-A)', () => {
         const wrapper = mount(defineComponent({
             setup() {
                 const expanded = ref<string | number | null>(null);
+
                 return () => h(VCTable, {
                     columns: [{ key: 'name' }] as never,
                     data: data as never,
@@ -187,6 +207,7 @@ describe('<VCTable> expansion (plan 038 v2-A)', () => {
                     expanded: expanded.value,
                     'onUpdate:expanded': (next: unknown) => {
                         lastEmit = next;
+
                         if (next === null || typeof next === 'string' || typeof next === 'number') {
                             expanded.value = next as string | number | null;
                         }
@@ -196,6 +217,7 @@ describe('<VCTable> expansion (plan 038 v2-A)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const triggers = wrapper.element.querySelectorAll('button.vc-table-expand-trigger');
+
         (triggers[0] as HTMLButtonElement).click();
         await nextTick();
         expect(lastEmit).toBe(1);
@@ -210,19 +232,22 @@ describe('<VCTable> expansion (plan 038 v2-A)', () => {
         const seeded = [
             { id: 1, name: 'Alice' },
             {
-                id: 2, 
-                name: 'Bob', 
-                _expanded: true, 
+                id: 2,
+                name: 'Bob',
+                _expanded: true,
             },
             { id: 3, name: 'Carol' },
         ];
+
         mount(defineComponent({
             setup() {
                 return () => h(VCTable, {
                     columns: [{ key: 'name' }] as never,
                     data: seeded as never,
                     expandable: true,
-                    'onUpdate:expanded': (next: unknown) => { lastEmit = next; },
+                    'onUpdate:expanded': (next: unknown) => {
+                        lastEmit = next;
+                    },
                 }, { expansion: ({ row }: { row: User }) => h('p', row.name) });
             },
         }), { global: { plugins: [...plugins] } });
@@ -250,6 +275,7 @@ describe('<VCTable> expansion (plan 038 v2-A)', () => {
         // catches a colspan-bump regression directly, not just a
         // header-cell-count proxy.)
         const emptyCell = wrapper.element.querySelector('tbody td');
+
         expect(emptyCell?.getAttribute('colspan')).toBe('3');
     });
 
@@ -261,6 +287,7 @@ describe('<VCTable> expansion (plan 038 v2-A)', () => {
         const wrapper = mount(defineComponent({
             setup() {
                 const expanded = ref<string | number | null>(null);
+
                 return () => h(VCTable, {
                     columns: [{ key: 'name' }] as never,
                     data: data as never,
@@ -279,6 +306,7 @@ describe('<VCTable> expansion (plan 038 v2-A)', () => {
         const trigger = wrapper.element.querySelector(
             'tbody tr:first-child button.vc-table-expand-trigger',
         ) as HTMLButtonElement;
+
         trigger.click();
         await nextTick();
         await nextTick();
@@ -309,6 +337,7 @@ describe('<VCTable> expansion (plan 038 v2-A)', () => {
         const trigger = wrapper.element.querySelector(
             'tbody tr:first-child button.vc-table-expand-trigger',
         ) as HTMLButtonElement;
+
         trigger.click();
         await nextTick();
         expect(expanded.value).toEqual([1]);
@@ -317,20 +346,25 @@ describe('<VCTable> expansion (plan 038 v2-A)', () => {
         // to the stale `expansionInternal` and the row stayed open.
         expanded.value = [];
         await nextTick();
+
         const openTriggers = wrapper.element.querySelectorAll('[aria-expanded="true"]');
+
         expect(openTriggers.length).toBe(0);
     });
 
     it('_expanded seed runs when data loads asynchronously (post-mount)', async () => {
         const dataRef = ref<User[]>([]);
         let lastEmit: unknown = null;
+
         mount(defineComponent({
             setup() {
                 return () => h(VCTable, {
                     columns: [{ key: 'name' }] as never,
                     data: dataRef.value as never,
                     expandable: true,
-                    'onUpdate:expanded': (next: unknown) => { lastEmit = next; },
+                    'onUpdate:expanded': (next: unknown) => {
+                        lastEmit = next;
+                    },
                 }, { expansion: ({ row }: { row: User }) => h('p', row.name) });
             },
         }), { global: { plugins: [...plugins] } });
@@ -344,9 +378,9 @@ describe('<VCTable> expansion (plan 038 v2-A)', () => {
         dataRef.value = [
             { id: 10, name: 'Late' } as User,
             {
-                id: 11, 
-                name: 'Seeded', 
-                _expanded: true, 
+                id: 11,
+                name: 'Seeded',
+                _expanded: true,
             } as User,
         ];
         await nextTick();
@@ -364,7 +398,9 @@ describe('<VCTable> expansion (plan 038 v2-A)', () => {
                     data: data as never,
                     expandable: true,
                     selectionMode: 'multi',
-                    'onUpdate:selection': () => { selectionUpdates += 1; },
+                    'onUpdate:selection': () => {
+                        selectionUpdates += 1;
+                    },
                 }, { expansion: ({ row }: { row: User }) => h('p', row.name) });
             },
         }), { global: { plugins: [...plugins] } });
@@ -372,15 +408,18 @@ describe('<VCTable> expansion (plan 038 v2-A)', () => {
         const trigger = wrapper.element.querySelector(
             'tbody tr:first-child button.vc-table-expand-trigger',
         ) as HTMLButtonElement;
+
         // Focus the trigger, then fire Enter — should toggle expansion
         // (button click) but NOT row selection (which the row's onKeydown
         // would have done pre-fix because it didn't filter by target).
         trigger.focus();
+
         const enterEvent = new KeyboardEvent('keydown', {
             key: 'Enter',
             bubbles: true,
             cancelable: true,
         });
+
         trigger.dispatchEvent(enterEvent);
         await nextTick();
         expect(selectionUpdates).toBe(0);
@@ -395,7 +434,9 @@ describe('<VCTable> expansion (plan 038 v2-A)', () => {
                     data: data as never,
                     expandable: true,
                     rowClickable: true,
-                    onRowClick: () => { rowClickCount += 1; },
+                    onRowClick: () => {
+                        rowClickCount += 1;
+                    },
                 }, { expansion: ({ row }: { row: User }) => h('p', row.name) });
             },
         }), { global: { plugins: [...plugins] } });
@@ -403,6 +444,7 @@ describe('<VCTable> expansion (plan 038 v2-A)', () => {
         const trigger = wrapper.element.querySelector(
             'tbody tr:first-child button.vc-table-expand-trigger',
         ) as HTMLButtonElement;
+
         trigger.click();
         await nextTick();
         expect(rowClickCount).toBe(0);

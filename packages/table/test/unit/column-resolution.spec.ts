@@ -31,29 +31,33 @@ describe('normalizeColumns', () => {
 
     it('explicit object keeps its label', () => {
         const cols = normalizeColumns([{ key: 'name', label: 'User name' }], []);
+
         expect(cols[0].label).toBe('User name');
     });
 
     it('explicit object without label gets startCase(key)', () => {
         const cols = normalizeColumns([{ key: 'firstName' }], []);
+
         expect(cols[0].label).toBe('First Name');
     });
 
     it('auto-derives from Object.keys(data[0]) when columns omitted', () => {
         const cols = normalizeColumns(undefined, [{
-            id: 1, 
-            name: 'Alice', 
-            email: 'a@x', 
+            id: 1,
+            name: 'Alice',
+            email: 'a@x',
         }]);
+
         expect(cols.map((c) => c.key)).toEqual(['id', 'name', 'email']);
     });
 
     it('auto-derive skips underscore-prefixed row-meta keys', () => {
         const cols = normalizeColumns(undefined, [{
-            id: 1, 
-            name: 'Alice', 
-            _rowVariant: 'success', 
+            id: 1,
+            name: 'Alice',
+            _rowVariant: 'success',
         }]);
+
         expect(cols.map((c) => c.key)).toEqual(['id', 'name']);
     });
 
@@ -65,11 +69,13 @@ describe('normalizeColumns', () => {
 describe('resolveCellValue', () => {
     it('direct row[key] when no accessor', () => {
         const row = { name: 'Alice' };
+
         expect(resolveCellValue({ key: 'name' }, row)).toBe('Alice');
     });
 
     it('string accessor with dot-path traverses nested objects', () => {
         const row = { profile: { email: 'a@x' } };
+
         expect(resolveCellValue({ key: 'email', accessor: 'profile.email' }, row)).toBe('a@x');
     });
 
@@ -79,6 +85,7 @@ describe('resolveCellValue', () => {
             key: 'full',
             accessor: (r: typeof row) => `${r.first} ${r.last}`,
         }, row);
+
         expect(full).toBe('Alice Liddell');
     });
 
@@ -90,40 +97,50 @@ describe('resolveCellValue', () => {
 describe('filterRowClickEvent', () => {
     function setup(html: string) {
         document.body.innerHTML = `<table><tbody><tr id="row">${html}</tr></tbody></table>`;
+
         return document.getElementById('row')!;
     }
 
     it('returns false for plain text clicks', () => {
         const row = setup('<td>plain</td>');
         const event = new MouseEvent('click', { bubbles: true });
+
         Object.defineProperty(event, 'target', { value: row.firstChild });
         expect(filterRowClickEvent(event)).toBe(false);
     });
 
     it('returns true when origin is a button', () => {
         setup('<td><button id="btn">go</button></td>');
+
         const event = new MouseEvent('click', { bubbles: true });
+
         Object.defineProperty(event, 'target', { value: document.getElementById('btn') });
         expect(filterRowClickEvent(event)).toBe(true);
     });
 
     it('returns true when origin is text inside an anchor', () => {
         setup('<td><a href="/x"><span id="t">go</span></a></td>');
+
         const event = new MouseEvent('click', { bubbles: true });
+
         Object.defineProperty(event, 'target', { value: document.getElementById('t') });
         expect(filterRowClickEvent(event)).toBe(true);
     });
 
     it('returns true when origin is a label[for]', () => {
         setup('<td><label for="cb" id="lbl">x</label></td>');
+
         const event = new MouseEvent('click', { bubbles: true });
+
         Object.defineProperty(event, 'target', { value: document.getElementById('lbl') });
         expect(filterRowClickEvent(event)).toBe(true);
     });
 
     it('returns true when click is inside a portalled overlay', () => {
         document.body.innerHTML = '<div class="vc-overlay-portal-content"><span id="x">i</span></div>';
+
         const event = new MouseEvent('click', { bubbles: true });
+
         Object.defineProperty(event, 'target', { value: document.getElementById('x') });
         expect(filterRowClickEvent(event)).toBe(true);
     });

@@ -7,6 +7,7 @@ function resetItemsByTraceIF(
 ) {
     for (const item of items) {
         const isEqual = isTraceEqual(item.trace, trace);
+
         item.active = isEqual;
         item.display = true;
 
@@ -18,6 +19,7 @@ function resetItemsByTraceIF(
             item.displayChildren = true;
         } else {
             const isAncestor = isTracePartOf(item.trace, trace);
+
             item.activeWithin = isAncestor;
             item.displayChildren = isAncestor || !!item.expanded;
         }

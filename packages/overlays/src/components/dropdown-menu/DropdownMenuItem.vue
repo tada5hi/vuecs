@@ -35,6 +35,7 @@ export default defineComponent({
         attrs,
     }) {
         const theme = useComponentTheme('dropdownMenu', props, dropdownMenuThemeDefaults);
+
         return () => h(
             DropdownMenuItem,
             mergeProps(attrs, {

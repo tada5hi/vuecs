@@ -5,6 +5,7 @@ import { EXTEND_SYMBOL } from '../../../src/theme/constants';
 describe('extend', () => {
     it('should create an ExtendValue', () => {
         const result = extend('my-class');
+
         expect(result.__extend).toBe(EXTEND_SYMBOL);
         expect(result.value).toBe('my-class');
     });

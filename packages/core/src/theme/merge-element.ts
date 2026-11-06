@@ -15,11 +15,18 @@ export function mergeClasses(
     const accumulator: Record<string, string> = {};
 
     for (const layer of chain) {
-        if (!layer) continue;
+        if (!layer) {
+            continue;
+        }
+
         const keys = Object.keys(layer);
+
         for (const key of keys) {
             const value = layer[key];
-            if (value === undefined) continue;
+
+            if (value === undefined) {
+                continue;
+            }
 
             if (isExtendValue(value)) {
                 accumulator[key] = mergeFn(accumulator[key] || '', value.value);
@@ -39,13 +46,22 @@ export function mergeVariants(
     let touched = false;
 
     for (const layer of chain) {
-        if (!layer) continue;
+        if (!layer) {
+            continue;
+        }
+
         touched = true;
+
         const names = Object.keys(layer);
+
         for (const name of names) {
-            if (!merged[name]) merged[name] = {};
+            if (!merged[name]) {
+                merged[name] = {};
+            }
+
             const def = layer[name];
             const values = Object.keys(def);
+
             for (const value of values) {
                 merged[name][value] = { ...def[value] };
             }
@@ -62,8 +78,12 @@ export function mergeCompoundVariants(
     let touched = false;
 
     for (const layer of chain) {
-        if (!layer) continue;
+        if (!layer) {
+            continue;
+        }
+
         touched = true;
+
         for (const compound of layer) {
             merged.push(compound);
         }
@@ -79,7 +99,10 @@ export function mergeDefaultVariants(
     let touched = false;
 
     for (const layer of chain) {
-        if (!layer) continue;
+        if (!layer) {
+            continue;
+        }
+
         touched = true;
         Object.assign(merged, layer);
     }
@@ -94,18 +117,30 @@ export function mergeElement(
     const result: ThemeElementDefinition = {};
 
     const classesChain = chain.map((entry) => entry.classes);
-    if (classesChain.some((c) => c !== undefined)) {
+
+    const matchesClassesChain = classesChain.some((c) => c !== undefined);
+
+    if (matchesClassesChain) {
         result.classes = mergeClasses(classesChain, mergeFn);
     }
 
     const variants = mergeVariants(chain.map((entry) => entry.variants));
-    if (variants) result.variants = variants;
+
+    if (variants) {
+        result.variants = variants;
+    }
 
     const compoundVariants = mergeCompoundVariants(chain.map((entry) => entry.compoundVariants));
-    if (compoundVariants) result.compoundVariants = compoundVariants;
+
+    if (compoundVariants) {
+        result.compoundVariants = compoundVariants;
+    }
 
     const defaultVariants = mergeDefaultVariants(chain.map((entry) => entry.defaultVariants));
-    if (defaultVariants) result.defaultVariants = defaultVariants;
+
+    if (defaultVariants) {
+        result.defaultVariants = defaultVariants;
+    }
 
     return result;
 }

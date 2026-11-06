@@ -15,7 +15,7 @@ import {
     h,
     mergeProps,
 } from 'vue';
-import type { FormOption } from '../../types/option';
+import type { FormOption } from '../../types/types';
 import FormRadio from '../form-radio/FormRadio.vue';
 
 export type FormRadioGroupThemeClasses = {
@@ -23,6 +23,7 @@ export type FormRadioGroupThemeClasses = {
 };
 
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public type name and declaration merging.
     interface ThemeElements {
         formRadioGroup?: ThemeElementDefinition<FormRadioGroupThemeClasses>;
     }
@@ -95,6 +96,7 @@ export default defineComponent({
                             labelContent: option.label,
                         }));
                     }
+
                     return slots.default?.();
                 },
             },

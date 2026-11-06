@@ -25,10 +25,15 @@ export default defineComponent({
     setup(props, { attrs, slots }) {
         const ctx = useBreadcrumbContext();
         const themeProps: UseComponentThemeProps<BreadcrumbThemeClasses> = {
-            get themeClass() { return { ...(ctx?.themeClass() ?? {}), ...(props.themeClass ?? {}) }; },
-            get themeVariant() { return { ...(ctx?.themeVariant() ?? {}), ...(props.themeVariant ?? {}) }; },
+            get themeClass() {
+                return { ...(ctx?.themeClass() ?? {}), ...(props.themeClass ?? {}) };
+            },
+            get themeVariant() {
+                return { ...(ctx?.themeVariant() ?? {}), ...(props.themeVariant ?? {}) };
+            },
         };
         const theme = useComponentTheme('breadcrumb', themeProps, breadcrumbThemeDefaults);
+
         return () => h(
             props.as,
             mergeProps(attrs, { class: theme.value.list || undefined }),

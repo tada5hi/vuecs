@@ -25,6 +25,7 @@ export default defineComponent({
     props: dropdownMenuLabelProps,
     setup(props, { slots }) {
         const theme = useComponentTheme('dropdownMenu', props, dropdownMenuThemeDefaults);
+
         return () => h(
             DropdownMenuLabel,
             {

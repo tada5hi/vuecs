@@ -1,33 +1,11 @@
-import {
-    defineComponent,
-    h,
-} from 'vue';
-import type { ExtractPublicPropTypes, PropType, SlotsType } from 'vue';
-import {
-    themableProps,
-    useComponentTheme,
-    useThemeProps,
-} from '@vuecs/core';
+import { tablePlaceholderProps } from './props';
+import { defineComponent, h } from 'vue';
+import type { SlotsType } from 'vue';
+import { useComponentTheme, useThemeProps } from '@vuecs/core';
 import { VCPlaceholder } from '@vuecs/placeholder';
-import type { PlaceholderAnimation } from '@vuecs/placeholder';
+
 import { tablePlaceholderThemeDefaults } from '../theme';
-import type { TablePlaceholderThemeClasses } from '../types';
 
-const tablePlaceholderProps = {
-    /** Number of body rows to render. */
-    rows: { type: Number, default: 5 },
-    /** Number of columns per row. */
-    columns: { type: Number, default: 4 },
-    /** Render a `<thead>` band with header-bar placeholders. */
-    showHeader: { type: Boolean, default: true },
-    /** Render a `<tfoot>` band with footer-bar placeholders. */
-    showFooter: { type: Boolean, default: false },
-    /** Animation pattern. Forwarded to every inner `<VCPlaceholder>`. */
-    animation: { type: String as PropType<PlaceholderAnimation>, default: 'wave' },
-    ...themableProps<TablePlaceholderThemeClasses>(),
-};
-
-export type TablePlaceholderProps = ExtractPublicPropTypes<typeof tablePlaceholderProps>;
 
 /**
  * Table-shaped skeleton — `rows × columns` placeholder bars in a real
@@ -66,8 +44,10 @@ export const VCTablePlaceholder = defineComponent({
             const pattern = [60, 80, 45, 90, 55, 75, 65];
             const len = pattern.length;
             const idx = ((rowIdx * 3 + colIdx) % len + len) % len;
+
             return `${pattern[idx]}%`;
         };
+
         return () => {
             const t = theme.value;
             const cell = (rowIdx: number, colIdx: number, tag: 'td' | 'th') => h(
@@ -84,6 +64,7 @@ export const VCTablePlaceholder = defineComponent({
             const rows = Math.max(0, props.rows);
             const colRange = Array.from({ length: cols }, (_, i) => i);
             const rowRange = Array.from({ length: rows }, (_, i) => i);
+
             return h(
                 'table',
                 {

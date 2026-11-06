@@ -9,6 +9,7 @@ const app = createApp({
         return () => h(List, { themeVariant: variantState.value });
     },
 });
+
 installVuecs(app);
 app.use(list);
 app.mount('#app');

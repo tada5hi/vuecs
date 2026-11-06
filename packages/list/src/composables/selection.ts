@@ -1,3 +1,4 @@
+/* eslint-disable @tada5hi/no-reexport-shims -- Preserve this existing public forwarding module. */
 /**
  * Thin re-export over `@vuecs/core`'s shared `useSelectionMachine` —
  * same composable powers `@vuecs/table` (ARIA grid). The slim shape

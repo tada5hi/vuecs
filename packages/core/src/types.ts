@@ -1,5 +1,9 @@
 import type { VNode, VNodeProps } from 'vue';
 
+import type { ThemeManagerOptions } from './theme';
+import type { DefaultsManagerOptions, IconsOptions } from './defaults';
+import type { ConfigManagerOptions } from './config';
+
 export type PartialPick<T, K extends keyof T> = Partial<Pick<T, K>>;
 
 export type VNodeClass = string | string[] | Record<string, boolean> | VNodeClass[];
@@ -66,3 +70,8 @@ export type GenericComponentShape<Props, Slots> = (
         emit: unknown;
     };
 };
+
+export type CoreOptions = ThemeManagerOptions &
+    DefaultsManagerOptions &
+    IconsOptions &
+    ConfigManagerOptions;

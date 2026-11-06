@@ -126,6 +126,7 @@ function showCustomComponent() {
     let pct = 0;
     const timer = setInterval(() => {
         pct += 20;
+
         if (pct >= 100) {
             clearInterval(timer);
             toast.update(id, {
@@ -136,8 +137,10 @@ function showCustomComponent() {
                 duration: 4000,
                 closable: true,
             });
+
             return;
         }
+
         toast.update(id, { componentProps: { progress: pct } });
     }, 400);
 }

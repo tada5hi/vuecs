@@ -19,7 +19,9 @@ function calculateItemScoreForPath(
     if (item.activeMatch) {
         if (item.activeMatch === currentPath) {
             return 6;
-        } if (currentPath.startsWith(item.activeMatch)) {
+        }
+
+        if (currentPath.startsWith(item.activeMatch)) {
             return 4;
         }
     }
@@ -27,7 +29,9 @@ function calculateItemScoreForPath(
     if (item.url) {
         if (item.url === currentPath) {
             return 3;
-        } if (currentPath.startsWith(item.url)) {
+        }
+
+        if (currentPath.startsWith(item.url)) {
             return 2;
         }
     }
@@ -74,6 +78,7 @@ export function findBestItemMatches(
 ) : NavigationItemNormalized[] {
     const result = findItemMatchesIF(items, options, { score: 0 });
     const [first] = result;
+
     if (!first) {
         return [];
     }

@@ -7,6 +7,7 @@ import type { ConfigManager } from '@vuecs/core';
  * on `@vuecs/overlays`.
  */
 declare module '@vuecs/core' {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the public contract.
     interface Config {
         /**
          * Selector or element that should receive scroll-lock when an

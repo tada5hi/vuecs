@@ -17,6 +17,7 @@ export function tryInjectNavigationRegistry(app?: App): NavigationRegistry | und
 
 export function injectNavigationRegistry(app?: App): NavigationRegistry {
     const instance = tryInjectNavigationRegistry(app);
+
     if (!instance) {
         throw new Error('A navigation registry has not been provided.');
     }
@@ -32,10 +33,12 @@ export function provideNavigationRegistry(
     // safety). Return the *already provided* registry so callers never get an
     // orphan instance that the navigation components won't inject.
     const existing = tryInjectNavigationRegistry(app);
+
     if (existing) {
         return existing;
     }
 
     provide(sym, registry, app);
+
     return registry;
 }

@@ -46,6 +46,7 @@ export default defineComponent({
             if (props.inline) {
                 return renderContent();
             }
+
             return h(ContextMenuPortal, null, { default: () => renderContent() });
         };
     },

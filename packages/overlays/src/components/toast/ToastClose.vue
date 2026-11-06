@@ -35,11 +35,13 @@ export default defineComponent({
     props: toastCloseProps,
     setup(props, { slots, attrs }) {
         const theme = useComponentTheme('toast', props, toastThemeDefaults);
+
         return () => {
             const hasSlot = !!slots.default;
             const ariaLabel = (attrs['aria-label'] as string | undefined) ??
                 (hasSlot ? undefined : 'Close');
             const slotKey = props.icon || !hasSlot ? 'closeIcon' : 'close';
+
             return h(
                 ToastClose,
                 mergeProps(attrs, {

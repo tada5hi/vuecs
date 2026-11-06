@@ -14,6 +14,7 @@ import vuecsTable, {
 
 const plugins = [[vuecsTable, {}]] as const;
 
+
 type User = { id: number; name: string };
 
 const data: User[] = [
@@ -41,7 +42,9 @@ const columns = [
 ];
 
 describe('<VCTableLite> (plan 033 v0.2-C)', () => {
-    afterEach(() => { document.body.innerHTML = ''; });
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
 
     it('renders the columns driver auto-render path', () => {
         const wrapper = mount(defineComponent({
@@ -51,10 +54,12 @@ describe('<VCTableLite> (plan 033 v0.2-C)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const headers = wrapper.element.querySelectorAll('thead th');
+
         expect(headers.length).toBe(2);
         expect(headers[0].textContent?.trim()).toBe('ID');
 
         const cells = wrapper.element.querySelectorAll('tbody td');
+
         expect(cells[0].textContent).toBe('1');
         expect(cells[1].textContent).toBe('Alice');
     });
@@ -67,6 +72,7 @@ describe('<VCTableLite> (plan 033 v0.2-C)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const sortableHeader = wrapper.element.querySelector('thead th[aria-sort]');
+
         expect(sortableHeader).not.toBeNull();
         expect(sortableHeader?.getAttribute('aria-sort')).toBe('none');
 
@@ -84,12 +90,15 @@ describe('<VCTableLite> (plan 033 v0.2-C)', () => {
                 return () => h(VCTableLite, {
                     columns: columns as never,
                     data: data as never,
-                    'onUpdate:sort': (v: unknown) => { onUpdateSort.value = v; },
+                    'onUpdate:sort': (v: unknown) => {
+                        onUpdateSort.value = v;
+                    },
                 });
             },
         }), { global: { plugins: [...plugins] } });
 
         const sortableHeader = wrapper.element.querySelector('thead th[aria-sort]') as HTMLElement;
+
         sortableHeader.click();
         await wrapper.vm.$nextTick();
 
@@ -109,6 +118,7 @@ describe('<VCTableLite> (plan 033 v0.2-C)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const row = wrapper.element.querySelector('tbody tr') as HTMLElement;
+
         // row-clickable=false in context → no tabindex/cursor-pointer.
         expect(row?.hasAttribute('tabindex')).toBe(false);
     });
@@ -125,6 +135,7 @@ describe('<VCTableLite> (plan 033 v0.2-C)', () => {
         }), { global: { plugins: [...plugins] } });
 
         const table = wrapper.element.querySelector('table');
+
         expect(table?.getAttribute('data-responsive')).toBe('true');
     });
 });

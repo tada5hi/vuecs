@@ -1,23 +1,5 @@
-export type ArrowKeyOptions = 'horizontal' | 'vertical' | 'both';
+import type { ArrowNavigationOptions } from './types';
 
-export type ArrowNavigationOptions = {
-    /** Restrict navigation to one axis. Default: `'both'`. */
-    arrowKeyOptions?: ArrowKeyOptions;
-    /** CSS selector that identifies collection items. Default: `'[data-vc-collection-item]'`. */
-    attributeName?: string;
-    /** Pre-resolved item array. Used when `parentElement` is unavailable. */
-    itemsArray?: HTMLElement[];
-    /** Wrap from last to first (and vice versa). Default: `true`. */
-    loop?: boolean;
-    /** Reading direction for horizontal arrows. Default: `'ltr'`. */
-    dir?: 'ltr' | 'rtl';
-    /** Call `event.preventDefault()` on a matching key. Default: `true`. */
-    preventScroll?: boolean;
-    /** Focus the resolved item before returning it. Default: `false`. */
-    focus?: boolean;
-    /** Skip navigation when the event originates from `<input>` / `<textarea>`. Default: `false`. */
-    enableIgnoredElement?: boolean;
-};
 
 const ignoredElements = ['INPUT', 'TEXTAREA'] as const;
 
@@ -46,12 +28,11 @@ export function useArrowNavigation(
     parentElement: HTMLElement | null | undefined,
     options: ArrowNavigationOptions = {},
 ): HTMLElement | null {
-    if (!currentElement) {
+    if ((!currentElement) || (options.enableIgnoredElement && ignoredElements.includes(currentElement.nodeName as typeof ignoredElements[number]))) {
         return null;
     }
-    if (options.enableIgnoredElement && ignoredElements.includes(currentElement.nodeName as typeof ignoredElements[number])) {
-        return null;
-    }
+
+
 
     const {
         arrowKeyOptions = 'both',
@@ -99,13 +80,16 @@ export function useArrowNavigation(
     }
 
     let item: HTMLElement | null = null;
+
     if (goingHorizontal || goingVertical) {
         let goForward: boolean;
+
         if (goingVertical) {
             goForward = down;
         } else {
             goForward = dir === 'ltr' ? right : left;
         }
+
         item = findNextFocusableElement(allCollectionItems, currentElement, { goForward, loop });
     } else if (home) {
         item = allCollectionItems.at(0) ?? null;
@@ -116,6 +100,7 @@ export function useArrowNavigation(
     if (focus) {
         item?.focus();
     }
+
     return item;
 }
 
@@ -128,47 +113,54 @@ function findNextFocusableElement(
     if (--iterations === 0) {
         return null;
     }
+
     const index = elements.indexOf(currentElement);
     let newIndex: number;
+
     if (index === -1) {
         newIndex = options.goForward ? 0 : elements.length - 1;
     } else {
         newIndex = options.goForward ? index + 1 : index - 1;
     }
+
     if (!options.loop && (newIndex < 0 || newIndex >= elements.length)) {
         return null;
     }
+
     const adjustedIndex = (newIndex + elements.length) % elements.length;
     const candidate = elements[adjustedIndex];
+
     if (!candidate) {
         return null;
     }
+
     if (isDisabledElement(candidate)) {
         return findNextFocusableElement(elements, candidate, options, iterations);
     }
+
     return candidate;
 }
 
 function isDisabledElement(el: HTMLElement): boolean {
     // Native `disabled` attribute — set explicitly to anything other than
     // the string `"false"` (HTML allows `disabled=""` and `disabled="disabled"`).
-    if (el.hasAttribute('disabled') && el.getAttribute('disabled') !== 'false') {
+    if ((el.hasAttribute('disabled') && el.getAttribute('disabled') !== 'false') || (el.getAttribute('aria-disabled') === 'true')) {
         return true;
     }
+
     // ARIA + data-* equivalents for non-button targets (anchors, divs).
-    if (el.getAttribute('aria-disabled') === 'true') {
+
+
+    if ((el.hasAttribute('data-disabled')) || (el.classList.contains('disabled'))) {
         return true;
     }
-    if (el.hasAttribute('data-disabled')) {
-        return true;
-    }
+
     // CSS-class disabled state — `VCLink` (the navigation consumer)
     // toggles a `disabled` class on its anchor instead of setting the
     // attribute, so an attribute-only check would never skip disabled
     // navigation links.
-    if (el.classList.contains('disabled')) {
-        return true;
-    }
+
+
     return false;
 }
 
@@ -180,8 +172,10 @@ function isVisibleElement(el: HTMLElement): boolean {
     // jsdom under unit tests) we fall through to treating the element as
     // visible so test environments without layout don't filter everything.
     const cv = (el as HTMLElement & { checkVisibility?: () => boolean }).checkVisibility;
+
     if (typeof cv === 'function') {
         return cv.call(el);
     }
+
     return true;
 }

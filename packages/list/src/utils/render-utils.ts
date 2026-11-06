@@ -1,8 +1,8 @@
-import { 
-    Comment, 
-    Fragment, 
-    Text, 
-    cloneVNode, 
+import {
+    Comment,
+    Fragment,
+    Text,
+    cloneVNode,
 } from 'vue';
 import type { VNode } from 'vue';
 
@@ -26,21 +26,36 @@ export function mergeSlotProps<S extends object, E extends object>(
  * `<VCList>` and for the as-child fast-path below.
  */
 export function meaningfulVNodes(nodes: VNode[] | undefined): VNode[] {
-    if (!nodes) return [];
+    if (!nodes) {
+        return [];
+    }
+
     const out: VNode[] = [];
+
     for (const vnode of nodes) {
         if (vnode.type === Fragment) {
             const children = Array.isArray(vnode.children) ? (vnode.children as VNode[]) : undefined;
+
             out.push(...meaningfulVNodes(children));
+
             continue;
         }
-        if (vnode.type === Comment) continue;
+
+        if (vnode.type === Comment) {
+            continue;
+        }
+
         if (vnode.type === Text) {
             const text = vnode.children;
-            if (typeof text === 'string' && text.trim().length === 0) continue;
+
+            if (typeof text === 'string' && text.trim().length === 0) {
+                continue;
+            }
         }
+
         out.push(vnode);
     }
+
     return out;
 }
 
@@ -66,6 +81,10 @@ export function applyAsChild(
     extra: Record<string, unknown> = {},
 ): VNode | null {
     const meaningful = meaningfulVNodes(nodes);
-    if (meaningful.length !== 1) return null;
+
+    if (meaningful.length !== 1) {
+        return null;
+    }
+
     return cloneVNode(meaningful[0], extra, true);
 }

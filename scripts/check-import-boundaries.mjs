@@ -33,13 +33,20 @@ function report(rule, detail) {
 
 function walk(dir, exts) {
     const out = [];
+
     for (const entry of readdirSync(join(ROOT, dir), { withFileTypes: true, recursive: true })) {
-        if (!entry.isFile()) continue;
-        if (exts.some((e) => entry.name.endsWith(e))) {
+        if (!entry.isFile()) {
+            continue;
+        }
+
+        const matchesExts = exts.some((e) => entry.name.endsWith(e));
+
+        if (matchesExts) {
             // Node <22 lacks parentPath; recursive:true gives it on 22+.
             out.push(join(entry.parentPath ?? dir, entry.name));
         }
     }
+
     return out;
 }
 
@@ -50,9 +57,12 @@ function readJson(rel) {
 // (a) design/src must not runtime-import @vuecs/core
 for (const file of walk('packages/design/src', ['.ts', '.mjs', '.js'])) {
     const src = readFileSync(file, 'utf8');
+
     src.split('\n').forEach((line, i) => {
-        if (!/from\s+['"]@vuecs\/core['"]/.test(line)) return;
-        if (/\b(import|export)\s+type\b/.test(line)) return; // type-only OK
+        if (!/from\s+['"]@vuecs\/core['"]/.test(line) || /\b(import|export)\s+type\b/.test(line)) {
+            return;
+        } // type-only OK
+
         report('a', `${file}:${i + 1} runtime import of @vuecs/core: ${line.trim()}`);
     });
 }
@@ -68,8 +78,12 @@ for (const rel of ['packages/core/src/theme/resolve.ts', 'packages/core/src/them
 
 // (c) theme packages carry no vue / @vuecs/* runtime dependency
 for (const theme of readdirSync(join(ROOT, 'themes'), { withFileTypes: true })) {
-    if (!theme.isDirectory()) continue;
+    if (!theme.isDirectory()) {
+        continue;
+    }
+
     const deps = readJson(`themes/${theme.name}/package.json`).dependencies ?? {};
+
     for (const name of Object.keys(deps)) {
         if (name === 'vue' || name.startsWith('@vuecs/')) {
             report('c', `themes/${theme.name} declares runtime dependency "${name}" (must be peer/dev)`);
@@ -79,13 +93,19 @@ for (const theme of readdirSync(join(ROOT, 'themes'), { withFileTypes: true })) 
 
 // (d) @vuecs/core has no runtime dependencies
 const coreDeps = Object.keys(readJson('packages/core/package.json').dependencies ?? {});
+
 if (coreDeps.length > 0) {
     report('d', `@vuecs/core declares runtime dependencies: ${coreDeps.join(', ')} (Vue must stay a peer dep)`);
 }
 
 if (violations.length > 0) {
     console.error(`✗ import-boundary guard: ${violations.length} violation(s)\n`);
-    for (const v of violations) console.error(`  ${v}`);
+
+    for (const v of violations) {
+        console.error(`  ${v}`);
+    }
+
     process.exit(1);
 }
+
 console.log('✓ import-boundary guard: all layering invariants hold');

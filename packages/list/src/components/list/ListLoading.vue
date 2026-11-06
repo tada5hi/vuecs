@@ -2,11 +2,11 @@
 import { useComponentTheme } from '@vuecs/core';
 import type { ComponentThemeDefinition, ThemeClassesOverride, VariantValues } from '@vuecs/core';
 import { defineComponent, h } from 'vue';
-import type { 
-    Component, 
-    ExtractPublicPropTypes, 
-    PropType, 
-    SlotsType, 
+import type {
+    Component,
+    ExtractPublicPropTypes,
+    PropType,
+    SlotsType,
 } from 'vue';
 import { useList } from '../../composables';
 import { applyAsChild } from '../../utils';
@@ -73,7 +73,11 @@ export default defineComponent({
             },
             get themeVariant() {
                 const base = { ...(props.themeVariant ?? {}) };
-                if (props.overlay) base.overlay = true;
+
+                if (props.overlay) {
+                    base.overlay = true;
+                }
+
                 return base;
             },
         };
@@ -81,8 +85,13 @@ export default defineComponent({
         const { state } = useList('VCListLoading');
 
         return () => {
-            if (!state.busy.value) return null;
-            if (!props.overlay && state.data.value.length > 0) return null;
+            if (!state.busy.value) {
+                return null;
+            }
+
+            if (!props.overlay && state.data.value.length > 0) {
+                return null;
+            }
 
             const rootClass = theme.value.root || undefined;
             const slotProps: ListLoadingSlotProps = {
@@ -95,10 +104,15 @@ export default defineComponent({
                 role: 'status',
                 'aria-live': 'polite',
             };
+
             if (props.asChild) {
                 const cloned = applyAsChild(children, attrs);
-                if (cloned) return cloned;
+
+                if (cloned) {
+                    return cloned;
+                }
             }
+
             return h(props.tag ?? props.as, attrs, children);
         };
     },

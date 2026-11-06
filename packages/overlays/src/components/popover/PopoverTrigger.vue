@@ -26,6 +26,7 @@ export default defineComponent({
     props: popoverTriggerProps,
     setup(props, { attrs, slots }) {
         const theme = useComponentTheme('popover', props, popoverThemeDefaults);
+
         return () => h(
             PopoverTrigger,
             mergeProps(attrs, {

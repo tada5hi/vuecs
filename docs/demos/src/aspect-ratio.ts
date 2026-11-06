@@ -5,6 +5,7 @@ import { installIframeBridge } from './iframe-bridge';
 import { installVuecs } from './shared';
 
 const app = createApp(AspectRatio);
+
 installVuecs(app);
 app.use(elements);
 app.mount('#app');

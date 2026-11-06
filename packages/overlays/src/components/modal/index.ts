@@ -15,3 +15,4 @@ export type { ModalCloseProps } from './ModalClose.vue';
 export * from './theme';
 export * from './types';
 export * from './use-modal';
+export type { ModalView, UseModalOptions, UseModalReturn } from './types';

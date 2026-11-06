@@ -7,7 +7,7 @@ import {
 } from 'vitest';
 import { nextTick, ref } from 'vue';
 import { bindColorMode } from '../../../../src/core/color-mode/bind';
-import type { ColorMode } from '../../../../src/core/color-mode/catalog';
+import type { ColorMode } from '../../../../src/core/color-mode/types';
 
 describe('bindColorMode', () => {
     afterEach(() => {
@@ -17,6 +17,7 @@ describe('bindColorMode', () => {
     it('exposes mode that proxies to the source', () => {
         const source = ref<ColorMode>('dark');
         const { mode } = bindColorMode(source, { syncClass: false });
+
         expect(mode.value).toBe('dark');
         mode.value = 'light';
         expect(source.value).toBe('light');
@@ -25,6 +26,7 @@ describe('bindColorMode', () => {
     it('resolves "light" / "dark" without consulting system preference', () => {
         const source = ref<ColorMode>('dark');
         const { resolved } = bindColorMode(source, { syncClass: false });
+
         expect(resolved.value).toBe('dark');
         source.value = 'light';
         expect(resolved.value).toBe('light');
@@ -33,6 +35,7 @@ describe('bindColorMode', () => {
     it('isDark mirrors resolved and writes back to source', () => {
         const source = ref<ColorMode>('light');
         const { isDark } = bindColorMode(source, { syncClass: false });
+
         expect(isDark.value).toBe(false);
         isDark.value = true;
         expect(source.value).toBe('dark');
@@ -44,12 +47,14 @@ describe('bindColorMode', () => {
         const source = ref<ColorMode>('system');
         const { toggle, resolved } = bindColorMode(source, { syncClass: false });
         const initial = resolved.value;
+
         toggle();
         expect(source.value).toBe(initial === 'dark' ? 'light' : 'dark');
     });
 
     it('syncs the .dark / .light class on <html> when syncClass is true', async () => {
         const source = ref<ColorMode>('dark');
+
         bindColorMode(source, { syncClass: true });
         await nextTick();
         expect(document.documentElement.classList.contains('dark')).toBe(true);
@@ -61,6 +66,7 @@ describe('bindColorMode', () => {
 
     it('skips class sync when syncClass is false', async () => {
         const source = ref<ColorMode>('dark');
+
         bindColorMode(source, { syncClass: false });
         await nextTick();
         expect(document.documentElement.classList.contains('dark')).toBe(false);

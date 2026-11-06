@@ -18,7 +18,9 @@ withDefaults(defineProps<{
 });
 
 const loading = ref(true);
-function toggleLoading() { loading.value = !loading.value; }
+function toggleLoading() {
+    loading.value = !loading.value;
+}
 </script>
 
 <template>

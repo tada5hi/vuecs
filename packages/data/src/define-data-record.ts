@@ -55,10 +55,12 @@ export function defineDataRecord<
     let resolvedInput : Input | undefined = options.initialInput;
 
     let hydrated = false;
+
     if (options.hydrate) {
         const snapshot = typeof options.hydrate === 'function' ?
             options.hydrate() :
             options.hydrate;
+
         if (snapshot) {
             dataRef.value = snapshot.data;
             resolvedInput = snapshot.input;
@@ -94,6 +96,7 @@ export function defineDataRecord<
         }
 
         const active = controller.active();
+
         if (active && matches(active.input)) {
             return active.promise;
         }
@@ -104,6 +107,7 @@ export function defineDataRecord<
     const set = (item: T, opts?: DataMutationOptions) => controller.enqueueOrApply(() => {
         dataRef.value = item;
         resolvedInput = undefined;
+
         return true;
     }, opts);
 
@@ -118,7 +122,10 @@ export function defineDataRecord<
     // its inputs, and `structuredClone` throws on a Proxy. `toRaw` of a plain
     // object is that same object, so the ordinary path is untouched.
     const mergePartial = (partial: Partial<T>, opts?: DataBufferedMutationOptions) => controller.enqueueOrApply(() => {
-        if (dataRef.value === undefined) return false;
+        if (dataRef.value === undefined) {
+            return false;
+        }
+
         const merged = mergePatch(
             {},
             toRaw(partial as Record<string, any>),
@@ -131,13 +138,19 @@ export function defineDataRecord<
         } else {
             dataRef.value = merged;
         }
+
         return true;
     }, opts);
 
     const clear = (opts?: DataMutationOptions) => controller.enqueueOrApply(() => {
         resolvedInput = undefined;
-        if (dataRef.value === undefined) return false;
+
+        if (dataRef.value === undefined) {
+            return false;
+        }
+
         dataRef.value = undefined;
+
         return true;
     }, opts);
 

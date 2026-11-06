@@ -1,3 +1,6 @@
+import type { linkProps } from './props';
+import type { ExtractPublicPropTypes } from 'vue';
+
 type Options = {};
 
 // NOTE (#1705): `LinkProperties` was removed from here. It was a second,
@@ -15,3 +18,5 @@ export type LinkQuery = Record<string, LinkQueryValue | LinkQueryValue[]>;
 export type {
     Options,
 };
+
+export type LinkProps = ExtractPublicPropTypes<typeof linkProps>;

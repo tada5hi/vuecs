@@ -46,6 +46,7 @@ test('LinkProps exposes every real prop, `query` included', () => {
     // incrementally, which `@vuecs/navigation`'s `<VCNavItem>` relies on.
     // Fails to compile if any prop ever becomes required.
     const incremental: LinkProps = {};
+
     incremental.href = '/x';
     incremental.target = '_blank';
     void incremental;
@@ -71,6 +72,7 @@ test('LinkProps has no index signature, so typos are rejected', () => {
         // @ts-expect-error — `queries` is not a prop; the real one is `query`.
         queries: { a: '1' },
     };
+
     void typo;
 
     // A correctly-spelled `query` still compiles.
@@ -78,6 +80,7 @@ test('LinkProps has no index signature, so typos are rejected', () => {
         to: '/x',
         query: { a: '1' },
     };
+
     void ok;
 
     // Arbitrary attribute pass-through is no longer part of `LinkProps`.
@@ -86,6 +89,7 @@ test('LinkProps has no index signature, so typos are rejected', () => {
         to: '/x',
         'data-testid': 'nav-link',
     };
+
     void withAttrs;
 });
 

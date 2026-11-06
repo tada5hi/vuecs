@@ -10,7 +10,7 @@ import VCAlertDialogCancel from './AlertDialogCancel.vue';
 import VCAlertDialogAction from './AlertDialogAction.vue';
 import { alertDialogThemeDefaults } from './theme';
 import { alertDialogHardcodedDefaults, injectAlertDialogManager } from './use-alert-dialog';
-import type { AlertDialogRequest } from './use-alert-dialog';
+import type { AlertDialogRequest } from './types';
 
 /**
  * Single host for the imperative `useAlertDialog()` API — place it once near the
@@ -46,14 +46,19 @@ export default defineComponent({
         // for — which, with 2+ queued confirms, would otherwise resolve the
         // wrong promise.
         function resolveRequest(req: AlertDialogRequest, value: boolean): void {
-            if (head.value?.id !== req.id) return;
+            if (head.value?.id !== req.id) {
+                return;
+            }
+
             manager.settle(value);
         }
 
         function onOpenChange(next: boolean): void {
             // Only Escape reaches here (outside-click is disabled by Reka and
             // the manual buttons don't close on click). Cancel the shown head.
-            if (!next && head.value) resolveRequest(head.value, false);
+            if (!next && head.value) {
+                resolveRequest(head.value, false);
+            }
         }
 
         function renderDefaultBody(req: AlertDialogRequest): VNode[] {
@@ -83,6 +88,7 @@ export default defineComponent({
                     }, () => options.confirmLabel ?? defaults.value.confirmLabel),
                 ]),
             ];
+
             return children.filter((c): c is VNode => c !== null);
         }
 
@@ -95,11 +101,13 @@ export default defineComponent({
                     cancel: () => resolveRequest(req, false),
                 });
             }
+
             return renderDefaultBody(req);
         }
 
         return () => {
             const current = head.value;
+
             return h(VCAlertDialog, {
                 open: open.value,
                 'onUpdate:open': onOpenChange,

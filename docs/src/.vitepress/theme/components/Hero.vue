@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { useData } from 'vitepress';
 import { useColorPalette } from '@vuecs/design';
-import {
-    NEUTRAL_PALETTES,
-    type NeutralPalette,
-    type PrimaryPalette,
-} from '../palette-options';
+import { NEUTRAL_PALETTES } from '../palette-options';
+import type { NeutralPalette, PrimaryPalette } from '../types';
 
 const { isDark } = useData();
 

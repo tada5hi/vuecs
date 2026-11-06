@@ -23,11 +23,14 @@ export function useBreadcrumbFromRegistry(
     id: MaybeRefOrGetter<string>,
 ): ComputedRef<BreadcrumbItem[]> {
     const registry = tryInjectNavigationRegistry();
+
     return computed<BreadcrumbItem[]>(() => {
         if (!registry) {
             return [];
         }
+
         const entry = registry.get(toValue(id));
+
         return entry.activeTrail.value.map((node) => ({
             label: node.name,
             to: node.url,
