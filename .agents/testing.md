@@ -6,32 +6,9 @@
 - Each tested package/theme has its own `test/vitest.config.ts`.
 - Two test flavours: runtime specs (`*.spec.ts`) and type-level drift guards (`*.test-d.ts`, run via Vitest `typecheck`).
 
-## Test inventory
+## Test boundaries
 
-**18 workspaces** carry tests — **112 `.spec.ts`** total (plus 7 `.test-d.ts`
-type guards). Keep this table in
-sync when adding a test dir.
-
-| Workspace | Specs | Focus |
-|-----------|------:|-------|
-| `@vuecs/core` | 36 | Theme resolve/extend/variant/manager/composable/install, defaults, config, `defineTheme`/`mergeThemes`, `auditTheme`, ported composables (`useSelectionMachine`, `createCollectionMutations`, primitive, …) |
-| `@vuecs/table` | 16 | Sort machine, `sortRows`, selection machine, auto-render, driver/columns |
-| `@vuecs/elements` | 10 | Card / Alert / Collapse / Badge / Avatar / Tag parts |
-| `@vuecs/navigation` | 11 | Registry, resolver, breadcrumb, stepper, submenu, expanded groups |
-| `@vuecs/overlays` | 10 | Modal / AlertDialog / Popover / Tooltip / menus, `useToast` / `useModal` / `useAlertDialog` |
-| `@vuecs/design` | 8 | `useColorMode`, color-mode catalog/guard, palette render/apply, standalone catalog |
-| `@vuecs/tree` | 4 | `parseTreePaths`, `buildTreeIndex`, cascade kernel (`normalize` / `cascadeSelect` / `orderKeys`), and the `<VCTree>` pins — `as-child` attribute ownership, the phantom `getKey({})` resolver, always-bound `:expanded`, cascade/indeterminate, lazy `load()` + reconcile |
-| `@vuecs/data` | 2 | `defineDataCollection` / `defineDataRecord` — latest-wins token guard, error capture vs rethrow, autoLoad + hydration skip, mutators + gate flags + `total` delta, D12 buffering, patch-merge semantics, snapshot round-trip |
-| `@vuecs/forms` | 2 | Components (incl. Reka `VCFormSelect`), `useSubmitButton` |
-| `@vuecs/list` | 2 | Components + list context |
-| `@vuecs/locale` | 2 | `bindLocale` / `useLocaleManager` |
-| `@vuecs/pagination` | 2 | Pagination behaviour |
-| `@vuecs/placeholder` | 1 | Placeholder / wrapper |
-| `@vuecs/button` | 1 | Disabled enforcement across native / non-native `as` targets |
-| `@vuecs/link` | 1 | Render-path resolution, `query` href merging, active / disabled |
-| `@vuecs/theme-tailwind` | 2 | `auditTheme` drift + palette render |
-| `@vuecs/theme-bootstrap` | 1 | `auditTheme` drift |
-| `@vuecs/theme-bulma` | 1 | `auditTheme` drift |
+Package runtime specs cover their behavior and rendering. Type-level checks consume built declarations to catch exported generic and model-value drift. `@vuecs/nuxt` checks all public option-interface imports through the published entry point with `tsc` after its build. Keep both runtime behavior and declaration consumers covered when changing a package API.
 
 ## Running Tests
 
@@ -51,7 +28,7 @@ npm run test --workspace=packages/table --if-present
 
 ## Type-level tests (drift guards)
 
-Seven `*.test-d.ts` files assert that the **built `dist` declarations** keep
+The `*.test-d.ts` files assert that the **built `dist` declarations** keep
 their generic-over-data / model-value / cross-package structural inference.
 They run via each package's Vitest `typecheck` block (its own
 `test/tsconfig.json`), not the runtime `.spec.ts` path:
