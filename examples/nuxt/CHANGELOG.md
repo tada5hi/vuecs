@@ -1,5 +1,23 @@
 # Changelog
 
+## [6.4.2](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v6.4.1...examples-nuxt-v6.4.2) (2026-11-06)
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 11 updates ([#1757](https://github.com/tada5hi/vuecs/issues/1757)) ([206639d](https://github.com/tada5hi/vuecs/commit/206639d58b4477d3daa063e4c63c94744037d194))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/button bumped from ^1.4.3 to ^1.4.4
+    * @vuecs/icon bumped from ^1.1.2 to ^1.1.3
+    * @vuecs/nuxt bumped from ^1.2.2 to ^1.2.3
+    * @vuecs/pagination bumped from ^2.2.2 to ^2.2.3
+    * @vuecs/theme-tailwind bumped from ^6.5.1 to ^6.5.2
+
 ## [6.4.1](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v6.4.0...examples-nuxt-v6.4.1) (2026-10-27)
 
 
