@@ -2,7 +2,28 @@ import type { Directive } from 'vue';
 
 type ValueElement = globalThis.HTMLInputElement | globalThis.HTMLTextAreaElement;
 
-function apply(el: ValueElement, value: string | null | undefined): void {
+export type DomValue = string | null | undefined;
+
+/**
+ * The value a text control shows: a forwarded native `value` attribute wins
+ * over the model, as it did when both were merged into the vnode's props.
+ */
+export function resolveDomValue(attrs: Record<string, unknown>, model: DomValue): DomValue {
+    if (!Object.hasOwn(attrs, 'value')) {
+        return model;
+    }
+
+    const forwarded = attrs.value;
+
+    return forwarded === null || forwarded === undefined ? null : String(forwarded);
+}
+
+/** The forwarded attributes without `value`, which only `vDomValue` may set. */
+export function withoutValue(attrs: Record<string, unknown>): Record<string, unknown> {
+    return Object.fromEntries(Object.entries(attrs).filter(([key]) => key !== 'value'));
+}
+
+function apply(el: ValueElement, value: DomValue): void {
     const next = value ?? '';
 
     // a write that matches would move the caret to the end while typing
@@ -16,9 +37,17 @@ function apply(el: ValueElement, value: string | null | undefined): void {
  * A `value` vnode prop is mirrored into the `value` attribute by Vue's runtime,
  * so a typed or bound value (a password, a key) would sit in the markup.
  */
-export const vDomValue: Directive<ValueElement, string | null | undefined> = {
+export const vDomValue: Directive<ValueElement, DomValue> = {
     mounted(el, { value }) {
-        apply(el, value);
+        // always written: the control then holds its own value, not its default
+        el.value = value ?? '';
+
+        // a hydrated control keeps the server's default, which a form reset would restore
+        if (el.tagName === 'TEXTAREA') {
+            el.defaultValue = '';
+        } else {
+            el.removeAttribute('value');
+        }
     },
     updated(el, { value }) {
         apply(el, value);

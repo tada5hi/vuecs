@@ -1292,6 +1292,63 @@ describe('VCFormTextarea', () => {
     });
 });
 
+describe('text control values', () => {
+    it.each([
+        ['VCFormInput', VCFormInput, 'input'],
+        ['VCFormTextarea', VCFormTextarea, 'textarea'],
+    ] as const)('%s lets a forwarded value win over the model, as a DOM property only', async (_name, component, tag) => {
+        const wrapper = mount(component, {
+            attrs: { value: 'forwarded' },
+            global: { plugins: [themePlugin] },
+        });
+        const element = wrapper.find(tag).element as HTMLInputElement;
+
+        expect(element.value).toBe('forwarded');
+        expect(element.getAttribute('value')).toBeNull();
+
+        await wrapper.setProps({ modelValue: 'model' });
+
+        expect(element.value).toBe('forwarded');
+        expect(wrapper.html()).not.toContain('forwarded');
+    });
+
+    it.each([
+        ['VCFormInput', VCFormInput, 'input'],
+        ['VCFormTextarea', VCFormTextarea, 'textarea'],
+    ] as const)('%s drops the server-rendered value once hydrated', async (_name, component, tag) => {
+        const model = ref<string | null>('initial');
+        const render = () => h(component, { modelValue: model.value });
+        const server = createSSRApp(render);
+
+        server.use(themePlugin);
+
+        const container = document.createElement('div');
+
+        container.innerHTML = await renderToString(server);
+        document.body.append(container);
+
+        const client = createSSRApp(render);
+
+        client.use(themePlugin);
+        client.mount(container);
+
+        const element = container.querySelector(tag) as HTMLInputElement;
+
+        expect(element.value).toBe('initial');
+        expect(container.innerHTML).not.toContain('initial');
+
+        model.value = null;
+        await nextTick();
+
+        expect(element.value).toBe('');
+        // a native form reset would bring a stale default back
+        expect(element.defaultValue).toBe('');
+
+        client.unmount();
+        container.remove();
+    });
+});
+
 describe('text control values on the server', () => {
     it('should render the initial value into the markup, as v-model does', async () => {
         const input = createSSRApp(() => h(VCFormInput, { modelValue: 'initial' }));

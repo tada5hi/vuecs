@@ -17,7 +17,7 @@ import {
     watch,
     withDirectives,
 } from 'vue';
-import { vDomValue } from '../../utils/dom-value';
+import { resolveDomValue, vDomValue, withoutValue } from '../../utils/dom-value';
 
 export type FormTextareaThemeClasses = {
     root: string;
@@ -55,6 +55,8 @@ export type FormTextareaProps = ExtractPublicPropTypes<typeof formTextareaProps>
 
 export default defineComponent({
     name: 'VCFormTextarea',
+    // the render merges `attrs` itself (without `value`); inheriting them would put `value` back
+    inheritAttrs: false,
     props: formTextareaProps,
     emits: ['update:modelValue'],
     setup(props, { attrs, emit }) {
@@ -89,12 +91,13 @@ export default defineComponent({
             }
         };
 
-        // the value goes through vDomValue, never a `value` prop: Vue would mirror it into the attribute
+        // the value (a forwarded one first) goes through vDomValue, never a `value` prop:
+        // Vue would mirror it into the attribute
         return () => withDirectives(h('textarea', mergeProps({
             placeholder: '...',
             class: theme.value.root || undefined,
             onInput,
-        }, attrs)), [[vDomValue, localValue.value]]);
+        }, withoutValue(attrs))), [[vDomValue, resolveDomValue(attrs, localValue.value)]]);
     },
 });
 </script>
