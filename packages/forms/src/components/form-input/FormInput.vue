@@ -19,7 +19,9 @@ import {
     mergeProps,
     ref,
     watch,
+    withDirectives,
 } from 'vue';
+import { resolveDomValue, vDomValue, withoutValue } from '../../utils/dom-value';
 import { useFormInputThemeProps } from '../form-group/context';
 
 export type FormInputThemeClasses = {
@@ -158,7 +160,10 @@ export default defineComponent({
 
             // Input element — square the corner(s) adjacent to a group element
             // so the input reads as one piece with the prepend/append.
-            children.push(h('input', mergeProps({
+            // The value (a forwarded one first) goes through vDomValue, never a
+            // `value` prop: Vue would mirror it into the attribute, putting a
+            // password in the markup.
+            children.push(withDirectives(h('input', mergeProps({
                 type: props.type,
                 class: [
                     resolved.root,
@@ -166,8 +171,7 @@ export default defineComponent({
                     hasAppend ? resolved.rootGroupEnd : undefined,
                 ],
                 onInput,
-                value: localValue.value,
-            }, attrs)));
+            }, withoutValue(attrs))), [[vDomValue, resolveDomValue(attrs, localValue.value)]]));
 
             // Group append
             if (slots.groupAppend) {
