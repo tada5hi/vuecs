@@ -2,7 +2,7 @@ import type { Directive } from 'vue';
 
 type ValueElement = globalThis.HTMLInputElement | globalThis.HTMLTextAreaElement;
 
-export type DomValue = string | null | undefined;
+type DomValue = string | null | undefined;
 
 /**
  * The value a text control shows: a forwarded native `value` attribute wins
