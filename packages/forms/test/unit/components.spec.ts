@@ -7,7 +7,13 @@ import {
     it,
     vi,
 } from 'vitest';
-import { h, nextTick, ref } from 'vue';
+import { 
+    createSSRApp, 
+    h, 
+    nextTick, 
+    ref, 
+} from 'vue';
+import { renderToString } from 'vue/server-renderer';
 import { mount } from '@vue/test-utils';
 import { installDefaultsManager, installThemeManager } from '@vuecs/core';
 import { default as VCFormCheckbox } from '../../src/components/form-checkbox/FormCheckbox.vue';
@@ -754,6 +760,32 @@ describe('VCFormInput', () => {
             vi.useRealTimers();
         }
     });
+
+    it('should keep a typed or bound value out of the value attribute', async () => {
+        const wrapper = mount(VCFormInput, {
+            props: { modelValue: 'bound-secret', type: 'password' },
+            global: { plugins: [themePlugin] },
+        });
+        const input = wrapper.find('input');
+
+        // the DOM property carries the value; the markup never does (a password stays out of outerHTML)
+        expect((input.element as HTMLInputElement).value).toBe('bound-secret');
+        expect(input.attributes('value')).toBeUndefined();
+
+        await input.setValue('typed-secret');
+        await wrapper.setProps({ modelValue: 'typed-secret' });
+
+        expect((input.element as HTMLInputElement).value).toBe('typed-secret');
+        expect(wrapper.html()).not.toContain('secret');
+
+        await wrapper.setProps({ modelValue: 'reset' });
+
+        expect((input.element as HTMLInputElement).value).toBe('reset');
+
+        await wrapper.setProps({ modelValue: null });
+
+        expect((input.element as HTMLInputElement).value).toBe('');
+    });
 });
 
 describe('VCFormCheckbox', () => {
@@ -1236,6 +1268,40 @@ describe('VCFormTextarea', () => {
 
         await wrapper.find('textarea').setValue('text');
         expect(wrapper.emitted('update:modelValue')![0]).toEqual(['text']);
+    });
+
+    it('should keep a typed or bound value out of the value attribute', async () => {
+        const wrapper = mount(VCFormTextarea, {
+            props: { modelValue: 'bound-secret' },
+            global: { plugins: [themePlugin] },
+        });
+        const area = wrapper.find('textarea');
+
+        expect((area.element as HTMLTextAreaElement).value).toBe('bound-secret');
+        expect(area.attributes('value')).toBeUndefined();
+
+        await area.setValue('typed\nsecret');
+        await wrapper.setProps({ modelValue: 'typed\nsecret' });
+
+        expect((area.element as HTMLTextAreaElement).value).toBe('typed\nsecret');
+        expect(wrapper.html()).not.toContain('secret');
+
+        await wrapper.setProps({ modelValue: null });
+
+        expect((area.element as HTMLTextAreaElement).value).toBe('');
+    });
+});
+
+describe('text control values on the server', () => {
+    it('should render the initial value into the markup, as v-model does', async () => {
+        const input = createSSRApp(() => h(VCFormInput, { modelValue: 'initial' }));
+        const area = createSSRApp(() => h(VCFormTextarea, { modelValue: 'initial' }));
+
+        input.use(themePlugin);
+        area.use(themePlugin);
+
+        expect(await renderToString(input)).toContain('value="initial"');
+        expect(await renderToString(area)).toContain('>initial</textarea>');
     });
 });
 

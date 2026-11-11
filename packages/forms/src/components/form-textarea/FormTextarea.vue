@@ -15,7 +15,9 @@ import {
     mergeProps,
     ref,
     watch,
+    withDirectives,
 } from 'vue';
+import { vDomValue } from '../../utils/dom-value';
 
 export type FormTextareaThemeClasses = {
     root: string;
@@ -87,12 +89,12 @@ export default defineComponent({
             }
         };
 
-        return () => h('textarea', mergeProps({
+        // the value goes through vDomValue, never a `value` prop: Vue would mirror it into the attribute
+        return () => withDirectives(h('textarea', mergeProps({
             placeholder: '...',
             class: theme.value.root || undefined,
             onInput,
-            value: localValue.value,
-        }, attrs));
+        }, attrs)), [[vDomValue, localValue.value]]);
     },
 });
 </script>
