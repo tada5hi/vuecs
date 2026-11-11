@@ -1,5 +1,16 @@
 # Changelog
 
+## [5.5.2](https://github.com/tada5hi/vuecs/compare/theme-bulma-v5.5.1...theme-bulma-v5.5.2) (2026-11-11)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/button bumped from ^1.4.3 to ^1.4.4
+    * @vuecs/forms bumped from ^5.4.3 to ^5.4.4
+    * @vuecs/pagination bumped from ^2.2.2 to ^2.2.3
+
 ## [5.5.1](https://github.com/tada5hi/vuecs/compare/theme-bulma-v5.5.0...theme-bulma-v5.5.1) (2026-10-27)
 
 

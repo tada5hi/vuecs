@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.4.4](https://github.com/tada5hi/vuecs/compare/forms-v5.4.3...forms-v5.4.4) (2026-11-11)
+
+
+### Bug Fixes
+
+* **forms:** keep text control values out of the value attribute ([#1768](https://github.com/tada5hi/vuecs/issues/1768)) ([515a524](https://github.com/tada5hi/vuecs/commit/515a5243b3c585282d658a6f91e9b21517eab84c))
+
 ## [5.4.3](https://github.com/tada5hi/vuecs/compare/forms-v5.4.2...forms-v5.4.3) (2026-10-27)
 
 

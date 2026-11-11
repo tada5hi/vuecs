@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.3](https://github.com/tada5hi/vuecs/compare/nuxt-v1.2.2...nuxt-v1.2.3) (2026-11-11)
+
+
+### Bug Fixes
+
+* **deps:** bump the minorandpatch group across 1 directory with 11 updates ([#1757](https://github.com/tada5hi/vuecs/issues/1757)) ([206639d](https://github.com/tada5hi/vuecs/commit/206639d58b4477d3daa063e4c63c94744037d194))
+* preserve nuxt option exports and agent contracts ([#1763](https://github.com/tada5hi/vuecs/issues/1763)) ([a6975ab](https://github.com/tada5hi/vuecs/commit/a6975abe241b712e1dc0e654294156b7e6e1a8ac))
+
 ## [1.2.2](https://github.com/tada5hi/vuecs/compare/nuxt-v1.2.1...nuxt-v1.2.2) (2026-10-27)
 
 
