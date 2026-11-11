@@ -7,11 +7,11 @@ import {
     it,
     vi,
 } from 'vitest';
-import { 
-    createSSRApp, 
-    h, 
-    nextTick, 
-    ref, 
+import {
+    createSSRApp,
+    h,
+    nextTick,
+    ref,
 } from 'vue';
 import { renderToString } from 'vue/server-renderer';
 import { mount } from '@vue/test-utils';
@@ -785,6 +785,20 @@ describe('VCFormInput', () => {
         await wrapper.setProps({ modelValue: null });
 
         expect((input.element as HTMLInputElement).value).toBe('');
+    });
+
+    it.each(['hidden', 'checkbox', 'submit'])('should keep the value of a type="%s" input, whose value is its attribute', async (type) => {
+        const wrapper = mount(VCFormInput, {
+            props: { modelValue: '123', type },
+            global: { plugins: [themePlugin] },
+        });
+        const input = wrapper.find('input').element as HTMLInputElement;
+
+        expect(input.value).toBe('123');
+
+        await wrapper.setProps({ modelValue: '456' });
+
+        expect(input.value).toBe('456');
     });
 });
 

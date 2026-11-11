@@ -2,7 +2,22 @@ import type { Directive } from 'vue';
 
 type ValueElement = globalThis.HTMLInputElement | globalThis.HTMLTextAreaElement;
 
-export type DomValue = string | null | undefined;
+type DomValue = string | null | undefined;
+
+/**
+ * Input types whose `.value` reflects the `value` attribute (the HTML "default"
+ * and "default/on" value modes) instead of holding a separate current value.
+ * Removing the attribute would clear their value.
+ */
+const ATTRIBUTE_VALUE_TYPES = new Set([
+    'hidden',
+    'submit',
+    'image',
+    'reset',
+    'button',
+    'checkbox',
+    'radio',
+]);
 
 /**
  * The value a text control shows: a forwarded native `value` attribute wins
@@ -45,7 +60,9 @@ export const vDomValue: Directive<ValueElement, DomValue> = {
         // a hydrated control keeps the server's default, which a form reset would restore
         if (el.tagName === 'TEXTAREA') {
             el.defaultValue = '';
-        } else {
+        } else if (!ATTRIBUTE_VALUE_TYPES.has((el as globalThis.HTMLInputElement).type)) {
+            // only where `.value` is separate from the attribute; for a hidden
+            // input (and the like) the attribute is the value
             el.removeAttribute('value');
         }
     },
