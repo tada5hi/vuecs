@@ -18,7 +18,7 @@ announceVariants(
     {
         variant: ['solid', 'soft', 'outline'],
         size: ['xs', 'sm', 'md', 'lg'],
-        align: ['start', 'center'],
+        align: ['start', 'center', 'end'],
     },
     {
         variant: 'soft',

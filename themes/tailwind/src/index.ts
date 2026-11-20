@@ -854,6 +854,7 @@ export default function tailwindTheme(): Theme {
                     align: {
                         start: { root: 'items-start', icon: 'mt-0.5' },
                         center: { root: 'items-center!', icon: 'mt-0!' },
+                        end: { root: 'items-end!', icon: 'mt-0!' },
                     },
                 },
                 compoundVariants: [

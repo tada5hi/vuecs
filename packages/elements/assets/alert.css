@@ -47,7 +47,12 @@
 .vc-alert[data-align="center"] {
     align-items: center;
 }
-.vc-alert[data-align="center"] > .vc-alert-icon {
+/* `align="end"` — align icon / content / actions to the row's bottom. */
+.vc-alert[data-align="end"] {
+    align-items: flex-end;
+}
+.vc-alert[data-align="center"] > .vc-alert-icon,
+.vc-alert[data-align="end"] > .vc-alert-icon {
     margin-top: 0;
 }
 

@@ -117,6 +117,8 @@ By default (`align="start"`) the icon lines up with the first line of text, whic
 </VCAlert>
 ```
 
+`align="end"` aligns them to the bottom of the row instead.
+
 ### Custom icon
 
 `:icon` accepts any Iconify name and overrides the preset's color-derived default:
@@ -190,7 +192,7 @@ The click handler flips `open` on `<VCCollapse>`, Reka's `Presence` plays the `a
 
 | Key | Slots | Notes |
 |---|---|---|
-| `alert` | `root`, `icon`, `content`, `actions`, `closeIcon`, `close` | `color × variant × size` matrix on `root` (15-cell `compoundVariants`); `align` variant (`start` / `center`) on `root` + `icon` |
+| `alert` | `root`, `icon`, `content`, `actions`, `closeIcon`, `close` | `color × variant × size` matrix on `root` (15-cell `compoundVariants`); `align` variant (`start` / `center` / `end`) on `root` + `icon` |
 | `alertTitle` | `root` | |
 | `alertDescription` | `root` | |
 
@@ -244,7 +246,7 @@ Override via `<VCAlert role="log">` for custom interaction patterns (e.g. chat l
 | `color` | `'primary' \| 'neutral' \| 'info' \| 'success' \| 'warning' \| 'error'` | `undefined` | Folded into `themeVariant`; auto-resolves the icon + ARIA role for `info/success/warning/error`. `primary` and `neutral` use no preset icon by default (pass `:icon` explicitly to render one). |
 | `variant` | `'solid' \| 'soft' \| 'outline'` | `undefined` | Folded into `themeVariant`. |
 | `size` | `'xs' \| 'sm' \| 'md' \| 'lg'` | `undefined` | Folded into `themeVariant`. |
-| `align` | `'start' \| 'center'` | `undefined` (theme default `'start'`) | Cross-axis alignment of icon, content and actions. Folded into `themeVariant` and reflected as `data-align` on the root. |
+| `align` | `'start' \| 'center' \| 'end'` | `undefined` (theme default `'start'`) | Cross-axis alignment of icon, content and actions. Folded into `themeVariant` and reflected as `data-align` on the root. |
 | `icon` | `string` | `undefined` (preset default for `color`) | Iconify name. Pass `''` to suppress. Overridden by the `#icon` slot. |
 | `role` | `string` | derived from `color` | ARIA role override. |
 | `as` | `string` | `'div'` | HTML tag to render. |

@@ -41,7 +41,8 @@ const alertProps = {
      * Cross-axis alignment of icon, content and actions. `start` (theme
      * default) lines the icon up with the first line of text; `center`
      * centers it against a row taller than one line (e.g. text beside a
-     * button). Also reflected as `data-align` on the root.
+     * button); `end` aligns everything to the bottom of the row. Also
+     * reflected as `data-align` on the root.
      */
     align: { type: String as PropType<AlertAlign>, default: undefined },
     /**

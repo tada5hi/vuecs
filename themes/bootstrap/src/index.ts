@@ -589,6 +589,7 @@ export default function bootstrapTheme(): Theme {
                     align: {
                         start: { root: 'align-items-start' },
                         center: { root: 'align-items-center', icon: 'mt-0' },
+                        end: { root: 'align-items-end', icon: 'mt-0' },
                     },
                 },
                 compoundVariants: [

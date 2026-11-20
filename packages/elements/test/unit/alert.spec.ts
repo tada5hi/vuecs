@@ -314,6 +314,12 @@ describe('<VCAlert>', () => {
             expect(wrapper.element.getAttribute('data-align')).toBe('center');
         });
 
+        it('reflects align="end" onto data-align', () => {
+            const wrapper = mount(defineComponent({ setup: () => () => h(VCAlert, { align: 'end' }, { default: () => 'x' }) }), { global: { plugins: [...plugins] } });
+
+            expect(wrapper.element.getAttribute('data-align')).toBe('end');
+        });
+
         it('lets the align prop win over themeVariant.align', () => {
             const wrapper = mount(defineComponent({ setup: () => () => h(VCAlert, { align: 'start', themeVariant: { align: 'center' } }, { default: () => 'x' }) }), { global: { plugins: [...plugins] } });
 

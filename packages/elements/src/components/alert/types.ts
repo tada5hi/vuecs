@@ -3,7 +3,7 @@ import type { ComponentDefaultValues, ThemeElementDefinition } from '@vuecs/core
 export type AlertColor = 'primary' | 'neutral' | 'info' | 'success' | 'warning' | 'error';
 export type AlertVariant = 'solid' | 'soft' | 'outline';
 export type AlertSize = 'xs' | 'sm' | 'md' | 'lg';
-export type AlertAlign = 'start' | 'center';
+export type AlertAlign = 'start' | 'center' | 'end';
 
 export type AlertThemeClasses = {
     /** Outer container. */
