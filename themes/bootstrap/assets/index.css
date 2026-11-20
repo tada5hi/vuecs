@@ -496,6 +496,15 @@
     background-color: transparent !important;
 }
 
+/* Corner-close gutter (#1770). The theme's `pe-5` reserves room for the
+ * absolute `<VCAlertClose>` corner-X on every alert, because a class string
+ * can't depend on the alert's children. Release it again when no corner
+ * close is rendered, so an alert with trailing content (an action button)
+ * keeps even padding. `!important` only to beat the `.pe-5` utility. */
+.vc-alert.alert:not(:has(.vc-alert-close-icon)) {
+    padding-right: var(--bs-alert-padding-x) !important;
+}
+
 /* ────────────────────────────────────────────────────────────────────────────
  * @vuecs/button — disabled cue for non-native render targets (#1699).
  *

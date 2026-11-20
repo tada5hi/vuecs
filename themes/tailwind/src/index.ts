@@ -827,18 +827,29 @@ export default function tailwindTheme(): Theme {
             collapseContent: { classes: { root: 'overflow-hidden data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up' } },
             alert: {
                 classes: {
-                    root: 'relative flex items-start gap-3 rounded-md border text-sm',
-                    icon: 'inline-flex shrink-0 items-center justify-center mt-0.5',
+                    root: 'relative flex gap-3 rounded-md border text-sm',
+                    icon: 'inline-flex shrink-0 items-center justify-center',
                     content: 'flex flex-1 flex-col gap-1 min-w-0',
+                    actions: 'flex shrink-0 items-center gap-2',
                     closeIcon: 'cursor-pointer absolute right-2 top-2 inline-flex h-6 w-6 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
                     close: 'cursor-pointer inline-flex items-center justify-center rounded-md px-2 py-1 text-xs font-medium hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-ring',
                 },
                 variants: {
+                    // The right gutter for the absolute corner close is only
+                    // reserved when one is rendered (#1770) — `has-[…]`
+                    // matches the `vc-alert-close-icon` default class that
+                    // `<VCAlertClose>` carries in its corner-X form.
                     size: {
-                        xs: { root: 'p-1.5 pr-7 text-[0.7rem]' },
-                        sm: { root: 'p-2 pr-8 text-xs' },
-                        md: { root: 'p-3 pr-9 text-sm' },
-                        lg: { root: 'p-4 pr-10 text-sm' },
+                        xs: { root: 'p-1.5 has-[.vc-alert-close-icon]:pr-7 text-[0.7rem]' },
+                        sm: { root: 'p-2 has-[.vc-alert-close-icon]:pr-8 text-xs' },
+                        md: { root: 'p-3 has-[.vc-alert-close-icon]:pr-9 text-sm' },
+                        lg: { root: 'p-4 has-[.vc-alert-close-icon]:pr-10 text-sm' },
+                    },
+                    // `start` lines the icon up with the first text line;
+                    // `center` centers it against a taller row (#1770).
+                    align: {
+                        start: { root: 'items-start', icon: 'mt-0.5' },
+                        center: { root: 'items-center' },
                     },
                 },
                 compoundVariants: [
@@ -871,6 +882,7 @@ export default function tailwindTheme(): Theme {
                     variant: 'soft',
                     color: 'neutral',
                     size: 'md',
+                    align: 'start',
                 },
             },
             alertTitle: { classes: { root: 'font-semibold leading-tight' } },

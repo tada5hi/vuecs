@@ -22,6 +22,7 @@ import {
 } from '@vuecs/core';
 import { alertThemeDefaults } from './theme';
 import type {
+    AlertAlign,
     AlertColor,
     AlertDefaults,
     AlertSize,
@@ -36,6 +37,13 @@ const alertProps = {
     variant: { type: String as PropType<AlertVariant>, default: undefined },
     /** Padding / font-size tier. */
     size: { type: String as PropType<AlertSize>, default: undefined },
+    /**
+     * Cross-axis alignment of icon, content and actions. `start` (theme
+     * default) lines the icon up with the first line of text; `center`
+     * centers it against a row taller than one line (e.g. text beside a
+     * button). Also reflected as `data-align` on the root.
+     */
+    align: { type: String as PropType<AlertAlign>, default: undefined },
     /**
      * Iconify name for the leading icon (e.g. `'lucide:triangle-alert'`).
      * When omitted, resolves from the active icon preset based on `color`
@@ -95,9 +103,15 @@ export default defineComponent({
          * `v-if="false"`) slot falls back to the prop / default.
          */
         icon?: AlertIconSlotProps;
+        /**
+         * Trailing controls (e.g. a retry button), laid out beside the
+         * content column so the text keeps its own alignment with the
+         * icon. An empty (or `v-if="false"`) slot renders no wrapper.
+         */
+        actions?: Record<string, never>;
     }>,
     setup(props, { attrs, slots }) {
-        const themeProps = useThemeProps(props, 'color', 'variant', 'size');
+        const themeProps = useThemeProps(props, 'color', 'variant', 'size', 'align');
         const theme = useComponentTheme('alert', themeProps, alertThemeDefaults);
         const defaults = useComponentDefaults('alert', {}, alertBehavioralDefaults);
 
@@ -166,15 +180,22 @@ export default defineComponent({
                 }
             }
 
+            const actionsSlot = slots.actions?.();
+            const actionsNode = isMeaningfulSlotContent(actionsSlot) ?
+                h('div', { class: theme.value.actions || undefined }, actionsSlot) :
+                null;
+
             return h(
                 props.as,
                 mergeProps(attrs, {
                     role: resolvedRole.value,
+                    'data-align': props.align,
                     class: theme.value.root || undefined,
                 }),
                 [
                     iconNode,
                     h('div', { class: theme.value.content || undefined }, slots.default?.()),
+                    actionsNode,
                 ],
             );
         };

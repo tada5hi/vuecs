@@ -3,6 +3,7 @@ import type { ComponentDefaultValues, ThemeElementDefinition } from '@vuecs/core
 export type AlertColor = 'primary' | 'neutral' | 'info' | 'success' | 'warning' | 'error';
 export type AlertVariant = 'solid' | 'soft' | 'outline';
 export type AlertSize = 'xs' | 'sm' | 'md' | 'lg';
+export type AlertAlign = 'start' | 'center';
 
 export type AlertThemeClasses = {
     /** Outer container. */
@@ -11,6 +12,8 @@ export type AlertThemeClasses = {
     icon: string;
     /** Title + description column. */
     content: string;
+    /** `#actions` slot wrapper — beside the content column, before any corner close. */
+    actions: string;
     /** Dismiss button — slotless `<VCAlertClose />` corner-X form. */
     closeIcon: string;
     /** Dismiss button — labeled-text form. */

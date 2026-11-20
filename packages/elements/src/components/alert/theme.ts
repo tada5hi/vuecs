@@ -10,6 +10,7 @@ export const alertThemeDefaults: ComponentThemeDefinition<AlertThemeClasses> = {
         root: 'vc-alert',
         icon: 'vc-alert-icon',
         content: 'vc-alert-content',
+        actions: 'vc-alert-actions',
         closeIcon: 'vc-alert-close-icon',
         close: 'vc-alert-close',
     },

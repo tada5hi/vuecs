@@ -604,9 +604,10 @@ export default function bulmaTheme(): Theme {
                 // Outline variant uses the existing `vc-toast-outline-*`
                 // helpers (same color palette, same intent).
                 classes: {
-                    root: 'notification is-flex is-align-items-flex-start mb-0 is-relative',
+                    root: 'notification is-flex mb-0 is-relative',
                     icon: 'is-flex is-flex-shrink-0 is-align-items-center is-justify-content-center mr-3',
                     content: 'is-flex-grow-1 is-flex is-flex-direction-column',
+                    actions: 'is-flex is-flex-shrink-0 is-align-items-center ml-3',
                     closeIcon: 'delete is-small',
                     close: 'button is-small is-text',
                 },
@@ -621,6 +622,10 @@ export default function bulmaTheme(): Theme {
                         sm: { root: 'is-size-7' },
                         md: { root: '' },
                         lg: { root: 'is-size-5' },
+                    },
+                    align: {
+                        start: { root: 'is-align-items-flex-start' },
+                        center: { root: 'is-align-items-center' },
                     },
                 },
                 compoundVariants: [
@@ -651,6 +656,7 @@ export default function bulmaTheme(): Theme {
                     variant: 'soft',
                     color: 'neutral',
                     size: 'md',
+                    align: 'start',
                 },
             },
             alertTitle: { classes: { root: 'has-text-weight-semibold mb-1' } },

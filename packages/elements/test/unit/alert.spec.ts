@@ -12,6 +12,7 @@ import {
     ref,
 } from 'vue';
 import { mount } from '@vue/test-utils';
+import vuecs from '@vuecs/core';
 import vuecsElements, {
     VCAlert,
     VCAlertClose,
@@ -273,6 +274,69 @@ describe('<VCAlert>', () => {
             expect(content).not.toBeNull();
             expect(content!.querySelector('.vc-alert-title')!.textContent).toBe('Title');
             expect(content!.querySelector('.vc-alert-description')!.textContent).toBe('Body');
+        });
+    });
+
+    describe('align', () => {
+        it('omits data-align when no align is set', () => {
+            const wrapper = mount(defineComponent({ setup: () => () => h(VCAlert, null, { default: () => 'x' }) }), { global: { plugins: [...plugins] } });
+
+            expect(wrapper.element.hasAttribute('data-align')).toBe(false);
+        });
+
+        it('reflects align onto data-align and forwards it as a theme variant', () => {
+            const wrapper = mount(defineComponent({ setup: () => () => h(VCAlert, { align: 'center' }, { default: () => 'x' }) }), {
+                global: {
+                    plugins: [
+                        ...plugins,
+                        [vuecs, {
+                            themes: [{
+                                elements: {
+                                    alert: {
+                                        classes: {},
+                                        variants: { align: { center: { root: 'is-centered' } } },
+                                    },
+                                },
+                            }],
+                        }],
+                    ],
+                },
+            });
+            const root = wrapper.element as HTMLElement;
+
+            expect(root.getAttribute('data-align')).toBe('center');
+            expect(root.classList.contains('is-centered')).toBe(true);
+        });
+    });
+
+    describe('#actions slot', () => {
+        it('renders the actions wrapper after the content column', () => {
+            const wrapper = mount(defineComponent({
+                setup: () => () => h(VCAlert, null, {
+                    default: () => 'Message',
+                    actions: () => h('button', 'Retry'),
+                }),
+            }), { global: { plugins: [...plugins] } });
+            const root = wrapper.element as HTMLElement;
+            const actions = root.querySelector('.vc-alert-actions');
+
+            expect(actions).not.toBeNull();
+            expect(actions!.textContent).toBe('Retry');
+            expect(actions!.previousElementSibling!.classList.contains('vc-alert-content')).toBe(true);
+            expect(root.querySelector('.vc-alert-content')!.textContent).toBe('Message');
+        });
+
+        it('renders no wrapper for an absent or empty actions slot', () => {
+            const absent = mount(defineComponent({ setup: () => () => h(VCAlert, null, { default: () => 'x' }) }), { global: { plugins: [...plugins] } });
+            const empty = mount(defineComponent({
+                setup: () => () => h(VCAlert, null, {
+                    default: () => 'x',
+                    actions: () => [h(Comment, 'v-if')],
+                }),
+            }), { global: { plugins: [...plugins] } });
+
+            expect(absent.element.querySelector('.vc-alert-actions')).toBeNull();
+            expect(empty.element.querySelector('.vc-alert-actions')).toBeNull();
         });
     });
 });
