@@ -3,6 +3,7 @@
  *
  * Themes paint color × variant × size; this file owns cross-theme layout:
  *   - icon (left) + content (right column with title + description)
+ *   - optional `#actions` cluster beside the content
  *   - absolute-positioned corner close button (slotless `<VCAlertClose />`)
  *   - inline close button position (with slotted text content)
  *
@@ -32,6 +33,27 @@
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+}
+
+.vc-alert-actions {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* `align="center"` — center icon / content / actions against a row
+ * taller than one line of text (e.g. a message beside a button). */
+.vc-alert[data-align="center"] {
+    align-items: center;
+}
+/* `align="end"` — align icon / content / actions to the row's bottom. */
+.vc-alert[data-align="end"] {
+    align-items: flex-end;
+}
+.vc-alert[data-align="center"] > .vc-alert-icon,
+.vc-alert[data-align="end"] > .vc-alert-icon {
+    margin-top: 0;
 }
 
 .vc-alert-title {

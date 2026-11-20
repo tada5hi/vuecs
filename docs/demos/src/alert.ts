@@ -18,8 +18,13 @@ announceVariants(
     {
         variant: ['solid', 'soft', 'outline'],
         size: ['xs', 'sm', 'md', 'lg'],
+        align: ['start', 'center', 'end'],
     },
-    { variant: 'soft', size: 'md' },
+    {
+        variant: 'soft',
+        size: 'md',
+        align: 'start',
+    },
 );
 
 installIframeBridge();

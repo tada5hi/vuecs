@@ -827,18 +827,34 @@ export default function tailwindTheme(): Theme {
             collapseContent: { classes: { root: 'overflow-hidden data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up' } },
             alert: {
                 classes: {
-                    root: 'relative flex items-start gap-3 rounded-md border text-sm',
-                    icon: 'inline-flex shrink-0 items-center justify-center mt-0.5',
+                    root: 'relative flex gap-3 rounded-md border text-sm',
+                    icon: 'inline-flex shrink-0 items-center justify-center',
                     content: 'flex flex-1 flex-col gap-1 min-w-0',
-                    closeIcon: 'absolute right-2 top-2 inline-flex h-6 w-6 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
-                    close: 'inline-flex items-center justify-center rounded-md px-2 py-1 text-xs font-medium hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-ring',
+                    actions: 'flex shrink-0 items-center gap-2',
+                    closeIcon: 'cursor-pointer absolute right-2 top-2 inline-flex h-6 w-6 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
+                    close: 'cursor-pointer inline-flex items-center justify-center rounded-md px-2 py-1 text-xs font-medium hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-ring',
                 },
                 variants: {
+                    // The right gutter for the absolute corner close is only
+                    // reserved when one is rendered (#1770) — `has-[…]`
+                    // matches the `vc-alert-close-icon` default class that
+                    // `<VCAlertClose>` carries in its corner-X form.
                     size: {
-                        xs: { root: 'p-1.5 pr-7 text-[0.7rem]' },
-                        sm: { root: 'p-2 pr-8 text-xs' },
-                        md: { root: 'p-3 pr-9 text-sm' },
-                        lg: { root: 'p-4 pr-10 text-sm' },
+                        xs: { root: 'p-1.5 has-[.vc-alert-close-icon]:pr-7 text-[0.7rem]' },
+                        sm: { root: 'p-2 has-[.vc-alert-close-icon]:pr-8 text-xs' },
+                        md: { root: 'p-3 has-[.vc-alert-close-icon]:pr-9 text-sm' },
+                        lg: { root: 'p-4 has-[.vc-alert-close-icon]:pr-10 text-sm' },
+                    },
+                    // `start` lines the icon up with the first text line;
+                    // `center` centers it against a taller row (#1770).
+                    // `!` because the unlayered structural `.vc-alert` /
+                    // `.vc-alert-icon` rules (flex-start + top margin) beat
+                    // Tailwind's layered utilities — also when `center` comes
+                    // from a theme default, where no `data-align` is set.
+                    align: {
+                        start: { root: 'items-start', icon: 'mt-0.5' },
+                        center: { root: 'items-center!', icon: 'mt-0!' },
+                        end: { root: 'items-end!', icon: 'mt-0!' },
                     },
                 },
                 compoundVariants: [
@@ -871,6 +887,7 @@ export default function tailwindTheme(): Theme {
                     variant: 'soft',
                     color: 'neutral',
                     size: 'md',
+                    align: 'start',
                 },
             },
             alertTitle: { classes: { root: 'font-semibold leading-tight' } },
@@ -934,9 +951,9 @@ export default function tailwindTheme(): Theme {
                     // Generic close trigger — neutral baseline so consumer
                     // classes (`<VCModalClose class="...">`) compose cleanly.
                     // The corner-X pattern lives in `closeIcon` below.
-                    close: 'focus:outline-none focus:ring-2 focus:ring-ring',
-                    closeIcon: 'absolute right-3 top-3 inline-flex h-7 w-7 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
-                    back: 'inline-flex h-7 w-7 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
+                    close: 'cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring',
+                    closeIcon: 'cursor-pointer absolute right-3 top-3 inline-flex h-7 w-7 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
+                    back: 'cursor-pointer inline-flex h-7 w-7 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
                 },
                 // Modal size axis = max-width tier. md (lg) is the default;
                 // sm fits compact confirms, lg fits forms, xl fits dashboards.
@@ -963,11 +980,11 @@ export default function tailwindTheme(): Theme {
                     trigger: '',
                     // Cancel = neutral outline button. Consumers compose
                     // `<VCButton>` via `as-child` for the full variant matrix.
-                    cancel: 'inline-flex h-9 items-center justify-center rounded-md border border-border bg-bg px-4 text-sm font-medium text-fg hover:bg-bg-muted focus:outline-none focus:ring-2 focus:ring-ring',
+                    cancel: 'cursor-pointer inline-flex h-9 items-center justify-center rounded-md border border-border bg-bg px-4 text-sm font-medium text-fg hover:bg-bg-muted focus:outline-none focus:ring-2 focus:ring-ring',
                     // Action base carries no color — the `tone` variant supplies
                     // bg + the matching `text-on-*` on-color (so amber `warning`
                     // gets dark text, not white — WCAG contrast per tone).
-                    action: 'inline-flex h-9 items-center justify-center rounded-md px-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-ring',
+                    action: 'cursor-pointer inline-flex h-9 items-center justify-center rounded-md px-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-ring',
                 },
                 variants: {
                     size: {
@@ -996,8 +1013,8 @@ export default function tailwindTheme(): Theme {
                     arrow: 'fill-bg',
                     // Generic close trigger — neutral baseline so consumer
                     // classes compose cleanly. Corner-X lives in `closeIcon`.
-                    close: 'focus:outline-none focus:ring-2 focus:ring-ring',
-                    closeIcon: 'absolute right-2 top-2 inline-flex h-6 w-6 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
+                    close: 'cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring',
+                    closeIcon: 'cursor-pointer absolute right-2 top-2 inline-flex h-6 w-6 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
                 },
                 variants: {
                     size: {
@@ -1122,8 +1139,8 @@ export default function tailwindTheme(): Theme {
                 classes: {
                     root: 'relative pointer-events-auto flex w-full items-start gap-3 overflow-hidden rounded-md border border-border bg-bg p-4 pr-8 text-sm text-fg shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:slide-in-from-right-full data-[state=closed]:slide-out-to-right-full data-[swipe=move]:translate-x-[var(--reka-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--reka-toast-swipe-end-x)] data-[swipe=end]:animate-out data-[swipe=end]:fade-out-80',
                     body: 'flex flex-col gap-1 flex-1 min-w-0',
-                    close: 'inline-flex items-center justify-center rounded-md px-2 py-1 text-xs font-medium text-fg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
-                    closeIcon: 'absolute right-2 top-2 inline-flex h-6 w-6 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
+                    close: 'cursor-pointer inline-flex items-center justify-center rounded-md px-2 py-1 text-xs font-medium text-fg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
+                    closeIcon: 'cursor-pointer absolute right-2 top-2 inline-flex h-6 w-6 items-center justify-center rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg focus:outline-none focus:ring-2 focus:ring-ring',
                 },
                 // Color × variant matrix mirrors `<VCBadge>`'s.
                 compoundVariants: [

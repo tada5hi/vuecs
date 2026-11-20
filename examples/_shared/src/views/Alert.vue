@@ -7,6 +7,7 @@ import {
     VCCollapse,
     VCCollapseContent,
 } from '@vuecs/elements';
+import { VCButton } from '@vuecs/button';
 import { ref } from 'vue';
 
 defineProps<{
@@ -80,6 +81,37 @@ function reset() {
                     :theme-variant="themeVariant"
                 >
                     Submission failed.
+                </VCAlert>
+            </div>
+        </section>
+
+        <section>
+            <h3 class="vc-demo-h">
+                With actions
+            </h3>
+            <div class="vc-demo-stack">
+                <VCAlert
+                    color="error"
+                    :theme-variant="themeVariant"
+                >
+                    The app could not be reached. Check the connection and try again.
+                    <template #actions>
+                        <VCButton size="sm">
+                            Try again
+                        </VCButton>
+                    </template>
+                </VCAlert>
+                <VCAlert
+                    color="info"
+                    align="center"
+                    :theme-variant="themeVariant"
+                >
+                    A new version is available.
+                    <template #actions>
+                        <VCButton>
+                            Reload
+                        </VCButton>
+                    </template>
                 </VCAlert>
             </div>
         </section>

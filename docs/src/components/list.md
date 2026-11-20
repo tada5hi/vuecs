@@ -257,6 +257,14 @@ overlay anchors to the list container.
 pass `data` / `busy` / `total` / `meta`. For shared state across
 views or extensible helpers, build your own and pass via `:state`:
 
+::: tip Need the list to load its own data?
+`defineList()` holds state you already have — it does not fetch.
+For a list that loads pages itself (limit / offset paging, newest
+request wins, `busy` / `total` / `error`, no load during SSR), use
+[`defineDataCollection()` from `@vuecs/data`](/guide/data-source).
+It binds to `<VCList :state>` the same way.
+:::
+
 ```ts
 import { defineList } from '@vuecs/list';
 

@@ -91,6 +91,34 @@ const visible = ref(true);
 
 For an animated dismiss, wrap with [`<VCCollapse>`](/components/collapse) (see the next section).
 
+The theme reserves a right-hand gutter for the corner-X only when a slotless `<VCAlertClose>` (or `<VCAlertClose icon>`) is actually rendered. An alert without one keeps even padding on both sides. Tailwind does this with `has-[.vc-alert-close-icon]`. Bootstrap always applies `pe-5`, and the optional bridge CSS (`@import "@vuecs/theme-bootstrap"`) removes it when no corner close is present. Bulma's `.notification` keeps its own native right padding.
+
+### Actions and alignment
+
+Put trailing controls in the `#actions` slot. They are laid out beside the content column, so the text keeps its own first-line alignment with the icon:
+
+```vue
+<VCAlert color="error">
+    The app could not be reached. Check the connection and try again.
+    <template #actions>
+        <VCButton size="sm" @click="retry">Try again</VCButton>
+    </template>
+</VCAlert>
+```
+
+By default (`align="start"`) the icon lines up with the first line of text, which is right for text, including text that wraps. When the row is taller than one line of text (a tall control, or your own flex layout in the default slot), set `align="center"` to center the icon, content and actions against it:
+
+```vue
+<VCAlert color="error" align="center">
+    The app could not be reached.
+    <template #actions>
+        <VCButton @click="retry">Try again</VCButton>
+    </template>
+</VCAlert>
+```
+
+`align="end"` aligns them to the bottom of the row instead.
+
 ### Custom icon
 
 `:icon` accepts any Iconify name and overrides the preset's color-derived default:
@@ -164,7 +192,7 @@ The click handler flips `open` on `<VCCollapse>`, Reka's `Presence` plays the `a
 
 | Key | Slots | Notes |
 |---|---|---|
-| `alert` | `root`, `icon`, `content`, `closeIcon`, `close` | `color × variant × size` matrix on `root` (15-cell `compoundVariants`) |
+| `alert` | `root`, `icon`, `content`, `actions`, `closeIcon`, `close` | `color × variant × size` matrix on `root` (15-cell `compoundVariants`); `align` variant (`start` / `center` / `end`) on `root` + `icon` |
 | `alertTitle` | `root` | |
 | `alertDescription` | `root` | |
 
@@ -218,6 +246,7 @@ Override via `<VCAlert role="log">` for custom interaction patterns (e.g. chat l
 | `color` | `'primary' \| 'neutral' \| 'info' \| 'success' \| 'warning' \| 'error'` | `undefined` | Folded into `themeVariant`; auto-resolves the icon + ARIA role for `info/success/warning/error`. `primary` and `neutral` use no preset icon by default (pass `:icon` explicitly to render one). |
 | `variant` | `'solid' \| 'soft' \| 'outline'` | `undefined` | Folded into `themeVariant`. |
 | `size` | `'xs' \| 'sm' \| 'md' \| 'lg'` | `undefined` | Folded into `themeVariant`. |
+| `align` | `'start' \| 'center' \| 'end'` | `undefined` (theme default `'start'`) | Cross-axis alignment of icon, content and actions. Folded into `themeVariant` and reflected as `data-align` on the root. |
 | `icon` | `string` | `undefined` (preset default for `color`) | Iconify name. Pass `''` to suppress. Overridden by the `#icon` slot. |
 | `role` | `string` | derived from `color` | ARIA role override. |
 | `as` | `string` | `'div'` | HTML tag to render. |
@@ -227,6 +256,7 @@ Override via `<VCAlert role="log">` for custom interaction patterns (e.g. chat l
 | Slot | Props | Description |
 |---|---|---|
 | `default` | — | Alert body — title / description compound or inline text. |
+| `actions` | — | Trailing controls (e.g. a retry button), rendered in the `actions` wrapper beside the content column. An empty (or `v-if="false"`) slot renders no wrapper. |
 | `icon` | `{ class: string }` | Leading-icon override, rendered inside the icon wrapper in place of the `icon` prop / color-derived default. `class` is the resolved icon-wrapper theme class. An empty (or `v-if="false"`) slot falls back to the prop / default. The slot wrapper is **not** `aria-hidden` (consumer owns slot a11y); the prop / color-derived icon wrapper is. |
 
 `<VCAlert>` is presentational — wrap with `v-if` (instant dismissal) or `<VCCollapse v-model:open>` (animated). No `v-model:open` on the alert itself.

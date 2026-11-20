@@ -564,9 +564,13 @@ export default function bootstrapTheme(): Theme {
                 // — bridge CSS adds `.vc-alert.vc-alert-outline.alert-<color>`
                 // rules that flip background to transparent.
                 classes: {
-                    root: 'alert d-flex align-items-start gap-3 mb-0 position-relative pe-5',
+                    // `pe-5` reserves the corner-close gutter on every alert;
+                    // the optional bridge CSS drops it when no corner close
+                    // is rendered (#1770).
+                    root: 'alert d-flex gap-3 mb-0 position-relative pe-5',
                     icon: 'flex-shrink-0 d-inline-flex align-items-center justify-content-center',
                     content: 'flex-grow-1 min-w-0 d-flex flex-column gap-1',
+                    actions: 'flex-shrink-0 d-flex align-items-center gap-2',
                     closeIcon: 'btn-close position-absolute top-0 end-0 m-2',
                     close: 'btn btn-sm',
                 },
@@ -581,6 +585,11 @@ export default function bootstrapTheme(): Theme {
                         sm: { root: 'py-2 small' },
                         md: { root: '' },
                         lg: { root: 'py-3 fs-6' },
+                    },
+                    align: {
+                        start: { root: 'align-items-start' },
+                        center: { root: 'align-items-center', icon: 'mt-0' },
+                        end: { root: 'align-items-end', icon: 'mt-0' },
                     },
                 },
                 compoundVariants: [
@@ -612,6 +621,7 @@ export default function bootstrapTheme(): Theme {
                     variant: 'soft',
                     color: 'neutral',
                     size: 'md',
+                    align: 'start',
                 },
             },
             alertTitle: { classes: { root: 'fw-semibold mb-1' } },

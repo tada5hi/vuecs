@@ -18,7 +18,10 @@ the theme system.
       card/             <- VCCard + VCCardHeader / Title / Description / Body / Footer
                            Compound surface with provideCardContext() for padding inheritance
       alert/            <- VCAlert + VCAlertTitle / Description / Close
-                           Pure-CSS persistent banner with provideAlertContext() for close dispatch
+                           Pure-CSS persistent banner; consumer owns visibility (VCAlertClose only emits click).
+                           Themes reserve the corner-close gutter only when `.vc-alert-close-icon` is
+                           rendered (Tailwind `has-[…]`, Bootstrap bridge `:has()`) — keep that class
+                           stable on VCAlertClose's corner form (#1770).
       collapse/         <- VCCollapse + VCCollapseTrigger / VCCollapseContent
                            Reka Collapsible wrapper with auto-chevron + height animation
     vue.ts              <- GlobalComponents augmentation
