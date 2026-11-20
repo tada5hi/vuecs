@@ -28,7 +28,7 @@
         "node": ">=22.0.0"
     },
     "devDependencies": {
-        "@tailwindcss/vite": "^4.3.3",
+        "@tailwindcss/vite": "^4.3.5",
         "@vuecs-examples/shared": "*",
         "@vuecs/button": "*",
         "@vuecs/core": "*",
@@ -45,8 +45,8 @@
         "@vuecs/theme-tailwind": "*",
         "@vuecs/timeago": "*",
         "@vuecs/tree": "*",
-        "tailwindcss": "^4.3.3",
+        "tailwindcss": "^4.3.5",
         "vitepress": "^1.6.3",
-        "vue": "^3.5.44"
+        "vue": "^3.5.45"
     }
 }
