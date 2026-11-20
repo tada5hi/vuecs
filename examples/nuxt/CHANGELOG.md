@@ -1,5 +1,16 @@
 # Changelog
 
+## [6.4.3](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v6.4.2...examples-nuxt-v6.4.3) (2026-11-20)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/elements bumped from ^1.5.2 to ^1.6.0
+    * @vuecs/gravatar bumped from ^2.1.2 to ^2.1.3
+    * @vuecs/theme-tailwind bumped from ^6.5.2 to ^6.6.0
+
 ## [6.4.2](https://github.com/tada5hi/vuecs/compare/examples-nuxt-v6.4.1...examples-nuxt-v6.4.2) (2026-11-11)
 
 
