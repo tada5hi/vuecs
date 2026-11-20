@@ -625,7 +625,7 @@ export default function bulmaTheme(): Theme {
                     },
                     align: {
                         start: { root: 'is-align-items-flex-start' },
-                        center: { root: 'is-align-items-center' },
+                        center: { root: 'is-align-items-center', icon: 'mt-0' },
                     },
                 },
                 compoundVariants: [

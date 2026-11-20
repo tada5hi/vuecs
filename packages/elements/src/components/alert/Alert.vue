@@ -180,6 +180,9 @@ export default defineComponent({
                 }
             }
 
+            // From the merged variant values, so an `align` passed through
+            // `themeVariant` also reaches the structural CSS (the prop wins).
+            const align = themeProps.themeVariant?.align;
             const actionsSlot = slots.actions?.();
             const actionsNode = isMeaningfulSlotContent(actionsSlot) ?
                 h('div', { class: theme.value.actions || undefined }, actionsSlot) :
@@ -189,7 +192,7 @@ export default defineComponent({
                 props.as,
                 mergeProps(attrs, {
                     role: resolvedRole.value,
-                    'data-align': props.align,
+                    'data-align': typeof align === 'string' ? align : undefined,
                     class: theme.value.root || undefined,
                 }),
                 [

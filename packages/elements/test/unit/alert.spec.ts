@@ -307,6 +307,18 @@ describe('<VCAlert>', () => {
             expect(root.getAttribute('data-align')).toBe('center');
             expect(root.classList.contains('is-centered')).toBe(true);
         });
+
+        it('reflects an align passed only through themeVariant', () => {
+            const wrapper = mount(defineComponent({ setup: () => () => h(VCAlert, { themeVariant: { align: 'center' } }, { default: () => 'x' }) }), { global: { plugins: [...plugins] } });
+
+            expect(wrapper.element.getAttribute('data-align')).toBe('center');
+        });
+
+        it('lets the align prop win over themeVariant.align', () => {
+            const wrapper = mount(defineComponent({ setup: () => () => h(VCAlert, { align: 'start', themeVariant: { align: 'center' } }, { default: () => 'x' }) }), { global: { plugins: [...plugins] } });
+
+            expect(wrapper.element.getAttribute('data-align')).toBe('start');
+        });
     });
 
     describe('#actions slot', () => {

@@ -847,9 +847,13 @@ export default function tailwindTheme(): Theme {
                     },
                     // `start` lines the icon up with the first text line;
                     // `center` centers it against a taller row (#1770).
+                    // `!` because the unlayered structural `.vc-alert` /
+                    // `.vc-alert-icon` rules (flex-start + top margin) beat
+                    // Tailwind's layered utilities — also when `center` comes
+                    // from a theme default, where no `data-align` is set.
                     align: {
                         start: { root: 'items-start', icon: 'mt-0.5' },
-                        center: { root: 'items-center' },
+                        center: { root: 'items-center!', icon: 'mt-0!' },
                     },
                 },
                 compoundVariants: [
