@@ -156,6 +156,27 @@ const onPage = (page: PaginationMeta) => source.load({
 
 Destructuring `total` / `busy` in `<script setup>` is deliberate: they are `ComputedRef`s living on a plain object, so Vue's template auto-unwrapping only kicks in once they are top-level bindings. Written inline you would need `source.total.value`. `meta` is a plain reactive object, so `meta.pagination.limit` reads directly.
 
+### Restarting at the first page
+
+When a filter or the page size changes, the list should go back to the first page. Watch those inputs and load with the offset reset:
+
+```ts
+import { watch } from 'vue';
+
+const props = defineProps<{ search?: string; limit: number }>();
+
+const source = defineDataCollection<User, UserListMeta, { search?: string }>({
+    initialMeta: { pagination: { limit: props.limit, offset: 0 } },
+    load: (meta, query) => fetchUsers({ ...meta.pagination, search: query?.search ?? props.search }),
+});
+
+watch(() => [props.search, props.limit] as const, ([search, limit]) => {
+    source.load({ pagination: { limit, offset: 0 } }, { search });
+});
+```
+
+Typing quickly fires several loads in a row. You don't need to cancel them: only the newest request applies, and the older ones resolve `superseded` (see [Latest-wins loading](#latest-wins-loading)). Debounce the watched value (e.g. `refDebounced` from VueUse) if you also want fewer requests.
+
 ### Two ways to write meta
 
 ```ts
