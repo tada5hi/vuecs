@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/tada5hi/vuecs/compare/elements-v1.5.2...elements-v1.6.0) (2026-11-20)
+
+
+### Features
+
+* **elements:** alert align and actions, close cursor, list loading docs ([#1777](https://github.com/tada5hi/vuecs/issues/1777)) ([f078cdf](https://github.com/tada5hi/vuecs/commit/f078cdffc4c8b7476a428bae4dd1bc017c7741e7))
+
 ## [1.5.2](https://github.com/tada5hi/vuecs/compare/elements-v1.5.1...elements-v1.5.2) (2026-10-27)
 
 
