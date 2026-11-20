@@ -177,6 +177,8 @@ watch(() => [props.search, props.limit] as const, ([search, limit]) => {
 
 Typing quickly fires several loads in a row. You don't need to cancel them: only the newest request applies, and the older ones resolve `superseded` (see [Latest-wins loading](#latest-wins-loading)). Debounce the watched value (e.g. `refDebounced` from VueUse) if you also want fewer requests.
 
+If the reset load fails, `meta` keeps the previous page (a failed load commits nothing, see [Meta commits on success](#meta-commits-on-success)). So `refresh()` would retry with the old offset. Retry with the same call instead: `source.load({ pagination: { limit, offset: 0 } }, { search })`.
+
 ### Two ways to write meta
 
 ```ts
