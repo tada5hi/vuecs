@@ -46,13 +46,13 @@ import { VCEmptyState } from '@vuecs/elements';
 | `empty` (default) | The collection has no records yet | none — pass `title` / `description` / `actionLabel` |
 | `noResults` | A search or filter matched nothing | title `No results`, description `Try adjusting your search or filters.`, action `Reset` |
 
-Explicit props always win over the default copy. The same component covers both states of a collection page:
+Explicit props always win over the default copy — so pass `undefined` for the props you want the `noResults` defaults to fill. The same component covers both states of a collection page:
 
 ```vue
 <VCEmptyState
     :variant="filtered ? 'noResults' : 'empty'"
-    title="No users yet"
-    action-label="Create user"
+    :title="filtered ? undefined : 'No users yet'"
+    :action-label="filtered ? undefined : 'Create user'"
     @action="filtered ? resetFilters() : openCreateDialog()"
 />
 ```

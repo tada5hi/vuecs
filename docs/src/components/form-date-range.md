@@ -74,6 +74,11 @@ the server renders every preset with `aria-pressed="false"`, and the matching
 one lights up once the component mounts in the browser. To highlight during
 SSR, pass a `now` that is identical on server and client (e.g. a timestamp
 carried in the SSR payload) — an explicit `now` is highlighted immediately.
+The presets resolve against **local calendar parts**, so the same timestamp
+only yields the same preset when the server and the browser also share the
+calendar time zone (`2026-02-01T00:30:00Z` is February in UTC but January in
+`America/Los_Angeles`). If the time zones can differ, omit `now` and let the
+highlight be deferred until mount.
 :::
 
 Custom presets implement `DateRangePreset`:
@@ -101,7 +106,7 @@ runtime's **local timezone**.
 | Helper | Returns |
 |--------|---------|
 | `toDateInput(date)` | The local calendar day of `date` as `YYYY-MM-DD` |
-| `fromDateInput(day, 'start' \| 'end')` | The **UTC ISO-8601 instant** (`…Z`) of the local start (`00:00:00.000`) or end (`23:59:59.999`) of `day`; `undefined` for empty, malformed or non-existent days (e.g. `2026-02-30`) |
+| `fromDateInput(day, 'start' \| 'end')` | The **UTC ISO-8601 instant** (`…Z`) of the local start (`00:00:00.000`) or end (`23:59:59.999`, after any final hour a DST fall-back repeats) of `day`; `undefined` for empty, malformed or non-existent days (e.g. `2026-02-30`) |
 | `resolveDateRangePreset(preset, now)` | `{ from, to }` of a preset for `now` |
 | `createDateRangePresets(labels?)` | The built-in presets, optionally relabelled |
 
