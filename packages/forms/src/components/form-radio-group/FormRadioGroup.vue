@@ -7,6 +7,7 @@ import type {
     ThemeElementDefinition,
     VariantValues,
 } from '@vuecs/core';
+import { isEqual } from 'ohash';
 import { RadioGroupRoot } from 'reka-ui';
 import type { AcceptableValue } from 'reka-ui';
 import type { ExtractPublicPropTypes, PropType } from 'vue';
@@ -124,7 +125,10 @@ export default defineComponent({
         const onUpdate = (value: AcceptableValue) => {
             const current = props.modelValue === undefined ? lastEmitted : props.modelValue;
 
-            if (value === current) {
+            // Same equality rule as Reka's checked state (`RadioGroupItem`
+            // uses ohash `isEqual`), so a structurally equal object value
+            // counts as the already-checked option.
+            if (isEqual(value, current)) {
                 return;
             }
 

@@ -66,6 +66,30 @@ describe('date-range helpers', () => {
             expect(new Date(end!).getHours()).toBe(23);
         });
 
+        it('includes a repeated final hour (fall-back at midnight) in the end bound', () => {
+            // America/Santiago falls back at 2026-04-05 00:00 (-03 -> -04):
+            // 23:00-23:59 on 2026-04-04 happens twice, so the day ends at
+            // 2026-04-05T03:59:59.999Z, not at the first 23:59:59.999.
+            // Synchronous on purpose: Node re-reads `TZ` on assignment, and
+            // nothing else runs in this worker while it is switched.
+            const previous = process.env.TZ;
+
+            process.env.TZ = 'America/Santiago';
+
+            try {
+                expect(new Date(2026, 3, 4, 12).getTimezoneOffset()).toBe(180);
+                expect(fromDateInput('2026-04-04', 'start')).toBe('2026-04-04T03:00:00.000Z');
+                expect(fromDateInput('2026-04-04', 'end')).toBe('2026-04-05T03:59:59.999Z');
+                // ordinary day after the switch
+                expect(fromDateInput('2026-04-06', 'end')).toBe('2026-04-07T03:59:59.999Z');
+                expect(fromDateInput('2026-02-30', 'end')).toBeUndefined();
+            } finally {
+                process.env.TZ = previous;
+            }
+
+            expect(new Date(2026, 0, 15).getTimezoneOffset()).toBe(-60);
+        });
+
         it('handles the fall-back DST day', () => {
             // 2026-10-25: CEST (+2) -> CET (+1) at 03:00.
             expect(fromDateInput('2026-10-25', 'start')).toBe('2026-10-24T22:00:00.000Z');

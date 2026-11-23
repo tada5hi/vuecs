@@ -43,6 +43,17 @@
     white-space: nowrap;
 }
 
+/* Unthemed selected-state affordance. `:where()` keeps it at zero
+   specificity so any theme class wins; it only sets `color` and
+   `border-color` — properties every shipped theme sets on its own active
+   segment (Bootstrap `.btn.active`, Bulma `.is-selected`, Tailwind
+   `text-fg!`; Tailwind's preflight zeroes the border width) — so it is
+   visible on a bare UA button and invisible under a theme. */
+:where(.vc-form-radio-segment[data-state="checked"]) {
+    color: var(--vc-color-primary-600, #2563eb);
+    border-color: var(--vc-color-primary-600, #2563eb);
+}
+
 .vc-form-radio-segment[data-disabled],
 .vc-form-radio-segment:disabled {
     cursor: not-allowed;

@@ -14,6 +14,8 @@ import {
     ref,
 } from 'vue';
 import { renderToString } from 'vue/server-renderer';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { mount } from '@vue/test-utils';
 import { installDefaultsManager, installThemeManager } from '@vuecs/core';
 import { default as VCFormCheckbox } from '../../src/components/form-checkbox/FormCheckbox.vue';
@@ -1497,6 +1499,28 @@ describe('VCFormRadioGroup same-value updates', () => {
         expect(radios[0].attributes('data-state')).toBe('checked');
     });
 
+    it('should treat a structurally equal object value as already checked (Reka equality)', async () => {
+        const wrapper = mount(VCFormRadioGroup, {
+            props: { modelValue: { id: 1 } },
+            global: { plugins: [themePlugin] },
+            slots: {
+                default: () => [
+                    h(VCFormRadio, { value: { id: 1 }, label: false }),
+                    h(VCFormRadio, { value: { id: 2 }, label: false }),
+                ],
+            },
+        });
+        const radios = wrapper.findAll('button[role="radio"]');
+
+        expect(radios[0].attributes('data-state')).toBe('checked');
+
+        await radios[0].trigger('click');
+        expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+
+        await radios[1].trigger('click');
+        expect(wrapper.emitted('update:modelValue')).toEqual([[{ id: 2 }]]);
+    });
+
     it('should not re-emit the same value when uncontrolled', async () => {
         const wrapper = mount(VCFormRadioGroup, {
             global: { plugins: [themePlugin] },
@@ -1586,6 +1610,44 @@ describe('VCFormRadioGroup segmented', () => {
         expect(radios.map((r) => r.text())).toEqual(['Alpha', 'Beta']);
         expect(wrapper.find('label').exists()).toBe(false);
         expect(radios[1].attributes('data-state')).toBe('checked');
+    });
+
+    it('should give only the checked segment a structural selected style without a theme', () => {
+        const style = document.createElement('style');
+
+        style.textContent = readFileSync(resolve(__dirname, '../../assets/form-radio.css'), 'utf8');
+        document.head.appendChild(style);
+
+        try {
+            const wrapper = mount(VCFormRadioGroup, {
+                props: {
+                    modelValue: 'grid',
+                    options,
+                    segmented: true,
+                },
+                attachTo: document.body,
+                global: {
+                    plugins: [{
+                        install: (app: any) => {
+                            installThemeManager(app);
+                            installDefaultsManager(app);
+                        },
+                    }],
+                },
+            });
+            const radios = wrapper.findAll('button[role="radio"]');
+            const checked = getComputedStyle(radios[1].element);
+            const unchecked = getComputedStyle(radios[0].element);
+
+            expect(radios[1].attributes('data-state')).toBe('checked');
+            expect(checked.borderColor).not.toBe('');
+            expect(checked.color).not.toBe(unchecked.color);
+            expect(checked.borderColor).not.toBe(unchecked.borderColor);
+
+            wrapper.unmount();
+        } finally {
+            style.remove();
+        }
     });
 
     it('should mark only the checked segment active and follow model changes', async () => {
