@@ -26,6 +26,7 @@ export default defineNuxtConfig({
         '@vuecs/pagination': path.join(__dirname, '..', '..', 'packages', 'pagination', 'src'),
         '@vuecs/placeholder': path.join(__dirname, '..', '..', 'packages', 'placeholder', 'src'),
         '@vuecs/table': path.join(__dirname, '..', '..', 'packages', 'table', 'src'),
+        '@vuecs/table-card': path.join(__dirname, '..', '..', 'packages', 'table-card', 'src'),
         '@vuecs/theme-tailwind': path.join(__dirname, '..', '..', 'themes', 'tailwind', 'src'),
         '@vuecs/icons-font-awesome': path.join(__dirname, '..', '..', 'icons', 'font-awesome', 'src'),
         '@vuecs/icons-lucide': path.join(__dirname, '..', '..', 'icons', 'lucide', 'src'),

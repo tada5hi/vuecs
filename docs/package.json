@@ -42,6 +42,7 @@
         "@vuecs/navigation": "*",
         "@vuecs/overlays": "*",
         "@vuecs/pagination": "*",
+        "@vuecs/table-card": "*",
         "@vuecs/theme-tailwind": "*",
         "@vuecs/timeago": "*",
         "@vuecs/tree": "*",

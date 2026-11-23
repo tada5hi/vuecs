@@ -40,6 +40,7 @@
         "@vuecs/navigation": "*",
         "@vuecs/overlays": "*",
         "@vuecs/pagination": "*",
+        "@vuecs/table-card": "*",
         "@vuecs/timeago": "*",
         "@vuecs/tree": "*",
         "vue": "^3.5.44"

@@ -17,6 +17,7 @@
     "packages/pagination": "2.2.3",
     "packages/placeholder": "1.1.2",
     "packages/table": "1.6.3",
+    "packages/table-card": "0.0.0",
     "themes/bootstrap": "7.6.0",
     "themes/bulma": "5.6.0",
     "themes/tailwind": "6.6.0",
