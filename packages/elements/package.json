@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/elements",
-    "version": "1.6.0",
+    "version": "1.7.0",
     "type": "module",
     "description": "Atomic, presentation-only UI elements for vuecs (Separator, Tag, Tags, Avatar, AspectRatio, VisuallyHidden, Badge).",
     "exports": {

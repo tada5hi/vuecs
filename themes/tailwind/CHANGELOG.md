@@ -1,5 +1,21 @@
 # Changelog
 
+## [6.7.0](https://github.com/tada5hi/vuecs/compare/theme-tailwind-v6.6.0...theme-tailwind-v6.7.0) (2026-11-23)
+
+
+### Features
+
+* add collection-page building blocks ([#1785](https://github.com/tada5hi/vuecs/issues/1785)) ([9e3496a](https://github.com/tada5hi/vuecs/commit/9e3496a75ae295b8021ee7c4dcf33a5461d035cd))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @vuecs/elements bumped from ^1.6.0 to ^1.7.0
+    * @vuecs/forms bumped from ^5.4.4 to ^5.5.0
+    * @vuecs/gravatar bumped from ^2.1.3 to ^2.1.4
+
 ## [6.6.0](https://github.com/tada5hi/vuecs/compare/theme-tailwind-v6.5.2...theme-tailwind-v6.6.0) (2026-11-20)
 
 

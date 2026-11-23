@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/tada5hi/vuecs/compare/elements-v1.6.0...elements-v1.7.0) (2026-11-23)
+
+
+### Features
+
+* add collection-page building blocks ([#1785](https://github.com/tada5hi/vuecs/issues/1785)) ([9e3496a](https://github.com/tada5hi/vuecs/commit/9e3496a75ae295b8021ee7c4dcf33a5461d035cd))
+
 ## [1.6.0](https://github.com/tada5hi/vuecs/compare/elements-v1.5.2...elements-v1.6.0) (2026-11-20)
 
 

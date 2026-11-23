@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.5.0](https://github.com/tada5hi/vuecs/compare/forms-v5.4.4...forms-v5.5.0) (2026-11-23)
+
+
+### Features
+
+* add collection-page building blocks ([#1785](https://github.com/tada5hi/vuecs/issues/1785)) ([9e3496a](https://github.com/tada5hi/vuecs/commit/9e3496a75ae295b8021ee7c4dcf33a5461d035cd))
+
 ## [5.4.4](https://github.com/tada5hi/vuecs/compare/forms-v5.4.3...forms-v5.4.4) (2026-11-11)
 
 
