@@ -1,5 +1,10 @@
 import { flushPromises, mount } from '@vue/test-utils';
-import { defineComponent, isProxy, reactive } from 'vue';
+import {
+    defineComponent, 
+    isProxy, 
+    reactive, 
+    watch,
+} from 'vue';
 import { describe, expect, it } from 'vitest';
 import { DataLoadStatus, defineDataCollection } from '../../src';
 
@@ -850,6 +855,42 @@ describe('defineDataCollection', () => {
 
             gate.resolve();
             await op;
+        });
+
+        it('should keep loading true across the handover to a newer load', async () => {
+            const { source, gates } = deferredSource();
+            const loadingSeen : boolean[] = [];
+            const nested : Promise<unknown>[] = [];
+
+            const p1 = source.load();
+
+            const stopLoading = watch(source.loading, (value) => {
+                loadingSeen.push(value);
+            }, { flush: 'sync' });
+            const stopEmpty = watch(source.isEmpty, (value) => {
+                // a consumer reacting synchronously to the empty state
+                if (value && nested.length === 0) {
+                    nested.push(source.load());
+                }
+            }, { flush: 'sync' });
+
+            const p2 = source.load();
+
+            expect(loadingSeen).not.toContain(false);
+            expect(nested).toHaveLength(0);
+            expect(source.loading.value).toBe(true);
+
+            stopLoading();
+            stopEmpty();
+
+            // newest (p2) wins even when the older load settles last
+            gates[1].resolve([{ id: 2, name: 'newer' }]);
+            await p2;
+            gates[0].resolve([{ id: 1, name: 'stale' }]);
+            await p1;
+            await Promise.all(nested);
+
+            expect(source.data.value.map((row) => row.name)).toEqual(['newer']);
         });
 
         it('should hide the empty state while the newest load runs', () => {

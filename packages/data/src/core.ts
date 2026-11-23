@@ -15,6 +15,7 @@ import {
     onMounted,
     ref,
     shallowReactive,
+    shallowRef,
 } from 'vue';
 
 import { DataLoadStatus, DataMutationStatus } from './constants';
@@ -84,27 +85,30 @@ export function createAsyncSourceCore() : AsyncSourceCore {
     const busy = computed(() => busyCount.value > 0);
     const error = ref<unknown>(undefined);
 
-    // `token` identifies the newest `run`; `activeToken` is the token of the
-    // run that is still executing, if that run started last. `loading` is
-    // true only while both agree — so `supersede()` (bumping `token`) turns
-    // it off at once, and a superseded run settling never touches it.
-    const token = ref(0);
-    const activeToken = ref<number | undefined>(undefined);
-    const loading = computed(() => activeToken.value !== undefined && activeToken.value === token.value);
+    // `token` identifies the newest `run`; `active` is the token of the run
+    // that is still executing, if that run started last. `loading` is true
+    // only while both agree — so `supersede()` (bumping `token`) turns it off
+    // at once, and a superseded run settling never touches it.
+    //
+    // Both live in ONE shallowRef that is replaced in a single assignment, so
+    // starting a run publishes the new token and the active run as one
+    // reactive change: `loading` never drops to false during the handover
+    // (a `flush: 'sync'` watcher on `isEmpty` could otherwise start a nested
+    // load in that window and break latest-wins).
+    const state = shallowRef<{ token: number, active: number | undefined }>({ token: 0, active: undefined });
+    const loading = computed(() => state.value.active !== undefined && state.value.active === state.value.token);
 
     const run = async <R>(work: () => Promise<R>, apply: (result: R) => void) : Promise<DataLoadOutcome> => {
-        token.value += 1;
+        const current = state.value.token + 1;
 
-        const current = token.value;
-
-        activeToken.value = current;
+        state.value = { token: current, active: current };
         busyCount.value += 1;
         error.value = undefined;
 
         try {
             const result = await work();
 
-            if (current !== token.value) {
+            if (current !== state.value.token) {
                 return { status: DataLoadStatus.SUPERSEDED };
             }
 
@@ -112,7 +116,7 @@ export function createAsyncSourceCore() : AsyncSourceCore {
 
             return { status: DataLoadStatus.APPLIED };
         } catch (e) {
-            if (current !== token.value) {
+            if (current !== state.value.token) {
                 return { status: DataLoadStatus.SUPERSEDED };
             }
 
@@ -122,14 +126,14 @@ export function createAsyncSourceCore() : AsyncSourceCore {
         } finally {
             busyCount.value -= 1;
 
-            if (activeToken.value === current) {
-                activeToken.value = undefined;
+            if (state.value.active === current) {
+                state.value = { token: state.value.token, active: undefined };
             }
         }
     };
 
     const supersede = () => {
-        token.value += 1;
+        state.value = { token: state.value.token + 1, active: state.value.active };
     };
 
     const mutate = async <R>(fn: () => Promise<R>) : Promise<R> => {
