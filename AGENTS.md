@@ -35,6 +35,7 @@ Versions are owned by release-please — read them from `.release-please-manifes
 | --- | --- |
 | Shared infrastructure | `core` owns themes, defaults, config, primitive wrappers and shared state helpers; `design` owns tokens, palette and color-mode primitives. |
 | Stateful composition | `data`, `list`, `table` and `tree` preserve consumer entity types through props and slots. Data/list compatibility is structural, with no runtime dependency cycle. |
+| Composite | `table-card` frames `VCTable` with card chrome, search, pagination and `VCEmptyState`; generic over the row type, no runtime dependency on `data` (structural binding). |
 | Components | Button, forms, elements, navigation, overlays, pagination, placeholder, link, icon, gravatar, countdown and timeago packages expose component plugins plus named exports. |
 | Theme and icon data | Bootstrap, Bulma and Tailwind themes provide classes/runtime hooks; icon presets map names without embedding icon data. |
 | Integration | `nuxt` owns SSR color-mode, palette and locale integration; `locale` supplies the reactive source consumed by core. |
@@ -47,6 +48,7 @@ Read the [package contract inventory](.agents/topics/package-inventory.md) for t
 Layer 0 (no internal deps):  core, countdown, design, icon, link, timeago
 Layer 1 (depends on core):   button, data, elements, forms, list, locale, navigation, overlays, pagination, placeholder, table, tree
 Layer 1' (depends on elements + core):   gravatar (composes VCAvatar)
+Layer 1'' (composite):       table-card (peer deps core + table + elements + pagination + forms; @vuecs/data devDep only)
 Layer 2 (depends on Layer 0): themes (@vuecs/core peer dep only — pure data that targets component packages at runtime)
                               theme-tailwind also depends on @vuecs/design (composes its generic palette primitives)
 Layer 2': icons (@vuecs/core peer dep only — Iconify-name vocabularies for @vuecs/icon's <VCIcon>, registered via `app.use(vuecs, { icons: [...] })`)

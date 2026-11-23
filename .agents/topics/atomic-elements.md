@@ -24,6 +24,9 @@ the theme system.
                            stable on VCAlertClose's corner form (#1770).
       collapse/         <- VCCollapse + VCCollapseTrigger / VCCollapseContent
                            Reka Collapsible wrapper with auto-chevron + height animation
+      empty-state/      <- VCEmptyState (pure CSS) — `empty` / `noResults` variant (also a theme variant).
+                           Collection-page composites (#1783) bind its prop / `action` emit / slot names (#1780).
+                           `noResults` copy comes from `useComponentDefaults('emptyState')`; `empty` has none.
     vue.ts              <- GlobalComponents augmentation
     index.ts            <- install() (themes, defaults; registers all VC* components)
   assets/
@@ -35,6 +38,7 @@ the theme system.
     card.css            <- structural defaults for card + bands + title / description
     alert.css           <- alert flex layout + absolute corner-close positioning
     collapse.css        <- chevron rotation tied to [data-state="open"]
+    empty-state.css     <- centered flex column + gap; themes own border / padding / action
 ```
 
 ### Card compound

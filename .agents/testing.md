@@ -41,9 +41,11 @@ packages/navigation/test/types/breadcrumb.test-d.ts    # <VCBreadcrumb> Item inf
 packages/forms/test/types/model-value.test-d.ts        # form model-value typing
 packages/link/test/types/link-props.test-d.ts          # LinkProps surface + no index signature
 packages/data/test/types/list-compat.test-d.ts         # DataCollection assignable to <VCList :state> (ListState & ListMutators)
+packages/table-card/test/types/generic-row.test-d.ts   # <VCTableCard> Row inference + handler props
+packages/table-card/test/types/data-compat.test-d.ts   # DataCollection data/loading/total bind to <VCTableCard>
 ```
 
-The four generic-component guards additionally pin that the facade types
+The generic-component guards additionally pin that the facade types
 (`*Slots` / `*PropsGeneric` / `VC*Component`) stay **exported from the package
 barrel** — the TS4023 condition from #1704, which only ever manifests in a
 downstream package's declaration emit. See

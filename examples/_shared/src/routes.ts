@@ -79,10 +79,22 @@ export const sharedRoutes: SharedRoute[] = [
         view: () => import('./views/DropdownMenu.vue').then((m) => m.default),
     },
     {
+        path: '/empty-state',
+        name: 'empty-state',
+        label: 'Empty State',
+        view: () => import('./views/EmptyState.vue').then((m) => m.default),
+    },
+    {
         path: '/form-checkbox',
         name: 'form-checkbox',
         label: 'Form Checkbox',
         view: () => import('./views/FormCheckbox.vue').then((m) => m.default),
+    },
+    {
+        path: '/form-date-range',
+        name: 'form-date-range',
+        label: 'Form Date Range',
+        view: () => import('./views/FormDateRange.vue').then((m) => m.default),
     },
     {
         path: '/form-group',
@@ -233,6 +245,12 @@ export const sharedRoutes: SharedRoute[] = [
         name: 'table',
         label: 'Table',
         view: () => import('./views/Table.vue').then((m) => m.default),
+    },
+    {
+        path: '/table-card',
+        name: 'table-card',
+        label: 'Table Card',
+        view: () => import('./views/TableCard.vue').then((m) => m.default),
     },
     {
         path: '/tag',

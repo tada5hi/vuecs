@@ -9,7 +9,7 @@ vuecs/
     countdown/        # @vuecs/countdown
     data/             # @vuecs/data — loader-backed data-source composables: defineDataCollection() (structural superset of ListState & ListMutators; binds to <VCList :state>) + defineDataRecord() (single entity) over one shared async core (counter-busy, token-guarded latest-wins, error ref, mutate(fn), dehydrate/hydrate, D12 mutator buffering). Pure composables — no components, no CSS, no Reka. @experimental
     design/           # @vuecs/design — CSS design tokens (concrete OKLCH defaults) + motion primitives (animations.css) + useColorMode + generic palette primitives (applyColorPaletteCss / bindColorPalette<T> / COLOR_PALETTE_STYLE_ELEMENT_ID) — theme-agnostic, no Tailwind dep. `/standalone` subpath additionally inlines the 22-palette Tailwind v4 catalog so setColorPalette() works for BS/Bulma consumers without Tailwind loaded. scripts/build-standalone.ts regenerates assets/palettes.css from upstream.
-    elements/         # @vuecs/elements — atomic, presentation-only UI elements (Separator, Tag/Tags, Avatar, AspectRatio, VisuallyHidden, Badge) + the Card compound + the Alert compound + the Collapse compound; thin Reka wrappers + pure-CSS chips
+    elements/         # @vuecs/elements — atomic, presentation-only UI elements (Separator, Tag/Tags, Avatar, AspectRatio, VisuallyHidden, Badge, EmptyState) + the Card compound + the Alert compound + the Collapse compound; thin Reka wrappers + pure-CSS chips
     forms/            # @vuecs/forms (renamed from @vuecs/form-controls in 3.0; checkbox/switch on Reka primitives)
     gravatar/         # @vuecs/gravatar — composes <VCAvatar> from @vuecs/elements
     icon/             # @vuecs/icon — <VCIcon> component wrapping @iconify/vue
@@ -22,6 +22,7 @@ vuecs/
     pagination/       # @vuecs/pagination
     placeholder/      # @vuecs/placeholder — primitive skeleton loading components (VCPlaceholder + Wrapper); shape: rect/pill/circle, wave/glow/none animations; ships its own structural CSS so it works without any theme. Composite skeletons live next to the real components (VCCardPlaceholder in elements, VCTablePlaceholder in table) (issue #1476)
     table/            # @vuecs/table — compound table (Table / Header / Body / Footer / Row / Cell / HeadCell / Empty / Loading) + :columns :data driver, controlled sort, row-meta variants, row keyboard nav
+    table-card/       # @vuecs/table-card — <VCTableCard> composite: VCCard frame (title/description, debounced search, #actions) around VCTable or VCEmptyState (busy wins; empty/noResults replace the table) + #aside + VCPagination footer; generic over Row; no CSS of its own
     timeago/          # @vuecs/timeago
     tree/             # @vuecs/tree — tree view that SELECTS rather than navigates (VCTree / VCTreeItem / VCTreeItemTrigger); wraps reka TreeRoot/TreeItem as a focus+flatten shell via as-child, vuecs owns key-based v-model:selection, v-model:expanded, cascade + indeterminate, lazy load(); Vue-free utils (parseTreePaths / buildTreeIndex / normalize / cascadeSelect / orderKeys); indents via --vc-tree-level in its own CSS
   themes/             # Theme packages (npm workspaces) — pure data, no Vue runtime deps
