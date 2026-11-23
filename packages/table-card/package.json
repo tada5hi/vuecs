@@ -41,7 +41,7 @@
         "test:coverage": "vitest --config test/vitest.config.ts --run --coverage"
     },
     "devDependencies": {
-        "@vue/test-utils": "^2.5.1",
+        "@vue/test-utils": "^2.6.0",
         "@vuecs/core": "^3.6.1",
         "@vuecs/data": "^1.0.0-alpha.2",
         "@vuecs/elements": "^1.7.0",
@@ -49,7 +49,7 @@
         "@vuecs/pagination": "^2.2.3",
         "@vuecs/table": "^1.6.3",
         "jsdom": "^30.1.3",
-        "vue": "^3.5.44"
+        "vue": "^3.5.46"
     },
     "peerDependencies": {
         "@vuecs/core": "^3.6.1",
