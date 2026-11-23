@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-alpha.2](https://github.com/tada5hi/vuecs/compare/data-v1.0.0-alpha.1...data-v1.0.0-alpha.2) (2026-11-23)
+
+
+### Features
+
+* add collection-page building blocks ([#1785](https://github.com/tada5hi/vuecs/issues/1785)) ([9e3496a](https://github.com/tada5hi/vuecs/commit/9e3496a75ae295b8021ee7c4dcf33a5461d035cd))
+
 ## [1.0.0-alpha.1](https://github.com/tada5hi/vuecs/compare/data-v1.0.0-alpha.0...data-v1.0.0-alpha.1) (2026-10-27)
 
 
