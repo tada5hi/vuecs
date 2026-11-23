@@ -893,8 +893,12 @@ export default function bulmaTheme(): Theme {
                 // is very close to `.pagination-link`'s anyway, just
                 // wider on small viewports). Visual parity with the
                 // Tailwind / Bootstrap themes is preserved.
+                // `.pagination` also goes on the root: Bulma registers the
+                // `--bulma-pagination-*` vars (min-width, item padding) on
+                // it, and `.pagination-link` collapses to its text width
+                // without them.
                 classes: {
-                    root: 'pagination-list is-flex is-justify-content-center',
+                    root: 'pagination pagination-list is-flex is-justify-content-center',
                     item: '',
                     link: 'pagination-link',
                     linkActive: 'is-current',
