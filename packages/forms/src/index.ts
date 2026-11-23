@@ -3,6 +3,7 @@ import type { App, Plugin } from 'vue';
 
 import '../assets/form-checkbox.css';
 import '../assets/form-checkbox-group.css';
+import '../assets/form-date-range.css';
 import '../assets/form-input.css';
 import '../assets/form-number.css';
 import '../assets/form-pin.css';
@@ -17,6 +18,7 @@ import './vue';
 import {
     VCFormCheckbox,
     VCFormCheckboxGroup,
+    VCFormDateRange,
     VCFormGroup,
     VCFormInput,
     VCFormNumber,
@@ -35,6 +37,7 @@ import type { Options } from './types';
 export * from './components';
 export * from './composables';
 export * from './types';
+export * from './utils/date-range';
 
 export function install(instance: App, options: Options = {}): void {
     installThemeManager(instance, options);
@@ -43,6 +46,7 @@ export function install(instance: App, options: Options = {}): void {
     Object.entries({
         VCFormCheckbox,
         VCFormCheckboxGroup,
+        VCFormDateRange,
         VCFormGroup,
         VCFormInput,
         VCFormNumber,

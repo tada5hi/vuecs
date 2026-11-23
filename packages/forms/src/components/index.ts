@@ -1,5 +1,6 @@
 export * from './form-checkbox';
 export * from './form-checkbox-group';
+export * from './form-date-range';
 export * from './form-group';
 export * from './form-input';
 export * from './form-number';
