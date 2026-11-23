@@ -4,7 +4,7 @@ import {
     defineComponent,
     h,
     mergeProps,
-    resolveComponent,
+    resolveDynamicComponent,
 } from 'vue';
 import type {
     Component,
@@ -85,7 +85,7 @@ export default defineComponent({
 
         // Resolved once per instance; a string result means `@vuecs/icon`
         // isn't installed (same pattern as `<VCAlert>`).
-        const VCIcon = resolveComponent('VCIcon');
+        const VCIcon = resolveDynamicComponent('VCIcon');
         const hasIconComponent = typeof VCIcon !== 'string';
 
         return () => {

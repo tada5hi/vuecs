@@ -4,6 +4,7 @@ import {
     describe,
     expect,
     it,
+    vi,
 } from 'vitest';
 import { defineComponent, h } from 'vue';
 import { mount } from '@vue/test-utils';
@@ -185,6 +186,21 @@ describe('<VCEmptyState>', () => {
         const wrapper = mount(VCEmptyState, { props: { title: 'x', icon: 'lucide:inbox' }, global: { plugins: [...plugins] } });
 
         expect(wrapper.find('.vc-empty-state-icon').exists()).toBe(false);
+    });
+
+    it('does not warn when VCIcon is not registered', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+        try {
+            mount(VCEmptyState, { props: { title: 'x' }, global: { plugins: [...plugins] } });
+            mount(VCEmptyState, { props: { title: 'x', icon: 'lucide:inbox' }, global: { plugins: [...plugins] } });
+
+            const messages = warn.mock.calls.map((args) => String(args[0]));
+
+            expect(messages.filter((m) => m.includes('VCIcon'))).toEqual([]);
+        } finally {
+            warn.mockRestore();
+        }
     });
 
     it('applies themeClass.root', () => {
