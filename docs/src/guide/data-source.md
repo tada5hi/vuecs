@@ -5,7 +5,7 @@
 - **`defineDataCollection()`** — a paginated/filtered list of entities. Its return shape is a deliberate structural superset of `@vuecs/list`'s `ListState & ListMutators`, so it binds straight to `<VCList :state>`.
 - **`defineDataRecord()`** — a single entity, for detail views and edit forms.
 
-Both sit on one shared async core: counter-backed `busy`, an `error` ref, token-guarded latest-wins loading, a `mutate()` wrapper for write gestures, and a `dehydrate()` / `hydrate` pair for SSR.
+Both sit on one shared async core: counter-backed `busy`, a `loading` flag for the newest load, an `error` ref, token-guarded latest-wins loading, a `mutate()` wrapper for write gestures, and a `dehydrate()` / `hydrate` pair for SSR.
 
 ::: warning Experimental
 `@vuecs/data` is marked `@experimental` and ships on the **alpha pre-release channel** (`x.y.z-alpha.N`, npm dist-tag `alpha`). The API may break between releases without a major bump while the first consumer adapters land; the surface stabilizes to regular releases once they have.
@@ -87,9 +87,10 @@ With `autoLoad` left at its default (`true`), the first fetch fires on mount. Th
 
 ```ts
 source.data      // ComputedRef<User[]>
-source.busy      // ComputedRef<boolean>
+source.busy      // ComputedRef<boolean>  — any load or mutate() running
+source.loading   // ComputedRef<boolean>  — the newest load is running
 source.total     // ComputedRef<number>   — last reported server total, else data.length
-source.isEmpty   // ComputedRef<boolean>  — !busy && total === 0
+source.isEmpty   // ComputedRef<boolean>  — !loading && total === 0
 source.error     // Ref<unknown>
 source.meta      // UserListMeta          — a reactive plain bag, NOT a ref
 ```
@@ -239,6 +240,7 @@ const source = defineDataRecord<User, UserRecordMeta>({
 
 source.data    // ComputedRef<User | undefined>
 source.busy    // ComputedRef<boolean>
+source.loading // ComputedRef<boolean>
 source.error   // Ref<unknown>
 source.meta    // UserRecordMeta — reactive plain bag
 ```
@@ -348,6 +350,21 @@ The source stores the value you pass by reference and never mutates it — but y
 Every `load()` takes a monotonic token. When a response arrives, it is applied **only if its token is still the latest** — a slow first request that resolves after a faster second one is discarded, state and rejection alike. `busy` is counter-backed rather than boolean, so overlapping `load()` and `mutate()` calls compose instead of stomping each other; it stays `true` until the last in-flight operation settles.
 
 This is the fix for two failure modes the hand-rolled containers this package replaces both had: stale responses clobbering newer state, and `if (busy) return` guards silently dropping user input.
+
+### `busy` vs `loading`
+
+The two flags answer different questions:
+
+| Flag | `true` while… | Bind it to |
+|---|---|---|
+| `busy` | **any** work runs: every `load()` (superseded ones too) and every `mutate()`. | Save buttons, a global progress bar, guards against leaving the page mid-write. |
+| `loading` | only the **newest** load runs. | Skeletons, loading placeholders, a table's or card's `busy` prop — anything that says "the data on screen is about to change". |
+
+`loading` follows the same token as latest-wins: a load that a newer `load()` or an [immediate write](#immediate-writes) supersedes stops counting the moment it is superseded, and settling later never turns `loading` (or `error`) back on. A `mutate()` never sets `loading` — it is a write, not a load. So when the user pages quickly (load 1 slow, load 2 fast), `loading` goes `false` as soon as load 2 applies, while `busy` stays `true` until load 1 settles too.
+
+`isEmpty` follows `loading`, not `busy`: an empty result shows the empty state even while a `mutate()` or a superseded load is still running.
+
+`<VCList :state>` still reads `busy` for `<VCListLoading>` / `<VCListEmpty>`.
 
 ### The `error` contract
 
@@ -599,7 +616,7 @@ Three details worth pinning:
 
 | Member | Type | Description |
 |---|---|---|
-| `data` / `busy` / `total` / `isEmpty` | `ComputedRef` | Read-only views. `total` falls back to `data.length` until a server total has been reported, then keeps the last reported value. |
+| `data` / `busy` / `loading` / `total` / `isEmpty` | `ComputedRef` | Read-only views. `busy` covers every load and `mutate()`; `loading` only the newest load (see [`busy` vs `loading`](#busy-vs-loading)); `isEmpty` is `!loading && total === 0`. `total` falls back to `data.length` until a server total has been reported, then keeps the last reported value. |
 | `meta` | `Meta` | Reactive plain bag (`shallowReactive`). Meta of the last load that applied. |
 | `error` | `Ref<unknown>` | Last captured failure. |
 | `load(next?, input?)` | `Promise<DataLoadOutcome>` | Draft meta + re-fire; commits on success. Never rejects. |
@@ -625,7 +642,7 @@ Three details worth pinning:
 | Member | Type | Description |
 |---|---|---|
 | `data` | `ComputedRef<T \| undefined>` | |
-| `busy` / `error` / `meta` | — | As the collection variant. |
+| `busy` / `loading` / `error` / `meta` | — | As the collection variant. |
 | `load(next?, input?)` / `refresh(input?)` | `Promise<DataLoadOutcome>` | As the collection variant. |
 | `ensure(input?)` | `Promise<DataEnsureOutcome>` | Fetch only when unresolved for `input`; coalesces onto an in-flight load with the same input. |
 | `set` / `clear` | `(…, { onSettled?, immediate? }?) => DataMutationStatus` | Local mutators; buffered during a load unless `immediate`. |

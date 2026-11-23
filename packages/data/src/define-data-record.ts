@@ -165,6 +165,7 @@ export function defineDataRecord<
     return {
         data,
         busy: core.busy,
+        loading: core.loading,
         meta: bag.meta,
         error: core.error,
         load,

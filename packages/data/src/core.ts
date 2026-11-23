@@ -84,20 +84,27 @@ export function createAsyncSourceCore() : AsyncSourceCore {
     const busy = computed(() => busyCount.value > 0);
     const error = ref<unknown>(undefined);
 
-    let token = 0;
+    // `token` identifies the newest `run`; `activeToken` is the token of the
+    // run that is still executing, if that run started last. `loading` is
+    // true only while both agree — so `supersede()` (bumping `token`) turns
+    // it off at once, and a superseded run settling never touches it.
+    const token = ref(0);
+    const activeToken = ref<number | undefined>(undefined);
+    const loading = computed(() => activeToken.value !== undefined && activeToken.value === token.value);
 
     const run = async <R>(work: () => Promise<R>, apply: (result: R) => void) : Promise<DataLoadOutcome> => {
-        token += 1;
+        token.value += 1;
 
-        const current = token;
+        const current = token.value;
 
+        activeToken.value = current;
         busyCount.value += 1;
         error.value = undefined;
 
         try {
             const result = await work();
 
-            if (current !== token) {
+            if (current !== token.value) {
                 return { status: DataLoadStatus.SUPERSEDED };
             }
 
@@ -105,7 +112,7 @@ export function createAsyncSourceCore() : AsyncSourceCore {
 
             return { status: DataLoadStatus.APPLIED };
         } catch (e) {
-            if (current !== token) {
+            if (current !== token.value) {
                 return { status: DataLoadStatus.SUPERSEDED };
             }
 
@@ -114,11 +121,15 @@ export function createAsyncSourceCore() : AsyncSourceCore {
             return { status: DataLoadStatus.FAILED, error: e };
         } finally {
             busyCount.value -= 1;
+
+            if (activeToken.value === current) {
+                activeToken.value = undefined;
+            }
         }
     };
 
     const supersede = () => {
-        token += 1;
+        token.value += 1;
     };
 
     const mutate = async <R>(fn: () => Promise<R>) : Promise<R> => {
@@ -155,6 +166,7 @@ export function createAsyncSourceCore() : AsyncSourceCore {
 
     return {
         busy,
+        loading,
         error,
         run,
         supersede,

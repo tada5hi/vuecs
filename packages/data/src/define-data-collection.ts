@@ -81,7 +81,7 @@ export function defineDataCollection<
     const total = computed(() => (
         typeof totalRef.value === 'number' ? totalRef.value : dataRef.value.length
     ));
-    const isEmpty = computed(() => !core.busy.value && total.value === 0);
+    const isEmpty = computed(() => !core.loading.value && total.value === 0);
 
     const mutations = createCollectionMutations<T>({
         itemId: options.itemId,
@@ -206,6 +206,7 @@ export function defineDataCollection<
     return {
         data,
         busy: core.busy,
+        loading: core.loading,
         total,
         meta: bag.meta,
         isEmpty,
