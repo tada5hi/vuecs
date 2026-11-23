@@ -73,6 +73,13 @@ export default function bootstrapTheme(): Theme {
                 defaultVariants: { size: 'md' },
             },
             formCheckboxGroup: { classes: { root: 'd-flex flex-column gap-2' } },
+            formDateRange: {
+                classes: {
+                    label: 'form-label mb-0',
+                    preset: 'btn btn-sm btn-outline-secondary',
+                    presetActive: 'active',
+                },
+            },
             formSwitch: {
                 classes: {
                     root: 'shadow-sm',
@@ -152,18 +159,38 @@ export default function bootstrapTheme(): Theme {
                     indicator: 'bg-primary',
                     label: 'form-check-label',
                     group: '',
+                    segment: 'btn btn-outline-primary',
+                    segmentActive: 'active',
                 },
                 variants: {
                     size: {
-                        xs: { root: 'vc-form-radio-xs', label: 'vc-fs-xs' },
-                        sm: { root: 'vc-form-radio-sm', label: 'small' },
+                        xs: {
+                            root: 'vc-form-radio-xs',
+                            label: 'vc-fs-xs',
+                            segment: 'btn-sm vc-btn-xs',
+                        },
+                        sm: {
+                            root: 'vc-form-radio-sm',
+                            label: 'small',
+                            segment: 'btn-sm',
+                        },
                         md: { root: '' },
-                        lg: { root: 'vc-form-radio-lg', label: 'fs-5' },
+                        lg: {
+                            root: 'vc-form-radio-lg',
+                            label: 'fs-5',
+                            segment: 'btn-lg',
+                        },
                     },
                 },
                 defaultVariants: { size: 'md' },
             },
-            formRadioGroup: { classes: { root: 'd-flex flex-column gap-2' } },
+            formRadioGroup: {
+                classes: {
+                    root: 'd-flex flex-column gap-2',
+                    // Segmented bar — replaces `root` when `segmented` is set.
+                    segmented: 'btn-group',
+                },
+            },
             // PinInputInput DOES render a real <input>, so `.form-control`
             // would technically apply — but it sets `width: 100%` and
             // collapses every cell into the container's full width. Use
@@ -626,6 +653,25 @@ export default function bootstrapTheme(): Theme {
             },
             alertTitle: { classes: { root: 'fw-semibold mb-1' } },
             alertDescription: { classes: { root: 'mb-0' } },
+            // Dashed-border centered card (#1780). Bootstrap 5 has no
+            // border-style utility — the bridge CSS sets `--bs-border-style:
+            // dashed` on `.vc-empty-state.border` (the var `.border` reads).
+            emptyState: {
+                classes: {
+                    root: 'border rounded p-5 text-center',
+                    icon: 'fs-2 text-body-secondary',
+                    title: 'h5 mb-0',
+                    description: 'text-body-secondary mb-0',
+                    action: 'btn',
+                },
+                variants: {
+                    variant: {
+                        empty: { action: 'btn-primary' },
+                        noResults: { action: 'btn-outline-secondary' },
+                    },
+                },
+                defaultVariants: { variant: 'empty' },
+            },
             badge: {
                 classes: { root: 'badge rounded-pill' },
                 variants: {
@@ -755,6 +801,19 @@ export default function bootstrapTheme(): Theme {
                 classes: {
                     root: 'text-center text-body-secondary py-4',
                     overlay: 'bg-body bg-opacity-75 text-body-secondary',
+                },
+            },
+            // Collection card (#1783). Bootstrap has no `min-width: 0` or
+            // responsive width utility, so the main / aside flex sizing
+            // lives in the bridge CSS (`.vc-table-card-main` / `-aside`).
+            tableCard: {
+                classes: {
+                    header: 'd-flex flex-row flex-wrap align-items-center justify-content-between gap-3',
+                    heading: 'd-flex flex-column gap-1',
+                    toolbar: 'd-flex flex-wrap align-items-center gap-2',
+                    search: 'w-auto',
+                    actions: 'd-flex flex-wrap align-items-center gap-2',
+                    body: 'd-flex flex-wrap align-items-start gap-3',
                 },
             },
             tableSortIndicators: {

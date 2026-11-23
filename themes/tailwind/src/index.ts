@@ -147,6 +147,16 @@ export default function tailwindTheme(): Theme {
                 defaultVariants: { size: 'md' },
             },
             formCheckboxGroup: { classes: { root: 'flex flex-col gap-2 data-[orientation=horizontal]:flex-row data-[orientation=horizontal]:items-center' } },
+            formDateRange: {
+                classes: {
+                    label: 'text-sm font-medium text-fg',
+                    // Small ghost buttons; the active preset fills primary.
+                    // `!` wins over the ghost hover fill without relying on
+                    // class order (preset + presetActive are concatenated).
+                    preset: 'inline-flex cursor-pointer items-center rounded-md px-2.5 py-1 text-xs font-medium text-fg-muted transition-colors hover:bg-bg-muted hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
+                    presetActive: 'bg-primary-600! text-on-primary! hover:bg-primary-700!',
+                },
+            },
             formSwitch: {
                 classes: {
                     root: 'inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border border-border bg-bg-muted p-0.5 shadow-sm transition-colors hover:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1 data-[state=checked]:bg-primary-600 data-[state=checked]:border-primary-600 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
@@ -222,20 +232,43 @@ export default function tailwindTheme(): Theme {
                     indicator: 'block h-2 w-2 rounded-full bg-primary-600',
                     label: 'text-sm text-fg cursor-pointer select-none',
                     group: 'inline-flex items-center gap-2',
+                    // Segmented group: the radio button is the segment face.
+                    segment: 'inline-flex items-center justify-center px-3 py-1 rounded text-sm font-medium text-fg-muted transition-colors hover:text-fg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
+                    // `!` because segment + segmentActive are joined, not twMerged (text-fg-muted).
+                    segmentActive: 'bg-bg shadow-sm text-fg!',
                 },
                 // Sizing references the structural `vc-form-radio-{sm,lg}` helpers
                 // (root + indicator scale together via descendant selectors).
                 variants: {
                     size: {
-                        xs: { root: 'vc-form-radio-xs', label: 'text-[0.7rem]!' },
-                        sm: { root: 'vc-form-radio-sm', label: 'text-xs!' },
+                        xs: {
+                            root: 'vc-form-radio-xs',
+                            label: 'text-[0.7rem]!',
+                            segment: 'px-1.5 py-0.5 text-[0.7rem]',
+                        },
+                        sm: {
+                            root: 'vc-form-radio-sm',
+                            label: 'text-xs!',
+                            segment: 'px-2 py-0.5 text-xs',
+                        },
                         md: { root: '' },
-                        lg: { root: 'vc-form-radio-lg', label: 'text-base!' },
+                        lg: {
+                            root: 'vc-form-radio-lg',
+                            label: 'text-base!',
+                            segment: 'px-4 py-1.5 text-base',
+                        },
                     },
                 },
                 defaultVariants: { size: 'md' },
             },
-            formRadioGroup: { classes: { root: 'flex flex-col gap-2 data-[orientation=horizontal]:flex-row data-[orientation=horizontal]:items-center data-[orientation=horizontal]:gap-4' } },
+            formRadioGroup: {
+                classes: {
+                    root: 'flex flex-col gap-2 data-[orientation=horizontal]:flex-row data-[orientation=horizontal]:items-center data-[orientation=horizontal]:gap-4',
+                    // Pill bar (replaces `root` when segmented). `!` beats the
+                    // unlayered structural `gap: 0`.
+                    segmented: 'inline-flex w-fit rounded-md border border-border bg-bg-muted p-0.5 gap-0.5!',
+                },
+            },
             formPin: {
                 classes: {
                     root: 'inline-flex items-center gap-2',
@@ -615,6 +648,23 @@ export default function tailwindTheme(): Theme {
                     overlay: 'bg-bg/70 backdrop-blur-[1px] text-fg-muted',
                 },
             },
+            // Collection card (#1783). Header lays heading + toolbar out in
+            // a row from `sm` up; the body wraps the aside below the table
+            // under `md`. The `!` suffix is load-bearing: `.vc-card-header`
+            // / `.vc-card-body` set `display` / `flex-direction` / `gap` in
+            // unlayered structural CSS, which beats layered utilities.
+            tableCard: {
+                classes: {
+                    header: 'sm:flex-row! sm:flex-wrap sm:items-center sm:justify-between sm:gap-3!',
+                    heading: 'flex min-w-0 flex-col gap-1',
+                    toolbar: 'flex flex-wrap items-center gap-2',
+                    search: 'sm:w-64',
+                    actions: 'flex flex-wrap items-center gap-2',
+                    body: 'flex! flex-wrap items-start gap-4',
+                    main: 'min-w-0 flex-1',
+                    aside: 'w-full md:w-64 md:shrink-0',
+                },
+            },
             tableSortIndicators: {
                 classes: {
                     root: 'flex flex-wrap items-center gap-1.5 rounded-md border border-border bg-bg-muted px-3 py-2 text-xs',
@@ -892,6 +942,26 @@ export default function tailwindTheme(): Theme {
             },
             alertTitle: { classes: { root: 'font-semibold leading-tight' } },
             alertDescription: { classes: { root: 'leading-snug opacity-90' } },
+            // Dashed-border centered card (#1780). Layout (flex column,
+            // centering, gap) comes from the structural `.vc-empty-state`
+            // CSS; the action color is per `variant` — `empty` invites a
+            // primary create action, `noResults` a quieter reset.
+            emptyState: {
+                classes: {
+                    root: 'rounded-lg border border-dashed border-border p-8 text-center',
+                    icon: 'text-3xl text-fg-muted',
+                    title: 'text-base font-semibold text-fg',
+                    description: 'max-w-prose text-sm text-fg-muted',
+                    action: 'inline-flex items-center justify-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium shadow-sm transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1',
+                },
+                variants: {
+                    variant: {
+                        empty: { action: 'bg-primary-600 text-on-primary hover:bg-primary-700 focus:ring-primary-500' },
+                        noResults: { action: 'border border-border bg-transparent text-fg hover:bg-bg-muted focus:ring-neutral-500' },
+                    },
+                },
+                defaultVariants: { variant: 'empty' },
+            },
             badge: {
                 classes: { root: 'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium leading-tight' },
                 // Size variants use the `!` suffix to override the unlayered

@@ -663,3 +663,39 @@
 .vc-nav-items {
     flex-direction: column;
 }
+
+/* ────────────────────────────────────────────────────────────────────────
+ * EmptyState (#1780) — dashed border.
+ *
+ * Bootstrap 5 ships no border-style utility, but `.border` resolves its
+ * style through `--bs-border-style`; set that var instead of overriding
+ * the resolved `border` property.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.vc-empty-state.border {
+    --bs-border-style: dashed;
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+ * TableCard (#1783) — main / aside sizing.
+ *
+ * Gap-fill: Bootstrap 5 ships no `min-width: 0` or responsive width
+ * utility. The main column grows from a zero basis (so a wide table
+ * scrolls inside it instead of stretching the card); the aside takes a
+ * full row below `md` and a fixed 16rem column beside the table above it.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.vc-table-card-main {
+    flex: 1 1 0%;
+    min-width: 0;
+}
+
+.vc-table-card-aside {
+    flex: 0 0 100%;
+}
+
+@media (min-width: 768px) {
+    .vc-table-card-aside {
+        flex-basis: 16rem;
+    }
+}
