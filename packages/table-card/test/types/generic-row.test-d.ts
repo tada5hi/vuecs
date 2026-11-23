@@ -1,6 +1,11 @@
 import { assertType, expectTypeOf, test } from 'vitest';
 import type { PaginationMeta } from '@vuecs/pagination';
-import type { TableColumn, TableSortState } from '@vuecs/table';
+import type {
+    RowSelectionKey,
+    TableColumn,
+    TablePropsGeneric,
+    TableSortState,
+} from '@vuecs/table';
 import type VCTableCard from '../../dist/components/TableCard.vue';
 import type {
     TableCardNoResultsSlotProps,
@@ -70,6 +75,27 @@ test('VCTableCard threads Row into props + typed handler props', () => {
             expectTypeOf(index).toEqualTypeOf<number>();
         },
         getRowKey: (row) => row.id,
+    };
+
+    void props;
+});
+
+test('VCTableCard forwards the table selection + expansion handler props', () => {
+    type TableUserProps = TablePropsGeneric<User>;
+
+    // Same handler types as <VCTable> — derived, not re-declared.
+    expectTypeOf<NonNullable<CardUserProps['onUpdate:selection']>>()
+        .toEqualTypeOf<NonNullable<TableUserProps['onUpdate:selection']>>();
+    expectTypeOf<NonNullable<CardUserProps['onUpdate:expanded']>>()
+        .toEqualTypeOf<NonNullable<TableUserProps['onUpdate:expanded']>>();
+
+    // A typed props object may set them (excess-property check passes) and
+    // inline arrows infer their parameter.
+    const props: CardUserProps = {
+        'onUpdate:selection': (value) => expectTypeOf(value).not.toBeAny(),
+        'onUpdate:expanded': (value) => {
+            expectTypeOf(value).toEqualTypeOf<RowSelectionKey | RowSelectionKey[] | null>();
+        },
     };
 
     void props;

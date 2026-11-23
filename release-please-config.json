@@ -22,7 +22,7 @@
         "packages/pagination": {"component": "pagination" },
         "packages/placeholder": {"component": "placeholder" },
         "packages/table": {"component": "table" },
-        "packages/table-card": {"component": "table-card" },
+        "packages/table-card": {"component": "table-card", "initial-version": "0.1.0" },
         "themes/bootstrap": {"component": "theme-bootstrap" },
         "themes/bulma": {"component": "theme-bulma" },
         "themes/tailwind": {"component": "theme-tailwind" },

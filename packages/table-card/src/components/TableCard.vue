@@ -33,6 +33,7 @@ import { VCTable } from '@vuecs/table';
 import type {
     RowSelectionKey,
     TableColumnRaw,
+    TablePropsGeneric,
     TableSlots,
     TableSortState,
 } from '@vuecs/table';
@@ -111,6 +112,8 @@ export type TableCardPropsGeneric<Row> = & Omit<TableCardProps, 'data' | 'column
         onRowClick?: (row: Row, index: number, event: Event) => void;
         getRowKey?: (row: Row, index: number) => RowSelectionKey;
     } &
+    // The table's remaining handler props, derived so they can't drift.
+    Pick<TablePropsGeneric<Row>, 'onUpdate:selection' | 'onUpdate:expanded'> &
     PublicProps;
 
 /** Generic `<VCTableCard>` type — `Row` is inferred from `:data` / `:columns`. */
