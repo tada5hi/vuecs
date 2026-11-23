@@ -1,0 +1,11 @@
+{
+    "extends": "../../tsconfig.build.json",
+    "compilerOptions": {
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "declarationDir": "./dist",
+        "skipLibCheck": true
+    },
+    "exclude": ["node_modules", "dist"],
+    "include": ["src/**/*.ts", "src/**/*.vue", "../../types/**/*.d.ts"]
+}

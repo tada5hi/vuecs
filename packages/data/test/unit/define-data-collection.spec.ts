@@ -1,5 +1,10 @@
 import { flushPromises, mount } from '@vue/test-utils';
-import { defineComponent, isProxy, reactive } from 'vue';
+import {
+    defineComponent, 
+    isProxy, 
+    reactive, 
+    watch,
+} from 'vue';
 import { describe, expect, it } from 'vitest';
 import { DataLoadStatus, defineDataCollection } from '../../src';
 
@@ -758,6 +763,144 @@ describe('defineDataCollection', () => {
 
             expect(snapshot.data.some((r) => isProxy(r))).toBe(false);
             expect(() => structuredClone(snapshot)).not.toThrow();
+        });
+    });
+
+    describe('loading (#1784)', () => {
+        const deferredSource = () => {
+            const gates : PromiseWithResolvers<Row[]>[] = [];
+            const source = defineDataCollection<Row, Meta>({
+                load: async () => {
+                    const gate = Promise.withResolvers<Row[]>();
+
+                    gates.push(gate);
+
+                    const rows = await gate.promise;
+
+                    return { data: rows, total: rows.length };
+                },
+                initialMeta: baseMeta(),
+                autoLoad: false,
+            });
+
+            return { source, gates };
+        };
+
+        it('should set loading only while the newest load runs', async () => {
+            const { source, gates } = deferredSource();
+
+            expect(source.loading.value).toBe(false);
+
+            const p1 = source.load();
+            const p2 = source.load();
+
+            expect(source.loading.value).toBe(true);
+
+            gates[1].resolve([{ id: 2, name: 'newer' }]);
+            await p2;
+            expect(source.loading.value).toBe(false);
+            expect(source.busy.value).toBe(true);
+
+            gates[0].resolve([{ id: 1, name: 'stale' }]);
+            await p1;
+            expect(source.busy.value).toBe(false);
+            expect(source.loading.value).toBe(false);
+        });
+
+        it('should not resurrect loading when a superseded load settles after the newest', async () => {
+            const { source, gates } = deferredSource();
+
+            const p1 = source.load();
+            const p2 = source.load();
+
+            const failure = new Error('newest failed');
+
+            gates[1].reject(failure);
+            await p2;
+            expect(source.error.value).toBe(failure);
+            expect(source.loading.value).toBe(false);
+
+            gates[0].resolve([{ id: 1, name: 'stale' }]);
+            await p1;
+            expect(source.loading.value).toBe(false);
+            expect(source.error.value).toBe(failure);
+        });
+
+        it('should not set loading for mutate()', async () => {
+            const { source } = deferredSource();
+            const gate = Promise.withResolvers<void>();
+            const op = source.mutate(() => gate.promise);
+
+            expect(source.busy.value).toBe(true);
+            expect(source.loading.value).toBe(false);
+
+            gate.resolve();
+            await op;
+            expect(source.busy.value).toBe(false);
+        });
+
+        it('isEmpty should follow loading, not busy', async () => {
+            const { source, gates } = deferredSource();
+            const gate = Promise.withResolvers<void>();
+            const op = source.mutate(() => gate.promise);
+
+            const p = source.load();
+
+            gates[0].resolve([]);
+            await p;
+
+            expect(source.busy.value).toBe(true);
+            expect(source.loading.value).toBe(false);
+            expect(source.isEmpty.value).toBe(true);
+
+            gate.resolve();
+            await op;
+        });
+
+        it('should keep loading true across the handover to a newer load', async () => {
+            const { source, gates } = deferredSource();
+            const loadingSeen : boolean[] = [];
+            const nested : Promise<unknown>[] = [];
+
+            const p1 = source.load();
+
+            const stopLoading = watch(source.loading, (value) => {
+                loadingSeen.push(value);
+            }, { flush: 'sync' });
+            const stopEmpty = watch(source.isEmpty, (value) => {
+                // a consumer reacting synchronously to the empty state
+                if (value && nested.length === 0) {
+                    nested.push(source.load());
+                }
+            }, { flush: 'sync' });
+
+            const p2 = source.load();
+
+            expect(loadingSeen).not.toContain(false);
+            expect(nested).toHaveLength(0);
+            expect(source.loading.value).toBe(true);
+
+            stopLoading();
+            stopEmpty();
+
+            // newest (p2) wins even when the older load settles last
+            gates[1].resolve([{ id: 2, name: 'newer' }]);
+            await p2;
+            gates[0].resolve([{ id: 1, name: 'stale' }]);
+            await p1;
+            await Promise.all(nested);
+
+            expect(source.data.value.map((row) => row.name)).toEqual(['newer']);
+        });
+
+        it('should hide the empty state while the newest load runs', () => {
+            const { source } = deferredSource();
+
+            expect(source.isEmpty.value).toBe(true);
+
+            source.load();
+
+            expect(source.isEmpty.value).toBe(false);
         });
     });
 });

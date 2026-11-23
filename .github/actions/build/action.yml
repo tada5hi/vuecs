@@ -4,11 +4,20 @@ description: 'Prepares the repo for a job by running the build'
 runs:
     using: 'composite'
     steps:
+        # Key on the checked-out commit, not github.sha: a workflow
+        # dispatched from one ref can check out another (e.g. the
+        # visual-regression-update `branch` input), and github.sha would
+        # then restore the dispatching ref's dist.
+        -   name: Resolve checked-out commit
+            id: head
+            shell: bash
+            run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
         -   uses: actions/cache@v6
             id: build-cache
             with:
                 path: '**/dist/**'
-                key: ${{ runner.os }}-build-${{ github.sha }}
+                key: ${{ runner.os }}-build-${{ steps.head.outputs.sha }}
 
         -   name: Build
             shell: bash

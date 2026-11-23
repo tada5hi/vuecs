@@ -124,6 +124,7 @@ export default defineConfig({
                         { text: 'Badge', link: '/components/badge' },
                         { text: 'Card', link: '/components/card' },
                         { text: 'Collapse', link: '/components/collapse' },
+                        { text: 'EmptyState', link: '/components/empty-state' },
                         { text: 'Separator', link: '/components/separator' },
                         { text: 'Tag', link: '/components/tag' },
                         { text: 'VisuallyHidden', link: '/components/visually-hidden' },
@@ -143,6 +144,7 @@ export default defineConfig({
                         { text: 'FormRadio', link: '/components/form-radio' },
                         { text: 'FormSlider', link: '/components/form-slider' },
                         { text: 'FormTags', link: '/components/form-tags' },
+                        { text: 'FormDateRange', link: '/components/form-date-range' },
                     ],
                 },
                 {
@@ -213,6 +215,12 @@ export default defineConfig({
                     text: '@vuecs/table',
                     items: [
                         { text: 'Table', link: '/components/table' },
+                    ],
+                },
+                {
+                    text: '@vuecs/table-card',
+                    items: [
+                        { text: 'TableCard', link: '/components/table-card' },
                     ],
                 },
                 {

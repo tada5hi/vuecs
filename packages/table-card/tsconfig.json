@@ -1,0 +1,23 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "lib": [
+            "ESNext",
+            "DOM"
+        ],
+        "jsx": "preserve",
+        "skipLibCheck": true,
+        "paths": {
+            "@vuecs/core": [
+                "./packages/core/src"
+            ],
+            "@vuecs/core/*": [
+                "./packages/core/src/*"
+            ]
+        }
+    },
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.vue"
+    ]
+}

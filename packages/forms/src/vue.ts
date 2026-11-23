@@ -1,6 +1,7 @@
 import type {
     VCFormCheckbox,
     VCFormCheckboxGroup,
+    VCFormDateRange,
     VCFormGroup,
     VCFormInput,
     VCFormNumber,
@@ -20,6 +21,7 @@ declare module 'vue' {
     export interface GlobalComponents {
         VCFormCheckbox: typeof VCFormCheckbox,
         VCFormCheckboxGroup: typeof VCFormCheckboxGroup,
+        VCFormDateRange: typeof VCFormDateRange,
         VCFormGroup: typeof VCFormGroup,
         VCFormInput: typeof VCFormInput,
         VCFormNumber: typeof VCFormNumber,

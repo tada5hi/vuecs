@@ -23,6 +23,7 @@ import {
     collapseContentThemeDefaults,
     collapseThemeDefaults,
     collapseTriggerThemeDefaults,
+    emptyStateThemeDefaults,
     separatorThemeDefaults,
     tagThemeDefaults,
     tagsThemeDefaults,
@@ -30,6 +31,7 @@ import {
 import {
     formCheckboxGroupThemeDefaults,
     formCheckboxThemeDefaults,
+    formDateRangeThemeDefaults,
     formGroupThemeDefaults,
     formInputThemeDefaults,
     formNumberThemeDefaults,
@@ -94,6 +96,7 @@ import {
     tableSortIndicatorsThemeDefaults,
     tableThemeDefaults,
 } from '@vuecs/table';
+import { tableCardThemeDefaults } from '@vuecs/table-card';
 import { timeagoThemeDefaults } from '@vuecs/timeago';
 import {
     treeItemThemeDefaults,
@@ -139,6 +142,7 @@ const expectedCatalog = {
     collapse: collapseThemeDefaults,
     collapseContent: collapseContentThemeDefaults,
     collapseTrigger: collapseTriggerThemeDefaults,
+    emptyState: emptyStateThemeDefaults,
     contextMenu: contextMenuThemeDefaults,
     countdown: countdownThemeDefaults,
     dropdownMenu: dropdownMenuThemeDefaults,
@@ -149,6 +153,7 @@ const expectedCatalog = {
     formNumber: formNumberThemeDefaults,
     formPin: formPinThemeDefaults,
     formRadio: formRadioThemeDefaults,
+    formDateRange: formDateRangeThemeDefaults,
     formRadioGroup: formRadioGroupThemeDefaults,
     formSelect: formSelectThemeDefaults,
     formSelectSearch: formSelectSearchThemeDefaults,
@@ -186,6 +191,7 @@ const expectedCatalog = {
     tableRow: tableRowThemeDefaults,
     tableRowExpansion: tableRowExpansionThemeDefaults,
     tableSortIndicators: tableSortIndicatorsThemeDefaults,
+    tableCard: tableCardThemeDefaults,
     tag: tagThemeDefaults,
     tags: tagsThemeDefaults,
     timeago: timeagoThemeDefaults,

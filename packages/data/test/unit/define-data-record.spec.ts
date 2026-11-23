@@ -672,4 +672,73 @@ describe('defineDataRecord', () => {
             expect(source.error.value).toBeInstanceOf(Error);
         });
     });
+
+    describe('loading (#1784)', () => {
+        it('should set loading only while the newest load runs', async () => {
+            const gates : PromiseWithResolvers<User>[] = [];
+            const source = defineDataRecord<User, Meta>({
+                load: async () => {
+                    const gate = Promise.withResolvers<User>();
+
+                    gates.push(gate);
+
+                    return { data: await gate.promise };
+                },
+                autoLoad: false,
+            });
+
+            expect(source.loading.value).toBe(false);
+
+            const p1 = source.load();
+            const p2 = source.load();
+
+            expect(source.loading.value).toBe(true);
+
+            gates[1].resolve({ id: 2, name: 'newer' });
+            await p2;
+            expect(source.loading.value).toBe(false);
+            expect(source.busy.value).toBe(true);
+
+            gates[0].resolve({ id: 1, name: 'stale' });
+            await p1;
+            expect(source.busy.value).toBe(false);
+            expect(source.loading.value).toBe(false);
+        });
+
+        it('should turn loading off when an immediate write supersedes the load', async () => {
+            const gate = Promise.withResolvers<User>();
+            const source = defineDataRecord<User, Meta>({
+                load: async () => ({ data: await gate.promise }),
+                autoLoad: false,
+            });
+
+            const p = source.load();
+
+            expect(source.loading.value).toBe(true);
+
+            source.set({ id: 1, name: 'local' }, { immediate: true });
+            expect(source.loading.value).toBe(false);
+            expect(source.busy.value).toBe(true);
+
+            gate.resolve({ id: 1, name: 'stale-server' });
+            await p;
+            expect(source.loading.value).toBe(false);
+            expect(source.busy.value).toBe(false);
+        });
+
+        it('should not set loading for mutate()', async () => {
+            const source = defineDataRecord<User, Meta>({
+                load: async () => ({ data: { id: 1, name: 'a' } }),
+                autoLoad: false,
+            });
+            const gate = Promise.withResolvers<void>();
+            const op = source.mutate(() => gate.promise);
+
+            expect(source.busy.value).toBe(true);
+            expect(source.loading.value).toBe(false);
+
+            gate.resolve();
+            await op;
+        });
+    });
 });

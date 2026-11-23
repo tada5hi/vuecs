@@ -137,6 +137,13 @@ export default function bulmaTheme(): Theme {
             // via the wrapper. The structural `vc-form-checkbox-group` rule
             // owns the flex direction.
             formCheckboxGroup: { classes: { root: 'is-flex is-flex-direction-column' } },
+            formDateRange: {
+                classes: {
+                    label: 'label mb-0',
+                    preset: 'button is-small',
+                    presetActive: 'is-primary',
+                },
+            },
             formSwitch: {
                 classes: {
                     root: '',
@@ -160,18 +167,38 @@ export default function bulmaTheme(): Theme {
                     indicator: '',
                     label: '',
                     group: 'is-inline-flex is-align-items-center',
+                    segment: 'button',
+                    segmentActive: 'is-primary is-selected',
                 },
                 variants: {
                     size: {
-                        xs: { root: 'vc-form-radio-xs', label: 'vc-fs-xs' },
-                        sm: { root: 'vc-form-radio-sm', label: 'is-size-7' },
+                        xs: {
+                            root: 'vc-form-radio-xs',
+                            label: 'vc-fs-xs',
+                            segment: 'is-small vc-size-xs',
+                        },
+                        sm: {
+                            root: 'vc-form-radio-sm',
+                            label: 'is-size-7',
+                            segment: 'is-small',
+                        },
                         md: { root: '' },
-                        lg: { root: 'vc-form-radio-lg', label: 'is-size-5' },
+                        lg: {
+                            root: 'vc-form-radio-lg',
+                            label: 'is-size-5',
+                            segment: 'is-medium',
+                        },
                     },
                 },
                 defaultVariants: { size: 'md' },
             },
-            formRadioGroup: { classes: { root: 'is-flex is-flex-direction-column' } },
+            formRadioGroup: {
+                classes: {
+                    root: 'is-flex is-flex-direction-column',
+                    // Segmented bar — replaces `root` when `segmented` is set.
+                    segmented: 'buttons has-addons',
+                },
+            },
             // FormSelect (Reka-backed compound) — we deliberately don't use
             // Bulma's `.select` because that styles a `<div>` wrapper around a
             // real `<select>`. Build the trigger from `.input` + flex
@@ -662,6 +689,26 @@ export default function bulmaTheme(): Theme {
             },
             alertTitle: { classes: { root: 'has-text-weight-semibold mb-1' } },
             alertDescription: { classes: { root: 'mb-0' } },
+            // Dashed-border centered card (#1780). `.box` sets
+            // `display: block`, so the flex helpers (which are `!important`)
+            // keep the structural column layout; the bridge CSS drops the
+            // box shadow via `--bulma-box-shadow` and adds the dashed border.
+            emptyState: {
+                classes: {
+                    root: 'box has-text-centered is-flex is-flex-direction-column is-align-items-center',
+                    icon: 'is-size-3 has-text-grey',
+                    title: 'title is-5 mb-0',
+                    description: 'has-text-grey mb-0',
+                    action: 'button',
+                },
+                variants: {
+                    variant: {
+                        empty: { action: 'is-primary' },
+                        noResults: { action: 'is-light' },
+                    },
+                },
+                defaultVariants: { variant: 'empty' },
+            },
             // Bulma has NO core `.badge` class. Use `.tag` as the host
             // (consistent with how Bulma docs recommend chip-style badges)
             // plus the same color × variant matrix structure as button.
@@ -792,6 +839,18 @@ export default function bulmaTheme(): Theme {
                 classes: {
                     root: 'has-text-centered has-text-grey py-5',
                     overlay: 'vc-table-loading-overlay-bulma',
+                },
+            },
+            // Collection card (#1783). Bulma has no `min-width: 0`, width or
+            // responsive flex-basis helper, so the main / aside sizing and
+            // the search input width live in the bridge CSS.
+            tableCard: {
+                classes: {
+                    header: 'is-flex is-flex-direction-row is-flex-wrap-wrap is-align-items-center is-justify-content-space-between is-gap-3',
+                    heading: 'is-flex is-flex-direction-column is-gap-1',
+                    toolbar: 'is-flex is-flex-wrap-wrap is-align-items-center is-gap-2',
+                    actions: 'is-flex is-flex-wrap-wrap is-align-items-center is-gap-2',
+                    body: 'is-flex is-flex-wrap-wrap is-align-items-flex-start is-gap-3',
                 },
             },
             tableSortIndicators: {

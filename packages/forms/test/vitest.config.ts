@@ -5,6 +5,10 @@ export default defineConfig({
     plugins: [vue()],
     test: {
         include: ['test/unit/**/*.{test,spec}.{js,ts}'],
+        // Pin the timezone so the date-range helper specs (local calendar
+        // day <-> UTC instant, DST boundaries) are deterministic on any
+        // machine / CI runner. Node re-reads `TZ` when it is assigned.
+        env: { TZ: 'Europe/Berlin' },
         typecheck: {
             enabled: true,
             checker: 'vue-tsc',

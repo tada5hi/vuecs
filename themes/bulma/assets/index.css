@@ -820,3 +820,45 @@
 .vc-tree-item:not([data-selected]) .vc-tree-item-icon {
     color: var(--bulma-text-weak);
 }
+
+/* ────────────────────────────────────────────────────────────────────────
+ * EmptyState (#1780) — flat dashed card.
+ *
+ * `.box` reads its shadow from `--bulma-box-shadow`; the dashed border is
+ * a gap-fill (Bulma has no border utility).
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.box.vc-empty-state {
+    --bulma-box-shadow: none;
+    border: 1px dashed var(--bulma-border);
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+ * TableCard (#1783) — main / aside sizing + search width.
+ *
+ * Gap-fill: Bulma has no `min-width: 0`, width or responsive flex-basis
+ * helper. The main column grows from a zero basis; the aside takes a full
+ * row below `tablet` and a fixed 16rem column beside the table above it.
+ * `.input` is `width: 100%`, which would stretch the search across the
+ * whole toolbar row.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+.vc-table-card-main {
+    flex: 1 1 0%;
+    min-width: 0;
+}
+
+.vc-table-card-aside {
+    flex: 0 0 100%;
+}
+
+@media screen and (min-width: 769px) {
+    .vc-table-card-aside {
+        flex-basis: 16rem;
+    }
+}
+
+.input.vc-table-card-search {
+    width: 16rem;
+    max-width: 100%;
+}

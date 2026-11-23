@@ -1,0 +1,30 @@
+/*
+ * Structural defaults for VCFormDateRange: the two date fields sit side by
+ * side and wrap on narrow viewports; the preset buttons form a wrapping row
+ * below them. Spacing and colors come from the active theme.
+ */
+.vc-form-date-range {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.vc-form-date-range-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.vc-form-date-range-field {
+    display: flex;
+    flex: 1 1 10rem;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.vc-form-date-range-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+}

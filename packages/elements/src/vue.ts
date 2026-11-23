@@ -15,6 +15,7 @@ import type VCCardTitle from './components/card/CardTitle.vue';
 import type VCCollapse from './components/collapse/Collapse.vue';
 import type VCCollapseContent from './components/collapse/CollapseContent.vue';
 import type VCCollapseTrigger from './components/collapse/CollapseTrigger.vue';
+import type VCEmptyState from './components/empty-state/EmptyState.vue';
 import type VCSeparator from './components/separator/Separator.vue';
 import type VCTag from './components/tag/Tag.vue';
 import type VCTags from './components/tag/Tags.vue';
@@ -44,5 +45,6 @@ declare module 'vue' {
         VCAlertTitle: typeof VCAlertTitle,
         VCAlertDescription: typeof VCAlertDescription,
         VCAlertClose: typeof VCAlertClose,
+        VCEmptyState: typeof VCEmptyState,
     }
 }

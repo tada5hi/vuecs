@@ -9,6 +9,7 @@ import '../assets/avatar.css';
 import '../assets/badge.css';
 import '../assets/card.css';
 import '../assets/collapse.css';
+import '../assets/empty-state.css';
 import '../assets/separator.css';
 import '../assets/tag.css';
 import './vue';
@@ -31,6 +32,7 @@ import {
     VCCollapse,
     VCCollapseContent,
     VCCollapseTrigger,
+    VCEmptyState,
     VCSeparator,
     VCTag,
     VCTags,
@@ -65,6 +67,7 @@ export function install(app: App, options: Options = {}): void {
         VCAlertTitle,
         VCAlertDescription,
         VCAlertClose,
+        VCEmptyState,
     }).forEach(([name, component]) => {
         app.component(name, component);
     });

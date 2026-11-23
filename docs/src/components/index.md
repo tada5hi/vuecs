@@ -24,6 +24,7 @@ vuecs ships its components across separate packages — install only what you us
 | [Badge](/components/badge) | Status pill — `solid` / `soft` / `outline` × semantic color matrix |
 | [Card](/components/card) | Compound surface — `<VCCard>` outer + Header / Title / Description / Body / Footer parts; variant + padding via context |
 | [Collapse](/components/collapse) | Reka `Collapsible` wrapper — `v-model:open`, auto-chevron, height transition; composes with Alert for dismiss animation |
+| [EmptyState](/components/empty-state) | Dashed placeholder card for an empty collection or a no-results search — `empty` / `noResults` variant, i18n-able default copy, `action` emit |
 | [Separator](/components/separator) | Horizontal / vertical divider with proper ARIA (Reka primitive) |
 | [Tag](/components/tag) | Removable, value-bound chip + `<VCTags>` list helper |
 | [VisuallyHidden](/components/visually-hidden) | Screen-reader-only content (Reka primitive) |
@@ -43,6 +44,7 @@ vuecs ships its components across separate packages — install only what you us
 | [FormRadio](/components/form-radio) | Radio + group with single v-model (Reka primitive) |
 | [FormSlider](/components/form-slider) | Single-thumb or range slider; thumb count derives from v-model shape |
 | [FormTags](/components/form-tags) | Multi-value chip input (Reka primitive) |
+| [FormDateRange](/components/form-date-range) | From/to date pair with presets + query-bound helpers |
 
 ## @vuecs/gravatar
 
@@ -107,6 +109,12 @@ vuecs ships its components across separate packages — install only what you us
 | Component | Notes |
 |-----------|-------|
 | [Table](/components/table) | Compound table — `<VCTable>` + 8 parts (Header / Body / Footer / Row / Cell / HeadCell / Empty / Loading) with a `:columns :data` driver, controlled sort, row-meta variants, and opt-in row keyboard nav |
+
+## @vuecs/table-card
+
+| Component | Notes |
+|-----------|-------|
+| [TableCard](/components/table-card) | Card frame around a table — title, search, actions, pagination, `#aside`, and an empty / no-results state that replaces the table; generic over the row type |
 
 ## @vuecs/timeago
 

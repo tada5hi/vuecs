@@ -6,6 +6,8 @@ parts (`<VCTableHeader>` / `<VCTableBody>` / `<VCTableFooter>` /
 `<VCTableLoading>`). Layer 1 — `@vuecs/core` peer dep only; no Reka dep
 (no Reka table primitive exists, semantic HTML covers it).
 
+The card frame around a table (header, search, pagination, empty state) lives in `@vuecs/table-card`, not here — `@vuecs/table` takes no dependency on `elements` / `forms` / `pagination`. `<VCTableCard>` forwards its non-own slots to `<VCTable>` and drives `data` / `columns` / `sort` / `busy` (`placeholder` always on). Its other attributes and listeners (`get-row-key`, `expandable`, `@row-click`, …) fall through to `<VCTable>`; only `class` / `style` stay on the card root.
+
 ### Two authoring shapes
 
 - **`:columns :data` driver** (primary): consumer passes `:columns`

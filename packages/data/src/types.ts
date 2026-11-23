@@ -154,7 +154,17 @@ export type DataCollection<T, Meta extends object, Input = unknown> = {
      * (`source.update({ ...row, name: 'x' })`), or opt into `deep: true`.
      */
     data: ComputedRef<T[]>,
+    /**
+     * `true` while ANY work runs — every load (superseded ones included)
+     * and every `mutate()`. Bind it to save buttons / global spinners.
+     */
     busy: ComputedRef<boolean>,
+    /**
+     * `true` only while the NEWEST load runs. A superseded load (a newer
+     * `load()` or an `immediate` write took over) and `mutate()` never set
+     * it. Bind it to skeletons / loading states / a table's `busy`.
+     */
+    loading: ComputedRef<boolean>,
     total: ComputedRef<number>,
     /**
      * Reactive plain bag (shallowReactive). Structural match for
@@ -162,6 +172,7 @@ export type DataCollection<T, Meta extends object, Input = unknown> = {
      * `load(next)` that fails or is superseded never commits `next`.
      */
     meta: Meta,
+    /** `true` when no load is pending (`!loading`) and `total` is 0. */
     isEmpty: ComputedRef<boolean>,
     error: Ref<unknown>,
     findIndex: (item: T) => number,
@@ -254,7 +265,10 @@ export type DataRecordDefinition<T, Meta extends object, Input = unknown> = {
 export type DataRecord<T, Meta extends object, Input = unknown> = {
     /** Backed by a `shallowRef` unless `deep: true` — replace, don't mutate in place. */
     data: ComputedRef<T | undefined>,
+    /** `true` while any load or `mutate()` runs — see `DataCollection['busy']`. */
     busy: ComputedRef<boolean>,
+    /** `true` only while the newest load runs — see `DataCollection['loading']`. */
+    loading: ComputedRef<boolean>,
     /** Meta of the last load that APPLIED — see `DataCollection['meta']`. */
     meta: Meta,
     error: Ref<unknown>,
@@ -286,6 +300,8 @@ export type DataRecord<T, Meta extends object, Input = unknown> = {
 
 export type AsyncSourceCore = {
     busy: ComputedRef<boolean>,
+    /** `true` while the `run` holding the current token executes. */
+    loading: ComputedRef<boolean>,
     error: Ref<unknown>,
     /**
      * Token-guarded latest-wins runner. `apply` only fires when this

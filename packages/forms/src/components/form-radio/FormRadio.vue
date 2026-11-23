@@ -1,6 +1,7 @@
 <script lang="ts">
 import { useComponentDefaults, useComponentTheme, useId } from '@vuecs/core';
 import { useFormInputThemeProps } from '../form-group/context';
+import { injectFormRadioGroupContext } from '../form-radio-group/context';
 import type {
     ComponentDefaultValues,
     ComponentThemeDefinition,
@@ -22,6 +23,10 @@ export type FormRadioThemeClasses = {
     indicator: string;
     label: string;
     group: string;
+    /** Segment face (the radio button) inside a segmented `<VCFormRadioGroup>`. */
+    segment: string;
+    /** Added to `segment` while the segment is checked. */
+    segmentActive: string;
 };
 
 export type FormRadioDefaults = {
@@ -49,6 +54,8 @@ export const formRadioThemeDefaults: ComponentThemeDefinition<FormRadioThemeClas
         // which has `flex-direction: column` and would stack the radio
         // above its label.
         group: 'vc-form-radio-wrapper',
+        segment: 'vc-form-radio-segment',
+        segmentActive: 'vc-form-radio-segment-active',
     },
 };
 
@@ -75,7 +82,10 @@ const formRadioProps = {
     required: { type: Boolean, default: false },
     /** Element id; falls back to an SSR-safe generated id. */
     id: { type: String, default: undefined },
-    /** Vuecs convention: render the label by default. Internal control flow, not forwarded to Reka. */
+    /**
+     * Vuecs convention: render the label by default. Internal control flow, not forwarded to Reka.
+     * Ignored inside a segmented group (the label is the segment face).
+     */
     label: { type: Boolean, default: true },
     /** Default label text (resolved through DefaultsManager). */
     labelContent: { type: String, default: undefined },
@@ -96,7 +106,23 @@ export default defineComponent({
         indicator: FormRadioIndicatorSlotProps;
     }>,
     setup(props, { attrs, slots }) {
-        const theme = useComponentTheme('formRadio', useFormInputThemeProps(props), formRadioThemeDefaults);
+        const group = injectFormRadioGroupContext();
+        // Inherit the group's `size` variant unless this radio sets its own.
+        const theme = useComponentTheme('formRadio', useFormInputThemeProps({
+            get themeClass() {
+                return props.themeClass;
+            },
+            get themeVariant() {
+                const own = props.themeVariant;
+                const inherited = group?.size();
+
+                if (inherited === undefined || (own && 'size' in own)) {
+                    return own;
+                }
+
+                return { ...(own ?? {}), size: inherited };
+            },
+        }), formRadioThemeDefaults);
         const defaults = useComponentDefaults('formRadio', props, behavioralDefaults);
         // SSR-safe stable id (Vue 3.5's native `useId` under the hood) —
         // see FormCheckbox.vue.
@@ -106,6 +132,35 @@ export default defineComponent({
             const resolved = theme.value;
             const resolvedDefaults = defaults.value;
             const id = props.id ?? fallbackId;
+
+            if (group?.segmented.value) {
+                // Segment face: the Reka radio button carries the label
+                // (no indicator, no sibling <label>). `asChild` lets us read
+                // Reka's `checked` slot prop to toggle `segmentActive`,
+                // since Bootstrap / Bulma can't style off `data-state`.
+                return h(
+                    RadioGroupItem,
+                    {
+                        id,
+                        value: props.value,
+                        disabled: props.disabled,
+                        required: props.required,
+                        asChild: true,
+                    },
+                    {
+                        default: ({ checked }: { checked: boolean }) => h(
+                            'button',
+                            mergeProps(attrs, {
+                                type: 'button',
+                                class: [resolved.segment, checked ? resolved.segmentActive : ''].filter(Boolean).join(' ') || undefined,
+                            }),
+                            slots.label ?
+                                slots.label({ class: resolved.label, id }) :
+                                [resolvedDefaults.labelContent],
+                        ),
+                    },
+                );
+            }
 
             const radio = h(
                 RadioGroupItem,

@@ -14,6 +14,8 @@ import {
     ref,
 } from 'vue';
 import { renderToString } from 'vue/server-renderer';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { mount } from '@vue/test-utils';
 import { installDefaultsManager, installThemeManager } from '@vuecs/core';
 import { default as VCFormCheckbox } from '../../src/components/form-checkbox/FormCheckbox.vue';
@@ -1432,6 +1434,366 @@ describe('VCFormRadioGroup + VCFormRadio', () => {
         expect(wrapper.text()).toContain('Small');
         expect(wrapper.text()).toContain('Medium');
         expect(wrapper.text()).toContain('Large');
+    });
+});
+
+describe('VCFormRadioGroup same-value updates', () => {
+    it('should not emit when the already-checked radio is clicked', async () => {
+        const wrapper = mount(VCFormRadioGroup, {
+            props: { modelValue: 'a' },
+            global: { plugins: [themePlugin] },
+            slots: {
+                default: () => [
+                    h(VCFormRadio, { value: 'a', label: false }),
+                    h(VCFormRadio, { value: 'b', label: false }),
+                ],
+            },
+        });
+        const radios = wrapper.findAll('button[role="radio"]');
+
+        await radios[0].trigger('click');
+        expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+
+        await radios[1].trigger('click');
+        expect(wrapper.emitted('update:modelValue')).toEqual([['b']]);
+    });
+
+    it('should emit again after the parent resets the model to undefined', async () => {
+        const wrapper = mount(VCFormRadioGroup, {
+            props: { modelValue: undefined },
+            global: { plugins: [themePlugin] },
+            slots: {
+                default: () => [
+                    h(VCFormRadio, { value: 'a', label: false }),
+                    h(VCFormRadio, { value: 'b', label: false }),
+                ],
+            },
+        });
+        const radios = wrapper.findAll('button[role="radio"]');
+
+        await radios[1].trigger('click');
+        await wrapper.setProps({ modelValue: 'b' });
+        await wrapper.setProps({ modelValue: undefined });
+        await radios[1].trigger('click');
+
+        expect(wrapper.emitted('update:modelValue')).toEqual([['b'], ['b']]);
+    });
+
+    it('should emit again when a controlling parent rejects the change', async () => {
+        const wrapper = mount(VCFormRadioGroup, {
+            props: { modelValue: 'a' },
+            global: { plugins: [themePlugin] },
+            slots: {
+                default: () => [
+                    h(VCFormRadio, { value: 'a', label: false }),
+                    h(VCFormRadio, { value: 'b', label: false }),
+                ],
+            },
+        });
+        const radios = wrapper.findAll('button[role="radio"]');
+
+        await radios[1].trigger('click');
+        await radios[1].trigger('click');
+
+        expect(wrapper.emitted('update:modelValue')).toEqual([['b'], ['b']]);
+        expect(radios[0].attributes('data-state')).toBe('checked');
+    });
+
+    it('should treat a structurally equal object value as already checked (Reka equality)', async () => {
+        const wrapper = mount(VCFormRadioGroup, {
+            props: { modelValue: { id: 1 } },
+            global: { plugins: [themePlugin] },
+            slots: {
+                default: () => [
+                    h(VCFormRadio, { value: { id: 1 }, label: false }),
+                    h(VCFormRadio, { value: { id: 2 }, label: false }),
+                ],
+            },
+        });
+        const radios = wrapper.findAll('button[role="radio"]');
+
+        expect(radios[0].attributes('data-state')).toBe('checked');
+
+        await radios[0].trigger('click');
+        expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+
+        await radios[1].trigger('click');
+        expect(wrapper.emitted('update:modelValue')).toEqual([[{ id: 2 }]]);
+    });
+
+    it('should not re-emit the same value when uncontrolled', async () => {
+        const wrapper = mount(VCFormRadioGroup, {
+            global: { plugins: [themePlugin] },
+            slots: {
+                default: () => [
+                    h(VCFormRadio, { value: 'a', label: false }),
+                    h(VCFormRadio, { value: 'b', label: false }),
+                ],
+            },
+        });
+        const radios = wrapper.findAll('button[role="radio"]');
+
+        await radios[1].trigger('click');
+        await radios[1].trigger('click');
+        expect(wrapper.emitted('update:modelValue')).toEqual([['b']]);
+    });
+});
+
+describe('VCFormRadioGroup segmented', () => {
+    const segmentedTheme = {
+        install: (app: any) => {
+            installThemeManager(app, {
+                themes: [{
+                    elements: {
+                        formRadio: {
+                            classes: {
+                                segment: 'seg',
+                                segmentActive: 'seg-on',
+                            },
+                            variants: { size: { sm: { segment: 'seg-sm' } } },
+                        },
+                        formRadioGroup: { classes: { segmented: 'bar' } },
+                    },
+                }],
+            });
+            installDefaultsManager(app);
+        },
+    };
+
+    const options = [
+        { value: 'list', label: 'List' },
+        { value: 'grid', label: 'Grid' },
+        {
+            value: 'table',
+            label: 'Table',
+            disabled: true,
+        },
+        { value: 'cards', label: 'Cards' },
+    ];
+
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
+
+    it('should render options as radio buttons containing their label', () => {
+        const wrapper = mount(VCFormRadioGroup, {
+            props: {
+                modelValue: 'list',
+                options,
+                segmented: true,
+            },
+            global: { plugins: [segmentedTheme] },
+        });
+        const radios = wrapper.findAll('button[role="radio"]');
+
+        expect(radios.map((r) => r.text())).toEqual(['List', 'Grid', 'Table', 'Cards']);
+        expect(wrapper.find('label').exists()).toBe(false);
+        expect(wrapper.find('.vc-form-radio-indicator').exists()).toBe(false);
+        expect(wrapper.find('.vc-form-radio-wrapper').exists()).toBe(false);
+        expect(radios[0].classes()).toContain('seg');
+        expect(radios[0].classes()).not.toContain('vc-form-radio');
+    });
+
+    it('should render default-slot VCFormRadio children as segments', () => {
+        const wrapper = mount(VCFormRadioGroup, {
+            props: { modelValue: 'b', segmented: true },
+            global: { plugins: [segmentedTheme] },
+            slots: {
+                default: () => [
+                    h(VCFormRadio, { value: 'a', labelContent: 'Alpha' }),
+                    h(VCFormRadio, { value: 'b' }, { label: () => 'Beta' }),
+                ],
+            },
+        });
+        const radios = wrapper.findAll('button[role="radio"]');
+
+        expect(radios.map((r) => r.text())).toEqual(['Alpha', 'Beta']);
+        expect(wrapper.find('label').exists()).toBe(false);
+        expect(radios[1].attributes('data-state')).toBe('checked');
+    });
+
+    it('should give only the checked segment a structural selected style without a theme', () => {
+        const style = document.createElement('style');
+
+        style.textContent = readFileSync(resolve(__dirname, '../../assets/form-radio.css'), 'utf8');
+        document.head.appendChild(style);
+
+        try {
+            const wrapper = mount(VCFormRadioGroup, {
+                props: {
+                    modelValue: 'grid',
+                    options,
+                    segmented: true,
+                },
+                attachTo: document.body,
+                global: {
+                    plugins: [{
+                        install: (app: any) => {
+                            installThemeManager(app);
+                            installDefaultsManager(app);
+                        },
+                    }],
+                },
+            });
+            const radios = wrapper.findAll('button[role="radio"]');
+            const checked = getComputedStyle(radios[1].element);
+            const unchecked = getComputedStyle(radios[0].element);
+
+            expect(radios[1].attributes('data-state')).toBe('checked');
+            expect(checked.borderColor).not.toBe('');
+            expect(checked.color).not.toBe(unchecked.color);
+            expect(checked.borderColor).not.toBe(unchecked.borderColor);
+
+            wrapper.unmount();
+        } finally {
+            style.remove();
+        }
+    });
+
+    it('should mark only the checked segment active and follow model changes', async () => {
+        const wrapper = mount(VCFormRadioGroup, {
+            props: {
+                modelValue: 'grid',
+                options,
+                segmented: true,
+            },
+            global: { plugins: [segmentedTheme] },
+        });
+        let radios = wrapper.findAll('button[role="radio"]');
+
+        expect(radios[1].classes()).toContain('seg-on');
+        expect(radios[0].classes()).not.toContain('seg-on');
+
+        await wrapper.setProps({ modelValue: 'cards' });
+        radios = wrapper.findAll('button[role="radio"]');
+        expect(radios[3].classes()).toContain('seg-on');
+        expect(radios[1].classes()).not.toContain('seg-on');
+    });
+
+    it('should apply the segmented root class and inherit size', () => {
+        const wrapper = mount(VCFormRadioGroup, {
+            props: {
+                modelValue: 'list',
+                options,
+                segmented: true,
+                themeVariant: { size: 'sm' },
+            },
+            global: { plugins: [segmentedTheme] },
+        });
+        const root = wrapper.find('[role="radiogroup"]');
+
+        expect(root.classes()).toContain('bar');
+        expect(root.attributes('data-segmented')).toBeDefined();
+        expect(wrapper.find('button[role="radio"]').classes()).toContain('seg-sm');
+    });
+
+    it('should not apply the segmented root class when not segmented', () => {
+        const wrapper = mount(VCFormRadioGroup, {
+            props: { modelValue: 'list', options },
+            global: { plugins: [segmentedTheme] },
+        });
+
+        expect(wrapper.find('[role="radiogroup"]').classes()).not.toContain('bar');
+        expect(wrapper.find('[role="radiogroup"]').attributes('data-segmented')).toBeUndefined();
+        expect(wrapper.find('label').exists()).toBe(true);
+    });
+
+    it('should resolve the non-segmented root exactly as before (themeClass replaces)', () => {
+        const wrapper = mount(VCFormRadioGroup, {
+            props: {
+                modelValue: 'list',
+                options,
+                themeClass: { root: 'my-row' },
+                themeVariant: { size: 'sm' },
+            },
+            global: { plugins: [segmentedTheme] },
+        });
+
+        expect(wrapper.find('[role="radiogroup"]').attributes('class')).toBe('my-row');
+        // The group's size only reaches items when segmented.
+        expect(wrapper.find('button[role="radio"]').classes()).not.toContain('seg-sm');
+    });
+
+    it('should emit once on change and nothing for the checked segment', async () => {
+        const wrapper = mount(VCFormRadioGroup, {
+            props: {
+                modelValue: 'list',
+                options,
+                segmented: true,
+            },
+            global: { plugins: [segmentedTheme] },
+        });
+        const radios = wrapper.findAll('button[role="radio"]');
+
+        await radios[0].trigger('click');
+        expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+
+        await radios[1].trigger('click');
+        expect(wrapper.emitted('update:modelValue')).toEqual([['grid']]);
+    });
+
+    it('should emit nothing when a disabled segment is clicked', async () => {
+        const wrapper = mount(VCFormRadioGroup, {
+            props: {
+                modelValue: 'list',
+                options,
+                segmented: true,
+            },
+            global: { plugins: [segmentedTheme] },
+        });
+        const disabled = wrapper.findAll('button[role="radio"]')[2];
+
+        expect(disabled.attributes('disabled')).toBeDefined();
+        disabled.element.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        await nextTick();
+        expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+    });
+
+    it('should move focus and selection with ArrowRight, skipping disabled segments', async () => {
+        const wrapper = mount(VCFormRadioGroup, {
+            props: {
+                modelValue: 'grid',
+                options,
+                segmented: true,
+                'onUpdate:modelValue': (value: unknown) => wrapper.setProps({ modelValue: value as string }),
+            },
+            global: { plugins: [segmentedTheme] },
+            attachTo: document.body,
+        });
+
+        // Reka's RovingFocusItem binds its keydown listener in a post-flush watcher.
+        await nextTick();
+
+        const radios = wrapper.findAll('button[role="radio"]');
+
+        (radios[1].element as HTMLElement).focus();
+        radios[1].element.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+        await new Promise((resolve) => {
+            setTimeout(resolve, 10);
+        });
+        await nextTick();
+
+        expect(document.activeElement).toBe(radios[3].element);
+        expect(wrapper.emitted('update:modelValue')).toEqual([['cards']]);
+
+        wrapper.unmount();
+        await nextTick();
+    });
+
+    it('should forward aria-label to the radiogroup root', () => {
+        const wrapper = mount(VCFormRadioGroup, {
+            props: {
+                modelValue: 'list',
+                options,
+                segmented: true,
+            },
+            attrs: { 'aria-label': 'View mode' },
+            global: { plugins: [segmentedTheme] },
+        });
+        const root = wrapper.find('[role="radiogroup"]');
+
+        expect(root.attributes('aria-label')).toBe('View mode');
+        expect(root.attributes('data-orientation')).toBe('horizontal');
     });
 });
 
