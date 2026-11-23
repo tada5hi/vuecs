@@ -1,12 +1,12 @@
 import forms from '@vuecs/forms';
 import FormRadio from '@vuecs-examples/shared/views/FormRadio.vue';
 import { createApp, h } from 'vue';
-import { announceVariants, installIframeBridge, variantState } from './iframe-bridge';
+import { announceProps, installIframeBridge, propState } from './iframe-bridge';
 import { installVuecs } from './shared';
 
 const app = createApp({
     setup() {
-        return () => h(FormRadio, { themeVariant: variantState.value });
+        return () => h(FormRadio, propState.value);
     },
 });
 
@@ -14,6 +14,21 @@ installVuecs(app);
 app.use(forms);
 app.mount('#app');
 
-announceVariants({ size: ['xs', 'sm', 'md', 'lg'] }, { size: 'md' });
+announceProps(
+    {
+        segmented: {
+            type: 'boolean',
+            default: false,
+            section: 'Layout',
+        },
+        'themeVariant.size': {
+            type: 'enum',
+            options: ['xs', 'sm', 'md', 'lg'],
+            default: 'md',
+            section: 'Variant',
+        },
+    },
+    { segmented: false, 'themeVariant.size': 'md' },
+);
 
 installIframeBridge();
