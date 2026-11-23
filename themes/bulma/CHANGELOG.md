@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.7.1](https://github.com/tada5hi/vuecs/compare/theme-bulma-v5.7.0...theme-bulma-v5.7.1) (2026-11-23)
+
+
+### Bug Fixes
+
+* **theme-bulma:** register Bulma pagination vars on the pagination root ([#1790](https://github.com/tada5hi/vuecs/issues/1790)) ([e46ebfb](https://github.com/tada5hi/vuecs/commit/e46ebfb7c80300919092b57c3362a3ae0c497b25))
+
 ## [5.7.0](https://github.com/tada5hi/vuecs/compare/theme-bulma-v5.6.0...theme-bulma-v5.7.0) (2026-11-23)
 
 

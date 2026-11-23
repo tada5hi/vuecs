@@ -1,6 +1,6 @@
 {
     "name": "@vuecs/theme-bulma",
-    "version": "5.7.0",
+    "version": "5.7.1",
     "type": "module",
     "description": "Bulma theme for vuecs components. Targets Bulma 1.0+ (CSS-variable-based theming); the version number tracks vuecs theme breaking changes, not Bulma's.",
     "exports": {
