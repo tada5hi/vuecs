@@ -4,6 +4,7 @@ export * from './avatar';
 export * from './badge';
 export * from './card';
 export * from './collapse';
+export * from './empty-state';
 export * from './separator';
 export * from './tag';
 export * from './visually-hidden';

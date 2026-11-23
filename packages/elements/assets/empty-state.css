@@ -1,0 +1,31 @@
+/*
+ * @vuecs/elements EmptyState — structural defaults.
+ *
+ * Owns the cross-theme layout only: a centered flex column with a gap
+ * between icon / title / description / action. Themes paint the border,
+ * padding, typography and the action button.
+ */
+
+.vc-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-align: center;
+}
+
+.vc-empty-state-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vc-empty-state-title,
+.vc-empty-state-description {
+    margin: 0;
+}
+
+.vc-empty-state-action {
+    margin-top: 0.5rem;
+}

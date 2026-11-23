@@ -16,6 +16,7 @@
 - ➖ **`<VCSeparator>`** — horizontal/vertical rule, `decorative` ARIA handling.
 - 🖼️ **`<VCAspectRatio>`** — fixed-ratio container.
 - 🙈 **`<VCVisuallyHidden>`** — screen-reader-only content.
+- 📭 **`<VCEmptyState>`** — dashed placeholder card for an empty collection (`empty`) or a search with no hits (`noResults`, with translatable default copy); emits `action`.
 
 **Compounds**
 
